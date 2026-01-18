@@ -342,7 +342,7 @@
 			
 			<div class="member">
 				<p class="member">Nama: Mas. Hamid</p>
-				<p class="member" style="display: none">Nomor: 0</p>
+				<p class="member" style="display: none">Nomor: 085546399043</p>
 				<p class="member satu aktif">Beli Kelas: 1 Bulan</p>
 				<p class="member">Masa Aktif: <span id="hamidwaktu"></span> <span id="hamidbulan"></span></p>
 			</div>
@@ -394,6 +394,13 @@
 				<p class="member" style="display: none">Nomor: 082229069298</p>
 				<p class="member satu aktif">Beli Kelas: 1 Bulan</p>
 				<p class="member">Masa Aktif: <span id="ilhamwaktu"></span> <span id="ilhambulan"></span></p>
+			</div>
+			
+			<div class="member">
+				<p class="member">Nama: Mas. Jefri</p>
+				<p class="member" style="display: none">Nomor: 0895322198674</p>
+				<p class="member satu aktif">Beli Kelas: 1 Bulan</p>
+				<p class="member">Masa Aktif: <span id="jefriwaktu"></span> <span id="jefribulan"></span></p>
 			</div>
 			
 			<div class="member">
@@ -1420,6 +1427,33 @@
 				clearInterval(simanjuntaktarget);
 				document.getElementById("simanjuntakwaktu").innerHTML = "<span class='expired'>Expired</span>";
 				document.getElementById("simanjuntakbulan").innerHTML = "";
+			}
+		}, 1000);
+		</script>
+		
+		<script type="text/javascript">
+		var targetjefri = new Date("18 Feb, 2026 00:00:00").getTime();
+		// Perbarui hitungan mundur setiap 1 detik
+		var jefritarget = setInterval(function() {
+			// Dapatkan tanggal dan waktu hari ini
+			var nTarget = new Date().getTime();
+			// Temukan jarak antara sekarang dan tanggal hitung mundur
+			var distance = targetjefri - nTarget;
+			// Kalkulasi waktu untuk tahun, bulan, hari, jam, menit dan detik
+			var years = Math.floor(distance /  (1000 * 60 * 60 * 24 * 31 * 12));
+			var months = Math.floor(distance /  (1000 * 60 * 60 * 24 * 31));
+			var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+			var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+			var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+			var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+			// Menampilkan Hasil di Element
+			document.getElementById("jefriwaktu").innerHTML = days + "Hari, " + hours + "Jam, " + minutes + "Menit";
+			document.getElementById("jefribulan").innerHTML = "(" + months + " Bulan lagi)";
+			// Jika hitungan mundur selesai, tuliskan sesuatu dalam Teks
+			if (distance < 0) {
+				clearInterval(jefritarget);
+				document.getElementById("jefriwaktu").innerHTML = "<span class='expired'>Expired</span>";
+				document.getElementById("jefribulan").innerHTML = "";
 			}
 		}, 1000);
 		</script>
