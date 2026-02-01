@@ -36,6 +36,11 @@
 		</select>
 	</div>
 	
+	<a href="${waLink}" target="_blank" class="wa-btn">
+		<i class="fa fa-whatsapp"></i> Reminder
+	</a>
+	<br><br><br>
+	
 	<div id="list"></div>
 
 	<script>
@@ -168,44 +173,48 @@
 	
 
 /* ================= NOTIF 7 HARI ================= */
-const NOTIF_KEY = "notif_7hari";
-let notified = JSON.parse(localStorage.getItem(NOTIF_KEY)) || {};
+function warning(ms) {
+  const d = Math.ceil(ms / DAY);
+  if (d <= 0) return "expired";
+  if (d <= 3) return "h3";
+  if (d <= 7) return "h7";
+  return "";
+}
 
-// file suara (wajib ada)
-const alertAudio = new Audio("stockid_suara/alert.mp3");
-alertAudio.preload = "auto";
+function waText(m, status) {
+  if (status === "h7")
+    return `Halo ${m.nama} 👋
+Masa aktif Stock ID VIP kamu akan berakhir dalam *7 hari*.
 
-function check7Hari(members){
-	const now = Date.now();
+Expired: ${m.expired}
+Yuk perpanjang sekarang supaya tidak terputus 🙏`;
 
-	members.forEach(m => {
-		const sisaHari = Math.ceil((target(m.expired) - now) / DAY);
+  if (status === "h3")
+    return `Halo ${m.nama} 👋
+Masa aktif Stock ID VIP kamu tinggal *3 hari lagi* ⏰
 
-		// notif hanya saat TEPAT 7 hari & belum pernah
-		if (sisaHari === 7 && !notified[m.nama]) {
+Expired: ${m.expired}
+Segera perpanjang ya 🙏`;
 
-			// 🔔 browser notification
-			if ("Notification" in window) {
-				if (Notification.permission === "granted") {
-					new Notification("⏰ Masa Aktif Hampir Habis", {
-						body: `${m.nama} tersisa 7 hari lagi`,
-						icon: "stockid_gambar/alert.jpg"
-					});
-				} else if (Notification.permission !== "denied") {
-					Notification.requestPermission();
-				}
-			}
+  if (status === "expired")
+    return `Halo ${m.nama} 👋
+Masa aktif Stock ID VIP kamu sudah *BERAKHIR* ❌
 
-			// 🔊 suara
-			alertAudio.currentTime = 0;
-			alertAudio.play().catch(()=>{});
+Silakan perpanjang kembali untuk melanjutkan akses 🙏`;
+}
 
-			// simpan agar tidak spam
-			notified[m.nama] = true;
-		}
-	});
+const warn = warning(m.ms);
+const msg = encodeURIComponent(waText(m, warn));
+const waLink = `https://wa.me/${m.wa}?text=${msg}`;
 
-	localStorage.setItem(NOTIF_KEY, JSON.stringify(notified));
+function autoWA(m, status) {
+  const key = `wa_${m.wa}_${status}`;
+  if (localStorage.getItem(key)) return;
+
+  const msg = encodeURIComponent(waText(m, status));
+  window.open(`https://wa.me/${m.wa}?text=${msg}`, "_blank");
+
+  localStorage.setItem(key, "1");
 }
 
 	</script>
