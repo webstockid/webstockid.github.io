@@ -1,0 +1,12 @@
+{
+  "name": "Monitoring Member VIP",
+  "short_name": "MemberVIP",
+  "start_url": "/expire.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3498db",
+  "icons": [
+    {"src":"stockid_gambar/alert.jpg","sizes":"192x192","type":"image/jpg"},
+    {"src":"stockid_gambar/alert.jpg","sizes":"512x512","type":"image/jpg"}
+  ]
+}

@@ -1,220 +1,135 @@
-<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<!DOCTYPE html PUBLIC '-//WAPFORUM//DTD XHTML Mobile 1.0//EN' 'http://www.wapforum.org/DTD/xhtml-mobile10.dtd'>
-	<head>
-		<title>Masa Aktif Member</title>
-		<meta charset="UTF-8">
-		<meta name="author" content="Hardiansyah">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-scale=1.0, maximal-scale=1">
-		<!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
-		<link rel="stylesheet" href="stockid_script/exp.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
-		<meta property="og:title" content="Di Tinggal Kekasih Emang Menyakitkan 💔">
-		<meta property="og:description" content="Tapi Pernah Gak Sih Loe Di Tinggal Stock ID VIP? 🗿">
-		<meta property="og:image" content="stockid_gambar/thumb.jpg">
-		<meta property="og:url" content="https://webstockid.github.io/exp">
-		<meta property="og:type" content="website">
-	</head>
-	
-	<body>
-	<audio id="notifSound">
-		<source src="stockid_suara/alert.mp3" type="audio/mp3">
-	</audio>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masa Aktif Member VIP</title>
 
-	<h2>Monitoring Masa Aktif Member</h2>
-	
-	<div class="stat-box" id="statistik"></div>
-	<div class="controls">
-		<input id="search" placeholder="Cari nama kamu...">
-		<select id="filter">
-			<option value="all">Semua</option>
-			<option value="1">1 Bulan</option>
-			<option value="2">2 Bulan</option>
-			<option value="3">3 Bulan</option>
-			<option value="6">6 Bulan</option>
-			<option value="12">1 Tahun</option>
-			<option value="expired">Expired</option>
-		</select>
-	</div>
-	
-	<button onclick="enableNotif()" class="notif-btn">
-		🔔 Aktifkan Reminder
-	</button>
+<!-- PWA manifest -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3498db">
 
-	<br><br><br>
-	
-	<div id="list"></div>
+<!-- Font & CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="stockid_script/exp.css">
 
-	<script>
-	/* ================= DATA MEMBER ================= */
-	const members = [
-		{ nama:"Mas. Yayat", wa:"82967078794", expired:"2027-02-21", history:[12] },
-		{ nama:"Mas. Dimas", wa:"6282288133212", expired:"2027-02-11", history:[1,12] },
-		{ nama:"Mas. Devan", wa:"6285800322160", expired:"2026-09-18", history:[1,6] },
-		{ nama:"Mas. Ardha", wa:"6281542779853", expired:"2026-08-25", history:[3,6] },
-		{ nama:"Mas. Vani", wa:"6289662208826", expired:"2026-08-09", history:[6] },
-		{ nama:"Mas. Tito", wa:"6281270370727", expired:"2026-06-30", history:[3,3] },
-		{ nama:"Mas. Farhan", wa:"6288221513462", expired:"2026-06-22", history:[1,3] },
-		{ nama:"Mas. Yoga", wa:"6282382795953", expired:"2026-06-18", history:[3,3] },
-		{ nama:"Mas. Dika", wa:"628131093311", expired:"2026-06-02", history:[3] },
-		{ nama:"Mas. Adam", wa:"6282140581317", expired:"2026-05-26", history:[3] },
-		{ nama:"Mas. Tomy", wa:"6289609809039", expired:"2026-05-22", history:[1,2,2] },
-		{ nama:"Mas. Dedi", wa:"6285951568082", expired:"2026-05-21", history:[1,3] },
-		{ nama:"Mas. Arif", wa:"6285265337779", expired:"2026-05-16", history:[1,3] },
-		{ nama:"Mas. Ananda", wa:"6282256863256", expired:"2026-05-12", history:[3] },
-		{ nama:"Mas. Anggoro", wa:"6289525567420", expired:"2026-05-10", history:[3] },
-		{ nama:"Mba. Puspita", wa:"6282146281427", expired:"2026-05-10", history:[3] },
-		{ nama:"Mas. Faisal", wa:"6285727473240", expired:"2026-05-07", history:[1,2] },
-		{ nama:"Mas. Abdul", wa:"6285704755602", expired:"2026-05-06", history:[1,2] },
-		{ nama:"Mba. Fauziah", wa:"6285753648079", expired:"2026-05-05", history:[1,2] },
-		{ nama:"Mas. Ardan", wa:"628888136363", expired:"2026-04-28", history:[2] },
-		{ nama:"Mas. Dwiky", wa:"628116383088", expired:"2026-04-27", history:[1,1,2] },
-		{ nama:"Mas. Ihsan", wa:"6282215352174", expired:"2026-04-27", history:[2] },
-		{ nama:"Mba. Dhila", wa:"6289528936511", expired:"2026-04-26", history:[1,1] },
-		{ nama:"Mas. Roid", wa:"6287819304040", expired:"2026-04-25", history:[1,2] },
-		{ nama:"Mas. Made", wa:"6281353043869", expired:"2026-02-05", history:[1,2] }
-	];
-	
-	const DAY=86400000,HOUR=3600000,MIN=60000;
-	const lastMonth=m=>m.history.at(-1)||0;
-	const target=d=>new Date(d+"T00:00:00").getTime();
-	
-	/* ================= FORMAT ================= */
-	function sisa(ms) {
-		if(ms<=0) return "Expired";
-		const h=Math.floor(ms/DAY);
-		const j=Math.floor(ms%DAY/HOUR);
-		const m=Math.floor(ms%HOUR/MIN);
-		return `${h} Hari ${j} Jam ${m} Menit`;
-	}
-	
-	function kelas(b,ms) {
-		if(ms<=0) return "expired";
-		if(b==1) return "satu";
-		if(b==2) return "dua";
-		if(b==3) return "tiga";
-		if(b==6) return "enam";
-		if(b==12) return "setahun";
-	}
-	
-	function badge(arr) {
-		if(arr.length==1) return `+${arr[0]} bulan`;
-		return `+${arr.slice(0,-1).join(", ")} & ${arr.at(-1)} bulan`;
-	}
-	
-	function join(arr) {
-		return arr.map(b=>`${b} Bulan`).join(" + ");
-	}
-	
-	/* ================= STAT ================= */
-	function renderStat(data) {
-		const box=document.getElementById("statistik");
-		box.innerHTML="";
-		const map={1:0,2:0,3:0,6:0,12:0,x:0};
-		data.forEach(m=> {
-			if(m.ms<=0) map.x++;
-			else map[lastMonth(m)]++;
-		});
-		
-		const rows=[
-			[1,"1 Bulan","b1"],
-			[2,"2 Bulan","b2"],
-			[3,"3 Bulan","b3"],
-			[6,"6 Bulan","b6"],
-			[12,"1 Tahun","b12"],
-			["x","Expired","bx"]
-		];
-		
-		const max=Math.max(...Object.values(map),1);
-		
-		rows.forEach(r=> {
-			const val=map[r[0]];
-			const el=document.createElement("div");
-			el.className="stat-row";
-			el.innerHTML=`
-			<div class="stat-label">${r[1]} (${val})</div>
-			<div class="bar">
-			<div class="bar-fill ${r[2]}" style="--w:${val/max*30}%"></div>
-			</div>`;
-			box.appendChild(el);
-		});
-	}
-	
-	/* ================= RENDER ================= */
-	function render() {
-		const list=document.getElementById("list");
-		list.innerHTML="";
-		const key=search.value.toLowerCase();
-		const f=filter.value;
-		members.forEach(m=>m.ms=target(m.expired)-Date.now());
-		const sorted=[...members].sort((a,b)=>b.ms-a.ms);
-		renderStat(sorted);
-		sorted.forEach(m=> {
-			const lm=lastMonth(m);
-			if(!m.nama.toLowerCase().includes(key)) return;
-			if(f==="expired" && m.ms>0) return;
-			if(f!=="all" && f!=="expired" && lm!=f) return;
-			const div=document.createElement("div");
-			div.className="member "+kelas(lm,m.ms);
-			div.innerHTML=`
-			<b>Nama: ${m.nama}</b><br>
-			Expired: ${m.expired}<br>
-			Sisa Waktu: ${sisa(m.ms)}
-			<span class="badge">${badge(m.history)}</span>
-			<div class="history">Join Kelas: ${join(m.history)}</div>
-			`;
-			list.appendChild(div);
-		});
-		
-		if(w) {
-			const key=notifKey(m,w);
-			if(!localStorage.getItem(key)) {
-				let title="⏰ Masa Aktif Member";
-				let msg="";
-				if(w=="h7") msg=`${m.nama} akan expired 7 hari lagi`;
-				if(w=="h3") msg=`${m.nama} tinggal 3 hari lagi`;
-				if(w=="expired") msg=`${m.nama} sudah EXPIRED`;
-				pushNotif(title,msg);
-				localStorage.setItem(key,"1");
-			}
-		}
-	}
-	search.oninput=render;
-	filter.onchange=render;
-	setInterval(render,10000); //6000
-	render();
-	
-	function notifKey(m,s) {
-		return `notif_${m.wa}_${s}`;
-	}
-	</script>
-	
-	<script>
-	function enableNotif() {
-		if(!("Notification" in window)) {
-			alert("Browser tidak mendukung notifikasi");
-			return;
-		}
-		Notification.requestPermission().then(p=> {
-			if(p==="granted") {
-				alert("Notifikasi diaktifkan ✅");
-			}
-		});
-	}
-	
-	function pushNotif(title, body) {
-		if(Notification.permission!=="granted") return;
-		new Notification(title, {
-			body: body,
-			icon: "stockid_gambar/alert.jpg",
-			vibrate: [200,100,200]
-		});
-		const sound=document.getElementById("notifSound");
-		sound.play().catch(()=>{});
-	}
-	</script>
-	</body>
+<style>
+/* Tambahan CSS tombol WA dan notif */
+.wa-btn{display:inline-block;margin-top:6px;padding:6px 10px;background:#25d366;color:#fff;border-radius:6px;font-size:13px;text-decoration:none;}
+.warn{display:inline-block;margin-left:6px;padding:2px 6px;border-radius:4px;font-size:11px;color:#fff;}
+.warn.h7{background:#f1c40f;}
+.warn.h3{background:#e67e22;}
+.warn.expired{background:#e74c3c;}
+.notif-btn{background:#3498db;color:#fff;padding:8px 12px;border:none;border-radius:6px;margin-bottom:10px;}
+</style>
+
+</head>
+<body>
+
+<h2>Monitoring Masa Aktif Member VIP</h2>
+
+<button onclick="enableNotif()" class="notif-btn">🔔 Aktifkan Reminder</button>
+<audio id="notifSound" src="stockid_script/notif.mp3"></audio>
+
+<div class="stat-box" id="statistik"></div>
+
+<div class="controls">
+	<input id="search" placeholder="Cari nama kamu...">
+	<select id="filter">
+		<option value="all">Semua</option>
+		<option value="1">1 Bulan</option>
+		<option value="2">2 Bulan</option>
+		<option value="3">3 Bulan</option>
+		<option value="6">6 Bulan</option>
+		<option value="12">1 Tahun</option>
+		<option value="expired">Expired</option>
+	</select>
+</div>
+
+<div id="list"></div>
+
+<script>
+/* ================= DATA MEMBER ================= */
+const members=[
+	{nama:"Mas. Yayat",wa:"0967078794",expired:"2027-02-21",history:[12]},
+	{nama:"Mas. Dimas",wa:"082288133212",expired:"2027-02-11",history:[1,12]},
+	{nama:"Mas. Devan",wa:"085800322160",expired:"2026-09-18",history:[1,6]},
+	{nama:"Mas. Ardha",wa:"081542779853",expired:"2026-08-25",history:[3,6]},
+	{nama:"Mas. Vani",wa:"089662208826",expired:"2026-08-09",history:[6]},
+	{nama:"Mas. Tito",wa:"081270370727",expired:"2026-06-30",history:[3,3]},
+	{nama:"Mas. Farhan",wa:"088221513462",expired:"2026-06-22",history:[1,3]},
+	{nama:"Mas. Yoga",wa:"082382795953",expired:"2026-06-18",history:[3,3]},
+	{nama:"Mas. Dika",wa:"08131093311",expired:"2026-06-02",history:[3]},
+	{nama:"Mas. Adam",wa:"082140581317",expired:"2026-05-26",history:[3]},
+	{nama:"Mas. Tomy",wa:"089609809039",expired:"2026-05-22",history:[1,2,2]},
+	{nama:"Mas. Dedi",wa:"085951568082",expired:"2026-05-21",history:[1,3]},
+	{nama:"Mas. Arif",wa:"085265337779",expired:"2026-05-16",history:[1,3]},
+	{nama:"Mas. Ananda",wa:"082256863256",expired:"2026-05-12",history:[3]},
+	{nama:"Mas. Anggoro",wa:"089525567420",expired:"2026-05-10",history:[3]},
+	{nama:"Mba. Puspita",wa:"082146281427",expired:"2026-05-10",history:[3]},
+	{nama:"Mas. Faisal",wa:"085727473240",expired:"2026-05-07",history:[1,2]},
+	{nama:"Mas. Abdul",wa:"085704755602",expired:"2026-05-06",history:[1,2]},
+	{nama:"Mba. Fauziah",wa:"085753648079",expired:"2026-05-05",history:[1,2]},
+	{nama:"Mas. Ardan",wa:"08888136363",expired:"2026-04-28",history:[2]},
+	{nama:"Mas. Dwiky",wa:"08116383088",expired:"2026-04-27",history:[1,1,2]},
+	{nama:"Mas. Ihsan",wa:"082215352174",expired:"2026-04-27",history:[2]},
+	{nama:"Mba. Dhila",wa:"089528936511",expired:"2026-04-26",history:[1,1]},
+	{nama:"Mas. Roid",wa:"087819304040",expired:"2026-04-25",history:[1,2]},
+	{nama:"Mas. Made",wa:"081353043869",expired:"2026-02-05",history:[1,2]}
+];
+
+/* ================= KONSTANTA ================= */
+const DAY=86400000,HOUR=3600000,MIN=60000;
+const lastMonth=m=>m.history.at(-1)||0;
+const target=d=>new Date(d+"T00:00:00").getTime();
+
+/* ================= FORMAT ================= */
+function sisa(ms){if(ms<=0)return "Expired";const h=Math.floor(ms/DAY),j=Math.floor(ms%DAY/HOUR),m=Math.floor(ms%HOUR/MIN);return `${h} Hari ${j} Jam ${m} Menit`;}
+function kelas(b,ms){if(ms<=0)return "expired";return b==1?"satu":b==2?"dua":b==3?"tiga":b==6?"enam":"setahun";}
+const badge=a=>a.length==1?`+${a[0]} bulan`:`+${a.slice(0,-1).join(", ")} & ${a.at(-1)} bulan`;
+const join=a=>a.map(b=>`${b} Bulan`).join(" + ");
+
+/* ================= WARNING & NOTIF ================= */
+function warning(ms){const d=Math.ceil(ms/DAY);if(d<=0)return"expired";if(d<=3)return"h3";if(d<=7)return"h7";return"";}
+function waText(m,s){if(s=="h7")return `Halo ${m.nama} 👋\nMasa aktif Stock ID VIP kamu akan berakhir dalam 7 hari.\nExpired: ${m.expired}\nYuk perpanjang ya 🙏`; if(s=="h3")return `Halo ${m.nama} 👋\nMasa aktif Stock ID VIP kamu tinggal 3 hari lagi ⏰\nExpired: ${m.expired}`; return `Halo ${m.nama} 👋\nMasa aktif Stock ID VIP kamu sudah EXPIRED ❌\nSilakan perpanjang kembali 🙏`;}
+function autoWA(m,s){const key=`wa_${m.wa}_${s}`;if(localStorage.getItem(key))return;window.open(`https://wa.me/${m.wa}?text=${encodeURIComponent(waText(m,s))}`,"_blank");localStorage.setItem(key,"1");}
+function enableNotif(){if(!("Notification" in window)){alert("Browser tidak mendukung notifikasi");return;}Notification.requestPermission().then(p=>{if(p==="granted")alert("Notifikasi diaktifkan ✅");});}
+function pushNotif(title,body){if(Notification.permission!=="granted")return;new Notification(title,{body:body,icon:"stockid_gambar/thumb.jpg",vibrate:[200,100,200]});document.getElementById("notifSound").play().catch(()=>{});}
+function notifKey(m,s){return `notif_${m.wa}_${s}`;}
+
+/* ================= STAT ================= */
+function renderStat(data){
+	const box=document.getElementById("statistik");box.innerHTML="";
+	const map={1:0,2:0,3:0,6:0,12:0,x:0};
+	data.forEach(m=>m.ms<=0?map.x++:map[lastMonth(m)]++);
+	const rows=[[1,"1 Bulan"],[2,"2 Bulan"],[3,"3 Bulan"],[6,"6 Bulan"],[12,"1 Tahun"],["x","Expired"]];
+	const max=Math.max(...Object.values(map),1);
+	rows.forEach(r=>{box.innerHTML+=`<div class="stat-row"><div>${r[1]} (${map[r[0]]})</div><div class="bar"><div class="bar-fill" style="width:${map[r[0]]/max*30}%"></div></div></div>`;});
+}
+
+/* ================= RENDER ================= */
+function render(){
+	const list=document.getElementById("list");list.innerHTML="";
+	const key=search.value.toLowerCase();const f=filter.value;
+	members.forEach(m=>m.ms=target(m.expired)-Date.now());
+	const sorted=[...members].sort((a,b)=>b.ms-a.ms);
+	renderStat(sorted);
+	sorted.forEach(m=>{
+		const lm=lastMonth(m);if(!m.nama.toLowerCase().includes(key))return;if(f=="expired"&&m.ms>0)return;if(f!="all"&&f!="expired"&&lm!=f)return;
+		const w=warning(m.ms);if(w){const k=notifKey(m,w);if(!localStorage.getItem(k)){let t="⏰ Masa Aktif Member";let msg="";if(w=="h7")msg=`${m.nama} akan expired 7 hari lagi`;if(w=="h3")msg=`${m.nama} tinggal 3 hari lagi`;if(w=="expired")msg=`${m.nama} sudah EXPIRED`;pushNotif(t,msg);localStorage.setItem(k,"1");}}
+		if(w) autoWA(m,w);
+		list.innerHTML+=`<div class="member ${kelas(lm,m.ms)}"><b>Nama: ${m.nama}</b><br>Expired: ${m.expired}<br>Sisa Waktu: ${sisa(m.ms)}${w?`<span class="warn ${w}">${w.toUpperCase()}</span>`:""}<span class="badge">${badge(m.history)}</span><div class="history">Join Kelas: ${join(m.history)}</div><a class="wa-btn" target="_blank" href="https://wa.me/${m.wa}?text=${encodeURIComponent(waText(m,w||'h7'))}"><i class="fa fa-whatsapp"></i> Reminder</a></div>`;
+	});
+}
+
+search.oninput=render;filter.onchange=render;setInterval(render,10000);render();
+
+/* ================= REGISTER SERVICE WORKER ================= */
+if('serviceWorker' in navigator){
+	navigator.serviceWorker.register('/sw.js').then(reg=>{console.log("SW registered",reg);}).catch(err=>{console.log("SW error",err);});
+	navigator.serviceWorker.addEventListener('message',e=>{if(e.data.type==='check-reminder')render();});
+}
+</script>
+
+</body>
 </html>
