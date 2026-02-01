@@ -84,7 +84,7 @@
 	
 	/* ================= FORMAT ================= */
 	function sisa(ms) {
-		if (ms<=0) return "Expired";
+		if(ms<=0) return "Expired";
 		const h=Math.floor(ms/DAY);
 		const j=Math.floor(ms%DAY/HOUR);
 		const m=Math.floor(ms%HOUR/MIN);
@@ -92,16 +92,16 @@
 	}
 	
 	function kelas(b,ms) {
-		if (ms<=0) return "expired";
-		if (b==1) return "satu";
-		if (b==2) return "dua";
-		if (b==3) return "tiga";
-		if (b==6) return "enam";
-		if (b==12) return "setahun";
+		if(ms<=0) return "expired";
+		if(b==1) return "satu";
+		if(b==2) return "dua";
+		if(b==3) return "tiga";
+		if(b==6) return "enam";
+		if(b==12) return "setahun";
 	}
 	
 	function badge(arr) {
-		if (arr.length==1) return `+${arr[0]} bulan`;
+		if(arr.length==1) return `+${arr[0]} bulan`;
 		return `+${arr.slice(0,-1).join(", ")} & ${arr.at(-1)} bulan`;
 	}
 	
@@ -115,7 +115,7 @@
 		box.innerHTML="";
 		const map={1:0,2:0,3:0,6:0,12:0,x:0};
 		data.forEach(m=> {
-			if (m.ms<=0) map.x++;
+			if(m.ms<=0) map.x++;
 			else map[lastMonth(m)]++;
 		});
 		
@@ -152,13 +152,11 @@
 		members.forEach(m=>m.ms=target(m.expired)-Date.now());
 		const sorted=[...members].sort((a,b)=>b.ms-a.ms);
 		renderStat(sorted);
-		
-		
 		sorted.forEach(m=> {
 			const lm=lastMonth(m);
-			if (!m.nama.toLowerCase().includes(key)) return;
-			if (f==="expired" && m.ms>0) return;
-			if (f!=="all" && f!=="expired" && lm!=f) return;
+			if(!m.nama.toLowerCase().includes(key)) return;
+			if(f==="expired" && m.ms>0) return;
+			if(f!=="all" && f!=="expired" && lm!=f) return;
 			const div=document.createElement("div");
 			div.className="member "+kelas(lm,m.ms);
 			div.innerHTML=`
@@ -171,61 +169,52 @@
 			list.appendChild(div);
 		});
 		
-		
-		if(w){
-	const key=notifKey(m,w);
-	if(!localStorage.getItem(key)){
-		let title="⏰ Masa Aktif Member";
-		let msg="";
-
-		if(w=="h7") msg=`${m.nama} akan expired 7 hari lagi`;
-		if(w=="h3") msg=`${m.nama} tinggal 3 hari lagi`;
-		if(w=="expired") msg=`${m.nama} sudah EXPIRED`;
-
-		pushNotif(title,msg);
-		localStorage.setItem(key,"1");
+		if(w) {
+			const key=notifKey(m,w);
+			if(!localStorage.getItem(key)) {
+				let title="⏰ Masa Aktif Member";
+				let msg="";
+				if(w=="h7") msg=`${m.nama} akan expired 7 hari lagi`;
+				if(w=="h3") msg=`${m.nama} tinggal 3 hari lagi`;
+				if(w=="expired") msg=`${m.nama} sudah EXPIRED`;
+				pushNotif(title,msg);
+				localStorage.setItem(key,"1");
+			}
+		}
 	}
-}
-
-	}
-	
 	search.oninput=render;
 	filter.onchange=render;
 	setInterval(render,10000); //6000
 	render();
 	
-	
-	function notifKey(m,s){
-	return `notif_${m.wa}_${s}`;
-}
-
+	function notifKey(m,s) {
+		return `notif_${m.wa}_${s}`;
+	}
 	</script>
 	
 	<script>
-	function enableNotif(){
-	if(!("Notification" in window)){
-		alert("Browser tidak mendukung notifikasi");
-		return;
-	}
-	Notification.requestPermission().then(p=>{
-		if(p==="granted"){
-			alert("Notifikasi diaktifkan ✅");
+	function enableNotif() {
+		if(!("Notification" in window)) {
+			alert("Browser tidak mendukung notifikasi");
+			return;
 		}
-	});
-}
-
-function pushNotif(title, body){
-	if(Notification.permission!=="granted") return;
-
-	new Notification(title,{
-		body: body,
-		icon: "stockid_gambar/alert.jpg",
-		vibrate: [200,100,200]
-	});
-
-	const sound=document.getElementById("notifSound");
-	sound.play().catch(()=>{});
-}
-</script>
+		Notification.requestPermission().then(p=> {
+			if(p==="granted") {
+				alert("Notifikasi diaktifkan ✅");
+			}
+		});
+	}
+	
+	function pushNotif(title, body) {
+		if(Notification.permission!=="granted") return;
+		new Notification(title, {
+			body: body,
+			icon: "stockid_gambar/alert.jpg",
+			vibrate: [200,100,200]
+		});
+		const sound=document.getElementById("notifSound");
+		sound.play().catch(()=>{});
+	}
+	</script>
 	</body>
 </html>
