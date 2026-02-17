@@ -21,7 +21,18 @@
 	</head>
 	
 	<body>
+	<button id="themeToggle" class="theme-btn">
+		🌙 Soft Mode
+	</button>
+	<button onclick="enableNotif()" class="notif-btn">
+		<i class="fa fa-bullhorn"></i> Aktifkan Reminder
+	</button>
+
 	<h2>Monitoring Masa Aktif Member</h2>
+	<button onclick="exportData()">Export Data</button>
+	<input type="file" id="importFile" style="display:none" onchange="importData(event)">
+	<button onclick="document.getElementById('importFile').click()">Import Data</button>
+	
 	<div id="activeSummary" class="active-summary"></div>
 	
 	<input id="search" placeholder="Cari nama kamu...">
@@ -44,10 +55,6 @@
 			<option value="nameZA">Sort: Nama Z-A</option>
 		</select>
 	</div>
-	
-	<button onclick="enableNotif ()" class="notif-btn">
-		<i class="fa fa-bullhorn"></i> Aktifkan Reminder
-	</button>
 	
 	<br/>
 	
@@ -339,11 +346,12 @@
 			}
 			div.className = "member " + kelas(lm,m.ms) + " " + urgentClass;
 			div.innerHTML=`
-			<b><i class='fa fa-user-circle-o'></i> Nama: ${m.nama}</b><br>
-			<i class='fa fa-hourglass-1 fa-spin'></i> Expired: ${m.expired}<br>
-			<i class='fa fa-circle-o-notch fa-spin'></i> Sisa Waktu: ${sisa(m.ms)}
+			<b><i class='fa fa-user-circle-o fa-spin'></i>&nbsp; Nama: ${m.nama}</b><br>
+			<b><i class='fa fa-spinner fa-spin'></i>&nbsp; Expired: ${m.expired}</b><br>
+			<b><i class='fa fa-circle-o-notch fa-spin'></i>&nbsp; Sisa Waktu: <span class="countdown" data-expired="${m.expired}">${sisa(m.ms)}</span></b>
+			<!--<i class='fa fa-circle-o-notch fa-spin'></i> Sisa Waktu: ${sisa(m.ms)}-->
 			<span class="badge">${badge(m.history)}</span>
-			<div class="history"><i class='fa fa-vcard-o'></i> Join Kelas: ${join(m.history)}</div>
+			<div class="history"><i class='fa fa-vcard-o'></i>&nbsp; Join Kelas: ${join(m.history)}</div>
 			`;
 			list.appendChild(div);
 		});
@@ -362,12 +370,35 @@
 		}
 	}
 	
-	search.oninput=render;
-	filter.onchange=render;
+	search.oninput = render;
+	filter.onchange = render;
 	sortMode.onchange = render; //baru
 	initStat();
-	setInterval(render, 6000); // hanya list yang update
+	setInterval(render, 25000);
 	render();
+	</script>
+	
+	<script>
+	setInterval(() => {
+		const countdowns = document.querySelectorAll(".countdown");
+		countdowns.forEach(el => {
+			const expiredDate = el.getAttribute("data-expired");
+			if (!expiredDate || expiredDate === "Expired") {
+				el.textContent = "Expired";
+				return;
+			}
+			const ms = new Date(expiredDate + "T00:00:00").getTime() - Date.now();
+			if (ms <= 0) {
+				el.textContent = "Expired";
+				return;
+			}
+			const h = Math.floor(ms / DAY);
+			const j = Math.floor(ms % DAY / HOUR);
+			const m = Math.floor(ms % HOUR / MIN);
+			const d = Math.floor(ms % MIN / SEC);
+			el.textContent = `${h} Hari ${j} Jam ${m} Menit ${d} Detik`;
+		});
+	}, 1000);
 	</script>
 	
 	<script type="text/javascript">
@@ -385,5 +416,62 @@
 	}
 	</script>
 	
+	<script>
+	function exportData() {
+		const dataStr = JSON.stringify(members, null, 2);
+		const blob = new Blob([dataStr], {type: "application/json"});
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = "backup_members.json";
+		a.click();
+	}
+	
+	function importData(event) {
+		const file = event.target.files[0];
+		if (!file) return;
+		const reader = new FileReader();
+		reader.onload = function(e) {
+			const imported = JSON.parse(e.target.result);
+			if (Array.isArray(imported)) {
+				members.length = 0;
+				imported.forEach(m => members.push(m));
+				alert("Data berhasil di-import ✅");
+				render();
+			}
+		};
+		reader.readAsText(file);
+	}
+	</script>
+	
+	
+	<script>
+		const toggleBtn = document.getElementById("themeToggle");
+		function applyTheme(theme) {
+			document.body.classList.add("theme-switching");
+			setTimeout(() => {
+				document.body.setAttribute("data-theme", theme);
+				localStorage.setItem("theme", theme);
+				toggleBtn.textContent = theme === "dark" ? "☀ Light Mode" : "🌙 Dark Mode";
+			}, 150);
+			setTimeout(() => {
+				document.body.classList.remove("theme-switching");
+			}, 400);
+		}
+		toggleBtn.onclick = () => {
+			const current = document.body.getAttribute("data-theme") || "dark";
+			applyTheme(current === "dark" ? "light" : "dark");
+		};
+		// Load saved theme
+		const savedTheme = localStorage.getItem("theme");
+		if (savedTheme) {
+			applyTheme(savedTheme);
+		} else { // optional: ikut sistem device
+			const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+			applyTheme(prefersDark ? "dark" : "light");
+		}
+	</script>
+
+
 	</body>
 </html>
