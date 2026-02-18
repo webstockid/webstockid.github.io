@@ -63,24 +63,6 @@
 	<div id="list"></div>
 	
 	<script type="text/javascript">
-	function enableNotif () {
-		if (!("Notification" in window)) {
-			alert("Browser tidak mendukung notifikasi");
-			return;
-		}
-		Notification.requestPermission().then(p=> {
-			if (p==="granted") alert("Notifikasi diaktifkan ✅");
-		});
-	}
-	
-	function pushNotif (title, body) {
-		if (Notification.permission!=="granted") return;
-		new Notification(title,{body:body,icon:"stockid_gambar/alert.jpg",vibrate:[200,100,200]});
-		document.getElementById("notifSound").play().catch(()=> {});
-	}
-	</script>
-	
-	<script type="text/javascript">
 	/* ================= DATA MEMBER ================= */
 	const members = [
 		{ nama:"Mas. Yayat", wa:"82967078794", expired:"2027-02-21", history:[12] },
@@ -374,11 +356,11 @@
 	filter.onchange = render;
 	sortMode.onchange = render; //baru
 	initStat();
-	setInterval(render, 25000);
+	//setInterval(render, 60000);
 	render();
 	</script>
 	
-	<script>
+	<script type="text/javascript">
 	setInterval(() => {
 		const countdowns = document.querySelectorAll(".countdown");
 		countdowns.forEach(el => {
@@ -389,7 +371,7 @@
 			}
 			const ms = new Date(expiredDate + "T00:00:00").getTime() - Date.now();
 			if (ms <= 0) {
-				el.textContent = "Expired";
+				el.textContent = "Masa Aktif Habis";
 				return;
 			}
 			const h = Math.floor(ms / DAY);
@@ -399,6 +381,24 @@
 			el.textContent = `${h} Hari ${j} Jam ${m} Menit ${d} Detik`;
 		});
 	}, 1000);
+	</script>
+	
+	<script type="text/javascript">
+	function enableNotif () {
+		if (!("Notification" in window)) {
+			alert("Browser tidak mendukung notifikasi");
+			return;
+		}
+		Notification.requestPermission().then(p=> {
+			if (p==="granted") alert("Notifikasi diaktifkan ✅");
+		});
+	}
+	
+	function pushNotif (title, body) {
+		if (Notification.permission!=="granted") return;
+		new Notification(title,{body:body,icon:"stockid_gambar/alert.jpg",vibrate:[200,100,200]});
+		document.getElementById("notifSound").play().catch(()=> {});
+	}
 	</script>
 	
 	<script type="text/javascript">
@@ -416,7 +416,7 @@
 	}
 	</script>
 	
-	<script>
+	<script type="text/javascript">
 	function exportData() {
 		const dataStr = JSON.stringify(members, null, 2);
 		const blob = new Blob([dataStr], {type: "application/json"});
@@ -444,8 +444,7 @@
 	}
 	</script>
 	
-	
-	<script>
+	<script type="text/javascript">
 		const toggleBtn = document.getElementById("themeToggle");
 		function applyTheme(theme) {
 			document.body.classList.add("theme-switching");
