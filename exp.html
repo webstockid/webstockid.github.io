@@ -377,14 +377,6 @@
 	render();
 	</script>
 	
-	<script type="text/javascript>
-	function tambahHari(tanggal, jumlahHari) {
-		const d = new Date(tanggal);
-		d.setDate(d.getDate() + jumlahHari);
-		return d.toISOString().split("T")[0];
-	}
-	</script>
-	
 	<script type="text/javascript">
 	setInterval(() => {
 		const countdowns = document.querySelectorAll(".countdown");
@@ -496,9 +488,9 @@
 		}
 	</script>
 	
-	<audio id="member" src="stockid_suara/member.mp3"></audio>
-	<audio id="cari" src="stockid_suara/cari.mp3"></audio>
-	<audio id="filter" src="stockid_suara/filter.mp3"></audio>
+	<audio id="audiomember" src="stockid_suara/member.mp3"></audio>
+	<audio id="audiocari" src="stockid_suara/cari.mp3"></audio>
+	<audio id="audiofilter" src="stockid_suara/filter.mp3"></audio>
 	<audio id="notifSound" src="stockid_suara/notif.mp3"></audio>
 
 	</body>
