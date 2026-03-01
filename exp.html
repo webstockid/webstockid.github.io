@@ -33,23 +33,23 @@
 	<input type="file" id="importFile" style="display:none" onchange="importData(event)">
 	<button onclick="document.getElementById('importFile').click()">Import Data</button>-->
 	
-	<input id="search" placeholder="Cari nama kamu...">
+	<input id="search" placeholder="🔎 Cari nama kamu... 🦧">
 	
 	<div class="controls">
 		<select id="filter">
-			<option value="all">Semua 👻</option>
-			<option value="1">1 Bulan 😏</option>
-			<option value="2">2 Bulan 🙂‍↔️</option>
-			<option value="3">3 Bulan 😌</option>
-			<option value="6">6 Bulan ☺️</option>
-			<option value="12">1 Tahun 😍</option>
-			<option value="expired">Expired 🥱</option>
+			<option value="all">Semua 🐉</option>
+			<option value="1">1 Bulan 🦎</option>
+			<option value="2">2 Bulan 🦖</option>
+			<option value="3">3 Bulan 🐲</option>
+			<option value="6">6 Bulan 🦚</option>
+			<option value="12">1 Tahun 🐦‍🔥</option>
+			<option value="expired">Expired 🐸</option>
 		</select>
 		
 		<select id="sortMode">
-			<option value="active">Sort: Masa Aktif Terlama</option>
-			<option value="nameAZ">Sort: Nama A-Z</option>
-			<option value="nameZA">Sort: Nama Z-A</option>
+			<option value="active">Masa Aktif Terlama 🦈</option>
+			<option value="nameAZ">Nama A-Z 🐟</option>
+			<option value="nameZA">Nama Z-A 🐠</option>
 		</select>
 	</div>
 	
@@ -345,12 +345,16 @@
 			}
 			div.className = "member " + kelas(lm,m.ms) + " " + urgentClass;
 			div.innerHTML=`
-			<b><i class='fa fa-user-circle-o fa-spin'></i>&nbsp; Nama: ${m.nama}</b><br>
+			<b><i class='fa fa-user-circle-o'></i>&nbsp; Nama: ${m.nama}</b><br>
 			<b><i class='fa fa-spinner fa-spin'></i>&nbsp; Expired: ${m.expired}</b><br>
 			<b><i class='fa fa-circle-o-notch fa-spin'></i>&nbsp; Sisa Waktu: <span class="countdown" data-expired="${m.expired}">${sisa(m.ms)}</span></b>
 			<!--<i class='fa fa-circle-o-notch fa-spin'></i> Sisa Waktu: ${sisa(m.ms)}-->
 			<span class="badge">${badge(m.history)}</span>
-			<div class="history"><i class='fa fa-vcard-o'></i>&nbsp; Join Kelas: ${join(m.history)}</div>
+			<div class="history">
+			&nbsp;<i class='fa fa-phone'></i> &nbsp; Nomor: ${m.wa}
+			<br>
+			<i class='fa fa-vcard-o'></i>&nbsp; Join Kelas: ${join(m.history)}
+			</div>
 			`;
 			list.appendChild(div);
 		});
