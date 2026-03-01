@@ -25,7 +25,7 @@
 		🌙 Soft Mode
 	</button>
 	<button onclick="enableNotif()" class="notif-btn">
-		<i class="fa fa-bullhorn"></i> Aktifkan Reminder
+		<i class="fa fa-bullhorn"></i> Aktifkan Reminder 🦭
 	</button>
 
 	<h2>Masa Aktif Member Stock ID VIP</h2>
@@ -401,13 +401,13 @@
 	</script>
 	
 	<script type="text/javascript">
-	/*function enableNotif () {
+	function enableNotif () {
 		if (!("Notification" in window)) {
 			alert("Browser tidak mendukung notifikasi");
 			return;
 		}
 		Notification.requestPermission().then(p=> {
-			if (p==="granted") alert("Notifikasi diaktifkan ✅");
+			if (p==="granted") alert("Aktif 🐿️");
 		});
 	}
 	
@@ -415,13 +415,13 @@
 		if (Notification.permission!=="granted") return;
 		new Notification(title,{body:body,icon:"stockid_gambar/alert.jpg",vibrate:[200,100,200]});
 		document.getElementById("notifSound").play().catch(()=> {});
-	}*/
+	}
 	</script>
 	
 	<script type="text/javascript">
 	/*if ('serviceWorker' in navigator) {
 		navigator.serviceWorker.register('/sw.js').then(reg=> {
-			alert("Service Worker Registered", reg);
+			alert("Service Worker Registered 🦤", reg);
 		}).catch(err=> {
 			alert("SW Registration failed: ", err);
 		});
