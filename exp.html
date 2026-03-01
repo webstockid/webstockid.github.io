@@ -28,16 +28,13 @@
 		<i class="fa fa-bullhorn"></i> Aktifkan Reminder
 	</button>
 
-	<h2>Monitoring Masa Aktif Member</h2>
-	<button onclick="exportData()">Export Data</button>
+	<h2>Masa Aktif Member Stock ID VIP</h2>
+	<!--<button onclick="exportData()">Export Data</button>
 	<input type="file" id="importFile" style="display:none" onchange="importData(event)">
-	<button onclick="document.getElementById('importFile').click()">Import Data</button>
-	
-	<div id="activeSummary" class="active-summary"></div>
+	<button onclick="document.getElementById('importFile').click()">Import Data</button>-->
 	
 	<input id="search" placeholder="Cari nama kamu...">
 	
-	<div class="stat-box" id="statistik"></div>
 	<div class="controls">
 		<select id="filter">
 			<option value="all">Semua 👻</option>
@@ -58,9 +55,11 @@
 	
 	<br/>
 	
-	<audio id="notifSound" src="stockid_suara/notif.mp3"></audio>
-	
 	<div id="list"></div>
+	
+	<div class="stat-box" id="statistik"></div>
+	
+	<div id="activeSummary" class="active-summary"></div>
 	
 	<script type="text/javascript">
 	/* ================= DATA MEMBER ================= */
@@ -328,6 +327,7 @@
 			return true;
 		});
 		//renderStat(sorted);
+		
 		sorted.forEach(m=> {
 			const lm=lastMonth(m);
 			if (!m.nama.toLowerCase().includes(key)) return;
@@ -377,7 +377,7 @@
 	render();
 	</script>
 	
-	<script>
+	<script type="text/javascript>
 	function tambahHari(tanggal, jumlahHari) {
 		const d = new Date(tanggal);
 		d.setDate(d.getDate() + jumlahHari);
@@ -495,7 +495,11 @@
 			applyTheme(prefersDark ? "dark" : "light");
 		}
 	</script>
-
+	
+	<audio id="member" src="stockid_suara/member.mp3"></audio>
+	<audio id="cari" src="stockid_suara/cari.mp3"></audio>
+	<audio id="filter" src="stockid_suara/filter.mp3"></audio>
+	<audio id="notifSound" src="stockid_suara/notif.mp3"></audio>
 
 	</body>
 </html>
