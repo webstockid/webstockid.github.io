@@ -21,19 +21,11 @@
 	</head>
 	
 	<body>
-	<button id="themeToggle" class="theme-btn">
-		🌙 Soft Mode
-	</button>
-	<button onclick="enableNotif()" class="notif-btn">
-		<i class="fa fa-bullhorn"></i> Aktifkan Reminder 🦭
-	</button>
 
 	<h2>Masa Aktif Member Stock ID VIP</h2>
 	<!--<button onclick="exportData()">Export Data</button>
 	<input type="file" id="importFile" style="display:none" onchange="importData(event)">
 	<button onclick="document.getElementById('importFile').click()">Import Data</button>-->
-	
-	<input id="search" placeholder="🔎 Cari nama kamu... 🦧">
 	
 	<div class="controls">
 		<select id="filter">
@@ -54,13 +46,11 @@
 		</select>
 	</div>
 	
-	<div id="reminderModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;">
-		<div style="background:white;padding:20px;border-radius:10px;width:300px;">
-			<h3>Pilih Member Reminder</h3>
-			<select id="memberSelect" style="width:100%;padding:8px;margin-bottom:10px;"></select>
-			<button onclick="simpanReminder()">Simpan</button>
-		</div>
-	</div>
+	<div id="list"></div>
+	
+	<div class="stat-box" id="statistik"></div>
+	
+	<div id="activeSummary" class="active-summary"></div>
 	
 	<h4>Rekap Pembelian Kelas</h4>
 	<table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;margin-bottom:20px;">
@@ -73,11 +63,22 @@
 		<tbody id="rekapTableBody"></tbody>
 	</table>
 	
-	<div id="list"></div>
+	<div id="reminderModal" style="z-index:99999; position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;">
+		<div style="background:#222; color: white;padding:20px;border-radius:10px;width:300px;">
+			<h3>Pilih Member Reminder</h3>
+			<select id="memberSelect" style="width:100%;padding:8px;margin-bottom:10px;"></select>
+			<button onclick="simpanReminder()">Simpan</button>
+		</div>
+	</div>
 	
-	<div class="stat-box" id="statistik"></div>
+	<button id="themeToggle" class="theme-btn">
+		🌙 Soft Mode
+	</button>
+	<button onclick="enableNotif()" class="notif-btn">
+		<i class="fa fa-bullhorn"></i> Aktifkan Reminder 🦭
+	</button>
 	
-	<div id="activeSummary" class="active-summary"></div>
+	<input id="search" placeholder="🔎 Cari nama kamu... 🦧">
 	
 	<script>
 	function bukaReminderModal() {
