@@ -48,12 +48,30 @@
 		
 		<select id="sortMode">
 			<option value="active">Masa Aktif Terlama 🦈</option>
+			<option value="bentar">Masa Aktif Sebentar 🐬</option>
 			<option value="nameAZ">Nama A-Z 🐟</option>
 			<option value="nameZA">Nama Z-A 🐠</option>
 		</select>
 	</div>
 	
-	<br/>
+	<div id="reminderModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;">
+		<div style="background:white;padding:20px;border-radius:10px;width:300px;">
+			<h3>Pilih Member Reminder</h3>
+			<select id="memberSelect" style="width:100%;padding:8px;margin-bottom:10px;"></select>
+			<button onclick="simpanReminder()">Simpan</button>
+		</div>
+	</div>
+	
+	<h4>Rekap Pembelian Kelas</h4>
+	<table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;margin-bottom:20px;">
+		<thead>
+			<tr style="background:#222; color: #fff;">
+				<th>Kelas</th>
+				<th>Total Dibeli</th>
+			</tr>
+		</thead>
+		<tbody id="rekapTableBody"></tbody>
+	</table>
 	
 	<div id="list"></div>
 	
@@ -61,173 +79,246 @@
 	
 	<div id="activeSummary" class="active-summary"></div>
 	
+	<script>
+	function bukaReminderModal() {
+    const select = document.getElementById("memberSelect");
+    select.innerHTML = "";
+
+    members.forEach((m, index) => {
+        select.innerHTML += `<option value="${index}">${m.nama}</option>`;
+    });
+
+    document.getElementById("reminderModal").style.display = "flex";
+	}
+	
+	function simpanReminder() {
+    const index = document.getElementById("memberSelect").value;
+    localStorage.setItem("reminderMember", index);
+    document.getElementById("reminderModal").style.display = "none";
+	}
+	
+	function cekReminder() {
+    const index = localStorage.getItem("reminderMember");
+    if (index === null) return;
+
+    const m = members[index];
+    if (!m || !m.expired) return;
+
+    const today = new Date();
+    const exp = new Date(m.expired);
+
+    const diffTime = exp - today;
+    const sisaHari = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    const levels = [10, 5, 3];
+    const sudahNotif = JSON.parse(localStorage.getItem("notifSent") || "{}");
+
+    if (levels.includes(sisaHari) && !sudahNotif[sisaHari]) {
+
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                new Notification(`Reminder ${m.nama}`, {
+                    body: `Masa aktif tersisa ${sisaHari} hari`
+                });
+            }
+        });
+
+        sudahNotif[sisaHari] = true;
+        localStorage.setItem("notifSent", JSON.stringify(sudahNotif));
+    }
+	}
+	
+	window.addEventListener("load", () => {
+    if (!localStorage.getItem("reminderMember")) {
+        bukaReminderModal();
+    }
+    cekReminder();
+	});
+	</script>
+	
 	<script type="text/javascript">
 	/* ================= DATA MEMBER ================= */
 	const members = [
-		{ nama:"Mas. Yayat", wa:"82967078794", expired:"2027-02-21", history:[12] },
-		{ nama:"Mas. Dimas", wa:"6282288133212", expired:"2027-02-11", history:[1,12] },
-		{ nama:"Mas. Devan", wa:"6285800322160", expired:"2026-09-18", history:[1,6] },
-		{ nama:"Mas. Ardha", wa:"6281542779853", expired:"2026-08-25", history:[3,6] },
-		{ nama:"Mas. Vani", wa:"62896622628826", expired:"2026-08-09", history:[6] },
-		{ nama:"Mas. Tito", wa:"6281270370727", expired:"2026-06-30", history:[3,3] },
-		{ nama:"Mas. Farhan", wa:"6288221513462", expired:"2026-06-22", history:[1,3] },
-		{ nama:"Mas. Yoga", wa:"6282382795953", expired:"2026-06-18", history:[3,3] },
-		{ nama:"Mas. Dika", wa:"628131093311", expired:"2026-06-02", history:[3] },
-		{ nama:"Mas. Adam", wa:"6282140581317", expired:"2026-05-26", history:[3] },
-		{ nama:"Mas. Tomy", wa:"6289609809039", expired:"2026-05-22", history:[1,2,2] },
-		{ nama:"Mas. Dedi", wa:"62859515686282", expired:"2026-05-21", history:[1,3] },
-		{ nama:"Mas. Arif", wa:"6285265337779", expired:"2026-05-16", history:[1,3] },
-		{ nama:"Mas. Ananda", wa:"6282256863256", expired:"2026-05-12", history:[3] },
-		{ nama:"Mas. Anggoro", wa:"6289525567420", expired:"2026-05-10", history:[3] },
-		{ nama:"Mba. Puspita", wa:"6282146281427", expired:"2026-05-10", history:[3] },
-		{ nama:"Mas. Faisal", wa:"6285727473240", expired:"2026-05-07", history:[1,2] },
-		{ nama:"Mas. Abdul", wa:"6285704755602", expired:"2026-05-06", history:[1,2] },
-		{ nama:"Mba. Fauziah", wa:"6285753648079", expired:"2026-05-05", history:[1,2] },
-		{ nama:"Mas. Ardan", wa:"628888136363", expired:"2026-04-28", history:[2] },
-		{ nama:"Mas. Dwiky", wa:"6281163836288", expired:"2026-04-27", history:[1,1,2] },
-		{ nama:"Mas. Ihsan", wa:"6282215352174", expired:"2026-04-27", history:[2] },
-		{ nama:"Mba. Dhila", wa:"6289528936511", expired:"2026-04-26", history:[1,1] },
-		{ nama:"Mas. Roid", wa:"6287819304040", expired:"2026-04-25", history:[1,2] },
-		{ nama:"Mas. Made", wa:"6281353043869", expired:"2026-04-24", history:[1,2] },
-		{ nama:"Mba. Tati", wa:"6285773015045", expired:"2026-04-21", history:[2] },
-		{ nama:"Mba. Linda", wa:"628112630261", expired:"2026-04-21", history:[2] },
-		{ nama:"Mas. Purna", wa:"6289627939527", expired:"2026-04-19", history:[1,2] },
-		{ nama:"Mas. Tomin", wa:"6282241230030", expired:"2026-04-11", history:[1] },
-		{ nama:"Mba. Kayla", wa:"6281357764067", expired:"2027-04-26", history:[2,12] },
-		{ nama:"Mas. Danny", wa:"6281932677981", expired:"2026-04-09", history:[2] },
-		{ nama:"Mas. Zidan", wa:"6282146281427", expired:"2026-04-09", history:[2] },
-		{ nama:"Mba. Viani", wa:"6282146281427", expired:"2026-04-09", history:[2] },
-		{ nama:"Mas. Dhio", wa:"6282349033673", expired:"2026-06-03", history:[1,1] },
+		{ nama:"Mas. Yayat", whatsapp:"82967078794", expired:"2027-02-21", history:[12] },
+		{ nama:"Mas. Dimas", whatsapp:"6282288133212", expired:"2027-02-11", history:[1,12] },
+		{ nama:"Mas. Devan", whatsapp:"6285800322160", expired:"2026-09-18", history:[1,6] },
+		{ nama:"Mas. Ardha", whatsapp:"6281542779853", expired:"2026-08-25", history:[3,6] },
+		{ nama:"Mas. Vani", whatsapp:"62896622628826", expired:"2026-08-09", history:[6] },
+		{ nama:"Mas. Tito", whatsapp:"6281270370727", expired:"2026-06-30", history:[3,3] },
+		{ nama:"Mas. Farhan", whatsapp:"6288221513462", expired:"2026-06-22", history:[1,3] },
+		{ nama:"Mas. Yoga", whatsapp:"6282382795953", expired:"2026-06-18", history:[3,3] },
+		{ nama:"Mas. Dika", whatsapp:"628131093311", expired:"2026-06-02", history:[3] },
+		{ nama:"Mas. Adam", whatsapp:"6282140581317", expired:"2026-05-26", history:[3] },
+		{ nama:"Mas. Tomy", whatsapp:"6289609809039", expired:"2026-05-22", history:[1,2,2] },
+		{ nama:"Mas. Dedi", whatsapp:"62859515686282", expired:"2026-05-21", history:[1,3] },
+		{ nama:"Mas. Arif", whatsapp:"6285265337779", expired:"2026-05-16", history:[1,3] },
+		{ nama:"Mas. Ananda", whatsapp:"6282256863256", expired:"2026-05-12", history:[3] },
+		{ nama:"Mas. Anggoro", whatsapp:"6289525567420", expired:"2026-05-10", history:[3] },
+		{ nama:"Mba. Puspita", whatsapp:"6282146281427", expired:"2026-05-10", history:[3] },
+		{ nama:"Mas. Faisal", whatsapp:"6285727473240", expired:"2026-05-07", history:[1,2] },
+		{ nama:"Mas. Abdul", whatsapp:"6285704755602", expired:"2026-05-06", history:[1,2] },
+		{ nama:"Mba. Fauziah", whatsapp:"6285753648079", expired:"2026-05-05", history:[1,2] },
+		{ nama:"Mas. Ardan", whatsapp:"628888136363", expired:"2026-04-28", history:[2] },
+		{ nama:"Mas. Dwiky", whatsapp:"6281163836288", expired:"2026-04-27", history:[1,1,2] },
+		{ nama:"Mas. Ihsan", whatsapp:"6282215352174", expired:"2026-04-27", history:[2] },
+		{ nama:"Mba. Dhila", whatsapp:"6289528936511", expired:"2026-04-26", history:[1,1] },
+		{ nama:"Mas. Roid", whatsapp:"6287819304040", expired:"2026-04-25", history:[1,2] },
+		{ nama:"Mas. Made", whatsapp:"6281353043869", expired:"2026-04-24", history:[1,2] },
+		{ nama:"Mba. Tati", whatsapp:"6285773015045", expired:"2026-04-21", history:[2] },
+		{ nama:"Mba. Linda", whatsapp:"628112630261", expired:"2026-04-21", history:[2] },
+		{ nama:"Mas. Purna", whatsapp:"6289627939527", expired:"2026-04-19", history:[1,2] },
+		{ nama:"Mas. Tomin", whatsapp:"6282241230030", expired:"2026-04-11", history:[1] },
+		{ nama:"Mba. Kayla", whatsapp:"6281357764067", expired:"2027-04-26", history:[2,12] },
+		{ nama:"Mas. Danny", whatsapp:"6281932677981", expired:"2026-04-09", history:[2] },
+		{ nama:"Mas. Zidan", whatsapp:"6282146281427", expired:"2026-04-09", history:[2] },
+		{ nama:"Mba. Viani", whatsapp:"6282146281427", expired:"2026-04-09", history:[2] },
+		{ nama:"Mas. Dhio", whatsapp:"6282349033673", expired:"2026-06-03", history:[1,1] },
 		//expired: tambahHari("2026-03-12", 60)
-		{ nama:"Mas. Ridho", wa:"6285839352252", expired:"2026-04-04", history:[1,1] },
-		{ nama:"Mas. Rachmad", wa:"6288989669913", expired:"2026-04-03", history:[1,1] },
-		{ nama:"Mas. Resky", wa:"6282125867841", expired:"2026-04-03", history:[1] },
-		{ nama:"Mas. Gias", wa:"6285974635148", expired:"2026-04-01", history:[1] },
-		{ nama:"Mba. Lukita", wa:"6282244816942", expired:"2026-04-01", history:[1] },
-		{ nama:"Mas. Rizal", wa:"6282190537612", expired:"2026-03-31", history:[1] },
-		{ nama:"Mas. Iram", wa:"6281391330905", expired:"2026-03-31", history:[1] },
-		{ nama:"Mas. Alvi", wa:"6282112373026", expired:"2026-03-30", history:[1,1] },
-		{ nama:"Mas. Agung", wa:"6281907273068", expired:"2026-03-30", history:[1] },
-		{ nama:"Mas. Erwin", wa:"6282284955923", expired:"2026-03-30", history:[1] },
-		{ nama:"Mas. Ahmad", wa:"6289610006606", expired:"2026-03-30", history:[1] },
-		{ nama:"Mas. Ega", wa:"6282371646313", expired:"2026-03-30", history:[1] },
-		{ nama:"Mba. Jasmine", wa:"6289527787810", expired:"2026-03-29", history:[1] },
-		{ nama:"Mas. Rahman", wa:"6281233704317", expired:"2026-03-27", history:[1] },
-		{ nama:"Mas. Annur", wa:"628558895157", expired:"2026-03-27", history:[1] },
-		{ nama:"Mas. Pandya", wa:"6281286977138", expired:"2026-04-27", history:[1] },
+		{ nama:"Mas. Ridho", whatsapp:"6285839352252", expired:"2026-04-04", history:[1,1] },
+		{ nama:"Mas. Rachmad", whatsapp:"6288989669913", expired:"2026-04-03", history:[1,1] },
+		{ nama:"Mas. Resky", whatsapp:"6282125867841", expired:"2026-04-03", history:[1] },
+		{ nama:"Mas. Gias", whatsapp:"6285974635148", expired:"2026-04-01", history:[1] },
+		{ nama:"Mba. Lukita", whatsapp:"6282244816942", expired:"2026-04-01", history:[1] },
+		{ nama:"Mas. Rizal", whatsapp:"6282190537612", expired:"2026-03-31", history:[1] },
+		{ nama:"Mas. Iram", whatsapp:"6281391330905", expired:"2026-03-31", history:[1] },
+		{ nama:"Mas. Alvi", whatsapp:"6282112373026", expired:"2026-03-30", history:[1,1] },
+		{ nama:"Mas. Agung", whatsapp:"6281907273068", expired:"2026-03-30", history:[1] },
+		{ nama:"Mas. Erwin", whatsapp:"6282284955923", expired:"2026-03-30", history:[1] },
+		{ nama:"Mas. Ahmad", whatsapp:"6289610006606", expired:"2026-03-30", history:[1] },
+		{ nama:"Mas. Ega", whatsapp:"6282371646313", expired:"2026-03-30", history:[1] },
+		{ nama:"Mba. Jasmine", whatsapp:"6289527787810", expired:"2026-03-29", history:[1] },
+		{ nama:"Mas. Rahman", whatsapp:"6281233704317", expired:"2026-03-27", history:[1] },
+		{ nama:"Mas. Annur", whatsapp:"628558895157", expired:"2026-03-27", history:[1] },
+		{ nama:"Mas. Pandya", whatsapp:"6281286977138", expired:"2026-04-27", history:[1] },
 		
-		{ nama:"Mas. Zacky", wa:"6289634164412", expired:"2026-06-10", history:[3] },
-		{ nama:"Mas. Ofeng", wa:"6285739500212", expired:"2026-04-28", history:[1] },
-		{ nama:"Mba. Jasmine", wa:"6289527787810", expired:"2026-03-30", history:[1] },
-		{ nama:"Mas. Christian", wa:"6285358872343", expired:"2026-05-08", history:[2] },
-		{ nama:"Mas. Febry", wa:"6285602252302", expired:"2026-04-28", history:[1] },
-		{ nama:"Mas. Thoriq", wa:"6282246243349", expired:"2026-04-20", history:[1] },
-		{ nama:"Mas. Ian", wa:"6281329990494", expired:"2026-04-19", history:[1] },
-		{ nama:"Mas. Daud", wa:"628176604110", expired:"2026-04-05", history:[1] },
-		{ nama:"Mas. Januar", wa:"6281281496941", expired:"2026-04-01", history:[1] },
-		{ nama:"Mas. Jajang", wa:"6285714009445", expired:"2026-04-19", history:[1] },
-		{ nama:"Mas. Choirul", wa:"6285749461105", expired:"2026-04-08", history:[1] },
-		{ nama:"Mas. Ferizo", wa:"6285608477897", expired:"2026-05-18", history:[2] },
-		{ nama:"Mba. Zulia", wa:"6282245155065", expired:"2026-04-03", history:[1] },
-		{ nama:"Mas. Irham", wa:"6281367662689", expired:"2026-04-01", history:[1] },
+		{ nama:"Mas. Zacky", whatsapp:"6289634164412", expired:"2026-06-10", history:[3] },
+		{ nama:"Mas. Ofeng", whatsapp:"6285739500212", expired:"2026-04-28", history:[1] },
+		{ nama:"Mba. Jasmine", whatsapp:"6289527787810", expired:"2026-03-30", history:[1] },
+		{ nama:"Mas. Christian", whatsapp:"6285358872343", expired:"2026-05-08", history:[2] },
+		{ nama:"Mas. Febry", whatsapp:"6285602252302", expired:"2026-04-28", history:[1] },
+		{ nama:"Mas. Thoriq", whatsapp:"6282246243349", expired:"2026-04-20", history:[1] },
+		{ nama:"Mas. Ian", whatsapp:"6281329990494", expired:"2026-04-19", history:[1] },
+		{ nama:"Mas. Daud", whatsapp:"628176604110", expired:"2026-04-05", history:[1] },
+		{ nama:"Mas. Januar", whatsapp:"6281281496941", expired:"2026-04-01", history:[1] },
+		{ nama:"Mas. Jajang", whatsapp:"6285714009445", expired:"2026-04-19", history:[1] },
+		{ nama:"Mas. Choirul", whatsapp:"6285749461105", expired:"2026-04-08", history:[1] },
+		{ nama:"Mas. Ferizo", whatsapp:"6285608477897", expired:"2026-05-18", history:[2] },
+		{ nama:"Mba. Zulia", whatsapp:"6282245155065", expired:"2026-04-03", history:[1] },
+		{ nama:"Mas. Irham", whatsapp:"6281367662689", expired:"2026-04-01", history:[1] },
 		
-		{ nama:"Mas. Hadi", wa:"6281934151515", expired:"2026-03-27", history:[1] },
-		{ nama:"Mas. Hamid", wa:"6285546399043", expired:"2026-03-27", history:[1] },
-		{ nama:"Mas. Izzudin", wa:"6281910019807", expired:"2026-03-26", history:[1] },
-		{ nama:"Mas. Satya", wa:"6285263019463", expired:"2026-03-26", history:[1] },
-		{ nama:"Mas. Hilmi", wa:"6281231012358", expired:"2026-03-26", history:[1] },
-		{ nama:"Mas. Ilham", wa:"6282229069298", expired:"2026-03-25", history:[1] },
-		{ nama:"Mas. Jefri", wa:"62895322198674", expired:"2026-03-25", history:[1] },
-		{ nama:"Mas. Muazin", wa:"6281391334236", expired:"2026-05-24", history:[1,1,1] },
-		{ nama:"Mas. Paolo", wa:"6282285682337", expired:"2026-03-25", history:[1] },
-		{ nama:"Mas. Japa", wa:"6285156154004", expired:"2026-03-25", history:[1] },
-		{ nama:"Mas. Wandi", wa:"6285185742517", expired:"2026-03-25", history:[1] },
-		{ nama:"Mas. Zayyin", wa:"62882003064529", expired:"2026-03-25", history:[1] },
-		{ nama:"Mas. Alpin", wa:"6285743157505", expired:"2026-03-25", history:[1] },
-		{ nama:"Mas. Stepanus", wa:"6282245465893", expired:"2026-03-25", history:[1] },
-		{ nama:"Mas. Rasyid", wa:"6287796722146", expired:"2026-03-25", history:[1] },
-		{ nama:"Mas. Ali", wa:"6282117932375", expired:"2026-03-25", history:[1] },
-		{ nama:"Mas. Yusuf", wa:"6281342480684", expired:"2026-03-25", history:[1] },
-		{ nama:"Mas. Rafli", wa:"818094352275", expired:"2026-03-25", history:[1] },
-		{ nama:"Mas. Simanjuntak", wa:"6285121000159", expired:"2026-03-25", history:[1] },
-		{ nama:"Mas. Daniar", wa:"6287722353893", expired:"2026-03-24", history:[1] },
-		{ nama:"Mba. Rizka", wa:"6287867772787", expired:"2026-03-24", history:[1] },
-		{ nama:"Mba. Ina", wa:"6285921648659", expired:"2026-03-24", history:[1] },
-		{ nama:"Mba. Cinta", wa:"6285691048600", expired:"2026-03-24", history:[1] },
-		{ nama:"Mba. Rahayu", wa:"6283181557626", expired:"2026-03-24", history:[1] },
-		{ nama:"Mas. Madani", wa:"6281399052389", expired:"2026-03-24", history:[1] },
-		{ nama:"Mas. Willy", wa:"6288747941100", expired:"2026-03-23", history:[1,1] },
-		{ nama:"Mas. Adit", wa:"6285773102128", expired:"2026-03-23", history:[3] },
-		{ nama:"Mas. Tama", wa:"6283823750527", expired:"2026-03-23", history:[1] },
-		{ nama:"Mas. Seii", wa:"6289516172663", expired:"2026-03-20", history:[1,1] },
-		{ nama:"Mas. Baharudin", wa:"6281328333319", expired:"2026-03-20", history:[1] },
-		{ nama:"Mas. Erick", wa:"6285704444633", expired:"2026-10-06", history:[1,6] },
-		{ nama:"Mas. Ikhwan", wa:"628813986613", expired:"2026-03-20", history:[3] },
-		{ nama:"Mas. Evan", wa:"6285649261450", expired:"2026-03-18", history:[1] },
-		{ nama:"Mas. Juan", wa:"6281218500883", expired:"2026-03-18", history:[1] },
-		{ nama:"Mba. Caca", wa:"6282131643877", expired:"2026-03-18", history:[1] },
-		{ nama:"Mas. Ulil", wa:"6285624417898", expired:"2026-03-18", history:[1] },
-		{ nama:"Mba. Febrina", wa:"6282257554848", expired:"2026-03-17", history:[1] },
-		{ nama:"Mas. Suba", wa:"6285851202129", expired:"2026-03-16", history:[1] },
-		{ nama:"Mas. Kevin", wa:"6281288374247", expired:"2026-03-15", history:[1] },
-		{ nama:"Mas. Ramadhan", wa:"6285717458562", expired:"2026-03-14", history:[1] },
-		{ nama:"Mas. Rama", wa:"6282146281427", expired:"2026-05-13", history:[3,1] },
-		{ nama:"Mas. Fahmi", wa:"6285725250834", expired:"2026-03-12", history:[1,1] },
-		{ nama:"Mas. Farid", wa:"6282216890335", expired:"2026-03-12", history:[1] },
-		{ nama:"Mas. Juno", wa:"6281388971102", expired:"2026-03-12", history:[1] },
-		{ nama:"Mas. Yogi", wa:"6281388943988", expired:"2026-03-12", history:[1] },
-		{ nama:"Mas. Ray", wa:"628994666668", expired:"2026-05-11", history:[1,1] },
-		{ nama:"Mas. Nanang", wa:"62895335867519", expired:"2026-03-12", history:[1,1] },
-		{ nama:"Mas. Candra", wa:"6285878590179", expired:"2026-03-12", history:[1] },
-		{ nama:"Mas. Salim", wa:"6285804210460", expired:"2026-03-12", history:[1] },
-		{ nama:"Mas. Rayhan", wa:"6282146281427", expired:"2026-03-12", history:[1] },
-		{ nama:"Mba. Putri", wa:"6281554559971", expired:"2026-05-09", history:[2,2,1] },
-		{ nama:"Mba. Siska", wa:"6287759946405", expired:"2026-03-10", history:[1,1] },
-		{ nama:"Mas. Ardika", wa:"6282170239819", expired:"2026-03-06", history:[3] },
-		{ nama:"Mas. Sefian", wa:"6285876926793", expired:"2026-03-06", history:[1,1] },
-		{ nama:"Mas. Widi", wa:"6283191133606", expired:"2026-03-05", history:[1] },
-		{ nama:"Mas. Natan", wa:"6285380369595", expired:"2026-03-03", history:[1] },
-		{ nama:"Mas. Anggit", wa:"6281542766503", expired:"2026-03-03", history:[2] },
-		{ nama:"Mas. Aka", wa:"6285959776370", expired:"2026-03-02", history:[1] },
-		{ nama:"Mas. Saputra", wa:"62895320471571", expired:"2026-01-26", history:[1] },
-		{ nama:"Mas. Dani", wa:"6281939198806", expired:"2026-01-28", history:[1,1] },
-		{ nama:"Mas. Atok", wa:"6281222455926", expired:"2026-01-26", history:[1] },
-		{ nama:"Mas. Noval", wa:"6285714184573", expired:"2026-01-26", history:[1] },
-		{ nama:"Mas. Neko", wa:"6282286867964", expired:"2026-01-26", history:[1,2] },
-		{ nama:"Pak. Yanto", wa:"6282374750189", expired:"2026-01-20", history:[3] },
-		{ nama:"Mas. Panji", wa:"6281383928774", expired:"2026-01-19", history:[1,1] },
-		{ nama:"Mba. Annisa", wa:"6283829116408", expired:"2026-01-19", history:[1] },
-		{ nama:"Mas. Dio", wa:"6287872855134", expired:"2026-01-18", history:[1] },
-		{ nama:"Mba. Rosita", wa:"6285746010654", expired:"2026-01-18", history:[1] },
-		{ nama:"Mas. Ahlis", wa:"6282374750189", expired:"2026-01-15", history:[2] },
-		{ nama:"Mas. Bayu", wa:"6282145928235", expired:"2026-04-04", history:[1,1] },
-		{ nama:"Mas. Jordan", wa:"6285361158771", expired:"2026-01-12", history:[1] },
-		{ nama:"Mas. Farieq", wa:"6283813693914", expired:"2026-01-11", history:[1] },
-		{ nama:"Mba. Riani", wa:"6282288593696", expired:"2026-01-10", history:[1] },
-		{ nama:"Mas. Rey", wa:"6287760777890", expired:"2026-01-08", history:[1] },
-		{ nama:"Mas. Sodik", wa:"6285156271181", expired:"2026-01-07", history:[1] },
-		{ nama:"Mba. Tia", wa:"6281360698004", expired:"2026-01-07", history:[1] },
-		{ nama:"Mas. Miko", wa:"628989735180", expired:"2026-01-03", history:[1] },
-		{ nama:"Mas. Niko", wa:"6285659115395", expired:"2026-01-02", history:[1,1] },
-		{ nama:"Mas. Fajar", wa:"6288980615045", expired:"2025-12-28", history:[1] },
-		{ nama:"Mas. Winsen", wa:"6282374750189", expired:"2025-12-26", history:[1] },
-		{ nama:"Mas. Nofal", wa:"62895340339030", expired:"2026-03-26", history:[1,1] },
-		{ nama:"Mas. Dandy", wa:"6281257215624", expired:"2025-12-25", history:[1] },
-		{ nama:"Mas. Ando", wa:"6282353546274", expired:"2025-12-25", history:[1] },
-		{ nama:"Mas. Adi", wa:"6281802037746", expired:"2025-12-25", history:[1] },
-		{ nama:"Mas. Lisbeth", wa:"6285211556086", expired:"2025-12-25", history:[1] },
-		{ nama:"Mas. Yudha", wa:"6281809326902", expired:"2025-12-18", history:[1] },
-		{ nama:"Mas. Azka", wa:"6285691639152", expired:"2025-12-14", history:[1] },
-		{ nama:"Mas. Fathan", wa:"6287763704096", expired:"2025-12-14", history:[1] },
-		{ nama:"Mas. Nijar", wa:"6282299282454", expired:"2025-12-14", history:[1] },
-		{ nama:"Mas. Gilang", wa:"6283131965957", expired:"2025-12-13", history:[1] },
-		{ nama:"Mas. Radit", wa:"62895324937129", expired:"2025-12-13", history:[1] },
-		{ nama:"Mas. Hendra", wa:"6289504229094", expired:"2026-05-04", history:[1,2] },
-		{ nama:"Mas. Alive", wa:"628151471961", expired:"2025-12-10", history:[1] },
-		{ nama:"Mas. Abraham", wa:"6287725999740", expired:"2025-11-30", history:[1] },
-		{ nama:"Sandi", wa:"6282146281427", expired:"2025-04-05", history:[1,1] }
+		{ nama:"Mas. Hadi", whatsapp:"6281934151515", expired:"2026-03-27", history:[1] },
+		{ nama:"Mas. Hamid", whatsapp:"6285546399043", expired:"2026-03-27", history:[1] },
+		{ nama:"Mas. Izzudin", whatsapp:"6281910019807", expired:"2026-03-26", history:[1] },
+		{ nama:"Mas. Satya", whatsapp:"6285263019463", expired:"2026-03-26", history:[1] },
+		{ nama:"Mas. Hilmi", whatsapp:"6281231012358", expired:"2026-03-26", history:[1] },
+		{ nama:"Mas. Ilham", whatsapp:"6282229069298", expired:"2026-03-25", history:[1] },
+		{ nama:"Mas. Jefri", whatsapp:"62895322198674", expired:"2026-03-25", history:[1] },
+		{ nama:"Mas. Muazin", whatsapp:"6281391334236", expired:"2026-05-24", history:[1,1,1] },
+		{ nama:"Mas. Paolo", whatsapp:"6282285682337", expired:"2026-03-25", history:[1] },
+		{ nama:"Mas. Japa", whatsapp:"6285156154004", expired:"2026-03-25", history:[1] },
+		{ nama:"Mas. Wandi", whatsapp:"6285185742517", expired:"2026-03-25", history:[1] },
+		{ nama:"Mas. Zayyin", whatsapp:"62882003064529", expired:"2026-03-25", history:[1] },
+		{ nama:"Mas. Alpin", whatsapp:"6285743157505", expired:"2026-03-25", history:[1] },
+		{ nama:"Mas. Stepanus", whatsapp:"6282245465893", expired:"2026-03-25", history:[1] },
+		{ nama:"Mas. Rasyid", whatsapp:"6287796722146", expired:"2026-03-25", history:[1] },
+		{ nama:"Mas. Ali", whatsapp:"6282117932375", expired:"2026-03-25", history:[1] },
+		{ nama:"Mas. Yusuf", whatsapp:"6281342480684", expired:"2026-03-25", history:[1] },
+		{ nama:"Mas. Rafli", whatsapp:"818094352275", expired:"2026-03-25", history:[1] },
+		{ nama:"Mas. Simanjuntak", whatsapp:"6285121000159", expired:"2026-03-25", history:[1] },
+		{ nama:"Mas. Daniar", whatsapp:"6287722353893", expired:"2026-03-24", history:[1] },
+		{ nama:"Mba. Rizka", whatsapp:"6287867772787", expired:"2026-03-24", history:[1] },
+		{ nama:"Mba. Ina", whatsapp:"6285921648659", expired:"2026-03-24", history:[1] },
+		{ nama:"Mba. Cinta", whatsapp:"6285691048600", expired:"2026-03-24", history:[1] },
+		{ nama:"Mba. Rahayu", whatsapp:"6283181557626", expired:"2026-03-24", history:[1] },
+		{ nama:"Mas. Madani", whatsapp:"6281399052389", expired:"2026-03-24", history:[1] },
+		{ nama:"Mas. Willy", whatsapp:"6288747941100", expired:"2026-03-23", history:[1,1] },
+		{ nama:"Mas. Adit", whatsapp:"6285773102128", expired:"2026-03-23", history:[3] },
+		{ nama:"Mas. Tama", whatsapp:"6283823750527", expired:"2026-03-23", history:[1] },
+		{ nama:"Mas. Seii", whatsapp:"6289516172663", expired:"2026-03-20", history:[1,1] },
+		{ nama:"Mas. Baharudin", whatsapp:"6281328333319", expired:"2026-03-20", history:[1] },
+		{ nama:"Mas. Erick", whatsapp:"6285704444633", expired:"2026-10-06", history:[1,6] },
+		{ nama:"Mas. Ikhwan", whatsapp:"628813986613", expired:"2026-03-20", history:[3] },
+		{ nama:"Mas. Evan", whatsapp:"6285649261450", expired:"2026-03-18", history:[1] },
+		{ nama:"Mas. Juan", whatsapp:"6281218500883", expired:"2026-03-18", history:[1] },
+		{ nama:"Mba. Caca", whatsapp:"6282131643877", expired:"2026-03-18", history:[1] },
+		{ nama:"Mas. Ulil", whatsapp:"6285624417898", expired:"2026-03-18", history:[1] },
+		{ nama:"Mba. Febrina", whatsapp:"6282257554848", expired:"2026-03-17", history:[1] },
+		{ nama:"Mas. Suba", whatsapp:"6285851202129", expired:"2026-03-16", history:[1] },
+		{ nama:"Mas. Kevin", whatsapp:"6281288374247", expired:"2026-03-15", history:[1] },
+		{ nama:"Mas. Ramadhan", whatsapp:"6285717458562", expired:"2026-03-14", history:[1] },
+		{ nama:"Mas. Rama", whatsapp:"6282146281427", expired:"2026-05-13", history:[3,1] },
+		{ nama:"Mas. Fahmi", whatsapp:"6285725250834", expired:"2026-03-12", history:[1,1] },
+		{ nama:"Mas. Farid", whatsapp:"6282216890335", expired:"2026-03-12", history:[1] },
+		{ nama:"Mas. Juno", whatsapp:"6281388971102", expired:"2026-03-12", history:[1] },
+		{ nama:"Mas. Yogi", whatsapp:"6281388943988", expired:"2026-03-12", history:[1] },
+		{ nama:"Mas. Ray", whatsapp:"628994666668", expired:"2026-05-11", history:[1,1] },
+		{ nama:"Mas. Nanang", whatsapp:"62895335867519", expired:"2026-03-12", history:[1,1] },
+		{ nama:"Mas. Candra", whatsapp:"6285878590179", expired:"2026-03-12", history:[1] },
+		{ nama:"Mas. Salim", whatsapp:"6285804210460", expired:"2026-03-12", history:[1] },
+		{ nama:"Mas. Rayhan", whatsapp:"6282146281427", expired:"2026-03-12", history:[1] },
+		{ nama:"Mba. Putri", whatsapp:"6281554559971", expired:"2026-05-09", history:[2,2,1] },
+		{ nama:"Mba. Siska", whatsapp:"6287759946405", expired:"2026-03-10", history:[1,1] },
+		{ nama:"Mas. Ardika", whatsapp:"6282170239819", expired:"2026-03-06", history:[3] },
+		{ nama:"Mas. Sefian", whatsapp:"6285876926793", expired:"2026-03-06", history:[1,1] },
+		{ nama:"Mas. Widi", whatsapp:"6283191133606", expired:"2026-03-05", history:[1] },
+		{ nama:"Mas. Natan", whatsapp:"6285380369595", expired:"2026-03-03", history:[1] },
+		{ nama:"Mas. Anggit", whatsapp:"6281542766503", expired:"2026-03-03", history:[2] },
+		{ nama:"Mas. Aka", whatsapp:"6285959776370", expired:"2026-03-02", history:[1] },
+		{ nama:"Mas. Saputra", whatsapp:"62895320471571", expired:"2026-01-26", history:[1] },
+		{ nama:"Mas. Dani", whatsapp:"6281939198806", expired:"2026-01-28", history:[1,1] },
+		{ nama:"Mas. Atok", whatsapp:"6281222455926", expired:"2026-01-26", history:[1] },
+		{ nama:"Mas. Noval", whatsapp:"6285714184573", expired:"2026-01-26", history:[1] },
+		{ nama:"Mas. Neko", whatsapp:"6282286867964", expired:"2026-01-26", history:[1,2] },
+		{ nama:"Pak. Yanto", whatsapp:"6282374750189", expired:"2026-01-20", history:[3] },
+		{ nama:"Mas. Panji", whatsapp:"6281383928774", expired:"2026-01-19", history:[1,1] },
+		{ nama:"Mba. Annisa", whatsapp:"6283829116408", expired:"2026-01-19", history:[1] },
+		{ nama:"Mas. Dio", whatsapp:"6287872855134", expired:"2026-01-18", history:[1] },
+		{ nama:"Mba. Rosita", whatsapp:"6285746010654", expired:"2026-01-18", history:[1] },
+		{ nama:"Mas. Ahlis", whatsapp:"6282374750189", expired:"2026-01-15", history:[2] },
+		{ nama:"Mas. Bayu", whatsapp:"6282145928235", expired:"2026-04-04", history:[1,1] },
+		{ nama:"Mas. Jordan", whatsapp:"6285361158771", expired:"2026-01-12", history:[1] },
+		{ nama:"Mas. Farieq", whatsapp:"6283813693914", expired:"2026-01-11", history:[1] },
+		{ nama:"Mba. Riani", whatsapp:"6282288593696", expired:"2026-01-10", history:[1] },
+		{ nama:"Mas. Rey", whatsapp:"6287760777890", expired:"2026-01-08", history:[1] },
+		{ nama:"Mas. Sodik", whatsapp:"6285156271181", expired:"2026-01-07", history:[1] },
+		{ nama:"Mba. Tia", whatsapp:"6281360698004", expired:"2026-01-07", history:[1] },
+		{ nama:"Mas. Miko", whatsapp:"628989735180", expired:"2026-01-03", history:[1] },
+		{ nama:"Mas. Niko", whatsapp:"6285659115395", expired:"2026-01-02", history:[1,1] },
+		{ nama:"Mas. Fajar", whatsapp:"6288980615045", expired:"2025-12-28", history:[1] },
+		{ nama:"Mas. Winsen", whatsapp:"6282374750189", expired:"2025-12-26", history:[1] },
+		{ nama:"Mas. Nofal", whatsapp:"62895340339030", expired:"2026-03-26", history:[1,1] },
+		{ nama:"Mas. Dandy", whatsapp:"6281257215624", expired:"2025-12-25", history:[1] },
+		{ nama:"Mas. Ando", whatsapp:"6282353546274", expired:"2025-12-25", history:[1] },
+		{ nama:"Mas. Adi", whatsapp:"6281802037746", expired:"2025-12-25", history:[1] },
+		{ nama:"Mas. Lisbeth", whatsapp:"6285211556086", expired:"2025-12-25", history:[1] },
+		{ nama:"Mas. Yudha", whatsapp:"6281809326902", expired:"2025-12-18", history:[1] },
+		{ nama:"Mas. Azka", whatsapp:"6285691639152", expired:"2025-12-14", history:[1] },
+		{ nama:"Mas. Fathan", whatsapp:"6287763704096", expired:"2025-12-14", history:[1] },
+		{ nama:"Mas. Nijar", whatsapp:"6282299282454", expired:"2025-12-14", history:[1] },
+		{ nama:"Mas. Gilang", whatsapp:"6283131965957", expired:"2025-12-13", history:[1] },
+		{ nama:"Mas. Radit", whatsapp:"62895324937129", expired:"2025-12-13", history:[1] },
+		{ nama:"Mas. Hendra", whatsapp:"6289504229094", expired:"2026-05-04", history:[1,2] },
+		{ nama:"Mas. Alive", whatsapp:"628151471961", expired:"2025-12-10", history:[1] },
+		{ nama:"Mas. Abraham", whatsapp:"6287725999740", expired:"2025-11-30", history:[1] },
+		{ nama:"Sandi", whatsapp:"6282146281427", expired:"2025-04-05", history:[1,1] }
 	];
+	</script>
 	
+	<script type="text/javascript">
+	function hitungRekapKelas() {
+		const rekap = {};
+		members.forEach(m => {
+		if (Array.isArray(m.history)) {
+			m.history.forEach(kelas => {
+				rekap[kelas] = (rekap[kelas] || 0) + 1;
+			});
+		}
+	});
+	return rekap;
+	}
+	</script>
+	
+	<script type="text/javascript">
 	const DAY=86400000,HOUR=3600000,MIN=60000,SEC=1000;
 	const lastMonth=m=>m.history.at(-1)||0;
 	const target=d=>new Date(d+"T00:00:00").getTime();
@@ -299,19 +390,56 @@
 		const sorted = [...members].sort((a,b)=>b.ms - a.ms);
 		renderStat(sorted);
 	}
+	</script>
 	
+	
+	<script>/*
+	const search = document.getElementById("search");
+	const container = document.getElementById("memberContainer");
+	const badge = document.getElementById("resultBadge");
+	const emptyState = document.getElementById("emptyState");
+	function debounce(func, delay) {
+		let timeout;
+		return function (...args) {
+			clearTimeout(timeout);
+			timeout = setTimeout(() => func.apply(this, args), delay);
+		};
+	}
+	
+	function highlight(text, keyword) {
+		 (!keyword) return text;
+		const safeKey = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+		const regex = new RegExp(`(${safeKey})`, "gi");
+		return text.replace(regex, `<span class="highlight">$1</span>`);
+	}*/
+	</script>
+	
+	<script type="text/javascript">
 	/* ================= RENDER ================= */
 	function render() {
+		const rekapBody = document.getElementById("rekapTableBody");
+		const rekapData = hitungRekapKelas();
+		rekapBody.innerHTML = "";
+		Object.keys(rekapData).sort((a, b) => Number(a) - Number(b)).forEach(kelas => {
+			rekapBody.innerHTML += `
+			<tr>
+				<td>Kelas ${kelas} Bulan</td>
+				<td>${rekapData[kelas]}x</td>
+			</tr>
+			`;
+		});
 		const list=document.getElementById("list");
 		list.innerHTML="";
-		const key=search.value.toLowerCase();
+		const key = search.value.toLowerCase();
 		const f=filter.value;
 		members.forEach(m=>m.ms=target(m.expired)-Date.now());
-		// const sorted=[...members].sort((a,b)=>b.ms-a.ms);
 		const mode = sortMode.value;
 		let sorted = [...members];
 		if (mode === "active") {
 			sorted.sort((a,b)=>b.ms - a.ms);
+		}
+		if (mode === "bentar") {
+			sorted.sort((a,b)=>a.ms - b.ms);
 		}
 		if (mode === "nameAZ") {
 			sorted.sort((a,b)=>a.nama.localeCompare(b.nama));
@@ -319,6 +447,7 @@
 		if (mode === "nameZA") {
 			sorted.sort((a,b)=>b.nama.localeCompare(a.nama));
 		}
+		
 		// ====== HAPUS DUPLIKAT BERDASARKAN NAMA ======
 		const seen = new Set();
 		sorted = sorted.filter(m => {
@@ -343,6 +472,7 @@
 				else if (daysLeft <= 7) urgentClass = "h7";
 				else if (daysLeft <= 14) urgentClass = "h14";
 			}
+			
 			div.className = "member " + kelas(lm,m.ms) + " " + urgentClass;
 			div.innerHTML=`
 			<b><i class='fa fa-user-circle-o'></i>&nbsp; Nama: ${m.nama}</b><br>
@@ -351,7 +481,7 @@
 			<!--<i class='fa fa-circle-o-notch fa-spin'></i> Sisa Waktu: ${sisa(m.ms)}-->
 			<span class="badge">${badge(m.history)}</span>
 			<div class="history">
-			&nbsp;<i class='fa fa-phone'></i> &nbsp; Nomor: ${m.wa}
+			&nbsp;<i class='fa fa-phone'></i> &nbsp; Nomor: ${m.whatsapp}
 			<br>
 			<i class='fa fa-vcard-o'></i>&nbsp; Join Kelas: ${join(m.history)}
 			</div>
@@ -377,7 +507,6 @@
 	filter.onchange = render;
 	sortMode.onchange = render; //baru
 	initStat();
-	//setInterval(render, 60000);
 	render();
 	</script>
 	
@@ -440,7 +569,7 @@
 			// cek apakah sudah pernah tampilkan notif
 			const swNotifShown = localStorage.getItem("swNotifShown");
 			if (!swNotifShown) {
-				alert("Service Worker berhasil diaktifkan ✅");
+				alert("Service Worker berhasil diaktifkan 🦤");
 				// simpan agar tidak muncul lagi
 				localStorage.setItem("swNotifShown", "true");
 			}
