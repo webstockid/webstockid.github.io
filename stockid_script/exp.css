@@ -9,7 +9,7 @@ body  {
 	margin: 6px 6px;
 	padding: 6px;
 	background: #111;
-	color: #eee;
+	color: snow;
 	/*linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
 	url("stockid_gambar/wall.jpg") no-repeat center center fixed;
 	background-size: cover;*/
@@ -28,6 +28,12 @@ b {
 	font-weight: 600;
 }
 
+i.fa, i, .fa {
+vertical-align: middle;
+padding: auto;
+color: #dedede;
+}
+
 /* ---- */
 
 /* ================= STATISTIK ================= */
@@ -44,8 +50,8 @@ b {
 
 .stat-label {
 	margin-bottom: 4px;
-	font-size: 14px;
-	color: #eee;
+	font-size: 16px;
+	color: snow;
 }
 
 .bar {
@@ -101,7 +107,7 @@ b {
 
 /* ---- */
 
-/* warna bar */
+/* Warna Bar */
 .b1 {
 	background-image: repeating-linear-gradient(45deg,#03a9f4 0 7px,#81d4fa 7px 14px);
 }
@@ -121,16 +127,18 @@ b {
 	background-image: repeating-linear-gradient(45deg,#f44336 0 7px,#ff8a80 7px 14px);
 }
 
+/* ---- */
+
 /* ================= MEMBER ================= */
 .member {
 	position: relative;
-	overflow: visible; /*visible*/
+	overflow: visible;
 	margin-bottom: 12px;
 	padding: 6px;
 	padding-left: 12px;
 	font-size: 14px;
-	color: #eee;
-	background: #202020;
+	color: snow;
+	background: #2a2a2a;
 	border-radius: 2px 6px 6px 2px;
 	transition: background-color 1s ease, color 1s ease;
 	-webkit-transition: background-color 1s ease, color 1s ease;
@@ -176,49 +184,49 @@ b {
 	top: 0;
 	left: -4px; /* keluar div */
 	position: absolute;
-	width: 6px;
+	width: 4px;
 	height: 100%;
 	border-right: 2px solid inherit;
 	border-radius: 6px 0 0 6px;
 	z-index: 100;
-	filter: drop-shadow(-6px 0 14px rgba(0,0,0,.45));
-	-webkit-filter: drop-shadow(-6px 0 14px rgba(0,0,0,.45));
+	filter: drop-shadow(-6px 0 12px rgba(0,0,0,.45)); /* 14px */
+	-webkit-filter: drop-shadow(-6px 0 12px rgba(0,0,0,.45));
 }
-
+/* -4px 0 14px #03a9f4, -10px 0 20px */
 .member.satu::before {
 	background: linear-gradient(to bottom,#03a9f4,#03a9f4,#03a9f4);
-	box-shadow: -4px 0 14px #03a9f4, -10px 0 20px rgba(52,152,219,.95);
-	-webkit-box-shadow: -4px 0 14px #03a9f4, -10px 0 20px rgba(52,152,219,.95);
+	box-shadow: -4px 0 20px #03a9f4, -10px 0 30px rgba(52,152,219,.95);
+	-webkit-box-shadow: -4px 0 20px #03a9f4, -10px 0 30px rgba(52,152,219,.95);
 }
 
 .member.dua::before {
 	background: linear-gradient(to bottom,#4caf50,#4caf50,#4caf50);
-	box-shadow: -4px 0 14px #4caf50, -10px 0 20px rgba(155,89,182,.95);
-	-webkit-box-shadow: -4px 0 14px #4caf50, -10px 0 20px rgba(155,89,182,.95);
+	box-shadow: -4px 0 20px #4caf50, -10px 0 30px rgba(155,89,182,.95);
+	-webkit-box-shadow: -4px 0 20px #4caf50, -10px 0 30px rgba(155,89,182,.95);
 }
 
 .member.tiga::before {
 	background: linear-gradient(to bottom,#F9629F,#F9629F,#F9629F);
-	box-shadow: -4px 0 14px #F9629F, -10px 0 20px rgba(230,126,34,.95);
-	-webkit-box-shadow: -4px 0 14px #F9629F, -10px 0 20px rgba(230,126,34,.95);
+	box-shadow: -4px 0 20px #F9629F, -10px 0 30px rgba(230,126,34,.95);
+	-webkit-box-shadow: -4px 0 20px #F9629F, -10px 0 30px rgba(230,126,34,.95);
 }
 
 .member.enam::before {
 	background: linear-gradient(to bottom,#EE82EE,#EE82EE,#EE82EE);
-	box-shadow: -4px 0 14px #EE82EE, -10px 0 20px rgba(46,204,113,.95);
-	-webkit-box-shadow: -4px 0 14px #EE82EE, -10px 0 20px rgba(46,204,113,.95);
+	box-shadow: -4px 0 20px #EE82EE, -10px 0 30px rgba(46,204,113,.95);
+	-webkit-box-shadow: -4px 0 20px #EE82EE, -10px 0 30px rgba(46,204,113,.95);
 }
 
 .member.setahun::before {
 	background: linear-gradient(to bottom,#ff9800,#ff9800,#ff9800);
-	box-shadow: -4px 0 14px #ff9800, -10px 0 20px rgba(241,196,15,.95);
-	-webkit-box-shadow: -4px 0 14px #ff9800, -10px 0 20px rgba(241,196,15,.95);
+	box-shadow: -4px 0 20px #ff9800, -10px 0 30px rgba(241,196,15,.95);
+	-webkit-box-shadow: -4px 0 20px #ff9800, -10px 0 30px rgba(241,196,15,.95);
 }
 
 .member.expired::before {
 	background: linear-gradient(to bottom,#f44336,#f44336,#f44336);
-	box-shadow: -4px 0 14px #f44336, -10px 0 20px rgba(231,76,60,.7);
-	-webkit-box-shadow: -4px 0 14px #f44336, -10px 0 20px rgba(231,76,60,.7);
+	box-shadow: -4px 0 20px #f44336, -10px 0 30px rgba(231,76,60,.7);
+	-webkit-box-shadow: -4px 0 20px #f44336, -10px 0 30px rgba(231,76,60,.7);
 	opacity: 1;
 }
 
@@ -229,7 +237,7 @@ b {
 	padding: 4px 4px;
 	font-size: 10px;
 	color: whitesmoke;
-	background: #333;
+	background: #303030;
 	border-radius: 12px;
 	box-shadow: 0 0 3px rgba(255,255,255,.3);
 	-webkit-box-shadow: 0 0 3px rgba(255,255,255,.3);
@@ -267,21 +275,7 @@ b {
 
 /* ---- */
 
-/* Strip kanan */
-.member.h3::after, 
-.member.h7::after, 
-.member.h14::after {
-	content: "";
-	position: absolute;
-	top: 0;
-	right: 0;
-	width: 4px;
-	height: 100%;
-	border-radius: 0 6px 6px 0;
-	animation: blinkSoft 1s infinite ease-in-out;
-	-webkit-animation: blinkSoft 1s infinite ease-in-out;
-}
-
+/* Strip Kanan */
 .member.h14::after {
 	background: #f1c40f;
 	box-shadow: 0 0 8px rgba(231,76,60,0.8);
@@ -295,6 +289,20 @@ b {
 .member.h3::after {
 	background: #e74c3c;
 	box-shadow: 0 0 8px rgba(231,76,60,0.8);
+}
+
+.member.h3::after, 
+.member.h7::after, 
+.member.h14::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 4px;
+	height: 100%;
+	border-radius: 0 6px 6px 0;
+	animation: blinkSoft 1s infinite ease-in-out;
+	-webkit-animation: blinkSoft 1s infinite ease-in-out;
 }
 
 @keyframes blinkSoft {
@@ -323,6 +331,7 @@ b {
 
 /* ---- */
 
+/* Tema Gelap */
 body[data-theme="dark"] {
 	background: #0b0f14;
 	color: #e6edf3;
@@ -366,9 +375,8 @@ body[data-theme="dark"] h2 {
 	text-fill-color: transparent;
 	-webkit-text-fill-color: transparent;
 	text-shadow: 0 0 8px rgba(0,255,255,0.3);
+	-webkit-text-shadow: 0 0 8px rgba(0,255,255,0.3);
 }
-
-
 
 /* ---- */
 
@@ -384,7 +392,7 @@ input, select {
 	outline: none;
 	padding: 8px;
 	font-size: 14px;
-	color: #fff;
+	color: snow;
 	background: #1b1b1b;
 	border: 1px solid #eee;
 	border-radius: 6px;
@@ -422,8 +430,8 @@ input:hover {
 	margin: 0;
 	padding: 4px 6px;
 	font-size: 14px;
-	color: #fff;
-	background: lightseagreen; /*3498db;*/;
+	color: snow;
+	background: dodgerblue; /*3498db;*/;
 	border: 0.8px solid #bbb;
 	border-radius: 8px;
 	z-index: 300;
