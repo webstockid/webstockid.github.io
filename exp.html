@@ -46,6 +46,8 @@
 		</select>
 	</div>
 	
+	<button onclick="toggleAdmin()" id="adminBtn">Aktifkan Mode Admin</button>
+	
 	<div id="list"></div>
 	
 	<div class="stat-box" id="statistik"></div>
@@ -63,10 +65,10 @@
 		<tbody id="rekapTableBody"></tbody>
 	</table>
 	
-	<div id="reminderModal" style="z-index:99999; position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;">
-		<div style="background:#222; color: white;padding:20px;border-radius:10px;width:300px;">
+	<div id="reminderModal" style="z-index: 99999; position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center;">
+		<div style="background: #222; color: white; padding: 20px; border-radius: 10px; width: 300px;">
 			<h3>Pilih Member Reminder</h3>
-			<select id="memberSelect" style="width:100%;padding:8px;margin-bottom:10px;"></select>
+			<select id="memberSelect" style="width: 100%; padding: 8px; margin-bottom: 10px;"></select>
 			<button onclick="simpanReminder()">Simpan</button>
 		</div>
 	</div>
@@ -74,6 +76,7 @@
 	<button id="themeToggle" class="theme-btn">
 		🌙 Soft Mode
 	</button>
+	
 	<button onclick="enableNotif()" class="notif-btn">
 		<i class="fa fa-bullhorn"></i> Aktifkan Reminder 🦭
 	</button>
@@ -82,58 +85,50 @@
 	
 	<script>
 	function bukaReminderModal() {
-    const select = document.getElementById("memberSelect");
-    select.innerHTML = "";
-
-    members.forEach((m, index) => {
-        select.innerHTML += `<option value="${index}">${m.nama}</option>`;
-    });
-
-    document.getElementById("reminderModal").style.display = "flex";
+		const select = document.getElementById("memberSelect");
+		select.innerHTML = "";
+		
+		members.forEach((m, index) => {
+			select.innerHTML += `<option value="${index}">${m.nama}</option>`;
+		});
+		document.getElementById("reminderModal").style.display = "flex";
 	}
 	
 	function simpanReminder() {
-    const index = document.getElementById("memberSelect").value;
-    localStorage.setItem("reminderMember", index);
-    document.getElementById("reminderModal").style.display = "none";
+		const index = document.getElementById("memberSelect").value;
+		localStorage.setItem("reminderMember", index);
+		document.getElementById("reminderModal").style.display = "none";
 	}
 	
 	function cekReminder() {
-    const index = localStorage.getItem("reminderMember");
-    if (index === null) return;
-
-    const m = members[index];
-    if (!m || !m.expired) return;
-
-    const today = new Date();
-    const exp = new Date(m.expired);
-
-    const diffTime = exp - today;
-    const sisaHari = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    const levels = [10, 5, 3];
-    const sudahNotif = JSON.parse(localStorage.getItem("notifSent") || "{}");
-
-    if (levels.includes(sisaHari) && !sudahNotif[sisaHari]) {
-
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                new Notification(`Reminder ${m.nama}`, {
-                    body: `Masa aktif tersisa ${sisaHari} hari`
-                });
-            }
-        });
-
-        sudahNotif[sisaHari] = true;
-        localStorage.setItem("notifSent", JSON.stringify(sudahNotif));
-    }
+		const index = localStorage.getItem("reminderMember");
+		if (index === null) return;
+		const m = members[index];
+		if (!m || !m.expired) return;
+		const today = new Date();
+		const exp = new Date(m.expired);
+		const diffTime = exp - today;
+		const sisaHari = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+		const levels = [10, 5, 3];
+		const sudahNotif = JSON.parse(localStorage.getItem("notifSent") || "{}");
+		if (levels.includes(sisaHari) && !sudahNotif[sisaHari]) {
+			Notification.requestPermission().then(permission => {
+				if (permission === "granted") {
+					new Notification(`Reminder ${m.nama}`, {
+						body: `Masa aktif tersisa ${sisaHari} hari`
+					});
+				}
+			});
+			sudahNotif[sisaHari] = true;
+			localStorage.setItem("notifSent", JSON.stringify(sudahNotif));
+		}
 	}
 	
 	window.addEventListener("load", () => {
-    if (!localStorage.getItem("reminderMember")) {
-        bukaReminderModal();
-    }
-    cekReminder();
+		if (!localStorage.getItem("reminderMember")) {
+			bukaReminderModal();
+		}
+		cekReminder();
 	});
 	</script>
 	
@@ -413,6 +408,34 @@
 		const regex = new RegExp(`(${safeKey})`, "gi");
 		return text.replace(regex, `<span class="highlight">$1</span>`);
 	}*/
+	let isAdmin = false;
+
+function toggleAdmin() {
+    isAdmin = !isAdmin;
+
+    const btn = document.getElementById("adminBtn");
+
+    if (isAdmin) {
+        btn.textContent = "Nonaktifkan Mode Admin";
+    } else {
+        btn.textContent = "Aktifkan Mode Admin";
+    }
+
+    render();
+}
+
+function tambahHistory(index) {
+    const bulan = prompt("Masukkan kelas (1 / 2 / 3 / 6 / 12):");
+    if (!bulan) return;
+
+    if (!members[index].history) {
+        members[index].history = [];
+    }
+
+    members[index].history.push(Number(bulan));
+    alert("History berhasil ditambahkan!");
+    render();
+}
 	</script>
 	
 	<script type="text/javascript">
@@ -429,6 +452,7 @@
 			</tr>
 			`;
 		});
+		
 		const list=document.getElementById("list");
 		list.innerHTML="";
 		const key = search.value.toLowerCase();
@@ -486,6 +510,11 @@
 			<br>
 			<i class='fa fa-vcard-o'></i>&nbsp; Join Kelas: ${join(m.history)}
 			</div>
+			${isAdmin ? `
+    <button onclick="tambahHistory(${index})">
+        + Tambah Pembelian
+    </button>
+` : ""}
 			`;
 			list.appendChild(div);
 		});
