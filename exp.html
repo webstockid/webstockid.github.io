@@ -158,7 +158,7 @@
 		{ nama:"Mas. Dwiky", whatsapp:"6281163836288", expired:"2026-04-27", history:[1,1,2] },
 		{ nama:"Mas. Ihsan", whatsapp:"6282215352174", expired:"2026-04-27", history:[2] },
 		{ nama:"Mba. Dhila", whatsapp:"6289528936511", expired:"2026-04-26", history:[1,1] },
-		{ nama:"Mas. Roid", whatsapp:"6287819304040", expired:"2026-04-25", history:[1,2] },
+		{ nama:"Mas. Roid", whatsapp:"6287819304040", expired:"2026-07-25", history:[1,2,3] },
 		{ nama:"Mas. Made", whatsapp:"6281353043869", expired:"2026-04-24", history:[1,2] },
 		{ nama:"Mba. Tati", whatsapp:"6285773015045", expired:"2026-04-21", history:[2] },
 		{ nama:"Mba. Linda", whatsapp:"628112630261", expired:"2026-04-21", history:[2] },
@@ -185,7 +185,8 @@
 		{ nama:"Mba. Jasmine", whatsapp:"6289527787810", expired:"2026-03-29", history:[1] },
 		{ nama:"Mas. Rahman", whatsapp:"6281233704317", expired:"2026-03-27", history:[1] },
 		{ nama:"Mas. Annur", whatsapp:"628558895157", expired:"2026-03-27", history:[1] },
-		{ nama:"Mas. Pandya", whatsapp:"6281286977138", expired:"2026-04-27", history:[1] },
+		{ nama:"Mas. Pandya", whatsapp:"6281286977138", expired:"2026-04-27", history:[1,1] },
+		{ nama:"Mas. Rezky", whatsapp:"6282221981889", expired:"2026-04-26", history:[1] },
 		
 		{ nama:"Mas. Zacky", whatsapp:"6289634164412", expired:"2026-06-10", history:[3] },
 		{ nama:"Mas. Ofeng", whatsapp:"6285739500212", expired:"2026-04-28", history:[1] },
@@ -314,6 +315,50 @@
 	}
 	</script>
 	
+	<script>/*
+	const search = document.getElementById("search");
+	const container = document.getElementById("memberContainer");
+	const badge = document.getElementById("resultBadge");
+	const emptyState = document.getElementById("emptyState");
+	function debounce(func, delay) {
+		let timeout;
+		return function (...args) {
+			clearTimeout(timeout);
+			timeout = setTimeout(() => func.apply(this, args), delay);
+		};
+	}
+	
+	function highlight(text, keyword) {
+		 (!keyword) return text;
+		const safeKey = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+		const regex = new RegExp(`(${safeKey})`, "gi");
+		return text.replace(regex, `<span class="highlight">$1</span>`);
+	}*/
+	let isAdmin = false;
+	
+	function toggleAdmin() {
+		isAdmin = !isAdmin;
+		const btn = document.getElementById("adminBtn");
+		if (isAdmin) {
+			btn.textContent = "Nonaktifkan Mode Admin";
+		} else {
+			btn.textContent = "Aktifkan Mode Admin";
+		}
+		render();
+	}
+	
+	function tambahHistory(index) {
+		const bulan = prompt("Masukkan kelas (1 / 2 / 3 / 6 / 12):");
+		if (!bulan) return;
+		if (!members[index].history) {
+			members[index].history = [];
+		}
+		members[index].history.push(Number(bulan));
+		alert("History berhasil ditambahkan!");
+		render();
+	}
+	</script>
+	
 	<script type="text/javascript">
 	const DAY=86400000,HOUR=3600000,MIN=60000,SEC=1000;
 	const lastMonth=m=>m.history.at(-1)||0;
@@ -388,56 +433,6 @@
 	}
 	</script>
 	
-	
-	<script>/*
-	const search = document.getElementById("search");
-	const container = document.getElementById("memberContainer");
-	const badge = document.getElementById("resultBadge");
-	const emptyState = document.getElementById("emptyState");
-	function debounce(func, delay) {
-		let timeout;
-		return function (...args) {
-			clearTimeout(timeout);
-			timeout = setTimeout(() => func.apply(this, args), delay);
-		};
-	}
-	
-	function highlight(text, keyword) {
-		 (!keyword) return text;
-		const safeKey = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-		const regex = new RegExp(`(${safeKey})`, "gi");
-		return text.replace(regex, `<span class="highlight">$1</span>`);
-	}*/
-	let isAdmin = false;
-
-function toggleAdmin() {
-    isAdmin = !isAdmin;
-
-    const btn = document.getElementById("adminBtn");
-
-    if (isAdmin) {
-        btn.textContent = "Nonaktifkan Mode Admin";
-    } else {
-        btn.textContent = "Aktifkan Mode Admin";
-    }
-
-    render();
-}
-
-function tambahHistory(index) {
-    const bulan = prompt("Masukkan kelas (1 / 2 / 3 / 6 / 12):");
-    if (!bulan) return;
-
-    if (!members[index].history) {
-        members[index].history = [];
-    }
-
-    members[index].history.push(Number(bulan));
-    alert("History berhasil ditambahkan!");
-    render();
-}
-	</script>
-	
 	<script type="text/javascript">
 	/* ================= RENDER ================= */
 	function render() {
@@ -503,7 +498,6 @@ function tambahHistory(index) {
 			<b><i class='fa fa-user-circle-o'></i>&nbsp; Nama: ${m.nama}</b><br>
 			<b><i class='fa fa-spinner fa-spin'></i>&nbsp; Expired: ${m.expired}</b><br>
 			<b><i class='fa fa-circle-o-notch fa-spin'></i>&nbsp; Sisa Waktu: <span class="countdown" data-expired="${m.expired}">${sisa(m.ms)}</span></b>
-			<!--<i class='fa fa-circle-o-notch fa-spin'></i> Sisa Waktu: ${sisa(m.ms)}-->
 			<span class="badge">${badge(m.history)}</span>
 			<div class="history">
 			&nbsp;<i class='fa fa-phone'></i> &nbsp; Nomor: ${m.whatsapp}
@@ -511,10 +505,8 @@ function tambahHistory(index) {
 			<i class='fa fa-vcard-o'></i>&nbsp; Join Kelas: ${join(m.history)}
 			</div>
 			${isAdmin ? `
-    <button onclick="tambahHistory(${index})">
-        + Tambah Pembelian
-    </button>
-` : ""}
+			<button onclick="tambahHistory(${index})">+ Tambah Pembelian</button>
+			` : ""}
 			`;
 			list.appendChild(div);
 		});
