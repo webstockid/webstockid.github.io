@@ -5,7 +5,7 @@ html  {
 }
 
 body  {
-	font-family: 'Parkinsans', sans-serif;
+	font-family: 'Rubik', sans-serif;
 	margin: 6px 6px;
 	padding: 6px;
 	background: #111;
@@ -16,7 +16,7 @@ body  {
 }
 
 body, div, span, button, p, b, a {
-	font-family: 'Parkinsans', sans-serif;
+	font-family: 'Rubik', sans-serif;
 }
 
 span {
@@ -301,8 +301,8 @@ color: #dedede;
 	width: 4px;
 	height: 100%;
 	border-radius: 0 6px 6px 0;
-	animation: blinkSoft 1s infinite ease-in-out;
-	-webkit-animation: blinkSoft 1s infinite ease-in-out;
+	animation: blinkSoft 0.7s infinite ease-in-out;
+	-webkit-animation: blinkSoft 0.7s infinite ease-in-out;
 }
 
 @keyframes blinkSoft {
@@ -364,8 +364,8 @@ body[data-theme="dark"] select {
 body[data-theme="dark"] .member:hover {
 	box-shadow: 0 0 12px rgba(0,255,255,0.15);
 	-webkit-box-shadow: 0 0 12px rgba(0,255,255,0.15);
-	transition: 0.3s;
-	-webkit-transition: 0.3s;
+	transition: 0.5s;
+	-webkit-transition: 0.5s;
 }
 
 body[data-theme="dark"] h2 {
@@ -402,16 +402,18 @@ input, select {
 }
 
 input {
-	max-width: 55%;
+	min-width: 40%;
 	bottom: 10px;
 	left: 12px;
 	position: fixed;
+	transition: 1s;
+	-webkit-transition: 1s;
 }
 
-input:hover {
-	max-width: 75%;
+input:hover, input:focus {
+	width: 50%;
 	border: 1px solid #333;
-	border-radius: 12px 0 12px 0;
+	border-radius: 12px 2px 12px 2px;
 	box-shadow: 0 0 8px #333, 0 0 8px rgba(52,152,219,.95);
 	-webkit-box-shadow: 0 0 8px #333, 0 0 8px rgba(52,152,219,.95);
 }
@@ -432,26 +434,27 @@ input:hover {
 	font-size: 14px;
 	color: snow;
 	background: dodgerblue; /*3498db;*/;
-	border: 0.8px solid #bbb;
-	border-radius: 8px;
+	border: 0.8px solid #ccc;
+	border-radius: 4px 12px 4px 12px;
 	z-index: 300;
 	transition: 0.8s;
 	-webkit-transition: 0.8s;
 }
 
 .notif-btn {
-	bottom: 8px;
+	bottom: 1%;
 }
 
 .theme-btn {
-	top: 8px;
+	bottom: 5%;
 }
 
-.notif-btn:hover, .notif-btn:focus {
-	margin-left: 6px;
-	margin-bottom: -2px;
-	background: darkcyan;
-	border-radius: 12px;
-	transition: background-color 0.7s ease, color 0.7s ease;
-	-webkit-transition: background-color 0.7s ease, color 0.7s ease;
+.notif-btn:hover, .notif-btn:focus,
+.theme-btn:hover, .theme-btn:focus {
+	margin-left: 8px;
+	margin-bottom: -4px;
+	background: lightseagreen;
+	border-radius: 14px;
+	transition: background-color 1s ease, color 1s ease;
+	-webkit-transition: background-color 1s ease, color 1s ease;
 }
