@@ -6,16 +6,18 @@ html  {
 
 body  {
 	font-family: 'Rubik', sans-serif;
-	margin: 6px 6px;
-	padding: 6px;
-	background: #111;
-	color: snow;
+	padding: 2px 2px;
+	background:
+	linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+	url("../stockid_gambar/wallexp.jpg") no-repeat center center fixed;
+	background-size: cover;
+	color: whitesmoke;
 	/*linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
 	url("stockid_gambar/wall.jpg") no-repeat center center fixed;
 	background-size: cover;*/
 }
 
-body, div, span, button, p, b, a {
+body, div, span, button, input, p, b, a {
 	font-family: 'Rubik', sans-serif;
 }
 
@@ -29,6 +31,7 @@ b {
 }
 
 i.fa, i, .fa {
+position: relative;
 vertical-align: middle;
 padding: auto;
 color: #dedede;
@@ -51,7 +54,7 @@ color: #dedede;
 .stat-label {
 	margin-bottom: 4px;
 	font-size: 16px;
-	color: snow;
+	color: whitesmoke;
 }
 
 .bar {
@@ -133,11 +136,11 @@ color: #dedede;
 .member {
 	position: relative;
 	overflow: visible;
-	margin-bottom: 12px;
+	margin-bottom: 6px;
 	padding: 6px;
-	padding-left: 12px;
+	padding-left: 8px;
 	font-size: 14px;
-	color: snow;
+	color: whitesmoke;
 	background: #2a2a2a;
 	border-radius: 2px 6px 6px 2px;
 	transition: background-color 1s ease, color 1s ease;
@@ -189,6 +192,8 @@ color: #dedede;
 	border-right: 2px solid inherit;
 	border-radius: 6px 0 0 6px;
 	z-index: 100;
+	animation: blinkSoft 3s infinite ease-in-out;
+	-webkit-animation: blinkSoft 3s infinite ease-in-out;
 	filter: drop-shadow(-6px 0 12px rgba(0,0,0,.45)); /* 14px */
 	-webkit-filter: drop-shadow(-6px 0 12px rgba(0,0,0,.45));
 }
@@ -301,16 +306,22 @@ color: #dedede;
 	width: 4px;
 	height: 100%;
 	border-radius: 0 6px 6px 0;
-	animation: blinkSoft 0.7s infinite ease-in-out;
-	-webkit-animation: blinkSoft 0.7s infinite ease-in-out;
+	animation: blinkSoft 1s infinite ease-in-out;
+	-webkit-animation: blinkSoft 1s infinite ease-in-out;
 }
 
 @keyframes blinkSoft {
 	0% {
 		opacity: 1;
 	}
-	50% {
+	20% {
 		opacity: 0.4;
+	}
+	60% {
+		opacity: 0.6;
+	}
+	80% {
+		opacity: 0.8;
 	}
 	100% {
 		opacity: 1;
@@ -392,7 +403,7 @@ input, select {
 	outline: none;
 	padding: 8px;
 	font-size: 14px;
-	color: snow;
+	color: whitesmoke;
 	background: #1b1b1b;
 	border: 1px solid #eee;
 	border-radius: 6px;
@@ -432,7 +443,7 @@ input:hover, input:focus {
 	margin: 0;
 	padding: 4px 6px;
 	font-size: 14px;
-	color: snow;
+	color: whitesmoke;
 	background: dodgerblue; /*3498db;*/;
 	border: 0.8px solid #ccc;
 	border-radius: 4px 12px 4px 12px;
