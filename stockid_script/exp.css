@@ -37,6 +37,18 @@ padding: auto;
 color: #dedede;
 }
 
+button.tambah {
+display: inline-block;
+position: relative;
+margin: 4px;
+padding: 4px;
+font-size: 12px;
+color: snow;
+background: darkcyan;
+border: 0.8px solid white;
+border-radius: 4px;
+}
+
 /* ---- */
 
 /* ================= STATISTIK ================= */
