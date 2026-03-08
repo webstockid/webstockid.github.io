@@ -47,6 +47,7 @@
 	</div>
 	
 	<button onclick="toggleAdmin()" id="adminBtn" style="font-size: 14px; color: snow; background: dodgerblue; border: none; border-radius: 4px;">Aktifkan Mode Admin 🔐</button>
+	<button onclick="tambahMember()" class="tambahmember" style="margin-bottom:10px;">➕ Tambah Member</button>
 	<br><br>
 	
 	<div id="list"></div>
@@ -326,7 +327,7 @@
 	}
 	
 	function highlight(text, keyword) {
-		 (!keyword) return text;
+		if (!keyword) return text;
 		const safeKey = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 		const regex = new RegExp(`(${safeKey})`, "gi");
 		return text.replace(regex, `<span class="highlight">$1</span>`);
@@ -351,7 +352,45 @@
 			members[index].history = [];
 		}
 		members[index].history.push(Number(bulan));
-		alert("History berhasil ditambahkan!");
+		alert("History berhasil ditambahkan! 🐔");
+		render();
+	}
+	</script>
+	
+	<script>
+	function tambahMember() {
+		const nama = prompt("Nama Member:");
+		if(!nama) return;
+		const whatsapp = prompt("Nomor WhatsApp:");
+		if(!whatsapp) return;
+		const expired = prompt("Tanggal Expired (YYYY-MM-DD):");
+		if(!expired) return;
+		const kelas = prompt("Kelas pertama (1 / 2 / 3 / 6 / 12 bulan):");
+		const newMember = {
+			nama:nama,
+			whatsapp:whatsapp,
+			expired:expired,
+			history:[Number(kelas)]
+		};
+		members.push(newMember);
+		alert("Member baru berhasil ditambahkan 🐍");
+		render();
+	}
+	</script>
+	
+	<script>
+	function editMember(index) {
+		const m = members[index];
+		const nama = prompt("Edit Nama:", m.nama);
+		if(!nama) return;
+		const whatsapp = prompt("Edit WhatsApp:", m.whatsapp);
+		if(!whatsapp) return;
+		const expired = prompt("Edit Expired (YYYY-MM-DD):", m.expired);
+		if(!expired) return;
+		m.nama = nama;
+		m.whatsapp = whatsapp;
+		m.expired = expired;
+		alert("Data member berhasil diupdate 🦜");
 		render();
 	}
 	</script>
@@ -456,8 +495,8 @@
 			sorted.sort((a,b)=>b.ms - a.ms);
 		}
 		if (mode === "bentar") {
-			members.sort((a,b)=>new Date(b.expired) - new Date(a.expired));
-			//sorted.sort((a,b)=>a.ms - b.ms);
+			//members.sort((a,b)=>new Date(b.expired) - new Date(a.expired));
+			sorted.sort((a,b)=>a.ms - b.ms);
 		}
 		if (mode === "nameAZ") {
 			sorted.sort((a,b)=>a.nama.localeCompare(b.nama));
@@ -475,7 +514,8 @@
 		});
 		//renderStat(sorted);
 		
-		sorted.forEach(m=> {
+		//sorted.forEach(m=> {
+			sorted.forEach((m,index)=> {
 			const lm=lastMonth(m);
 			if (!m.nama.toLowerCase().includes(key)) return;
 			if (f==="expired" && m.ms>0) return;
@@ -503,13 +543,14 @@
 			<i class='fa fa-vcard-o'></i>&nbsp; Join Kelas: ${join(m.history)}
 			</div>
 			${isAdmin ? `
-			<button onclick="tambahHistory(${index})">+ Tambah Pembelian</button>
+			<button class="tambah" onclick="tambahHistory(${index})">+ Tambah Pembelian</button>
+			<button class="tambah" onclick="editMember(${index})">✏ Edit</button>
 			` : ""}
 			`;
 			list.appendChild(div);
 		});
 		
-		if (w) {
+		/*if (w) {
 			const key=notifKey(m,w);
 			if (!localStorage.getItem(key)) {
 				let title="⏰ Masa Aktif Member";
@@ -520,7 +561,7 @@
 				pushNotif (title,msg);
 				localStorage.setItem(key,"1");
 			}
-		}
+		}*/
 	}
 	
 	search.oninput = render;
@@ -528,7 +569,6 @@
 	sortMode.onchange = render; //baru
 	initStat();
 	render();
-	renderMembers(data);
 	</script>
 	
 	<script type="text/javascript">
