@@ -46,8 +46,8 @@
 		</select>
 	</div>
 	
-	<button onclick="toggleAdmin()" id="adminBtn" style="font-size: 14px; color: snow; background: dodgerblue; border: none; border-radius: 4px;">Aktifkan Mode Admin 🔐</button>
-	<button onclick="tambahMember()" class="tambahmember" style="margin-bottom:10px;">➕ Tambah Member</button>
+	<button onclick="toggleAdmin()" id="adminBtn" style="padding: 4px; font-size: 14px; color: snow; background: dodgerblue; border: 1px solid white; border-radius: 6px;">Aktifkan Mode Admin 🔐</button>
+	<button onclick="tambahMember()" class="tambahmember" style="margin: 4px; padding: 4px; font-size: 14px; color: snow; background: dodgerblue; border: 1px solid white; border-radius: 6px;">➕ Tambah Member</button>
 	<br><br>
 	
 	<div id="list"></div>
@@ -543,8 +543,8 @@
 			<i class='fa fa-vcard-o'></i>&nbsp; Join Kelas: ${join(m.history)}
 			</div>
 			${isAdmin ? `
-			<button class="tambah" onclick="tambahHistory(${index})">+ Tambah Pembelian</button>
-			<button class="tambah" onclick="editMember(${index})">✏ Edit</button>
+			<button class="tambah" onclick="tambahHistory(${index})">🐝 Tambah Kelas</button>
+			<button class="tambah" onclick="editMember(${index})">🐱 Edit</button>
 			` : ""}
 			`;
 			list.appendChild(div);
