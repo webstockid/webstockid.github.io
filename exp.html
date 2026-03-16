@@ -46,9 +46,10 @@
 		</select>
 	</div>
 	
+	<!--
 	<button onclick="toggleAdmin()" id="adminBtn" style="padding: 4px; font-size: 14px; color: snow; background: dodgerblue; border: 1px solid white; border-radius: 6px;">Aktifkan Mode Admin 🔐</button>
 	<button onclick="tambahMember()" class="tambahmember" style="margin: 4px; padding: 4px; font-size: 14px; color: snow; background: dodgerblue; border: 1px solid white; border-radius: 6px;">➕ Tambah Member</button>
-	<br><br>
+	--><br>
 	
 	<div id="list"></div>
 	
@@ -365,7 +366,11 @@
 		if(!whatsapp) return;
 		const expired = prompt("Tanggal Expired (YYYY-MM-DD):");
 		if(!expired) return;
-		const kelas = prompt("Kelas pertama (1 / 2 / 3 / 6 / 12 bulan):");
+		const kelas = Number(prompt("Kelas pertama (1 / 2 / 3 / 6 / 12 bulan):"));
+		if (![1,2,3,6,12].includes(kelas)) {
+			alert("Kelas tidak valid");
+			return;
+		}
 		const newMember = {
 			nama:nama,
 			whatsapp:whatsapp,
@@ -515,7 +520,8 @@
 		//renderStat(sorted);
 		
 		//sorted.forEach(m=> {
-			sorted.forEach((m,index)=> {
+		sorted.forEach((m)=> {
+			const index = members.indexOf(m);
 			const lm=lastMonth(m);
 			if (!m.nama.toLowerCase().includes(key)) return;
 			if (f==="expired" && m.ms>0) return;
@@ -534,13 +540,13 @@
 			div.className = "member " + kelas(lm,m.ms) + " " + urgentClass;
 			div.innerHTML=`
 			<b><i class='fa fa-user-circle-o'></i>&nbsp; Nama: ${m.nama}</b><br>
-			<b><i class='fa fa-spinner fa-spin'></i>&nbsp; Expired: ${m.expired}</b><br>
-			<b><i class='fa fa-circle-o-notch fa-spin'></i>&nbsp; Sisa Waktu: <span class="countdown" data-expired="${m.expired}">${sisa(m.ms)}</span></b>
+			<b><i class='fa fa-calendar'></i>&nbsp; Expired: ${m.expired}</b><br>
+			<b><i class='fa fa-clock-o'></i>&nbsp; Sisa Waktu: <span class="countdown" data-expired="${m.expired}">${sisa(m.ms)}</span></b>
 			<span class="badge">${badge(m.history)}</span>
 			<div class="history">
-			&nbsp;<i class='fa fa-phone'></i> &nbsp; Nomor: ${m.whatsapp}
+			<i class='fa fa-phone-square'></i>&nbsp;&nbsp; Nomor: ${m.whatsapp}
 			<br>
-			<i class='fa fa-vcard-o'></i>&nbsp; Join Kelas: ${join(m.history)}
+			<i class='fa fa-recycle'></i>&nbsp; Join Kelas: ${join(m.history)}
 			</div>
 			${isAdmin ? `
 			<button class="tambah" onclick="tambahHistory(${index})">🐝 Tambah Kelas</button>
@@ -591,7 +597,7 @@
 			const d = Math.floor(ms % MIN / SEC);
 			el.textContent = `${h} Hari ${j} Jam ${m} Menit ${d} Detik`;
 		});
-	}, 1000);
+	}, 8000); // 8 detik
 	</script>
 	
 	<script type="text/javascript">
