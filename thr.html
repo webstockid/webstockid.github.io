@@ -13,171 +13,151 @@
 		<meta property="og:description" content="Ayo dapatkan THR mu disini!">
 		<meta property="og:url" content="https://webstockid.github.io/thr.html">
 		<meta property="og:type" content="website">
-<style>
-body{
- font-family:sans-serif;
- text-align:center;
- background:#111;
- color:#fff;
- padding:20px;
-}
-
-.box{
- font-size:45px;
- margin:30px;
- font-weight:bold;
- transition:0.1s;
-}
-
-button{
- padding:12px 20px;
- font-size:16px;
- border:none;
- border-radius:8px;
- background:dodgerblue;
- color:white;
-}
-
-input{
- padding:10px;
- font-size:16px;
- border-radius:6px;
- border:none;
-}
-
-.spin{
- animation: shake 0.15s infinite;
-}
-
-@keyframes shake{
- 0%{transform:translateX(0)}
- 25%{transform:translateX(-4px)}
- 50%{transform:translateX(4px)}
- 75%{transform:translateX(-4px)}
- 100%{transform:translateX(0)}
-}
-</style>
-
-</head>
-
-<body>
-
-<h2>🎰 Gacha THR</h2>
-
-<div id="form">
-<input id="nama" placeholder="Masukkan nama kamu">
-<br><br>
-<button onclick="saveName()">Mulai</button>
-</div>
-
-<div id="game" style="display:none;">
-<h3 id="welcome"></h3>
-
-<div class="box" id="result">---</div>
-
-<button onclick="gacha()" id="btn">🎲 Simsalabim</button>
-</div>
-
-<!-- suara dadu -->
-<audio id="diceSound" src="https://www.soundjay.com/misc/sounds/dice-roll-1.mp3"></audio>
-
-<script>
-
-// ================= DATA =================
-const hadiah = [
- {value:"50.000", chance:15},
- {value:"35.000", chance:15},
- {value:"30.000", chance:20},
- {value:"25.000", chance:25},
- {value:"20.000", chance:25}
-];
-
-// ================= INIT =================
-const nama = localStorage.getItem("nama");
-const hasil = localStorage.getItem("hasil");
-
-if(nama){
- document.getElementById("form").style.display="none";
- document.getElementById("game").style.display="block";
- document.getElementById("welcome").innerText = "Halo " + nama;
-
- if(hasil){
- document.getElementById("result").innerText = "Rp " + hasil;
- document.getElementById("btn").disabled = true;
- }
-}
-
-// ================= SAVE NAMA =================
-function saveName(){
- const n = document.getElementById("nama").value;
- if(!n) return alert("Isi nama dulu");
-
- localStorage.setItem("nama", n);
- location.reload();
-}
-
-// ================= RANDOM BERDASARKAN % =================
-function getRandomHadiah(){
- let rand = Math.random() * 100;
- let sum = 0;
-
- for(let h of hadiah){
- sum += h.chance;
- if(rand <= sum) return h.value;
- }
-}
-
-// ================= WARNA RANDOM =================
-function randomColor(){
- const colors = ["#ff4d4d","#4dff4d","#4dd2ff","#ffff4d","#ff4df2","#ffa64d"];
- return colors[Math.floor(Math.random()*colors.length)];
-}
-
-// ================= GACHA =================
-function gacha(){
-
- if(localStorage.getItem("hasil")){
- alert("Kamu sudah gacha!");
- return;
- }
-
- const box = document.getElementById("result");
- const btn = document.getElementById("btn");
- const sound = document.getElementById("diceSound");
-
- btn.disabled = true;
- box.classList.add("spin");
-
- // play sound loop
- sound.currentTime = 0;
- sound.play();
-
- let interval = setInterval(()=>{
- const random = hadiah[Math.floor(Math.random()*hadiah.length)];
- box.innerText = "Rp " + random.value;
-
- // warna berubah
- box.style.color = randomColor();
-
- },100);
-
- setTimeout(()=>{
- clearInterval(interval);
-
- const final = getRandomHadiah();
-
- box.classList.remove("spin");
- box.style.color = "#fff";
- box.innerText = "Rp " + final;
-
- sound.pause();
-
- localStorage.setItem("hasil", final);
-
- },6000);
-}
-
-</script>
-
+		<style>
+		body  {
+			font-family: "Rubik", sans-serif;
+			text-align: center;
+			background: #202020;
+			color: #fafafa;
+			padding: 20px;
+		}
+		.box  {
+			font-size: 45px;
+			margin: 30px;
+			font-weight: 800;
+			transition: 0.1s;
+			-webkit-transition: 0.1s;
+		}
+		button {
+			padding: 12px 20px;
+			font-size: 16px;
+			border: none;
+			border-radius: 12px;
+			background: dodgerblue;
+			color: #fafafa;
+		}
+		input {
+			padding: 10px;
+			font-size: 16px;
+			border-radius: 8px;
+			border: none;
+		}
+		.spin {
+			animation: shake 0.15s infinite;
+			-webkit-animation: shake 0.15s infinite;
+		}
+		@keyframes shake {
+			0% {transform:translateX(0)}
+			25% {transform:translateX(-4px)}
+			50% {transform:translateX(4px)}
+			75% {transform:translateX(-4px)}
+			100% {transform:translateX(0)}
+		}
+		</style>
+	</head>
+	
+	<body>
+		<h2>🎰 Gacha THR</h2>
+		<div id="form">
+			<input id="nama" placeholder="Masukkan nama kamu">
+			<br><br>
+			<button onclick="saveName()">Mulai</button>
+		</div>
+		
+		<div id="game" style="display:none;">
+		<h3 id="welcome"></h3>
+		
+		<div class="box" id="result">---</div>
+		<div id="message" style="font-size:18px; margin-top:10px;"></div>
+		
+		<button onclick="gacha()" id="btn">🎲 Simsalabim</button>
+	</div>
+	
+	<!-- suara dadu -->
+	<audio id="diceSound" src="https://www.soundjay.com/misc/sounds/dice-roll-1.mp3"></audio>
+	
+	<script>
+	
+	// ================= DATA =================
+	const hadiah = [
+		{value:"50.000", chance:10},
+		{value:"35.000", chance:20},
+		{value:"30.000", chance:20},
+		{value:"25.000", chance:25},
+		{value:"20.000", chance:25}
+	];
+	
+	// ================= INIT =================
+	const nama = localStorage.getItem("nama");
+	const hasil = localStorage.getItem("hasil");
+	
+	if(nama) {
+		document.getElementById("form").style.display="none";
+		document.getElementById("game").style.display="block";
+		document.getElementById("welcome").innerText = "Halo " + nama;
+		if(hasil) {
+			document.getElementById("result").innerText = "Rp " + hasil;
+			document.getElementById("btn").disabled = true;
+			document.getElementById("message").innerText = "Selamat " + nama + ", THR kamu Rp. " + hasil;
+		}
+	}
+	
+	// ================= SAVE NAMA =================
+	function saveName() {
+		const n = document.getElementById("nama").value;
+		if(!n) return alert("Isi nama dulu");
+		localStorage.setItem("nama", n);
+		location.reload();
+	}
+	
+	// ================= RANDOM BERDASARKAN % =================
+	function getRandomHadiah() {
+		let rand = Math.random() * 100;
+		let sum = 0;
+		for(let h of hadiah) {
+			sum += h.chance;
+			if(rand <= sum) return h.value;
+		}
+	}
+	
+	// ================= WARNA RANDOM =================
+	function randomColor() {
+		const colors = ["#ff4d4d","#4dff4d","#4dd2ff","#ffff4d","#ff4df2","#ffa64d"];
+		return colors[Math.floor(Math.random()*colors.length)];
+	}
+	
+	// ================= GACHA =================
+	function gacha() {
+		if(localStorage.getItem("hasil")) {
+			alert("Kamu sudah gacha!");
+			return;
+		}
+		const box = document.getElementById("result");
+		const btn = document.getElementById("btn");
+		const sound = document.getElementById("diceSound");
+		btn.disabled = true;
+		box.classList.add("spin");
+		// play sound loop
+		sound.currentTime = 0;
+		sound.play();
+		let interval = setInterval(()=> {
+			const random = hadiah[Math.floor(Math.random()*hadiah.length)];
+			box.innerText = "Rp " + random.value;
+			// warna berubah
+			box.style.color = randomColor();
+		},100);
+		setTimeout(()=> {
+			clearInterval(interval);
+			const final = getRandomHadiah();
+			box.classList.remove("spin");
+			box.style.color = "#fff";
+			box.innerText = "Rp " + final;
+			const nama = localStorage.getItem("nama");
+			document.getElementById("message").innerText = "Selamat " + nama + ", THR kamu Rp. " + final;
+			sound.pause();
+			localStorage.setItem("hasil", final);
+		},6000);
+	}
+	</script>
 </body>
 </html>
