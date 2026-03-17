@@ -131,7 +131,7 @@
         }
 
         .envelope-card {
-            background: #d62828; /* Merah Amplop */
+            background: dodgerblue; /* Merah Amplop */
             border: 5px solid #f77f00; /* Emas Pinggiran */
             color: #fff;
             padding: 3rem 2rem;
@@ -169,10 +169,10 @@
     <div id="registration-overlay">
         <div class="input-card">
             <h2>🎉 Gacha THR</h2>
-            <p>Masukkan nama lengkapmu untuk mulai memutar roda keberuntungan!</p>
-            <input type="text" id="username" placeholder="Nama Lengkap Anda..." autocomplete="off">
+            <p>Masukin Nama Kamu: </p>
+            <input type="text" id="username" placeholder="Isi Nama Kamu..." autocomplete="off">
             <br>
-            <button class="btn" onclick="startApp()">Masuk</button>
+            <button class="btn" onclick="startApp()">Mulai</button>
         </div>
     </div>
 
@@ -194,7 +194,7 @@
             <h2>🎁 SELAMAT!</h2>
             <p id="congrats-text"></p>
             <p style="font-size: 1rem; color: #fee440;">Terima kasih sudah berpartisipasi!</p>
-            <button class="btn" style="background:var(--dark);" onclick="location.reload()">Tutup</button>
+            <!--<button class="btn" style="background:var(--dark);" onclick="location.reload()">Tutup</button>-->
         </div>
     </div>
 
@@ -276,7 +276,7 @@
         // === MASUK & MULAI ===
         function startApp() {
             const inputName = document.getElementById('username').value.trim();
-            if (inputName.length < 3) return alert("Masukkan nama lengkap yang valid!");
+            if (inputName.length < 3) return alert("Masukkan Nama Yang Bener!");
             
             userName = inputName;
             document.getElementById('display-name').innerText = userName;
@@ -364,9 +364,9 @@
             popup.style.display = 'flex';
             
             if (alreadyPlayed) {
-                text.innerHTML = `Halo ${name},<br>Anda sudah mengambil THR sebesar: <span class="prize-amount">Rp. ${prize}</span>`;
+                text.innerHTML = `Halo ${name},<br>Kamu Depet  THR Sebesar: <span class="prize-amount">Rp. ${prize}</span>`;
             } else {
-                text.innerHTML = `Selamat ${name},<br>kamu mendapat THR sebesar: <span class="prize-amount">Rp. ${prize}</span>`;
+                text.innerHTML = `Selamat ${name},<br>Kamu Dapet THR Sebesar: <span class="prize-amount">Rp. ${prize}</span>`;
             }
         }
     </script>
