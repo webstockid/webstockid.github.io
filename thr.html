@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <!DOCTYPE html PUBLIC '-//WAPFORUM//DTD XHTML Mobile 1.0//EN' 'http://www.wapforum.org/DTD/xhtml-mobile10.dtd'>
 	<head>
-		<title>Masa Aktif Member</title>
+		<title>Tunjangan THR Lebaran</title>
 		<meta charset="UTF-8">
 		<meta name="author" content="Hardiansyah">
 		<meta name="viewport" content="width=device-width, initial-scale=1, minimal-scale=1, maximal-scale=1">
@@ -13,146 +13,173 @@
 		<meta property="og:description" content="Ayo dapatkan THR mu disini!">
 		<meta property="og:url" content="https://webstockid.github.io/thr.html">
 		<meta property="og:type" content="website">
-		<style>
-		body  {
-			font-family: "Rubik", sans-serif;
-			text-align: center;
-			background: #202020;
-			color: #fafafa;
-			padding: 20px;
-		}
-		.box  {
-			font-size: 45px;
-			margin: 30px;
-			font-weight: 800;
-			transition: 0.1s;
-			-webkit-transition: 0.1s;
-		}
-		#confetti {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			pointer-events: none;
-		}
-		#card h1 {
-			font-size: 40px;
-			margin: 10px 0;
-		}
-		button {
-			padding: 12px 20px;
-			font-size: 16px;
-			border: none;
-			border-radius: 25px;
-			background: dodgerblue;
-			color: #fafafa;
-		}
-		input {
-			padding: 10px;
-			font-size: 16px;
-			border-radius: 8px;
-			border: none;
-		}
-		.spin {
-			animation: shake 0.15s infinite;
-			-webkit-animation: shake 0.15s infinite;
-		}
-		@keyframes shake {
-			0% {transform:translateX(0)}
-			25% {transform:translateX(-4px)}
-			50% {transform:translateX(4px)}
-			75% {transform:translateX(-4px)}
-			100% {transform:translateX(0)}
-		}
-		</style>
-	</head>
-	
-	<body>
-		<h2>🎰 Gacha THR</h2>
-		<div id="form">
-			<input id="nama" placeholder="Masukkan nama kamu">
-			<br><br>
-			<button onclick="saveName()">Mulai</button>
-		</div>
-		
-		<div id="game" style="display:none;">
-		<h3 id="welcome"></h3>
-		
-		<div class="box" id="result">---</div>
-		<div id="message" style="margin-top:10px;"></div>
-		<!-- KARTU THR -->
-		<div id="card" style="display:none; margin-top:20px;">
-			<div style="background:linear-gradient(135deg,#1e3c72,#2a5298);padding:20px;border-radius:15px;color:white;box-shadow:0 0 20px rgba(0,0,0,0.5);">
-				<h3>🎁 THR Kamu</h3>
-				<p id="cardNama"></p>
-				<h1 id="cardHasil"></h1>
-			</div>
-		</div>
-		
-		<!-- CONFETTI CANVAS -->
-		<canvas id="confetti"></canvas>
-		<!-- AUDIO -->
-		<audio id="winSound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
-		<div id="message" style="font-size:18px; margin-top:10px;"></div>
-		<br><br>
-		<button onclick="gacha()" id="btn">🎲 Simsalabim</button>
-	</div>
-	
-	<!-- suara dadu -->
-	<audio id="diceSound" src="https://www.soundjay.com/misc/sounds/dice-roll-1.mp3"></audio>
-	
-	<script>
-	
-	// ================= DATA =================
-	const hadiah = [
-		{value:"50.000", chance:10},
-		{value:"35.000", chance:15},
-		{value:"30.000", chance:25},
-		{value:"25.000", chance:25},
-		{value:"20.000", chance:25}
-	];
-	
-	// ================= INIT =================
-	const nama = localStorage.getItem("nama");
-	const hasil = localStorage.getItem("hasil");
-	
-	if(nama) {
-		document.getElementById("form").style.display="none";
-		document.getElementById("game").style.display="block";
-		document.getElementById("welcome").innerText = "Halo " + nama;
-		if(hasil){
- document.getElementById("result").innerText = "Rp " + hasil;
- document.getElementById("btn").disabled = true;
-
- document.getElementById("message").innerText =
-  "Selamat " + nama + ", THR kamu Rp. " + hasil;
-
- document.getElementById("card").style.display = "block";
- document.getElementById("cardNama").innerText = nama;
- document.getElementById("cardHasil").innerText = "Rp " + hasil;
+<style>
+body{
+ font-family:sans-serif;
+ text-align:center;
+ background:#111;
+ color:#fff;
+ padding:20px;
 }
-	}
-	
-	// ================= SAVE NAMA =================
-	function saveName() {
-		const n = document.getElementById("nama").value;
-		if(!n) return alert("Isi nama dulu");
-		localStorage.setItem("nama", n);
-		location.reload();
-	}
-	
-	// ================= RANDOM BERDASARKAN % =================
-	function getRandomHadiah() {
-		let rand = Math.random() * 100;
-		let sum = 0;
-		for(let h of hadiah) {
-			sum += h.chance;
-			if(rand <= sum) return h.value;
-		}
-	}
-	
-	function startConfetti(){
+
+.box{
+ font-size:45px;
+ margin:30px;
+ font-weight:bold;
+ transition:0.1s;
+}
+
+button{
+ padding:12px 20px;
+ font-size:16px;
+ border:none;
+ border-radius:8px;
+ background:dodgerblue;
+ color:white;
+}
+
+input{
+ padding:10px;
+ font-size:16px;
+ border-radius:6px;
+ border:none;
+}
+
+.spin{
+ animation: shake 0.15s infinite;
+}
+
+@keyframes shake{
+ 0%{transform:translateX(0)}
+ 25%{transform:translateX(-4px)}
+ 50%{transform:translateX(4px)}
+ 75%{transform:translateX(-4px)}
+ 100%{transform:translateX(0)}
+}
+
+/* confetti */
+#confetti{
+ position:fixed;
+ top:0;
+ left:0;
+ width:100%;
+ height:100%;
+ pointer-events:none;
+}
+
+/* kartu */
+#card{
+ display:none;
+ margin-top:20px;
+}
+
+.card-box{
+ background:linear-gradient(135deg,#1e3c72,#2a5298);
+ padding:20px;
+ border-radius:15px;
+ color:white;
+ box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+.card-box h1{
+ font-size:40px;
+ margin:10px 0;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>🎰 Gacha THR</h2>
+
+<div id="form">
+<input id="nama" placeholder="Masukkan nama kamu">
+<br><br>
+<button onclick="saveName()">Mulai</button>
+</div>
+
+<div id="game" style="display:none;">
+<h3 id="welcome"></h3>
+
+<div class="box" id="result">---</div>
+
+<button onclick="gacha()" id="btn">🎲 Gacha</button>
+
+<div id="message" style="margin-top:10px;"></div>
+
+<!-- kartu -->
+<div id="card">
+ <div class="card-box">
+  <h3>🎁 THR Kamu</h3>
+  <p id="cardNama"></p>
+  <h1 id="cardHasil"></h1>
+ </div>
+</div>
+
+</div>
+
+<!-- canvas confetti -->
+<canvas id="confetti"></canvas>
+
+<!-- audio -->
+<audio id="diceSound" src="https://www.soundjay.com/misc/sounds/dice-roll-1.mp3"></audio>
+<audio id="winSound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
+
+<script>
+
+// ================= DATA =================
+const hadiah = [
+ {value:"50.000", chance:15},
+ {value:"35.000", chance:15},
+ {value:"30.000", chance:20},
+ {value:"25.000", chance:25},
+ {value:"20.000", chance:25}
+];
+
+// ================= INIT =================
+const nama = localStorage.getItem("nama");
+const hasil = localStorage.getItem("hasil");
+
+if(nama){
+ document.getElementById("form").style.display="none";
+ document.getElementById("game").style.display="block";
+ document.getElementById("welcome").innerText = "Halo " + nama;
+
+ if(hasil){
+  showResult(nama, hasil);
+  document.getElementById("btn").disabled = true;
+ }
+}
+
+// ================= SAVE NAMA =================
+function saveName(){
+ const n = document.getElementById("nama").value;
+ if(!n) return alert("Isi nama dulu");
+
+ localStorage.setItem("nama", n);
+ location.reload();
+}
+
+// ================= RANDOM =================
+function getRandomHadiah(){
+ let rand = Math.random()*100;
+ let sum = 0;
+
+ for(let h of hadiah){
+  sum += h.chance;
+  if(rand <= sum) return h.value;
+ }
+}
+
+// ================= WARNA =================
+function randomColor(){
+ const colors = ["#ff4d4d","#4dff4d","#4dd2ff","#ffff4d","#ff4df2","#ffa64d"];
+ return colors[Math.floor(Math.random()*colors.length)];
+}
+
+// ================= CONFETTI =================
+function startConfetti(){
  const canvas = document.getElementById("confetti");
  const ctx = canvas.getContext("2d");
 
@@ -163,10 +190,10 @@
 
  for(let i=0;i<150;i++){
   pieces.push({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    size: Math.random()*8+2,
-    speed: Math.random()*3+2
+   x: Math.random()*canvas.width,
+   y: Math.random()*canvas.height,
+   size: Math.random()*8+2,
+   speed: Math.random()*3+2
   });
  }
 
@@ -174,11 +201,11 @@
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
   pieces.forEach(p=>{
-    ctx.fillStyle = `hsl(${Math.random()*360},100%,50%)`;
-    ctx.fillRect(p.x,p.y,p.size,p.size);
+   ctx.fillStyle = `hsl(${Math.random()*360},100%,50%)`;
+   ctx.fillRect(p.x,p.y,p.size,p.size);
 
-    p.y += p.speed;
-    if(p.y > canvas.height) p.y = 0;
+   p.y += p.speed;
+   if(p.y > canvas.height) p.y = 0;
   });
 
   requestAnimationFrame(draw);
@@ -190,63 +217,65 @@
   ctx.clearRect(0,0,canvas.width,canvas.height);
  },4000);
 }
-	
-	// ================= WARNA RANDOM =================
-	function randomColor() {
-		const colors = ["#ff4d4d","#4dff4d","#4dd2ff","#ffff4d","#ff4df2","#ffa64d"];
-		return colors[Math.floor(Math.random()*colors.length)];
-	}
-	
-	// ================= GACHA =================
-	function gacha() {
-		if(localStorage.getItem("hasil")) {
-			alert("Kamu sudah gacha!");
-			return;
-		}
-		const box = document.getElementById("result");
-		const btn = document.getElementById("btn");
-		const sound = document.getElementById("diceSound");
-		btn.disabled = true;
-		box.classList.add("spin");
-		// play sound loop
-		sound.currentTime = 0;
-		sound.play();
-		let interval = setInterval(()=> {
-			const random = hadiah[Math.floor(Math.random()*hadiah.length)];
-			box.innerText = "Rp " + random.value;
-			// warna berubah
-			box.style.color = randomColor();
-		},100);
-		setTimeout(()=> {
-			clearInterval(interval);
-			const final = getRandomHadiah();
-			box.classList.remove("spin");
-			box.style.color = "#fff";
-			box.innerText = "Rp " + final;
 
-const nama = localStorage.getItem("nama");
+// ================= TAMPILKAN HASIL =================
+function showResult(nama, hasil){
+ document.getElementById("result").innerText = "Rp " + hasil;
 
-// pesan
-document.getElementById("message").innerText =
- "Selamat " + nama + ", THR kamu Rp. " + final;
+ document.getElementById("message").innerText =
+  "Selamat " + nama + ", THR kamu Rp. " + hasil;
 
-// kartu tampil
-document.getElementById("card").style.display = "block";
-document.getElementById("cardNama").innerText = nama;
-document.getElementById("cardHasil").innerText = "Rp " + final;
+ document.getElementById("card").style.display = "block";
+ document.getElementById("cardNama").innerText = nama;
+ document.getElementById("cardHasil").innerText = "Rp " + hasil;
+}
 
-// suara menang
-const win = document.getElementById("winSound");
-win.play();
+// ================= GACHA =================
+function gacha(){
 
-// confetti
-startConfetti();
-			const nama = localStorage.getItem("nama");
-			document.getElementById("message").innerText = "Selamat " + nama + ", THR kamu Rp. " + final;
-			sound.pause();
-			localStorage.setItem("hasil", final);
-		},6000);
-	}
-	</script>
+ if(localStorage.getItem("hasil")){
+  alert("Kamu sudah gacha!");
+  return;
+ }
+
+ const box = document.getElementById("result");
+ const btn = document.getElementById("btn");
+ const sound = document.getElementById("diceSound");
+
+ btn.disabled = true;
+ box.classList.add("spin");
+
+ sound.currentTime = 0;
+ sound.play();
+
+ let interval = setInterval(()=>{
+  const random = hadiah[Math.floor(Math.random()*hadiah.length)];
+  box.innerText = "Rp " + random.value;
+  box.style.color = randomColor();
+ },100);
+
+ setTimeout(()=>{
+  clearInterval(interval);
+
+  const final = getRandomHadiah();
+  const nama = localStorage.getItem("nama");
+
+  box.classList.remove("spin");
+  box.style.color = "#fff";
+
+  showResult(nama, final);
+
+  sound.pause();
+
+  document.getElementById("winSound").play();
+  startConfetti();
+
+  localStorage.setItem("hasil", final);
+
+ },7000);
+}
+
+</script>
+
 </body>
 </html>
