@@ -3,117 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gacha THR - Spin Wheel</title>
+    <title>Gacha THR Roda Putar - Versi Rapi & Diperbaiki</title>
     <style>
         :root {
-            --primary: #e63946;
-            --secondary: #f1faee;
-            --accent: #a8dadc;
-            --dark: #1d3557;
+            --primary: #e63946;    /* Merah */
+            --secondary: #a8dadc;  /* Biru Muda */
+            --dark: #1d3557;       /* Biru Tua */
+            --accent: #fca311;     /* Emas */
+            --bg: #f1faee;         /* Putih Abu */
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
             background-color: var(--dark);
-            color: white;
+            color: #fff;
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            margin: 0;
             overflow-x: hidden;
         }
 
-        /* Form Input Nama */
+        h1 { margin-bottom: 0.5rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+
+        /* === 1. OVERLAY PENDAFTARAN === */
         #registration-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 100;
+            z-index: 999;
+            backdrop-filter: blur(5px);
         }
 
-        .card {
-            background: white;
+        .input-card {
+            background: #fff;
             color: var(--dark);
-            padding: 2rem;
-            border-radius: 15px;
+            padding: 2.5rem;
+            border-radius: 20px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            width: 90%;
+            max-width: 400px;
         }
 
-        input {
-            padding: 10px;
-            width: 80%;
-            margin: 15px 0;
-            border: 2px solid var(--accent);
-            border-radius: 5px;
+        .input-card h2 { margin-top: 0; color: var(--primary); }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 1rem 0;
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
         }
 
-        button {
-            padding: 10px 25px;
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 5px rgba(252, 163, 17, 0.5);
+        }
+
+        .btn {
             background: var(--primary);
-            color: white;
+            color: #fff;
             border: none;
-            border-radius: 5px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
+            transition: transform 0.2s;
         }
 
-        /* Wheel Styles */
-        .wheel-container {
+        .btn:hover { transform: scale(1.05); }
+
+        /* === 2. AREA RODA PUTAR === */
+        #main-app { display: none; text-align: center; width: 100%; max-width: 500px; padding: 20px; box-sizing: border-box; }
+
+        .wheel-area {
             position: relative;
-            width: 350px;
-            height: 350px;
-            margin-bottom: 2rem;
+            width: 320px;
+            height: 320px;
+            margin: 1.5rem auto;
         }
 
         canvas {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 5px solid gold;
-            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+            border: 8px solid var(--accent);
+            box-shadow: 0 0 25px rgba(252, 163, 17, 0.6);
+            /* Jarum ada di atas (angle 270) secara default, 
+               jadi kita offset kanvas agar slice pertama ada di bawah jarum */
+            transform: rotate(-90deg);
         }
 
+        /* Penunjuk / Jarum (Wajib ada di Atas) */
         .pointer {
             position: absolute;
             top: -20px;
             left: 50%;
             transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
-            background: gold;
-            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 35px solid var(--accent);
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5));
             z-index: 10;
         }
 
-        /* Result Popup (Amplop) */
+        /* === 3. POPUP KARTU HASIL (AMPLOP) === */
         #result-popup {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             justify-content: center;
             align-items: center;
-            z-index: 200;
+            z-index: 1000;
         }
 
-        .envelope {
-            background: #d62828;
-            padding: 40px;
-            border-radius: 10px;
-            border: 4px solid #f77f00;
+        .envelope-card {
+            background: #d62828; /* Merah Amplop */
+            border: 5px solid #f77f00; /* Emas Pinggiran */
+            color: #fff;
+            padding: 3rem 2rem;
+            border-radius: 15px;
             text-align: center;
-            transform: scale(0.5);
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            transform: scale(0.6);
             animation: popIn 0.5s forwards ease-out;
         }
 
         @keyframes popIn {
             to { transform: scale(1); }
+        }
+
+        .envelope-card h2 { color: #fee440; margin-top: 0; }
+        .envelope-card p { font-size: 1.2rem; font-weight: bold; margin: 1.5rem 0; }
+        
+        .prize-amount {
+            display: block;
+            font-size: 2rem;
+            color: #fff;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
         }
 
         .hidden { display: none !important; }
@@ -122,139 +167,206 @@
 <body>
 
     <div id="registration-overlay">
-        <div class="card">
-            <h2>Siapa Namamu?</h2>
-            <p>Masukkan nama untuk memutar roda THR</p>
-            <input type="text" id="username" placeholder="Nama Lengkap...">
+        <div class="input-card">
+            <h2>🎉 Gacha THR</h2>
+            <p>Masukkan nama lengkapmu untuk mulai memutar roda keberuntungan!</p>
+            <input type="text" id="username" placeholder="Nama Lengkap Anda..." autocomplete="off">
             <br>
-            <button onclick="startApp()">Masuk</button>
+            <button class="btn" onclick="startApp()">Masuk</button>
         </div>
     </div>
 
-    <h1>Gacha THR 🎉</h1>
-    <div class="wheel-container">
-        <div class="pointer"></div>
-        <canvas id="wheel"></canvas>
+    <div id="main-app">
+        <h1>Putar Roda THR</h1>
+        <p>Halo, <b id="display-name">...</b>!</p>
+        
+        <div class="wheel-area">
+            <div class="pointer"></div>
+            <canvas id="wheel"></canvas>
+        </div>
+
+        <button id="spin-btn" class="btn btn-spin" onclick="spin()">PUTAR SEKARANG!</button>
+        <p style="font-size: 0.8rem; color: #ccc;">*Kesempatan putar hanya sekali.</p>
     </div>
-    <button id="spin-btn" onclick="spin()">PUTAR SEKARANG!</button>
 
     <div id="result-popup">
-        <div class="envelope">
-            <h2 id="congrats-text"></h2>
-            <p style="font-size: 1.2rem;">Saldo ditambahkan ke akun Anda!</p>
-            <button onclick="location.reload()">Tutup</button>
+        <div class="envelope-card">
+            <h2>🎁 SELAMAT!</h2>
+            <p id="congrats-text"></p>
+            <p style="font-size: 1rem; color: #fee440;">Terima kasih sudah berpartisipasi!</p>
+            <button class="btn" style="background:var(--dark);" onclick="location.reload()">Tutup</button>
         </div>
     </div>
 
-    <audio id="spin-sound" src="https://assets.mixkit.co/active_storage/sfx/2004/2004-preview.mp3"></audio>
-    <audio id="win-sound" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+    <audio id="spin-sound" src="https://assets.mixkit.co/active_storage/sfx/2004/2004-preview.mp3" preload="auto"></audio>
+    <audio id="win-sound" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
 
     <script>
+        // === KONFIGURASI ===
         const canvas = document.getElementById('wheel');
         const ctx = canvas.getContext('2d');
         const spinBtn = document.getElementById('spin-btn');
-        
+        const mainApp = document.getElementById('main-app');
+        const registerOverlay = document.getElementById('registration-overlay');
+        const spinSound = document.getElementById('spin-sound');
+        const winSound = document.getElementById('win-sound');
+
+        // Hadiah dan Peluang (Sesuai spesifikasi Anda)
+        // Weight adalah persentase: total harus 100
         const prizes = [
-            { label: '20rb', weight: 25, color: '#e63946' },
-            { label: '25rb', weight: 25, color: '#f1faee' },
-            { label: '30rb', weight: 20, color: '#a8dadc' },
-            { label: '35rb', weight: 20, color: '#457b9d' },
-            { label: '50rb', weight: 10, color: '#fca311' }
+            { label: '20rb', weight: 25, color: '#e63946' }, // Merah
+            { label: '25rb', weight: 25, color: '#f1faee' }, // Putih
+            { label: '30rb', weight: 20, color: '#a8dadc' }, // Biru Muda
+            { label: '35rb', weight: 20, color: '#457b9d' }, // Biru Tua
+            { label: '50rb', weight: 10, color: '#fca311' }  // Emas
         ];
 
-        let currentRotation = 0;
         let isSpinning = false;
         let userName = "";
 
-        // Cek LocalStorage saat load
+        // Ukuran Kanvas (Internal, bukan display CSS)
+        const size = 300;
+        const center = size / 2;
+        const sliceAngle = 360 / prizes.length;
+        const sliceAngleRad = (2 * Math.PI) / prizes.length;
+
+        // === LOGIKA LOCALSTORAGE ===
         window.onload = () => {
-            if(localStorage.getItem('gacha_user')) {
-                showResult(localStorage.getItem('gacha_user'), localStorage.getItem('gacha_prize'), true);
+            const savedUser = localStorage.getItem('gacha_user');
+            const savedPrize = localStorage.getItem('gacha_prize');
+
+            if (savedUser && savedPrize) {
+                // User sudah pernah spin
+                showFinalCard(savedUser, savedPrize, true);
+            } else {
+                // User baru, gambar roda
+                drawWheel();
             }
-            drawWheel();
         };
 
-        function startApp() {
-            const input = document.getElementById('username').value;
-            if(input.trim().length < 3) return alert("Masukkan nama yang valid!");
-            
-            userName = input;
-            document.getElementById('registration-overlay').classList.add('hidden');
-        }
-
+        // === GAMBAR RODA (CANVAS) ===
         function drawWheel() {
-            const size = 300;
             canvas.width = size;
             canvas.height = size;
-            const center = size / 2;
-            const sliceAngle = (2 * Math.PI) / prizes.length;
-
+            
             prizes.forEach((prize, i) => {
+                // 1. Gambar Potongan
                 ctx.beginPath();
                 ctx.fillStyle = prize.color;
                 ctx.moveTo(center, center);
-                ctx.arc(center, center, center, i * sliceAngle, (i + 1) * sliceAngle);
+                ctx.arc(center, center, center, i * sliceAngleRad, (i + 1) * sliceAngleRad);
                 ctx.fill();
 
-                // Text
+                // 2. Gambar Teks Hadiah
                 ctx.save();
                 ctx.translate(center, center);
-                ctx.rotate(i * sliceAngle + sliceAngle / 2);
-                ctx.fillStyle = "#1d3557";
-                ctx.font = "bold 18px Arial";
-                ctx.fillText(prize.label, center / 2, 10);
+                // Rotate ke tengah-tengah potongan
+                ctx.rotate(i * sliceAngleRad + sliceAngleRad / 2);
+                
+                // Atur warna teks agar kontras
+                ctx.fillStyle = (prize.color === '#f1faee' || prize.color === '#a8dadc') ? '#1d3557' : '#fff';
+                ctx.font = 'bold 20px Poppins, sans-serif';
+                ctx.textAlign = 'right';
+                // Geser teks agar tidak menempel tengah
+                ctx.fillText(prize.label, center - 20, 7); 
                 ctx.restore();
             });
         }
 
-        function getWeightedPrize() {
+        // === MASUK & MULAI ===
+        function startApp() {
+            const inputName = document.getElementById('username').value.trim();
+            if (inputName.length < 3) return alert("Masukkan nama lengkap yang valid!");
+            
+            userName = inputName;
+            document.getElementById('display-name').innerText = userName;
+            registerOverlay.classList.add('hidden');
+            mainApp.style.display = 'block';
+        }
+
+        // === LOGIKA PELUANG (WEIGHTED RANDOM) ===
+        function calculateWeightedPrize() {
             let totalWeight = prizes.reduce((sum, p) => sum + p.weight, 0);
-            let random = Math.random() * totalWeight;
+            let randomNum = Math.random() * totalWeight;
+            
             for (let i = 0; i < prizes.length; i++) {
-                if (random < prizes[i].weight) return i;
-                random -= prizes[i].weight;
+                if (randomNum < prizes[i].weight) {
+                    return i; // Mengembalikan index hadiah
+                }
+                randomNum -= prizes[i].weight;
             }
         }
 
+        // === PROSES SPIN ===
         function spin() {
             if (isSpinning) return;
             isSpinning = true;
-            
-            const prizeIndex = getWeightedPrize();
-            const sliceAngle = 360 / prizes.length;
-            const extraSpins = 5 * 360; // 5 kali putar
-            const finalAngle = extraSpins + (360 - (prizeIndex * sliceAngle)) - (sliceAngle / 2);
-            
-            document.getElementById('spin-sound').play();
-            
-            canvas.style.transition = "transform 4s cubic-bezier(0.15, 0, 0.15, 1)";
-            canvas.style.transform = `rotate(${finalAngle}deg)`;
+            spinBtn.disabled = true;
+            spinBtn.innerText = "SEDANG BERPUTAR...";
 
+            // 1. Tentukan hadiah (index)
+            const prizeIndex = calculateWeightedPrize();
+            
+            // 2. Hitung Sudut Akhir (Wajib Sinkron dengan Gambar)
+            // Offset -90 karena jarum di atas, sedangkan kanvas mulai dari kanan.
+            // Kita hitung sudut tengah-tengah potongan hadiah.
+            const targetAngleMid = (prizeIndex * sliceAngle) + (sliceAngle / 2);
+            
+            // Jarak yang harus ditempuh agar tengah hadiah berhenti di jarum (sudut 270)
+            const distanceToTarget = 360 - targetAngleMid;
+            
+            // Berapa kali putaran penuh (min 5x agar seru) + jarak target
+            const extraSpins = 360 * 5; 
+            const finalRotation = extraSpins + distanceToTarget;
+
+            // 3. Jalankan Audio dan Animasi
+            spinSound.play();
+            
+            // Gunakan cubic-bezier untuk efek putar lambat di akhir
+            canvas.style.transition = "transform 5s cubic-bezier(0.15, 0, 0.15, 1)";
+            // Kita tambahkan rotation saat ini agar tidak restart dari nol jika di-hack
+            canvas.style.transform = `rotate(-90deg) rotate(${finalRotation}deg)`; 
+
+            // 4. Setelah Animasi Selesai (5 Detik)
             setTimeout(() => {
                 const wonPrize = prizes[prizeIndex].label;
-                document.getElementById('win-sound').play();
+                
+                // Matikan suara roda, nyalakan suara menang
+                spinSound.pause();
+                spinSound.currentTime = 0;
+                winSound.play();
+
+                // Simpan ke LocalStorage dan tampilkan kartu
                 saveAndShow(wonPrize);
-            }, 4000);
+            }, 5100); 
         }
 
+        // === SIMPAN & TAMPILKAN HASIL ===
         function saveAndShow(prize) {
             localStorage.setItem('gacha_user', userName);
             localStorage.setItem('gacha_prize', prize);
-            showResult(userName, prize);
+            
+            showFinalCard(userName, prize, false);
         }
 
-        function showResult(name, prize, alreadyPlayed = false) {
-            document.getElementById('registration-overlay').classList.add('hidden');
+        // === MENAMPILKAN KARTU AMPlOP ===
+        function showFinalCard(name, prize, alreadyPlayed = false) {
+            // Sembunyikan form pendaftaran
+            registerOverlay.classList.add('hidden');
+            // Pastikan aplikasi utama tampil (agar background tidak kosong)
+            mainApp.style.display = 'block';
+            spinBtn.disabled = true;
+            spinBtn.innerText = "SUDAH PERNAH SPIN";
+
             const popup = document.getElementById('result-popup');
             const text = document.getElementById('congrats-text');
             
             popup.style.display = 'flex';
-            if(alreadyPlayed) {
-                text.innerText = `Halo ${name}, Anda sudah mengambil THR sebesar Rp. ${prize}`;
-                spinBtn.disabled = true;
-                spinBtn.innerText = "SUDAH PERNAH SPIN";
+            
+            if (alreadyPlayed) {
+                text.innerHTML = `Halo ${name},<br>Anda sudah mengambil THR sebesar: <span class="prize-amount">Rp. ${prize}</span>`;
             } else {
-                text.innerText = `Selamat ${name}, kamu mendapat thr sebesar Rp. ${prize}`;
+                text.innerHTML = `Selamat ${name},<br>kamu mendapat THR sebesar: <span class="prize-amount">Rp. ${prize}</span>`;
             }
         }
     </script>
