@@ -1,11 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Gacha Nominal</title>
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC '-//WAPFORUM//DTD XHTML Mobile 1.0//EN' 'http://www.wapforum.org/DTD/xhtml-mobile10.dtd'>
+	<head>
+		<title>Masa Aktif Member</title>
+		<meta charset="UTF-8">
+		<meta name="author" content="Hardiansyah">
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimal-scale=1, maximal-scale=1">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+		<meta name="theme-color" content="#3498DB">
+		<meta property="og:title" content="THR nih wkwkwk">
+		<meta property="og:description" content="Ayo dapatkan THR mu disini!">
+		<meta property="og:url" content="https://webstockid.github.io/thr.html">
+		<meta property="og:type" content="website">
 <style>
 body{
- font-family: sans-serif;
+ font-family:sans-serif;
  text-align:center;
  background:#111;
  color:#fff;
@@ -13,8 +23,10 @@ body{
 }
 
 .box{
- font-size:40px;
+ font-size:45px;
  margin:30px;
+ font-weight:bold;
+ transition:0.1s;
 }
 
 button{
@@ -31,26 +43,26 @@ input{
  font-size:16px;
  border-radius:6px;
  border:none;
- margin-top:20px;
 }
 
 .spin{
- animation: shake 0.2s infinite;
+ animation: shake 0.15s infinite;
 }
 
 @keyframes shake{
  0%{transform:translateX(0)}
- 25%{transform:translateX(-3px)}
- 50%{transform:translateX(3px)}
- 75%{transform:translateX(-3px)}
+ 25%{transform:translateX(-4px)}
+ 50%{transform:translateX(4px)}
+ 75%{transform:translateX(-4px)}
  100%{transform:translateX(0)}
 }
 </style>
+
 </head>
 
 <body>
 
-<h2>🎰 Gacha Nominal</h2>
+<h2>🎰 Gacha THR</h2>
 
 <div id="form">
 <input id="nama" placeholder="Masukkan nama kamu">
@@ -63,21 +75,24 @@ input{
 
 <div class="box" id="result">---</div>
 
-<button onclick="gacha()" id="btn">🎲 Gacha</button>
+<button onclick="gacha()" id="btn">🎲 Simsalabim</button>
 </div>
+
+<!-- suara dadu -->
+<audio id="diceSound" src="https://www.soundjay.com/misc/sounds/dice-roll-1.mp3"></audio>
 
 <script>
 
-// ================== DATA ==================
+// ================= DATA =================
 const hadiah = [
- {value:"20.000", weight:80},
- {value:"25.000", weight:70},
- {value:"30.000", weight:50},
- {value:"35.000", weight:30},
- {value:"50.000", weight:15}
+ {value:"50.000", chance:15},
+ {value:"35.000", chance:15},
+ {value:"30.000", chance:20},
+ {value:"25.000", chance:25},
+ {value:"20.000", chance:25}
 ];
 
-// ================== INIT ==================
+// ================= INIT =================
 const nama = localStorage.getItem("nama");
 const hasil = localStorage.getItem("hasil");
 
@@ -92,27 +107,33 @@ if(nama){
  }
 }
 
-// ================== SAVE NAMA ==================
+// ================= SAVE NAMA =================
 function saveName(){
- const namaInput = document.getElementById("nama").value;
- if(!namaInput) return alert("Isi nama dulu");
+ const n = document.getElementById("nama").value;
+ if(!n) return alert("Isi nama dulu");
 
- localStorage.setItem("nama", namaInput);
+ localStorage.setItem("nama", n);
  location.reload();
 }
 
-// ================== WEIGHT RANDOM ==================
-function weightedRandom(){
- let total = hadiah.reduce((sum,h)=>sum+h.weight,0);
- let rand = Math.random()*total;
+// ================= RANDOM BERDASARKAN % =================
+function getRandomHadiah(){
+ let rand = Math.random() * 100;
+ let sum = 0;
 
  for(let h of hadiah){
- if(rand < h.weight) return h.value;
- rand -= h.weight;
+ sum += h.chance;
+ if(rand <= sum) return h.value;
  }
 }
 
-// ================== GACHA ==================
+// ================= WARNA RANDOM =================
+function randomColor(){
+ const colors = ["#ff4d4d","#4dff4d","#4dd2ff","#ffff4d","#ff4df2","#ffa64d"];
+ return colors[Math.floor(Math.random()*colors.length)];
+}
+
+// ================= GACHA =================
 function gacha(){
 
  if(localStorage.getItem("hasil")){
@@ -122,26 +143,38 @@ function gacha(){
 
  const box = document.getElementById("result");
  const btn = document.getElementById("btn");
+ const sound = document.getElementById("diceSound");
 
  btn.disabled = true;
  box.classList.add("spin");
 
+ // play sound loop
+ sound.currentTime = 0;
+ sound.play();
+
  let interval = setInterval(()=>{
  const random = hadiah[Math.floor(Math.random()*hadiah.length)];
  box.innerText = "Rp " + random.value;
+
+ // warna berubah
+ box.style.color = randomColor();
+
  },100);
 
  setTimeout(()=>{
  clearInterval(interval);
 
- const final = weightedRandom();
+ const final = getRandomHadiah();
 
  box.classList.remove("spin");
+ box.style.color = "#fff";
  box.innerText = "Rp " + final;
+
+ sound.pause();
 
  localStorage.setItem("hasil", final);
 
- },7000);
+ },6000);
 }
 
 </script>
