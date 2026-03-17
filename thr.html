@@ -332,7 +332,7 @@
             spinSound.play();
             
             // Gunakan cubic-bezier untuk efek putar lambat di akhir
-            canvas.style.transition = "transform 5s cubic-bezier(0.15, 0, 0.15, 1)";
+            canvas.style.transition = "transform 8s cubic-bezier(0.15, 0, 0.15, 1)";
             // Kita tambahkan rotation saat ini agar tidak restart dari nol jika di-hack
             canvas.style.transform = `rotate(-90deg) rotate(${finalRotation}deg)`; 
 
@@ -347,7 +347,7 @@
 
                 // Simpan ke LocalStorage dan tampilkan kartu
                 saveAndShow(wonPrize);
-            }, 10000); 
+            }, 8100); 
         }
 
         // === SIMPAN & TAMPILKAN HASIL ===
