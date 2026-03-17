@@ -28,6 +28,18 @@
 			transition: 0.1s;
 			-webkit-transition: 0.1s;
 		}
+		#confetti {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+		}
+		#card h1 {
+			font-size: 40px;
+			margin: 10px 0;
+		}
 		button {
 			padding: 12px 20px;
 			font-size: 16px;
@@ -68,6 +80,20 @@
 		<h3 id="welcome"></h3>
 		
 		<div class="box" id="result">---</div>
+		<div id="message" style="margin-top:10px;"></div>
+		<!-- KARTU THR -->
+		<div id="card" style="display:none; margin-top:20px;">
+			<div style="background:linear-gradient(135deg,#1e3c72,#2a5298);padding:20px;border-radius:15px;color:white;box-shadow:0 0 20px rgba(0,0,0,0.5);">
+				<h3>🎁 THR Kamu</h3>
+				<p id="cardNama"></p>
+				<h1 id="cardHasil"></h1>
+			</div>
+		</div>
+		
+		<!-- CONFETTI CANVAS -->
+		<canvas id="confetti"></canvas>
+		<!-- AUDIO -->
+		<audio id="winSound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
 		<div id="message" style="font-size:18px; margin-top:10px;"></div>
 		<br><br>
 		<button onclick="gacha()" id="btn">🎲 Simsalabim</button>
@@ -81,8 +107,8 @@
 	// ================= DATA =================
 	const hadiah = [
 		{value:"50.000", chance:10},
-		{value:"35.000", chance:20},
-		{value:"30.000", chance:20},
+		{value:"35.000", chance:15},
+		{value:"30.000", chance:25},
 		{value:"25.000", chance:25},
 		{value:"20.000", chance:25}
 	];
@@ -95,11 +121,17 @@
 		document.getElementById("form").style.display="none";
 		document.getElementById("game").style.display="block";
 		document.getElementById("welcome").innerText = "Halo " + nama;
-		if(hasil) {
-			document.getElementById("result").innerText = "Rp " + hasil;
-			document.getElementById("btn").disabled = true;
-			document.getElementById("message").innerText = "Selamat " + nama + ", THR kamu Rp. " + hasil;
-		}
+		if(hasil){
+ document.getElementById("result").innerText = "Rp " + hasil;
+ document.getElementById("btn").disabled = true;
+
+ document.getElementById("message").innerText =
+  "Selamat " + nama + ", THR kamu Rp. " + hasil;
+
+ document.getElementById("card").style.display = "block";
+ document.getElementById("cardNama").innerText = nama;
+ document.getElementById("cardHasil").innerText = "Rp " + hasil;
+}
 	}
 	
 	// ================= SAVE NAMA =================
@@ -119,6 +151,45 @@
 			if(rand <= sum) return h.value;
 		}
 	}
+	
+	function startConfetti(){
+ const canvas = document.getElementById("confetti");
+ const ctx = canvas.getContext("2d");
+
+ canvas.width = window.innerWidth;
+ canvas.height = window.innerHeight;
+
+ let pieces = [];
+
+ for(let i=0;i<150;i++){
+  pieces.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    size: Math.random()*8+2,
+    speed: Math.random()*3+2
+  });
+ }
+
+ function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  pieces.forEach(p=>{
+    ctx.fillStyle = `hsl(${Math.random()*360},100%,50%)`;
+    ctx.fillRect(p.x,p.y,p.size,p.size);
+
+    p.y += p.speed;
+    if(p.y > canvas.height) p.y = 0;
+  });
+
+  requestAnimationFrame(draw);
+ }
+
+ draw();
+
+ setTimeout(()=>{
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+ },4000);
+}
 	
 	// ================= WARNA RANDOM =================
 	function randomColor() {
@@ -152,6 +223,24 @@
 			box.classList.remove("spin");
 			box.style.color = "#fff";
 			box.innerText = "Rp " + final;
+
+const nama = localStorage.getItem("nama");
+
+// pesan
+document.getElementById("message").innerText =
+ "Selamat " + nama + ", THR kamu Rp. " + final;
+
+// kartu tampil
+document.getElementById("card").style.display = "block";
+document.getElementById("cardNama").innerText = nama;
+document.getElementById("cardHasil").innerText = "Rp " + final;
+
+// suara menang
+const win = document.getElementById("winSound");
+win.play();
+
+// confetti
+startConfetti();
 			const nama = localStorage.getItem("nama");
 			document.getElementById("message").innerText = "Selamat " + nama + ", THR kamu Rp. " + final;
 			sound.pause();
