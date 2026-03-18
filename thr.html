@@ -129,8 +129,8 @@
 
         /* === 3. POPUP KARTU HASIL (AMPLOP) === */
         #result-popup {
-            display: block; /*none*/
-            position: relative; /*fixed*/
+            display: none; /*none*/
+            position: fixed; /*fixed*/
             inset: 0;
             background: rgba(0,0,0,0.85);
             justify-content: center;
@@ -185,7 +185,7 @@
     </div>
 
     <div id="main-app">
-        <h1>Putar Roda THR</h1>
+        <h1>Tunjangan THR Raya</h1>
         <p>Halo, <b id="display-name">...</b>!</p>
         
         <div class="wheel-area">
@@ -227,7 +227,7 @@
             { label: '30.000', weight: 20, color: 'darkcyan' }, // Putih
             { label: '25.000', weight: 25, color: '#e63946' }, // Biru Tua
             { label: '20.000', weight: 30, color: 'salmon' }, // Merah
-            //{ label: '100rb', weight: 5, color: 'teal' }  // hijau
+            //{ label: '100rb', weight: 5, color: 'darkcyan' }  // hijau
         ];
 
         let isSpinning = false;
