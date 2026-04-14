@@ -340,6 +340,26 @@
 	</head>
 	
 	<body>
+		<script>
+		const klik = document.querySelectorAll('button');
+		const audio = new Audio("stockid_suara/klik.mp3"); // suara klik
+		klik.forEach(el => {
+			el.addEventListener("click", () => {
+				// Getar HP
+				if (navigator.vibrate) {
+					navigator.vibrate(30); // 30 ms
+				}
+				// Bunyi
+				audio.currentTime = 0;
+				audio.play();
+			});
+		});
+		document.querySelectorAll("button,input,div,span,a,b,p").forEach(el=>{
+			el.addEventListener("click",()=>{
+				if(navigator.vibrate) navigator.vibrate(20);
+			});
+		});
+		</script>
 		<audio src="stockid_suara/screener.mp3" type="audio/mp3" id="screenervoice"></audio>
 		<audio src="stockid_suara/1bulan.mp3" type="audio/mp3" id="1bulanvoice"></audio>
 		<audio src="stockid_suara/2bulan.mp3" type="audio/mp3" id="2bulanvoice"></audio>
@@ -543,7 +563,7 @@
 					
 					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
 						<img src="stockid_gambar/3month.jpg" class="card-img-top">
-						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 15 orang</marquee>
+						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 22 orang</marquee>
 						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>45%</bdo>
 							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Kelas 100 Hari</h4>
 							<p class="card-text text-hitam">Harga Awal: Rp. <del>600,000</del></p>
@@ -554,7 +574,7 @@
 					
 					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
 						<img src="stockid_gambar/6month.jpg" class="card-img-top">
-						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 4 orang</marquee>
+						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 8 orang</marquee>
 						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>50%</bdo>
 							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Kelas 200 Hari</h4>
 							<p class="card-text text-hitam">Harga Awal: Rp. <del>1.200,000</del></p>
@@ -565,18 +585,18 @@
 					
 					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
 						<img src="stockid_gambar/oneyear.jpg" class="card-img-top">
-						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 3 orang</marquee>
-						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>55%</bdo>
+						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 6 orang</marquee>
+						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>65%</bdo>
 							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Kelas 400 Hari</h4>
 							<p class="card-text text-hitam">Harga Awal: Rp. <del>2.400,000</del></p>
-							<p class="card-text text-hitam">Harga Disc: <bdo>Rp. 1.079,999</bdo></p>
+							<p class="card-text text-hitam">Harga Disc: <bdo>Rp. 840,000</bdo></p>
 							<button type="button" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" data-toggle="modal" data-target="#kelas5-modal" onclick="satutahunvoice()"><i class="bi bi-currency-exchange"></i> Beli</button>
 						</div>
 					</div>
 					
 					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
 						<img src="stockid_gambar/free.jpg" class="card-img-top">
-						<marquee direction="left" width="100%" scrollamount="5">820 orang telah bergabung</marquee>
+						<marquee direction="left" width="100%" scrollamount="5">781 orang telah bergabung</marquee>
 						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>100%</bdo>
 							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Stock ID Free</h4>
 							<p class="card-text text-hitam">Harga Awal: Rp. <del>9.555,999</del></p>
