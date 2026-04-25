@@ -16,7 +16,7 @@
 .card-rating {
   max-width: 330px;
   width: 100%;
-  background: white;
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 15px;
   padding: 15px;
   flex-shrink: 0;
@@ -34,6 +34,7 @@
   font-weight: bold;
   margin-bottom: 10px;
   font-size: 18px;
+  color: #fff;
 }
 
 /* Ulasan */
