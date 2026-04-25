@@ -9,34 +9,62 @@ const nextBtn = document.getElementById('nextBtn');
 let items = [];
 let currentIndex = -1;
 
-// FUNGSI UTAMA: Mengambil data dari PHP
-async function loadGallery() {
-    try {
-        // Memanggil file PHP untuk mendapatkan daftar nama file asli
-        const response = await fetch('gain.php');
-        const fileList = await response.json();
-
-        if (fileList.length === 0) {
-            galleryContainer.innerHTML = "<p>Tidak ada gambar dalam folder.</p>";
-            return;
-        }
-
-        // Memetakan file ke dalam array gallery
-        items = fileList.map((fileName, i) => ({
-            thumb: `stockid_gambar/gain/${fileName}`,
-            full: `stockid_gambar/gain/${fileName}`,
-            title: fileName // Menampilkan nama asli file sebagai judul
-        }));
-
-        renderGallery();
-    } catch (error) {
-        console.error("Gagal memuat folder gambar:", error);
-        galleryContainer.innerHTML = "<p>Error: Pastikan server PHP aktif.</p>";
-    }
+// 1. Fungsi cek gambar
+async function checkImage(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+    });
 }
 
-// Menampilkan gambar ke dalam HTML
+// 2. Fungsi acak
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+// 3. Inisialisasi
+async function initGallery() {
+    galleryContainer.innerHTML = "<p>Memuat galeri...</p>";
+    
+    const tempItems = [];
+    for (let i = 1; i <= 1000; i++) {
+        const path = `stockid_gambar/gain/IMG${i}.jpg`;
+        const exists = await checkImage(path);
+        
+        if (exists) {
+            tempItems.push({
+                full: path,
+                thumb: path
+            });
+        }
+    }
+
+    if (tempItems.length === 0) {
+        galleryContainer.innerHTML = "<p>Tidak ada gambar berawalan 'img' ditemukan.</p>";
+        return;
+    }
+
+    // ACAK urutan dulu
+    const shuffled = shuffleArray(tempItems);
+    
+    // BERI LABEL BERURUTAN (1, 2, 3...) setelah diacak
+    items = shuffled.map((item, index) => ({
+        ...item,
+        title: `Stock ID Gain ${index + 1}`
+    }));
+    
+    renderGallery();
+}
+
+// 4. Render ke HTML
 function renderGallery() {
+    galleryContainer.innerHTML = "";
     items.forEach((g, idx) => {
         const a = document.createElement('button');
         a.className = 'divgain';
@@ -51,7 +79,7 @@ function renderGallery() {
     });
 }
 
-// Logika Modal
+// --- Logika Modal ---
 function openModal(index) {
     const item = items[index];
     if (!item) return;
@@ -80,10 +108,7 @@ function showNext(delta) {
 closeBtn.addEventListener('click', closeModal);
 prevBtn.addEventListener('click', () => showNext(-1));
 nextBtn.addEventListener('click', () => showNext(1));
-
-overlay.addEventListener('click', (e) => { 
-    if (e.target === overlay) closeModal(); 
-});
+overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
 
 window.addEventListener('keydown', (e) => {
     if (overlay.classList.contains('open')) {
@@ -93,5 +118,5 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
-// Jalankan fungsi saat halaman dibuka
-loadGallery();
+// Jalankan
+initGallery();

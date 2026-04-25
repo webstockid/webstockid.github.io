@@ -37,12 +37,12 @@ const data = [
   },
   {
   nama: "Mas. Rafli",
-  netral: "Watchlist sama pembelajaran bener² bermanfaat, semenjak gabung disni portofolioku bertambah dan cara memandang suatu emiten jadi berubah",
+  positif: "Watchlist sama pembelajaran bener² bermanfaat, semenjak gabung disni portofolioku bertambah dan cara memandang suatu emiten jadi berubah.",
   },
   {
   nama: "Mas. Ardika",
-  positif: "Saya bergabung di Stockbit masih terbilang baru, September tahun lalu, terus sebulan ga gabung kelas, aku belajar otodidak, agak pusing sih.<br>Terus aku kenal Stock ID VIP ini dari Bang Hardi lewat Tiktok, terus aku masuk group biasa aja ga berbayar, terus belajar banyak disana, dan aku ga lama habistu gabung lah di VIP nya, dan Alhamdulillah disana aku belajar banyak, mulai dari Bang Hardi, yg banyak bantu aku, yg nyediakan waktu buat nelpon belajar saham, ngasih Watchlist yg bagus.<br>Kemudian untuk Bang Irfan, dia ini ngasih Watchlist juga, dan dia yg ngajarin saham terutama yg untuk Trading.",
-  negatif: "Untuk Bang Hardi mungkin agak lebih sabar lagi menghadapi ritel yg agak keras kepala ini, dan sering nyangkut ini. 🗿<br>Perbanyak sabar ye Bang. 🗿🤩<br>Untuk Bang Irfan kek nya ga ada, dia udah sabar wkwk."
+  positif: "Saya bergabung di Stockbit masih terbilang baru, September tahun lalu, terus sebulan ga gabung kelas, aku belajar otodidak, agak pusing sih.<br>Terus aku kenal Stock ID VIP ini dari Bang Hardi lewat Tiktok, terus aku masuk group biasa aja ga berbayar, terus belajar banyak disana, dan aku ga lama habistu gabung lah di VIP nya, dan Alhamdulillah disana aku belajar banyak, mulai dari Bang Hardi yg banyak bantu aku, yg nyediakan waktu buat nelpon belajar saham, ngasih Watchlist yg bagus.<br>Kemudian untuk Bang Irfan, dia ini ngasih Watchlist juga, dan dia yg ngajarin saham terutama yg untuk Trading.",
+  netral: "Untuk Bang Hardi mungkin agak lebih sabar lagi menghadapi ritel yg agak keras kepala ini, dan sering nyangkut ini. 🗿<br>Perbanyak sabar ye Bang. 🗿🤩<br>Untuk Bang Irfan kek nya ga ada, dia udah sabar wkwk."
   },
   {
   nama: "Mas. Hendra Simanjuntak",
