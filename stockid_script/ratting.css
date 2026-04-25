@@ -1,0 +1,65 @@
+/* Container */
+.rating-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 15px;
+  padding: 10px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+}
+
+.rating-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Card */
+.card-rating {
+  max-width: 330px;
+  width: 100%;
+  background: white;
+  border-radius: 15px;
+  padding: 15px;
+  flex-shrink: 0;
+  scroll-snap-align: center;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.card-rating:hover {
+  transform: scale(1.05);
+}
+
+/* Nama */
+.nama {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+/* Ulasan */
+.ulasan {
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-size: 14px;
+
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Warna */
+.positif {
+  background: #e6f9ec;
+  color: #1a7f37;
+}
+
+.negatif {
+  background: #fdecea;
+  color: #b42318;
+}
+
+.netral {
+  background: #eef2ff;
+  color: #3730a3;
+}
