@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE HTML>
 	<head>
-		<title>Stock's ID</title>
+		<title>Stock's ID VIP #Andaimology 🗿</title>
 		<meta charset="UTF-8">
 		<meta name="keyword" content="stock id, stockid, stock id vip, saham, kelas saham">
 		<meta name="HandheldFriendly" content="True">
 		<meta name="viewport" content="width=device-width, initial-scale=0.9, maximal-scale=0.9, shrink-to-fit=no">
 		<meta name="author" content="Hardiansyah, Mark Otto, Jacob Thornton, and Bootstrap contributors">
 		<meta property="og:title" content="Stock ID VIP">
-		<meta property="og:description" content="Dapatkan Watchlist Siap Pakai, Info Saham MultiBagger, Insight dst">
+		<meta property="og:description" content="Belajar Dengan Mentor, Watchlist Siap Pakai & Diskusi Disini">
 		<meta property="og:image" content="stockid_gambar/stockicon.jpg">
-		<meta property="og:url" content="https://hardian98.github.io/stockid">
+		<meta property="og:url" content="https://webstockid.github.io/stockid">
 		<meta property="og:type" content="website">
-		<!--<meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
-		<meta http-equiv="pragma" content="no-cache">
-		<meta http-equiv="expires" content="0">-->
-		<link rel="stylesheet" href="stockid_script/ratting.css" type="text/css">
 		<link rel="stylesheet" href="stockid_script/carousel.css" type="text/css">
 		<link rel="stylesheet" href="stockid_script/gallery.css" type="text/css">
-		
+		<link rel="stylesheet" href="stockid_script/ratting.css" type="text/css">
 		<link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/carousel/">
 		<link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/album/">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
@@ -338,6 +334,30 @@
 			background: transparent;
 			border: none;
 		}
+		/**/
+		.market-status-widget {
+			background: rgba(0, 0, 0, 0.6);
+			border: 1px solid #3498db;
+			border-radius: 10px;
+			padding: 15px;
+			text-align: center;
+			margin: 20px auto;
+			max-width: 300px;
+			color: #fff;
+		}
+		#market-timer-label {
+			font-size: 0.8rem;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			margin-bottom: 5px;
+			color: #bdc3c7;
+		}
+		#market-timer-clock {
+			font-size: 1.4rem;
+			font-weight: 600;
+			color: #2ecc71; /* Warna hijau biar semangat cuan */
+			font-family: 'Courier New', monospace;
+		}
 		</style>
 	</head>
 	
@@ -485,6 +505,61 @@
 			</div>
 			-->
 			
+			<div class="market-status-widget">
+				<div id="market-timer-label">Memuat Waktu Market...</div>
+				<div id="market-timer-clock">00:00:00</div>
+			</div>
+
+			<script>
+			function updateMarketTimer() {
+				const now = new Date();
+				// Gunakan Waktu Indonesia Barat (WIB)
+				const jktTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
+				const hours = jktTime.getHours();
+				const minutes = jktTime.getMinutes();
+				const day = jktTime.getDay(); // 0 = Minggu, 6 = Sabtu
+				let targetTime = new Date(jktTime);
+				let label = "";
+				// Cek apakah hari ini Weekend (Sabtu/Minggu)
+				if (day === 0 || day === 6) {
+					label = "Market Libur (Buka Senin)";
+					document.getElementById("market-timer-clock").innerHTML = "--:--:--";
+					document.getElementById("market-timer-label").innerText = label;
+					return;
+				}
+				// Tentukan Target Waktu
+				if (hours < 9) {
+					// Sebelum Market Buka
+					label = "Menuju Market Open (09:00)";
+					targetTime.setHours(9, 0, 0);
+				} else if (hours < 16) {
+					// Market Sedang Berjalan
+					label = "Menuju Market Close (16:00)";
+					targetTime.setHours(16, 0, 0);
+				} else {
+					// Setelah Market Tutup
+					label = "Market Sudah Tutup";
+					document.getElementById("market-timer-clock").innerHTML = "CLOSED";
+					document.getElementById("market-timer-label").innerText = label;
+					return;
+				}
+				// Hitung Selisih Waktu
+				const diff = targetTime - jktTime;
+				const h = Math.floor(diff / (1000 * 60 * 60));
+				const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+				const s = Math.floor((diff % (1000 * 60)) / 1000);
+				// Format Digital Clock
+				const displayH = h < 10 ? "0" + h : h;
+				const displayM = m < 10 ? "0" + m : m;
+				const displayS = s < 10 ? "0" + s : s;
+				document.getElementById("market-timer-label").innerText = label;
+				document.getElementById("market-timer-clock").innerText = `${displayH}:${displayM}:${displayS}`;
+			}
+			// Update setiap 1 detik
+			setInterval(updateMarketTimer, 1000);
+			updateMarketTimer();
+			</script>
+			
 			<div class="container">
 				<div class="tentang col-md-8">
 						<p class="tentang-title text-center text-hitam"><i class="bi bi-question-circle"></i> Apa itu Stock ID VIP?</p>
@@ -500,7 +575,7 @@
 						<p class="tentang-text text-hitam underline"><i class="bi bi-activity"></i> Membaca Pergerakan Bandar atau Asing</p>
 						<p class="tentang-text text-hitam underline"><i class="bi bi-bar-chart-line-fill"></i> Membaca Data Perusahaan (Fundamental)</p>
 						<p class="tentang-text text-hitam underline"><i class="bi bi-broadcast-pin"></i> Saran (Entry Safe, Support, Take Profit)</p>
-						<p class="tentang-text text-hitam underline"><i class="bi bi-graph-up-arrow"></i> Watchlist Gacor Tiap Hari & Info A1</p>
+						<p class="tentang-text text-hitam underline"><i class="bi bi-graph-up-arrow"></i> Watchlist Gacor Untuk Swing & Info A2</p>
 						</span>
 					</div>
 			</div>
@@ -534,7 +609,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
-						<img src="stockid_gambar/screener.jpg" class="card-img-top">
+						<img src="stockid_gambar/jr205.jpg" class="card-img-top">
 						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 3 orang</marquee>
 						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>30%</bdo>
 							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Paket Screener</h4>
@@ -567,7 +642,7 @@
 					</div>-->
 					
 					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
-						<img src="stockid_gambar/3month.jpg" class="card-img-top">
+						<img src="stockid_gambar/cli.jpg" class="card-img-top">
 						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 29 orang</marquee>
 						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>45%</bdo>
 							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Kelas 100 Hari</h4>
@@ -578,7 +653,7 @@
 					</div>
 					
 					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
-						<img src="stockid_gambar/6month.jpg" class="card-img-top">
+						<img src="stockid_gambar/lrt.jpg" class="card-img-top">
 						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 8 orang</marquee>
 						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>50%</bdo>
 							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Kelas 200 Hari</h4>
@@ -589,7 +664,7 @@
 					</div>
 					
 					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
-						<img src="stockid_gambar/oneyear.jpg" class="card-img-top">
+						<img src="stockid_gambar/whoosh.jpg" class="card-img-top">
 						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 6 orang</marquee>
 						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>65%</bdo>
 							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Kelas 400 Hari</h4>
@@ -600,8 +675,8 @@
 					</div>
 					
 					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
-						<img src="stockid_gambar/free.jpg" class="card-img-top">
-						<marquee direction="left" width="100%" scrollamount="5">781 orang telah bergabung</marquee>
+						<img src="stockid_gambar/mrt.jpg" class="card-img-top">
+						<marquee direction="left" width="100%" scrollamount="5">760 orang telah bergabung</marquee>
 						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>100%</bdo>
 							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Stock ID Free</h4>
 							<p class="card-text text-hitam">Harga Awal: Rp. <del>9.555,999</del></p>
@@ -807,11 +882,11 @@
 					</div>
 				</div>
 			</div>
-				
-			<h4 class="gain">Rating User</h4>
-			<div class="rating-container" id="ratingContainer"></div>
 			
 			<hr class="featurette-divider">
+				
+			<h4 class="gain">Apa Kata Mereka? 🗿</h4>
+			<div class="rating-container" id="ratingContainer"></div>
 			
 			<div class="container-gain" onclick="photovoice()">
 				<h4 class="gain">Realized Gain Stock ID's</h4>
@@ -1049,11 +1124,15 @@
 			var quotes = [
 				{"quote": "Abraham Keluar"},
 				{"quote": "Abdul Bergabung"},
+				{"quote": "Adam Bergabung"},
 				{"quote": "Adi Keluar"},
-				{"quote": "Adit Bergabung"},
+				{"quote": "Adit Keluar"},
 				{"quote": "Agung Bergabung"},
-				{"quote": "Aka Bergabung"},
+				{"quote": "Agus Bergabung"},
+				{"quote": "Aka Keluar"},
+				{"quote": "Ali Keluar"},
 				{"quote": "Alvi Bergabung"},
+				{"quote": "Alpin Bergabung"},
 				{"quote": "Afif Keluar"},
 				{"quote": "Ahlis Keluar"},
 				{"quote": "Anggoro Bergabung"},
@@ -1160,10 +1239,10 @@
 			setInterval(randomQuote, 4000);
 			</script>
 			
-			<script src="stockid_script/bootstrap.bundle.min.js"></script>
 			<script src="stockid_script/ratting.js"></script>
 			<script src="stockid_script/gallery.js"></script>
 			<script src="stockid_script/waktu.js"></script>
+			<script src="stockid_script/bootstrap.bundle.min.js"></script>
 		</main>
 	</body>
 </html>
