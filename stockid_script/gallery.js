@@ -9,8 +9,8 @@ const nextBtn = document.getElementById('nextBtn');
 let items = [];
 let currentIndex = -1;
 
-// 1. Fungsi cek gambar
-async function checkImage(url) {
+// 1. Fungsi cek gambar (Tanpa perubahan)
+function checkImage(url) {
     return new Promise((resolve) => {
         const img = new Image();
         img.onload = () => resolve(true);
@@ -19,7 +19,7 @@ async function checkImage(url) {
     });
 }
 
-// 2. Fungsi acak
+// 2. Fungsi acak (Tanpa perubahan)
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -28,32 +28,35 @@ function shuffleArray(array) {
     return array;
 }
 
-// 3. Inisialisasi
+// 3. Inisialisasi: Menghilangkan 'await' di dalam loop untuk kecepatan
 async function initGallery() {
-    galleryContainer.innerHTML = "<p>Memuat galeri...</p>";
-    
-    const tempItems = [];
-    for (let i = 1; i <= 1000; i++) {
-        const path = `stockid_gambar/gain/IMG${i}.jpg`;
-        const exists = await checkImage(path);
-        
-        if (exists) {
-            tempItems.push({
-                full: path,
-                thumb: path
-            });
-        }
+    const promises = [];
+    const maxFiles = 200; // Sesuaikan dengan perkiraan jumlah file Anda
+
+    // Kita tembak semua pengecekan sekaligus (Paralel)
+    for (let i = 1; i <= maxFiles; i++) {
+        const path = `stockid_gambar/gain/img${i}.jpg`;
+        promises.push(
+            checkImage(path).then(exists => {
+                if (exists) return { full: path, thumb: path };
+                return null;
+            })
+        );
     }
 
-    if (tempItems.length === 0) {
-        galleryContainer.innerHTML = "<p>Tidak ada gambar berawalan 'img' ditemukan.</p>";
+    // Menunggu semua "janji" pengecekan selesai secara kolektif
+    const results = await Promise.all(promises);
+    const validItems = results.filter(item => item !== null);
+
+    if (validItems.length === 0) {
+        galleryContainer.innerHTML = "<p>Tidak ada gambar ditemukan.</p>";
         return;
     }
 
-    // ACAK urutan dulu
-    const shuffled = shuffleArray(tempItems);
+    // Acak hasil yang sudah pasti ada filenya
+    const shuffled = shuffleArray(validItems);
     
-    // BERI LABEL BERURUTAN (1, 2, 3...) setelah diacak
+    // Beri penomoran berurutan
     items = shuffled.map((item, index) => ({
         ...item,
         title: `Stock ID Gain ${index + 1}`
@@ -104,7 +107,6 @@ function showNext(delta) {
     openModal(next);
 }
 
-// Event Listeners
 closeBtn.addEventListener('click', closeModal);
 prevBtn.addEventListener('click', () => showNext(-1));
 nextBtn.addEventListener('click', () => showNext(1));
@@ -118,5 +120,4 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
-// Jalankan
 initGallery();
