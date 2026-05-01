@@ -129,7 +129,7 @@ border-radius: 4px;
 .b2 {
 	background-image: repeating-linear-gradient(45deg,#4caf50 0 7px,#7cff7c 7px 14px);
 }
-.b3 {
+.b3, .b4 {
 	background-image: repeating-linear-gradient(45deg,#F9629F 0 7px,#FFC0CB 7px 14px);
 }
 .b6 {
@@ -170,7 +170,9 @@ border-radius: 4px;
 }
 
 .member.tiga:hover, 
-.member.tiga:focus-within {
+.member.tiga:focus-within, 
+.member.empat:hover, 
+.member.empat:focus-within {
 	background: #F9629F;
 }
 
@@ -222,7 +224,7 @@ border-radius: 4px;
 	-webkit-box-shadow: -4px 0 20px #4caf50, -10px 0 30px rgba(155,89,182,.95);
 }
 
-.member.tiga::before {
+.member.tiga::before, .member.empat::before {
 	background: linear-gradient(to bottom,#F9629F,#F9629F,#F9629F);
 	box-shadow: -4px 0 20px #F9629F, -10px 0 30px rgba(230,126,34,.95);
 	-webkit-box-shadow: -4px 0 20px #F9629F, -10px 0 30px rgba(230,126,34,.95);
@@ -266,7 +268,7 @@ border-radius: 4px;
 .member.dua .badge {
 	background: #4caf50;
 }
-.member.tiga .badge {
+.member.tiga .badge, .member.empat .badge {
 	background: #F9629F;
 }
 .member.enam .badge {
