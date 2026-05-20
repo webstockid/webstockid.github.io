@@ -5,6 +5,12 @@ const data = [
 	negatif: "Menurut Aku sendiri kebanyakan Watchlist, mungkin nextnya dikurangin biar Member bisa pokus dengan 1 Emiten, biar ga pusing.<br>Kadang suruh cicil atau UW atau apalah itu, bagi yang belum terlalu paham mungkin bingung, mungkin bisa di sederhanakan (Bandar/Smartmoney).",
 },
 {
+	nama: "Mas. Dika",
+	positif: "Banyak ilmu yg di dapet kaya ciri saham lagi di akum, bisa ikut masuk, kalau udah terbang udah di dalem.<br>Mmentor responsif & bertanggungjawab kalo Market Crash di tambah hari kelasnya. 😂",
+	negatif: "Kalo yang sibuk kerja ngga bisa ikut nimbrung pasti ketinggalan topik.",
+	netral: "Mungkin bisa di pisahin antara Full Day Trader & Pekerja, kaya yg pekerja sibuk ngga bisa liat Market di kasihnya Saham Fundamental terus yg Trader kasih Gorengan kan juga gapapa masih bisa pantau.<br>Itu aja sih sarannya buat Bang Har & Bang Irfan",
+},
+{
 	nama: "Mas. Jefri",
 	positif: "Watchlist nya lumayan lah udah ga ngawur, dermawan sama Member apalagi kemarin pas crash.",
 	negatif: "Buat Mas Har sih kurang²in Tlp Grup sambil berak.<br>Kalo buat Mas Irfan harus lebih sering ngoceh ke Member yg baru nyebur ke Saham tAkutnya mentalnya down krn ikut Watchlist tp ga untung malah buntung.",
