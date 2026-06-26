@@ -1,1248 +1,1299 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE HTML>
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
 	<head>
-		<title>Stock's ID VIP #Andaimology 🗿</title>
 		<meta charset="UTF-8">
+		<title>Stock's ID VIP - Premium Trading & Learning Community</title>
 		<meta name="keyword" content="stock id, stockid, stock id vip, saham, kelas saham">
 		<meta name="HandheldFriendly" content="True">
-		<meta name="viewport" content="width=device-width, initial-scale=0.9, maximal-scale=0.9, shrink-to-fit=no">
-		<meta name="author" content="Hardiansyah, Mark Otto, Jacob Thornton, and Bootstrap contributors">
-		<meta property="og:title" content="Stock ID VIP">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximal-scale=1,shrink-to-fit=no">
+		<meta name="author" content="Hardiansyah & Tailwind.css">
+		<meta property="og:title" content="Stock ID VIP #Andaimology">
 		<meta property="og:description" content="Belajar Dengan Mentor, Watchlist Siap Pakai & Diskusi Disini">
 		<meta property="og:image" content="stockid_gambar/stockicon.jpg">
-		<meta property="og:url" content="https://webstockid.github.io/stockid">
+		<meta property="og:url" content="https://webstockid.github.io/stockid.html">
 		<meta property="og:type" content="website">
-		<link rel="stylesheet" href="stockid_script/carousel.css" type="text/css">
-		<link rel="stylesheet" href="stockid_script/gallery.css" type="text/css">
-		<link rel="stylesheet" href="stockid_script/ratting.css" type="text/css">
-		<link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/carousel/">
-		<link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/album/">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Onest&display=swap">
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-		<!---->
-		<style type="text/css">
-		html { 
-			scroll-behavior: smooth;
-		}
-		body {
-			background:
-			linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-			url("stockid_gambar/wall.jpg") no-repeat center center fixed;
-			background-size: cover;
-			/*animation: bgChange 10s infinite alternate;
-			-webkit-animation: bgChange 10s infinite alternate;*/
-		}
-		/*@-webkit-keyframes bgChange {
-			0% { background: #fff; } merah muda
-			25% { background: #eee; } peach
-			50% { background: #ddd; } ungu soft
-			75% { background: #ccc; } biru muda
-			100% { background: #bbb; } biru pastel
-		}*/
-		div, span, p, a, b, h1, h4, bdo, del, button, input {
-			font-family: "Onest", sans-serif;
-		}
-		.dark-theme .hitam-bg,
-		.dark-theme body {
-			background-color: snow;
-		}
-		.dark-theme .div-hitam {
-			background-color: snow;
-		}
-		.dark-theme h1.header,
-		.dark-theme p.header {
-			color: #555;
-		}
-		.dark-theme .hitam,
-		.dark-theme .text-hitam {
-			color: #555;
-		}
-		.dark-theme .card-text bdo,
-		.dark-theme .card-text del,
-		.dark-theme .disc {
-			color: snow;
-			border: 1px solid #444;
-		}
-		.dark-theme .text-biru {
-			color: steelblue;
-		}
-		.dark-theme .hitam-btn,
-		.dark-theme button {
-			border: 1.2px solid #444;
-		}
-		/**/
-		.carousel-caption h1,
-		.col-md-4 h1 {
-			font-size: 20px; /*22*/
-			font-weight: 500;
-			color: snow;
-		}
-		.carousel-caption p,
-		.col-md-4 p {
-			font-size: 14px; /*16*/
-			font-weight: 400;
-			color: snow;
-		}
-		/**/
-		div.card-body,
-		div.modal-body {
-			padding: 12px 12px;
-			background-color: snow; /*353535*/
-			border: none;
-			border-top: 4px solid dodgerblue;
-			/*border-left: 1.2px solid #444;
-			border-right: 1.2px solid #444;
-			border-bottom: 1.2px solid #444;*/
-			border-radius: 0px 0px 10px 10px;
-			transition: ease 0.8s;
-			-webkit-transition: ease 0.8s;
-			box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-			-webkit-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-		}
-		div.modal-body {
-			border: none;
-			border-radius: 0px;
-			box-shadow: none;
-		}
-		div.modal-content {
-			background-color: snow;
-			transition: ease 0.8s;
-			-webkit-transition: ease 0.8s;
-		}
-		.card-title,
-		.modal-title {
-			font-size: 20px; /*22*/
-			font-weight: 600;
-			color: steelblue;
-		}
-		.card-text,
-		.modal-text {
-			margin: 8px 0px;
-			padding: 0px;
-			font-size: 14px; /*16*/
-			font-weight: 500;
-			color: #444;
-		}
-		.card-text bdo,
-		.card-text del {
-			font-size: 14px; /*16*/
-			color: snow;
-			background-color: steelblue;
-			padding: 2px;
-			border: 0.8px solid #444;
-			border-radius: 2px 10px 2px 10px;
-		}
-		.card-text del {
-			background-color: teal;
-		}
-		.disc, .promo {
-			display: initial;
-			position: absolute;
-			z-index: 999;
-			top: 0;
-			right: 0;
-			margin: 0;
-			padding: 0px 4px;
-			font-size: 12px; /*14*/
-			font-weight: 500;
-			background-color: slateblue;
-			color: snow;
-			border-radius: 2px 10px 2px 10px;
-			border: none !important;
-		}
-		.promo {
-			top: 0;
-			left: 0;
-			width: 60px;
-			font-size: 14px;
-			text-align: center;
-			background-color: dodgerblue;
-			border-radius: 10px 2px 10px 2px;
-		}
-		marquee {
-			display: block;
-			position: absolute;
-			margin-top: -18px;
-			padding: 0px;
-			font-size: 12px; /*14*/
-			font-weight: 400;
-			color: snow;
-			background: rgba(0, 0, 0, 0.5);
-		}
-		.gabung {
-			position: fixed;
-			z-index: 999;
-			left: 2%;
-			bottom: 2%;
-			padding: 2px 8px;
-			font-size: 14px; /*16*/
-			font-weight: 400;
-			color: snow;
-			background-color: rgba(30, 144, 255, 0.8);
-			border: 0.8px solid #fff;
-			border-radius: 12px;
-			opacity: 0.8;
-			transition: ease 2s;
-			-webkit-transition: ease 2s;
-		}
-		.btn, button {
-			font-size: 16px !important;
-			font-weight: 500 !important;
-			border: 1.2px solid #333;
-			transition: ease 0.8s;
-			-webkit-transition: ease 0.8s;
-		}
-		/**/
-		div.tentang {
-			display: block;
-			position: relative;
-			margin: 0px;
-			padding: 6px 6px;
-			background: inherit;
-			/*border: 1px solid #656565;
-			border-radius: 10px 10px 2px 2px;
-			box-shadow: 0px 0px 8px 0px #555;*/
-		}
-		.tentang-title,
-		.tentang-text {
-			margin: 10px 0px;
-			padding: 0px;
-			font-size: 18px; /*20*/
-			font-weight: 600;
-			color: snow;
-		}
-		.tentang-text {
-			font-size: 14px; /*16*/
-			font-weight: 500;
-			text-decoration: none;
-		}
-		.tentang-title i.bi,
-		.tentang-text i.bi {
-			margin: 0px 6px 0px 0px;
-			padding: 0px;
-		}
-		i.bi {
-			vertical-align: baseline;
-		}
-		a:focus, a:hover {
-			text-decoration: none;
-		}
-		.text-footer {
-			font-size: 14px; /*16*/
-			color: snow;
-		}
-		/**/
-		a.bayar {
-			text-align: center;
-			font-size: 14px; /*16*/
-			font-weight: 500;
-			color: #444;
-			text-decoration: none;
-		}
-		.bayar-box {
-			max-height: 0;
-			overflow: hidden;
-			transition: max-height 0.7s ease;
-			-webkit-transition: max-height 0.7s ease;
-		}
-		.bayar-box.show {
-			max-height: 500px;
-			margin: 0px;
-			padding: 0px 4px 4px 4px;
-			border: 1px solid gray;
-			border-radius: 4px;
-		}
-		#arrowIconsatu, #arrowIcondua, #arrowIcontiga,
-		#arrowIconempat, #arrowIconlima, #arrowIconenam {
-			display: inline-block;
-			transition: transform 0.7s ease;
-			-webkit-transition: transform 0.7s ease;
-		}
-		#arrowIconsatu.rotate, #arrowIcondua.rotate, #arrowIcontiga.rotate,
-		#arrowIconempat.rotate, #arrowIconlima.rotate, #arrowIconenam.rotate {
-			transform: rotate(180deg);
-			-webkit-transform: rotate(180deg);
-		}
-		.bayar-text {
-			margin: 0px;
-			padding: 0px;
-			font-size: 14px; /*16*/
-			font-weight: 400;
-			color: #444;
-		}
-		.label {
-			text-align: center;
-			font-size: 14px; /*16*/
-			font-weight: 400;
-			color: snow;
-			margin: 0px;
-			padding: 4px 0px;
-			background-color: teal;
-			border: 1px solid steelblue;
-			border-radius: 0px 0px 12px 12px;
-		}
-		.bayar-text bdo {
-			color: snow;
-			padding: 0px 6px;
-			background-color: teal;
-			border-radius: 8px;
-		}
-		input {
-			width: 160px;
-			outline: none;
-			margin: 4px 0px;
-			padding: 0px 8px;
-			font-size: 14px; /*16*/
-			font-weight: 400;
-			color: snow;
-			background-color: steelblue;
-			border: 0.8px solid gray;
-			border-radius: 12px 2px;
-		}
-		/**/
-		.bd-placeholder-img {
-			font-size: 1.125rem;
-			text-anchor: middle;
-			-webkit-user-select: none;
-			-moz-user-select: none;
-			-ms-user-select: none;
-			user-select: none;
-		}
-		@media (min-width: 768px) {
-			.bd-placeholder-img-lg {
-				font-size: 3.5rem;
+		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+		<style>
+			body {
+				font-family: 'Plus Jakarta Sans', sans-serif;
+				background-color: #0b0f19
 			}
-		}
-		.card-img-top {
-			width: 100%;
-			height: 250px;
-			object-fit: cover;
-			border: none;
-			border-radius: 10px 10px 0 0;
-		}
-		.img-slid-custom {
-			background: none;
-			padding: 0px;
-		}
-		.waktu {
-			top: 66px;
-			right: -132px;
-			position: fixed;
-			z-index: 50000;
-			background: transparent;
-			border: none;
-		}
-		/**/
-		.market-status-widget {
-			background: rgba(0, 0, 0, 0.6);
-			border: 1px solid #3498db;
-			border-radius: 10px;
-			padding: 15px;
-			text-align: center;
-			margin: 20px auto;
-			max-width: 300px;
-			color: #fff;
-		}
-		#market-timer-label {
-			font-size: 0.8rem;
-			text-transform: uppercase;
-			letter-spacing: 1px;
-			margin-bottom: 5px;
-			color: #bdc3c7;
-		}
-		#market-timer-clock {
-			font-size: 1.4rem;
-			font-weight: 600;
-			color: #2ecc71; /* Warna hijau biar semangat cuan */
-			font-family: 'Courier New', monospace;
-		}
+
+			.heading-font {
+				font-family: 'Space Grotesk', sans-serif
+			}
+
+			.glassmorphism {
+				background: rgba(17, 24, 39, .7);
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+				border: 1px solid rgba(255, 255, 255, .06)
+			}
+
+			.glow-green {
+				box-shadow: 0 0 20px rgba(16, 185, 129, .2)
+			}
+
+			.glow-premium {
+				box-shadow: 0 0 30px rgba(245, 158, 11, .25)
+			}
 		</style>
 	</head>
 	
-	<body>
-		<script>
-		const klik = document.querySelectorAll('button');
-		const audio = new Audio("stockid_suara/klik.mp3"); // suara klik
-		klik.forEach(el => {
-			el.addEventListener("click", () => {
-				// Getar HP
-				if (navigator.vibrate) {
-					navigator.vibrate(30); // 30 ms
-				}
-				// Bunyi
-				audio.currentTime = 0;
-				audio.play();
-			});
-		});
-		document.querySelectorAll("button,input,div,span,a,b,p").forEach(el=>{
-			el.addEventListener("click",()=>{
-				if(navigator.vibrate) navigator.vibrate(20);
-			});
-		});
-		</script>
-		<audio src="stockid_suara/screener.mp3" type="audio/mp3" id="screenervoice"></audio>
-		<audio src="stockid_suara/1bulan.mp3" type="audio/mp3" id="1bulanvoice"></audio>
-		<audio src="stockid_suara/2bulan.mp3" type="audio/mp3" id="2bulanvoice"></audio>
-		<audio src="stockid_suara/3bulan.mp3" type="audio/mp3" id="3bulanvoice"></audio>
-		<audio src="stockid_suara/6bulan.mp3" type="audio/mp3" id="6bulanvoice"></audio>
-		<audio src="stockid_suara/1tahun.mp3" type="audio/mp3" id="1tahunvoice"></audio>
-		<audio src="stockid_suara/free.mp3" type="audio/mp3" id="freevoice"></audio>
-		<audio src="stockid_suara/jokowi.mp3" type="audio/mp3" id="jokowivoice"></audio>
-		<audio src="stockid_suara/bayar.mp3" type="audio/mp3" id="bayarvoice"></audio>
-		<audio src="stockid_suara/yeay.mp3" type="audio/mp3" id="yeayvoice"></audio>
-		<audio src="stockid_suara/stockid.mp3" type="audio/mp3" id="stockidvoice"></audio>
-		<audio src="stockid_suara/yapping2.mp3" type="audio/mp3" id="yapping2"></audio>
-		<audio src="stockid_suara/" type="audio/mp3" id="musik"></audio>
-		<audio src="stockid_suara/photo.mp3" type="audio/mp3" id="photovoice"></audio>
-		<header>
-			<nav class="navbar navbar-expand-sm navbar-dark bg-primary fixed-top">
-				<a style="border: none" class="navbar-brand font-weight-bold" href="#"><img src="stockid_gambar/header.jpg" style="width: 38px; height: 38px; margin-right: 6px; object-fit: cover; vertical-align: middle; border-radius: 50%"> Stock's ID <i class="bi bi-graph-up-arrow"></i></a>
-				<button class="navbar-toggler bg-dark" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse" id="navbarCollapse">
+	<body class="text-slate-200 antialiased overflow-x-hidden">
+		<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
+				<div class="flex items-center gap-3">
+					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2.5 rounded-xl shadow-lg shadow-emerald-500/20">
+						<i class="fa-solid fa-chart-line text-slate-950 text-xl font-black"></i>
+					</div>
+					<div>
+						<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">VIP</span>
+						</span>
+						<p class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
+					</div>
 				</div>
-			</nav>
+				
+				<div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+					<a href="#benefit" class="hover:text-emerald-400 transition-colors">Benefit</a>
+					<a href="#stats" class="hover:text-emerald-400 transition-colors">Statistik</a>
+					<a href="#paket" class="hover:text-emerald-400 transition-colors">Paket Belajar</a>
+					<a href="#faq" class="hover:text-emerald-400 transition-colors">FAQ</a>
+				</div>
+				
+				<div>
+					<a href="#paket" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-sm tracking-wide transition shadow-lg shadow-emerald-500/20 block">Gabung Grup Sekarang</a>
+				</div>
+			</div>
+		</nav>
+		
+		<div class="fixed bottom-0 left-0 z-40 w-full bg-slate-950 border-t border-slate-900/80 overflow-hidden shadow-lg">
+			<div class="tradingview-widget-container">
+				<div class="tradingview-widget-container__widget"></div>
+				<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+					{
+						"symbols": [{
+							"proName": "FX_IDC:IDRUSD",
+							"title": "USD / IDR"
+						}, {
+							"description": "SSE (Cina)",
+							"proName": "SSE:000001"
+						}, {
+							"description": "Hang Seng (Hong Kong)",
+							"proName": "HSI:HSI"
+						}, {
+							"description": "IHSG",
+							"proName": "IDX:COMPOSITE"
+						}, {
+							"description": "BBCA",
+							"proName": "IDX:BBCA"
+						}, {
+							"description": "BBRI",
+							"proName": "IDX:BBRI"
+						}, {
+							"description": "BMRI",
+							"proName": "IDX:BMRI"
+						}, {
+							"description": "BBNI",
+							"proName": "IDX:BBNI"
+						}, {
+							"description": "MDIA",
+							"proName": "IDX:MDIA"
+						}, {
+							"description": "NIKKEI 225 (Jepang)",
+							"proName": "INDEX:NKY"
+						}, {
+							"description": "Bitcoin",
+							"proName": "BINANCE:BTCUSDT"
+						}, {
+							"description": "Ethereum",
+							"proName": "BINANCE:ETHUSDT"
+						}, {
+							"description": "S&P 500 (AS)",
+							"proName": "FOREXCOM:SPXUSD"
+						}, {
+							"description": "EMAS (Gold)",
+							"proName": "TVC:GOLD"
+						}, {
+							"description": "MINYAK (WTI)",
+							"proName": "TVC:USOIL"
+						}],
+						"showSymbolLogo": true,
+						"isAnimated": true,
+						"colorTheme": "dark",
+						"locale": "id",
+						"displayMode": "adaptive"
+					}
+				</script>
+			</div>
+		</div>
+		
+		<header class="relative py-24 overflow-hidden">
+			<div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(16,185,129,0.08),transparent_50%)]"></div>
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+				<div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+					<span class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-xs font-semibold text-emerald-400">
+						<span class="flex h-2 w-2 relative">
+							<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+							<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+						</span>Pendaftaran Grup VIP Periode Juni 2026 Dibuka </span>
+					<h1 class="heading-font text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight">Belajar Saham Pintar & Dapatkan <span class="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">Watchlist</span>Siap Pakai </h1>
+					<p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">Stock ID VIP dibentuk pada September 2025, ditujukan untuk membantu teman-teman Belajar Saham dan memberikan Watchlist terbaik yang sudah kami analisa. <br>Kami memastikan harga kelas kami sangat kompetitif dan dapat bersaing, diharapkan semua teman dapat profit dengan konsisten. </p>
+					<div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 pt-2">
+						<a href="#paket" class="bg-emerald-500 hover:bg-emerald-400 text-white-950 px-8 py-4 rounded-xl font-bold transition shadow-xl shadow-emerald-500/10 text-center">Lihat Pilihan Paket</a>
+						<a href="#benefit" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 px-8 py-4 rounded-xl font-medium transition text-center">Pelajari Benefit <i class="fa-solid fa-arrow-right ml-2 text-xs text-slate-500"></i>
+						</a>
+					</div>
+				</div>
+				
+				<div class="lg:col-span-5">
+					<div class="glassmorphism p-8 rounded-2xl relative glow-green overflow-hidden">
+						<div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl"></div>
+						<h3 class="heading-font text-lg font-bold text-white mb-6 flex items-center gap-2">
+							<i class="fa-solid fa-users text-emerald-400"></i>Aktivitas Komunitas Live
+						</h3>
+						
+						<div class="space-y-4">
+							<div class="bg-slate-950/50 border border-slate-800/60 p-4 rounded-xl flex justify-between items-center">
+								<div>
+									<span class="text-xs text-slate-500 block uppercase">Member Cap</span>
+									<span class="text-xl font-black text-white heading-font mt-0.5">1,5 Miliar</span>
+								</div>
+								<i class="fa-solid fa-dollar-sign text-emerald-500 opacity-60 text-lg"></i>
+							</div>
+							
+							<div class="bg-slate-950/50 border border-slate-800/60 p-4 rounded-xl flex justify-between items-center">
+								<div>
+									<span class="text-xs text-slate-500 block uppercase">Pernah Bergabung</span>
+									<span class="text-xl font-black text-white heading-font mt-0.5">175 Orang</span>
+								</div>
+								<i class="fa-solid fa-heart-pulse text-emerald-500 opacity-60 text-lg"></i>
+							</div>
+							
+							<div class="bg-slate-950/50 border border-slate-800/60 p-4 rounded-xl flex justify-between items-center">
+								<div>
+									<span class="text-xs text-slate-500 block uppercase">Anggota Aktif Saat Ini</span>
+									<span class="text-xl font-black text-emerald-400 heading-font mt-0.5">76 Orang</span>
+								</div>
+								<span class="flex h-3 w-3 bg-emerald-400 rounded-full shadow-[0_0_8px_rgba(52,211,153,1)]"></span>
+							</div>
+							
+							<div class="bg-slate-950/50 border border-slate-800/60 p-4 rounded-xl flex justify-between items-center">
+								<div>
+									<span class="text-xs text-slate-500 block uppercase">Lama Grup Berjalan</span>
+									<span id="liveClock" class="text-sm font-mono text-slate-200 block mt-0.5 font-bold">999 Bulan (999 hari)</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</header>
 		
-		<main role="main" class="latar-utama hitam-bg" onclick="musik()">
-			<div id="myCarousel" class="carousel slide carousel-fade" data-ride="carousel">
-				<ol class="carousel-indicators">
-					<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-					<li data-target="#myCarousel" data-slide-to="1"></li>
-					<li data-target="#myCarousel" data-slide-to="2"></li>
-				</ol>
-				
-				<div class="carousel-inner">
-					<div class="carousel-item active" style="background-color: inherit">
-						<img class="d-block w-100 img" src="stockid_gambar/slide1.jpg" style="object-fit: cover; margin-top: 16px">
-						<div class="container">
-							<div class="carousel-caption text-start">
-								<h1 class="header">Selamat Datang</h1>
-								<p class="header">Belajar Saham Dari Nol Sampai Bisa, Di Bimbing Dengan 2 Mentor Berpengalaman</p>
-								<!--<p><a class="btn btn-md btn-primary rounded-pill" href="https://api.whatsapp.com/send?phone=6289529305947&text=Aku+Ingin+Gabung+Grup+Saham+VIP" role="button"><i class="bi bi-box-arrow-in-right" style="font-size: 1rem"></i> Gabung, yuk!</a></p>-->
-							</div>
-						</div>
-					</div>
-					
-					<div class="carousel-item" style="background-color: inherit">
-						<img class="d-block w-100 img" src="stockid_gambar/slide2.jpg" style="object-fit: cover; margin-top: 16px">
-						<div class="container">
-							<div class="carousel-caption">
-								<h1 class="header">Pembelajaran</h1>
-								<p class="header">Belajar Dasar Saham, Analisa Fundamental, Analisa Teknikal, Bandarmology dan masih banyak lagi</p>
-							</div>
-						</div>
-					</div>
-					
-					<div class="carousel-item" style="background-color: inherit">
-						<img class="d-block w-100 img" src="stockid_gambar/slide3.jpg" style="object-fit: cover; margin-top: 16px">
-						<div class="container text-end">
-							<div class="carousel-caption">
-								<h1 class="header">Pasti Murah</h1>
-								<p class="header">Kami Berani Jamin Harga Kelas Kami Dapat Bersaing Dengan Kompetitif</p>
-							</div>
-						</div>
-					</div>
+		<section id="benefit" class="py-20 bg-slate-950/40 relative border-y border-slate-900">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+					<span class="text-xs font-bold uppercase tracking-widest text-emerald-400">Kurikulum & Layanan VIP</span>
+					<h2 class="heading-font text-3xl sm:text-4xl font-extrabold text-white">Benefit Eksklusif Yang Kamu Dapatkan</h2>
+					<p class="text-slate-400">Kami tidak hanya memberikan menu rekomendasi mentah, tetapi juga memberikan pembelajaran komprehensif agar Kamu bisa mandiri.</p>
 				</div>
 				
-				<a style="border: none" onclick="klik()" class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-					<span class="sr-only">Previous</span>
-				</a>
-				
-				<a style="border: none" onclick="klik()" class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
-					<span class="sr-only">Next</span>
-				</a>
-			</div>
-			
-			<!--
-			<div class="container marketing">
-				<div class="row">
-					<div class="col-lg-4">
-						<img class="box-shadow" src="top1.jpg" style="width: 120px; height: 120px; margin-bottom: 10px; object-fit: cover; border: 1px solid #BBB; border-radius: 50%">
-						<h1 class="hitam">Tentang</h1>
-						<p id="typing_01" class="hitam"><i class="bi bi-chat-dots" style="font-size: 1rem"></i> </p>
-						<p><button class="btn btn-sm rounded-pill btn-primary box-shadow hitam-btn" onclick="writer_01();yappingsatu()">Selengkapnya <i class="bi bi-terminal" style="font-size: 1rem"></i></button></p>
-					</div>
-					<script>
-						var satu = 0;
-						var txt01 = "Dengan dibuatnya kelas berbayar ini ditujukan untuk membantu teman-teman belajar saham termasuk menganalisa saham, membaca market, membaca pergerakan bandar atau asing, memilih saham yang bagus dan memberikan sinyal atau watchlist saham yang berpontensi naik, kadang ada juga info A1"; /* The text */
-						var speed1 = 55;
-						function writer_01() {
-							if (satu < txt01.length) {
-								document.getElementById("typing_01").innerHTML += txt01.charAt(satu);
-								satu++;
-								setTimeout(writer_01, speed1);
-							}
-						}
-					</script>
-					
-					<hr class="featurette-divider">
-					
-					<div class="col-lg-4">
-						<img class="box-shadow" src="top2.jpg" style="width: 120px; height: 120px; margin-bottom: 10px; object-fit: cover; border: 1px solid #BBB; border-radius: 50%">
-						<h1 class="hitam">Harga Terbaik</h1>
-						<p id="typing_02" class="hitam"><i class="bi bi-chat-dots" style="font-size: 1rem"></i> </p>
-						<p><button class="btn btn-sm rounded-pill btn-primary box-shadow hitam-btn" onclick="writer_02();yappingdua()">Selengkapnya <i class="bi bi-terminal" style="font-size: 1rem"></i></button></p>
-					</div>
-					<script>
-						var dua = 0;
-						var txt02 = 'Harga kelas yang kami tawarkan sangat worth it untuk dibeli, terjangkau dan dapat bersaing, jaminan balik modal dalam 7 hari kerja (tergantung modalnya)'; /* The text */
-						var speed2 = 60;
-						function writer_02() {
-							if (dua < txt02.length) {
-								document.getElementById("typing_02").innerHTML += txt02.charAt(dua);
-								dua++;
-								setTimeout(writer_02, speed2);
-							}
-						}
-					</script>
-				</div>
-			</div>
-			-->
-			
-			<div class="market-status-widget">
-				<div id="market-timer-label">Memuat Waktu Market...</div>
-				<div id="market-timer-clock">00:00:00</div>
-			</div>
-
-			<script>
-			function updateMarketTimer() {
-				const now = new Date();
-				// Gunakan Waktu Indonesia Barat (WIB)
-				const jktTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Jakarta"}));
-				const hours = jktTime.getHours();
-				const minutes = jktTime.getMinutes();
-				const day = jktTime.getDay(); // 0 = Minggu, 6 = Sabtu
-				let targetTime = new Date(jktTime);
-				let label = "";
-				// Cek apakah hari ini Weekend (Sabtu/Minggu)
-				if (day === 0 || day === 6) {
-					label = "Market Libur (Buka Senin)";
-					document.getElementById("market-timer-clock").innerHTML = "--:--:--";
-					document.getElementById("market-timer-label").innerText = label;
-					return;
-				}
-				// Tentukan Target Waktu
-				if (hours < 9) {
-					// Sebelum Market Buka
-					label = "Menuju Market Open (09:00)";
-					targetTime.setHours(9, 0, 0);
-				} else if (hours < 16) {
-					// Market Sedang Berjalan
-					label = "Menuju Market Close (16:00)";
-					targetTime.setHours(16, 0, 0);
-				} else {
-					// Setelah Market Tutup
-					label = "Market Sudah Tutup";
-					document.getElementById("market-timer-clock").innerHTML = "CLOSED";
-					document.getElementById("market-timer-label").innerText = label;
-					return;
-				}
-				// Hitung Selisih Waktu
-				const diff = targetTime - jktTime;
-				const h = Math.floor(diff / (1000 * 60 * 60));
-				const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-				const s = Math.floor((diff % (1000 * 60)) / 1000);
-				// Format Digital Clock
-				const displayH = h < 10 ? "0" + h : h;
-				const displayM = m < 10 ? "0" + m : m;
-				const displayS = s < 10 ? "0" + s : s;
-				document.getElementById("market-timer-label").innerText = label;
-				document.getElementById("market-timer-clock").innerText = `${displayH}:${displayM}:${displayS}`;
-			}
-			// Update setiap 1 detik
-			setInterval(updateMarketTimer, 1000);
-			updateMarketTimer();
-			</script>
-			
-			<div class="container">
-				<div class="tentang col-md-8">
-						<p class="tentang-title text-center text-hitam"><i class="bi bi-question-circle"></i> Apa itu Stock ID VIP?</p>
-						<p class="tentang-text text-hitam">Stock ID VIP dibentuk pada September 2025, ditujukan untuk membantu teman-teman Belajar Saham dan memberikan Watchlist terbaik yang sudah kami analisa.</p>
-						<p class="tentang-text text-hitam">Kami memastikan harga kelas kami sangat kompetitif dan dapat bersaing, diharapkan semua teman dapat profit dengan konsisten.</p>
-						<br>
-						<span onclick="yapping2voice()">
-						<p class="tentang-title text-center text-hitam"><i class="bi bi-cup-hot-fill"></i> Benefit apa saja yang didapat?</p>
-						<p class="tentang-text text-hitam">Di Stock ID VIP kami tidak hanya memberikan Watchlist, tapi juga memberikan Pengertian dan Pembelajaran, seperti:</p>
-						<p class="tentang-text text-hitam underline"><i class="bi bi-search"></i> Menganalisa Saham</p>
-						<p class="tentang-text text-hitam underline"><i class="bi bi-pc-display-horizontal"></i> Membaca Market</p>
-						<p class="tentang-text text-hitam underline"><i class="bi bi-columns"></i> Membaca Broker Summary</p>
-						<p class="tentang-text text-hitam underline"><i class="bi bi-activity"></i> Membaca Pergerakan Bandar atau Asing</p>
-						<p class="tentang-text text-hitam underline"><i class="bi bi-bar-chart-line-fill"></i> Membaca Data Perusahaan (Fundamental)</p>
-						<p class="tentang-text text-hitam underline"><i class="bi bi-broadcast-pin"></i> Saran (Entry Safe, Support, Take Profit)</p>
-						<p class="tentang-text text-hitam underline"><i class="bi bi-graph-up-arrow"></i> Watchlist Gacor Untuk Swing & Info A2</p>
-						</span>
-					</div>
-			</div>
-			
-			<br>
-			
-			<div class="container">
-				<div class="tentang col-md-8">
-					<p class="tentang-title text-center text-hitam">Total Member</p>
-					<p class="tentang-text text-center text-hitam">168 Jiwa</p>
-					<br>
-					<p class="tentang-title text-center text-hitam">Total Member Aktif</p>
-					<p class="tentang-text text-center text-hitam">76 Jiwa</p>
-					<br>
-					<p class="tentang-title text-center text-hitam">Member Cap</p>
-					<p class="tentang-text text-center text-hitam">1.200,000,000 +</p>
-					<br>
-					<p class="tentang-title text-center text-hitam">Grup Berjalan Lamanya</p>
-					<p class="tentang-text text-center text-hitam">
-						<span id="umur">
-							<span class="bulan"></span> Bulan
-							<br>
-							(<span class="hari"></span> hari, <span class="jam"></span> jam, <span class="mnt"></span> mnt, <span class="dtk"></span> dtk)
-						</span>
-					</p>
-				</div>
-			</div>
-			
-			<hr class="featurette-divider">
-			
-			<div class="container">
-				<div class="row">
-					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
-						<img src="stockid_gambar/screener.jpg" class="card-img-top">
-						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 3 orang</marquee>
-						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>30%</bdo>
-							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Paket Screener</h4>
-							<p class="card-text text-hitam">Harga Awal: Rp. <bdo>100,000</bdo></p>
-							<p class="card-text text-hitam">Harga Disc: <bdo>Rp. 70,000</bdo></p>
-							<button type="button" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" data-toggle="modal" data-target="#screener-modal" onclick="screenervoice()"><i class="bi bi-currency-exchange"></i> Beli</button>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					<div class="bg-slate-900/60 border border-slate-800/60 p-6 rounded-xl hover:border-emerald-500/30 transition duration-300 group">
+						<div class="bg-slate-950 w-12 h-12 rounded-lg flex items-center justify-center border border-slate-800 group-hover:bg-emerald-500 transition duration-300">
+							<i class="fa-solid fa-magnifying-glass-chart text-emerald-400 group-hover:text-slate-950 text-lg"></i>
 						</div>
+						<h3 class="heading-font text-lg font-bold text-white mt-5 mb-2">Menganalisa Struktur Saham</h3>
+						<p class="text-sm text-slate-400 leading-relaxed">Pahami area support kuat, resistance target, tren pergerakan major maupun minor agar trading lebih terukur.</p>
 					</div>
 					
-					<!--<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
-						<img src="stockid_gambar/1month.jpg" class="card-img-top">
-						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 118 orang</marquee>
-						<div class="card-body div-hitam"> <bdo class="promo">PROMO</bdo> <bdo class="disc"><i class="bi bi-dash-lg"></i>50%</bdo>
-							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Kelas 1 Bulan</h4>
-							<p class="card-text text-hitam">Harga Awal: Rp. <bdo>200,000</bdo></p>
-							<p class="card-text text-hitam">Harga Disc: <bdo>Rp. 129,000</bdo></p>
-							<button type="button" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" data-toggle="modal" data-target="#kelas1-modal" onclick="satubulanvoice()"><i class="bi bi-currency-exchange"></i> Beli</button>
+					<div class="bg-slate-900/60 border border-slate-800/60 p-6 rounded-xl hover:border-emerald-500/30 transition duration-300 group">
+						<div class="bg-slate-950 w-12 h-12 rounded-lg flex items-center justify-center border border-slate-800 group-hover:bg-emerald-500 transition duration-300">
+							<i class="fa-solid fa-user-secret text-emerald-400 group-hover:text-slate-950 text-lg"></i>
 						</div>
-					</div>-->
-					
-					<!--<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
-						<img src="stockid_gambar/2month.jpg" class="card-img-top">
-						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 23 orang</marquee>
-						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>40%</bdo>
-							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Kelas 2 Bulan</h4>
-							<p class="card-text text-hitam">Harga Awal: Rp. <bdo>400,000</bdo></p>
-							<p class="card-text text-hitam">Harga Disc: <bdo>Rp. 239,999</bdo></p>
-							<button type="button" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" data-toggle="modal" data-target="#kelas2-modal" onclick="duabulanvoice()"><i class="bi bi-currency-exchange"></i> Beli</button>
-						</div>
-					</div>-->
-					
-					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
-						<img src="stockid_gambar/3month.jpg" class="card-img-top">
-						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 35x</marquee>
-						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>45%</bdo>
-							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Kelas 100 Hari</h4>
-							<p class="card-text text-hitam">Harga Awal: Rp. <bdo>600,000</bdo></p>
-							<p class="card-text text-hitam">Harga Disc: <bdo>Rp. 329,999</bdo></p>
-							<button type="button" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" data-toggle="modal" data-target="#kelas3-modal" onclick="tigabulanvoice()"><i class="bi bi-currency-exchange"></i> Beli</button>
-						</div>
+						<h3 class="heading-font text-lg font-bold text-white mt-5 mb-2">Membaca Pergerakan Bantar / Asing</h3>
+						<p class="text-sm text-slate-400 leading-relaxed">Kupas tuntas ilmu Bandarmologi dan pembacaan data Broker Summary (Top Buyer & Top Seller) secara akurat.</p>
 					</div>
 					
-					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
-						<img src="stockid_gambar/6month.jpg" class="card-img-top">
-						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 12x</marquee>
-						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>50%</bdo>
-							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Kelas 200 Hari</h4>
-							<p class="card-text text-hitam">Harga Awal: Rp. <bdo>1.200,000</bdo></p>
-							<p class="card-text text-hitam">Harga Disc: <bdo>Rp. 599,999</bdo></p>
-							<button type="button" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" data-toggle="modal" data-target="#kelas4-modal" onclick="enambulanvoice()"><i class="bi bi-currency-exchange"></i> Beli</button>
+					<div class="bg-slate-900/60 border border-slate-800/60 p-6 rounded-xl hover:border-emerald-500/30 transition duration-300 group">
+						<div class="bg-slate-950 w-12 h-12 rounded-lg flex items-center justify-center border border-slate-800 group-hover:bg-emerald-500 transition duration-300">
+							<i class="fa-solid fa-fire text-emerald-400 group-hover:text-slate-950 text-lg"></i>
 						</div>
+						<h3 class="heading-font text-lg font-bold text-white mt-5 mb-2">Watchlist Siap Pakai</h3>
+						<p class="text-sm text-slate-400 leading-relaxed">Akses berkala terhadap list saham pilihan dengan probabilitas tinggi untuk Swing Trading lengkap dengan trading plan aman.</p>
 					</div>
 					
-					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
-						<img src="stockid_gambar/oneyear.jpg" class="card-img-top">
-						<marquee direction="left" width="100%" scrollamount="5">Sudah dibeli 8x</marquee>
-						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>55%</bdo>
-							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Kelas 400 Hari</h4>
-							<p class="card-text text-hitam">Harga Awal: Rp. <bdo>2.400,000</bdo></p>
-							<p class="card-text text-hitam">Harga Disc: <bdo>Rp. 1.079,999</bdo></p>
-							<button type="button" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" data-toggle="modal" data-target="#kelas5-modal" onclick="satutahunvoice()"><i class="bi bi-currency-exchange"></i> Beli</button>
+					<div class="bg-slate-900/60 border border-slate-800/60 p-6 rounded-xl hover:border-emerald-500/30 transition duration-300 group">
+						<div class="bg-slate-950 w-12 h-12 rounded-lg flex items-center justify-center border border-slate-800 group-hover:bg-emerald-500 transition duration-300">
+							<i class="fa-solid fa-shield-halved text-emerald-400 group-hover:text-slate-950 text-lg"></i>
 						</div>
+						<h3 class="heading-font text-lg font-bold text-white mt-5 mb-2">Saran Entry Safe & Stop Loss</h3>
+						<p class="text-sm text-slate-400 leading-relaxed">Manajemen risiko super ketat, penentuan titik support krusial, dan menjaga psikologi modal agar tetap sehat.</p>
 					</div>
 					
-					<div class="card mb-4 div-hitam" style="display: block; margin: 0 auto; width: 16rem; border-radius: 10px 10px">
-						<img src="stockid_gambar/free.jpg" class="card-img-top">
-						<marquee direction="left" width="100%" scrollamount="5">760 orang telah bergabung</marquee>
-						<div class="card-body div-hitam"> <bdo class="disc"><i class="bi bi-dash-lg"></i>100%</bdo>
-							<h4 class="card-title text-biru"><i class="bi bi-stars"></i>Stock ID Free</h4>
-							<p class="card-text text-hitam">Harga Awal: Rp. <bdo>10.000,999</bdo></p>
-							<p class="card-text text-hitam">Harga Disc: <bdo>Rp. 0</bdo></p>
-							<button type="button" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" data-toggle="modal" data-target="#free-modal" onclick="freevoice()"><i class="bi bi-currency-exchange"></i> Beli</button>
+					<div class="bg-slate-900/60 border border-slate-800/60 p-6 rounded-xl hover:border-emerald-500/30 transition duration-300 group">
+						<div class="bg-slate-950 w-12 h-12 rounded-lg flex items-center justify-center border border-slate-800 group-hover:bg-emerald-500 transition duration-300">
+							<i class="fa-solid fa-coins text-emerald-400 group-hover:text-slate-950 text-lg"></i>
 						</div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Modal -->
-			
-			<div id="screener-modal" class="modal fade" role="dialog">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header div-hitam">
-							<h4 class="modal-title text-biru">Screener Beli Sore Jual Pagi / Swing</h4>
-						</div>
-						<div class="modal-body div-hitam">
-							<p class="modal-text text-hitam"><i class="bi bi-calendar-month-fill" style="font-size: 1rem"></i> Kamu akan membeli Screener BSJP / Swing</p>
-							<p class="modal-text text-hitam"><i class="bi bi-question-circle" style="font-size: 1rem"></i> Apakah kamu sudah yakin ingin membeli ini?</p>
-							<p class="modal-text text-hitam text-center"><i class="bi bi-person-circle" style="font-size: 1rem"></i> Harga Screener Rp. 70,000</p>
-							<a class="bayar text-center" onclick="bayartoggle('bayar1')">Lihat Cara Bayar <i id="arrowIconsatu" class="bi bi-chevron-bar-down"></i></a>
-							<div id="bayarboxsatu" class="bayar-box">
-								<p class="bayar-text label">Siapkan Dana Sebesar Rp. 70,000</p>
-								<p class="bayar-text">Transfer ke Nomor Rekening atau E-Wallet berikut:</p>
-								<p class="bayar-text">Dana: <input type="text" value="089529305947" id="dana" disabled> <a onclick="aksi('danacopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Gopay: <input type="text" value="089529305947" id="gopay" disabled> <a onclick="aksi('gopaycopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Bank Jago: <input type="text" value="101650720245" id="jago" disabled> <a onclick="aksi('jagocopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Jika sudah membayar, Screen Shoot dan kirimkan bukti bayar di bawah ini</p>
-							</div>
-							<br>
-							<a href="https://api.whatsapp.com/send?phone=6289529305947&text=Saya ingin membeli Paket Screener dan sudah membayar sebesar Rp. 70,000, mohon cek pembayaran masuk."><button type="button" onclick="yeayvoice()" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" role="button" aria-pressed="true"><i class="bi bi-wallet2" style="font-size: 1rem"></i>&nbsp; Saya Sudah Bayar</button></a>
-						</div>
-						<div class="modal-footer div-hitam">
-							<button type="button" class="btn btn-sm btn-info hitam-btn" data-dismiss="modal"><i class="bi bi-x-circle"></i> Tutup</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div id="kelas1-modal" class="modal fade" role="dialog">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header div-hitam">
-							<h4 class="modal-title text-biru">Paket 1 Bulan</h4>
-						</div>
-						<div class="modal-body div-hitam">
-							<p class="modal-text text-hitam"><i class="bi bi-calendar-month-fill" style="font-size: 1rem"></i> Kamu akan membeli kelas selama 30 hari.</p>
-							<p class="modal-text text-hitam"><i class="bi bi-question-circle" style="font-size: 1rem"></i> Apakah kamu sudah yakin ingin membeli kelas ini?</p>
-							<p class="modal-text text-hitam text-center"><i class="bi bi-person-circle" style="font-size: 1rem"></i> Harga Kelas Rp. 129,000</p>
-							<a class="bayar text-center" onclick="bayartoggle('bayar2')">Lihat Cara Bayar <i id="arrowIcondua" class="bi bi-chevron-bar-down"></i></a>
-							<div id="bayarboxdua" class="bayar-box">
-								<p class="bayar-text label">Siapkan Dana Sebesar Rp. 129,000</p>
-								<p class="bayar-text">Transfer ke Nomor Rekening atau E-Wallet berikut:</p>
-								<p class="bayar-text">Dana: <input type="text" value="089529305947" id="dana" disabled> <a onclick="aksi('danacopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Gopay: <input type="text" value="089529305947" id="gopay" disabled> <a onclick="aksi('gopaycopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Bank Jago: <input type="text" value="101650720245" id="jago" disabled> <a onclick="aksi('jagocopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Jika sudah membayar, Screen Shoot dan kirimkan bukti bayar di bawah ini</p>
-							</div>
-							<br>
-							<a href="https://api.whatsapp.com/send?phone=6289529305947&text=Saya ingin bergabung kelas 1 Bulan dan sudah membayar sebesar Rp. 129,000, mohon cek pembayaran masuk."><button type="button" onclick="bayarvoice()" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" role="button" aria-pressed="true"><i class="bi bi-wallet2" style="font-size: 1rem"></i>&nbsp; Saya Sudah Bayar</button></a>
-						</div>
-						<div class="modal-footer div-hitam">
-							<button type="button" class="btn btn-sm btn-info hitam-btn" data-dismiss="modal"><i class="bi bi-x-circle"></i> Tutup</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div id="kelas2-modal" class="modal fade" role="dialog">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header div-hitam">
-							<h4 class="modal-title text-biru">Paket 2 Bulan</h4>
-						</div>
-						<div class="modal-body div-hitam">
-							<p class="modal-text text-hitam"><i class="bi bi-calendar-month-fill" style="font-size: 1rem"></i> Kamu akan membeli kelas selama 60 hari.</p>
-							<p class="modal-text text-hitam"><i class="bi bi-question-circle" style="font-size: 1rem"></i> Apakah kamu sudah yakin ingin membeli kelas ini?</p>
-							<p class="modal-text text-hitam text-center"><i class="bi bi-person-circle" style="font-size: 1rem"></i> Harga Kelas Rp. 239,999</p>
-							<a class="bayar text-center" onclick="bayartoggle('bayar3')">Lihat Cara Bayar <i id="arrowIcontiga" class="bi bi-chevron-bar-down"></i></a>
-							<div id="bayarboxtiga" class="bayar-box">
-								<p class="bayar-text label">Siapkan Dana Sebesar Rp. 239,999</p>
-								<p class="bayar-text">Transfer ke Nomor Rekening atau E-Wallet berikut:</p>
-								<p class="bayar-text">Dana: <input type="text" value="089529305947" id="dana" disabled> <a onclick="aksi('danacopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Gopay: <input type="text" value="089529305947" id="gopay" disabled> <a onclick="aksi('gopaycopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Bank Jago: <input type="text" value="101650720245" id="jago" disabled> <a onclick="aksi('jagocopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Jika sudah membayar, Screen Shoot dan kirimkan bukti bayar di bawah ini</p>
-							</div>
-							<br>
-							<a href="https://api.whatsapp.com/send?phone=6289529305947&text=Saya ingin bergabung kelas 2 Bulan dan sudah membayar sebesar Rp. 239,999, mohon cek pembayaran masuk."><button type="button" onclick="bayarvoice()" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" role="button" aria-pressed="true"><i class="bi bi-wallet2" style="font-size: 1rem"></i>&nbsp; Saya Sudah Bayar</button></a>
-						</div>
-						<div class="modal-footer div-hitam">
-							<button type="button" class="btn btn-sm btn-info hitam-btn" data-dismiss="modal"><i class="bi bi-x-circle"></i> Tutup</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div id="kelas3-modal" class="modal fade" role="dialog">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header div-hitam">
-							<h4 class="modal-title text-biru">Paket 100 Hari</h4>
-						</div>
-						<div class="modal-body div-hitam">
-							<p class="modal-text text-hitam"><i class="bi bi-calendar-month-fill" style="font-size: 1rem"></i> Kamu akan membeli kelas selama 100 Hari.</p>
-							<p class="modal-text text-hitam"><i class="bi bi-question-circle" style="font-size: 1rem"></i> Apakah kamu sudah yakin ingin membeli kelas ini?</p>
-							<p class="modal-text text-hitam text-center"><i class="bi bi-person-circle" style="font-size: 1rem"></i> Harga Kelas Rp. 329,999</p>
-							<a class="bayar text-center" onclick="bayartoggle('bayar4')">Lihat Cara Bayar <i id="arrowIconempat" class="bi bi-chevron-bar-down"></i></a>
-							<div id="bayarboxempat" class="bayar-box">
-								<p class="bayar-text label">Siapkan Dana Sebesar Rp. 329,999</p>
-								<p class="bayar-text">Transfer ke Nomor Rekening atau E-Wallet berikut:</p>
-								<p class="bayar-text">Dana: <input type="text" value="089529305947" id="dana" disabled> <a onclick="aksi('danacopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Gopay: <input type="text" value="089529305947" id="gopay" disabled> <a onclick="aksi('gopaycopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Bank Jago: <input type="text" value="101650720245" id="jago" disabled> <a onclick="aksi('jagocopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Jika sudah membayar, Screen Shoot dan kirimkan bukti bayar di bawah ini</p>
-							</div>
-							<br>
-							<a href="https://api.whatsapp.com/send?phone=6289529305947&text=Saya ingin bergabung kelas 100 Hari dan sudah membayar sebesar Rp. 329,999, mohon cek pembayaran masuk."><button type="button" onclick="bayarvoice()" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" role="button" aria-pressed="true"><i class="bi bi-wallet2" style="font-size: 1rem"></i>&nbsp; Saya Sudah Bayar</button></a>
-						</div>
-						<div class="modal-footer div-hitam">
-							<button type="button" class="btn btn-sm btn-info hitam-btn" data-dismiss="modal"><i class="bi bi-x-circle"></i> Tutup</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div id="kelas4-modal" class="modal fade" role="dialog">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header div-hitam">
-							<h4 class="modal-title text-biru">Paket 200 Hari</h4>
-						</div>
-						<div class="modal-body div-hitam">
-							<p class="modal-text text-hitam"><i class="bi bi-calendar-month-fill" style="font-size: 1rem"></i> Kamu akan membeli kelas selama 200 Hari.</p>
-							<p class="modal-text text-hitam"><i class="bi bi-question-circle" style="font-size: 1rem"></i> Apakah kamu sudah yakin ingin membeli kelas ini?</p>
-							<p class="modal-text text-hitam text-center"><i class="bi bi-person-circle" style="font-size: 1rem"></i> Harga Kelas Rp. 599,999</p>
-							<a class="bayar text-center" onclick="bayartoggle('bayar5')">Lihat Cara Bayar <i id="arrowIconlima" class="bi bi-chevron-bar-down"></i></a>
-							<div id="bayarboxlima" class="bayar-box">
-								<p class="bayar-text label">Siapkan Dana Sebesar Rp. 599,999</p>
-								<p class="bayar-text">Transfer ke Nomor Rekening atau E-Wallet berikut:</p>
-								<p class="bayar-text">Dana: <input type="text" value="089529305947" id="dana" disabled> <a onclick="aksi('danacopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Gopay: <input type="text" value="089529305947" id="gopay" disabled> <a onclick="aksi('gopaycopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Bank Jago: <input type="text" value="101650720245" id="jago" disabled> <a onclick="aksi('jagocopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Jika sudah membayar, Screen Shoot dan kirimkan bukti bayar di bawah ini</p>
-							</div>
-							<br>
-							<a href="https://api.whatsapp.com/send?phone=6289529305947&text=Saya ingin bergabung kelas 200 Hari dan sudah membayar sebesar Rp. 599,999, mohon cek pembayaran masuk."><button type="button" onclick="jokowivoice()" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" role="button" aria-pressed="true"><i class="bi bi-wallet2" style="font-size: 1rem"></i>&nbsp; Saya Sudah Bayar</button></a>
-						</div>
-						<div class="modal-footer div-hitam">
-							<button type="button" class="btn btn-sm btn-info hitam-btn" data-dismiss="modal"><i class="bi bi-x-circle"></i> Tutup</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div id="kelas5-modal" class="modal fade" role="dialog">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header div-hitam">
-							<h4 class="modal-title text-biru">Paket 400 Hari</h4>
-						</div>
-						<div class="modal-body div-hitam">
-							<p class="modal-text text-hitam"><i class="bi bi-calendar-month-fill" style="font-size: 1rem"></i> Kamu akan membeli kelas selama 400 Hari.</p>
-							<p class="modal-text text-hitam"><i class="bi bi-question-circle" style="font-size: 1rem"></i> Apakah kamu sudah yakin ingin membeli kelas ini?</p>
-							<p class="modal-text text-hitam text-center"><i class="bi bi-person-circle" style="font-size: 1rem"></i> Harga Kelas Rp. 1.079,999</p>
-							<a class="bayar text-center" onclick="bayartoggle('bayar6')">Lihat Cara Bayar <i id="arrowIconenam" class="bi bi-chevron-bar-down"></i></a>
-							<div id="bayarboxenam" class="bayar-box">
-								<p class="bayar-text label">Siapkan Dana Sebesar Rp. 1.079,999</p>
-								<p class="bayar-text">Transfer ke Nomor Rekening atau E-Wallet berikut:</p>
-								<p class="bayar-text">Dana: <input type="text" value="089529305947" id="dana" disabled> <a onclick="aksi('danacopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Gopay: <input type="text" value="089529305947" id="gopay" disabled> <a onclick="aksi('gopaycopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Bank Jago: <input type="text" value="101650720245" id="jago" disabled> <a onclick="aksi('jagocopy')"> <i class="bi bi-copy"></i></a></p>
-								<p class="bayar-text">Jika sudah membayar, Screen Shoot dan kirimkan bukti bayar di bawah ini</p>
-							</div>
-							<br>
-							<a href="https://api.whatsapp.com/send?phone=6289529305947&text=Saya ingin bergabung kelas 400 Hari dan sudah membayar sebesar Rp. 1.079,999, mohon cek pembayaran masuk."><button type="button" onclick="jokowivoice()" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" role="button" aria-pressed="true"><i class="bi bi-wallet2" style="font-size: 1rem"></i>&nbsp; Saya Sudah Bayar</button></a>
-						</div>
-						<div class="modal-footer div-hitam">
-							<button type="button" class="btn btn-sm btn-info hitam-btn" data-dismiss="modal"><i class="bi bi-x-circle"></i> Tutup</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div id="free-modal" class="modal fade" role="dialog">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header div-hitam">
-							<h4 class="modal-title text-biru">Stock ID Free</h4>
-						</div>
-						<div class="modal-body div-hitam">
-							<p class="modal-text text-hitam"><i class="bi bi-calendar-month-fill" style="font-size: 1rem"></i> Kamu akan bergabung ke Stock ID</p>
-							<p class="modal-text text-hitam"><i class="bi bi-question-circle" style="font-size: 1rem"></i> Apakah kamu sudah yakin ingin bergabung ke Grup ini?</p>
-							<p class="modal-text text-hitam text-center"><i class="bi bi-person-circle" style="font-size: 1rem"></i> Harga Grup Rp. 0 (Gratis)</p>
-							<br>
-							<a href="https://chat.whatsapp.com/BpMVt0wI3v78aBYZWMau9p?mode=gi_t"><button type="button" onclick="stockidvoice()" class="btn btn-sm btn-block rounded-pill btn-info hitam-btn" role="button" aria-pressed="true"><i class="bi bi-wallet2" style="font-size: 1rem"></i>&nbsp; Gabung</button></a>
-						</div>
-						<div class="modal-footer div-hitam">
-							<button type="button" class="btn btn-sm btn-info hitam-btn" data-dismiss="modal"><i class="bi bi-x-circle"></i> Tutup</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<hr class="featurette-divider">
-				
-			<h4 class="gain">Apa Kata Mereka? 🗿</h4>
-			<div class="rating-container" id="ratingContainer"></div>
-			
-			<div class="container-gain" onclick="photovoice()">
-				<h4 class="gain">Realized Gain Stock ID's</h4>
-				<div class="gallery-scroll-gain" id="gallery"></div>
-			</div>
-			
-			<div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-hidden="true">
-				<div class="modal-gain" role="document">
-					<div class="modal-media" onclick="photovoice()">
-						<img id="modalImage" src="" alt="">
+						<h3 class="heading-font text-lg font-bold text-white mt-5 mb-2">Analisa Fundamental Perusahaan</h3>
+						<p class="text-sm text-slate-400 leading-relaxed">Diajarkan cara praktis menyaring emiten berfundamental sehat, menakar valuasi wajar, PE ratio, PBV, serta ROE operasional.</p>
 					</div>
 					
-					<div class="modal-footer-gain">
-						<div class="meta" id="modalCaption">&nbsp;</div>
-						<div class="controls">
-							<button class="btn-tutup ghost" id="prevBtn" title="Sebelumnya">‹</button>
-							<button class="btn-tutup ghost" id="nextBtn" title="Selanjutnya">›</button>
-							<button class="btn-tutup" id="closeBtn" title="Tutup (Esc)">Tutup</button>
+					<div class="bg-slate-900/60 border border-slate-800/60 p-6 rounded-xl hover:border-emerald-500/30 transition duration-300 group">
+						<div class="bg-slate-950 w-12 h-12 rounded-lg flex items-center justify-center border border-slate-800 group-hover:bg-emerald-500 transition duration-300">
+							<i class="fa-solid fa-bolt text-emerald-400 group-hover:text-slate-950 text-lg"></i>
 						</div>
+						<h3 class="heading-font text-lg font-bold text-white mt-5 mb-2">Info A2 & Pola Market Maker</h3>
+						<p class="text-sm text-slate-400 leading-relaxed">Update gosip market valid, pergerakan dana asing (Foreign Flow), dan membaca psikologi akumulasi ritel vs institusi raksasa.</p>
 					</div>
 				</div>
 			</div>
-			
-			<hr class="featurette-divider">
-			
-			<div class="card mb-4 div-hitam" style="display: block; position: absolute; left: 2%; width: 47%; margin: 0 auto; border-radius: 10px 10px">
-				<img src="stockid_gambar/admin1.jpg" class="card-img-top" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px 10px 0 0; border: none">
-				<div class="card-body div-hitam" style="padding: 8px 8px !important; border-radius: 0 0 10px 10px">
-					<img src="stockid_gambar/porto1.jpg" class="card-img-top" style="width: 100%; height: auto; object-fit: cover; border: none">
-					<h4 class="card-title hitam">Har</h4>
-					<p class="card-text hitam">Mentor of Stock's ID</p>
-					<p class="card-text hitam">Equity: 81M+</p>
-					<p class="card-text hitam">Type: Mid-Long Term</p>
-					<a type="button" href="https://wa.me/6289529305947" class="btn btn-sm btn-block rounded-pill btn-success hitam-btn"><i class="bi bi-whatsapp" style="font-size: 1rem"></i>&nbsp; Whatsapp</a>
-					<a type="button" href="sms:089529305947" class="btn btn-sm btn-block rounded-pill btn-primary hitam-btn"><i class="bi bi-envelope" style="font-size: 1rem"></i>&nbsp; SMS</a>
-				</div>
-			</div>
-			
-			<div class="card mb-4 div-hitam" style="display: block; position: absolute; right: 2%; width: 47%; margin: 0 auto; border-radius: 10px 10px">
-				<img src="stockid_gambar/admin2.jpg" class="card-img-top" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px 10px 0 0; border: none">
-				<div class="card-body div-hitam" style="padding: 8px 8px !important; border-radius: 0 0 10px 10px">
-					<img src="stockid_gambar/porto2.jpg" class="card-img-top" style="width: 100%; height: auto; object-fit: cover; border: none">
-					<h4 class="card-title hitam">Irfan</h4>
-					<p class="card-text hitam">Mentor of Stock's ID</p>
-					<p class="card-text hitam">Equity: 236M+</p>
-					<p class="card-text hitam">Type: Swing, Long Term</p>
-					<a type="button" href="https://wa.me/6281216752945" class="btn btn-sm btn-block rounded-pill btn-success hitam-btn"><i class="bi bi-whatsapp" style="font-size: 1rem"></i>&nbsp; Whatsapp</a>
-					<a type="button" href="sms:6281216752945" class="btn btn-sm btn-block rounded-pill btn-primary hitam-btn"><i class="bi bi-envelope" style="font-size: 1rem"></i>&nbsp; SMS</a>
-				</div>
-			</div>
-			
-			<br><br><br><rb><br><br><br><rb><br><br><rb><br><br><rb><br><rb><br><br><rb><br><br><rb><br><br><br><rb><br><br><rb><br><br><rb><br><br><rb><br><br><rb><br><br>
-			
-			<footer class="container">
-				<p class="text-footer float-right"><a href="#top">Kembali Ke Atas</a></p>
-				<p class="text-footer hitam">&copy; 2025 Stock's ID, Inc.<br>&middot; Har &middot; GitHub (Servers, Domain) &middot; Bootstrap Package (Theme, Icon, Features) &middot; Free Pik (Images) &middot; ChatGPT (For Helping) &middot; TypeCast.ai (Voice) &middot; W3School &middot; Google Font &middot;</p>
-			</footer>
-			
-			<p class="gabung" id="quotation"><i class="bi bi-box-arrow-in-right"></i> Stock ID</p>
-			
-			<!--
-			<button class="btn btn-toggle btn-sm rounded-pill btn-primary hitam-btn" style="bottom: 80px; left: 10px; position: fixed; z-index: 99999">Tema</button>
-			<script type="text/javascript">
-				const btn = document.querySelector(".btn-toggle");
-				btn.addEventListener("click", function () {
-					document.body.classList.toggle("dark-theme");
-				});
-			</script>
-			-->
-			<script>
-			function aksi(type) {
-				if (type === 'gopaycopy') {
-					var copyText = document.getElementById("gopay");
-				}
-				if (type === 'danacopy') {
-					var copyText = document.getElementById("dana");
-				}
-				if (type === 'jagocopy') {
-					var copyText = document.getElementById("jago");
-				}
-				copyText.select();
-				copyText.setSelectionRange(0, 99999);
-				navigator.clipboard.writeText(copyText.value);
-				alert("Berhasil di salin: " + copyText.value);
-			}
-			</script>
-			
-			<script>
-			function bayartoggle(type) {
-				if (type === 'bayar1') {
-					var box = document.getElementById("bayarboxsatu");
-					var icon = document.getElementById("arrowIconsatu");
-					box.classList.toggle("show");
-					icon.classList.toggle("rotate");
-				}
-				if (type === 'bayar2') {
-					var box = document.getElementById("bayarboxdua");
-					var icon = document.getElementById("arrowIcondua");
-					box.classList.toggle("show");
-					icon.classList.toggle("rotate");
-				}
-				if (type === 'bayar3') {
-					var box = document.getElementById("bayarboxtiga");
-					var icon = document.getElementById("arrowIcontiga");
-					box.classList.toggle("show");
-					icon.classList.toggle("rotate");
-				}
-				if (type === 'bayar4') {
-					var box = document.getElementById("bayarboxempat");
-					var icon = document.getElementById("arrowIconempat");
-					box.classList.toggle("show");
-					icon.classList.toggle("rotate");
-				}
-				if (type === 'bayar5') {
-					var box = document.getElementById("bayarboxlima");
-					var icon = document.getElementById("arrowIconlima");
-					box.classList.toggle("show");
-					icon.classList.toggle("rotate");
-				}
-				if (type === 'bayar6') {
-					var box = document.getElementById("bayarboxenam");
-					var icon = document.getElementById("arrowIconenam");
-					box.classList.toggle("show");
-					icon.classList.toggle("rotate");
-				}
-			}
-			</script>
+		</section>
 		
-			<script type="text/javascript">
-			function musik() {
-				var audio = document.getElementById("musik");
-				audio.play();
+		<section id="watchlist-notes" class="py-16 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-10">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">Personal Workspace</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Trading Watchlist & Notes</h2>
+					<p class="mt-2 text-sm text-slate-400">Catat saham incaran dan rencana trading Kamu di sini. Data otomatis tersimpan dengan aman di browser Kamu.</p>
+				</div>
+				
+				<div class="grid md:grid-cols-3 gap-8">
+					<div class="md:col-span-1 bg-slate-900/40 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-sm h-fit space-y-4">
+						<h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider border-b border-slate-800 pb-2">Tambah Rencana</h3>
+						<div>
+							<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Kode Saham</label>
+							<input type="text" id="note-ticker" placeholder="Contoh: BBRI" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-sm text-white uppercase font-mono placeholder-slate-600 focus:outline-none transition-all">
+						</div>
+						<div>
+							<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5 font-sans">Status Rencana</label>
+							<select id="note-status" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-3 py-2 text-sm text-slate-300 focus:outline-none transition-all">
+								<option value="WATCH" class="text-amber-400">👀 WATCHLIST</option>
+								<option value="BUY" class="text-emerald-400">🎯 BUY PLAN</option>
+								<option value="HOLD" class="text-blue-400">💎 HOLD</option>
+								<option value="SELL" class="text-rose-400">🚀 SELL PLAN</option>
+							</select>
+						</div>
+						<div>
+							<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Catatan / Strategi Trading</label>
+							<textarea id="note-text" rows="4" placeholder="Contoh: Tunggu pantulan di area support 4300, target profit ke 4600. Stop loss kalau breakdown 4200." class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-600 focus:outline-none transition-all leading-relaxed"></textarea>
+						</div>
+						<button onclick="simpanCatatanSaham()" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-md shadow-indigo-600/10">Simpan ke Radar</button>
+					</div>
+					
+					<div class="md:col-span-2 space-y-4">
+						<div class="flex items-center justify-between border-b border-slate-900 pb-2">
+							<h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">📋 Radar Pantauan Saham ( <span id="total-notes-count">0</span>) </h3>
+							<button onclick="hapusSemuaCatatan()" class="text-xs text-rose-400 hover:text-rose-300 transition-colors font-medium">Hapus Semua</button>
+						</div>
+						<div id="watchlist-cards-container" class="grid sm:grid-cols-2 gap-4 max-h-[520px] overflow-y-auto pr-1"></div>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<script>
+			// Ambil data dari localStorage saat halaman pertama kali dibuka
+			let daftarNotes = JSON.parse(localStorage.getItem('stocks_id_notes')) || [];
+			// Fungsi Render Tampilan Kartu
+			function renderWatchlistCards() {
+				const container = document.getElementById('watchlist-cards-container');
+				const countBadge = document.getElementById('total-notes-count');
+				container.innerHTML = '';
+				countBadge.innerText = daftarNotes.length;
+				if (daftarNotes.length === 0) {
+					container.innerHTML = `
+						<div class="col-span-2 py-12 text-center border border-dashed border-slate-900 rounded-2xl bg-slate-900/10">
+							<p class="text-sm text-slate-600 font-medium">Belum ada saham yang masuk radar pantauan.</p>
+						</div>
+					`;
+					return;
+				}
+				daftarNotes.forEach((item, index) => {
+					let warnaStatusClass = "";
+					let bgBadgeClass = "";
+					// Atur variasi warna dekorasi berdasarkan jenis status pilihan
+					switch (item.status) {
+						case 'BUY':
+							warnaStatusClass = "border-emerald-500/40";
+							bgBadgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+							break;
+						case 'SELL':
+							warnaStatusClass = "border-rose-500/40";
+							bgBadgeClass = "bg-rose-500/10 text-rose-400 border-rose-500/20";
+							break;
+						case 'HOLD':
+							warnaStatusClass = "border-blue-500/40";
+							bgBadgeClass = "bg-blue-500/10 text-blue-400 border-blue-500/20";
+							break;
+						default:
+							warnaStatusClass = "border-amber-500/40";
+							bgBadgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/20";
+					}
+					container.innerHTML += `
+						<div class="bg-slate-900/60 border ${warnaStatusClass} rounded-2xl p-4 flex flex-col justify-between hover:bg-slate-900/80 transition-all duration-200">
+							<div>
+								<div class="flex items-center justify-between mb-2">
+									<span class="font-mono font-black text-white text-base tracking-wide">${item.ticker}</span>
+									<span class="px-2 py-0.5 rounded text-[10px] font-bold border ${bgBadgeClass}">${item.status}</span>
+								</div>
+								<p class="text-xs text-slate-300 leading-relaxed font-normal whitespace-pre-line">${item.text}</p>
+							</div>
+							<div class="flex items-center justify-between mt-4 pt-2 border-t border-slate-950 text-[10px] text-slate-500">
+								<span>${item.date}</span>
+								<button onclick="hapusSatuCatatan(${index})" class="text-rose-500 hover:text-rose-400 font-semibold transition-colors">Hapus</button>
+							</div>
+						</div>
+					`;
+				});
 			}
-			function yapping2voice() {
-				var audio = document.getElementById("yapping2");
-				audio.play();
+			// Fungsi Tambah Catatan Baru
+			function simpanCatatanSaham() {
+				const tickerInput = document.getElementById('note-ticker');
+				const statusInput = document.getElementById('note-status');
+				const textInput = document.getElementById('note-text');
+				const ticker = tickerInput.value.trim().toUpperCase();
+				const status = statusInput.value;
+				const text = textInput.value.trim();
+				if (!ticker || !text) {
+					alert("Harap isi Kode Saham dan isi Catatan Strategi terlebih dahulu!");
+					return;
+				}
+				const opsiWaktu = {
+					day: 'numeric',
+					month: 'short',
+					hour: '2-digit',
+					minute: '2-digit'
+				};
+				const waktuSekarang = new Date().toLocaleDateString('id-ID', opsiWaktu);
+				// Buat objek data baru
+				const dataBaru = {
+					ticker,
+					status,
+					text,
+					date: waktuSekarang
+				};
+				// Dorong masuk ke array teratas (agar yang baru dibuat muncul di depan)
+				daftarNotes.unshift(dataBaru);
+				// Kunci ke localStorage browser
+				localStorage.setItem('stocks_id_notes', JSON.stringify(daftarNotes));
+				// Bersihkan form setelah input berhasil dimasukkan
+				tickerInput.value = '';
+				textInput.value = '';
+				// Segarkan layout visual
+				renderWatchlistCards();
 			}
-			function screenervoice() {
-				var audio = document.getElementById("screenervoice");
-				audio.play();
+			// Fungsi Hapus Satu Item
+			function hapusSatuCatatan(index) {
+				daftarNotes.splice(index, 1);
+				localStorage.setItem('stocks_id_notes', JSON.stringify(daftarNotes));
+				renderWatchlistCards();
 			}
-			function freevoice() {
-				var audio = document.getElementById("freevoice");
-				audio.play();
+			// Fungsi Hapus Massal
+			function hapusSemuaCatatan() {
+				if (confirm("Apakah Kamu yakin ingin menghapus seluruh daftar radar watchlist Kamu?")) {
+					daftarNotes = [];
+					localStorage.removeItem('stocks_id_notes');
+					renderWatchlistCards();
+				}
 			}
-			function satubulanvoice() {
-				var audio = document.getElementById("1bulanvoice");
-				audio.play();
+			// Trigger jalankan render otomatis saat web dimuat pertama kali oleh user
+			window.addEventListener('DOMContentLoaded', renderWatchlistCards);
+		</script>
+		
+		<section id="kalkulator-profit" class="py-16 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-12">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">Investment Planner</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Kalkulator Proyeksi & Target Profit</h2>
+					<p class="mt-2 text-sm text-slate-400">Simulasikan pertumbuhan modal investasi Kamu berdasarkan target profit harian, mingguan, atau bulanan.</p>
+				</div>
+				
+				<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
+					<div class="grid md:grid-cols-2 gap-8">
+						<div class="space-y-6">
+							<div>
+								<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Modal Awal (Rp)</label>
+								<input type="text" id="profit-modal-input" oninput="formatRupiahInput(this)" placeholder="10.000.000" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
+							</div>
+							
+							<div>
+								<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Target Profit per Periode (%)</label>
+								<input type="number" id="profit-target" placeholder="Contoh: 5" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
+							</div>
+							
+							<div>
+								<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Jangka Waktu Simulasi</label>
+								<div class="grid grid-cols-2 gap-3">
+									<label class="flex items-center gap-3 bg-slate-950 border border-slate-800 rounded-xl p-3 cursor-pointer hover:border-slate-700 transition-all">
+										<input type="radio" name="profit-durasi" value="1" checked="checked" class="w-4 h-4 text-emerald-500 bg-slate-900 border-slate-700 focus:ring-emerald-500 focus:ring-offset-slate-900">
+										<span class="text-sm text-slate-300 font-medium">Sehari</span>
+									</label>
+									
+									<label class="flex items-center gap-3 bg-slate-950 border border-slate-800 rounded-xl p-3 cursor-pointer hover:border-slate-700 transition-all">
+										<input type="radio" name="profit-durasi" value="5" class="w-4 h-4 text-emerald-500 bg-slate-900 border-slate-700 focus:ring-emerald-500 focus:ring-offset-slate-900">
+										<span class="text-sm text-slate-300 font-medium">5 Hari (1 Pekan Bursa)</span>
+									</label>
+									
+									<label class="flex items-center gap-3 bg-slate-950 border border-slate-800 rounded-xl p-3 cursor-pointer hover:border-slate-700 transition-all">
+										<input type="radio" name="profit-durasi" value="10" class="w-4 h-4 text-emerald-500 bg-slate-900 border-slate-700 focus:ring-emerald-500 focus:ring-offset-slate-900">
+										<span class="text-sm text-slate-300 font-medium">2 Minggu (10 Hari Bursa)</span>
+									</label>
+									
+									<label class="flex items-center gap-3 bg-slate-950 border border-slate-800 rounded-xl p-3 cursor-pointer hover:border-slate-700 transition-all">
+										<input type="radio" name="profit-durasi" value="20" class="w-4 h-4 text-emerald-500 bg-slate-900 border-slate-700 focus:ring-emerald-500 focus:ring-offset-slate-900">
+										<span class="text-sm text-slate-300 font-medium">1 Bulan (20 Hari Bursa)</span>
+									</label>
+								</div>
+							</div>
+							<button onclick="hitungProyeksiProfit()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 transform hover:-translate-y-0.5">Hitung Proyeksi Keuntungan</button>
+						</div>
+						
+						<div class="bg-slate-950/60 border border-slate-800/60 rounded-2xl p-5 flex flex-col justify-between">
+							<div>
+								<h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">Estimasi Pertumbuhan Modal</h3>
+								<div class="space-y-4">
+									<div class="flex justify-between items-center text-sm border-b border-slate-900 pb-2.5">
+										<span class="text-slate-400">Modal Awal Pokok</span>
+										<span id="res-profit-awal" class="font-mono text-slate-300">Rp 0</span>
+									</div>
+									
+									<div class="flex justify-between items-center text-sm border-b border-slate-900 pb-2.5">
+										<span class="text-slate-400">Total Hari Perdagangan Aktif</span>
+										<span id="res-profit-hari" class="font-mono text-slate-300">0 Hari</span>
+									</div>
+									
+									<div class="flex justify-between items-center text-sm border-b border-slate-900 pb-2.5 bg-emerald-500/5 p-2 rounded-lg border border-emerald-500/10">
+										<span class="text-emerald-400 font-medium">Estimasi Bersih Keuntungan</span>
+										<span id="res-profit-nominal" class="font-mono font-bold text-emerald-400 text-base">Rp 0</span>
+									</div>
+									
+									<div class="flex justify-between items-center text-sm border-b border-slate-900 pb-2.5 bg-slate-900/50 p-2.5 rounded-lg">
+										<span class="text-slate-200 font-semibold">Akhir Modal + Profit (Gross)</span>
+										<span id="res-profit-akhir" class="font-mono font-black text-amber-400 text-lg">Rp 0</span>
+									</div>
+								</div>
+							</div>
+							
+							<div class="mt-6 pt-4 border-t border-dashed border-slate-800/80">
+								<div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-[11px] text-slate-500 leading-relaxed">💡 <span class="text-slate-400 font-semibold">Catatan Kompetensi:</span>Simulasi ini menggunakan metode <span class="text-slate-300 font-medium">Efek Gulung (Compound Interest)</span>asumsi profit harian bursa diinvestasikan kembali penuh pada hari perdagangan berikutnya. Hasil aktual bergantung pada volatilitas market. </div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<script>
+			// Fungsi pembantu untuk membuat input modal otomatis bertitik/berkoma rupiah saat diketik
+			function formatRupiahInput(input) {
+				let value = input.value.replace(/[^,\d]/g, '').toString();
+				let split = value.split(',');
+				let sisa = split[0].length % 3;
+				let rupiah = split[0].substr(0, sisa);
+				let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+				if (ribuan) {
+					let separator = sisa ? '.' : '';
+					rupiah += separator + ribuan.join('.');
+				}
+				rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+				input.value = rupiah;
 			}
-			function duabulanvoice() {
-				var audio = document.getElementById("2bulanvoice");
-				audio.play();
+
+			function hitungProyeksiProfit() {
+				// Ambil string input, hilangkan tKamu titik pemisah ribuan agar bisa dihitung sebagai angka murni
+				const modalRaw = document.getElementById('profit-modal-input').value;
+				const modalAwal = parseFloat(modalRaw.replace(/\./g, '')) || 0;
+				const targetPersen = parseFloat(document.getElementById('profit-target').value) || 0;
+				// Cari radio button durasi hari bursa yang dicentang user
+				const durasiRadio = document.querySelector('input[name="profit-durasi"]:checked');
+				const totalHari = parseInt(durasiRadio.value) || 1;
+				if (modalAwal === 0 || targetPersen === 0) {
+					alert("Silakan masukkan jumlah modal awal dan target persen keuntungan.");
+					return;
+				}
+				// Rumus Compound Interest (Efek Gulung): Modal Akhir = Modal Awal * (1 + rate)^waktu
+				const rate = targetPersen / 100;
+				const modalAkhir = modalAwal * Math.pow((1 + rate), totalHari);
+				const nominalProfit = modalAkhir - modalAwal;
+				// Fungsi Format Mata Uang Rupiah Indonesia
+				const formatIDR = (angka) => {
+					return "Rp " + Math.round(angka).toLocaleString('id-ID');
+				};
+				// Suntik Hasil ke DOM Web
+				document.getElementById('res-profit-awal').innerText = formatIDR(modalAwal);
+				document.getElementById('res-profit-hari').innerText = totalHari + " Hari Bursa";
+				document.getElementById('res-profit-nominal').innerText = formatIDR(nominalProfit);
+				document.getElementById('res-profit-akhir').innerText = formatIDR(modalAkhir);
 			}
-			function tigabulanvoice() {
-				var audio = document.getElementById("3bulanvoice");
-				audio.play();
+		</script>
+		
+		<section id="kalkulator-saham" class="py-16 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-12">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">Trading Tools Pro</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Kalkulator Average Up & Down</h2>
+					<p class="mt-2 text-sm text-slate-400">Hitung rata-rata modal baru dan estimasi total pengeluaran Kamu termasuk komisi broker secara akurat.</p>
+				</div>
+				
+				<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
+					<div class="grid md:grid-cols-2 gap-8">
+						<div class="space-y-5">
+							<h3 class="text-base font-bold text-slate-200 border-b border-slate-800 pb-2 flex items-center gap-2">
+								<span class="w-2 h-2 rounded-full bg-blue-500"></span>Posisi Kepemilikan Saat Ini
+							</h3>
+							<div class="grid grid-cols-2 gap-4">
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Harga Beli Awal (AVG)</label>
+									<input type="number" id="avg-price-1" placeholder="Contoh: 250,50" class="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
+								</div>
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Jumlah Lot Awal</label>
+									<input type="number" id="avg-lot-1" placeholder="Contoh: 10" class="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
+								</div>
+							</div>
+							<h3 class="text-base font-bold text-slate-200 border-b border-slate-800 pt-2 pb-2 flex items-center gap-2">
+								<span class="w-2 h-2 rounded-full bg-amber-500"></span>Rencana Pembelian Ke-2
+							</h3>
+							<div class="grid grid-cols-2 gap-4">
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Harga Beli Baru (AVG)</label>
+									<input type="number" id="avg-price-2" placeholder="Contoh: 500,20" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
+								</div>
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Jumlah Lot Baru</label>
+									<input type="number" id="avg-lot-2" placeholder="Contoh: 20" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
+								</div>
+							</div>
+							<h3 class="text-base font-bold text-slate-200 border-b border-slate-800 pt-2 pb-2 flex items-center gap-2">
+								<span class="w-2 h-2 rounded-full bg-emerald-500"></span>Pengaturan Fee Broker
+							</h3>
+							<div class="grid grid-cols-2 gap-4">
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Fee Beli (%)</label>
+									<input type="number" id="fee-beli" value="0.30" step="0.01" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+								</div>
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Fee Jual (%)</label>
+									<input type="number" id="fee-jual" value="0.50" step="0.01" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+								</div>
+							</div>
+							<button onclick="hitungAverageSaham()" class="w-full py-3 mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-blue-600/10 transform hover:-translate-y-0.5">Hitung Kalkulasi Rata-Rata</button>
+						</div>
+						
+						<div class="bg-slate-950/60 border border-slate-800/60 rounded-2xl p-5 flex flex-col justify-between">
+							<div>
+								<h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">Hasil Ringkasan Perhitungan</h3>
+								<div class="space-y-3.5">
+									<div class="flex justify-between items-center text-sm border-b border-slate-900 pb-2.5">
+										<span class="text-slate-400">Total Lot Gabungan</span>
+										<span id="res-total-lot" class="font-mono font-bold text-white text-base">0 Lot</span>
+									</div>
+									<div class="flex justify-between items-center text-sm border-b border-slate-900 pb-2.5">
+										<span class="text-slate-400">Total Lembar Saham</span>
+										<span id="res-total-lembar" class="font-mono text-slate-300">0 Lembar</span>
+									</div>
+									<div class="flex justify-between items-center text-sm border-b border-slate-900 pb-2.5">
+										<span class="text-slate-400">Modal Bersih (Tanpa Fee)</span>
+										<span id="res-modal-bersih" class="font-mono text-slate-300">Rp 0</span>
+									</div>
+									<div class="flex justify-between items-center text-sm border-b border-slate-900 pb-2.5">
+										<span class="text-slate-400">Estimasi Total Fee Beli</span>
+										<span id="res-total-fee-beli" class="font-mono text-rose-400/90 text-xs">Rp 0</span>
+									</div>
+									<div class="flex justify-between items-center text-sm border-b border-slate-900 pb-2.5 bg-slate-900/30 p-2 rounded-lg">
+										<span class="text-slate-200 font-medium">Harga Rata-Rata Baru (Avg)</span>
+										<span id="res-harga-avg" class="font-mono font-black text-amber-400 text-lg">Rp 0</span>
+									</div>
+								</div>
+							</div>
+							
+							<div class="mt-6 pt-4 border-t border-dashed border-slate-800/80">
+								<div class="bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-3.5 text-xs text-slate-400 space-y-1.5">
+									<div class="flex justify-between text-emerald-400 font-bold">
+										<span>Estimasi Total Modal + Fee Beli:</span>
+										<span id="res-grand-total">Rp 0</span>
+									</div>
+									<p class="text-[11px] text-slate-500 leading-relaxed pt-1">*Untuk keluar dalam posisi minimal impas (Break Even Point), Kamu disarankan menjual seluruh lot gabungan minimal pada harga rata-rata baru ditambah kompensasi estimasi total fee jual sebesar <span id="res-min-jual" class="text-slate-300 font-bold">Rp 0</span>. </p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<script>
+			function hitungAverageSaham() {
+				// Ambil Nilai Input
+				const p1 = parseFloat(document.getElementById('avg-price-1').value) || 0;
+				const l1 = parseFloat(document.getElementById('avg-lot-1').value) || 0;
+				const p2 = parseFloat(document.getElementById('avg-price-2').value) || 0;
+				const l2 = parseFloat(document.getElementById('avg-lot-2').value) || 0;
+				const feeBeliPersen = parseFloat(document.getElementById('fee-beli').value) || 0;
+				const feeJualPersen = parseFloat(document.getElementById('fee-jual').value) || 0;
+				// Validasi Dasar
+				if ((l1 === 0 && l2 === 0) || (p1 === 0 && p2 === 0)) {
+					alert("Silakan masukkan harga saham dan jumlah lot terlebih dahulu.");
+					return;
+				}
+				// Kalkulasi Dasar Saham (1 Lot = 100 Lembar)
+				const lembar1 = l1 * 100;
+				const lembar2 = l2 * 100;
+				const modal1 = p1 * lembar1;
+				const modal2 = p2 * lembar2;
+				const totalLot = l1 + l2;
+				const totalLembar = lembar1 + lembar2;
+				const totalModalBersih = modal1 + modal2;
+				// Hitung Komisi/Fee Broker
+				const totalFeeBeli = (modal1 * (feeBeliPersen / 100)) + (modal2 * (feeBeliPersen / 100));
+				const grandTotalModal = totalModalBersih + totalFeeBeli;
+				// Hitung Harga Average Murni
+				const hargaAvgBaru = totalLembar > 0 ? Math.round(totalModalBersih / totalLembar) : 0;
+				// Estimasi Pengeluaran Fee Jual jika nanti di-exit di harga avg tersebut
+				const estimasiFeeJual = totalModalBersih * (feeJualPersen / 100);
+				// Format Rupiah Otomatis
+				const formatRupiah = (angka) => {
+					return "Rp " + Math.round(angka).toLocaleString('id-ID');
+				};
+				// Suntikkan Hasil Ke DOM Tampilan HTML
+				document.getElementById('res-total-lot').innerText = totalLot + " Lot";
+				document.getElementById('res-total-lembar').innerText = totalLembar.toLocaleString('id-ID') + " Lembar";
+				document.getElementById('res-modal-bersih').innerText = formatRupiah(totalModalBersih);
+				document.getElementById('res-total-fee-beli').innerText = formatRupiah(totalFeeBeli);
+				document.getElementById('res-harga-avg').innerText = formatRupiah(hargaAvgBaru);
+				document.getElementById('res-grand-total').innerText = formatRupiah(grandTotalModal);
+				document.getElementById('res-min-jual').innerText = formatRupiah(estimasiFeeJual);
 			}
-			function enambulanvoice() {
-				var audio = document.getElementById("6bulanvoice");
-				audio.play();
+		</script>
+		
+		<section id="jadwal-bursa" class="py-16 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-10">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase tracking-wider">Market Info</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Jadwal Jam Perdagangan BEI</h2>
+					<p class="mt-2 text-sm text-slate-400">Acuan waktu operasional pasar modal berdasarkan aturan resmi Bursa Efek Indonesia (WIB).</p>
+				</div>
+				
+				<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
+					<div class="flex flex-col sm:flex-row items-center justify-between bg-slate-950 border border-slate-800/60 p-4 rounded-xl mb-8 gap-4">
+						<div class="flex items-center gap-3">
+							<span class="relative flex h-3 w-3">
+								<span id="status-dot-pulse" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+								<span id="status-dot" class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+							</span>
+							<div>
+								<div class="text-xs text-slate-500 font-medium uppercase tracking-wider">Status Pasar Saat Ini:</div>
+								<div id="status-text" class="text-sm font-bold text-rose-500">PASAR SEDANG TUTUP</div>
+							</div>
+						</div>
+						<div class="text-right sm:text-right text-center">
+							<div class="text-xs text-slate-500 font-medium uppercase tracking-wider">Waktu Lokal Kamu:</div>
+							<div id="live-clock" class="text-sm font-mono font-bold text-slate-300">00:00:00 WIB</div>
+						</div>
+					</div>
+					
+					<div class="overflow-x-auto">
+						<table class="w-full text-left border-collapse">
+							<thead>
+								<tr class="border-b border-slate-800 text-xs text-slate-400 uppercase tracking-wider font-semibold">
+									<th class="pb-3 pl-2">Sesi Perdagangan</th>
+									<th class="pb-3">Senin - Kamis</th>
+									<th class="pb-3">Jumat</th>
+								</tr>
+							</thead>
+							<tbody class="text-sm text-slate-300 divide-y divide-slate-900 font-medium">
+								<tr>
+									<td class="py-3.5 pl-2 text-slate-400 font-normal">Pra-Pembukaan (Pre-Opening)</td>
+									<td class="py-3.5 font-mono text-slate-200">08:45 - 08:59</td>
+									<td class="py-3.5 font-mono text-slate-200">08:45 - 08:59</td>
+								</tr>
+								<tr class="bg-blue-500/[0.01]">
+									<td class="py-3.5 pl-2 text-blue-400 font-semibold">Sesi I (Pagi)</td>
+									<td class="py-3.5 font-mono text-white font-semibold">09:00 - 12:00</td>
+									<td class="py-3.5 font-mono text-white font-semibold">09:00 - 11:30</td>
+								</tr>
+								<tr>
+									<td class="py-3.5 pl-2 text-slate-500 font-normal italic">Istirahat Bursa</td>
+									<td class="py-3.5 font-mono text-slate-500 italic">12:00 - 13:30</td>
+									<td class="py-3.5 font-mono text-slate-500 italic">11:30 - 14:00</td>
+								</tr>
+								<tr class="bg-emerald-500/[0.01]">
+									<td class="py-3.5 pl-2 text-emerald-400 font-semibold">Sesi II (Siang)</td>
+									<td class="py-3.5 font-mono text-white font-semibold">13:30 - 15:49</td>
+									<td class="py-3.5 font-mono text-white font-semibold">14:00 - 15:49</td>
+								</tr>
+								<tr>
+									<td class="py-3.5 pl-2 text-slate-400 font-normal">Pra-Penutupan (Pre-Closing)</td>
+									<td class="py-3.5 font-mono text-slate-200">15:50 - 16:00</td>
+									<td class="py-3.5 font-mono text-slate-200">15:50 - 16:00</td>
+								</tr>
+								<tr>
+									<td class="py-3.5 pl-2 text-slate-400 font-normal">Pasca-Penutupan (Post-Closing)</td>
+									<td class="py-3.5 font-mono text-slate-200">16:01 - 16:30</td>
+									<td class="py-3.5 font-mono text-slate-200">16:01 - 16:30</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					
+					<div class="mt-6 pt-4 border-t border-slate-900 text-[11px] text-slate-500 leading-relaxed grid sm:grid-cols-2 gap-4">
+						<div>📌 <span class="font-semibold text-slate-400">Pasar Reguler & Tunai:</span>Menggunakan mekanisme tawar-menawar berkelanjutan. Khusus Pasar Tunai hanya beroperasi pada Sesi I saja. </div>
+						<div>⚠️ <span class="font-semibold text-slate-400">Hari Libur:</span>Sabtu, Minggu, dan Hari Libur Nasional (Tanggal Merah) bursa sepenuhnya tidak beroperasi. </div>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<script>
+			function updateLiveBursaStatus() {
+				const sekarang = new Date();
+				const hari = sekarang.getDay(); // 0: Minggu, 1: Senin, ..., 5: Jumat, 6: Sabtu
+				const jam = sekarang.getHours();
+				const menit = StadiumMenit = sekarang.getMinutes();
+				// Konversi waktu saat ini ke format menit total untuk mempermudah perbandingan logika
+				const waktuMenit = (jam * 60) + menit;
+				// Ambil elemen DOM
+				const txtStatus = document.getElementById('status-text');
+				const dotStatus = document.getElementById('status-dot');
+				const dotPulse = document.getElementById('status-dot-pulse');
+				const clockElement = document.getElementById('live-clock');
+				// Tampilkan Jam Live Terupdate
+				clockElement.innerText = sekarang.toLocaleTimeString('id-ID') + " WIB";
+				// Inisialisasi status default (Tutup)
+				let pasarBuka = false;
+				let sesiNama = "PASAR SEDANG TUTUP";
+				// Cek jika hari ini adalah hari bursa aktif (Senin s.d Jumat)
+				if (hari >= 1 && hari <= 5) {
+					if (hari === 5) {
+						// LOGIKA ATURAN KHUSUS HARI JUMAT
+						if (waktuMenit >= 525 && waktuMenit < 540) { // 08:45 - 08:59
+							pasarBuka = true;
+							sesiNama = "PRA-PEMBUKAAN (PRE-OPENING)";
+						} else if (waktuMenit >= 540 && waktuMenit < 690) { // 09:00 - 11:30
+							pasarBuka = true;
+							sesiNama = "PASAR BUKA: SESI I (PAGI)";
+						} else if (waktuMenit >= 690 && waktuMenit < 840) { // 11:30 - 14:00
+							pasarBuka = false;
+							sesiNama = "ISTIRAHAT BURSA JUMAT";
+						} else if (waktuMenit >= 840 && waktuMenit < 949) { // 14:00 - 15:49
+							pasarBuka = true;
+							sesiNama = "PASAR BUKA: SESI II (SIANG)";
+						} else if (waktuMenit >= 949 && waktuMenit < 960) { // 15:50 - 16:00
+							pasarBuka = true;
+							sesiNama = "PRA-PENUTUPAN (PRE-CLOSING)";
+						} else if (waktuMenit >= 961 && waktuMenit <= 990) { // 16:01 - 16:30
+							pasarBuka = true;
+							sesiNama = "PASCA-PENUTUPAN (POST-CLOSING)";
+						}
+					} else {
+						// LOGIKA ATURAN HARI SENIN - KAMIS
+						if (waktuMenit >= 525 && waktuMenit < 540) { // 08:45 - 08:59
+							pasarBuka = true;
+							sesiNama = "PRA-PEMBUKAAN (PRE-OPENING)";
+						} else if (waktuMenit >= 540 && waktuMenit < 720) { // 09:00 - 12:00
+							pasarBuka = true;
+							sesiNama = "PASAR BUKA: SESI I (PAGI)";
+						} else if (waktuMenit >= 720 && waktuMenit < 810) { // 12:00 - 13:30
+							pasarBuka = false;
+							sesiNama = "ISTIRAHAT BURSA";
+						} else if (waktuMenit >= 810 && waktuMenit < 949) { // 13:30 - 15:49
+							pasarBuka = true;
+							sesiNama = "PASAR BUKA: SESI II (SIANG)";
+						} else if (waktuMenit >= 949 && waktuMenit < 960) { // 15:50 - 16:00
+							pasarBuka = true;
+							sesiNama = "PRA-PENUTUPAN (PRE-CLOSING)";
+						} else if (waktuMenit >= 961 && waktuMenit <= 990) { // 16:01 - 16:30
+							pasarBuka = true;
+							sesiNama = "PASCA-PENUTUPAN (POST-CLOSING)";
+						}
+					}
+				} else {
+					sesiNama = "PASAR TUTUP (AKHIR PEKAN)";
+				}
+				// Terapkan Perubahan Gaya Warna UI Berdasarkan Status Pasar
+				if (pasarBuka) {
+					txtStatus.innerText = sesiNama;
+					txtStatus.className = "text-sm font-bold text-emerald-400";
+					dotStatus.className = "relative inline-flex rounded-full h-3 w-3 bg-emerald-500";
+					dotPulse.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75";
+				} else {
+					txtStatus.innerText = sesiNama;
+					txtStatus.className = "text-sm font-bold text-rose-500";
+					dotStatus.className = "relative inline-flex rounded-full h-3 w-3 bg-rose-500";
+					dotPulse.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75";
+				}
 			}
-			function satutahunvoice() {
-				var audio = document.getElementById("1tahunvoice");
-				audio.play();
+			// Jalankan real-time update setiap 1 detik
+			setInterval(updateLiveBursaStatus, 1000);
+			// Jalankan sekali saat load pertama halaman
+			window.addEventListener('DOMContentLoaded', updateLiveBursaStatus);
+		</script>
+		
+		<section id="paket" class="py-20 relative">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+					<span class="text-xs font-bold uppercase tracking-widest text-emerald-400">Investasi Terbaik Leher ke Atas</span>
+					<h2 class="heading-font text-3xl sm:text-4xl font-extrabold text-white">Pilih Paket Belajar Saham Kamu</h2>
+					<p class="text-slate-400">Harga sangat kompetitif dibandingkan potensi kerugian akibat *cut-loss* membabi buta tanpa arah di market.</p>
+				</div>
+				
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+					<div class="bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-rose-500/40 rounded-2xl p-6 relative flex flex-col justify-between h-full shadow-xl glow-green transform lg:-translate-y-4">
+						<div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-rose-500 text-white-950 text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full shadow-md">REKOMENDASI TRADDER</div>
+						<div>
+							<div class="flex justify-between items-start">
+								<span class="bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[9px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-md">Alat Mandiri</span>
+								<span class="text-xs text-rose-400 font-semibold bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">Hemat 20%</span>
+							</div>
+							<h3 class="heading-font text-xl font-bold text-rose-400 mt-4 flex items-center gap-2">Paket Screener</h3>
+							<p class="text-xs text-slate-400 mt-1">Formula Screener Beli Sore Jual Pagi (BSJP) / Swing Trading khusus siap pakai.</p>
+							<div class="mt-6 space-y-1">
+								<span class="text-xs text-slate-500 line-through">Rp 100,000</span>
+								<div class="flex items-baseline gap-1 text-rose-400">
+									<span class="text-3xl font-black heading-font">Rp 80,000</span>
+								</div>
+							</div>
+							
+							<div class="mt-4 bg-slate-950/60 p-2.5 rounded-lg border border-slate-800 text-center text-xs text-slate-400">🔥 Sudah dibeli <span class="text-white font-bold">10 kali</span>
+							</div>
+							<ul class="mt-6 space-y-3 text-xs text-slate-300 border-t border-slate-800/80 pt-6">
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-rose-400"></i>Script Screener Otomatis
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-rose-400"></i>Panduan Setup & Setting parameter
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-rose-400"></i>Akurasi screening up to 78%
+								</li>
+							</ul>
+						</div>
+						<button onclick='openCheckoutModal("Paket Screener","80,000")' class="w-full bg-rose-800 hover:bg-slate-700 text-white font-bold py-3 px-4 rounded-xl text-xs transition tracking-wide mt-8">Beli Paket Screener</button>
+					</div>
+					
+					<div class="bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-emerald-500/40 rounded-2xl p-6 relative flex flex-col justify-between h-full shadow-xl glow-green transform lg:-translate-y-4">
+						<div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-emerald-500 text-slate-950 text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full shadow-md">REKOMENDASI PEMULA</div>
+						<div>
+							<div class="flex justify-between items-start mt-2">
+								<h3 class="heading-font text-xl font-bold text-emerald-400 mt-4 flex items-center gap-2">Kelas 100 Hari</h3>
+								<span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Hemat 45%</span>
+							</div>
+							<p class="text-xs text-slate-400 mt-1">Pendampingan penuh bursa selama 100 hari perdagangan bursa aktif.</p>
+							<div class="mt-6 space-y-1">
+								<span class="text-xs text-slate-500 line-through">Rp 600,000</span>
+								<div class="flex items-baseline gap-1 text-emerald-400">
+									<span class="text-3xl font-black heading-font">Rp 329,999</span>
+								</div>
+							</div>
+							
+							<div class="mt-4 bg-emerald-500/5 p-2.5 rounded-lg border border-emerald-500/20 text-center text-xs text-slate-300">📈 Sudah dibeli <span class="text-emerald-400 font-bold">45 kali</span>oleh member aktif </div>
+							<ul class="mt-6 space-y-3 text-xs text-slate-300 border-t border-slate-800 pt-6">
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-emerald-400"></i>Full Benefit Akses Grup VIP
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-emerald-400"></i>Premium Watchlist Harian Gacor
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-emerald-400"></i>Konsultasi Portofolio Pribadi
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-emerald-400"></i>Saran Managemen Risiko
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-emerald-400"></i>Belajar via Telepon
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-emerald-400"></i>Materi Berupa PDF
+								</li>
+							</ul>
+						</div>
+						<button onclick='openCheckoutModal("Kelas 100 Hari","329,999")' class="w-full bg-emerald-500 hover:bg-emerald-400 text-white-950 font-black py-3 px-4 rounded-xl text-xs transition tracking-wide mt-8 shadow-md">Ambil Kelas 100 Hari</button>
+					</div>
+					
+					<div class="bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-blue-500/40 rounded-2xl p-6 relative flex flex-col justify-between h-full shadow-xl glow-green transform lg:-translate-y-4">
+						<div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-blue-500 text-slate-950 text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full shadow-md">BERPENGALAMAN</div>
+						<div>
+							<div class="flex justify-between items-start">
+								<span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[9px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-md">Jangka Menengah</span>
+								<span class="text-xs text-blue-400 font-semibold bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">Hemat 50%</span>
+							</div>
+							<h3 class="heading-font text-xl font-bold text-blue-400 mt-4 flex items-center gap-2">Kelas 200 Hari</h3>
+							<p class="text-xs text-slate-400 mt-1">Pendampingan jangka menengah untuk mematangkan konsistensi profit Kamu.</p>
+							<div class="mt-6 space-y-1">
+								<span class="text-xs text-slate-500 line-through">Rp 1,200,000</span>
+								<div class="flex items-baseline gap-1 text-blue-400">
+									<span class="text-3xl font-black heading-font">Rp 599,999</span>
+								</div>
+							</div>
+							
+							<div class="mt-4 bg-slate-950/60 p-2.5 rounded-lg border border-slate-800 text-center text-xs text-slate-400">🚀 Sudah dibeli <span class="text-white font-bold">22 kali</span>
+							</div>
+							<ul class="mt-6 space-y-3 text-xs text-slate-300 border-t border-slate-800/80 pt-6">
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-blue-400"></i>Seluruh Benefit Kelas 200 Hari
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-blue-400"></i>Full Benefit Akses Grup VIP
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-blue-400"></i>Premium Watchlist Harian Gacor
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-blue-400"></i>Konsultasi Portofolio Pribadi
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-blue-400"></i>Saran Managemen Risiko
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-blue-400"></i>Belajar via Telepon
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-blue-400"></i>Materi Berupa PDF
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-blue-400"></i>Prioritas Belajar Utama via Telepon
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-blue-400"></i>Bonus Screener Bandar Akum
+								</li>
+							</ul>
+						</div>
+						<button onclick='openCheckoutModal("Kelas 200 Hari","599,999")' class="w-full bg-blue-500 hover:bg-blue-400 text-white-950 font-black py-3 px-4 rounded-xl text-xs transition tracking-wide mt-8 shadow-md">Ambil Kelas 200 Hari</button>
+					</div>
+					
+					<div class="bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-amber-500/40 rounded-2xl p-6 relative flex flex-col justify-between h-full shadow-xl glow-green transform lg:-translate-y-4">
+						<div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-widest px-4 py-1 rounded-full shadow-md">REKOMENDASI VIP++</div>
+						<div>
+							<div class="flex justify-between items-start">
+								<span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[9px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-md">Ultimate Plan</span>
+								<span class="text-xs text-amber-400 font-semibold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Hemat 55%</span>
+							</div>
+							<h3 class="heading-font text-xl font-bold text-amber-400 mt-4 flex items-center gap-2">
+								<i class="fa-solid fa-crown text-sm"></i>Kelas 400 Hari
+							</h3>
+							<p class="text-xs text-slate-400 mt-1">Paket penguasaan pasar modal jangka panjang untuk mencetak profesional trader.</p>
+							<div class="mt-6 space-y-1">
+								<span class="text-xs text-slate-500 line-through">Rp 2,400,000</span>
+								<div class="flex items-baseline gap-1 text-amber-400">
+									<span class="text-3xl font-black heading-font">Rp 1,079,999</span>
+								</div>
+							</div>
+							
+							<div class="mt-4 bg-slate-950/60 p-2.5 rounded-lg border border-slate-800 text-center text-xs text-slate-400">💎 Sudah diambil <span class="text-white font-bold">15 orang</span>loyal member </div>
+							<ul class="mt-6 space-y-3 text-xs text-slate-300 border-t border-slate-800/80 pt-6">
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-amber-400"></i>Seluruh Benefit Kelas 400 Hari
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-amber-400"></i>Full Benefit Akses Grup VIP
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-amber-400"></i>Premium Watchlist Harian Gacor
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-amber-400"></i>Konsultasi Portofolio Pribadi
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-amber-400"></i>Saran Managemen Risiko
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-amber-400"></i>Belajar via Telepon
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-amber-400"></i>Materi Berupa PDF
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-amber-400"></i>Prioritas Belajar Utama via Telepon
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-amber-400"></i>Durasi Proteksi Komunitas Terpanjang
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-amber-400"></i>Bonus Screener BSJP / Swing
+								</li>
+							</ul>
+						</div>
+						<button onclick='openCheckoutModal("Kelas 400 Hari","1,079,999")' class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white-950 font-black py-3 px-4 rounded-xl text-xs transition tracking-wide mt-8 shadow-md">Ambil Kelas Ultimate</button>
+					</div>
+					
+					<div class="bg-slate-900/40 border border-slate-800 border-dashed rounded-2xl p-6 relative flex flex-col justify-between h-full lg:col-span-2">
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-6 h-full items-center">
+							<div>
+								<span class="bg-slate-800 text-slate-400 text-[10px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-md">Uji Coba</span>
+								<h3 class="heading-font text-xl font-bold text-slate-300 mt-4">Stock ID Free Plan</h3>
+								<p class="text-xs text-slate-400 mt-1 leading-relaxed">Coba masuk ke ekosistem dasar kami secara gratis tanpa dipungut biaya sepeserpun untuk melihat kualitas edukasi awal.</p>
+								<div class="mt-4 space-y-0.5">
+									<span class="text-[10px] text-slate-500 line-through">Rp 10,000,999</span>
+									<div class="text-emerald-400 text-xl font-black font-mono">Rp 0</div>
+								</div>
+							</div>
+							
+							<div class="flex flex-col justify-between h-full pt-2 sm:pt-0">
+								<div class="bg-slate-950 p-3 rounded-xl border border-slate-800/80 text-xs space-y-2 text-slate-400">
+									<div class="flex items-center gap-2">
+										<i class="fa-solid fa-check text-slate-500 text-[10px]"></i>Akses Edukasi Edu-Channel basic
+									</div>
+									<div class="flex items-center gap-2">
+										<i class="fa-solid fa-check text-slate-500 text-[10px]"></i>760+ Anggota Publik telah bergabung
+									</div>
+								</div>
+								<button onclick='openCheckoutModal("Stock ID Free Plan","0")' class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-4 rounded-xl text-xs transition tracking-wide mt-4 sm:mt-0">Join Komunitas Free</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<section id="faq" class="py-20 bg-slate-950/40 border-t border-slate-900">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6">
+				<div class="text-center space-y-3 mb-12">
+					<h2 class="heading-font text-3xl font-bold text-white">Pertanyaan Umum (FAQ)</h2>
+					<p class="text-sm text-slate-400">Ada kendala atau pertanyaan? Baca jawaban praktis di bawah ini.</p>
+				</div>
+				
+				<div class="space-y-4">
+					<div class="bg-slate-900/60 border border-slate-800 rounded-xl p-5 cursor-pointer transition" onclick="toggleFaq(this)">
+						<div class="flex justify-between items-center">
+							<h4 class="font-bold text-white text-sm sm:text-base">Apakah grup ini memberikan jaminan pasti cuan 100%?</h4>
+							<i class="fa-solid fa-plus text-xs text-slate-500 transition-transform duration-300"></i>
+						</div>
+						<p class="text-xs sm:text-sm text-slate-400 mt-3 hidden leading-relaxed">Tidak ada instrumen keuangan yang memberikan jaminan 100%. <br>Di Stock ID VIP, kami meminimalisir risiko kerugian melalui Management Risiko ketat dan analisa probabilitas tinggi berbasis data rasional agar profit konsisten jangka panjang. </p>
+					</div>
+					
+					<div class="bg-slate-900/60 border border-slate-800 rounded-xl p-5 cursor-pointer transition" onclick="toggleFaq(this)">
+						<div class="flex justify-between items-center">
+							<h4 class="font-bold text-white text-sm sm:text-base">Bagaimana cara konfirmasi setelah melakukan transfer dana?</h4>
+							<i class="fa-solid fa-plus text-xs text-slate-500 transition-transform duration-300"></i>
+						</div>
+						<p class="text-xs sm:text-sm text-slate-400 mt-3 hidden leading-relaxed">Sangat mudah! Saat Kamu mengklik tombol "Beli", pop up pembayaran interaktif akan muncul. <br>Lakukan transfer ke salah satu rekening tertera, lalu klik konfirmasi untuk diarahkan langsung mengirimkan bukti screenshot ke WhatsApp Admin kami. </p>
+					</div>
+					
+					<div class="bg-slate-900/60 border border-slate-800 rounded-xl p-5 cursor-pointer transition" onclick="toggleFaq(this)">
+						<div class="flex justify-between items-center">
+							<h4 class="font-bold text-white text-sm sm:text-base">Apakah materi diajarkan dari dasar atau nol?</h4>
+							<i class="fa-solid fa-plus text-xs text-slate-500 transition-transform duration-300"></i>
+						</div>
+						<p class="text-xs sm:text-sm text-slate-400 mt-3 hidden leading-relaxed">Ya, kurikulum dirancang ramah untuk pemula. <br>Kami mengajari Kamu mulai dari cara membaca Struktur Tren Chart, Bandarmologi, Fundamental, Psikologi Pergerakan hingga cara menyaring Laporan Fundamental Emiten secara ringkas. </p>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<section id="mentor" class="py-16 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-12">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase tracking-wider">Tim Analis Utama</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Kenali Mentor Stock ID VIP</h2>
+					<p class="mt-2 text-sm text-slate-400">Praktisi pasar modal berpengalaman yang siap mengawal portofolio dan bimbingan belajar Kamu.</p>
+				</div>
+				
+				<div class="grid sm:grid-cols-2 gap-8">
+					<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 relative overflow-hidden group hover:border-amber-500/30 transition-all duration-300 flex flex-col justify-between">
+						<div>
+							<div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-500/5 to-transparent rounded-bl-full pointer-events-none"></div>
+							<div class="flex items-center gap-4 mb-4">
+								<div class="w-14 h-14 bg-gradient-to-tr from-amber-500 to-amber-400 rounded-xl flex items-center justify-center text-slate-950 text-xl font-black shadow-lg shadow-amber-500/10">H</div>
+								<div>
+									<h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">Har</h3>
+									<p class="text-xs text-slate-500 font-medium tracking-wide uppercase">Mentor 1</p>
+								</div>
+							</div>
+							
+							<div class="space-y-3 border-t border-slate-800/60 pt-4 mb-6">
+								<div class="flex justify-between items-center text-sm">
+									<span class="text-slate-400">Total Equity</span>
+									<span class="font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-md border border-emerald-500/10">125 Million</span>
+								</div>
+								<div class="flex justify-between items-start text-sm">
+									<span class="text-slate-400">Type</span>
+									<span class="text-right font-medium text-slate-200">Intra day & Long term</span>
+								</div>
+							</div>
+						</div>
+						<a href="https://wa.me/6289529305947?text=Halo%20Mentor%20Har,%20saya%20ingin%20tanya%20seputar%20kelas%20saham%20Stock%20ID%20VIP." target="_blank" class="w-full py-3 bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-lg shadow-[#25D366]/10 transform hover:-translate-y-0.5">
+							<i class="fa-brands fa-whatsapp text-lg"></i>Chat Mentor Har </a>
+					</div>
+					
+					<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 relative overflow-hidden group hover:border-blue-500/30 transition-all duration-300 flex flex-col justify-between">
+						<div>
+							<div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-500/5 to-transparent rounded-bl-full pointer-events-none"></div>
+							<div class="flex items-center gap-4 mb-4">
+								<div class="w-14 h-14 bg-gradient-to-tr from-blue-500 to-indigo-400 rounded-xl flex items-center justify-center text-slate-950 text-xl font-black shadow-lg shadow-blue-500/10">I</div>
+								<div>
+									<h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">Irfan</h3>
+									<p class="text-xs text-slate-500 font-medium tracking-wide uppercase">Mentor 2</p>
+								</div>
+							</div>
+							
+							<div class="space-y-3 border-t border-slate-800/60 pt-4 mb-6">
+								<div class="flex justify-between items-center text-sm">
+									<span class="text-slate-400">Total Equity</span>
+									<span class="font-mono font-bold text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-md border border-blue-500/10">400 Million</span>
+								</div>
+								<div class="flex justify-between items-start text-sm">
+									<span class="text-slate-400">Type</span>
+									<span class="text-right font-medium text-slate-200">Swing & Long term</span>
+								</div>
+							</div>
+						</div>
+						<a href="https://wa.me/6281216752945?text=Halo%20Mentor%20Irfan,%20saya%20ingin%20tanya%20seputar%20kelas%20saham%20Stock%20ID%20VIP." target="_blank" class="w-full py-3 bg-[#25D366] hover:bg-[#20ba5a] text-slate-950 font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-lg shadow-[#25D366]/10 transform hover:-translate-y-0.5">
+							<i class="fa-brands fa-whatsapp text-lg"></i>Chat Mentor Irfan </a>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<div id="checkoutModal" style="display: none;" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-1000">
+			<div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 relative shadow-2xl transform scale-95 transition-transform duration-300" id="modalCard">
+				<button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
+					<i class="fa-solid fa-xmark text-lg"></i>
+				</button>
+				<h3 class="heading-font text-xl font-bold text-white border-b border-slate-800 pb-3 mb-4">Konfirmasi Pembelian</h3>
+				<div class="space-y-4 text-sm">
+					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800/80">
+						<span class="text-xs text-slate-500 uppercase block">Paket Pilihan</span>
+						<span class="text-base font-bold text-orange-400 block mt-0.5" id="mdPackageName">Kelas 100 Hari</span>
+						<span class="text-lg font-mono font-black text-orange mt-1 block" id="mdPackagePrice">Rp 329,999</span>
+					</div>
+					
+					<p class="text-xs text-slate-400 leading-relaxed">Silakan lakukan transfer sesuai harga paket di atas ke salah satu rekening atau e-wallet resmi Admin berikut:</p>
+					<div class="grid grid-cols-1 gap-2 text-xs font-mono">
+						<div class="bg-slate-950/60 p-3 rounded-lg border border-slate-800 flex justify-between items-center">
+							<span>
+								<b class="text-purple-400">BANK JAGO:</b>103948214921 </span>
+							<button onclick='copyText("103948214921")' class="text-slate-500 hover:text-emerald-400 text-[11px]">
+								<i class="fa-regular fa-copy"></i>Salin </button>
+						</div>
+						
+						<div class="bg-slate-950/60 p-3 rounded-lg border border-slate-800 flex justify-between items-center">
+							<span>
+								<b class="text-purple-400">DANA / GOPAY:</b>089529305947 </span>
+							<button onclick='copyText("089529305947")' class="text-slate-500 hover:text-emerald-400 text-[11px]">
+								<i class="fa-regular fa-copy"></i>Salin </button>
+						</div>
+					</div>
+					
+					<div class="border-t border-slate-800/80 pt-4 space-y-3">
+						<label class="block text-xs text-slate-400">Unggah/Siapkan Bukti Bayar (Screenshot):</label>
+						<div class="w-full bg-slate-950 border border-dashed border-slate-800 hover:border-emerald-500/50 rounded-xl p-4 text-center cursor-pointer transition">
+							<i class="fa-solid fa-cloud-arrow-up text-slate-600 text-lg mb-1 block"></i>
+							<span class="text-[11px] text-slate-400 block">Klik untuk memilih file bukti transaksi</span>
+							<input type="file" class="hidden" id="fileUpload">
+						</div>
+					</div>
+					
+					<button onclick="redirectToWhatsapp()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl text-xs transition tracking-wide shadow-lg shadow-emerald-500/10 mt-2 flex items-center justify-center gap-2">
+						<i class="fa-brands fa-whatsapp text-sm"></i>Kirim Bukti ke WhatsApp Admin </button>
+				</div>
+			</div>
+		</div>
+		
+		<footer class="bg-slate-950 border-t border-slate-900 py-12 text-center text-xs text-slate-500">
+			<p class="mb-2">&copy; 2026 Stock ID VIP #Andaimology. All Rights Reserved.</p>
+			<p class="max-w-xl mx-auto leading-relaxed px-4">Disclaimer: Perdagangan saham memiliki risiko kerugian finansial. Seluruh data rekomendasi bersifat edukasi dan analisa mandiri ritel, keputusan beli/jual ada di tangan investor masing-masing.</p>
+		</footer>
+		
+		<script>
+			// Realtime Clock Simulator for the Group Runtime (7 Months base)
+			function updateLiveClock() {
+				const baseDays = 285;
+				const now = new Date();
+				const hours = String(now.getHours()).padStart(2, '0');
+				const minutes = String(now.getMinutes()).padStart(2, '0');
+				const seconds = String(now.getSeconds()).padStart(2, '0');
+				document.getElementById('liveClock').innerText = `9 Bulan (${baseDays} Hari, ${hours} jam, ${minutes} mnt, ${seconds} dtk)`;
 			}
-			function bayarvoice() {
-				var audio = document.getElementById("bayarvoice");
-				audio.play();
+			setInterval(updateLiveClock, 1000);
+			updateLiveClock();
+			// FAQ Toggle Logic
+			function toggleFaq(element) {
+				const icon = element.querySelector('i');
+				const answer = element.querySelector('p');
+				if (answer.classList.contains('hidden')) {
+					answer.classList.remove('hidden');
+					icon.className = "fa-solid fa-minus text-xs text-emerald-400 transition-transform duration-300";
+					element.classList.add('border-emerald-500/30');
+				} else {
+					answer.add('hidden');
+					answer.classList.add('hidden');
+					icon.className = "fa-solid fa-plus text-xs text-slate-500 transition-transform duration-300";
+					element.classList.remove('border-emerald-500/30');
+				}
 			}
-			function jokowivoice() {
-				var audio = document.getElementById("jokowivoice");
-				audio.play();
+			// Live Investment Return Estimator Addon
+			function liveCalc() {
+				const modal = parseFloat(document.getElementById('calcModal').value) || 0;
+				const wr = parseFloat(document.getElementById('calcWinRate').value) || 0;
+				// Formula estimating potential net gain based on winrate probability over average swing month
+				const result = modal * (wr / 100) * 0.35;
+				document.getElementById('calcResult').innerText = "Rp " + Math.round(result).toLocaleString('id-ID');
 			}
-			function yeayvoice() {
-				var audio = document.getElementById("yeayvoice");
-				audio.play();
+			liveCalc();
+		</script>
+		
+		<script>
+			let currentPackage = "";
+			let currentPrice = "";
+			function openCheckoutModal(pkg, price) {
+				currentPackage = pkg;
+				currentPrice = price;
+				document.getElementById('mdPackageName').innerText = pkg;
+				document.getElementById('mdPackagePrice').innerText = price === '0' ? 'Rp 0' : 'Rp ' + price;
+				const modal = document.getElementById('checkoutModal');
+				const card = document.getElementById('modalCard');
+				modal.style.setProperty('display', 'flex', 'important');
+				modal.style.opacity = "1";
+				modal.style.pointerEvents = "auto";
+				card.classList.remove('scale-95');
+				card.classList.add('scale-100');
 			}
-			function stockidvoice() {
-				var audio = document.getElementById("stockidvoice");
-				audio.play();
+
+			function closeCheckoutModal() {
+				const modal = document.getElementById('checkoutModal');
+				const card = document.getElementById('modalCard');
+				modal.style.opacity = "0";
+				modal.style.pointerEvents = "none";
+				card.classList.remove('scale-100');
+				card.classList.add('scale-95');
+				setTimeout(() => {
+					modal.style.setProperty('display', 'none', 'important');
+				}, 700);
 			}
-			function photovoice() {
-				var audio = document.getElementById("photovoice");
-				audio.play();
+			/*function openCheckoutModal(pkg, price) {
+				currentPackage = pkg;
+				currentPrice = price;
+				document.getElementById('mdPackageName').innerText = pkg;
+				document.getElementById('mdPackagePrice').innerText = price === '0' ? 'Rp 0' : 'Rp ' + price;
+				const modal = document.getElementById('checkoutModal');
+				const card = document.getElementById('modalCard');
+				modal.classList.remove('opacity-0', 'pointer-events-none');
+				card.classList.remove('scale-95');
 			}
-			function setahunbayar() {
-				var audio = document.getElementById("setahunbayars");
-				audio.play();
+
+			function closeCheckoutModal() {
+				const modal = document.getElementById('checkoutModal');
+				const card = document.getElementById('modalCard');
+				modal.classList.add('opacity-0', 'pointer-events-none');
+				card.classList.add('scale-95');
 			}
-			</script>
-			
-			<!--<script type="text/javascript">
-			function emoji() {
-				var a;
-				a = document.getElementById("emoji");
-				a.innerHTML = "&#xf08a;";
-				setTimeout(function () {
-					a.innerHTML = "&#xf006;"
-				}, 2000);
-				setTimeout(function () {
-					a.innerHTML = "&#xf118;";
-				}, 4000);
-				setTimeout(function () {
-					a.innerHTML = "&#xf224;";
-				}, 6000);
-				setTimeout(function () {
-					a.innerHTML = "&#xf087;";
-				}, 8000);
+
+			function copyText(text) {
+				navigator.clipboard.writeText(text);
+				alert("Nomor rekening berhasil disalin: " + text);
 			}
-			emoji();
-			setInterval(emoji, 7000);
-			</script>-->
-			
-			<!-- <script>
-			function satubulan() {
-				window.open("https://api.whatsapp.com/send?phone=6289529305947&text=Saya ingin membeli kelas 30 hari seharga Rp. 129,000, mohon kirimkan alamat pembayaran.");
-			}
-			function duabulan() {
-				window.open("https://api.whatsapp.com/send?phone=6289529305947&text=Saya ingin membeli kelas 60 hari seharga Rp. 239,999, mohon kirimkan alamat pembayaran.");
-			}
-			function tigabulan() {
-				window.open("https://api.whatsapp.com/send?phone=6289529305947&text=Saya ingin membeli kelas 100 Hari seharga Rp. 329,999, mohon kirimkan alamat pembayaran.");
-			}
-			function enambulan() {
-				window.open("https://api.whatsapp.com/send?phone=6289529305947&text=Saya ingin membeli kelas 200 Hari seharga Rp. 599,999, mohon kirimkan alamat pembayaran.");
-			}
-			function setahun() {
-				window.open("https://api.whatsapp.com/send?phone=6289529305947&text=Saya ingin membeli kelas 400 Hari seharga Rp. 1.079,999, mohon kirimkan alamat pembayaran.");
-			}
-			</script>-->
-			
-			<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-			
-			<script type="text/javascript">
-			var quotes = [
-				{"quote": "Abraham Keluar"},
-				{"quote": "Abdul Bergabung"},
-				{"quote": "Adam Bergabung"},
-				{"quote": "Adi Keluar"},
-				{"quote": "Adit Keluar"},
-				{"quote": "Agung Bergabung"},
-				{"quote": "Agus Bergabung"},
-				{"quote": "Aka Keluar"},
-				{"quote": "Ali Keluar"},
-				{"quote": "Alvi Bergabung"},
-				{"quote": "Alpin Bergabung"},
-				{"quote": "Afif Keluar"},
-				{"quote": "Ahlis Keluar"},
-				{"quote": "Anggoro Bergabung"},
-				{"quote": "Ando Keluar"},
-				{"quote": "Annur Bergabung"},
-				{"quote": "Ahmad Bergabung"},
-				{"quote": "Anggit Bergabung"},
-				{"quote": "Annisa Keluar"},
-				{"quote": "Alive Keluar"},
-				{"quote": "Ardha Bergabung"},
-				{"quote": "Ardika Bergabung"},
-				{"quote": "Arif Bergabung"},
-				{"quote": "Atok Bergabung"},
-				{"quote": "Azka Keluar"},
-				{"quote": "Bayu Bergabung"},
-				{"quote": "Candra Bergabung"},
-				{"quote": "Danny Bergabung"},
-				{"quote": "Dandy Keluar"},
-				{"quote": "Dani Keluar"},
-				{"quote": "Dedi Keluar"},
-				{"quote": "Devan Bergabung"},
-				{"quote": "Dimas Keluar"},
-				{"quote": "Dio Keluar"},
-				{"quote": "Dhilla Bergabung"},
-				{"quote": "Dwiky Bergabung"},
-				{"quote": "Evan Bergabung"},
-				{"quote": "Ega Bergabung"},
-				{"quote": "Erwin Bergabung"},
-				{"quote": "Faisal Bergabung"},
-				{"quote": "Farid Bergabung"},
-				{"quote": "Fahmi Bergabung"},
-				{"quote": "Farieq Bergabung"},
-				{"quote": "Fauziah Bergabung"},
-				{"quote": "Fajar Keluar"},
-				{"quote": "Fathan Keluar"},
-				{"quote": "Gias Bergabung"},
-				{"quote": "Gilang Keluar"},
-				{"quote": "Hadi Bergabung"},
-				{"quote": "Hendra Keluar"},
-				{"quote": "Hamid Bergabung"},
-				{"quote": "Ihsan Bergabung"},
-				{"quote": "Ikhwan Bergabung"},
-				{"quote": "Iram Bergabung"},
-				{"quote": "Izzudin Bergabung"},
-				{"quote": "Jordan Keluar"},
-				{"quote": "Juno Bergabung"},
-				{"quote": "Lisbeth Keluar"},
-				{"quote": "Lukita Bergabung"},
-				{"quote": "Made Bergabung"},
-				{"quote": "Miko Keluar"},
-				{"quote": "Muazin Bergabung"},
-				{"quote": "Natan Bergabung"},
-				{"quote": "Nanang Bergabung"},
-				{"quote": "Neko Bergabung"},
-				{"quote": "Nijar Keluar"},
-				{"quote": "Niko Keluar"},
-				{"quote": "Nofal Keluar"},
-				{"quote": "Noval Bergabung"},
-				{"quote": "Pandya Bergabung"},
-				{"quote": "Panji Keluar"},
-				{"quote": "Purna Keluar"},
-				{"quote": "Putri Bergabung"},
-				{"quote": "Rachmad Bergabung"},
-				{"quote": "Radit Keluar"},
-				{"quote": "Rahman Bergabung"},
-				{"quote": "Rama Bergabung"},
-				{"quote": "Ray Bergabung"},
-				{"quote": "Rayhan Bergabung"},
-				{"quote": "Rey Keluar"},
-				{"quote": "Riani Bergabung"},
-				{"quote": "Ridho Bergabung"},
-				{"quote": "Rizal Bergabung"},
-				{"quote": "Roid Bergabung"},
-				{"quote": "Rosita Keluar"},
-				{"quote": "Salim Bergabung"},
-				{"quote": "Sandi Di Banned"},
-				{"quote": "Satya Bergabung"},
-				{"quote": "Saputra Bergabung"},
-				{"quote": "Sefian Bergabung"},
-				{"quote": "Seii Bergabung"},
-				{"quote": "Siska Bergabung"},
-				{"quote": "Sodik Bergabung"},
-				{"quote": "Tia Keluar"},
-				{"quote": "Tama Bergabung"},
-				{"quote": "Tito Bergabung"},
-				{"quote": "Tomin Bergabung"},
-				{"quote": "Tomy Bergabung"},
-				{"quote": "Vani Bergabung"},
-				{"quote": "Viani Bergabung"},
-				{"quote": "Widi Bergabung"},
-				{"quote": "Willy Bergabung"},
-				{"quote": "Winsen Keluar"},
-				{"quote": "Yanto Bergabung"},
-				{"quote": "Yudha Keluar"},
-				{"quote": "Yoga Bergabung"},
-				{"quote": "Yogi Bergabung"},
-				{"quote": "Zidan Bergabung"},
-			]
-			function randomQuote() {
-				var random = quotes[Math.floor(Math.random() * quotes.length)];
-				quotation.innerText = `${random.quote}`;
-				source.innerText = random.source;
-			}
-			setInterval(randomQuote, 4000);
-			</script>
-			
-			<script src="stockid_script/ratting.js"></script>
-			<script src="stockid_script/gallery.js"></script>
-			<script src="stockid_script/waktu.js"></script>
-			<script src="stockid_script/bootstrap.bundle.min.js"></script>
-		</main>
+
+			function redirectToWhatsapp() {
+				const message = encodeURIComponent(`Halo Admin Stock ID VIP, saya berminat bergabung ke paket *${currentPackage}* senilai *Rp ${currentPrice}*. Berikut saya lampirkan bukti transfer transaksi saya.`);
+				window.open(`https://wa.me/6289529305947?text=${message}`, '_blank');
+			}*/
+		</script>
+		
 	</body>
 </html>
