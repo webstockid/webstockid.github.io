@@ -71,6 +71,320 @@
 			</div>
 		</nav>
 		
+		
+		
+		<section id="fitur-watchlist-tracker" class="max-w-5xl mx-auto px-4 my-8 relative">
+    
+    <div id="wlNotificationBanner" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-md bg-gradient-to-r from-emerald-600 to-teal-600 border border-emerald-400/30 rounded-xl p-4 shadow-2xl backdrop-blur-md flex items-start gap-3 text-white animate-bounce">
+        <div class="p-2 bg-white/20 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+        </div>
+        <div class="flex-1">
+            <h4 class="text-sm font-bold">🎯 TARGET PLAN HIT!</h4>
+            <p id="wlNotificationText" class="text-xs text-emerald-100 mt-0.5">Saham Anda telah mencapai target harga TradingView.</p>
+        </div>
+        <button onclick="tutupBannerNotif()" class="text-white/70 hover:text-white text-xs font-bold px-1">&times;</button>
+    </div>
+
+    <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="p-2 bg-cyan-500/20 text-cyan-400 rounded-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white">Smart Watchlist (Live TV Synced)</h3>
+                <p class="text-xs text-gray-400">Ketik kode saham pilihan Anda untuk melihat info harga terakhir dan setup trading plan</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div class="lg:col-span-2 space-y-4 bg-black/20 p-5 rounded-xl border border-white/5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="relative">
+                        <label class="block text-[11px] font-semibold text-gray-400 mb-1">Kode Saham (Emiten IDX)</label>
+                        <input type="text" id="wlInputStock" oninput="cariSuggestionSaham(this)" placeholder="Contoh: BBRI, BBCA, TLKM..." autocomplete="off" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-xs font-bold uppercase tracking-wider">
+                        <div id="wlSuggestionBox" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900 border border-white/10 rounded-xl max-h-44 overflow-y-auto z-30 shadow-2xl text-xs"></div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-400 mb-1">Status Rencana</label>
+                        <select id="wlSelectStatus" onchange="toggleOpsiTargetHarga(this.value)" class="w-full bg-slate-800 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-xs">
+                            <option value="Watchlist">👀 Watchlist (Pantau)</option>
+                            <option value="Hold">💎 Hold (Simpan)</option>
+                            <option value="Buy">🛒 Set Target Buy (Beli)</option>
+                            <option value="Sell">💰 Set Target Sell (Jual)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div id="wlWrapperTargetHarga" class="opacity-30 pointer-events-none transition-all sm:col-span-1">
+                        <label class="block text-[11px] font-semibold text-gray-400 mb-1">Target Harga Anda (Rp)</label>
+                        <input type="text" id="wlInputTargetPrice" placeholder="0" oninput="formatRupiahInput(this)" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-xs font-mono">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-[11px] font-semibold text-gray-400 mb-1">Catatan Analisis</label>
+                        <input type="text" id="wlInputNotes" placeholder="Misal: Tunggu koreksi sehat di support..." class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-gray-200 focus:outline-none focus:border-cyan-500 text-xs">
+                    </div>
+                </div>
+
+                <button onclick="simpanKeWatchlist()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-md tracking-wider">
+                    + SIMPAN KE PERSONAL TRADING PLAN
+                </button>
+            </div>
+
+            <div class="bg-black/30 border border-white/5 rounded-xl p-4 flex flex-col justify-between min-h-[160px]">
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-cyan-400 block mb-2">Live Price Monitor (TradingView):</span>
+                    <div id="tv-form-live-preview" class="w-full h-[120px] rounded overflow-hidden">
+                        <div class="text-center text-gray-500 text-xs pt-10 italic">Masukkan kode saham untuk memuat harga live...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-white/10 text-gray-400 text-[11px] uppercase tracking-wider">
+                        <th class="pb-3 pl-2 w-24">Saham</th>
+                        <th class="pb-3 w-28">Status</th>
+                        <th class="pb-3 w-56">Live Ticker (TradingView)</th>
+                        <th class="pb-3 w-40">Target Anda</th>
+                        <th class="pb-3">Catatan</th>
+                        <th class="pb-3 text-right pr-2 w-20">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="wlTableBodyLayout" class="text-xs text-gray-200 divide-y divide-white/5">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
+<script>
+// Kamus data suggestion komprehensif saham-saham likuid bursa efek indonesia (IDX)
+const kamusSahamIndonesia = [
+    { kode: "BBRI", nama: "Bank Rakyat Indonesia (Persero) Tbk" },
+    { kode: "BBCA", nama: "Bank Central Asia Tbk" },
+    { kode: "BMRI", nama: "Bank Mandiri (Persero) Tbk" },
+    { kode: "BBNI", nama: "Bank Negara Indonesia (Persero) Tbk" },
+    { kode: "TLKM", nama: "Telkom Indonesia (Persero) Tbk" },
+    { kode: "ASII", nama: "Astra International Tbk" },
+    { kode: "GOTO", nama: "GoTo Gojek Tokopedia Tbk" },
+    { kode: "AMMN", nama: "Amman Mineral Internasional Tbk" },
+    { kode: "BRMS", nama: "Bumi Resources Minerals Tbk" },
+    { kode: "ADRO", nama: "Adaro Energy Indonesia Tbk" },
+    { kode: "UNVR", nama: "Unilever Indonesia Tbk" },
+    { kode: "ANTM", nama: "Aneka Tambang Tbk" }
+];
+
+// =========================================================================
+// LOGIKA ENGINE PENCARIAN & SINKRONISASI WIDGET PREVIEW HARGA
+// =========================================================================
+function cariSuggestionSaham(inputElement) {
+    const keyword = inputElement.value.toUpperCase().trim();
+    const box = document.getElementById('wlSuggestionBox');
+    
+    if (!keyword) { box.classList.add('hidden'); return; }
+    
+    const hasilFilter = kamusSahamIndonesia.filter(s => s.kode.includes(keyword) || s.nama.toUpperCase().includes(keyword));
+    if (hasilFilter.length === 0) { box.classList.add('hidden'); return; }
+
+    box.innerHTML = "";
+    box.classList.remove('hidden');
+
+    hasilFilter.forEach(saham => {
+        const item = document.createElement('div');
+        item.className = "p-2.5 hover:bg-white/10 cursor-pointer transition-all border-b border-white/5 last:border-none";
+        item.innerHTML = `<span class="font-bold text-cyan-400">${saham.kode}</span> <span class="text-gray-400 text-[10px] ml-1">(${saham.nama})</span>`;
+        item.onclick = () => {
+            inputElement.value = saham.kode;
+            box.classList.add('hidden');
+            
+            // INTINYA DI SINI: Begitu member memilih saham dari suggestion, 
+            // Kita langsung load widget TV Mini Chart di sebelah kanan untuk memperlihatkan HARGA TERAKHIR.
+            muatTradingViewLivePreview(saham.kode);
+        };
+        box.appendChild(item);
+    });
+}
+
+function muatTradingViewLivePreview(kodeEmiten) {
+    const container = document.getElementById('tv-form-live-preview');
+    if(!container) return;
+    container.innerHTML = ""; // Bersihkan text placeholder lama
+
+    // Menggunakan Mini Widget Resmi TradingView untuk melacak harga real-time tanpa delay bursa
+    new TradingView.MiniWidget({
+        "container_id": "tv-form-live-preview",
+        "symbol": `IDX:${kodeEmiten.toUpperCase()}`,
+        "width": "100%",
+        "height": "100%",
+        "locale": "id",
+        "dateRange": "1D",
+        "colorTheme": "dark",
+        "trendLineColor": "#22c55e",
+        "underLineColor": "rgba(34, 197, 94, 0.1)",
+        "isTransparent": true,
+        "autosize": true,
+        "largeChartUrl": ""
+    });
+}
+
+function toggleOpsiTargetHarga(status) {
+    const wrapper = document.getElementById('wlWrapperTargetHarga');
+    const inputTarget = document.getElementById('wlInputTargetPrice');
+    if (status === 'Buy' || status === 'Sell') {
+        wrapper.classList.remove('opacity-30', 'pointer-events-none');
+        inputTarget.focus();
+    } else {
+        wrapper.classList.add('opacity-30', 'pointer-events-none');
+        inputTarget.value = "0";
+    }
+}
+
+// Tutup suggestion box otomatis jika klik di luar area input form
+document.addEventListener('click', function(e) {
+    const box = document.getElementById('wlSuggestionBox');
+    if (box && !document.getElementById('wlInputStock').contains(e.target)) {
+        box.classList.add('hidden');
+    }
+});
+
+// =========================================================================
+// LOGIKA MANAJEMEN CRUD WATCHLIST
+// =========================================================================
+function simpanKeWatchlist() {
+    const emiten = document.getElementById('wlInputStock').value.toUpperCase().trim();
+    const status = document.getElementById('wlSelectStatus').value;
+    const targetPrice = bersihkanAngka(document.getElementById('wlInputTargetPrice').value);
+    const catatan = document.getElementById('wlInputNotes').value || "-";
+
+    if (!emiten) { alert("Pilih kode emiten terlebih dahulu!"); return; }
+
+    const listData = JSON.parse(localStorage.getItem('stock_id_tv_watchlist')) || [];
+    
+    const dataBaru = {
+        id: Date.now(),
+        emiten: emiten,
+        status: status,
+        targetPrice: (status === 'Buy' || status === 'Sell') ? targetPrice : 0,
+        catatan: catatan
+    };
+
+    listData.push(dataBaru);
+    localStorage.setItem('stock_id_tv_watchlist', JSON.stringify(listData));
+    
+    // Reset Seluruh Input Form
+    document.getElementById('wlInputStock').value = "";
+    document.getElementById('wlInputTargetPrice').value = "";
+    document.getElementById('wlInputNotes').value = "";
+    document.getElementById('tv-form-live-preview').innerHTML = `<div class="text-center text-gray-500 text-xs pt-10 italic">Masukkan kode saham untuk memuat harga live...</div>`;
+    toggleOpsiTargetHarga('Watchlist');
+    document.getElementById('wlSelectStatus').value = "Watchlist";
+
+    tampilkanDataWatchlist();
+}
+
+function tampilkanDataWatchlist() {
+    const tableBody = document.getElementById('wlTableBodyLayout');
+    if (!tableBody) return;
+
+    const listData = JSON.parse(localStorage.getItem('stock_id_tv_watchlist')) || [];
+    tableBody.innerHTML = "";
+
+    if (listData.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-gray-500 italic">Belum ada plan/watchlist TradingView yang disimpan.</td></tr>`;
+        return;
+    }
+
+    listData.forEach(data => {
+        let warnaStatus = "bg-white/10 text-gray-300";
+        if(data.status === 'Buy') warnaStatus = "bg-emerald-500/10 text-emerald-400";
+        if(data.status === 'Sell') warnaStatus = "bg-red-500/10 text-red-400";
+        if(data.status === 'Hold') warnaStatus = "bg-blue-500/10 text-blue-400";
+
+        const containerIdTV = `tv-table-widget-${data.id}`;
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-white/5 border-b border-white/5 transition-all";
+        tr.innerHTML = `
+            <td class="py-4 pl-2 font-bold text-white tracking-wide">${data.emiten}</td>
+            <td><span class="px-2 py-0.5 rounded text-[10px] font-bold ${warnaStatus}">${data.status}</span></td>
+            <td class="py-2">
+                <div id="${containerIdTV}" class="w-48 h-8 overflow-hidden rounded bg-transparent"></div>
+            </td>
+            <td class="font-mono text-gray-300 font-semibold">${data.targetPrice > 0 ? 'Rp ' + data.targetPrice.toLocaleString('id-ID') : '-'}</td>
+            <td class="text-gray-400 italic max-w-[200px] truncate" title="${data.catatan}">${data.catatan}</td>
+            <td class="text-right pr-2">
+                <button onclick="hapusItemWatchlist(${data.id})" class="text-red-400 hover:text-red-300 transition-all text-xs font-semibold">Hapus</button>
+            </td>
+        `;
+        tableBody.appendChild(tr);
+
+        // Render widget baris tabel
+        new TradingView.MediumWidget({
+            "symbols": [[ `IDX:${data.emiten}` ]],
+            "chartOnly": false,
+            "width": "100%",
+            "height": "100%",
+            "locale": "id",
+            "colorTheme": "dark",
+            "gridLineColor": "transparent",
+            "trendLineColor": "#22c55e",
+            "fontColor": "#f3f4f6",
+            "underLineColor": "transparent",
+            "isTransparent": true,
+            "autosize": true,
+            "container_id": containerIdTV
+        });
+    });
+
+    jalankanSimulasiAlertHit(listData);
+}
+
+function hapusItemWatchlist(id) {
+    let listData = JSON.parse(localStorage.getItem('stock_id_tv_watchlist')) || [];
+    listData = listData.filter(item => item.id !== id);
+    localStorage.setItem('stock_id_tv_watchlist', JSON.stringify(listData));
+    tampilkanDataWatchlist();
+}
+
+function jalankanSimulasiAlertHit(listData) {
+    const targetAksi = listData.find(item => item.targetPrice > 0);
+    if (targetAksi) {
+        setTimeout(() => {
+            pemicuBannerNotifikasi(targetAksi.emiten, targetAksi.status.toUpperCase(), targetAksi.targetPrice);
+        }, 2000);
+    }
+}
+
+function pemicuBannerNotifikasi(emiten, tipeAksi, target) {
+    const banner = document.getElementById('wlNotificationBanner');
+    const teks = document.getElementById('wlNotificationText');
+    if (banner && teks) {
+        teks.innerHTML = `Analisis TradingView: Saham <strong class="underline font-mono">$${emiten}</strong> terindikasi masuk zona krusial <strong class="font-mono">Rp ${target.toLocaleString('id-ID')}</strong>. Segera cek eksekusi <span class="bg-black text-yellow-400 px-1.5 py-0.5 rounded font-black text-[10px]">${tipeAksi}</span>!`;
+        banner.classList.remove('hidden');
+    }
+}
+
+function tutupBannerNotif() {
+    document.getElementById('wlNotificationBanner').classList.add('hidden');
+}
+
+// Initializer On Load
+document.addEventListener("DOMContentLoaded", () => {
+    if (document.getElementById('wlInputStock')) {
+        tampilkanDataWatchlist();
+    }
+});
+</script>
+
+
+		
 		<div class="fixed bottom-0 left-0 z-40 w-full bg-slate-950 border-t border-slate-900/80 overflow-hidden shadow-lg">
 			<div class="tradingview-widget-container">
 				<div class="tradingview-widget-container__widget"></div>
@@ -1135,7 +1449,7 @@
 							<div class="space-y-3 border-t border-slate-800/60 pt-4 mb-6">
 								<div class="flex justify-between items-center text-sm">
 									<span class="text-slate-400">Total Equity</span>
-									<span class="font-mono font-bold text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-md border border-blue-500/10">250 Million</span>
+									<span class="font-mono font-bold text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-md border border-blue-500/10">400 Million</span>
 								</div>
 								<div class="flex justify-between items-start text-sm">
 									<span class="text-slate-400">Type</span>
@@ -1150,7 +1464,7 @@
 			</div>
 		</section>
 		
-		<div id="checkoutModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+		<div id="checkoutModal" style="display: none;" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-1000">
 			<div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 relative shadow-2xl transform scale-95 transition-transform duration-300" id="modalCard">
 				<button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
 					<i class="fa-solid fa-xmark text-lg"></i>
@@ -1236,11 +1550,37 @@
 				document.getElementById('calcResult').innerText = "Rp " + Math.round(result).toLocaleString('id-ID');
 			}
 			liveCalc();
-			// Checkout Modal Controller
+		</script>
+		
+		<script>
 			let currentPackage = "";
 			let currentPrice = "";
-
 			function openCheckoutModal(pkg, price) {
+				currentPackage = pkg;
+				currentPrice = price;
+				document.getElementById('mdPackageName').innerText = pkg;
+				document.getElementById('mdPackagePrice').innerText = price === '0' ? 'Rp 0' : 'Rp ' + price;
+				const modal = document.getElementById('checkoutModal');
+				const card = document.getElementById('modalCard');
+				modal.style.setProperty('display', 'flex', 'important');
+				modal.style.opacity = "1";
+				modal.style.pointerEvents = "auto";
+				card.classList.remove('scale-95');
+				card.classList.add('scale-100');
+			}
+
+			function closeCheckoutModal() {
+				const modal = document.getElementById('checkoutModal');
+				const card = document.getElementById('modalCard');
+				modal.style.opacity = "0";
+				modal.style.pointerEvents = "none";
+				card.classList.remove('scale-100');
+				card.classList.add('scale-95');
+				setTimeout(() => {
+					modal.style.setProperty('display', 'none', 'important');
+				}, 700);
+			}
+			/*function openCheckoutModal(pkg, price) {
 				currentPackage = pkg;
 				currentPrice = price;
 				document.getElementById('mdPackageName').innerText = pkg;
@@ -1266,7 +1606,8 @@
 			function redirectToWhatsapp() {
 				const message = encodeURIComponent(`Halo Admin Stock ID VIP, saya berminat bergabung ke paket *${currentPackage}* senilai *Rp ${currentPrice}*. Berikut saya lampirkan bukti transfer transaksi saya.`);
 				window.open(`https://wa.me/6289529305947?text=${message}`, '_blank');
-			}
+			}*/
 		</script>
+		
 	</body>
 </html>
