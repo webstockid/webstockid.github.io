@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Stock's ID VIP - Premium Trading & Learning Community</title>
-		<meta name="keyword" content="stock id, stockid, stock id vip, saham, kelas saham">
+		<meta name="keyword" content="stock id, stockid, stock id vip, stockid vip, saham, kelas saham">
 		<meta name="HandheldFriendly" content="True">
 		<meta name="viewport" content="width=device-width,initial-scale=1,maximal-scale=1,shrink-to-fit=no">
 		<meta name="author" content="Hardiansyah & Tailwind.css">
@@ -1265,6 +1265,16 @@
 				setTimeout(() => {
 					modal.style.setProperty('display', 'none', 'important');
 				}, 700);
+			}
+			
+			function copyText(text) {
+				navigator.clipboard.writeText(text);
+				alert("Nomor rekening berhasil disalin: " + text);
+			}
+
+			function redirectToWhatsapp() {
+				const message = encodeURIComponent(`Halo Admin Stock ID VIP, saya berminat bergabung ke paket *${currentPackage}* senilai *Rp ${currentPrice}*. Berikut saya lampirkan bukti transfer transaksi saya.`);
+				window.open(`https://wa.me/6289529305947?text=${message}`, '_blank');
 			}
 			/*function openCheckoutModal(pkg, price) {
 				currentPackage = pkg;
