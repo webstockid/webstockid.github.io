@@ -162,10 +162,10 @@
         </div>
     </div>
 </section>
+
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
-// Kamus data suggestion komprehensif saham-saham likuid bursa efek indonesia (IDX)
 const kamusSahamIndonesia = [
     { kode: "BBRI", nama: "Bank Rakyat Indonesia (Persero) Tbk" },
     { kode: "BBCA", nama: "Bank Central Asia Tbk" },
@@ -181,9 +181,6 @@ const kamusSahamIndonesia = [
     { kode: "ANTM", nama: "Aneka Tambang Tbk" }
 ];
 
-// =========================================================================
-// LOGIKA ENGINE PENCARIAN & SINKRONISASI WIDGET PREVIEW HARGA
-// =========================================================================
 function cariSuggestionSaham(inputElement) {
     const keyword = inputElement.value.toUpperCase().trim();
     const box = document.getElementById('wlSuggestionBox');
@@ -203,9 +200,6 @@ function cariSuggestionSaham(inputElement) {
         item.onclick = () => {
             inputElement.value = saham.kode;
             box.classList.add('hidden');
-            
-            // INTINYA DI SINI: Begitu member memilih saham dari suggestion, 
-            // Kita langsung load widget TV Mini Chart di sebelah kanan untuk memperlihatkan HARGA TERAKHIR.
             muatTradingViewLivePreview(saham.kode);
         };
         box.appendChild(item);
@@ -215,9 +209,8 @@ function cariSuggestionSaham(inputElement) {
 function muatTradingViewLivePreview(kodeEmiten) {
     const container = document.getElementById('tv-form-live-preview');
     if(!container) return;
-    container.innerHTML = ""; // Bersihkan text placeholder lama
+    container.innerHTML = "";
 
-    // Menggunakan Mini Widget Resmi TradingView untuk melacak harga real-time tanpa delay bursa
     new TradingView.MiniWidget({
         "container_id": "tv-form-live-preview",
         "symbol": `IDX:${kodeEmiten.toUpperCase()}`,
@@ -246,7 +239,6 @@ function toggleOpsiTargetHarga(status) {
     }
 }
 
-// Tutup suggestion box otomatis jika klik di luar area input form
 document.addEventListener('click', function(e) {
     const box = document.getElementById('wlSuggestionBox');
     if (box && !document.getElementById('wlInputStock').contains(e.target)) {
@@ -255,15 +247,22 @@ document.addEventListener('click', function(e) {
 });
 
 // =========================================================================
-// LOGIKA MANAJEMEN CRUD WATCHLIST
+// LOGIKA MANAJEMEN CRUD WATCHLIST (SUDAH DIPERBAIKI SINTAKSNYA)
 // =========================================================================
 function simpanKeWatchlist() {
     const emiten = document.getElementById('wlInputStock').value.toUpperCase().trim();
     const status = document.getElementById('wlSelectStatus').value;
-    const targetPrice = bersihkanAngka(document.getElementById('wlInputTargetPrice').value);
-    const catatan = document.getElementById('wlInputNotes').value || "-";
+    
+    // PERBAIKAN: Fungsi penangkap angka target harga dibersihkan dari typo karakter asing
+    const targetPriceRaw = document.getElementById('wlInputTargetPrice').value;
+    const targetPrice = (typeof bersihkanAngka === 'function') ? bersihkanAngka(targetPriceRaw) : parseFloat(targetPriceRaw.replace(/\./g, '')) || 0;
+    
+    const catatan = document.getElementById('wlInputNotes').value.trim() || "-";
 
-    if (!emiten) { alert("Pilih kode emiten terlebih dahulu!"); return; }
+    if (!emiten) { 
+        alert("Pilih atau ketik kode emiten terlebih dahulu!"); 
+        return; 
+    }
 
     const listData = JSON.parse(localStorage.getItem('stock_id_tv_watchlist')) || [];
     
@@ -278,7 +277,7 @@ function simpanKeWatchlist() {
     listData.push(dataBaru);
     localStorage.setItem('stock_id_tv_watchlist', JSON.stringify(listData));
     
-    // Reset Seluruh Input Form
+    // Reset Seluruh Elemen Form Input
     document.getElementById('wlInputStock').value = "";
     document.getElementById('wlInputTargetPrice').value = "";
     document.getElementById('wlInputNotes').value = "";
@@ -325,7 +324,6 @@ function tampilkanDataWatchlist() {
         `;
         tableBody.appendChild(tr);
 
-        // Render widget baris tabel
         new TradingView.MediumWidget({
             "symbols": [[ `IDX:${data.emiten}` ]],
             "chartOnly": false,
@@ -372,10 +370,10 @@ function pemicuBannerNotifikasi(emiten, tipeAksi, target) {
 }
 
 function tutupBannerNotif() {
-    document.getElementById('wlNotificationBanner').classList.add('hidden');
+    const banner = document.getElementById('wlNotificationBanner');
+    if(banner) banner.classList.add('hidden');
 }
 
-// Initializer On Load
 document.addEventListener("DOMContentLoaded", () => {
     if (document.getElementById('wlInputStock')) {
         tampilkanDataWatchlist();
