@@ -483,14 +483,14 @@
 					<div class="space-y-4">
 						<div>
 							<label class="block text-xs font-semibold text-gray-300 mb-1">Total Modal Kulakan (Rp)</label>
-							<input type="text" id="psInputModal" value="10.000.000" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
+							<input type="text" id="psInputModal" value="1.000.000" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
 						</div>
 						<div>
 							<label class="block text-xs font-semibold text-gray-300 mb-1">Maksimal Risiko per Trade (%)</label>
 							<select id="psSelectRisk" onchange="eksekusiSizing()" class="w-full bg-slate-800 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm">
 								<option value="1">1% (Sangat Konservatif)</option>
-								<option value="2.5" selected="selected">2,5% (Rekomendasi Trader Pro)</option>
-								<option value="5">5% (Agresif)</option>
+								<option value="2.5">2,5% (Rekomendasi Trader Pro)</option>
+								<option value="5" selected="selected">5% (Agresif)</option>
 								<option value="7">7% (High Risk)</option>
 								<option value="10">10% (Sedekah)</option>
 								<option value="15">15% (Stresss)</option>
@@ -499,11 +499,11 @@
 						<div class="grid grid-cols-2 gap-3">
 							<div>
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Harga Entry (Rp)</label>
-								<input type="text" id="psInputEntry" value="500" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
+								<input type="text" id="psInputEntry" value="1.000" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
 							</div>
 							<div>
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Harga Stop Loss (Rp)</label>
-								<input type="text" id="psInputSL" value="400" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
+								<input type="text" id="psInputSL" value="900" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
 							</div>
 						</div>
 					</div>
@@ -546,11 +546,11 @@
 						<div class="grid grid-cols-2 gap-3">
 							<div>
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Jumlah Trade Profit (Win)</label>
-								<input type="number" id="rpWinCount" value="12" oninput="eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
+								<input type="number" id="rpWinCount" value="50" oninput="eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
 							</div>
 							<div>
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Jumlah Trade Rugi (Loss)</label>
-								<input type="number" id="rpLossCount" value="8" oninput="eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
+								<input type="number" id="rpLossCount" value="25" oninput="eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
 							</div>
 						</div>
 						<div class="grid grid-cols-2 gap-3">
