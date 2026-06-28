@@ -56,17 +56,265 @@
 						<p class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
 					</div>
 				</div>
-				<div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+				<!--<div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
 					<a href="#benefit" class="hover:text-emerald-400 transition-colors">Benefit</a>
 					<a href="#stats" class="hover:text-emerald-400 transition-colors">Statistik</a>
 					<a href="#paket" class="hover:text-emerald-400 transition-colors">Paket Belajar</a>
 					<a href="#faq" class="hover:text-emerald-400 transition-colors">FAQ</a>
-				</div>
+				</div>-->
 				<div>
 					<a href="https://webstockid.github.io/index.html" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-sm tracking-wide transition shadow-lg shadow-emerald-500/20 block">STOCK ID VIP</a>
 				</div>
 			</div>
 		</nav>
+		
+		<section id="market-radar-section" class="py-16 bg-slate-950 border-t border-slate-900">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="text-center mb-12">
+				<span class="px-3 py-1 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 uppercase tracking-wider">Market Radar</span>
+				<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Arah & Sentimen Pasar Global</h2>
+				<p class="mt-2 text-sm text-slate-400">Klik pada kategori untuk memuat data pasar secara real-time tanpa membuat website terasa berat.</p>
+			</div>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+				<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-bluechip">
+					<div class="flex items-center justify-between w-full">
+						<div class="flex items-center gap-3">
+							<span class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
+								<i class="fa-solid fa-gem text-xs"></i>
+							</span>
+							<div>
+								<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Blue Chip (IDX)</h3>
+								<p class="text-[11px] text-slate-500">Saham unggulan pasar modal Indonesia</p>
+							</div>
+						</div>
+						<button onclick='toggleRadarWidget("bluechip")' id="btn-bluechip" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+							<span>Pantau</span>
+							<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-bluechip"></i>
+						</button>
+					</div>
+					<div id="wrapper-bluechip" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
+						<div id="container-bluechip" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
+					</div>
+				</div>
+				<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-index">
+					<div class="flex items-center justify-between w-full">
+						<div class="flex items-center gap-3">
+							<span class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+								<i class="fa-solid fa-globe text-xs"></i>
+							</span>
+							<div>
+								<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Index Pasar Global</h3>
+								<p class="text-[11px] text-slate-500">Acuan arah pergerakan bursa saham dunia</p>
+							</div>
+						</div>
+						<button onclick='toggleRadarWidget("index")' id="btn-index" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+							<span>Pantau</span>
+							<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-index"></i>
+						</button>
+					</div>
+					<div id="wrapper-index" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
+						<div id="container-index" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
+					</div>
+				</div>
+				<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-komoditas">
+					<div class="flex items-center justify-between w-full">
+						<div class="flex items-center gap-3">
+							<span class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
+								<i class="fa-solid fa-fire-flame-simple text-xs"></i>
+							</span>
+							<div>
+								<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Komoditas Dunia</h3>
+								<p class="text-[11px] text-slate-500">Harga emas, minyak, gas, dan logam mulia</p>
+							</div>
+						</div>
+						<button onclick='toggleRadarWidget("komoditas")' id="btn-komoditas" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+							<span>Pantau</span>
+							<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-komoditas"></i>
+						</button>
+					</div>
+					<div id="wrapper-komoditas" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
+						<div id="container-komoditas" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
+					</div>
+				</div>
+				<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-kripto">
+					<div class="flex items-center justify-between w-full">
+						<div class="flex items-center gap-3">
+							<span class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400">
+								<i class="fa-brands fa-bitcoin text-xs"></i>
+							</span>
+							<div>
+								<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Aset Kripto</h3>
+								<p class="text-[11px] text-slate-500">Arus likuiditas koin kripto kapitalisasi besar</p>
+							</div>
+						</div>
+						<button onclick='toggleRadarWidget("kripto")' id="btn-kripto" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+							<span>Pantau</span>
+							<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-kripto"></i>
+						</button>
+					</div>
+					<div id="wrapper-kripto" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
+						<div id="container-kripto" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<script>
+		// Konfigurasi Simbol TradingView Ticker Data 
+		// Cukup ganti bagian isi dari objek 'radarSymbolsData' ini saja di script Anda:
+		const radarSymbolsData = {
+			bluechip: [{
+				"s": "IDX:BBCA"
+			}, {
+				"s": "IDX:BBRI"
+			}, {
+				"s": "IDX:ICBP"
+			}, {
+				"s": "IDX:AMRT"
+			}, {
+				"s": "IDX:TLKM"
+			}, {
+				"s": "IDX:ASII"
+			}, {
+				"s": "IDX:UNTR"
+			}, {
+				"s": "IDX:ANTM"
+			}, {
+				"s": "IDX:MDIA"
+			}],
+			index: [{
+					"s": "IDX:COMPOSITE",
+					"d": "Bursa Indo (IHSG)"
+				}, {
+					"s": "FOREXCOM:SPXUSD",
+					"d": "Bursa AS"
+				}, {
+					"s": "INDEX:NKY",
+					"d": "Bursa Jepang"
+				}, {
+					"s": "SSE:000001",
+					"d": "Bursa China"
+				}, {
+					"s": "HSI:HSI",
+					"d": "Bursa Hongkong"
+				}, {
+					"s": "BSE:SENSEX",
+					"d": "Bursa India"
+				}, {
+					"s": "TWSE:TAIEX",
+					"d": "Bursa Taiwan"
+				}, {
+					"s": "SZSE:399001",
+				}, {
+					"s": "INDEX:DAX",
+					"d": "Bursa Jerman"
+				}, {
+					"s": "INDEX:XJO",
+					"d": "Bursa Australia"
+				}],
+			komoditas: [{
+					"s": "TVC:GOLD",
+					"d": "Harga Emas Dunia"
+				}, {
+					"s": "TVC:SILVER",
+					"d": "Harga Perak Dunia"
+				}, {
+					"s": "OANDA:XCUUSD",
+					"d": "Spot Tembaga Dunia"
+				}, {
+					"s": "TVC:USOIL",
+					"d": "Minyak Mentah US"
+				}, {
+					"s": "TVC:UKOIL",
+					"d": "Minyak Mentah Eropa"
+				}, {
+					"s": "NYBOT:KC1!",
+					"d": "Harga Kopi Global (Softs)"
+				}],
+			kripto: [{
+				"s": "BINANCE:BTCUSDT",
+				"d": "BTC"
+			}, {
+				"s": "BINANCE:ETHUSDT",
+				"d": "ETH"
+			}, {
+				"s": "BINANCE:BNBUSDT",
+				"d": "BNB"
+			}, {
+				"s": "BINANCE:SOLUSDT",
+				"d": "SOL"
+			}, {
+				"s": "BINANCE:ADAUSDT",
+				"d": "ADA"
+			}, {
+				"s": "BINANCE:TRXUSDT",
+				"d": "TRX"
+			}]
+		};
+
+		function toggleRadarWidget(category) {
+			const wrapper = document.getElementById(`wrapper-${category}`);
+			const container = document.getElementById(`container-${category}`);
+			const icon = document.getElementById(`icon-${category}`);
+			const button = document.getElementById(`btn-${category}`);
+			const card = document.getElementById(`card-${category}`);
+			if (wrapper.classList.contains('hidden')) {
+				// 1. Tampilkan kontainer wrapper terlebih dahulu
+				wrapper.classList.remove('hidden');
+				icon.classList.add('rotate-180');
+				card.classList.add('border-emerald-500/30', 'glow-green');
+				// 2. Ubah UI State Tombol
+				button.innerHTML = `
+																<span>Tutup</span>
+																<i class="fa-solid fa-chevron-down rotate-180 transition-transform duration-300" id="icon-${category}"></i>`;
+				button.classList.remove('bg-slate-900', 'text-slate-300');
+				button.classList.add('bg-rose-500/10', 'text-rose-400', 'border-rose-500/20');
+				// 3. Bersihkan sisa renderan lama, lalu buat element widget fresh
+				container.innerHTML = "";
+				const widgetDiv = document.createElement('div');
+				widgetDiv.className = "tradingview-widget-container";
+				widgetDiv.style.width = "100%";
+				widgetDiv.style.height = "100%";
+				widgetDiv.innerHTML = `
+																<div class="tradingview-widget-container__widget" style="width:100%; height:100%;"></div>`;
+				const script = document.createElement('script');
+				script.type = 'text/javascript';
+				script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js';
+				script.async = true;
+				script.text = JSON.stringify({
+					"colorTheme": "dark",
+					"dateRange": "12M",
+					"showChart": false,
+					"locale": "id",
+					"width": "100%",
+					"height": "100%",
+					"largeChartUrl": "",
+					"isTransparent": true,
+					"showSymbolLogo": true,
+					"showFloatingTooltip": false,
+					"tabs": [{
+						"title": "Data Pasar",
+						"symbols": radarSymbolsData[category]
+					}]
+				});
+				widgetDiv.appendChild(script);
+				container.appendChild(widgetDiv);
+			} else {
+				// Tutup dan kembalikan memori RAM agar enteng kembali
+				wrapper.classList.add('hidden');
+				icon.classList.remove('rotate-180');
+				card.classList.remove('border-emerald-500/30', 'glow-green');
+				button.innerHTML = `
+																<span>Pantau</span>
+																<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-${category}"></i>`;
+				button.classList.remove('bg-rose-500/10', 'text-rose-400', 'border-rose-500/20');
+				button.classList.add('bg-slate-900', 'text-slate-300');
+				// Hancurkan objek widget didalamnya
+				container.innerHTML = "";
+			}
+		}
+	</script>
+	
 		<section id="kalkulator-profit" class="py-16 bg-slate-950 border-t border-slate-900/60">
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="text-center mb-12">
