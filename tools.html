@@ -79,10 +79,10 @@
 						<div class="space-y-6">
 							<div>
 								<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Modal Awal (Rp)</label>
-								<input type="text" id="profit-modal-input" oninput="formatRupiahInput(this)" placeholder="1.000.000" value="5.000.000" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
+								<input type="text" id="profit-modal-input" oninput="formatRupiahInput(this)" placeholder="1.000.000" value="10.000.000" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
 							</div>
 							<div>
-								<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Target Profit per Periode (%)</label>
+								<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Target Profit per Trade (%)</label>
 								<input type="number" id="profit-target" placeholder="10" value="5" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
 							</div>
 							<div>
@@ -184,7 +184,7 @@
 		<section id="kalkulator-saham" class="py-16 bg-slate-950 border-t border-slate-900/60">
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="text-center mb-12">
-					<span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">Trading Tools Pro</span>
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">Calc Average Pro</span>
 					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Kalkulator Average Up & Down</h2>
 					<p class="mt-2 text-sm text-slate-400">Hitung rata-rata modal baru dan estimasi total pengeluaran Kamu termasuk komisi broker secara akurat.</p>
 				</div>
@@ -201,7 +201,7 @@
 								</div>
 								<div>
 									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Jumlah Lot Awal</label>
-									<input type="number" id="avg-lot-1" placeholder="50" value="25" class="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
+									<input type="number" id="avg-lot-1" placeholder="50" value="200" class="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
 								</div>
 							</div>
 							<h3 class="text-base font-bold text-slate-200 border-b border-slate-800 pt-2 pb-2 flex items-center gap-2">
@@ -214,7 +214,7 @@
 								</div>
 								<div>
 									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Jumlah Lot Baru</label>
-									<input type="number" id="avg-lot-2" placeholder="50" value="25" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
+									<input type="number" id="avg-lot-2" placeholder="50" value="200" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
 								</div>
 							</div>
 							<h3 class="text-base font-bold text-slate-200 border-b border-slate-800 pt-2 pb-2 flex items-center gap-2">
@@ -479,7 +479,7 @@
 					<div class="space-y-4">
 						<div>
 							<label class="block text-xs font-semibold text-gray-300 mb-1">Total Modal Kulakan (Rp)</label>
-							<input type="text" id="psInputModal" value="1.000.000" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
+							<input type="text" id="psInputModal" placeholder="1.000.000" value="10.000.000" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
 						</div>
 						<div>
 							<label class="block text-xs font-semibold text-gray-300 mb-1">Maksimal Risiko per Trade (%)</label>
@@ -495,11 +495,11 @@
 						<div class="grid grid-cols-2 gap-3">
 							<div>
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Harga Entry (Rp)</label>
-								<input type="text" id="psInputEntry" value="200" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
+								<input type="text" id="psInputEntry" placeholder="200" value="200" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
 							</div>
 							<div>
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Harga Stop Loss (Rp)</label>
-								<input type="text" id="psInputSL" value="180" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
+								<input type="text" id="psInputSL" placeholder="180" value="180" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
 							</div>
 						</div>
 					</div>
@@ -595,7 +595,7 @@
 						<div class="grid grid-cols-2 gap-3">
 							<div>
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Jumlah Trade Profit (Win)</label>
-								<input type="number" id="rpWinCount" placeholder="100" value="500" oninput="eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
+								<input type="number" id="rpWinCount" placeholder="100" value="800" oninput="eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
 							</div>
 							<div>
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Jumlah Trade Rugi (Loss)</label>
@@ -605,11 +605,11 @@
 						<div class="grid grid-cols-2 gap-3">
 							<div>
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Rata-rata Cuan (Rp)</label>
-								<input type="text" id="rpAvgWin" placeholder="500.000" value="1.000.000" oninput="formatRupiahInput(this),eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
+								<input type="text" id="rpAvgWin" placeholder="500.000" value="2.000.000" oninput="formatRupiahInput(this),eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
 							</div>
 							<div>
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Rata-rata Rugi (Rp)</label>
-								<input type="text" id="rpAvgLoss" placeholder="100.000" value="200.000" oninput="formatRupiahInput(this),eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
+								<input type="text" id="rpAvgLoss" placeholder="100.000" value="500.000" oninput="formatRupiahInput(this),eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
 							</div>
 						</div>
 					</div>
