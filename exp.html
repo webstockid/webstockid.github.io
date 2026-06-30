@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-		<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Exo+2&display=swap" rel="stylesheet">
 		<meta name="theme-color" content="#0b0f19">
 		<meta property="og:title" content="Masa Aktif Member Stock ID VIP">
 		<meta property="og:description" content="Cek Masa Aktifmu Disini Yaa!">
@@ -20,13 +20,13 @@
 		<meta property="og:type" content="website">
 		<style>
 			body {
-				font-family: 'Plus Jakarta Sans', sans-serif;
+				font-family: 'Exo 2', sans-serif;
 				background-color: #0b0f19;
 				transition: background-color .3s, color .3s
 			}
 
 			.heading-font {
-				font-family: 'Space Grotesk', sans-serif
+				font-family: 'Exo 2', sans-serif
 			}
 
 			.theme-switching {
@@ -1244,7 +1244,7 @@
 						statusCardBorder = "border-rose-500/30 bg-rose-950/20 opacity-75 shadow-lg shadow-rose-950/5"; // <-- Kontras Expired
 						daysBadgeColor = "bg-rose-500/10 text-rose-400 border-rose-500/20";
 						sisaTeks = "Expired";
-					} else if (daysLeft <= 3) {
+					} else if (daysLeft <= 4) {
 						statusCardBorder = "border-rose-500 bg-slate-900/80 shadow-[0_0_20px_rgba(244,63,94,0.1)]"; // <-- Kontras H-3 Glow
 						daysBadgeColor = "bg-rose-500 text-slate-950 font-extrabold animate-pulse";
 					} else if (daysLeft <= 7) {
@@ -1279,28 +1279,28 @@
                         </span>
 																			</div>
 																			<div class="space-y-2 text-xs font-medium">
-																				<div class="flex items-center gap-2 text-slate-400">
-																					<i class="fa-solid fa-calendar-xmark text-[10px] text-slate-500 w-4"></i>
+																				<div class="flex items-center gap-2 text-white-600">
+																					<i class="fa-solid fa-calendar-xmark text-[14px] text-blue-500 w-4"></i>
 																					<span>Expired: 
-																						<span class="text-slate-200 font-mono">${m.expired}</span>
+																						<span class="text-blue-500">${m.expired}</span>
 																					</span>
 																				</div>
-																				<div class="flex items-center gap-2 text-slate-400">
-																					<i class="fa-solid fa-hourglass-half text-[10px] text-slate-500 w-4"></i>
+																				<div class="flex items-center gap-2 text-white-600">
+																					<i class="fa-solid fa-hourglass-full text-[14px] text-amber-500 w-4"></i>
 																					<span>Sisa Waktu: 
-																						<span class="countdown font-mono text-white font-bold" data-expired="${m.expired}">${sisa(m.ms)}</span>
+																						<span class="countdown text-amber-500" data-expired="${m.expired}">${sisa(m.ms)}</span>
 																					</span>
 																				</div>
-																				<div class="flex items-center gap-2 text-slate-400 pt-2 border-t border-slate-900/60 mt-2">
-																					<i class="fa-brands fa-whatsapp text-[11px] text-emerald-500 w-4"></i>
+																				<div class="flex items-center gap-2 text-white-600">
+																					<i class="fa-brands fa-whatsapp text-[15px] text-emerald-500 w-4"></i>
 																					<span>Kontak: 
-																						<span class="text-slate-300 font-mono">${m.whatsapp}</span>
+																						<span class="text-emerald-500">${m.whatsapp}</span>
 																					</span>
 																				</div>
-																				<div class="flex items-center gap-2 text-slate-400">
-																					<i class="fa-solid fa-layer-group text-[10px] text-indigo-400 w-4"></i>
+																				<div class="flex items-center gap-2 text-white-600">
+																					<i class="fa-solid fa-layer-group text-[12px] text-rose-500 w-4"></i>
 																					<span>Paket Join: 
-																						<span class="text-slate-300 font-mono">${join(m.history)}</span>
+																						<span class="text-rose-500">${join(m.history)}</span>
 																					</span>
 																				</div>
 																			</div>
