@@ -62,6 +62,274 @@
 			</div>
 		</nav>
 		
+		<!-- ========================================================================= -->
+<!-- FITUR BARU: STOCK ID VIP AI CHAT ASSISTANT -->
+<!-- ========================================================================= -->
+<section id="fitur-ai-chat" class="max-w-5xl mx-auto px-4 my-8">
+	<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl h-[600px] flex flex-col relative overflow-hidden">
+		
+		<!-- SCREEN 1: FORMULIR INPUT NAMA MEMBER VIP (DITAMPILKAN JIKA NAMA KOSONG) -->
+		<div id="aiChatAuthScreen" class="absolute inset-0 z-10 bg-slate-950/90 backdrop-blur-lg flex flex-col items-center justify-center p-6 text-center transition-all duration-300">
+			<div class="max-w-md space-y-5">
+				<div class="w-16 h-16 mx-auto bg-gradient-to-tr from-cyan-500 to-emerald-400 text-slate-950 rounded-2xl shadow-xl shadow-emerald-500/20 flex items-center justify-center">
+					<i class="fa-solid fa-user-shield text-2xl font-black"></i>
+				</div>
+				<div>
+					<h4 class="text-xl font-bold text-white tracking-tight">Verifikasi Akses Stock ID VIP</h4>
+					<p class="text-xs text-gray-400 mt-1">Halo Member VIP! Silakan masukkan nama Anda untuk memulai sesi diskusi eksklusif bersama Asisten AI.</p>
+				</div>
+				<div class="flex gap-2 max-w-sm mx-auto">
+					<input type="text" id="aiChatUsernameInput" onkeydown="checkAiAuthEnter(event)" placeholder="Masukkan nama panggilan Anda..." class="flex-1 bg-white/5 border border-white/10 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none text-sm transition-all font-medium">
+					<button onclick="simpanNamaMemberVIP()" class="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-bold px-5 rounded-xl text-sm transition-all duration-300 shadow-md">
+						Masuk
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- SCREEN 2: INTERFAS UTAMA CHATBOT (STANDBY) -->
+		<!-- Header Chatbot -->
+		<div class="flex items-center justify-between mb-4 shrink-0 border-b border-white/10 pb-4">
+			<div class="flex items-center gap-3">
+				<div class="p-2 bg-gradient-to-tr from-cyan-500 to-emerald-400 text-slate-950 rounded-xl shadow-lg shadow-emerald-500/20">
+					<i class="fa-solid fa-robot text-base font-black"></i>
+				</div>
+				<div>
+					<h3 class="text-base font-bold text-white flex items-center gap-2 tracking-wide uppercase">
+						STOCK ID AI ASSISTANT
+						<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-widest animate-pulse normal-case">Online</span>
+					</h3>
+					<p class="text-[11px] text-gray-400">Tanya seputar analisa bursa dan strategi trading plan</p>
+				</div>
+			</div>
+			
+			<!-- Kontrol menu pojok kanan atas disusun secara Vertikal -->
+			<div class="flex flex-col items-end gap-1 shrink-0">
+				<button onclick="logoutNamaMemberVIP()" class="text-[10px] text-gray-400 hover:text-rose-400 transition-colors flex items-center gap-1" title="Ganti Nama Pengguna">
+					<i class="fa-solid fa-user-pen text-[9px]"></i> Ganti User
+				</button>
+				<button onclick="clearChatHistory()" class="text-[10px] text-gray-400 hover:text-rose-400 transition-colors flex items-center gap-1" title="Bersihkan Isi Obrolan">
+					<i class="fa-solid fa-broom text-[9px]"></i> Bersihkan
+				</button>
+			</div>
+		</div>
+
+		<!-- Ruang Konten Pesan Obrolan (Scrollable) -->
+		<div id="aiChatWindow" class="flex-1 overflow-y-auto pr-1 space-y-4 custom-scrollbar mb-4 p-2 bg-black/20 rounded-xl border border-white/5">
+			<!-- Pesan sambutan diisikan otomatis oleh JavaScript -->
+		</div>
+
+		<!-- Input Form Pengiriman Pesan -->
+		<div class="shrink-0">
+			<div class="flex gap-2">
+				<input type="text" id="aiChatInputField" onkeydown="checkAiChatEnter(event)" placeholder="Ketik pertanyaan sahammu di sini..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500 text-sm transition-all shadow-inner">
+				<button onclick="kirimPesanKeAi()" class="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-bold px-5 rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 flex items-center justify-center">
+					<i class="fa-solid fa-paper-plane text-sm"></i>
+				</button>
+			</div>
+			<p class="text-[10px] text-gray-500 mt-2 text-center">💡 Catatan: Jawaban AI bersifat edukasi. Selalu cross-check kembali dengan data kalkulator utama kami.</p>
+			<p class="text-[10px] font-black text-rose-500 mt-2 text-center">❤️ Diberdayakan oleh: GROQ AI.</p>
+		</div>
+
+	</div>
+</section>
+
+<script>
+	// =========================================================================
+	// LOGIKA FITUR: STOCK ID AI CHATBOT SYSTEM REAL HIGH-SPEED API (NO MORE AQ ERROR)
+	// =========================================================================
+
+	let NAMA_MEMBER_VIP = localStorage.getItem('stockIdVipChatUser') || "";
+
+	// PENTING: Tempel kunci gratis dari console.groq.com di bawah ini (Diawali huruf gsk_...)
+	const API_KEY_ALT = "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";
+
+	function cekOtorisasiNamaChat() {
+		const authScreen = document.getElementById('aiChatAuthScreen');
+		if (!authScreen) return;
+
+		if (NAMA_MEMBER_VIP === "") {
+			authScreen.classList.remove('hidden');
+		} else {
+			authScreen.classList.add('hidden');
+			inisialisasiPesanSambutanAI();
+		}
+	}
+
+	function checkAiAuthEnter(event) {
+		if (event.key === "Enter") {
+			simpanNamaMemberVIP();
+		}
+	}
+
+	function simpanNamaMemberVIP() {
+		const inputNama = document.getElementById('aiChatUsernameInput');
+		if (!inputNama) return;
+
+		const namaTrimmed = inputNama.value.trim();
+		if (namaTrimmed === "") {
+			alert("Silakan masukkan nama Anda terlebih dahulu!");
+			return;
+		}
+
+		localStorage.setItem('stockIdVipChatUser', namaTrimmed);
+		NAMA_MEMBER_VIP = namaTrimmed;
+		inputNama.value = "";
+		
+		cekOtorisasiNamaChat();
+	}
+
+	function logoutNamaMemberVIP() {
+		if (confirm("Apakah Anda ingin mengganti nama pengguna chat?")) {
+			localStorage.removeItem('stockIdVipChatUser');
+			NAMA_MEMBER_VIP = "";
+			cekOtorisasiNamaChat();
+		}
+	}
+
+	function inisialisasiPesanSambutanAI() {
+		const chatWindow = document.getElementById('aiChatWindow');
+		if (!chatWindow) return;
+
+		chatWindow.innerHTML = `
+			<div class="flex items-start gap-2.5 max-w-[85%]">
+				<div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+					<i class="fa-solid fa-robot text-xs"></i>
+				</div>
+				<div class="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3.5 text-xs text-gray-200 leading-relaxed shadow-md">
+					<p class="font-bold text-emerald-400 mb-1">StockID AI</p>
+					Halo <strong>${NAMA_MEMBER_VIP}</strong>! 👋 Selamat datang di ruang analisis premium Stock ID VIP. Sesi obrolan real-time berkecepatan tinggi siap digunakan. Ada saham, emiten, atau strategi trading yang mau kita bahas hari ini?
+				</div>
+			</div>
+		`;
+	}
+
+	function checkAiChatEnter(event) {
+		if (event.key === "Enter") {
+			kirimPesanKeAi();
+		}
+	}
+
+	async function kirimPesanKeAi() {
+		const inputField = document.getElementById('aiChatInputField');
+		const chatWindow = document.getElementById('aiChatWindow');
+		
+		if (!inputField || !chatWindow) return;
+		
+		const pesanUser = inputField.value.trim();
+		if (pesanUser === "") return;
+
+		// 1. Render Pesan User ke Layar Chat
+		const userMessageDiv = document.createElement('div');
+		userMessageDiv.className = "flex items-start gap-2.5 max-w-[85%] ml-auto justify-end";
+		userMessageDiv.innerHTML = `
+			<div class="bg-emerald-600/20 border border-emerald-500/30 rounded-2xl rounded-tr-none p-3.5 text-xs text-gray-200 leading-relaxed shadow-md text-right">
+				<p class="font-bold text-emerald-400 mb-1">${NAMA_MEMBER_VIP} (Member VIP)</p>
+				<p>${pesanUser}</p>
+			</div>
+			<div class="w-8 h-8 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-gray-300 shrink-0">
+				<i class="fa-solid fa-user text-xs"></i>
+			</div>
+		`;
+		chatWindow.appendChild(userMessageDiv);
+		
+		inputField.value = "";
+		chatWindow.scrollTop = chatWindow.scrollHeight;
+
+		// 2. Tampilkan Animasi Loading Bubble
+		const loadingDiv = document.createElement('div');
+		loadingDiv.id = "ai-loading-bubble";
+		loadingDiv.className = "flex items-start gap-2.5 max-w-[85%]";
+		loadingDiv.innerHTML = `
+			<div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+				<i class="fa-solid fa-robot text-xs"></i>
+			</div>
+			<div class="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3.5 text-xs text-gray-400 italic flex items-center gap-2">
+				<i class="fa-solid fa-circle-notch animate-spin text-emerald-400"></i> StockID AI sedang menganalisa pasar...
+			</div>
+		`;
+		chatWindow.appendChild(loadingDiv);
+		chatWindow.scrollTop = chatWindow.scrollHeight;
+
+		// 3. Request Langsung ke API Kecepatan Tinggi (Bebas Eror Kode GCP)
+		try {
+			const systemInstruction = "Kamu adalah StockID AI, asisten trading premium untuk komunitas Stock ID VIP. Jawablah pertanyaan user dengan gaya pakar saham Indonesia yang cerdas, singkat, edukatif, objektif, dan berikan disclaimer di akhir bahwa ini bukan ajakan membeli/menjual. Selalu sapa user dengan namanya.";
+			
+			const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+				method: "POST",
+				headers: {
+					"Authorization": `Bearer ${API_KEY_ALT}`,
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					model: "llama-3.3-70b-versatile",
+					messages: [
+						{ role: "system", content: systemInstruction },
+						{ role: "user", content: `Nama User: ${NAMA_MEMBER_VIP}\nPertanyaan: ${pesanUser}` }
+					],
+					temperature: 0.5
+				})
+			});
+
+			const data = await response.json();
+			let jawabanAi = data.choices[0].message.content;
+			
+			// Format teks markdown ke HTML render
+			jawabanAi = jawabanAi.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+			jawabanAi = jawabanAi.replace(/\n/g, '<br>');
+
+			const currentLoading = document.getElementById('ai-loading-bubble');
+			if (currentLoading) currentLoading.remove();
+
+			// Render Balasan Jawaban AI ke Layar Chat
+			const aiMessageDiv = document.createElement('div');
+			aiMessageDiv.className = "flex items-start gap-2.5 max-w-[85%]";
+			aiMessageDiv.innerHTML = `
+				<div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+					<i class="fa-solid fa-robot text-xs"></i>
+				</div>
+				<div class="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3.5 text-xs text-gray-200 leading-relaxed shadow-md">
+					<p class="font-bold text-cyan-400 mb-1">StockID AI</p>
+					<p>${jawabanAi}</p>
+				</div>
+			`;
+			chatWindow.appendChild(aiMessageDiv);
+
+		} catch (error) {
+			console.error("Error:", error);
+			const currentLoading = document.getElementById('ai-loading-bubble');
+			if (currentLoading) currentLoading.remove();
+
+			const errorDiv = document.createElement('div');
+			errorDiv.className = "flex items-start gap-2.5 max-w-[85%]";
+			errorDiv.innerHTML = `
+				<div class="w-8 h-8 rounded-lg bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0">
+					<i class="fa-solid fa-circle-exclamation text-xs"></i>
+				</div>
+				<div class="bg-rose-500/10 border border-rose-500/20 rounded-2xl rounded-tl-none p-3.5 text-xs text-rose-300 shadow-md">
+					Koneksi AI terputus. Pastikan kunci gsk_ Anda aktif dan terisi dengan benar.
+				</div>
+			`;
+			chatWindow.appendChild(errorDiv);
+		}
+
+		chatWindow.scrollTop = chatWindow.scrollHeight;
+	}
+
+	function clearChatHistory() {
+		const chatWindow = document.getElementById('aiChatWindow');
+		if (chatWindow) {
+			if(confirm("Apakah Anda ingin menghapus seluruh riwayat obrolan AI saat ini?")) {
+				inisialisasiPesanSambutanAI();
+			}
+		}
+	}
+
+	document.addEventListener("DOMContentLoaded", () => {
+		cekOtorisasiNamaChat();
+	});
+</script>
+		
 		<section id="market-radar-section" class="py-16 bg-slate-950 border-t border-slate-900">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="text-center mb-12">
@@ -162,7 +430,15 @@
 				}, {
 					"s": "IDX:BBRI"
 				}, {
-					"s": "IDX:ICBP"
+					"s": "IDX:BMRI"
+				}, {
+					"s": "IDX:INCO"
+				}, {
+					"s": "IDX:BRPT"
+				}, {
+					"s": "IDX:TPIA"
+				}, {
+					"s": "IDX:DSSA"
 				}, {
 					"s": "IDX:AMRT"
 				}, {
@@ -173,6 +449,10 @@
 					"s": "IDX:UNTR"
 				}, {
 					"s": "IDX:ANTM"
+				}, {
+					"s": "IDX:ARCI"
+				}, {
+					"s": "IDX:EMAS"
 				}, {
 					"s": "IDX:MDIA"
 				}],
@@ -710,7 +990,7 @@
 				<div class="space-y-4">
 					<div>
 						<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Nama Emiten</label>
-						<input type="text" id="jurnalEmiten" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all uppercase" placeholder="Contoh: BBRI">
+						<input type="text" id="jurnalEmiten" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all uppercase" placeholder="Contoh: MDIA">
 					</div>
 					<div class="grid grid-cols-2 gap-3">
 						<div>
@@ -734,7 +1014,7 @@
 				<div class="grid grid-cols-3 gap-4 bg-slate-900/20 border border-slate-800/60 rounded-2xl p-4 font-mono">
 					<div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-900">
 						<p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Win Rate</p>
-						<p id="jurnalStatWinRate" class="text-lg font-black text-emerald-400">0%</p>
+						<p id="jurnalStatWinRate" class="text-sm font-black text-emerald-400">0%</p>
 					</div>
 					<div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-900">
 						<p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Total P/L</p>
@@ -742,7 +1022,7 @@
 					</div>
 					<div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-900">
 						<p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Trades</p>
-						<p id="jurnalStatTrades" class="text-lg font-bold text-indigo-400">0</p>
+						<p id="jurnalStatTrades" class="text-sm font-bold text-indigo-400">0</p>
 					</div>
 				</div>
 
@@ -1268,25 +1548,25 @@
 						<div class="grid grid-cols-3 gap-2">
 							<div class="col-span-1">
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Kode Emiten</label>
-								<input type="text" id="tpEmiten" value="BBRI" oninput="generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm uppercase font-bold">
+								<input type="text" id="tpEmiten" placeholder="0" value="MDIA" oninput="generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm uppercase font-bold">
 							</div>
 							<div class="col-span-2">
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Area Beli / Buy Zone (Rp)</label>
-								<input type="text" id="tpBuyZone" value="4.200 - 4.250" oninput="generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm font-mono">
+								<input type="text" id="tpBuyZone" placeholder="0" value="55-60" oninput="generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm font-mono">
 							</div>
 						</div>
 						<div class="grid grid-cols-3 gap-2">
 							<div>
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Target Price 1</label>
-								<input type="text" id="tpTarget1" value="4.400" oninput="formatRupiahInput(this),generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm font-mono">
+								<input type="text" id="tpTarget1" placeholder="0" value="200" oninput="formatRupiahInput(this),generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm font-mono">
 							</div>
 							<div>
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Target Price 2</label>
-								<input type="text" id="tpTarget2" value="4.600" oninput="formatRupiahInput(this),generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm font-mono">
+								<input type="text" id="tpTarget2" placeholder="0" value="300" oninput="formatRupiahInput(this),generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm font-mono">
 							</div>
 							<div>
 								<label class="block text-xs font-semibold text-gray-300 mb-1">Stop Loss (SL)</label>
-								<input type="text" id="tpStopLoss" value="4.100" oninput="formatRupiahInput(this),generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm font-mono">
+								<input type="text" id="tpStopLoss" placeholder="0" value="50" oninput="formatRupiahInput(this),generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm font-mono">
 							</div>
 						</div>
 						<div>
@@ -1475,7 +1755,7 @@
 				tags: "IHSG"
 			}, {
 				waktu: "12 menit lalu",
-				judul: "Rapat Umum Pemegang Saham (RUPS) BBRI Sepakati Pembagian Dividen Jumbo",
+				judul: "Rapat Umum Pemegang Saham (RUPS) MDIA Sepakati Pembagian Dividen Jumbo",
 				asal: "Kontan",
 				tags: "Corporate Action"
 			}, {
