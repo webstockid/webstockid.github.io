@@ -86,22 +86,23 @@
 		<div class="flex items-center justify-between mb-4 shrink-0 border-b border-white/10 pb-4">
 			<div class="flex items-center gap-3">
 				<div class="p-2 bg-gradient-to-tr from-cyan-500 to-emerald-400 text-slate-950 rounded-xl shadow-lg shadow-emerald-500/10">
-					<i class="fa-solid fa-robot text-xl font-black"></i>
+					<i class="fa-solid fa-robot text-base font-black"></i>
 				</div>
 				<div>
-					<h3 class="text-xl font-bold text-white flex items-center gap-2">
-						Stock ID AI Assistant 
-						<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-widest animate-pulse">Online</span>
+					<h3 class="text-base font-bold text-white flex items-center gap-2 tracking-wide uppercase">
+						STOCK ID AI ASSISTANT
+						<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-widest animate-pulse normal-case">Online</span>
 					</h3>
-					<p class="text-xs text-gray-400">Tanya seputar analisa saham, istilah bursa, dan strategi trading</p>
+					<p class="text-[11px] text-gray-400">Tanya seputar analisa bursa dan strategi trading plan</p>
 				</div>
 			</div>
-			<div class="flex items-center gap-3">
-				<button onclick="logoutNamaMemberVIP()" class="text-[10px] text-gray-500 hover:text-rose-400 transition-colors" title="Ganti Nama">
-					<i class="fa-solid fa-user-pen"></i> Ganti User
+			
+			<div class="flex flex-col items-end gap-1 shrink-0">
+				<button onclick="logoutNamaMemberVIP()" class="text-[10px] text-gray-400 hover:text-rose-400 transition-colors flex items-center gap-1" title="Ganti Nama Pengguna">
+					<i class="fa-solid fa-user-pen text-[9px]"></i> Ganti User
 				</button>
-				<button onclick="clearChatHistory()" class="text-xs text-gray-400 hover:text-rose-400 transition-colors flex items-center gap-1.5" title="Bersihkan Obrolan">
-					<i class="fa-solid fa-broom"></i> Bersihkan
+				<button onclick="clearChatHistory()" class="text-[10px] text-gray-400 hover:text-rose-400 transition-colors flex items-center gap-1" title="Bersihkan Isi Obrolan">
+					<i class="fa-solid fa-broom text-[9px]"></i> Bersihkan
 				</button>
 			</div>
 		</div>
@@ -124,7 +125,7 @@
 
 <script>
 	// =========================================================================
-	// LOGIKA FITUR BARU: STOCK ID AI CHATBOT SYSTEM WITH REAL GEMINI API
+	// LOGIKA FITUR: STOCK ID AI CHATBOT SYSTEM WITH DIRECT MANUAL API KEY
 	// =========================================================================
 
 	let NAMA_MEMBER_VIP = localStorage.getItem('stockIdVipChatUser') || "";
@@ -207,7 +208,7 @@
 		const pesanUser = inputField.value.trim();
 		if (pesanUser === "") return;
 
-		// 1. Render Pesan User ke Layar (DIPERBAIKI: Backslash dihilangkan)
+		// 1. Render Pesan User ke Layar Chat
 		const userMessageDiv = document.createElement('div');
 		userMessageDiv.className = "flex items-start gap-2.5 max-w-[85%] ml-auto justify-end";
 		userMessageDiv.innerHTML = `
@@ -224,7 +225,7 @@
 		inputField.value = "";
 		chatWindow.scrollTop = chatWindow.scrollHeight;
 
-		// 2. Tampilkan Loading Bubble
+		// 2. Tampilkan Animasi Loading Bubble
 		const loadingDiv = document.createElement('div');
 		loadingDiv.id = "ai-loading-bubble";
 		loadingDiv.className = "flex items-start gap-2.5 max-w-[85%]";
@@ -233,13 +234,13 @@
 				<i class="fa-solid fa-robot text-xs"></i>
 			</div>
 			<div class="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3.5 text-xs text-gray-400 italic flex items-center gap-2">
-				<i class="fa-solid fa-circle-notch animate-spin text-emerald-400"></i> StockID AI sedang menganalisa pasar via Gemini...
+				<i class="fa-solid fa-circle-notch animate-spin text-emerald-400"></i> StockID AI sedang menganalisa pasar...
 			</div>
 		`;
 		chatWindow.appendChild(loadingDiv);
 		chatWindow.scrollTop = chatWindow.scrollHeight;
 
-		// 3. Eksekusi Request HTTP Fetch ke API Gemini
+		// 3. Eksekusi Request Langsung ke Google Gemini API dengan Kunci Manual
 		try {
 			const systemInstruction = "Kamu adalah StockID AI, asisten trading premium untuk komunitas Stock ID VIP. Jawablah pertanyaan user dengan gaya pakar saham, edukatif, objektif, dan berikan disclaimer di akhir bahwa ini bukan ajakan membeli/menjual. Selalu sapa user dengan namanya.";
 			
@@ -259,18 +260,16 @@
 
 			const data = await response.json();
 			
-			// Ambil teks respons dari payload JSON Gemini
 			let jawabanAi = data.candidates[0].content.parts[0].text;
 			
-			// Mengubah format markdown sederhana (**teks**) dari AI menjadi tag HTML (<strong>teks</strong>) agar tampil rapi
+			// Format teks markdown dari AI ke tag HTML render
 			jawabanAi = jawabanAi.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 			jawabanAi = jawabanAi.replace(/\n/g, '<br>');
 
-			// Hapus loading bubble
 			const currentLoading = document.getElementById('ai-loading-bubble');
 			if (currentLoading) currentLoading.remove();
 
-			// Render Jawaban Asli AI ke Layar
+			// Render Balasan Jawaban AI ke Layar Chat
 			const aiMessageDiv = document.createElement('div');
 			aiMessageDiv.className = "flex items-start gap-2.5 max-w-[85%]";
 			aiMessageDiv.innerHTML = `
@@ -285,7 +284,7 @@
 			chatWindow.appendChild(aiMessageDiv);
 
 		} catch (error) {
-			console.error("Gemini API Error:", error);
+			console.error("Error:", error);
 			const currentLoading = document.getElementById('ai-loading-bubble');
 			if (currentLoading) currentLoading.remove();
 
@@ -314,7 +313,7 @@
 		}
 	}
 
-	// Menjalankan pengecekan otorisasi nama sesaat setelah DOM selesai di-load browser
+	// Otomatis cek status nama saat DOM selesai dimuat browser
 	document.addEventListener("DOMContentLoaded", () => {
 		cekOtorisasiNamaChat();
 	});
