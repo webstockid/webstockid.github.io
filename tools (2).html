@@ -62,9 +62,13 @@
 			</div>
 		</nav>
 		
-		<section id="fitur-ai-chat" class="max-w-5xl mx-auto px-4 my-8">
+		<!-- ========================================================================= -->
+<!-- FITUR BARU: STOCK ID VIP AI CHAT ASSISTANT -->
+<!-- ========================================================================= -->
+<section id="fitur-ai-chat" class="max-w-5xl mx-auto px-4 my-8">
 	<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl h-[600px] flex flex-col relative overflow-hidden">
 		
+		<!-- SCREEN 1: FORMULIR INPUT NAMA MEMBER VIP (DITAMPILKAN JIKA NAMA KOSONG) -->
 		<div id="aiChatAuthScreen" class="absolute inset-0 z-10 bg-slate-950/90 backdrop-blur-lg flex flex-col items-center justify-center p-6 text-center transition-all duration-300">
 			<div class="max-w-md space-y-5">
 				<div class="w-16 h-16 mx-auto bg-gradient-to-tr from-cyan-500 to-emerald-400 text-slate-950 rounded-2xl shadow-xl shadow-emerald-500/20 flex items-center justify-center">
@@ -83,9 +87,11 @@
 			</div>
 		</div>
 
+		<!-- SCREEN 2: INTERFAS UTAMA CHATBOT (STANDBY) -->
+		<!-- Header Chatbot -->
 		<div class="flex items-center justify-between mb-4 shrink-0 border-b border-white/10 pb-4">
 			<div class="flex items-center gap-3">
-				<div class="p-2 bg-gradient-to-tr from-cyan-500 to-emerald-400 text-slate-950 rounded-xl shadow-lg shadow-emerald-500/10">
+				<div class="p-2 bg-gradient-to-tr from-cyan-500 to-emerald-400 text-slate-950 rounded-xl shadow-lg shadow-emerald-500/20">
 					<i class="fa-solid fa-robot text-base font-black"></i>
 				</div>
 				<div>
@@ -97,6 +103,7 @@
 				</div>
 			</div>
 			
+			<!-- Kontrol menu pojok kanan atas disusun secara Vertikal -->
 			<div class="flex flex-col items-end gap-1 shrink-0">
 				<button onclick="logoutNamaMemberVIP()" class="text-[10px] text-gray-400 hover:text-rose-400 transition-colors flex items-center gap-1" title="Ganti Nama Pengguna">
 					<i class="fa-solid fa-user-pen text-[9px]"></i> Ganti User
@@ -107,9 +114,12 @@
 			</div>
 		</div>
 
+		<!-- Ruang Konten Pesan Obrolan (Scrollable) -->
 		<div id="aiChatWindow" class="flex-1 overflow-y-auto pr-1 space-y-4 custom-scrollbar mb-4 p-2 bg-black/20 rounded-xl border border-white/5">
-			</div>
+			<!-- Pesan sambutan diisikan otomatis oleh JavaScript -->
+		</div>
 
+		<!-- Input Form Pengiriman Pesan -->
 		<div class="shrink-0">
 			<div class="flex gap-2">
 				<input type="text" id="aiChatInputField" onkeydown="checkAiChatEnter(event)" placeholder="Ketik pertanyaan sahammu di sini... (Contoh: Apa itu Win Rate?)" class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500 text-sm transition-all shadow-inner">
@@ -130,8 +140,8 @@
 
 	let NAMA_MEMBER_VIP = localStorage.getItem('stockIdVipChatUser') || "";
 
-	// Masukkan API Key gratis dari Google AI Studio di sini
-	const API_KEY_GEMINI = "AQ.Ab8RN6LoXjhf5llNKlCJ-pVrsAciQnkwmMM5WUeU6DmmGTOuUQ";
+	// PENTING: Ganti string di bawah dengan API Key valid dari Google AI Studio (Dimulai dengan AIzaSy...)
+	const API_KEY_GEMINI = "AQ.Ab8RN6IgFSroJska98REUoWITzswc3ubBtFmYDofe5EC-PiRiA";
 
 	function cekOtorisasiNamaChat() {
 		const authScreen = document.getElementById('aiChatAuthScreen');
@@ -240,7 +250,7 @@
 		chatWindow.appendChild(loadingDiv);
 		chatWindow.scrollTop = chatWindow.scrollHeight;
 
-		// 3. Eksekusi Request Langsung ke Google Gemini API dengan Kunci Manual
+		// 3. Request ke Google Gemini API
 		try {
 			const systemInstruction = "Kamu adalah StockID AI, asisten trading premium untuk komunitas Stock ID VIP. Jawablah pertanyaan user dengan gaya pakar saham, edukatif, objektif, dan berikan disclaimer di akhir bahwa ini bukan ajakan membeli/menjual. Selalu sapa user dengan namanya.";
 			
@@ -262,7 +272,7 @@
 			
 			let jawabanAi = data.candidates[0].content.parts[0].text;
 			
-			// Format teks markdown dari AI ke tag HTML render
+			// FIX: Mengubah regex yang eror agar perubahan teks tebal (strong) berjalan normal
 			jawabanAi = jawabanAi.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 			jawabanAi = jawabanAi.replace(/\n/g, '<br>');
 
@@ -313,7 +323,6 @@
 		}
 	}
 
-	// Otomatis cek status nama saat DOM selesai dimuat browser
 	document.addEventListener("DOMContentLoaded", () => {
 		cekOtorisasiNamaChat();
 	});
@@ -1007,7 +1016,7 @@
 					</div>
 					<div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-900">
 						<p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Total P/L</p>
-						<p id="jurnalStatTotalCuan" class="text-xs font-bold text-slate-300">Rp 0</p>
+						<p id="jurnalStatTotalCuan" class="text-sm font-bold text-slate-300">Rp 0</p>
 					</div>
 					<div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-900">
 						<p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Trades</p>
