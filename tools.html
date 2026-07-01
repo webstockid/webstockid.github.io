@@ -56,12 +56,6 @@
 						<p class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
 					</div>
 				</div>
-				<!--<div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-					<a href="#benefit" class="hover:text-emerald-400 transition-colors">Benefit</a>
-					<a href="#stats" class="hover:text-emerald-400 transition-colors">Statistik</a>
-					<a href="#paket" class="hover:text-emerald-400 transition-colors">Paket Belajar</a>
-					<a href="#faq" class="hover:text-emerald-400 transition-colors">FAQ</a>
-				</div>-->
 				<div>
 					<a href="https://webstockid.github.io/index.html" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-sm tracking-wide transition shadow-lg shadow-emerald-500/20 block">STOCK ID VIP</a>
 				</div>
@@ -69,120 +63,120 @@
 		</nav>
 		
 		<section id="market-radar-section" class="py-16 bg-slate-950 border-t border-slate-900">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="text-center mb-12">
-				<span class="px-3 py-1 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 uppercase tracking-wider">Market Radar</span>
-				<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Arah & Sentimen Pasar Global</h2>
-				<p class="mt-2 text-sm text-slate-400">Klik pada kategori untuk memuat data pasar secara real-time tanpa membuat website terasa berat.</p>
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-12">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 uppercase tracking-wider">Market Radar</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Arah & Sentimen Pasar Global</h2>
+					<p class="mt-2 text-sm text-slate-400">Klik pada kategori untuk memuat data pasar secara real-time untuk mendapat gambaran arah market.</p>
+				</div>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+					<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-bluechip">
+						<div class="flex items-center justify-between w-full">
+							<div class="flex items-center gap-3">
+								<span class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
+									<i class="fa-solid fa-gem text-xs"></i>
+								</span>
+								<div>
+									<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Blue Chip (IDX)</h3>
+									<p class="text-[11px] text-slate-500">Saham unggulan pasar modal Indonesia</p>
+								</div>
+							</div>
+							<button onclick='toggleRadarWidget("bluechip")' id="btn-bluechip" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+								<span>Pantau</span>
+								<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-bluechip"></i>
+							</button>
+						</div>
+						<div id="wrapper-bluechip" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
+							<div id="container-bluechip" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
+						</div>
+					</div>
+					<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-index">
+						<div class="flex items-center justify-between w-full">
+							<div class="flex items-center gap-3">
+								<span class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+									<i class="fa-solid fa-globe text-xs"></i>
+								</span>
+								<div>
+									<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Index Pasar Global</h3>
+									<p class="text-[11px] text-slate-500">Acuan arah pergerakan bursa saham dunia</p>
+								</div>
+							</div>
+							<button onclick='toggleRadarWidget("index")' id="btn-index" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+								<span>Pantau</span>
+								<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-index"></i>
+							</button>
+						</div>
+						<div id="wrapper-index" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
+							<div id="container-index" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
+						</div>
+					</div>
+					<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-komoditas">
+						<div class="flex items-center justify-between w-full">
+							<div class="flex items-center gap-3">
+								<span class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
+									<i class="fa-solid fa-fire-flame-simple text-xs"></i>
+								</span>
+								<div>
+									<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Komoditas Dunia</h3>
+									<p class="text-[11px] text-slate-500">Harga emas, minyak, gas, dan logam mulia</p>
+								</div>
+							</div>
+							<button onclick='toggleRadarWidget("komoditas")' id="btn-komoditas" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+								<span>Pantau</span>
+								<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-komoditas"></i>
+							</button>
+						</div>
+						<div id="wrapper-komoditas" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
+							<div id="container-komoditas" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
+						</div>
+					</div>
+					<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-kripto">
+						<div class="flex items-center justify-between w-full">
+							<div class="flex items-center gap-3">
+								<span class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400">
+									<i class="fa-brands fa-bitcoin text-xs"></i>
+								</span>
+								<div>
+									<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Aset Kripto</h3>
+									<p class="text-[11px] text-slate-500">Arus likuiditas koin kripto kapitalisasi besar</p>
+								</div>
+							</div>
+							<button onclick='toggleRadarWidget("kripto")' id="btn-kripto" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+								<span>Pantau</span>
+								<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-kripto"></i>
+							</button>
+						</div>
+						<div id="wrapper-kripto" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
+							<div id="container-kripto" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-				<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-bluechip">
-					<div class="flex items-center justify-between w-full">
-						<div class="flex items-center gap-3">
-							<span class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
-								<i class="fa-solid fa-gem text-xs"></i>
-							</span>
-							<div>
-								<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Blue Chip (IDX)</h3>
-								<p class="text-[11px] text-slate-500">Saham unggulan pasar modal Indonesia</p>
-							</div>
-						</div>
-						<button onclick='toggleRadarWidget("bluechip")' id="btn-bluechip" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-							<span>Pantau</span>
-							<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-bluechip"></i>
-						</button>
-					</div>
-					<div id="wrapper-bluechip" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
-						<div id="container-bluechip" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
-					</div>
-				</div>
-				<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-index">
-					<div class="flex items-center justify-between w-full">
-						<div class="flex items-center gap-3">
-							<span class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-								<i class="fa-solid fa-globe text-xs"></i>
-							</span>
-							<div>
-								<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Index Pasar Global</h3>
-								<p class="text-[11px] text-slate-500">Acuan arah pergerakan bursa saham dunia</p>
-							</div>
-						</div>
-						<button onclick='toggleRadarWidget("index")' id="btn-index" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-							<span>Pantau</span>
-							<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-index"></i>
-						</button>
-					</div>
-					<div id="wrapper-index" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
-						<div id="container-index" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
-					</div>
-				</div>
-				<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-komoditas">
-					<div class="flex items-center justify-between w-full">
-						<div class="flex items-center gap-3">
-							<span class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
-								<i class="fa-solid fa-fire-flame-simple text-xs"></i>
-							</span>
-							<div>
-								<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Komoditas Dunia</h3>
-								<p class="text-[11px] text-slate-500">Harga emas, minyak, gas, dan logam mulia</p>
-							</div>
-						</div>
-						<button onclick='toggleRadarWidget("komoditas")' id="btn-komoditas" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-							<span>Pantau</span>
-							<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-komoditas"></i>
-						</button>
-					</div>
-					<div id="wrapper-komoditas" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
-						<div id="container-komoditas" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
-					</div>
-				</div>
-				<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-kripto">
-					<div class="flex items-center justify-between w-full">
-						<div class="flex items-center gap-3">
-							<span class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400">
-								<i class="fa-brands fa-bitcoin text-xs"></i>
-							</span>
-							<div>
-								<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Aset Kripto</h3>
-								<p class="text-[11px] text-slate-500">Arus likuiditas koin kripto kapitalisasi besar</p>
-							</div>
-						</div>
-						<button onclick='toggleRadarWidget("kripto")' id="btn-kripto" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-							<span>Pantau</span>
-							<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-kripto"></i>
-						</button>
-					</div>
-					<div id="wrapper-kripto" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
-						<div id="container-kripto" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<script>
-		// Konfigurasi Simbol TradingView Ticker Data 
-		// Cukup ganti bagian isi dari objek 'radarSymbolsData' ini saja di script Anda:
-		const radarSymbolsData = {
-			bluechip: [{
-				"s": "IDX:BBCA"
-			}, {
-				"s": "IDX:BBRI"
-			}, {
-				"s": "IDX:ICBP"
-			}, {
-				"s": "IDX:AMRT"
-			}, {
-				"s": "IDX:TLKM"
-			}, {
-				"s": "IDX:ASII"
-			}, {
-				"s": "IDX:UNTR"
-			}, {
-				"s": "IDX:ANTM"
-			}, {
-				"s": "IDX:MDIA"
-			}],
-			index: [{
+		</section>
+		<script>
+			// Konfigurasi Simbol TradingView Ticker Data 
+			// Cukup ganti bagian isi dari objek 'radarSymbolsData' ini saja di script Anda:
+			const radarSymbolsData = {
+				bluechip: [{
+					"s": "IDX:BBCA"
+				}, {
+					"s": "IDX:BBRI"
+				}, {
+					"s": "IDX:ICBP"
+				}, {
+					"s": "IDX:AMRT"
+				}, {
+					"s": "IDX:TLKM"
+				}, {
+					"s": "IDX:ASII"
+				}, {
+					"s": "IDX:UNTR"
+				}, {
+					"s": "IDX:ANTM"
+				}, {
+					"s": "IDX:MDIA"
+				}],
+				index: [{
 					"s": "IDX:COMPOSITE",
 					"d": "Bursa Indo (IHSG)"
 				}, {
@@ -212,7 +206,7 @@
 					"s": "INDEX:XJO",
 					"d": "Bursa Australia"
 				}],
-			komoditas: [{
+				komoditas: [{
 					"s": "TVC:GOLD",
 					"d": "Harga Emas Dunia"
 				}, {
@@ -240,90 +234,84 @@
 					"s": "NYBOT:KC1!",
 					"d": "Harga Kopi Global (Softs)"
 				}],
-			kripto: [{
-				"s": "BINANCE:BTCUSDT",
-				"d": "BTC"
-			}, {
-				"s": "BINANCE:ETHUSDT",
-				"d": "ETH"
-			}, {
-				"s": "BINANCE:BNBUSDT",
-				"d": "BNB"
-			}, {
-				"s": "BINANCE:SOLUSDT",
-				"d": "SOL"
-			}, {
-				"s": "BINANCE:ADAUSDT",
-				"d": "ADA"
-			}, {
-				"s": "BINANCE:TRXUSDT",
-				"d": "TRX"
-			}]
-		};
+				kripto: [{
+					"s": "BINANCE:BTCUSDT",
+					"d": "BTC"
+				}, {
+					"s": "BINANCE:ETHUSDT",
+					"d": "ETH"
+				}, {
+					"s": "BINANCE:BNBUSDT",
+					"d": "BNB"
+				}, {
+					"s": "BINANCE:SOLUSDT",
+					"d": "SOL"
+				}, {
+					"s": "BINANCE:ADAUSDT",
+					"d": "ADA"
+				}, {
+					"s": "BINANCE:TRXUSDT",
+					"d": "TRX"
+				}]
+			};
 
-		function toggleRadarWidget(category) {
-			const wrapper = document.getElementById(`wrapper-${category}`);
-			const container = document.getElementById(`container-${category}`);
-			const icon = document.getElementById(`icon-${category}`);
-			const button = document.getElementById(`btn-${category}`);
-			const card = document.getElementById(`card-${category}`);
-			if (wrapper.classList.contains('hidden')) {
-				// 1. Tampilkan kontainer wrapper terlebih dahulu
-				wrapper.classList.remove('hidden');
-				icon.classList.add('rotate-180');
-				card.classList.add('border-emerald-500/30', 'glow-green');
-				// 2. Ubah UI State Tombol
-				button.innerHTML = `
-																<span>Tutup</span>
-																<i class="fa-solid fa-chevron-down rotate-180 transition-transform duration-300" id="icon-${category}"></i>`;
-				button.classList.remove('bg-slate-900', 'text-slate-300');
-				button.classList.add('bg-rose-500/10', 'text-rose-400', 'border-rose-500/20');
-				// 3. Bersihkan sisa renderan lama, lalu buat element widget fresh
-				container.innerHTML = "";
-				const widgetDiv = document.createElement('div');
-				widgetDiv.className = "tradingview-widget-container";
-				widgetDiv.style.width = "100%";
-				widgetDiv.style.height = "100%";
-				widgetDiv.innerHTML = `
-																<div class="tradingview-widget-container__widget" style="width:100%; height:100%;"></div>`;
-				const script = document.createElement('script');
-				script.type = 'text/javascript';
-				script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js';
-				script.async = true;
-				script.text = JSON.stringify({
-					"colorTheme": "dark",
-					"dateRange": "12M",
-					"showChart": false,
-					"locale": "id",
-					"width": "100%",
-					"height": "100%",
-					"largeChartUrl": "",
-					"isTransparent": true,
-					"showSymbolLogo": true,
-					"showFloatingTooltip": false,
-					"tabs": [{
-						"title": "Data Pasar",
-						"symbols": radarSymbolsData[category]
-					}]
-				});
-				widgetDiv.appendChild(script);
-				container.appendChild(widgetDiv);
-			} else {
-				// Tutup dan kembalikan memori RAM agar enteng kembali
-				wrapper.classList.add('hidden');
-				icon.classList.remove('rotate-180');
-				card.classList.remove('border-emerald-500/30', 'glow-green');
-				button.innerHTML = `
-																<span>Pantau</span>
-																<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-${category}"></i>`;
-				button.classList.remove('bg-rose-500/10', 'text-rose-400', 'border-rose-500/20');
-				button.classList.add('bg-slate-900', 'text-slate-300');
-				// Hancurkan objek widget didalamnya
-				container.innerHTML = "";
+			function toggleRadarWidget(category) {
+				const wrapper = document.getElementById(`wrapper-${category}`);
+				const container = document.getElementById(`container-${category}`);
+				const icon = document.getElementById(`icon-${category}`);
+				const button = document.getElementById(`btn-${category}`);
+				const card = document.getElementById(`card-${category}`);
+				if (wrapper.classList.contains('hidden')) {
+					// 1. Tampilkan kontainer wrapper terlebih dahulu
+					wrapper.classList.remove('hidden');
+					icon.classList.add('rotate-180');
+					card.classList.add('border-emerald-500/30', 'glow-green');
+					// 2. Ubah UI State Tombol
+					button.innerHTML = `<span>Tutup</span><i class="fa-solid fa-chevron-down rotate-180 transition-transform duration-300" id="icon-${category}"></i>`;
+					button.classList.remove('bg-slate-900', 'text-slate-300');
+					button.classList.add('bg-rose-500/10', 'text-rose-400', 'border-rose-500/20');
+					// 3. Bersihkan sisa renderan lama, lalu buat element widget fresh
+					container.innerHTML = "";
+					const widgetDiv = document.createElement('div');
+					widgetDiv.className = "tradingview-widget-container";
+					widgetDiv.style.width = "100%";
+					widgetDiv.style.height = "100%";
+					widgetDiv.innerHTML = `<div class="tradingview-widget-container__widget" style="width:100%; height:100%;"></div>`;
+					const script = document.createElement('script');
+					script.type = 'text/javascript';
+					script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js';
+					script.async = true;
+					script.text = JSON.stringify({
+						"colorTheme": "dark",
+						"dateRange": "12M",
+						"showChart": false,
+						"locale": "id",
+						"width": "100%",
+						"height": "100%",
+						"largeChartUrl": "",
+						"isTransparent": true,
+						"showSymbolLogo": true,
+						"showFloatingTooltip": false,
+						"tabs": [{
+							"title": "Data Pasar",
+							"symbols": radarSymbolsData[category]
+						}]
+					});
+					widgetDiv.appendChild(script);
+					container.appendChild(widgetDiv);
+				} else {
+					// Tutup dan kembalikan memori RAM agar enteng kembali
+					wrapper.classList.add('hidden');
+					icon.classList.remove('rotate-180');
+					card.classList.remove('border-emerald-500/30', 'glow-green');
+					button.innerHTML = `<span>Pantau</span><i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-${category}"></i>`;
+					button.classList.remove('bg-rose-500/10', 'text-rose-400', 'border-rose-500/20');
+					button.classList.add('bg-slate-900', 'text-slate-300');
+					// Hancurkan objek widget didalamnya
+					container.innerHTML = "";
+				}
 			}
-		}
-	</script>
-	
+		</script>
 		<section id="kalkulator-profit" class="py-16 bg-slate-950 border-t border-slate-900/60">
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="text-center mb-12">
@@ -480,11 +468,11 @@
 							<div class="grid grid-cols-2 gap-4">
 								<div>
 									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Fee Beli (%)</label>
-									<input type="number" id="fee-beli" value="0.30" step="0.01" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+									<input type="number" id="fee-beli" placeholder="0.25" value="0.30" step="0.01" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
 								</div>
 								<div>
 									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Fee Jual (%)</label>
-									<input type="number" id="fee-jual" value="0.50" step="0.01" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+									<input type="number" id="fee-jual" placeholder="0.50" value="0.50" step="0.01" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
 								</div>
 							</div>
 							<button onclick="hitungAverageSaham()" class="w-full py-3 mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-blue-600/10 transform hover:-translate-y-0.5">Hitung Kalkulasi Rata-Rata</button>
@@ -572,6 +560,331 @@
 				document.getElementById('res-min-jual').innerText = formatRupiah(estimasiFeeJual);
 			}
 		</script>
+		<section id="fitur-target-average" class="py-16 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-12">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">Average Target Pro</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Kalkulator Target Average</h2>
+					<p class="mt-2 text-sm text-slate-400">Hitung berapa lot dan dana tambahan yang Anda butuhkan secara presisi untuk menggeser rata-rata ke target tertentu.</p>
+				</div>
+				<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
+					<div class="grid md:grid-cols-2 gap-8">
+						<div class="space-y-5">
+							<h3 class="text-base font-bold text-slate-200 border-b border-slate-800 pb-2 flex items-center gap-2">
+								<span class="w-2 h-2 rounded-full bg-indigo-500"></span>Posisi Kepemilikan Saat Ini
+							</h3>
+							<div class="grid grid-cols-2 gap-4">
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Avg Harga Awal</label>
+									<input type="text" id="targetAvgHargaAvg" oninput="formatRupiahInput(this); eksekusiTargetAvg();" placeholder="1.000" value="2.000" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
+								</div>
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Jumlah Lot Awal</label>
+									<input type="text" id="targetAvgLotAwal" oninput="formatRupiahInput(this); eksekusiTargetAvg();" placeholder="100" value="10" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
+								</div>
+							</div>
+							<h3 class="text-base font-bold text-slate-200 border-b border-slate-800 pt-2 pb-2 flex items-center gap-2">
+								<span class="w-2 h-2 rounded-full bg-amber-500"></span>Rencana Eksekusi Target
+							</h3>
+							<div class="grid grid-cols-2 gap-4">
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Harga Beli Baru</label>
+									<input type="text" id="targetAvgHargaBaru" oninput="formatRupiahInput(this); eksekusiTargetAvg();" placeholder="500" value="1.500" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
+								</div>
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Target Avg Baru</label>
+									<input type="text" id="targetAvgHargaTarget" oninput="formatRupiahInput(this); eksekusiTargetAvg();" placeholder="700" value="1.700" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
+								</div>
+							</div>
+							<button onclick="eksekusiTargetAvg()" class="w-full py-3 mt-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-indigo-600/10 transform hover:-translate-y-0.5">Hitung Rencana Target</button>
+						</div>
+						<div class="bg-slate-950/60 border border-slate-800/60 rounded-2xl p-5 flex flex-col justify-between">
+							<div>
+								<h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">Hasil Analisis Amunisi</h3>
+								<!-- Konten Utama Hasil (Standby) -->
+								<div id="targetAvgHasilKalkulasi" class="space-y-3.5">
+									<div class="flex justify-between items-center text-sm border-b border-slate-900 pb-2.5">
+										<span class="text-slate-400">Jenis Strategi</span>
+										<span id="targetAvgStatusAksi" class="px-2 py-0.5 rounded text-[10px] font-bold border bg-slate-900 text-slate-300">STANDBY</span>
+									</div>
+									<div class="flex justify-between items-center text-sm border-b border-slate-900 pb-2.5">
+										<span class="text-slate-400">Kebutuhan Lot Baru</span>
+										<span id="targetAvgHasilLot" class="font-mono font-bold text-white text-base">0 Lot</span>
+									</div>
+									<div class="flex justify-between items-center text-sm border-b border-slate-900 pb-2.5 bg-slate-900/30 p-2 rounded-lg">
+										<span class="text-slate-200 font-medium">Estimasi Dana Tambahan</span>
+										<span id="targetAvgHasilDana" class="font-mono font-black text-amber-400 text-lg">Rp 0</span>
+									</div>
+								</div>
+								<!-- Kotak Pesan Error (Tersembunyi secara default) -->
+								<div id="targetAvgAlertBox" class="hidden mt-4 p-3.5 bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs rounded-xl text-center font-medium leading-relaxed">
+									⚠️ Target harga tidak valid atau tidak mungkin dicapai dengan harga pasar/baru saat ini.
+								</div>
+							</div>
+							<div class="mt-6 pt-4 border-t border-dashed border-slate-800/80">
+								<div class="bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-3.5 text-xs text-slate-400 space-y-1.5">
+									<p class="text-[11px] text-slate-500 leading-relaxed">*Perhitungan di atas menggunakan pembulatan lot ke atas agar target harga rata-rata baru Anda dapat terlampaui dengan aman.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<script>
+			// =========================================================================
+			// LOGIKA FITUR BARU: TARGET AVERAGE PLANNER PRO (UP & DOWN)
+			// =========================================================================
+			function eksekusiTargetAvg() {
+				const inputAvg = document.getElementById('targetAvgHargaAvg');
+				const inputLot = document.getElementById('targetAvgLotAwal');
+				const inputBaru = document.getElementById('targetAvgHargaBaru');
+				const inputTarget = document.getElementById('targetAvgHargaTarget');
+				const hasilLayout = document.getElementById('targetAvgHasilKalkulasi');
+				const alertLayout = document.getElementById('targetAvgAlertBox');
+				if (!inputAvg || !inputLot || !inputBaru || !inputTarget) return;
+				const pAvg = parseFloat(inputAvg.value.replace(/\./g, '')) || 0;
+				const pLot = parseFloat(inputLot.value.replace(/\./g, '')) || 0;
+				const pBaru = parseFloat(inputBaru.value.replace(/\./g, '')) || 0;
+				const pTarget = parseFloat(inputTarget.value.replace(/\./g, '')) || 0;
+				// Reset view state jika data kosong
+				if (pAvg === 0 || pLot === 0 || pBaru === 0 || pTarget === 0) {
+					alertLayout.classList.add('hidden');
+					hasilLayout.classList.remove('hidden');
+					document.getElementById('targetAvgHasilLot').innerText = "0 Lot";
+					document.getElementById('targetAvgHasilDana').innerText = "Rp 0";
+					document.getElementById('targetAvgStatusAksi').innerText = "STANDBY";
+					document.getElementById('targetAvgStatusAksi').className = "px-2 py-0.5 rounded text-[10px] font-bold border bg-slate-900 text-slate-300";
+					return;
+				}
+				// Proteksi logika matematika mustahil
+				if ((pBaru > pAvg && pTarget <= pAvg) || (pBaru < pAvg && pTarget >= pAvg) || pTarget === pBaru) {
+					hasilLayout.classList.add('hidden');
+					alertLayout.classList.remove('hidden');
+					return;
+				}
+				// Rumus matematika posisi lot target
+				let hitungLotBaru = (pLot * (pTarget - pAvg)) / (pBaru - pTarget);
+				if (hitungLotBaru <= 0) {
+					hasilLayout.classList.add('hidden');
+					alertLayout.classList.remove('hidden');
+					return;
+				}
+				const totalLotDibutuhkan = Math.ceil(hitungLotBaru);
+				const totalDanaDibutuhkan = totalLotDibutuhkan * 100 * pBaru;
+				// Kelola badge strategi
+				const komponenAksi = document.getElementById('targetAvgStatusAksi');
+				if (pTarget > pAvg) {
+					komponenAksi.innerText = "AVERAGE UP";
+					komponenAksi.className = "px-2 py-0.5 rounded text-[10px] font-bold border bg-indigo-500/10 text-indigo-400 border-indigo-500/20";
+				} else {
+					komponenAksi.innerText = "AVERAGE DOWN";
+					komponenAksi.className = "px-2 py-0.5 rounded text-[10px] font-bold border bg-amber-500/10 text-amber-400 border-amber-500/20";
+				}
+				alertLayout.classList.add('hidden');
+				hasilLayout.classList.remove('hidden');
+				document.getElementById('targetAvgHasilLot').innerText = totalLotDibutuhkan.toLocaleString('id-ID') + " Lot";
+				document.getElementById('targetAvgHasilDana').innerText = "Rp " + totalDanaDibutuhkan.toLocaleString('id-ID');
+			}
+			// Tambahkan inisialisasi ini di dalam script penutup DOMContentLoaded Anda yang sudah ada:
+			document.addEventListener("DOMContentLoaded", () => {
+				// ... kode fitur lain ...
+				if (document.getElementById('targetAvgHargaAvg')) {
+					eksekusiTargetAvg();
+				}
+			});
+		</script>
+		<section id="fitur-trading-journal" class="py-16 bg-slate-950 border-t border-slate-900/60">
+	<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="text-center mb-12">
+			<span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">Trading Performance</span>
+			<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Jurnal Trading Harian</h2>
+			<p class="mt-2 text-sm text-slate-400">Catat histori transaksi yang sudah closed untuk memantau Win Rate dan pertumbuhan portofolio Anda secara real-time.</p>
+		</div>
+
+		<div class="grid lg:grid-cols-3 gap-8">
+			<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 backdrop-blur-sm shadow-xl h-fit">
+				<h3 class="text-base font-bold text-slate-200 border-b border-slate-800 pb-2 flex items-center gap-2 mb-4">
+					<span class="w-2 h-2 rounded-full bg-emerald-500"></span>Log Transaksi Baru
+				</h3>
+				<div class="space-y-4">
+					<div>
+						<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Nama Emiten</label>
+						<input type="text" id="jurnalEmiten" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all uppercase" placeholder="Contoh: BBRI">
+					</div>
+					<div class="grid grid-cols-2 gap-3">
+						<div>
+							<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Harga Beli</label>
+							<input type="text" id="jurnalHargaBeli" oninput="formatRupiahInput(this)" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all" placeholder="0">
+						</div>
+						<div>
+							<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Harga Jual</label>
+							<input type="text" id="jurnalHargaJual" oninput="formatRupiahInput(this)" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all" placeholder="0">
+						</div>
+					</div>
+					<div>
+						<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Jumlah Lot</label>
+						<input type="text" id="jurnalTotalLot" oninput="formatRupiahInput(this)" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all" placeholder="0">
+					</div>
+					<button onclick="simpanLogJurnalTrading()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 transform hover:-translate-y-0.5">Simpan ke Jurnal</button>
+				</div>
+			</div>
+
+			<div class="lg:col-span-2 flex flex-col gap-6">
+				<div class="grid grid-cols-3 gap-4 bg-slate-900/20 border border-slate-800/60 rounded-2xl p-4 font-mono">
+					<div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-900">
+						<p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Win Rate</p>
+						<p id="jurnalStatWinRate" class="text-lg font-black text-emerald-400">0%</p>
+					</div>
+					<div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-900">
+						<p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Total P/L</p>
+						<p id="jurnalStatTotalCuan" class="text-sm font-bold text-slate-300">Rp 0</p>
+					</div>
+					<div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-900">
+						<p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Trades</p>
+						<p id="jurnalStatTrades" class="text-lg font-bold text-indigo-400">0</p>
+					</div>
+				</div>
+
+				<div class="bg-slate-950/60 border border-slate-800/60 rounded-2xl p-5 flex flex-col justify-between flex-1 min-h-[300px]">
+					<div class="overflow-x-auto">
+						<table class="w-full text-left border-collapse">
+							<thead>
+								<tr class="border-b border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+									<th class="pb-3">Emiten</th>
+									<th class="pb-3 text-right">P/L (%)</th>
+									<th class="pb-3 text-right">Net Rupiah</th>
+									<th class="pb-3 text-center">Aksi</th>
+								</tr>
+							</thead>
+							<tbody id="jurnalTabelBody" class="text-xs text-slate-300 divide-y divide-slate-900">
+								</tbody>
+						</table>
+						<div id="jurnalEmptyState" class="text-center text-slate-500 text-xs py-12">Belum ada histori transaksi yang dicatat.</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Mengambil atau menginisialisasi database lokal di browser
+		let DB_JURNAL_TRADING = JSON.parse(localStorage.getItem('stockIdVipJurnal')) || [];
+
+		// Fungsi utama untuk me-render data array lokal ke elemen Tabel HTML
+		function muatDataJurnalKeUi() {
+			const tBody = document.getElementById('jurnalTabelBody');
+			const emptyState = document.getElementById('jurnalEmptyState');
+			
+			if (!tBody) return;
+			tBody.innerHTML = "";
+
+			if (DB_JURNAL_TRADING.length === 0) {
+				emptyState.classList.remove('hidden');
+				perbaruiStatistikJurnal(0, 0, 0);
+				return;
+			}
+			
+			emptyState.classList.add('hidden');
+
+			let akumulasiCuanRupiah = 0;
+			let totalMenang = 0;
+
+			DB_JURNAL_TRADING.forEach((item, index) => {
+				const modalBeli = item.beli * item.lot * 100;
+				const hasilJual = item.jual * item.lot * 100;
+				const cuanRupiah = hasilJual - modalBeli;
+				const persentasePl = ((item.jual - item.beli) / item.beli) * 100;
+
+				akumulasiCuanRupiah += cuanRupiah;
+				if (cuanRupiah > 0) totalMenang++;
+
+				const warnaTeks = cuanRupiah >= 0 ? 'text-emerald-400' : 'text-rose-400';
+				const tandaPlus = cuanRupiah > 0 ? '+' : '';
+
+				const barisHtml = document.createElement('tr');
+				barisHtml.className = "hover:bg-white/[0.02] transition-all";
+				barisHtml.innerHTML = `
+					<td class="py-3 font-mono font-bold text-white uppercase">${item.emiten}</td>
+					<td class="py-3 text-right font-mono font-semibold ${warnaTeks}">${tandaPlus}${persentasePl.toFixed(2)}%</td>
+					<td class="py-3 text-right font-mono ${warnaTeks}">${tandaPlus}Rp ${cuanRupiah.toLocaleString('id-ID')}</td>
+					<td class="py-3 text-center">
+						<button onclick="hapusBarisJurnal(${index})" class="text-slate-600 hover:text-rose-400 transition-all px-2 py-1">
+							<i class="fa-solid fa-trash-can text-[11px]"></i>
+						</button>
+					</td>
+				`;
+				tBody.appendChild(barisHtml);
+			});
+
+			const hitungWinRate = (totalMenang / DB_JURNAL_TRADING.length) * 100;
+			perbaruiStatistikJurnal(hitungWinRate, akumulasiCuanRupiah, DB_JURNAL_TRADING.length);
+		}
+
+		// Fungsi pendukung untuk menghitung ringkasan Win Rate dan Total Profit/Loss portofolio
+		function perbaruiStatistikJurnal(wr, totalCuan, jumlahTrade) {
+			const elWr = document.getElementById('jurnalStatWinRate');
+			const elCuan = document.getElementById('jurnalStatTotalCuan');
+			const elTrades = document.getElementById('jurnalStatTrades');
+
+			if (elWr) elWr.innerText = wr.toFixed(0) + "%";
+			if (elTrades) elTrades.innerText = jumlahTrade;
+			
+			if (elCuan) {
+				elCuan.innerText = "Rp " + totalCuan.toLocaleString('id-ID');
+				if (totalCuan > 0) elCuan.className = "text-lg font-black text-emerald-400";
+				else if (totalCuan < 0) elCuan.className = "text-lg font-black text-rose-400";
+				else elCuan.className = "text-lg font-black text-slate-300";
+			}
+		}
+
+		// Fungsi untuk menangkap input formulir dan menyimpannya ke dalam local storage
+		function simpanLogJurnalTrading() {
+			const nodeEmiten = document.getElementById('jurnalEmiten');
+			const nodeBeli = document.getElementById('jurnalHargaBeli');
+			const nodeJual = document.getElementById('jurnalHargaJual');
+			const nodeLot = document.getElementById('jurnalTotalLot');
+
+			if (!nodeEmiten || !nodeBeli || !nodeJual || !nodeLot) return;
+
+			const valEmiten = nodeEmiten.value.trim().toUpperCase();
+			const valBeli = parseFloat(nodeBeli.value.replace(/\./g, '')) || 0;
+			const valJual = parseFloat(nodeJual.value.replace(/\./g, '')) || 0;
+			const valLot = parseFloat(nodeLot.value.replace(/\./g, '')) || 0;
+
+			if (valEmiten === "" || valBeli === 0 || valJual === 0 || valLot === 0) {
+				alert("Harap isi semua kolom log jurnal dengan benar!");
+				return;
+			}
+
+			const dataLogBaru = { emiten: valEmiten, beli: valBeli, jual: valJual, lot: valLot };
+			DB_JURNAL_TRADING.unshift(dataLogBaru); 
+			localStorage.setItem('stockIdVipJurnal', JSON.stringify(DB_JURNAL_TRADING));
+
+			// Pengosongan form isian setelah berhasil submit
+			nodeEmiten.value = "";
+			nodeBeli.value = "";
+			nodeJual.value = "";
+			nodeLot.value = "";
+
+			muatDataJurnalKeUi();
+		}
+
+		// Fungsi untuk menghapus baris riwayat jurnal tertentu
+		function hapusBarisJurnal(indexHapus) {
+			if(confirm("Hapus log transaksi ini dari histori?")) {
+				DB_JURNAL_TRADING.splice(indexHapus, 1);
+				localStorage.setItem('stockIdVipJurnal', JSON.stringify(DB_JURNAL_TRADING));
+				muatDataJurnalKeUi();
+			}
+		}
+
+		// Autoload agar data langsung standby saat halaman dimuat pertama kali
+		document.addEventListener("DOMContentLoaded", () => {
+			muatDataJurnalKeUi();
+		});
+	</script>
+</section>
 		<section id="watchlist-notes" class="py-16 bg-slate-950 border-t border-slate-900/60">
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="text-center mb-10">
@@ -621,11 +934,7 @@
 				container.innerHTML = '';
 				countBadge.innerText = daftarNotes.length;
 				if (daftarNotes.length === 0) {
-					container.innerHTML = `
-					<div class="col-span-2 py-12 text-center border border-dashed border-slate-900 rounded-2xl bg-slate-900/10">
-						<p class="text-sm text-slate-600 font-medium">Belum ada saham yang masuk radar pantauan.</p>
-					</div>
-					`;
+					container.innerHTML = `<div class="col-span-2 py-12 text-center border border-dashed border-slate-900 rounded-2xl bg-slate-900/10"><p class="text-sm text-slate-600 font-medium">Belum ada saham yang masuk radar pantauan.</p></div>`;
 					return;
 				}
 				daftarNotes.forEach((item, index) => {
@@ -663,7 +972,7 @@
 							<button onclick="hapusSatuCatatan(${index})" class="text-rose-500 hover:text-rose-400 font-semibold transition-colors">Hapus</button>
 						</div>
 					</div>
-					`;
+				`;
 				});
 			}
 			// Fungsi Tambah Catatan Baru
@@ -812,9 +1121,7 @@
 				const outRisk = document.getElementById('outUangRisiko');
 				const outSlPct = document.getElementById('outPersenSL');
 				if (entry <= 0 || sl <= 0 || entry <= sl) {
-					outLot.innerHTML = `
-					<span class="text-sm text-red-400 font-normal">Harga SL harus di bawah Entry!</span>
-					`;
+					outLot.innerHTML = `<span class="text-sm text-red-400 font-normal">Harga SL harus di bawah Entry!</span>`;
 					outTotal.innerText = "Total Alokasi Pembelian: Rp 0";
 					return;
 				}
@@ -826,9 +1133,7 @@
 					hitungLot--;
 				}
 				const totalDanaBeli = hitungLot * 100 * entry;
-				outLot.innerHTML = `${hitungLot.toLocaleString('id-ID')} 
-																					
-																																										<span class="text-base font-normal text-gray-400">Lot</span>`;
+				outLot.innerHTML = `${hitungLot.toLocaleString('id-ID')} <span class="text-base font-normal text-gray-400">Lot</span>`;
 				outTotal.innerText = `Total Alokasi Pembelian: Rp ${totalDanaBeli.toLocaleString('id-ID')}`;
 				outRisk.innerText = `Rp ${nominalRisiko.toLocaleString('id-ID')}`;
 				outSlPct.innerText = `${persentaseSL.toFixed(2)}%`;
@@ -927,23 +1232,19 @@
 				// ENGINE DIAGNOSIS KOMPLEKS
 				let narasiHtml = "";
 				if (profitFactor >= 2.0 && expectancyValue > 0) {
-					narasiHtml = `
-																																										<strong class="text-emerald-400">SISTEM KELAS ATAS (Excellent):</strong> Strategi trading Anda memiliki keunggulan statistik (edge) yang sangat kuat di pasar modal. Kombinasi parameter saat ini menghasilkan pertumbuhan ekuitas portofolio yang stabil dalam jangka panjang. Pertahankan manajemen ukuran posisi Anda saat ini.`;
+					narasiHtml = `<strong class="text-emerald-400">SISTEM KELAS ATAS (Excellent):</strong> Strategi trading Anda memiliki keunggulan statistik (edge) yang sangat kuat di pasar modal. Kombinasi parameter saat ini menghasilkan pertumbuhan ekuitas portofolio yang stabil dalam jangka panjang. Pertahankan manajemen ukuran posisi Anda saat ini.
+					`;
 				} else if (profitFactor >= 1.0 && profitFactor < 2.0 && expectancyValue > 0) {
 					if (winRate < 45 && avgWin > (avgLoss * 2)) {
-						narasiHtml = `
-																																										<strong class="text-cyan-400">STRATEGI TREND FOLLOWER (Good Profitability):</strong> Meskipun persentase Win Rate Anda tergolong rendah, sistem Anda diselamatkan oleh rasio Risk-Reward yang lebar (Rata-rata profit jauh lebih tinggi dari kerugian). Sistem ini aman dijalankan selama psikologi Anda tahan menghadapi loss beruntun.`;
+						narasiHtml = `<strong class="text-cyan-400">STRATEGI TREND FOLLOWER (Good Profitability):</strong> Meskipun persentase Win Rate Anda tergolong rendah, sistem Anda diselamatkan oleh rasio Risk-Reward yang lebar (Rata-rata profit jauh lebih tinggi dari kerugian). Sistem ini aman dijalankan selama psikologi Anda tahan menghadapi loss beruntun.`;
 					} else {
-						narasiHtml = `
-																																										<strong class="text-yellow-400">SISTEM AMBANG BATAS (Moderate Profitability):</strong> Strategi ini menghasilkan uang, tetapi kinerjanya tipis dan rentan tergerus oleh biaya komisi sekuritas jika frekuensi perdagangan terlalu tinggi. Cobalah tingkatkan kualitas seleksi emiten untuk memperlebar profit rata-rata Anda.`;
+						narasiHtml = `<strong class="text-yellow-400">SISTEM AMBANG BATAS (Moderate Profitability):</strong> Strategi ini menghasilkan uang, tetapi kinerjanya tipis dan rentan tergerus oleh biaya komisi sekuritas jika frekuensi perdagangan terlalu tinggi. Cobalah tingkatkan kualitas seleksi emiten untuk memperlebar profit rata-rata Anda.`;
 					}
 				} else if (profitFactor < 1.0 || expectancyValue <= 0) {
 					if (winRate > 60 && avgWin < (avgLoss * 0.5)) {
-						narasiHtml = `
-																																										<strong class="text-red-400">JEBAKAN WIN RATE TINGGI (Negative Edge):</strong> Sinyal Bahaya. Anda memiliki Win Rate tinggi namun sistem tetap merugi karena perilaku trading Anda sering membiarkan kerugian membengkak besar (*holding losers*) dan memotong keuntungan terlalu cepat. Perbaiki disiplin Stop Loss Anda segera!`;
+						narasiHtml = `<strong class="text-red-400">JEBAKAN WIN RATE TINGGI (Negative Edge):</strong> Sinyal Bahaya. Anda memiliki Win Rate tinggi namun sistem tetap merugi karena perilaku trading Anda sering membiarkan kerugian membengkak besar (*holding losers*) dan memotong keuntungan terlalu cepat. Perbaiki disiplin Stop Loss Anda segera!`;
 					} else {
-						narasiHtml = `
-																																										<strong class="text-red-500">STRATEGI MERUGI (Negative Expectancy):</strong> Sistem trading ini memiliki ekspektasi matematis negatif. Dalam jangka panjang, mengeksekusi strategi ini hanya akan menguras saldo modal Anda. Hentikan trading real account, evaluasi kembali titik entri, jurnalkan trading Anda, dan gunakan kembali demo account.`;
+						narasiHtml = `<strong class="text-red-500">STRATEGI MERUGI (Negative Expectancy):</strong> Sistem trading ini memiliki ekspektasi matematis negatif. Dalam jangka panjang, mengeksekusi strategi ini hanya akan menguras saldo modal Anda. Hentikan trading real account, evaluasi kembali titik entri, jurnalkan trading Anda, dan gunakan kembali demo account.`;
 					}
 				}
 				outDiagnosis.innerHTML = narasiHtml;
@@ -1218,9 +1519,7 @@
 			function refreshManualBerita() {
 				const box = document.getElementById('liveNewsLayoutContainer');
 				if (box) {
-					box.innerHTML = `
-																					
-																																										<div class="text-center text-xs text-gray-400 py-6 animate-pulse">Memperbarui sentimen bursa...</div>`;
+					box.innerHTML = `<div class="text-center text-xs text-gray-400 py-6 animate-pulse">Memperbarui sentimen bursa...</div>`;
 					setTimeout(bangunFeedBerita, 600);
 				}
 			}
@@ -1233,7 +1532,6 @@
 				bangunFeedBerita();
 			});
 		</script>
-		
 		<footer class="bg-slate-950 border-t border-slate-900 py-12 text-center text-xs text-slate-500">
 			<p class="mb-2">&copy; 2026 Stock ID VIP #Andaimology. All Rights Reserved.</p>
 			<p class="max-w-xl mx-auto leading-relaxed px-4">Disclaimer: Perdagangan saham memiliki risiko kerugian finansial. Seluruh data rekomendasi bersifat edukasi dan analisa mandiri ritel, keputusan beli/jual ada di tangan investor masing-masing.</p>
