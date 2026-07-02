@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-		<link href="https://fonts.googleapis.com/css2?family=Exo+2&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 		<meta name="theme-color" content="#0b0f19">
 		<meta property="og:title" content="Masa Aktif Member Stock ID VIP">
 		<meta property="og:description" content="Cek Masa Aktifmu Disini Yaa!">
@@ -20,13 +20,13 @@
 		<meta property="og:type" content="website">
 		<style>
 			body {
-				font-family: 'Exo 2', sans-serif;
+				font-family: 'Nunito', sans-serif;
 				background-color: #0b0f19;
 				transition: background-color .3s, color .3s
 			}
 
 			.heading-font {
-				font-family: 'Exo 2', sans-serif
+				font-family: 'Nunito', sans-serif
 			}
 
 			.theme-switching {
@@ -151,7 +151,8 @@
 				select.innerHTML = "";
 				members.forEach((m, index) => {
 					select.innerHTML += `
-																		<option value="${index}">${m.nama}</option>`;
+					<option value="${index}">${m.nama}</option>
+					`;
 				});
 				document.getElementById("reminderModal").style.display = "flex";
 			}
@@ -1188,14 +1189,14 @@
 					const el = document.createElement("div");
 					el.className = "space-y-1";
 					el.innerHTML = `
-                
-																		<div class="flex justify-between text-xs font-semibold">
-																			<span class="text-slate-400">${r[1]}</span>
-																			<span class="text-white font-mono">${val} Member</span>
-																		</div>
-																		<div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-900">
-																			<div class="${r[2]} h-full rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(255,255,255,0.05)]" style="width: ${percent}%"></div>
-																		</div>`;
+					<div class="flex justify-between text-xs font-semibold">
+					<span class="text-slate-400">${r[1]}</span>
+					<span class="text-white font-mono">${val} Member</span>
+					</div>
+					<div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-900">
+					<div class="${r[2]} h-full rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(255,255,255,0.05)]" style="width: ${percent}%"></div>
+					</div>
+					`;
 					box.appendChild(el);
 				});
 			}
@@ -1206,12 +1207,11 @@
 				rekapBody.innerHTML = "";
 				Object.keys(rekapData).sort((a, b) => Number(a) - Number(b)).forEach(kelas => {
 					rekapBody.innerHTML += `
-            
-																		<tr class="hover:bg-slate-900/40 transition-colors">
-																			<td class="p-3 font-semibold text-slate-300">Kelas VIP ${kelas} Bulan</td>
-																			<td class="p-3 text-center font-mono font-bold text-emerald-400 bg-emerald-500/5">${rekapData[kelas]}x Pembelian</td>
-																		</tr>
-            `;
+					<tr class="hover:bg-slate-900/40 transition-colors">
+					<td class="p-3 font-semibold text-slate-300">Kelas VIP ${kelas} Bulan</td>
+					<td class="p-3 text-center font-mono font-bold text-emerald-400 bg-emerald-500/5">${rekapData[kelas]}x Pembelian</td>
+					</tr>
+					`;
 				});
 				const list = document.getElementById("list");
 				list.innerHTML = "";
@@ -1270,8 +1270,8 @@
                                 ${m.nama.charAt(5) ? m.nama.charAt(5) : m.nama.charAt(0)}
                             </span>
 																					<div>
-																						<h4 class="text-xs font-bold text-white tracking-wide">${m.nama}</h4>
-																						<span class="text-[10px] text-slate-500 font-medium">VIP Premium Member</span>
+																						<h4 class="text-xs font-bold text-white tracking-wide">${m.nama} <i class="fa-solid fa-circle-check text-[12px] text-blue-500 w-4"></i></h4>
+																						<span class="text-[10px] text-slate-500 font-medium">VIP Member</span>
 																					</div>
 																				</div>
 																				<span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${daysBadgeColor}">
@@ -1280,27 +1280,27 @@
 																			</div>
 																			<div class="space-y-2 text-xs font-medium">
 																				<div class="flex items-center gap-2 text-white-600">
-																					<i class="fa-solid fa-calendar-xmark text-[14px] text-blue-500 w-4"></i>
+																					<i class="fa-solid fa-calendar-days text-[14px] text-orange-500 w-4"></i>
 																					<span>Expired: 
-																						<span class="text-blue-500">${m.expired}</span>
+																						<span class="font-black text-orange-500">${m.expired}</span>
 																					</span>
 																				</div>
 																				<div class="flex items-center gap-2 text-white-600">
-																					<i class="fa-solid fa-hourglass-full text-[14px] text-amber-500 w-4"></i>
+																					<i class="fa-solid fa-hourglass-half text-[15px] text-yellow-500 w-4"></i>
 																					<span>Sisa Waktu: 
-																						<span class="countdown text-amber-500" data-expired="${m.expired}">${sisa(m.ms)}</span>
+																						<span class="countdown font-black text-yellow-500" data-expired="${m.expired}">${sisa(m.ms)}</span>
 																					</span>
 																				</div>
 																				<div class="flex items-center gap-2 text-white-600">
 																					<i class="fa-brands fa-whatsapp text-[15px] text-emerald-500 w-4"></i>
 																					<span>Kontak: 
-																						<span class="text-emerald-500">${m.whatsapp}</span>
+																						<span class="font-black text-emerald-500">${m.whatsapp}</span>
 																					</span>
 																				</div>
 																				<div class="flex items-center gap-2 text-white-600">
-																					<i class="fa-solid fa-layer-group text-[12px] text-rose-500 w-4"></i>
+																					<i class="fa-solid fa-layer-group text-[12px] text-blue-500 w-4"></i>
 																					<span>Paket Join: 
-																						<span class="text-rose-500">${join(m.history)}</span>
+																						<span class="font-black text-blue-500">${join(m.history)}</span>
 																					</span>
 																				</div>
 																			</div>
