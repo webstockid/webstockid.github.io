@@ -777,19 +777,20 @@
 			updateLiveClock();
 			// FAQ Toggle Logic
 			function toggleFaq(element) {
-				const icon = element.querySelector('i');
-				const answer = element.querySelector('p');
-				if (answer.classList.contains('hidden')) {
-					answer.classList.remove('hidden');
-					icon.className = "fa-solid fa-minus text-xs text-emerald-400 transition-transform duration-300";
-					element.classList.add('border-emerald-500/30');
-				} else {
-					answer.add('hidden');
-					answer.classList.add('hidden');
-					icon.className = "fa-solid fa-plus text-xs text-slate-500 transition-transform duration-300";
-					element.classList.remove('border-emerald-500/30');
-				}
-			}
+    const icon = element.querySelector('i');
+    const answer = element.querySelector('p');
+    
+    if (answer.classList.contains('hidden')) {
+        answer.classList.remove('hidden');
+        icon.className = "fa-solid fa-minus text-xs text-emerald-400 transition-transform duration-300";
+        element.classList.add('border-emerald-500/30');
+    } else {
+        // PERBAIKAN: Baris 'answer.add('hidden');' yang salah sudah dihapus
+        answer.classList.add('hidden');
+        icon.className = "fa-solid fa-plus text-xs text-slate-500 transition-transform duration-300";
+        element.classList.remove('border-emerald-500/30');
+    }
+}
 			// Live Investment Return Estimator Addon
 			function liveCalc() {
 				const modal = parseFloat(document.getElementById('calcModal').value) || 0;
