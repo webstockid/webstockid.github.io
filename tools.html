@@ -284,8 +284,8 @@
 					<i class="fa-solid fa-chart-line text-lg"></i>
 				</div>
 				<div>
-					<h2 class="text-md font-bold text-slate-100 tracking-wide">Multi-Day ARA / ARB Simulator (10 Days)</h2>
-					<p class="text-[11px] text-slate-400">Simulasi proyeksi berantai 10 hari bursa berdasarkan aturan reguler BEI dengan poin genap</p>
+					<h2 class="text-base font-bold text-slate-100 tracking-wide">Multi-Day ARA / ARB Simulator (10 Days)</h2>
+					<p class="text-[11px] text-slate-400">Simulasi proyeksi keuntungan berantai 10 hari bursa.</p>
 				</div>
 			</div>
 			<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 items-end">
@@ -372,7 +372,7 @@
 				boxArb.innerHTML = '';
 				// 1. GENERATE JALUR ARA (10 HARI NAIK - PERSEN PAS)
 				let hargaCurrentAra = hargaAwal;
-				for (let hari = 1; hari <= 10; hari++) {
+				for (let hari = 1; hari <= 18; hari++) {
 					let pPersen = dapatkanPersentaseAutoRejection(hargaCurrentAra);
 					// Hitung target mentah lalu bulatkan ke fraksi bursa terdekat
 					let hargaTargetMentah = hargaCurrentAra * (1 + pPersen);
@@ -387,13 +387,13 @@
 						<div class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded w-fit">Hari ${hari}</div>
 						<!-- Baris 1: Kenaikan harga saham Rp (ARA) + kenaikan poin <-> persentase pas BEI -->
 						<div class="flex justify-between items-center text-xs">
-							<span class="font-bold text-slate-100 font-mono">Rp ${hargaTargetAra.toLocaleString('id-ID')} (+${kenaikanPoin})</span>
-							<span class="font-bold text-emerald-400 font-mono">+ ${(pPersen * 100)}%</span>
+							<span class="font-bold text-base text-emerald-300">Rp ${hargaTargetAra.toLocaleString('id-ID')} (+${kenaikanPoin})</span>
+							<span class="font-bold text-base text-emerald-300">+ ${(pPersen * 100)}%</span>
 						</div>
 						<!-- Baris 2: Total modal (profit / gulung) <-> profit nominal -->
-						<div class="flex justify-between items-center text-[10px]">
-							<span class="text-slate-400">Rp ${totalAsetAra.toLocaleString('id-ID')} <span class="text-[9px] text-slate-500">(Aset Gulung)</span></span>
-							<span class="font-semibold text-emerald-400 font-mono">+Rp ${profitNominal.toLocaleString('id-ID')} (+${profitPersenKumulatif.toFixed(1)}%)</span>
+						<div class="flex justify-between items-center text-base text-[10px]">
+							<span class="font-bold-mono text-base text-emerald-400">Rp ${totalAsetAra.toLocaleString('id-ID')}</span></span>
+							<span class="font-bold-mono text-base text-emerald-400">+Rp ${profitNominal.toLocaleString('id-ID')} (+${profitPersenKumulatif.toFixed(1)}%)</span>
 						</div>
 					</div>
 					`;
@@ -425,13 +425,13 @@
 						<div class="text-[9px] font-bold text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded w-fit">Hari ${hari}</div>
 						<!-- Baris 1: Penurunan harga saham Rp (ARB) - penurunan poin <-> persentase pas BEI -->
 						<div class="flex justify-between items-center text-xs">
-							<span class="font-bold text-slate-100 font-mono">Rp ${hargaTargetArb.toLocaleString('id-ID')} (-${penurunanPoin})</span>
-							<span class="font-bold text-rose-400 font-mono">- ${(pPersen * 100)}%</span>
+							<span class="font-bold text-base text-rose-300">Rp ${hargaTargetArb.toLocaleString('id-ID')} (-${penurunanPoin})</span>
+							<span class="font-bold text-base text-rose-300">- ${(pPersen * 100)}%</span>
 						</div>
 						<!-- Baris 2: Total modal (loss / gulung) <-> loss nominal -->
-						<div class="flex justify-between items-center text-[10px]">
-							<span class="text-slate-400">Rp ${totalAsetArb.toLocaleString('id-ID')} <span class="text-[9px] text-slate-500">(Aset Gulung)</span></span>
-							<span class="font-semibold text-rose-400 font-mono">Rp ${lossNominal.toLocaleString('id-ID')} (${lossPersenKumulatif.toFixed(1)}%)</span>
+						<div class="flex justify-between items-center text-base text-[10px]">
+							<span class="font-bold-mono text-base text-rose-400">Rp ${totalAsetArb.toLocaleString('id-ID')}</span>
+							<span class="font-bold-mono text-base text-rose-400">Rp ${lossNominal.toLocaleString('id-ID')} (${lossPersenKumulatif.toFixed(1)}%)</span>
 						</div>
 					</div>
 					`;
@@ -1680,7 +1680,7 @@
 				const textara = document.getElementById('outTpTextara');
 				if (!textara) return;
 				// Rangkuman Teks Menggunakan Karakter Template Bersih
-				const outputString = `📌 STOCK ID VIP TRADING PLAN 📌\n` + `----------------------------------\n` + `📈 EMITEN  : $${emiten}\n` + `🛒 BUY AREA: ${buyZone}\n` + `🎯 TARGET 1: Rp ${target1}\n` + `🎯 TARGET 2: Rp ${target2}\n` + `🛑 STOP LOSS: Rp ${sl}\n` + `----------------------------------\n` + `📝 CATATAN : ${catatan}\n` + `#StockIDTools #TradingPlan #Disiplin`;
+				const outputString = `📌 STOCK ID VIP TRADING PLAN 📌\n` + `----------------------------------\n` + `📈 EMITEN : $${emiten}\n` + `🛒 BUY AREA: ${buyZone}\n` + `🎯 TARGET 1: Rp ${target1}\n` + `🎯 TARGET 2: Rp ${target2}\n` + `🛑 STOP LOSS: Rp ${sl}\n` + `----------------------------------\n` + `📝 CATATAN : ${catatan}\n` + `#StockIDTools #TradingPlan #Disiplin`;
 				textara.value = outputString;
 			}
 			
