@@ -119,7 +119,7 @@
 		<script>
 			// LOGIKA FITUR: STOCK ID AI CHATBOT SYSTEM REAL HIGH-SPEED API
 			let NAMA_MEMBER_VIP = localStorage.getItem('stockIdVipChatUser') || "";
-			const API_KEY_ALT = "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";
+			const API_KEY_ALT = "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";
 			function cekOtorisasiNamaChat() {
 				const authScreen = document.getElementById('aiChatAuthScreen');
 				if (!authScreen) return;
@@ -212,7 +212,7 @@
 				chatWindow.scrollTop = chatWindow.scrollHeight;
 				// 3. Request Langsung ke API Kecepatan Tinggi (Bebas Eror Kode GCP)
 				try {
-					const systemInstruction = "Kamu adalah StockID AI, asisten trading premium untuk komunitas Stock ID VIP. Jawablah pertanyaan user dengan gaya pakar saham Indonesia yang cerdas, singkat, terbaru, responsif, edukatif, objektif, dan berikan disclaimer di akhir untuk chat pertama bahwa ini bukan ajakan membeli/menjual. Selalu sapa user dengan namanya.";
+					const systemInstruction = "Kamu adalah StockID AI, asisten trading premium untuk komunitas Stock ID VIP. Jawablah pertanyaan user dengan gaya pakar saham Indonesia yang cerdas, komplek, terbaru, responsif, edukatif, objektif, dan berikan disclaimer di akhir untuk chat pertama bahwa ini bukan ajakan membeli/menjual. Selalu sapa user dengan namanya.";
 					const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
 						method: "POST",
 						headers: {
