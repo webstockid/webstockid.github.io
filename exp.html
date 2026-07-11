@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="id" class="scroll-smooth" xmlns="http://www.w3.org/1999/xhtml">
 	<!DOCTYPE html PUBLIC '-//WAPFORUM//DTD XHTML Mobile 1.0//EN' 'http://www.wapforum.org/DTD/xhtml-mobile10.dtd'>
 	<head>
-		<title>Masa Aktif Member - Stock ID VIP</title>
 		<meta charset="UTF-8">
-		<meta name="author" content="Hardiansyah">
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimal-scale=0.8,maximal-scale=1">
-		<link rel="manifest" href="manifest.json">
-		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-		<link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
-		<meta name="theme-color" content="#0b0f19">
+		<title>Stock ID Member - Premium Trading & Learning Community</title>
+		<meta name="keyword" content="stock id member, stockid member, stock id vip member, stockid vip, member stockid, member stock id">
+		<meta name="HandheldFriendly" content="True">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximal-scale=1,shrink-to-fit=no">
+		<meta name="author" content="Hardiansyah & Tailwind.css">
 		<meta property="og:title" content="Masa Aktif Member Stock ID VIP">
 		<meta property="og:description" content="Cek Masa Aktifmu Disini Yaa!">
 		<meta property="og:image" content="stockid_gambar/thumb.jpg">
-		<meta property="og:url" content="https://webstockid.github.io/exp">
+		<meta property="og:url" content="https://webstockid.github.io/exp.html">
 		<meta property="og:type" content="website">
+		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 		<style>
 			body {
 				font-family: 'Nunito', sans-serif;
@@ -96,7 +96,7 @@
 					</select>
 					<select id="sortMode" class="w-full md:w-44 bg-slate-950 border border-slate-800/80 rounded-xl p-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500 font-medium">
 						<option value="active">Masa Aktif Terlama</option>
-						<option value="bentar">Masa Aktif Sebentar</option>
+						<option value="bentar">Sisa 1 - 15 Hari</option>
 						<option value="nameAZ">Urut Nama: A - Z</option>
 						<option value="nameZA">Urut Nama: Z - A</option>
 					</select>
@@ -365,6 +365,12 @@
 				expired: "2026-06-14",
 				history: [3]
 			}, {
+				origin: "https://webstockid.github.io/exp",
+				nama: "Mas. Agung",
+				whatsapp: "081907273068",
+				expired: "2026-11-30",
+				history: [1, 6]
+			}, {
 				nama: "Mba. Puspita",
 				whatsapp: "082146281427",
 				expired: "2026-12-31",
@@ -564,11 +570,6 @@
 				whatsapp: "082112373026",
 				expired: "2026-04-14",
 				history: [1, 1]
-			}, {
-				nama: "Mas. Agung",
-				whatsapp: "081907273068",
-				expired: "2026-11-30",
-				history: [1, 6]
 			}, {
 				nama: "Mas. Erwin",
 				whatsapp: "082284955923",
@@ -905,6 +906,7 @@
 				expired: "2026-02-10",
 				history: [1, 2]
 			}, {
+				Nama: "Pak. Yanto",
 				nama: "Pak. Yanto",
 				whatsapp: "082374750189",
 				expired: "2026-02-04",
@@ -1064,69 +1066,6 @@
 				return rekap;
 			}
 			let isAdmin = false;
-
-			function toggleAdmin() {
-				isAdmin = !isAdmin;
-				const btn = document.getElementById("adminBtn");
-				const actionArea = document.getElementById("adminActionArea");
-				if (isAdmin) {
-					btn.textContent = "Nonaktifkan Mode Admin 🔐";
-					actionArea.classList.remove('hidden');
-				} else {
-					btn.textContent = "Aktifkan Mode Admin 🔑";
-					actionArea.classList.add('hidden');
-				}
-				render();
-			}
-
-			function tambahHistory(index) {
-				const bulan = prompt("Masukkan durasi kelas perpanjangan (1 / 2 / 3 / 6 / 12):");
-				if (!bulan) return;
-				if (!members[index].history) {
-					members[index].history = [];
-				}
-				members[index].history.push(Number(bulan));
-				alert("Riwayat kelas baru berhasil direkam di jurnal! 🚀");
-				render();
-			}
-
-			function tambahMember() {
-				const nama = prompt("Nama Lengkap Member:");
-				if (!nama) return;
-				const whatsapp = prompt("Nomor WhatsApp Aktif:");
-				if (!whatsapp) return;
-				const expired = prompt("Tanggal Jatuh Tempo Expired (Format: YYYY-MM-DD):");
-				if (!expired) return;
-				const kelas = Number(prompt("Pilihan Paket Kelas Pertama (1 / 2 / 3 / 6 / 12 bulan):"));
-				if (![1, 2, 3, 6, 12].includes(kelas)) {
-					alert("Kategori durasi kelas tidak valid!");
-					return;
-				}
-				const newMember = {
-					nama: nama,
-					whatsapp: whatsapp,
-					expired: expired,
-					history: [Number(kelas)]
-				};
-				members.push(newMember);
-				alert("Member VIP baru berhasil direkam di sistem! 💎");
-				render();
-			}
-
-			function editMember(index) {
-				const m = members[index];
-				const nama = prompt("Edit Nama Profile:", m.nama);
-				if (!nama) return;
-				const whatsapp = prompt("Edit Nomor Kontak:", m.whatsapp);
-				if (!whatsapp) return;
-				const expired = prompt("Edit Tanggal Expired (Format: YYYY-MM-DD):", m.expired);
-				if (!expired) return;
-				m.nama = nama;
-				m.whatsapp = whatsapp;
-				m.expired = expired;
-				alert("Data profil member diperbarui! ⚡");
-				render();
-			}
 		</script>
 		<script type="text/javascript">
 			const DAY = 86400000,
@@ -1143,16 +1082,6 @@
 				const m = Math.floor((ms % HOUR) / MIN);
 				const d = Math.floor((ms % MIN) / SEC);
 				return `${h}H ${j}J ${m}M ${d}D`;
-			}
-
-			function kelas(b, ms) {
-				if (ms <= 0) return "expired";
-				if (b == 1) return "satu";
-				if (b == 2) return "dua";
-				if (b == 3) return "tiga";
-				if (b == 4) return "empat";
-				if (b == 6) return "enam";
-				if (b == 12) return "setahun";
 			}
 
 			function badge(arr) {
@@ -1224,104 +1153,123 @@
 				const f = filter.value;
 				members.forEach(m => m.ms = target(m.expired) - Date.now());
 				const mode = sortMode.value;
+				
 				let sorted = [...members];
+
+				// PEMUTUSAN DATA FILTER DI AWAL (MUTLAK)
+				if (mode === "bentar") {
+					// Jika memilih filter 1 - 15 hari, keluarkan yang expired dan yang durasinya masih panjang
+					sorted = sorted.filter(m => {
+						const dLeft = Math.floor(m.ms / DAY);
+						return dLeft >= 1 && dLeft <= 15;
+					});
+				} else {
+					// Jika opsi lain, filter kategori kiri berjalan normal
+					if (f === "expired") {
+						sorted = sorted.filter(m => m.ms <= 0);
+					} else if (f !== "all") {
+						sorted = sorted.filter(m => lastMonth(m) == f);
+					}
+				}
+
+				// LOGIKA SORTING DATA
 				if (mode === "active") sorted.sort((a, b) => b.ms - a.ms);
 				if (mode === "bentar") sorted.sort((a, b) => a.ms - b.ms);
 				if (mode === "nameAZ") sorted.sort((a, b) => a.nama.localeCompare(b.nama));
 				if (mode === "nameZA") sorted.sort((a, b) => b.nama.localeCompare(a.nama));
+
 				const seen = new Set();
 				sorted = sorted.filter(m => {
 					if (seen.has(m.nama)) return false;
 					seen.add(m.nama);
 					return true;
 				});
+
 				sorted.forEach((m) => {
 					const index = members.indexOf(m);
 					const lm = lastMonth(m);
-					if (!m.nama.toLowerCase().includes(key)) return;
-					if (f === "expired" && m.ms > 0) return;
-					if (f !== "all" && f !== "expired" && lm != f) return;
 					const daysLeft = Math.floor(m.ms / DAY);
-					let statusCardBorder = "border-slate-800 bg-slate-900/60 shadow-lg"; // <-- Dipertegas & dikontraskan
+
+					// Filter pencarian ketikan nama
+					if (!m.nama.toLowerCase().includes(key)) return;
+
+					let statusCardBorder = "border-slate-800 bg-slate-900/60 shadow-lg"; 
 					let daysBadgeColor = "bg-slate-800 text-slate-300 border-slate-700";
 					let sisaTeks = `${daysLeft} Hari Lagi`;
 					if (m.ms <= 0) {
-						statusCardBorder = "border-rose-500/30 bg-rose-950/20 opacity-75 shadow-lg shadow-rose-950/5"; // <-- Kontras Expired
+						statusCardBorder = "border-rose-500/30 bg-rose-950/20 opacity-75 shadow-lg shadow-rose-950/5"; 
 						daysBadgeColor = "bg-rose-500/10 text-rose-400 border-rose-500/20";
 						sisaTeks = "Expired";
 					} else if (daysLeft <= 4) {
-						statusCardBorder = "border-rose-500 bg-slate-900/80 shadow-[0_0_20px_rgba(244,63,94,0.1)]"; // <-- Kontras H-3 Glow
+						statusCardBorder = "border-rose-500 bg-slate-900/80 shadow-[0_0_20px_rgba(244,63,94,0.1)]"; 
 						daysBadgeColor = "bg-rose-500 text-slate-950 font-extrabold animate-pulse";
 					} else if (daysLeft <= 7) {
-						statusCardBorder = "border-amber-500/60 bg-slate-900/70 shadow-[0_0_15px_rgba(245,158,11,0.05)]"; // <-- Kontras H-7
+						statusCardBorder = "border-amber-500/60 bg-slate-900/70 shadow-[0_0_15px_rgba(245,158,11,0.05)]"; 
 						daysBadgeColor = "bg-amber-500/10 text-amber-400 border-amber-500/20";
 					} else if (daysLeft <= 14) {
 						statusCardBorder = "border-blue-500/50 bg-slate-900/60";
 						daysBadgeColor = "bg-blue-500/10 text-blue-400 border-blue-500/20";
 					} else {
-						statusCardBorder = "border-emerald-500/30 hover:border-emerald-500/60 bg-slate-900/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.08)]"; // <-- Kontras Aktif Panjang
+						statusCardBorder = "border-emerald-500/30 hover:border-emerald-500/60 bg-slate-900/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.08)]"; 
 						daysBadgeColor = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
 					}
-					// 2. GANTI PEMBENTUKAN CLASS UTAMA DIV INI:
+					
 					const div = document.createElement("div");
-					// Diperbarui agar efek glassmorphism, border, dan shadow-nya keluar kontrasnya
 					div.className = `glassmorphism p-5 rounded-2xl border flex flex-col justify-between transition-all duration-300 group hover:scale-[1.01] ${statusCardBorder}`;
 					div.innerHTML = `
-                
-																		<div>
-																			<div class="flex justify-between items-start gap-2 border-b border-slate-800/60 pb-3 mb-3.5">
-																				<div class="flex items-center gap-2.5">
-																					<span class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-300 uppercase">
-                                ${m.nama.charAt(5) ? m.nama.charAt(5) : m.nama.charAt(0)}
-                            </span>
-																					<div>
-																						<h4 class="text-xs font-bold text-white tracking-wide">${m.nama} <i class="fa-solid fa-circle-check text-[12px] text-blue-500 w-4"></i></h4>
-																						<span class="text-[10px] text-slate-500 font-medium">VIP Member</span>
-																					</div>
-																				</div>
-																				<span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${daysBadgeColor}">
-                            ${sisaTeks}
-                        </span>
-																			</div>
-																			<div class="space-y-2 text-xs font-medium">
-																				<div class="flex items-center gap-2 text-white-600">
-																					<i class="fa-solid fa-calendar-days text-[14px] text-orange-500 w-4"></i>
-																					<span>Expired: 
-																						<span class="font-black text-orange-500">${m.expired}</span>
-																					</span>
-																				</div>
-																				<div class="flex items-center gap-2 text-white-600">
-																					<i class="fa-solid fa-hourglass-half text-[15px] text-yellow-500 w-4"></i>
-																					<span>Sisa Waktu: 
-																						<span class="countdown font-black text-yellow-500" data-expired="${m.expired}">${sisa(m.ms)}</span>
-																					</span>
-																				</div>
-																				<div class="flex items-center gap-2 text-white-600">
-																					<i class="fa-brands fa-whatsapp text-[15px] text-emerald-500 w-4"></i>
-																					<span>Kontak: 
-																						<span class="font-black text-emerald-500">${m.whatsapp}</span>
-																					</span>
-																				</div>
-																				<div class="flex items-center gap-2 text-white-600">
-																					<i class="fa-solid fa-layer-group text-[12px] text-blue-500 w-4"></i>
-																					<span>Paket Join: 
-																						<span class="font-black text-blue-500">${join(m.history)}</span>
-																					</span>
-																				</div>
-																			</div>
-																		</div>
-                ${isAdmin ? `
-                
-																		<div class="grid grid-cols-2 gap-2 mt-4 pt-3.5 border-t border-slate-800/80">
-																			<button class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[10px] font-bold py-2 px-3 rounded-xl transition cursor-pointer" onclick="tambahHistory(${index})">
-                        ➕ Tambah Kelas
-                    </button>
-																			<button class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[10px] font-bold py-2 px-3 rounded-xl transition cursor-pointer" onclick="editMember(${index})">
-                        📝 Edit Profil
-                    </button>
-																		</div>
-                ` : ""}
-            `;
+							<div>
+								<div class="flex justify-between items-start gap-2 border-b border-slate-800/60 pb-3 mb-3.5">
+									<div class="flex items-center gap-2.5">
+										<span class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-300 uppercase">
+											${m.nama.charAt(5) ? m.nama.charAt(5) : m.nama.charAt(0)}
+										</span>
+										<div>
+											<h4 class="text-xs font-bold text-white tracking-wide">${m.nama} <i class="fa-solid fa-circle-check text-[12px] text-blue-500 w-4"></i></h4>
+											<span class="text-[10px] text-slate-500 font-medium">VIP Member</span>
+										</div>
+									</div>
+									<span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${daysBadgeColor}">
+										${sisaTeks}
+									</span>
+								</div>
+								<div class="space-y-2 text-xs font-medium">
+									<div class="flex items-center gap-2 text-white-600">
+										<i class="fa-solid fa-calendar-days text-[14px] text-orange-500 w-4"></i>
+										<span>Expired: 
+											<span class="font-black text-orange-500">${m.expired}</span>
+										</span>
+									</div>
+									<div class="flex items-center gap-2 text-white-600">
+										<i class="fa-solid fa-hourglass-half text-[15px] text-yellow-500 w-4"></i>
+										<span>Sisa Waktu: 
+											<span class="countdown font-black text-yellow-500" data-expired="${m.expired}">${sisa(m.ms)}</span>
+										</span>
+									</div>
+									<div class="flex items-center gap-2 text-white-600">
+										<i class="fa-brands fa-whatsapp text-[15px] text-emerald-500 w-4"></i>
+										<span>Kontak: 
+											<span class="font-black text-emerald-500">${m.whatsapp}</span>
+										</span>
+									</div>
+									<div class="flex items-center gap-2 text-white-600">
+										<i class="fa-solid fa-layer-group text-[12px] text-blue-500 w-4"></i>
+										<span>Paket Join: 
+											<span class="font-black text-blue-500">${join(m.history)}</span>
+										</span>
+									</div>
+								</div>
+							</div>
+							${isAdmin ? `
+							<div class="grid grid-cols-2 gap-2 mt-4 pt-3.5 border-t border-slate-800/80">
+								<button class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[10px] font-bold py-2 px-3 rounded-xl transition cursor-pointer" onclick="tambahHistory(${index})">
+									➕ Tambah Kelas
+								</button>
+								<button class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[10px] font-bold py-2 px-3 rounded-xl transition cursor-pointer" onclick="editMember(${index})">
+									📝 Edit Profil
+								</button>
+							</div>
+							` : ""}
+					`;
 					list.appendChild(div);
 				});
 			}
@@ -1433,7 +1381,6 @@
 				if (btn) {
 					btn.textContent = theme === "dark" ? "☀ Light Mode" : "🌙 Soft Mode";
 				}
-				// Manipulasi class utility background & text body secara instan
 				if (theme === "light") {
 					document.body.classList.remove("bg-slate-950", "text-slate-200");
 					document.body.classList.add("bg-slate-50", "text-slate-800");
@@ -1442,7 +1389,6 @@
 					document.body.classList.add("bg-slate-950", "text-slate-200");
 				}
 			}
-			// Jalankan logika klik tombol setelah DOM terisi sempurna
 			document.addEventListener("DOMContentLoaded", () => {
 				const btn = document.getElementById("themeToggle");
 				if (btn) {
@@ -1451,7 +1397,6 @@
 						applyTheme(current === "dark" ? "light" : "dark");
 					};
 				}
-				// Muat tema yang tersimpan di memori browser
 				const savedTheme = localStorage.getItem("theme");
 				if (savedTheme) {
 					applyTheme(savedTheme);

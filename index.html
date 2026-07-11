@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+<?xml version="1.0" encoding="UTF-8"?>
+<html lang="id" class="scroll-smooth" xmlns="http://www.w3.org/1999/xhtml">
+	<!DOCTYPE html PUBLIC '-//WAPFORUM//DTD XHTML Mobile 1.0//EN' 'http://www.wapforum.org/DTD/xhtml-mobile10.dtd'>
 	<head>
 		<meta charset="UTF-8">
 		<title>Stock's ID VIP - Premium Trading & Learning Community</title>
@@ -16,7 +17,7 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Fredoka&Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
 		<style>
 			body {
 				font-family: Fredoka, sans-serif;
@@ -320,25 +321,20 @@
 		<script>
 			function updateLiveBursaStatus() {
 				const sekarang = new Date();
-				const hari = sekarang.getDay(); // 0: Minggu, 1: Senin, ..., 5: Jumat, 6: Sabtu
+				const hari = sekarang.getDay();
 				const jam = sekarang.getHours();
 				const menit = StadiumMenit = sekarang.getMinutes();
-				// Konversi waktu saat ini ke format menit total untuk mempermudah perbandingan logika
 				const waktuMenit = (jam * 60) + menit;
-				// Ambil elemen DOM
 				const txtStatus = document.getElementById('status-text');
 				const dotStatus = document.getElementById('status-dot');
 				const dotPulse = document.getElementById('status-dot-pulse');
 				const clockElement = document.getElementById('live-clock');
-				// Tampilkan Jam Live Terupdate
 				clockElement.innerText = sekarang.toLocaleTimeString('id-ID') + " WIB";
-				// Inisialisasi status default (Tutup)
 				let pasarBuka = false;
 				let sesiNama = "PASAR SEDANG TUTUP";
-				// Cek jika hari ini adalah hari bursa aktif (Senin s.d Jumat)
 				if (hari >= 1 && hari <= 5) {
 					if (hari === 5) {
-						// LOGIKA ATURAN KHUSUS HARI JUMAT
+						// HARI JUMAT
 						if (waktuMenit >= 525 && waktuMenit < 540) { // 08:45 - 08:59
 							pasarBuka = true;
 							sesiNama = "PRA-PEMBUKAAN (PRE-OPENING)";
@@ -359,7 +355,7 @@
 							sesiNama = "PASCA-PENUTUPAN (POST-CLOSING)";
 						}
 					} else {
-						// LOGIKA ATURAN HARI SENIN - KAMIS
+						// HARI SENIN - KAMIS
 						if (waktuMenit >= 525 && waktuMenit < 540) { // 08:45 - 08:59
 							pasarBuka = true;
 							sesiNama = "PRA-PEMBUKAAN (PRE-OPENING)";
@@ -383,7 +379,6 @@
 				} else {
 					sesiNama = "PASAR TUTUP (AKHIR PEKAN)";
 				}
-				// Terapkan Perubahan Gaya Warna UI Berdasarkan Status Pasar
 				if (pasarBuka) {
 					txtStatus.innerText = sesiNama;
 					txtStatus.className = "text-sm font-bold text-emerald-400";
@@ -396,9 +391,7 @@
 					dotPulse.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75";
 				}
 			}
-			// Jalankan real-time update setiap 1 detik
 			setInterval(updateLiveBursaStatus, 1000);
-			// Jalankan sekali saat load pertama halaman
 			window.addEventListener('DOMContentLoaded', updateLiveBursaStatus);
 		</script>
 		<section id="paket" class="py-20 relative">
@@ -531,7 +524,7 @@
 									<i class="fa-solid fa-circle-check text-blue-400"></i>Prioritas Belajar Utama via Telepon
 								</li>
 								<li class="flex items-center gap-2">
-									<i class="fa-solid fa-circle-check text-blue-400"></i>Bonus Screener Spike Potential
+									<i class="fa-solid fa-circle-check text-blue-400"></i>Bonus Screener BSJP
 								</li>
 							</ul>
 						</div>
@@ -584,7 +577,7 @@
 									<i class="fa-solid fa-circle-check text-amber-400"></i>Durasi Proteksi Komunitas Terpanjang
 								</li>
 								<li class="flex items-center gap-2">
-									<i class="fa-solid fa-circle-check text-amber-400"></i>Bonus Screener BSJP / Swing
+									<i class="fa-solid fa-circle-check text-amber-400"></i>Bonus Screener Potential Spikes
 								</li>
 							</ul>
 						</div>
@@ -764,7 +757,6 @@
 		<br>
 		<br>
 		<script>
-			// Realtime Clock Simulator for the Group Runtime (7 Months base)
 			function updateLiveClock() {
 				const baseDays = 285;
 				const now = new Date();
@@ -775,27 +767,22 @@
 			}
 			setInterval(updateLiveClock, 1000);
 			updateLiveClock();
-			// FAQ Toggle Logic
 			function toggleFaq(element) {
-    const icon = element.querySelector('i');
-    const answer = element.querySelector('p');
-    
-    if (answer.classList.contains('hidden')) {
-        answer.classList.remove('hidden');
-        icon.className = "fa-solid fa-minus text-xs text-emerald-400 transition-transform duration-300";
-        element.classList.add('border-emerald-500/30');
-    } else {
-        // PERBAIKAN: Baris 'answer.add('hidden');' yang salah sudah dihapus
-        answer.classList.add('hidden');
-        icon.className = "fa-solid fa-plus text-xs text-slate-500 transition-transform duration-300";
-        element.classList.remove('border-emerald-500/30');
-    }
-}
-			// Live Investment Return Estimator Addon
+				const icon = element.querySelector('i');
+				const answer = element.querySelector('p');
+				if (answer.classList.contains('hidden')) {
+					answer.classList.remove('hidden');
+					icon.className = "fa-solid fa-minus text-xs text-emerald-400 transition-transform duration-300";
+					element.classList.add('border-emerald-500/30');
+				} else {
+					answer.classList.add('hidden');
+					icon.className = "fa-solid fa-plus text-xs text-slate-500 transition-transform duration-300";
+					element.classList.remove('border-emerald-500/30');
+				}
+			}
 			function liveCalc() {
 				const modal = parseFloat(document.getElementById('calcModal').value) || 0;
 				const wr = parseFloat(document.getElementById('calcWinRate').value) || 0;
-				// Formula estimating potential net gain based on winrate probability over average swing month
 				const result = modal * (wr / 100) * 0.35;
 				document.getElementById('calcResult').innerText = "Rp " + Math.round(result).toLocaleString('id-ID');
 			}
