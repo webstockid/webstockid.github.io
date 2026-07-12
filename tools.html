@@ -40,6 +40,35 @@
 			}
 		</style>
 	</head>
+	
+	<audio id="premiumBackgroundAudio" loop preload="auto">
+		<source src="stockid_suara/dangdut.mp3" type="audio/mp3">
+	</audio>
+
+	<script>
+		function inisialisasiAudioPremium() {
+			const audioSaham = document.getElementById('premiumBackgroundAudio');
+			if (!audioSaham) return;
+			audioSaham.volume = 0.2;
+			audioSaham.play()
+			.then(() => {
+				alert("Sambil dengerin lagu dangdut keknya enak nih 🗿.");
+				hapusListenerInteraksi();
+			})
+			.catch((eror) => {
+				alert("Autoplay diblokir oleh sistem keamanan browser:", eror);
+			});
+		}
+		function hapusListenerInteraksi() {
+			document.removeEventListener('click', inisialisasiAudioPremium);
+			document.removeEventListener('keydown', inisialisasiAudioPremium);
+			document.removeEventListener('touchstart', inisialisasiAudioPremium);
+		}
+		document.addEventListener('click', inisialisasiAudioPremium);
+		document.addEventListener('keydown', inisialisasiAudioPremium);
+		document.addEventListener('touchstart', inisialisasiAudioPremium);
+	</script>
+	
 	<body class="text-slate-200 antialiased overflow-x-hidden">
 		<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
@@ -114,6 +143,7 @@
 				</div>
 			</div>
 		</section>
+		
 		<script>
 			// LOGIKA FITUR: STOCK ID AI CHATBOT SYSTEM REAL HIGH-SPEED API
 			let NAMA_MEMBER_VIP = localStorage.getItem('stockIdVipChatUser') || "";
@@ -290,21 +320,21 @@
 							<div class="grid grid-cols-2 gap-4">
 								<div>
 									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Harga Cum-Date (Rp)</label>
-									<input type="text" id="riHargaCum" oninput="formatRupiahInput(this); hitungRightIssue();" placeholder="300" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+									<input type="text" id="riHargaCum" oninput="formatRupiahInput(this); hitungRightIssue();" placeholder="300" value="500" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
 								</div>
 								<div>
 									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Harga Pelaksanaan (Rp)</label>
-									<input type="text" id="riHargaTebus" oninput="formatRupiahInput(this); hitungRightIssue();" placeholder="500" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+									<input type="text" id="riHargaTebus" oninput="formatRupiahInput(this); hitungRightIssue();" placeholder="500" value=" 300" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
 								</div>
 							</div>
 							<div class="grid grid-cols-2 gap-4">
 								<div>
 									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Rasio Saham Lama</label>
-									<input type="number" id="riRasioLama" oninput="hitungRightIssue()" placeholder="25" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+									<input type="number" id="riRasioLama" oninput="hitungRightIssue()" placeholder="25" value ="30" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
 								</div>
 								<div>
 									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Rasio Saham Baru</label>
-									<input type="number" id="riRasioBaru" oninput="hitungRightIssue()" placeholder="15" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+									<input type="number" id="riRasioBaru" oninput="hitungRightIssue()" placeholder="15" value="10" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
 								</div>
 							</div>
 							<h3 class="text-base font-bold text-slate-200 border-b border-slate-800 pt-2 pb-2 flex items-center gap-2">
@@ -314,13 +344,13 @@
 								<div>
 									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Jumlah Saham (Lot)</label>
 									<div class="relative">
-										<input type="text" id="riLotKepemilikan" oninput="formatRupiahInput(this); hitungRightIssue();" placeholder="500" class="w-full pl-4 pr-12 py-2.5 bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl text-sm text-white font-mono focus:outline-none transition-all">
+										<input type="text" id="riLotKepemilikan" oninput="formatRupiahInput(this); hitungRightIssue();" placeholder="500" value="1000" class="w-full pl-4 pr-12 py-2.5 bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl text-sm text-white font-mono focus:outline-none transition-all">
 										<div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-500 text-xs">Lot</div>
 									</div>
 								</div>
 								<div>
 									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Harga Average Kamu (Rp)</label>
-									<input type="text" id="riAvgLama" oninput="formatRupiahInput(this); hitungRightIssue();" placeholder="600" class="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+									<input type="text" id="riAvgLama" oninput="formatRupiahInput(this); hitungRightIssue();" placeholder="600" value="400" class="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
 								</div>
 							</div>
 							<!--<button onclick="hitungRightIssue()" class="w-full py-3 mt-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-orange-600/10 transform hover:-translate-y-0.5">Kalkulasi Aksi Korporasi</button>-->
@@ -361,6 +391,7 @@
 				</div>
 			</div>
 		</section>
+		
 		<script>
 			function hitungRightIssue() {
 				const hargaCum = bersihkanAngka(document.getElementById('riHargaCum').value);
@@ -463,6 +494,7 @@
 				</div>
 			</div>
 		</section>
+		
 		<script>
 			// LOGIKA FITUR: SIMULATOR ARA/ARB BERANTAI
 			function dapatkanPersentaseAutoRejection(harga) {
@@ -576,6 +608,75 @@
 			}
 		</script>
 		
+		<section class="py-16 bg-slate-950 border-t border-slate-900">
+			<div class="w-full max-w-7xl mx-auto px-4 mb-6">
+				<div class="bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl p-5 shadow-xl shadow-emerald-950/5">
+					<div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+						<div class="flex items-center gap-3 w-full lg:w-auto shrink-0">
+							<div class="p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400">
+								<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+							</div>
+							<div>
+								<div class="flex items-center gap-2">
+									<h3 class="text-sm font-bold text-gray-100 tracking-wide uppercase">Sentimen Pasar BEI</h3>
+									<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-widest animate-pulse">LIVE</span>
+								</div>
+								<p class="text-[11px] text-gray-400">Analisis agregat volatilitas & arah 900+ saham Indonesia</p>
+							</div>
+						</div>
+						<div class="w-full max-w-xl flex-1 h-[220px] overflow-hidden bg-black/10 rounded-xl border border-white/5 relative">
+							<div class="tradingview-widget-container w-full h-full">
+								<div id="tradingview-realtime-sentiment" class="w-full h-full"></div>
+							</div>
+						</div>
+						<div class="w-full lg:w-auto flex justify-end shrink-0 border-t border-white/5 lg:border-t-0 pt-3 lg:pt-0">
+							<button onclick="segarkanSentimenRealTime()" class="w-full lg:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 active:scale-95 text-gray-300 hover:text-white rounded-xl border border-white/10 text-xs font-bold transition-all cursor-pointer" title="Sinkronisasi Data Bursa">
+								<svg id="iconPutarRealTime" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+								<span>Muat Ulang</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<script>
+				function segarkanSentimenRealTime() {
+					const kontainer = document.getElementById('tradingview-realtime-sentiment');
+					const ikonAnimasi = document.getElementById('iconPutarRealTime');
+					if (!kontainer) return;
+					if (ikonAnimasi) ikonAnimasi.classList.add('animate-spin');
+					kontainer.innerHTML = "";
+					const innerContainer = document.createElement('div');
+					innerContainer.className = 'tradingview-widget-container__widget w-full h-full';
+					kontainer.appendChild(innerContainer);
+					const scriptSentimen = document.createElement('script');
+					scriptSentimen.type = 'text/javascript';
+					scriptSentimen.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
+					scriptSentimen.async = true;
+					scriptSentimen.text = JSON.stringify({
+						"interval": "1D",
+						"width": "100%",
+						"isTransparent": true,
+						"height": "100%",
+						"symbol": "IDX:COMPOSITE",
+						"showIntervalTabs": false,
+						"displayMode": "single",
+						"locale": "id",
+						"colorTheme": "dark"
+					});
+					innerContainer.appendChild(scriptSentimen);
+					setTimeout(() => {
+						if (ikonAnimasi) ikonAnimasi.classList.remove('animate-spin');
+					}, 1000);
+				}
+				if (document.readyState === "loading") {
+					document.addEventListener("DOMContentLoaded", segarkanSentimenRealTime);
+				} else {
+					segarkanSentimenRealTime();
+				}
+			</script>
+		</section>
+		
 		<!-- FITUR: ARAH & SENTIMEN PASAR GLOBAL -->
 		<section id="market-radar-section" class="py-16 bg-slate-950 border-t border-slate-900">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -668,6 +769,7 @@
 				</div>
 			</div>
 		</section>
+		
 		<script>
 			// Konfigurasi Simbol TradingView Ticker Data 
 			const radarSymbolsData = {
@@ -857,20 +959,20 @@
 								<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Jangka Waktu Simulasi</label>
 								<div class="grid grid-cols-2 gap-3">
 									<label class="flex items-center gap-3 bg-slate-950 border border-slate-800 rounded-xl p-3 cursor-pointer hover:border-slate-700 transition-all">
-									<input type="radio" name="profit-durasi" value="1" class="w-4 h-4 text-emerald-500 bg-slate-900 border-slate-700 focus:ring-emerald-500 focus:ring-offset-slate-900">
-									<span class="text-sm text-slate-300 font-medium">Sehari</span>
+										<input type="radio" name="profit-durasi" value="1" class="w-4 h-4 text-emerald-500 bg-slate-900 border-slate-700 focus:ring-emerald-500 focus:ring-offset-slate-900">
+										<span class="text-sm text-slate-300 font-medium">Sehari</span>
 									</label>
 									<label class="flex items-center gap-3 bg-slate-950 border border-slate-800 rounded-xl p-3 cursor-pointer hover:border-slate-700 transition-all">
-									<input type="radio" name="profit-durasi" value="5" checked="checked" class="w-4 h-4 text-emerald-500 bg-slate-900 border-slate-700 focus:ring-emerald-500 focus:ring-offset-slate-900">
-									<span class="text-sm text-slate-300 font-medium">5 Hari</span>
+										<input type="radio" name="profit-durasi" value="5" checked="checked" class="w-4 h-4 text-emerald-500 bg-slate-900 border-slate-700 focus:ring-emerald-500 focus:ring-offset-slate-900">
+										<span class="text-sm text-slate-300 font-medium">5 Hari</span>
 									</label>
 									<label class="flex items-center gap-3 bg-slate-950 border border-slate-800 rounded-xl p-3 cursor-pointer hover:border-slate-700 transition-all">
-									<input type="radio" name="profit-durasi" value="10" class="w-4 h-4 text-emerald-500 bg-slate-900 border-slate-700 focus:ring-emerald-500 focus:ring-offset-slate-900">
-									<span class="text-sm text-slate-300 font-medium">10 Hari</span>
+										<input type="radio" name="profit-durasi" value="10" class="w-4 h-4 text-emerald-500 bg-slate-900 border-slate-700 focus:ring-emerald-500 focus:ring-offset-slate-900">
+										<span class="text-sm text-slate-300 font-medium">10 Hari</span>
 									</label>
 									<label class="flex items-center gap-3 bg-slate-950 border border-slate-800 rounded-xl p-3 cursor-pointer hover:border-slate-700 transition-all">
-									<input type="radio" name="profit-durasi" value="20" class="w-4 h-4 text-emerald-500 bg-slate-900 border-slate-700 focus:ring-emerald-500 focus:ring-offset-slate-900">
-									<span class="text-sm text-slate-300 font-medium">20 Hari</span>
+										<input type="radio" name="profit-durasi" value="20" class="w-4 h-4 text-emerald-500 bg-slate-900 border-slate-700 focus:ring-emerald-500 focus:ring-offset-slate-900">
+										<span class="text-sm text-slate-300 font-medium">20 Hari</span>
 									</label>
 								</div>
 							</div>
@@ -906,6 +1008,7 @@
 				</div>
 			</div>
 		</section>
+		
 		<script>
 			function formatRupiahInput(input) {
 				let value = input.value.replace(/[^,\d]/g, '').toString();
@@ -1036,6 +1139,7 @@
 				</div>
 			</div>
 		</section>
+		
 		<script>
 			function hitungAverageSaham() {
 				const p1 = parseFloat(document.getElementById('avg-price-1').value) || 0;
@@ -1148,6 +1252,7 @@
 				</div>
 			</div>
 		</section>
+		
 		<script>
 			function eksekusiTargetAvg() {
 				const inputAvg = document.getElementById('targetAvgHargaAvg');
@@ -1272,6 +1377,7 @@
 					</div>
 				</div>
 			</div>
+			
 			<script>
 				let DB_JURNAL_TRADING = JSON.parse(localStorage.getItem('stockIdVipJurnal')) || [];
 				function muatDataJurnalKeUi() {
@@ -1402,6 +1508,7 @@
 				</div>
 			</div>
 		</section>
+		
 		<script>
 			let daftarNotes = JSON.parse(localStorage.getItem('stocks_id_notes')) || [];
 			function renderWatchlistCards() {
@@ -1558,6 +1665,7 @@
 				</div>
 			</div>
 		</section>
+		
 		<script>
 			function formatRupiahInput(element) {
 				let value = element.value.replace(/[^0-9]/g, '');
@@ -1662,6 +1770,7 @@
 				</div>
 			</div>
 		</section>
+		
 		<script>
 			function eksekusiRaporTrading() {
 				const wins = parseFloat(document.getElementById('rpWinCount').value) || 0;
@@ -1771,6 +1880,7 @@
 				</div>
 			</div>
 		</section>
+		
 		<script>
 			function generateTradingPlanText() {
 				const emiten = document.getElementById('tpEmiten').value.toUpperCase() || "---";
@@ -1800,6 +1910,7 @@
 				if (document.getElementById('tpEmiten')) generateTradingPlanText();
 			});
 		</script>
+		
 		<section id="fitur-chart-pattern" class="max-w-5xl mx-auto px-4 my-8">
 			<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl">
 				<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -1846,6 +1957,7 @@
 				<div class="overflow-y-auto flex-1 pr-1 space-y-3 custom-scrollbar" id="liveNewsLayoutContainer"></div>
 			</div>
 		</section>
+		
 		<script>
 			const dataPolaSaham = [{
 				nama: "Cup and Handle",
@@ -1978,6 +2090,7 @@
 				bangunFeedBerita();
 			});
 		</script>
+		
 		<footer class="bg-slate-950 border-t border-slate-900 py-12 text-center text-xs text-slate-500">
 			<p class="mb-2">&copy; 2026 Stock ID VIP #Andaimology. All Rights Reserved.</p>
 			<p class="max-w-xl mx-auto leading-relaxed px-4">Disclaimer: Perdagangan saham memiliki risiko kerugian finansial. Seluruh data rekomendasi bersifat edukasi dan analisa mandiri ritel, keputusan beli/jual ada di tangan investor masing-masing.</p>

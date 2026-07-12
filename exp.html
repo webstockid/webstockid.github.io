@@ -58,6 +58,35 @@
 			}
 		</style>
 	</head>
+	
+	<audio id="premiumBackgroundAudio" loop preload="auto">
+		<source src="stockid_suara/s105.ogg" type="audio/mp3">
+	</audio>
+
+	<script>
+		function inisialisasiAudioPremium() {
+			const audioSaham = document.getElementById('premiumBackgroundAudio');
+			if (!audioSaham) return;
+			audioSaham.volume = 0.2;
+			audioSaham.play()
+			.then(() => {
+				alert("Relax ❤️");
+				hapusListenerInteraksi();
+			})
+			.catch((eror) => {
+				alert("Autoplay diblokir oleh sistem keamanan browser:", eror);
+			});
+		}
+		function hapusListenerInteraksi() {
+			document.removeEventListener('click', inisialisasiAudioPremium);
+			document.removeEventListener('keydown', inisialisasiAudioPremium);
+			document.removeEventListener('touchstart', inisialisasiAudioPremium);
+		}
+		document.addEventListener('click', inisialisasiAudioPremium);
+		document.addEventListener('keydown', inisialisasiAudioPremium);
+		document.addEventListener('touchstart', inisialisasiAudioPremium);
+	</script>
+	
 	<body class="text-slate-200 antialiased min-h-screen pb-32" data-theme="dark">
 		<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 space-y-8">
 			<header class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-900/40 p-6 rounded-2xl border border-slate-800/60 backdrop-blur-md">
