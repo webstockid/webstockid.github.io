@@ -17,14 +17,14 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Comfortaa&display=swap" rel="stylesheet">
 		<style>
 			body {
-			font-family: Quicksand, sans-serif;
+			font-family: Comfortaa, sans-serif;
 			background-color: #0b0f19
 			}
 			.heading-font {
-			font-family: Quicksand, sans-serif
+			font-family: Comfortaa, sans-serif
 			}
 			.glassmorphism {
 			background: rgba(17, 24, 39, .7);
@@ -38,6 +38,12 @@
 			.glow-premium {
 			box-shadow: 0 0 30px rgba(245, 158, 11, .25)
 			}
+			.glass-menu {
+			background: rgba(15, 23, 42, 0.95);
+			backdrop-filter: blur(12px);
+			-webkit-backdrop-filter: blur(12px);
+			border: 1px solid rgba(255, 255, 255, 0.08);
+		}
 		</style>
 	</head>
 	
@@ -87,6 +93,141 @@
 				</div>
 			</div>
 		</nav>
+		
+		<div class="fixed bottom-4 right-4 z-[999] transform-gpu">
+			<button onclick="toggleMenuTools(); tong(); getar(40)" id="btnUtamaTools" class="w-12 h-12 flex items-center justify-center bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 rounded-2xl shadow-lg shadow-emerald-500/20 active:scale-90 transition-all cursor-pointer border border-emerald-400/20">
+				<i id="ikonUtamaTools" class="fa-solid fa-layer-group text-lg"></i>
+			</button>
+		</div>
+		
+		<div id="overlayMenuTools" class="fixed inset-0 z-[998] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+			<div class="w-full max-w-xs glass-menu rounded-3xl p-5 shadow-2xl scale-90 transition-all duration-300 transform-gpu" id="kotakMenuTools">
+				<div class="flex items-center justify-between border-b border-white/5 pb-3 mb-4">
+					<div class="flex items-center gap-2">
+						<i class="fa-solid fa-screwdriver-wrench text-emerald-400 text-xs"></i>
+						<span class="text-xs font-black tracking-wider uppercase text-slate-200">STOCK ID TOOLS</span>
+					</div>
+					<button onclick="toggleMenuTools(); tang(); getar(30)" class="text-slate-500 hover:text-rose-400 transition-colors cursor-pointer">
+						<i class="fa-solid fa-circle-xmark text-base"></i>
+					</button>
+				</div>
+				
+				<div class="grid grid-cols-1 gap-2 text-xs font-bold">
+					<a href="#fitur-ai-chat" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-brands fa-bots text-sm w-4 text-center"></i>
+						<span>STOCK ID AI ASSISTANT</span>
+					</a>
+					
+					<a href="#market-radar-section" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-tower-broadcast text-sm w-4 text-center"></i>
+						<span>Arah & Sentimen Pasar Global</span>
+					</a>
+					
+					<a href="#kalkulator-right-issue" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-calculator text-sm w-4 text-center"></i>
+						<span>Kalkulator Right Issue & Delusi</span>
+					</a>
+					
+					<a href="#kalkulator-profit" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-calculator text-sm w-4 text-center"></i>
+						<span>Kalkulator Proyeksi & Target Profit</span>
+					</a>
+					
+					<a href="#kalkulator-saham" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-calculator text-sm w-4 text-center"></i>
+						<span>Kalkulator Average Up & Down</span>
+					</a>
+					
+					<a href="#kalkulator-target-average" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-calculator text-sm w-4 text-center"></i>
+						<span>Kalkulator Target Average</span>
+					</a>
+					
+					<a href="#kalkulator-position-sizing" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-calculator text-sm w-4 text-center"></i>
+						<span>Kalkulator Position Sizing</span>
+					</a>
+					
+					<a href="#kalkulator-rapor-trading" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-calculator text-sm w-4 text-center"></i>
+						<span>Kalkulator Rapor & Diagnostik Trading</span>
+					</a>
+					
+					<a href="#fitur-trading-journal" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-book text-sm w-4 text-center"></i>
+						<span>Jurnal Trading Harian</span>
+					</a>
+					
+					<a href="#watchlist-notes" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-list-check text-sm w-4 text-center"></i>
+						<span>Trading Watchlist & Notes</span>
+					</a>
+					
+					<a href="#ara-arb-simulator" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-scale-balanced text-sm w-4 text-center"></i>
+						<span>ARA / ARB Simulator</span>
+					</a>
+					
+					<a href="#fitur-plan-generator" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-clipboard-list text-sm w-4 text-center"></i>
+						<span>Trading Plan Generator</span>
+					</a>
+					
+					<a href="#sentimen-pasar-bei" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-face-angry text-sm w-4 text-center"></i>
+						<span>Sentimen Pasar BEI</span>
+					</a>
+					
+					<a href="#fitur-chart-pattern" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-book-open-reader text-sm w-4 text-center"></i>
+						<span>Edukasi Chart Pattern</span>
+					</a>
+					
+					<a href="#fitur-news-feed" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
+						<i class="fa-solid fa-satellite-dish text-sm w-4 text-center"></i>
+						<span>Live Market News Feed</span>
+					</a>
+				</div>
+				
+				<div class="text-[8px] text-slate-500 text-center font-mono mt-4 pt-2 border-t border-white/5 tracking-widest uppercase">
+					NAVIGATION DASHBOARD
+				</div>
+			</div>
+		</div>
+		
+		<script>
+		let isMenuToolsTerbuka = false;
+		
+		function toggleMenuTools() {
+			const overlay = document.getElementById("overlayMenuTools");
+			const kotakMenu = document.getElementById("kotakMenuTools");
+			const ikonUtama = document.getElementById("ikonUtamaTools");
+			
+			if (!overlay || !kotakMenu) return;
+
+			isMenuToolsTerbuka = !isMenuToolsTerbuka;
+
+			if (isMenuToolsTerbuka) {
+				// Munculkan overlay & zoom in kotak menu ke tengah layar
+				overlay.classList.remove("opacity-0", "pointer-events-none");
+				kotakMenu.classList.remove("scale-90");
+				kotakMenu.classList.add("scale-100");
+				if (ikonUtama) ikonUtama.className = "fa-solid fa-xmark text-lg";
+			} else {
+				// Sembunyikan kembali modal ke latar belakang
+				overlay.classList.add("opacity-0", "pointer-events-none");
+				kotakMenu.classList.remove("scale-100");
+				kotakMenu.classList.add("scale-90");
+				if (ikonUtama) ikonUtama.className = "fa-solid fa-layer-group text-lg";
+			}
+		}
+
+		// Fungsi Audio click & Haptic bawaan agar selaras dengan file lokalmu
+		function tang() { document.getElementById("01")?.play().catch(()=>{}); }
+		function ting() { document.getElementById("02")?.play().catch(()=>{}); }
+		function tong() { document.getElementById("05")?.play().catch(()=>{}); }
+		function getar(pola) { if (window.navigator.vibrate) window.navigator.vibrate(pola); }
+		</script>
 		
 		<!-- FITUR: AI CHAT ASSISTANT -->
 		<section id="fitur-ai-chat" class="max-w-5xl mx-auto px-4 my-8">
@@ -954,7 +1095,7 @@
 		</script>
 		
 		<!-- FITUR: KALKULATOR TARGET AVERAGE -->
-		<section id="fitur-target-average" class="py-16 bg-slate-950 border-t border-slate-900/60">
+		<section id="kalkulator-target-average" class="py-16 bg-slate-950 border-t border-slate-900/60">
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="text-center mb-12">
 					<span class="px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">Average Target Pro</span>
@@ -1379,7 +1520,7 @@
 		</script>
 		
 		<!-- FITUR: KALKULATOR POSITION SIZING -->
-		<section id="fitur-position-sizing" class="max-w-5xl mx-auto px-4 my-8">
+		<section id="kalkulator-position-sizing" class="max-w-5xl mx-auto px-4 my-8">
 			<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl">
 				<div class="flex items-center gap-3 mb-6">
 					<div class="p-2 bg-emerald-500/20 text-emerald-400 rounded-lg">
@@ -1488,7 +1629,7 @@
 		</script>
 		
 		<!-- FITUR: KALKULATOR RAPOR & DIAGNOSTIK TRADING -->
-		<section id="fitur-rapor-trading" class="max-w-5xl mx-auto px-4 my-8">
+		<section id="kalkulator-rapor-trading" class="max-w-5xl mx-auto px-4 my-8">
 			<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl">
 				<div class="flex items-center gap-3 mb-6">
 					<div class="p-2 bg-purple-500/20 text-purple-400 rounded-lg">
@@ -1689,7 +1830,7 @@
 		</script>
 		
 		<!-- FITUR: ARA / ARB SIMULATOR -->
-		<section class="p-6 border-t border-slate-900">
+		<section id="ara-arb-simulator" class="p-6 border-t border-slate-900">
 			<div class="flex items-center space-x-3 mb-6">
 				<div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/10">
 					<i class="fa-solid fa-chart-line text-lg"></i>
@@ -1850,7 +1991,7 @@
 			}
 		</script>
 		
-		<section class="py-16 bg-slate-950 border-t border-slate-900">
+		<section id="sentimen-pasar-bei" class="py-16 bg-slate-950 border-t border-slate-900">
 			<div class="w-full max-w-7xl mx-auto px-4 mb-6">
 				<div class="bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl p-5 shadow-xl shadow-emerald-950/5">
 					<div class="flex flex-col lg:flex-row items-center justify-between gap-6">
@@ -1942,6 +2083,7 @@
 				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="patternGridWrapper"></div>
 			</div>
 		</section>
+		
 		<section id="fitur-news-feed" class="max-w-5xl mx-auto px-4 my-8">
 			<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl h-[400px] flex flex-col">
 				<div class="flex items-center justify-between mb-4 shrink-0">
