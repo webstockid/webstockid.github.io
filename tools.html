@@ -6,7 +6,7 @@
 		<title>Stock's ID Tools - Premium Trading & Learning Community</title>
 		<meta name="keyword" content="stock id tools, stockid tools, stock id vip, stockid vip, tools saham, alat saham">
 		<meta name="HandheldFriendly" content="True">
-		<meta name="viewport" content="width=device-width,initial-scale=1,maximal-scale=1,shrink-to-fit=no">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no">
 		<meta name="author" content="Hardiansyah & Tailwind.css">
 		<meta property="og:title" content="Stock ID Tools #Andaimology">
 		<meta property="og:description" content="Banyak Alat Trading yang bisa kamu coba disini, gratis!">
@@ -392,6 +392,7 @@
 			</div>
 		</section>
 		
+		<!-- LOGIKA: KALKULATOR RIGHT ISSUE & DELUSI -->
 		<script>
 			function hitungRightIssue() {
 				const hargaCum = bersihkanAngka(document.getElementById('riHargaCum').value);
@@ -445,237 +446,6 @@
 				}
 			});
 		</script>
-		
-		<!-- FITUR: ARA / ARB SIMULATOR -->
-		<section class="p-6 border-t border-slate-900">
-			<div class="flex items-center space-x-3 mb-6">
-				<div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/10">
-					<i class="fa-solid fa-chart-line text-lg"></i>
-				</div>
-				<div>
-					<h2 class="text-base font-bold text-slate-100 tracking-wide">ARA / ARB Simulator</h2>
-					<p class="text-[11px] text-slate-400">Simulasi proyeksi keuntungan berantai dari saham IPO</p>
-				</div>
-			</div>
-			<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 items-end">
-				<div>
-					<label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Harga Listing / Awal (Rp)</label>
-					<div class="relative">
-						<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 text-xs">Rp</div>
-						<input type="text" id="ipoHargaAwal" class="w-full pl-9 pr-4 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition font-mono" placeholder="Contoh: 200" onkeyup="formatRupiahInput(this)">
-					</div>
-				</div>
-				<div>
-					<label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Jumlah Kepemilikan (Lot)</label>
-					<div class="relative">
-						<input type="number" id="ipoJumlahLot" class="w-full px-4 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition font-mono" placeholder="Contoh: 10" min="1">
-						<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-500 text-xs">Lot</div>
-					</div>
-				</div>
-				<div>
-					<button onclick="hitungProyeksiIpo()" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-900/20 active:scale-[0.98] transition cursor-pointer">
-						<i class="fa-solid fa-calculator mr-1"></i> Hitung Proyeksi
-					</button>
-				</div>
-			</div>
-			<div id="hasilProyeksiIpoContainer" class="hidden space-y-4">
-				<div class="p-3 bg-slate-900/40 rounded-xl border border-slate-800/60 text-center text-[11px] text-slate-400">
-					Estimasi nilai aset awal: <span id="txtAsetAwal" class="font-bold text-slate-200 font-mono">-</span>
-				</div>
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-					<div>
-						<h3 class="text-xs font-bold text-emerald-400 mb-2 flex items-center"><i class="fa-solid fa-angles-up mr-1.5 text-[10px]"></i> Proyeksi Berantai ARA (Naik)</h3>
-						<div id="daftarAraIpo" class="space-y-2 max-h-[480px] overflow-y-auto pr-1"></div>
-					</div>
-					<div>
-						<h3 class="text-xs font-bold text-rose-400 mb-2 flex items-center"><i class="fa-solid fa-angles-down mr-1.5 text-[10px]"></i> Proyeksi Berantai ARB (Turun)</h3>
-						<div id="daftarArbIpo" class="space-y-2 max-h-[480px] overflow-y-auto pr-1"></div>
-					</div>
-				</div>
-			</div>
-		</section>
-		
-		<script>
-			// LOGIKA FITUR: SIMULATOR ARA/ARB BERANTAI
-			function dapatkanPersentaseAutoRejection(harga) {
-				if (harga >= 50 && harga <= 200) {
-					return 0.35; // Pas 35%
-				} else if (harga > 200 && harga <= 5000) {
-					return 0.25; // Pas 25%
-				} else {
-					return 0.20; // Pas 20%
-				}
-			}
-			function bulatkanKeFraksiBEI(hargaTarget, hargaAwal) {
-				let fraksi = 1;
-				if (hargaAwal < 200) {
-					fraksi = 1;
-				} else if (hargaAwal >= 200 && hargaAwal < 500) {
-					fraksi = 2;
-				} else if (hargaAwal >= 500 && hargaAwal < 2000) {
-					fraksi = 5;
-				} else if (hargaAwal >= 2000 && hargaAwal < 5000) {
-					fraksi = 10;
-				} else if (hargaAwal >= 5000) {
-					fraksi = 25;
-				}
-				return Math.round(hargaTarget / fraksi) * fraksi;
-			}
-			function hitungProyeksiIpo() {
-				const inputHarga = document.getElementById('ipoHargaAwal');
-				const inputLot = document.getElementById('ipoJumlahLot');
-				const containerHasil = document.getElementById('hasilProyeksiIpoContainer');
-				const boxAra = document.getElementById('daftarAraIpo');
-				const boxArb = document.getElementById('daftarArbIpo');
-				if (!inputHarga || !inputLot) return;
-				let hargaAwal = parseInt(inputHarga.value.replace(/\./g, '')) || 0;
-				let jumlahLot = parseInt(inputLot.value) || 0;
-				if (hargaAwal < 50 || jumlahLot <= 0) {
-					alert('Silakan masukkan harga awal minimal Rp 50 dan jumlah lot minimal 1.');
-					return;
-				}
-				containerHasil.classList.remove('hidden');
-				let nilaiAsetAwal = hargaAwal * jumlahLot * 100;
-				document.getElementById('txtAsetAwal').innerText = 'Rp ' + nilaiAsetAwal.toLocaleString('id-ID');
-				boxAra.innerHTML = '';
-				boxArb.innerHTML = '';
-				// 1. GENERATE JALUR ARA
-				let hargaCurrentAra = hargaAwal;
-				for (let hari = 1; hari <= 18; hari++) {
-					let pPersen = dapatkanPersentaseAutoRejection(hargaCurrentAra);
-					// Hitung target mentah lalu bulatkan ke fraksi bursa terdekat
-					let hargaTargetMentah = hargaCurrentAra * (1 + pPersen);
-					let hargaTargetAra = bulatkanKeFraksiBEI(hargaTargetMentah, hargaCurrentAra);
-					// Poin didapat dari selisih harga bersih
-					let kenaikanPoin = hargaTargetAra - hargaCurrentAra;
-					let totalAsetAra = hargaTargetAra * jumlahLot * 100;
-					let profitNominal = totalAsetAra - nilaiAsetAwal;
-					let profitPersenKumulatif = ((hargaTargetAra - hargaAwal) / hargaAwal) * 100;
-					boxAra.innerHTML += `
-					<div class="p-3 bg-emerald-950/20 border border-emerald-900/40 rounded-xl flex flex-col space-y-1.5">
-						<div class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded w-fit">Hari ${hari}</div>
-						<!-- Baris 1: Kenaikan harga saham Rp (ARA) + kenaikan poin <-> persentase pas BEI -->
-						<div class="flex justify-between items-center text-xs">
-							<span class="font-bold text-base text-emerald-300">Rp ${hargaTargetAra.toLocaleString('id-ID')} (+${kenaikanPoin})</span>
-							<span class="font-bold text-base text-emerald-300">+ ${(pPersen * 100)}%</span>
-						</div>
-						<!-- Baris 2: Total modal (profit / gulung) <-> profit nominal -->
-						<div class="flex justify-between items-center text-base text-[10px]">
-							<span class="font-bold-mono text-base text-emerald-400">Rp ${totalAsetAra.toLocaleString('id-ID')}</span></span>
-							<span class="font-bold-mono text-base text-emerald-400">+Rp ${profitNominal.toLocaleString('id-ID')} (+${profitPersenKumulatif.toFixed(1)}%)</span>
-						</div>
-					</div>
-					`;
-					hargaCurrentAra = hargaTargetAra;
-				}
-				// 2. GENERATE JALUR ARB
-				let hargaCurrentArb = hargaAwal;
-				for (let hari = 1; hari <= 10; hari++) {
-					if (hargaCurrentArb <= 50) {
-						boxArb.innerHTML += `
-						<div class="p-3 bg-slate-900/20 border border-slate-800 rounded-xl flex flex-col justify-center items-center py-4">
-							<span class="text-[10px] font-bold text-slate-500">Hari ${hari} - Mentok Batas Bawah BEI (Rp 50)</span>
-						</div>
-						`;
-						continue;
-					}
-					let pPersen = dapatkanPersentaseAutoRejection(hargaCurrentArb);
-					let hargaTargetMentah = hargaCurrentArb * (1 - pPersen);
-					let hargaTargetArb = bulatkanKeFraksiBEI(hargaTargetMentah, hargaCurrentArb);
-					// Proteksi batas bawah Rp 50
-					if (hargaTargetArb < 50) hargaTargetArb = 50;
-					let penurunanPoin = hargaCurrentArb - hargaTargetArb;
-					let totalAsetArb = hargaTargetArb * jumlahLot * 100;
-					let lossNominal = totalAsetArb - nilaiAsetAwal;
-					let lossPersenKumulatif = ((hargaTargetArb - hargaAwal) / hargaAwal) * 100;
-					boxArb.innerHTML += `
-					<div class="p-3 bg-rose-950/20 border border-rose-900/40 rounded-xl flex flex-col space-y-1.5">
-						<div class="text-[9px] font-bold text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded w-fit">Hari ${hari}</div>
-						<!-- Baris 1: Penurunan harga saham Rp (ARB) - penurunan poin <-> persentase pas BEI -->
-						<div class="flex justify-between items-center text-xs">
-							<span class="font-bold text-base text-rose-300">Rp ${hargaTargetArb.toLocaleString('id-ID')} (-${penurunanPoin})</span>
-							<span class="font-bold text-base text-rose-300">- ${(pPersen * 100)}%</span>
-						</div>
-						<!-- Baris 2: Total modal (loss / gulung) <-> loss nominal -->
-						<div class="flex justify-between items-center text-base text-[10px]">
-							<span class="font-bold-mono text-base text-rose-400">Rp ${totalAsetArb.toLocaleString('id-ID')}</span>
-							<span class="font-bold-mono text-base text-rose-400">Rp ${lossNominal.toLocaleString('id-ID')} (${lossPersenKumulatif.toFixed(1)}%)</span>
-						</div>
-					</div>
-					`;
-					hargaCurrentArb = hargaTargetArb;
-				}
-			}
-		</script>
-		
-		<section class="py-16 bg-slate-950 border-t border-slate-900">
-			<div class="w-full max-w-7xl mx-auto px-4 mb-6">
-				<div class="bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl p-5 shadow-xl shadow-emerald-950/5">
-					<div class="flex flex-col lg:flex-row items-center justify-between gap-6">
-						<div class="flex items-center gap-3 w-full lg:w-auto shrink-0">
-							<div class="p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400">
-								<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-							</div>
-							<div>
-								<div class="flex items-center gap-2">
-									<h3 class="text-sm font-bold text-gray-100 tracking-wide uppercase">Sentimen Pasar BEI</h3>
-									<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-widest animate-pulse">LIVE</span>
-								</div>
-								<p class="text-[11px] text-gray-400">Analisis agregat volatilitas & arah 900+ saham Indonesia</p>
-							</div>
-						</div>
-						<div class="w-full max-w-xl flex-1 h-[220px] overflow-hidden bg-black/10 rounded-xl border border-white/5 relative">
-							<div class="tradingview-widget-container w-full h-full">
-								<div id="tradingview-realtime-sentiment" class="w-full h-full"></div>
-							</div>
-						</div>
-						<div class="w-full lg:w-auto flex justify-end shrink-0 border-t border-white/5 lg:border-t-0 pt-3 lg:pt-0">
-							<button onclick="segarkanSentimenRealTime()" class="w-full lg:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 active:scale-95 text-gray-300 hover:text-white rounded-xl border border-white/10 text-xs font-bold transition-all cursor-pointer" title="Sinkronisasi Data Bursa">
-								<svg id="iconPutarRealTime" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-								<span>Muat Ulang</span>
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<script>
-				function segarkanSentimenRealTime() {
-					const kontainer = document.getElementById('tradingview-realtime-sentiment');
-					const ikonAnimasi = document.getElementById('iconPutarRealTime');
-					if (!kontainer) return;
-					if (ikonAnimasi) ikonAnimasi.classList.add('animate-spin');
-					kontainer.innerHTML = "";
-					const innerContainer = document.createElement('div');
-					innerContainer.className = 'tradingview-widget-container__widget w-full h-full';
-					kontainer.appendChild(innerContainer);
-					const scriptSentimen = document.createElement('script');
-					scriptSentimen.type = 'text/javascript';
-					scriptSentimen.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
-					scriptSentimen.async = true;
-					scriptSentimen.text = JSON.stringify({
-						"interval": "1D",
-						"width": "100%",
-						"isTransparent": true,
-						"height": "100%",
-						"symbol": "IDX:COMPOSITE",
-						"showIntervalTabs": false,
-						"displayMode": "single",
-						"locale": "id",
-						"colorTheme": "dark"
-					});
-					innerContainer.appendChild(scriptSentimen);
-					setTimeout(() => {
-						if (ikonAnimasi) ikonAnimasi.classList.remove('animate-spin');
-					}, 1000);
-				}
-				if (document.readyState === "loading") {
-					document.addEventListener("DOMContentLoaded", segarkanSentimenRealTime);
-				} else {
-					segarkanSentimenRealTime();
-				}
-			</script>
-		</section>
 		
 		<!-- FITUR: ARAH & SENTIMEN PASAR GLOBAL -->
 		<section id="market-radar-section" class="py-16 bg-slate-950 border-t border-slate-900">
@@ -770,6 +540,7 @@
 			</div>
 		</section>
 		
+		<!-- LOGIKA: ARAH & SENTIMEN PASAR GLOBAL -->
 		<script>
 			// Konfigurasi Simbol TradingView Ticker Data 
 			const radarSymbolsData = {
@@ -782,7 +553,7 @@
 				}, {
 					"s": "IDX:INCO"
 				}, {
-					"s": "IDX:BRPT"
+					"s": "IDX:BREN"
 				}, {
 					"s": "IDX:TPIA"
 				}, {
@@ -800,7 +571,7 @@
 				}, {
 					"s": "IDX:ARCI"
 				}, {
-					"s": "IDX:EMAS"
+					"s": "IDX:INDY"
 				}, {
 					"s": "IDX:MDIA"
 				}],
@@ -1009,6 +780,7 @@
 			</div>
 		</section>
 		
+		<!-- LOGIKA: KALKULATOR PROYEKSI & TARGET PROFIT -->
 		<script>
 			function formatRupiahInput(input) {
 				let value = input.value.replace(/[^,\d]/g, '').toString();
@@ -1140,6 +912,7 @@
 			</div>
 		</section>
 		
+		<!-- LOGIKA: KALKULATOR AVERAGE UP & DOWN -->
 		<script>
 			function hitungAverageSaham() {
 				const p1 = parseFloat(document.getElementById('avg-price-1').value) || 0;
@@ -1253,6 +1026,7 @@
 			</div>
 		</section>
 		
+		<!-- LOGIKA: KALKULATOR TARGET AVERAGE -->
 		<script>
 			function eksekusiTargetAvg() {
 				const inputAvg = document.getElementById('targetAvgHargaAvg');
@@ -1378,6 +1152,7 @@
 				</div>
 			</div>
 			
+			<!-- LOGIKA: JURNAL TRADING HARIAN -->
 			<script>
 				let DB_JURNAL_TRADING = JSON.parse(localStorage.getItem('stockIdVipJurnal')) || [];
 				function muatDataJurnalKeUi() {
@@ -1509,6 +1284,7 @@
 			</div>
 		</section>
 		
+		<!-- LOGIKA: TRADING WATCHLIST & NOTE -->
 		<script>
 			let daftarNotes = JSON.parse(localStorage.getItem('stocks_id_notes')) || [];
 			function renderWatchlistCards() {
@@ -1666,6 +1442,7 @@
 			</div>
 		</section>
 		
+		<!-- LOGIKA: KALKULATOR POSITION SIZING -->
 		<script>
 			function formatRupiahInput(element) {
 				let value = element.value.replace(/[^0-9]/g, '');
@@ -1910,6 +1687,237 @@
 				if (document.getElementById('tpEmiten')) generateTradingPlanText();
 			});
 		</script>
+		
+		<!-- FITUR: ARA / ARB SIMULATOR -->
+		<section class="p-6 border-t border-slate-900">
+			<div class="flex items-center space-x-3 mb-6">
+				<div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/10">
+					<i class="fa-solid fa-chart-line text-lg"></i>
+				</div>
+				<div>
+					<h2 class="text-base font-bold text-slate-100 tracking-wide">ARA / ARB Simulator</h2>
+					<p class="text-[11px] text-slate-400">Simulasi proyeksi keuntungan berantai dari saham IPO</p>
+				</div>
+			</div>
+			<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 items-end">
+				<div>
+					<label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Harga Listing / Awal (Rp)</label>
+					<div class="relative">
+						<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 text-xs">Rp</div>
+						<input type="text" id="ipoHargaAwal" class="w-full pl-9 pr-4 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition font-mono" placeholder="Contoh: 200" onkeyup="formatRupiahInput(this)">
+					</div>
+				</div>
+				<div>
+					<label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Jumlah Kepemilikan (Lot)</label>
+					<div class="relative">
+						<input type="number" id="ipoJumlahLot" class="w-full px-4 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition font-mono" placeholder="Contoh: 10" min="1">
+						<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-500 text-xs">Lot</div>
+					</div>
+				</div>
+				<div>
+					<button onclick="hitungProyeksiIpo()" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-900/20 active:scale-[0.98] transition cursor-pointer">
+						<i class="fa-solid fa-calculator mr-1"></i> Hitung Proyeksi
+					</button>
+				</div>
+			</div>
+			<div id="hasilProyeksiIpoContainer" class="hidden space-y-4">
+				<div class="p-3 bg-slate-900/40 rounded-xl border border-slate-800/60 text-center text-[11px] text-slate-400">
+					Estimasi nilai aset awal: <span id="txtAsetAwal" class="font-bold text-slate-200 font-mono">-</span>
+				</div>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<div>
+						<h3 class="text-xs font-bold text-emerald-400 mb-2 flex items-center"><i class="fa-solid fa-angles-up mr-1.5 text-[10px]"></i> Proyeksi Berantai ARA (Naik)</h3>
+						<div id="daftarAraIpo" class="space-y-2 max-h-[480px] overflow-y-auto pr-1"></div>
+					</div>
+					<div>
+						<h3 class="text-xs font-bold text-rose-400 mb-2 flex items-center"><i class="fa-solid fa-angles-down mr-1.5 text-[10px]"></i> Proyeksi Berantai ARB (Turun)</h3>
+						<div id="daftarArbIpo" class="space-y-2 max-h-[480px] overflow-y-auto pr-1"></div>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<script>
+			// LOGIKA FITUR: SIMULATOR ARA/ARB BERANTAI
+			function dapatkanPersentaseAutoRejection(harga) {
+				if (harga >= 50 && harga <= 200) {
+					return 0.35; // Pas 35%
+				} else if (harga > 200 && harga <= 5000) {
+					return 0.25; // Pas 25%
+				} else {
+					return 0.20; // Pas 20%
+				}
+			}
+			function bulatkanKeFraksiBEI(hargaTarget, hargaAwal) {
+				let fraksi = 1;
+				if (hargaAwal < 200) {
+					fraksi = 1;
+				} else if (hargaAwal >= 200 && hargaAwal < 500) {
+					fraksi = 2;
+				} else if (hargaAwal >= 500 && hargaAwal < 2000) {
+					fraksi = 5;
+				} else if (hargaAwal >= 2000 && hargaAwal < 5000) {
+					fraksi = 10;
+				} else if (hargaAwal >= 5000) {
+					fraksi = 25;
+				}
+				return Math.round(hargaTarget / fraksi) * fraksi;
+			}
+			function hitungProyeksiIpo() {
+				const inputHarga = document.getElementById('ipoHargaAwal');
+				const inputLot = document.getElementById('ipoJumlahLot');
+				const containerHasil = document.getElementById('hasilProyeksiIpoContainer');
+				const boxAra = document.getElementById('daftarAraIpo');
+				const boxArb = document.getElementById('daftarArbIpo');
+				if (!inputHarga || !inputLot) return;
+				let hargaAwal = parseInt(inputHarga.value.replace(/\./g, '')) || 0;
+				let jumlahLot = parseInt(inputLot.value) || 0;
+				if (hargaAwal < 50 || jumlahLot <= 0) {
+					alert('Silakan masukkan harga awal minimal Rp 50 dan jumlah lot minimal 1.');
+					return;
+				}
+				containerHasil.classList.remove('hidden');
+				let nilaiAsetAwal = hargaAwal * jumlahLot * 100;
+				document.getElementById('txtAsetAwal').innerText = 'Rp ' + nilaiAsetAwal.toLocaleString('id-ID');
+				boxAra.innerHTML = '';
+				boxArb.innerHTML = '';
+				// 1. GENERATE JALUR ARA
+				let hargaCurrentAra = hargaAwal;
+				for (let hari = 1; hari <= 18; hari++) {
+					let pPersen = dapatkanPersentaseAutoRejection(hargaCurrentAra);
+					// Hitung target mentah lalu bulatkan ke fraksi bursa terdekat
+					let hargaTargetMentah = hargaCurrentAra * (1 + pPersen);
+					let hargaTargetAra = bulatkanKeFraksiBEI(hargaTargetMentah, hargaCurrentAra);
+					// Poin didapat dari selisih harga bersih
+					let kenaikanPoin = hargaTargetAra - hargaCurrentAra;
+					let totalAsetAra = hargaTargetAra * jumlahLot * 100;
+					let profitNominal = totalAsetAra - nilaiAsetAwal;
+					let profitPersenKumulatif = ((hargaTargetAra - hargaAwal) / hargaAwal) * 100;
+					boxAra.innerHTML += `
+					<div class="p-3 bg-emerald-950/20 border border-emerald-900/40 rounded-xl flex flex-col space-y-1.5">
+						<div class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded w-fit">Hari ${hari}</div>
+						<!-- Baris 1: Kenaikan harga saham Rp (ARA) + kenaikan poin <-> persentase pas BEI -->
+						<div class="flex justify-between items-center text-xs">
+							<span class="font-bold text-base text-emerald-300">Rp ${hargaTargetAra.toLocaleString('id-ID')} (+${kenaikanPoin})</span>
+							<span class="font-bold text-base text-emerald-300">+ ${(pPersen * 100)}%</span>
+						</div>
+						<!-- Baris 2: Total modal (profit / gulung) <-> profit nominal -->
+						<div class="flex justify-between items-center text-base text-[10px]">
+							<span class="font-bold-mono text-base text-emerald-400">Rp ${totalAsetAra.toLocaleString('id-ID')}</span></span>
+							<span class="font-bold-mono text-base text-emerald-400">+Rp ${profitNominal.toLocaleString('id-ID')} (+${profitPersenKumulatif.toFixed(1)}%)</span>
+						</div>
+					</div>
+					`;
+					hargaCurrentAra = hargaTargetAra;
+				}
+				// 2. GENERATE JALUR ARB
+				let hargaCurrentArb = hargaAwal;
+				for (let hari = 1; hari <= 10; hari++) {
+					if (hargaCurrentArb <= 50) {
+						boxArb.innerHTML += `
+						<div class="p-3 bg-slate-900/20 border border-slate-800 rounded-xl flex flex-col justify-center items-center py-4">
+							<span class="text-[10px] font-bold text-slate-500">Hari ${hari} - Mentok Batas Bawah BEI (Rp 50)</span>
+						</div>
+						`;
+						continue;
+					}
+					let pPersen = dapatkanPersentaseAutoRejection(hargaCurrentArb);
+					let hargaTargetMentah = hargaCurrentArb * (1 - pPersen);
+					let hargaTargetArb = bulatkanKeFraksiBEI(hargaTargetMentah, hargaCurrentArb);
+					// Proteksi batas bawah Rp 50
+					if (hargaTargetArb < 50) hargaTargetArb = 50;
+					let penurunanPoin = hargaCurrentArb - hargaTargetArb;
+					let totalAsetArb = hargaTargetArb * jumlahLot * 100;
+					let lossNominal = totalAsetArb - nilaiAsetAwal;
+					let lossPersenKumulatif = ((hargaTargetArb - hargaAwal) / hargaAwal) * 100;
+					boxArb.innerHTML += `
+					<div class="p-3 bg-rose-950/20 border border-rose-900/40 rounded-xl flex flex-col space-y-1.5">
+						<div class="text-[9px] font-bold text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded w-fit">Hari ${hari}</div>
+						<!-- Baris 1: Penurunan harga saham Rp (ARB) - penurunan poin <-> persentase pas BEI -->
+						<div class="flex justify-between items-center text-xs">
+							<span class="font-bold text-base text-rose-300">Rp ${hargaTargetArb.toLocaleString('id-ID')} (-${penurunanPoin})</span>
+							<span class="font-bold text-base text-rose-300">- ${(pPersen * 100)}%</span>
+						</div>
+						<!-- Baris 2: Total modal (loss / gulung) <-> loss nominal -->
+						<div class="flex justify-between items-center text-base text-[10px]">
+							<span class="font-bold-mono text-base text-rose-400">Rp ${totalAsetArb.toLocaleString('id-ID')}</span>
+							<span class="font-bold-mono text-base text-rose-400">Rp ${lossNominal.toLocaleString('id-ID')} (${lossPersenKumulatif.toFixed(1)}%)</span>
+						</div>
+					</div>
+					`;
+					hargaCurrentArb = hargaTargetArb;
+				}
+			}
+		</script>
+		
+		<section class="py-16 bg-slate-950 border-t border-slate-900">
+			<div class="w-full max-w-7xl mx-auto px-4 mb-6">
+				<div class="bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl p-5 shadow-xl shadow-emerald-950/5">
+					<div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+						<div class="flex items-center gap-3 w-full lg:w-auto shrink-0">
+							<div class="p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400">
+								<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+							</div>
+							<div>
+								<div class="flex items-center gap-2">
+									<h3 class="text-sm font-bold text-gray-100 tracking-wide uppercase">Sentimen Pasar BEI</h3>
+									<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-widest animate-pulse">LIVE</span>
+								</div>
+								<p class="text-[11px] text-gray-400">Analisis agregat volatilitas & arah 900+ saham Indonesia</p>
+							</div>
+						</div>
+						<div class="w-full max-w-xl flex-1 h-[220px] overflow-hidden bg-black/10 rounded-xl border border-white/5 relative">
+							<div class="tradingview-widget-container w-full h-full">
+								<div id="tradingview-realtime-sentiment" class="w-full h-full"></div>
+							</div>
+						</div>
+						<div class="w-full lg:w-auto flex justify-end shrink-0 border-t border-white/5 lg:border-t-0 pt-3 lg:pt-0">
+							<button onclick="segarkanSentimenRealTime()" class="w-full lg:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 active:scale-95 text-gray-300 hover:text-white rounded-xl border border-white/10 text-xs font-bold transition-all cursor-pointer" title="Sinkronisasi Data Bursa">
+								<svg id="iconPutarRealTime" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+								<span>Muat Ulang</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<script>
+				function segarkanSentimenRealTime() {
+					const kontainer = document.getElementById('tradingview-realtime-sentiment');
+					const ikonAnimasi = document.getElementById('iconPutarRealTime');
+					if (!kontainer) return;
+					if (ikonAnimasi) ikonAnimasi.classList.add('animate-spin');
+					kontainer.innerHTML = "";
+					const innerContainer = document.createElement('div');
+					innerContainer.className = 'tradingview-widget-container__widget w-full h-full';
+					kontainer.appendChild(innerContainer);
+					const scriptSentimen = document.createElement('script');
+					scriptSentimen.type = 'text/javascript';
+					scriptSentimen.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
+					scriptSentimen.async = true;
+					scriptSentimen.text = JSON.stringify({
+						"interval": "1D",
+						"width": "100%",
+						"isTransparent": true,
+						"height": "100%",
+						"symbol": "IDX:COMPOSITE",
+						"showIntervalTabs": false,
+						"displayMode": "single",
+						"locale": "id",
+						"colorTheme": "dark"
+					});
+					innerContainer.appendChild(scriptSentimen);
+					setTimeout(() => {
+						if (ikonAnimasi) ikonAnimasi.classList.remove('animate-spin');
+					}, 1000);
+				}
+				if (document.readyState === "loading") {
+					document.addEventListener("DOMContentLoaded", segarkanSentimenRealTime);
+				} else {
+					segarkanSentimenRealTime();
+				}
+			</script>
+		</section>
 		
 		<section id="fitur-chart-pattern" class="max-w-5xl mx-auto px-4 my-8">
 			<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl">
