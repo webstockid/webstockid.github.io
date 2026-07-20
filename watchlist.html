@@ -348,27 +348,11 @@
 				window.open(linkWaFinal, '_blank');
 			}
 			
-			
 			function kendaliAksiAccordion(id) {
 				const p = document.getElementById(id);
 				if (p) p.classList.toggle('hidden');
 			}
 			
-			/* ENGINE 5: LIGHTWEIGHT AUDIO PLAYER DUMMY STUB */
-			const DAFTAR_PLAYLIST_RELAX = [{ judul: "Utopia", src: "stockid_suara/Utopia - Mencintaimu Sampai Mati.mp3" }];
-			function inisialisasiPlayerRelax() {
-				const audio = document.getElementById("audioRelaxEngine");
-				if (!audio) return;
-				audio.src = DAFTAR_PLAYLIST_RELAX[0].src;
-				audio.load();
-				document.getElementById("marqueeJudulLagu").innerText = "READY TO PLAY TRACKS";
-			}
-			function togglePlayPause() {
-				const audio = document.getElementById("audioRelaxEngine");
-				const ikon = document.getElementById("ikonPlayPause");
-				if (audio.paused) { audio.play().then(() => { ikon.className = "fa-solid fa-pause text-xs"; }).catch(()=>{}); }
-				else { audio.pause(); ikon.className = "fa-solid fa-play text-xs ml-0.5"; }
-			}
 			function putarLaguBerikutnya() {} function putarLaguSebelumnya() {}
 			function getar(pola) { if (window.navigator.vibrate) window.navigator.vibrate(pola); }
 			
@@ -385,7 +369,7 @@
 						const dateHariIni = new Date();
 						dateHariIni.setHours(0,0,0,0);
 						dateTarget.setHours(0,0,0,0);
-			
+						
 						if (dateHariIni.getTime() > dateTarget.getTime()) {
 							keluarAksesVip();
 							return;
