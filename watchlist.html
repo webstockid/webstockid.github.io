@@ -172,51 +172,6 @@
 			</div>
 		</div>
 		<!-- END: REAL-TIME STOCK SCREENER VIP COMPONENT -->
-		<!-- Watchlist Grid Archive Display -->
-		<div class="w-full max-w-7xl mx-auto px-4 py-6 text-gray-100">
-			<div class="bg-gradient-to-r from-slate-900/60 to-slate-950/40 backdrop-blur-md border border-white/10 rounded-2xl p-5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl shadow-emerald-950/5">
-				<div class="flex items-center gap-3.5">
-					<div class="p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400">
-						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-							<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-						</svg>
-					</div>
-					<div>
-						<h2 class="text-base font-black tracking-wider uppercase text-gray-100 flex items-center gap-2">Stock ID Watchlist Harian</h2>
-						<p class="text-[11px] text-gray-400">Arsip terstruktur rencana trading harian premium member</p>
-					</div>
-				</div>
-				<div class="flex items-center gap-3 w-full sm:w-auto">
-					<label for="pilihPeriodeBulan" class="text-xs font-bold text-gray-400 uppercase tracking-widest shrink-0">Periode:</label>
-					<select id="pilihPeriodeBulan" onchange="muatUlangWatchlist()" class="w-full sm:w-52 bg-slate-950/90 border border-white/10 rounded-xl px-3 py-2.5 text-xs font-bold text-emerald-400 focus:outline-none focus:border-emerald-500 transition-all cursor-pointer shadow-inner"></select>
-				</div>
-			</div>
-			<div id="rakWatchlistUtama" class="space-y-6"></div>
-		</div>
-		<!-- START: FLOATING MINI AUDIO PLAYER RELAX LIGHTWEIGHT -->
-		<div class="fixed bottom-8 left-0 right-0 z-50 px-4 flex justify-center pointer-events-none transform-gpu">
-			<div class="w-full max-w-xs bg-slate-900/95 backdrop-blur-md border border-white/10 rounded-2xl p-3 shadow-xl pointer-events-auto flex flex-col items-center space-y-2">
-				<div class="flex items-center justify-center space-x-4 text-slate-300">
-					<button onclick="putarLaguSebelumnya(); getar(30)" class="hover:text-emerald-400 active:scale-90 transition-all cursor-pointer"><i class="fa-solid fa-backward-step text-sm"></i></button>
-					<button onclick="togglePlayPause(); getar(40)" id="tombolPlayPause" class="w-8 h-8 flex items-center justify-center bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-full shadow-md active:scale-95 transition-all cursor-pointer"><i class="fa-solid fa-play text-xs ml-0.5" id="ikonPlayPause"></i></button>
-					<button onclick="putarLaguBerikutnya(); getar(30)" class="hover:text-emerald-400 active:scale-90 transition-all cursor-pointer"><i class="fa-solid fa-forward-step text-sm"></i></button>
-					<button id="tombolLoop" class="hover:text-emerald-400 text-slate-500 transition-all cursor-pointer relative"><i class="fa-solid fa-repeat text-xs"></i></button>
-				</div>
-				<div class="w-full flex items-center space-x-2 text-[9px] font-mono text-slate-400 px-1">
-					<span id="waktuSekarang">00:00</span>
-					<input type="range" id="sliderDurasi" min="0" max="100" value="0" class="flex-1 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none transform-gpu">
-					<span id="totalDurasi">00:00</span>
-				</div>
-				<div class="w-full bg-slate-950/80 border border-white/5 rounded-lg py-1 px-2 overflow-hidden">
-					<marquee id="marqueeJudulLagu" behavior="scroll" direction="left" scrollamount="3" class="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider block whitespace-nowrap">Memuat Pemutar Musik...</marquee>
-				</div>
-			</div>
-		</div>
-		<audio id="audioRelaxEngine" preload="auto"></audio>
-		<!-- END: FLOATING MINI AUDIO PLAYER RELAX LIGHTWEIGHT -->
-		<!-- ==========================================================================
-			CORE JAVASCRIPT LOGIC ENGINE (Ditempatkan di bawah agar DOM Aman)
-			========================================================================== */ -->
 		<script>
 			/* DATABASE EXPIRATION TOKEN VIP MENGGUNAKAN FORMAT KALENDER HARI BERSIH (YYYY-MM-DD) */
 			const DATABASE_TOKEN_VIP = {
@@ -229,40 +184,12 @@
 				"STOCKIDVIP": { tanggalExpired: "LIFETIME" }
 			};
 			
-			/* ARSIP DATA WATCHLIST PREMIUM MEMBER */
-			const DATABASE_WATCHLIST = [
-				{
-					tanggalISO: "2026-07-16",
-					kategoriBulan: "2026-07",
-					daftarSaham: [
-						{ nama: "MMIX", status: "HIT", support: "", entrySafe: "775 - 745", takeProfit: "840 - 880", stoploss: "705", note: "Konsolidasi > Breakout" },
-						{ nama: "TOSK", status: "HIT", support: "", entrySafe: "60 - 62", takeProfit: "67 - 70", stoploss: "58", note: "Konsolidasi > Breakout" },
-						{ nama: "BAJA", status: "BUY", support: "", entrySafe: "166 - 170", takeProfit: "188 - 198", stoploss: "156", note: "Konsolidasi > Breakout" }
-					]
-				},
-				{
-					tanggalISO: "2026-07-14",
-					kategoriBulan: "2026-07",
-					daftarSaham: [
-						{ nama: "DSSA", status: "BUY", support: "725", entrySafe: "HAKA or 800 - 815", takeProfit: "840 - 875", stoploss: "775", note: "" },
-						{ nama: "ESSA", status: "HIT", support: "", entrySafe: "570 - 580", takeProfit: "590 - 600", stoploss: "550", note: "Hajar agak gedean, karna naiknya sedikit, ambil keuntungan dari modal gede." },
-						{ nama: "DATA", status: "HIT", support: "", entrySafe: "2,300 - 2,350", takeProfit: "2,390 - 2,420", stoploss: "2,330", note: "" },
-						{ nama: "BRPT", status: "BUY", support: "", entrySafe: "1,660 - 1,690", takeProfit: "1,800 - 1,880 or higger. ", stoploss: "1,620", note: "" }
-					]
-				}
-			];
-			
 			const KAMUS_BULAN = {
 				"01": "Januari", "02": "Februari", "03": "Maret", "04": "April", "05": "Mei", "06": "Juni",
 				"07": "Juli", "08": "Agustus", "09": "September", "10": "Oktober", "11": "November", "12": "Desember"
 			};
 			
-			/* ENGINE 1: DRIVER WIDGET REAL-TIME SCREENER STOCK (TRADINGVIEW OPEN ENGINE) */
-			/* ==========================================================================
-			   LOGIKA ENGINE DRIVER REAL-TIME STOCK SCREENER
-			   ========================================================================== */
-			
-			/**
+			/*
 			 * Merender ulang constructor widget screener dengan filter teknikal dan rasio BEI
 			 */
 			function jalankanUlangScreener() {
@@ -276,13 +203,13 @@
 				
 				// Bersihkan sisa render widget lama secara total
 				targetScreener.innerHTML = "";
-			
+				
 				// Membuat elemen penampung skrip embedding TradingView resmi
 				const skripScreener = document.createElement('script');
 				skripScreener.type = 'text/javascript';
 				skripScreener.src = 'https://s3.tradingview.com/external-embedding/embed-widget-screener.js';
 				skripScreener.async = true;
-			
+				
 				// Rangkaian parameter konfigurasi logika filter basic ratio & ratio vs ratio (Live Stream)
 				skripScreener.text = JSON.stringify({
 					"width": "100%",
@@ -295,10 +222,10 @@
 					"locale": "id",
 					"isTransparent": true
 				});
-			
+				
 				// Tempel elemen skrip ke dalam DOM untuk memicu visualisasi scanner data
 				targetScreener.appendChild(skripScreener);
-			
+				
 				// Hentikan putaran animasi setelah 1 detik proses injeksi skrip
 				setTimeout(() => {
 					if (ikonTombol) ikonTombol.classList.remove('animate-spin');
@@ -312,11 +239,11 @@
 				jalankanUlangScreener();
 			}
 			
-			/* ENGINE 2: SECURITY GATEWAY VERIFIKASI MASA AKTIF KALENDER */
+			/* SECURITY GATEWAY VERIFIKASI MASA AKTIF KALENDER */
 			function periksaTokenAksesVip() {
 				const inputUser = document.getElementById('isiTokenUser').value.trim();
 				const notifEror = document.getElementById('notifTokenEror');
-			
+				
 				if (DATABASE_TOKEN_VIP.hasOwnProperty(inputUser)) {
 					const targetToken = DATABASE_TOKEN_VIP[inputUser];
 					
@@ -326,14 +253,14 @@
 						
 						dateHariIni.setHours(0,0,0,0);
 						dateTarget.setHours(0,0,0,0);
-			
+						
 						if (dateHariIni.getTime() > dateTarget.getTime()) {
 							notifEror.innerText = "⚠️ Token Tersebut Sudah Kedaluwarsa!";
 							notifEror.classList.remove('hidden');
 							return;
 						}
 					}
-			
+					
 					notifEror.classList.add('hidden');
 					localStorage.setItem('stockIdVipTokenActive', inputUser);
 					localStorage.setItem('stockIdVipExpiration', targetToken.tanggalExpired);
