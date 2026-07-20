@@ -17,14 +17,14 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Comfortaa&display=swap" rel="stylesheet">
 		<style>
 			body {
-			font-family: Nunito, sans-serif;
+			font-family: Comfortaa, sans-serif;
 			background-color: #0b0f19
 			}
 			.heading-font {
-			font-family: Nunito, sans-serif
+			font-family: Comfortaa, sans-serif
 			}
 			.glassmorphism {
 			background: rgba(17, 24, 39, .7);
@@ -311,7 +311,7 @@
 				if (sisaHariBersih === 0) {
 					teksInfo.innerHTML = "Sisa Masa Aktif: <span class='text-orange-400 font-black'>HARI INI HARI TERAKHIR</span> Akses VIP Anda";
 				} else {
-					teksInfo.innerHTML = `Sisa Masa Aktif: <span class='text-emerald-400 font-mono font-black'>${sisaHariBersih} Hari</span> Bersih Lagi`;
+					teksInfo.innerHTML = `Sisa Masa Aktif: <span class='text-emerald-400 font-mono font-black'>${sisaHariBersih}Hari</span> Lagi`;
 				}
 			}
 			
@@ -362,12 +362,14 @@
 				audio.load();
 				document.getElementById("marqueeJudulLagu").innerText = "READY TO PLAY TRACKS";
 			}
+			
 			function togglePlayPause() {
 				const audio = document.getElementById("audioRelaxEngine");
 				const ikon = document.getElementById("ikonPlayPause");
 				if (audio.paused) { audio.play().then(() => { ikon.className = "fa-solid fa-pause text-xs"; }).catch(()=>{}); }
 				else { audio.pause(); ikon.className = "fa-solid fa-play text-xs ml-0.5"; }
 			}
+			
 			function putarLaguBerikutnya() {} function putarLaguSebelumnya() {}
 			function getar(pola) { if (window.navigator.vibrate) window.navigator.vibrate(pola); }
 			
@@ -384,7 +386,7 @@
 						const dateHariIni = new Date();
 						dateHariIni.setHours(0,0,0,0);
 						dateTarget.setHours(0,0,0,0);
-			
+						
 						if (dateHariIni.getTime() > dateTarget.getTime()) {
 							keluarAksesVip();
 							return;
