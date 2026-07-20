@@ -353,6 +353,8 @@
 				if (p) p.classList.toggle('hidden');
 			}
 			
+			/* LIGHTWEIGHT AUDIO PLAYER DUMMY STUB */
+			
 			function putarLaguBerikutnya() {} function putarLaguSebelumnya() {}
 			function getar(pola) { if (window.navigator.vibrate) window.navigator.vibrate(pola); }
 			
@@ -369,7 +371,7 @@
 						const dateHariIni = new Date();
 						dateHariIni.setHours(0,0,0,0);
 						dateTarget.setHours(0,0,0,0);
-						
+			
 						if (dateHariIni.getTime() > dateTarget.getTime()) {
 							keluarAksesVip();
 							return;
