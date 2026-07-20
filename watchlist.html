@@ -115,9 +115,10 @@
 				</div>
 			</div>
 		</nav>
+		
 		<!-- START: PANEL MELAYANG INFORMASI MASA AKTIF TOKEN ACCESS VIP -->
 		<div id="badgeMasaAktifVip" class="hidden sticky top-24 z-30 w-full px-4 mt-2 transform-gpu">
-			<div class="max-w-7xl mx-auto bg-slate-900/90 backdrop-blur-md border border-emerald-500/20 rounded-2xl p-3 flex items-center justify-between gap-3 shadow-xl shadow-emerald-950/20 text-xs">
+			<div class="max-w-7xl mx-auto bg-slate-900/90 backdrop-blur-md border border-emerald-500/20 rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xl shadow-emerald-950/20 text-xs">
 				<div class="flex items-center gap-2.5">
 					<div class="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400">
 						<i class="fa-solid fa-clock-history text-sm"></i>
@@ -127,12 +128,20 @@
 						<p id="teksHitungMundurVip" class="text-[10px] text-gray-400 mt-0.5 font-medium">Menghitung sisa masa aktif...</p>
 					</div>
 				</div>
+				
+				<!-- ELEMEN GIMMICK LIVE USER ONLINE -->
+				<div id="fiturGimmickOnline" class="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/5 border border-emerald-500/10 rounded-xl text-emerald-400 font-medium sm:ml-auto">
+					<i class="fa-solid fa-users text-[11px] animate-pulse"></i>
+					<span class="text-[10px] tracking-wide"><span id="angkaUserOnline" class="font-mono font-black text-white">--</span> orang sedang memantau</span>
+				</div>
+				
 				<button onclick="keluarAksesVip()" class="px-3 py-1.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl font-bold text-[10px] uppercase hover:bg-rose-500/20 transition-all cursor-pointer">
 				Logout
 				</button>
 			</div>
 		</div>
 		<!-- END: PANEL MELAYANG INFORMASI MASA AKTIF TOKEN ACCESS VIP -->
+		
 		<!-- START: REAL-TIME STOCK SCREENER VIP COMPONENT -->
 		<div class="w-full max-w-7xl mx-auto px-4 py-6 text-gray-100">
 		<!-- Header & Status Panel -->
@@ -148,7 +157,7 @@
 				</div>
 				<div>
 					<div class="flex items-center gap-2">
-						<h2 class="text-base font-black tracking-wider uppercase text-gray-100">Stock ID Real-Time Screener</h2>
+						<h2 class="text-base font-black tracking-wider uppercase text-gray-100">Stock ID Screener</h2>
 						<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-widest animate-pulse">LIVE FEED</span>
 					</div>
 					<p class="text-[11px] text-gray-400">Penyaringan otomatis momentum & basic ratio pasar saham Indonesia</p>
@@ -189,6 +198,24 @@
 				"07": "Juli", "08": "Agustus", "09": "September", "10": "Oktober", "11": "November", "12": "Desember"
 			};
 			
+			/* GIMMICK ENGINE: SIMULASI PENGGUNA ONLINE DINAMIS PER 10 DETIK */
+			function perbaruiAngkaUserOnline() {
+				const elemenAngka = document.getElementById('angkaUserOnline');
+				if (!elemenAngka) return;
+				
+				// Menentukan range angka acak (misalnya antara 8 sampai 25 orang)
+				const batasMinimal = 8;
+				const batasMaksimal = 25;
+				
+				const angkaAcak = Math.floor(Math.random() * (batasMaksimal - batasMinimal + 1)) + batasMinimal;
+				elemenAngka.innerText = angkaAcak;
+			}
+			
+			function inisialisasiGimmickOnline() {
+				perbaruiAngkaUserOnline();
+				setInterval(perbaruiAngkaUserOnline, 10000);
+			}
+			
 			/*
 			 * Merender ulang constructor widget screener dengan filter teknikal dan rasio BEI
 			 */
@@ -215,7 +242,7 @@
 					"width": "100%",
 					"height": "100%",
 					"defaultColumn": "overview",
-					"defaultScreen": "most_capitalized",
+					"defaultScreen": "most_volatile",
 					"market": "indonesia",
 					"showToolbar": true,
 					"colorTheme": "dark",
@@ -277,9 +304,13 @@
 				document.getElementById('badgeMasaAktifVip').classList.remove('hidden');
 				
 				hitungSisaWaktuAkses();
-				inisialisasiPilihanPeriode();
-				muatUlangWatchlist();
+				// Panggil fungsi inisialisasi menu bawaan jika ada (ditambahkan stub pengaman agar tidak error)
+				if (typeof inisialisasiPilihanPeriode === "function") inisialisasiPilihanPeriode();
+				if (typeof muatUlangWatchlist === "function") muatUlangWatchlist();
 				jalankanUlangScreener();
+				
+				// Memicu mesin gimmick live user online berjalan
+				inisialisasiGimmickOnline();
 			}
 			
 			function hitungSisaWaktuAkses() {
@@ -366,6 +397,7 @@
 			function togglePlayPause() {
 				const audio = document.getElementById("audioRelaxEngine");
 				const ikon = document.getElementById("ikonPlayPause");
+				if (!audio || !ikon) return;
 				if (audio.paused) { audio.play().then(() => { ikon.className = "fa-solid fa-pause text-xs"; }).catch(()=>{}); }
 				else { audio.pause(); ikon.className = "fa-solid fa-play text-xs ml-0.5"; }
 			}
