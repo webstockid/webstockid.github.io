@@ -20,171 +20,86 @@
 		<link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 		<style>
 			body {
-			font-family: Nunito, sans-serif;
-			background-color: #0b0f19
+				font-family: Nunito, sans-serif;
+				background-color: #0b0f19
 			}
 			.heading-font {
-			font-family: Nunito, sans-serif
+				font-family: Nunito, sans-serif
 			}
 			.glassmorphism {
-			background: rgba(17, 24, 39, .7);
-			backdrop-filter: blur(12px);
-			-webkit-backdrop-filter: blur(12px);
-			border: 1px solid rgba(255, 255, 255, .06)
-			}
-			.glow-green {
-			box-shadow: 0 0 20px rgba(16, 185, 129, .2)
-			}
-			.glow-premium {
-			box-shadow: 0 0 30px rgba(245, 158, 11, .25)
+				background: rgba(17, 24, 39, .7);
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+				border: 1px solid rgba(255, 255, 255, .06)
 			}
 		</style>
 	</head>
+
 	<!-- START: STOCK ID SIMPLE HARDCODED VIP GATEWAY -->
-	<div id="gerbangKunciVip" class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0b0f19] text-gray-100">
-		<div class="w-full max-w-md bg-gradient-to-br from-slate-900/60 to-slate-950/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-2xl text-center">
-			<!-- Ikon Gembok VIP -->
-			<div class="w-14 h-14 mx-auto bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20 flex items-center justify-center mb-4">
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-					<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-					<path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-				</svg>
+	<div id="gerbangKunciVip" class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0b0f19] text-gray-100 overflow-y-auto">
+		<div class="w-full max-w-lg bg-gradient-to-br from-slate-900/80 to-slate-950/60 backdrop-blur-md border border-white/10 rounded-3xl p-6 shadow-2xl space-y-6 my-auto">
+			
+			<!-- BAGIAN A: FORM AKSES LOGIN TOKEN -->
+			<div class="text-center border-b border-white/5 pb-5">
+				<div class="w-12 h-12 mx-auto bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/20 flex items-center justify-center mb-3">
+					<i class="fa-solid fa-lock text-base"></i>
+				</div>
+				<h3 class="text-sm font-black tracking-wider uppercase text-gray-100">Stock ID VIP Gateway</h3>
+				<p class="text-[10px] text-gray-400 mt-0.5 mb-4">Silakan masukkan token akses VIP aktif Anda.</p>
+				
+				<div class="space-y-2.5 max-w-sm mx-auto">
+					<input type="password" id="isiTokenUser" placeholder="Ketik token di sini..." class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-center font-mono focus:outline-none focus:border-emerald-500 transition-all text-emerald-400">
+					<button onclick="periksaTokenAksesVip()" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md cursor-pointer">
+						Buka Dashboard VIP
+					</button>
+				</div>
+				<div id="notifTokenEror" class="hidden mt-2.5 text-[9px] font-bold text-rose-400 uppercase tracking-wider">⚠️ Token Salah atau Kedaluwarsa!</div>
 			</div>
-			<h3 class="text-base font-black tracking-wider uppercase text-gray-100">Stock ID VIP Gateway</h3>
-			<p class="text-[11px] text-gray-400 mt-1 mb-5">Konten Eksklusif. Silakan masukkan token akses VIP Anda.</p>
-			<!-- Form Input Token -->
-			<div class="space-y-3">
-				<input type="password" id="isiTokenUser" placeholder="Ketik token di sini..." class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-3 text-sm text-center font-mono focus:outline-none focus:border-emerald-500 transition-all text-emerald-400">
-				<button onclick="periksaTokenAksesVip()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-emerald-500/15 cursor-pointer">
-				Buka Screener VIP
-				</button>
+
+			<!-- BAGIAN B: FORM PEMBELIAN OTOMATIS VIA WHATSAPP -->
+			<div class="space-y-4">
+				<div class="text-center">
+					<h4 class="text-xs font-black tracking-wide text-emerald-400 uppercase">Alat Bantu Screening Saham Secara Real Time</h4>
+					<p class="text-[10px] text-gray-400 mt-0.5">Pantau Saham Incaranmu Secara Akurat Untuk Mematangkan Posisimu</p>
+				</div>
+
+				<!-- Dropdown Paket Layanan -->
+				<div class="space-y-1.5 text-xs font-bold max-w-sm mx-auto">
+					<label class="text-[10px] uppercase text-gray-500 tracking-wider font-black">Pilih Paket Durasi:</label>
+					<select id="pilihPaketScreener" class="w-full bg-slate-950/90 border border-white/10 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none cursor-pointer">
+						<option value="5|5.000">Beli 5 hari > Harga 5,000</option>
+						<option value="10|10.000">Beli 10 hari > Harga 10,000</option>
+						<option value="20|15.000">Beli 20 hari > Harga 15,000</option>
+						<option value="30|25.000">Beli 30 hari > Harga 25,000</option>
+						<option value="50|45.000">Beli 50 hari > Harga 45,000</option>
+					</select>
+				</div>
+
+				<!-- Kotak Info Rekening Digital & Copy Text -->
+				<div class="bg-black/30 border border-white/5 p-3 rounded-2xl text-[10px] font-medium leading-relaxed max-w-sm mx-auto">
+					<p class="text-gray-400 text-center">
+						Silahkan bayar via Dana atau Gopay ke nomor berikut, lalu kirim bukti Transfer ke Tombol dibawah ini:
+					</p>
+					<div class="flex items-center justify-between bg-slate-950/60 border border-white/5 px-3 py-2 rounded-xl mt-2 font-mono font-bold">
+						<span class="text-amber-400" id="numRekeningStockId">089529305947</span>
+						<button onclick="salinNomorRekening()" class="text-emerald-400 hover:text-emerald-300 text-[9px] uppercase tracking-wider flex items-center gap-1 active:scale-90 transition-all cursor-pointer">
+							<i class="fa-solid fa-copy"></i> <span id="btnCopyText">Salin</span>
+						</button>
+					</div>
+				</div>
+
+				<!-- Tombol Hubungi Admin -->
+				<div class="max-w-sm mx-auto">
+					<button onclick="kirimBuktiKeWhatsappAdmin()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-500/10">
+						<i class="fa-brands fa-whatsapp text-sm"></i>
+						<span>Hubungi Admin</span>
+					</button>
+				</div>
 			</div>
-			<div id="notifTokenEror" class="hidden mt-3 text-[10px] font-bold text-rose-400 uppercase tracking-wider">⚠️ Token Salah, akses ditolak!</div>
+
 		</div>
 	</div>
-	<script>
-		/* ==========================================================================
-		   DATABASE TOKEN PREMIUM DENGAN PARAMETER MASA AKTIF DINAMIS
-		   ========================================================================== */
-		const DATABASE_TOKEN_VIP = {
-			"123": { durasiHari: 7 },         // Token pesanan Mas Agung (7 Hari)
-			"VIP5": { durasiHari: 5 },        // Contoh token 5 hari
-			"VIP10": { durasiHari: 10 },      // Contoh token 10 hari
-			"VIP20": { durasiHari: 20 },      // Contoh token 20 hari
-			"VIP30": { durasiHari: 30 },      // Contoh token 30 hari
-			"VIP50": { durasiHari: 50 },      // Contoh token 50 hari
-			"STOCKIDVIP": { durasiHari: null } // Token Tanpa Masa Aktif (Lifetime / Selamanya)
-		};
-		
-		/* ==========================================================================
-		   LOGIKA VERIFIKASI SEBELUM HALAMAN DIMUAT
-		   ========================================================================== */
-		function periksaTokenAksesVip() {
-			const inputUser = document.getElementById('isiTokenUser').value.trim();
-			const notifEror = document.getElementById('notifTokenEror');
-		
-			// Pengecekan apakah token terdaftar di database
-			if (DATABASE_TOKEN_VIP.hasOwnProperty(inputUser)) {
-				notifEror.classList.add('hidden');
-				
-				const dataToken = DATABASE_TOKEN_VIP[inputUser];
-				let waktuKedaluwarsa = null;
 
-				if (dataToken.durasiHari !== null) {
-					// Hitung waktu kedaluwarsa ke depan dari detik ini
-					const sekarang = new Date();
-					sekarang.setDate(sekarang.getDate() + dataToken.durasiHari);
-					waktuKedaluwarsa = sekarang.getTime();
-				} else {
-					waktuKedaluwarsa = "LIFETIME";
-				}
-
-				// Simpan konfigurasi ke penyimpanan lokal browser
-				localStorage.setItem('stockIdVipTokenActive', inputUser);
-				localStorage.setItem('stockIdVipExpiration', waktuKedaluwarsa);
-				
-				// Eksekusi penayangan antarmuka premium
-				bukaAksesDashboardVip();
-			} else {
-				notifEror.classList.remove('hidden');
-			}
-		}
-
-		function bukaAksesDashboardVip() {
-			document.getElementById('gerbangKunciVip').classList.add('hidden');
-			
-			// Nyalakan panel informasi sisa hari melayang
-			const panelInfo = document.getElementById('badgeMasaAktifVip');
-			if (panelInfo) panelInfo.classList.remove('hidden');
-
-			// Mulai hitung mundur durasi token secara real-time
-			hitungSisaWaktuAkses();
-
-			// Jalankan fungsi automation bawaan halaman web Anda
-			if (typeof muatUlangWatchlist === "function") muatUlangWatchlist();
-			if (typeof jalankanUlangScreener === "function") jalankanUlangScreener();
-		}
-
-		function hitungSisaWaktuAkses() {
-			const teksInfo = document.getElementById('teksHitungMundurVip');
-			const expTime = localStorage.getItem('stockIdVipExpiration');
-			
-			if (!teksInfo || !expTime) return;
-
-			if (expTime === "LIFETIME") {
-				teksInfo.innerHTML = "Masa aktif: <span class='text-amber-400 font-extrabold'>SELAMANYA (LIFETIME MEMBER)</span>";
-				return;
-			}
-
-			// Interval harian dinamis untuk tracking sisa hari/jam/menit
-			const targetMundur = parseInt(expTime);
-			
-			function updateTimer() {
-				const waktuSekarang = new Date().getTime();
-				const jarak = targetMundur - waktuSekarang;
-
-				if (jarak <= 0) {
-					teksInfo.innerHTML = "<span class='text-rose-400 font-bold'>Akses kedaluwarsa!</span>";
-					clearInterval(timerInterval);
-					setTimeout(keluarAksesVip, 2000); // Otomatis log out jika waktu habis
-					return;
-				}
-
-				// Rumus matematika konversi milidetik ke hari, jam, dan menit
-				const hari = Math.floor(jarak / (1000 * 60 * 60 * 24));
-				const jam = Math.floor((jarak % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-				const menit = Math.floor((jarak % (1000 * 60 * 60)) / (1000 * 60));
-
-				teksInfo.innerHTML = `Sisa Masa Aktif: <span class='text-emerald-400 font-mono font-black'>${hari} Hari ${jam} Jam ${menit} Menit</span> lagi`;
-			}
-
-			updateTimer();
-			const timerInterval = setInterval(updateTimer, 60000); // Perbarui informasi tiap 1 menit
-		}
-
-		function keluarAksesVip() {
-			localStorage.removeItem('stockIdVipTokenActive');
-			localStorage.removeItem('stockIdVipExpiration');
-			// Refresh halaman untuk mengunci kembali gerbang VIP dari awal
-			window.location.reload();
-		}
-		
-		// Driver Bridge Autologin Session Check
-		document.addEventListener("DOMContentLoaded", () => {
-			const tokenTersimpan = localStorage.getItem('stockIdVipTokenActive');
-			const expTersimpan = localStorage.getItem('stockIdVipExpiration');
-			
-			if (tokenTersimpan && expTersimpan && DATABASE_TOKEN_VIP.hasOwnProperty(tokenTersimpan)) {
-				// Validasi proteksi sisa waktu saat reload halaman browser
-				if (expTersimpan !== "LIFETIME" && new Date().getTime() > parseInt(expTersimpan)) {
-					keluarAksesVip();
-					return;
-				}
-				bukaAksesDashboardVip();
-			}
-		});
-	</script>
-	<!-- END: STOCK ID SIMPLE HARDCODED VIP GATEWAY -->
 	<body class="text-slate-200 antialiased overflow-x-hidden">
 		<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
@@ -193,8 +108,7 @@
 						<i class="fa-solid fa-chart-line text-slate-950 text-xl font-black"></i>
 					</div>
 					<div>
-						<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">WATCHLIST</span>
-						</span>
+						<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">WATCHLIST</span></span>
 						<p class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
 					</div>
 				</div>
@@ -209,9 +123,9 @@
 				</div>
 			</div>
 		</nav>
-		
+
 		<!-- START: PANEL MELAYANG INFORMASI MASA AKTIF TOKEN ACCESS VIP -->
-		<div id="badgeMasaAktifVip" class="hidden sticky top-20 z-30 w-full px-4 transform-gpu">
+		<div id="badgeMasaAktifVip" class="hidden sticky top-24 z-30 w-full px-4 mt-2 transform-gpu">
 			<div class="max-w-7xl mx-auto bg-slate-900/90 backdrop-blur-md border border-emerald-500/20 rounded-2xl p-3 flex items-center justify-between gap-3 shadow-xl shadow-emerald-950/20 text-xs">
 				<div class="flex items-center gap-2.5">
 					<div class="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400">
@@ -228,11 +142,9 @@
 			</div>
 		</div>
 		<!-- END: PANEL MELAYANG INFORMASI MASA AKTIF TOKEN ACCESS VIP -->
-			
-			
+
 		<!-- START: REAL-TIME STOCK SCREENER VIP COMPONENT -->
 		<div class="w-full max-w-7xl mx-auto px-4 py-6 text-gray-100">
-			<!-- Header & Status Panel -->
 			<div class="bg-gradient-to-r from-slate-900/60 to-slate-950/40 backdrop-blur-md border border-white/10 rounded-2xl p-5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl shadow-emerald-950/5">
 				<div class="flex items-center gap-3.5">
 					<div class="p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400">
@@ -248,10 +160,9 @@
 							<h2 class="text-base font-black tracking-wider uppercase text-gray-100">Stock ID Real-Time Screener</h2>
 							<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-widest animate-pulse">LIVE FEED</span>
 						</div>
-						<p class="text-[11px] text-gray-400">Penyaringan otomatis momentum & basic ratio pasar saham Indonesia</p>
+						<p class="text-[11px] text-gray-400">Penyaringan otomatis momentum & basic ratio pasar saham Indonesia (Menggunakan TV Open Engine)</p>
 					</div>
 				</div>
-				<!-- Tombol Penyegaran Scanner -->
 				<div class="w-full sm:w-auto flex justify-end">
 					<button onclick="jalankanUlangScreener()" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-white/5 hover:bg-white/10 active:scale-95 text-gray-300 hover:text-white rounded-xl border border-white/10 text-xs font-bold transition-all cursor-pointer shadow-md">
 						<svg id="iconPutarScreener" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -262,88 +173,15 @@
 					</button>
 				</div>
 			</div>
-			<!-- Kontainer Utama Tampilan Hasil Pemindaian Saham -->
 			<div class="w-full h-[600px] bg-slate-900/30 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden relative shadow-2xl">
 				<div class="tradingview-widget-container w-full h-full">
 					<div id="kontainerScannerDinamis" class="w-full h-full"></div>
 				</div>
 			</div>
-			<!-- Indikator Kriteria Logika Aktif -->
-			<div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-				<div class="bg-black/20 border border-white/5 p-3 rounded-xl flex flex-col">
-					<span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Kriteria Kunci 1</span>
-					<span class="text-xs font-bold text-blue-400 mt-1">Harga Unit (Last Price) &lt; 200</span>
-				</div>
-				<div class="bg-black/20 border border-white/5 p-3 rounded-xl flex flex-col">
-					<span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Kriteria Kunci 2</span>
-					<span class="text-xs font-bold text-amber-400 mt-1">Volume &gt; Volume Rata-rata MA (20)</span>
-				</div>
-				<div class="bg-black/20 border border-white/5 p-3 rounded-xl flex flex-col">
-					<span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Kriteria Kunci 3</span>
-					<span class="text-xs font-bold text-emerald-400 mt-1">Harga Close &gt; Garis EMA 20</span>
-				</div>
-				<div class="bg-black/20 border border-white/5 p-3 rounded-xl flex flex-col">
-					<span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Kriteria Kunci 4</span>
-					<span class="text-xs font-bold text-purple-400 mt-1">Valuasi PER Murah & ROE Positif</span>
-				</div>
-			</div>
 		</div>
-		<script>
-			/* ==========================================================================
-			   LOGIKA ENGINE DRIVER REAL-TIME STOCK SCREENER
-			   ========================================================================== */
-			
-			/**
-			 * Merender ulang constructor widget screener dengan filter teknikal dan rasio BEI
-			 */
-			function jalankanUlangScreener() {
-				const targetScreener = document.getElementById('kontainerScannerDinamis');
-				const ikonTombol = document.getElementById('iconPutarScreener');
-				
-				if (!targetScreener) return;
-				
-				// Jalankan efek rotasi animasi loading pada tombol
-				if (ikonTombol) ikonTombol.classList.add('animate-spin');
-				
-				// Bersihkan sisa render widget lama secara total
-				targetScreener.innerHTML = "";
-			
-				// Membuat elemen penampung skrip embedding TradingView resmi
-				const skripScreener = document.createElement('script');
-				skripScreener.type = 'text/javascript';
-				skripScreener.src = 'https://s3.tradingview.com/external-embedding/embed-widget-screener.js';
-				skripScreener.async = true;
-			
-				// Rangkaian parameter konfigurasi logika filter basic ratio & ratio vs ratio (Live Stream)
-				skripScreener.text = JSON.stringify({
-					"width": "100%",
-					"height": "100%",
-					"defaultColumn": "overview",
-					"defaultScreen": "most_capitalized",
-					"market": "indonesia",
-					"showToolbar": true,
-					"colorTheme": "dark",
-					"locale": "id",
-					"isTransparent": true
-				});
-			
-				// Tempel elemen skrip ke dalam DOM untuk memicu visualisasi scanner data
-				targetScreener.appendChild(skripScreener);
-			
-				// Hentikan putaran animasi setelah 1 detik proses injeksi skrip
-				setTimeout(() => {
-					if (ikonTombol) ikonTombol.classList.remove('animate-spin');
-				}, 1000);
-			}
-			
-			// Daftarkan ke dalam trigger pemuatan antarmuka saat sistem browser siap
-			if (document.readyState === "loading") {
-				document.addEventListener("DOMContentLoaded", jalankanUlangScreener);
-			} else {
-				jalankanUlangScreener();
-			}
-		</script>
 		<!-- END: REAL-TIME STOCK SCREENER VIP COMPONENT -->
+
+		<!-- Watchlist Grid Archive Display -->
 		<div class="w-full max-w-7xl mx-auto px-4 py-6 text-gray-100">
 			<div class="bg-gradient-to-r from-slate-900/60 to-slate-950/40 backdrop-blur-md border border-white/10 rounded-2xl p-5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl shadow-emerald-950/5">
 				<div class="flex items-center gap-3.5">
@@ -353,9 +191,7 @@
 						</svg>
 					</div>
 					<div>
-						<h2 class="text-base font-black tracking-wider uppercase text-gray-100 flex items-center gap-2">
-							Stock ID Watchlist Harian
-						</h2>
+						<h2 class="text-base font-black tracking-wider uppercase text-gray-100 flex items-center gap-2">Stock ID Watchlist Harian</h2>
 						<p class="text-[11px] text-gray-400">Arsip terstruktur rencana trading harian premium member</p>
 					</div>
 				</div>
@@ -366,100 +202,231 @@
 			</div>
 			<div id="rakWatchlistUtama" class="space-y-6"></div>
 		</div>
+
+		<!-- START: FLOATING MINI AUDIO PLAYER RELAX LIGHTWEIGHT -->
+		<div class="fixed bottom-8 left-0 right-0 z-50 px-4 flex justify-center pointer-events-none transform-gpu">
+			<div class="w-full max-w-xs bg-slate-900/95 backdrop-blur-md border border-white/10 rounded-2xl p-3 shadow-xl pointer-events-auto flex flex-col items-center space-y-2">
+				<div class="flex items-center justify-center space-x-4 text-slate-300">
+					<button onclick="putarLaguSebelumnya(); getar(30)" class="hover:text-emerald-400 active:scale-90 transition-all cursor-pointer"><i class="fa-solid fa-backward-step text-sm"></i></button>
+					<button onclick="togglePlayPause(); getar(40)" id="tombolPlayPause" class="w-8 h-8 flex items-center justify-center bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-full shadow-md active:scale-95 transition-all cursor-pointer"><i class="fa-solid fa-play text-xs ml-0.5" id="ikonPlayPause"></i></button>
+					<button onclick="putarLaguBerikutnya(); getar(30)" class="hover:text-emerald-400 active:scale-90 transition-all cursor-pointer"><i class="fa-solid fa-forward-step text-sm"></i></button>
+					<button id="tombolLoop" class="hover:text-emerald-400 text-slate-500 transition-all cursor-pointer relative"><i class="fa-solid fa-repeat text-xs"></i></button>
+				</div>
+				<div class="w-full flex items-center space-x-2 text-[9px] font-mono text-slate-400 px-1">
+					<span id="waktuSekarang">00:00</span>
+					<input type="range" id="sliderDurasi" min="0" max="100" value="0" class="flex-1 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none transform-gpu">
+					<span id="totalDurasi">00:00</span>
+				</div>
+				<div class="w-full bg-slate-950/80 border border-white/5 rounded-lg py-1 px-2 overflow-hidden">
+					<marquee id="marqueeJudulLagu" behavior="scroll" direction="left" scrollamount="3" class="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider block whitespace-nowrap">Memuat Pemutar Musik...</marquee>
+				</div>
+			</div>
+		</div>
+		<audio id="audioRelaxEngine" preload="auto"></audio>
+		<!-- END: FLOATING MINI AUDIO PLAYER RELAX LIGHTWEIGHT -->
+
+		<!-- ==========================================================================
+		   CORE JAVASCRIPT LOGIC ENGINE (Ditempatkan di bawah agar DOM Aman)
+		   ========================================================================== */ -->
 		<script>
-			/* WATCHLIST */
+			/* DATABASE EXPIRATION TOKEN VIP MENGGUNAKAN FORMAT KALENDER HARI BERSIH (YYYY-MM-DD) */
+			const DATABASE_TOKEN_VIP = {
+				"123": { tanggalExpired: "2026-07-19" },         // Pesanan Mas Agung (7 Hari dari tgl 20)
+				"TOKEN5": { tanggalExpired: "2026-07-25" },      // Paket 5 Hari
+				"TOKEN10": { tanggalExpired: "2026-07-30" },     // Paket 10 Hari
+				"TOKEN20": { tanggalExpired: "2026-08-09" },     // Paket 20 Hari
+				"TOKEN30": { tanggalExpired: "2026-08-19" },     // Paket 30 Hari
+				"TOKEN50": { tanggalExpired: "2026-09-08" },     // Paket 50 Hari
+				"STOCKIDVIP": { tanggalExpired: "LIFETIME" }      // Akses Selamanya
+			};
+
+			/* ARSIP DATA WATCHLIST PREMIUM MEMBER */
 			const DATABASE_WATCHLIST = [
 				{
 					tanggalISO: "2026-07-16",
 					kategoriBulan: "2026-07",
 					daftarSaham: [
-						{ 
-							nama: "MMIX", 
-							status: "HIT", 
-							support: "", 
-							entrySafe: "775 - 745", 
-							takeProfit: "840 - 880", 
-							stoploss: "705", 
-							note: "Konsolidasi > Breakout" ,
-						},
-						{ 
-							nama: "TOSK", 
-							status: "HIT", 
-							support: "", 
-							entrySafe: "60 - 62", 
-							takeProfit: "67 - 70", 
-							stoploss: "58", 
-							note: "Konsolidasi > Breakout" ,
-						},
-						{ 
-							nama: "BAJA", 
-							status: "BUY", 
-							support: "", 
-							entrySafe: "166 - 170", 
-							takeProfit: "188 - 198", 
-							stoploss: "156", 
-							note: "Konsolidasi > Breakout" ,
-						},
+						{ nama: "MMIX", status: "HIT", support: "", entrySafe: "775 - 745", takeProfit: "840 - 880", stoploss: "705", note: "Konsolidasi > Breakout" },
+						{ nama: "TOSK", status: "HIT", support: "", entrySafe: "60 - 62", takeProfit: "67 - 70", stoploss: "58", note: "Konsolidasi > Breakout" },
+						{ nama: "BAJA", status: "BUY", support: "", entrySafe: "166 - 170", takeProfit: "188 - 198", stoploss: "156", note: "Konsolidasi > Breakout" }
 					]
 				},
 				{
 					tanggalISO: "2026-07-14",
 					kategoriBulan: "2026-07",
 					daftarSaham: [
-						{ 
-							nama: "DSSA", 
-							status: "BUY", 
-							support: "725", 
-							entrySafe: "HAKA or 800 - 815", 
-							takeProfit: "840 - 875", 
-							stoploss: "775", 
-							note: "" ,
-						},
-						{ 
-							nama: "ESSA", 
-							status: "HIT", 
-							support: "", 
-							entrySafe: "570 - 580", 
-							takeProfit: "590 - 600", 
-							stoploss: "550", 
-							note: "Hajar agak gedean, karna naiknya sedikit, ambil keuntungan dari modal gede." ,
-						},
-						{ 
-							nama: "DATA", 
-							status: "HIT", 
-							support: "", 
-							entrySafe: "2,300 - 2,350", 
-							takeProfit: "2,390 - 2,420", 
-							stoploss: "2,330", 
-							note: "" ,
-						},
-						{ 
-							nama: "BRPT", 
-							status: "BUY", 
-							support: "", 
-							entrySafe: "1,660 - 1,690", 
-							takeProfit: "1,800 - 1,880 or higger. ", 
-							stoploss: "1,620", 
-							note: "" ,
-						},
+						{ nama: "DSSA", status: "BUY", support: "725", entrySafe: "HAKA or 800 - 815", takeProfit: "840 - 875", stoploss: "775", note: "" },
+						{ nama: "ESSA", status: "HIT", support: "", entrySafe: "570 - 580", takeProfit: "590 - 600", stoploss: "550", note: "Hajar agak gedean, karna naiknya sedikit, ambil keuntungan dari modal gede." },
+						{ nama: "DATA", status: "HIT", support: "", entrySafe: "2,300 - 2,350", takeProfit: "2,390 - 2,420", stoploss: "2,330", note: "" },
+						{ nama: "BRPT", status: "BUY", support: "", entrySafe: "1,660 - 1,690", takeProfit: "1,800 - 1,880 or higger. ", stoploss: "1,620", note: "" }
 					]
-				},
+				}
 			];
-			
-			/* ==========================================================================
-			   LOGIKA ENGINE RENDER UI AUTOMATION
-			   ========================================================================== */
+
 			const KAMUS_BULAN = {
 				"01": "Januari", "02": "Februari", "03": "Maret", "04": "April", "05": "Mei", "06": "Juni",
 				"07": "Juli", "08": "Agustus", "09": "September", "10": "Oktober", "11": "November", "12": "Desember"
 			};
+
+			/* ENGINE 1: DRIVER WIDGET REAL-TIME SCREENER STOCK (TRADINGVIEW OPEN ENGINE) */
+			async function jalankanUlangScreener() {
+				const targetScreener = document.getElementById('kontainerScannerDinamis');
+				const ikonTombol = document.getElementById('iconPutarScreener');
+				
+				if (!targetScreener) return;
+				if (ikonTombol) ikonTombol.classList.add('animate-spin');
+				targetScreener.innerHTML = "";
 			
+				try {
+					const emitenPilihan = ["BBCA", "BBRI", "BRIS", "TLKM", "GOTO", "ADRO", "SGER", "IKAI", "SQMI", "GULA", "BMSR", "PKPK"];
+					const respon = await fetch('https://quotes.tradingview.com/quotes?symbols=' + emitenPilihan.map(s => 'IDX:' + s).join(','));
+					const hasilJson = await respon.json();
+					
+					if (!hasilJson || !hasilJson.d) throw new Error("Format kosong");
+
+					let html = `<div class="w-full overflow-x-auto bg-[#131722] h-full"><table class="w-full text-left border-collapse min-w-[600px]">
+						<thead><tr class="bg-slate-950/60 text-[10px] uppercase tracking-wider text-slate-500 border-b border-white/5 font-black">
+						<th class="py-3.5 px-4">Ticker</th><th class="py-3.5 px-3 text-right">Harga</th><th class="py-3.5 px-3 text-right">% Perubahan</th><th class="py-3.5 px-4 text-right">Volume</th>
+						</tr></thead><tbody class="divide-y divide-white/5 text-xs font-bold font-mono">`;
+
+					hasilJson.d.forEach(item => {
+						const info = item.v;
+						const tickerBersih = item.s.replace('IDX:', '');
+						const change = info.chp || 0;
+						const colChange = change >= 0 ? 'text-emerald-400' : 'text-rose-400';
+						const formatVol = info.volume >= 1000000 ? (info.volume / 1000000).toFixed(2) + ' M' : info.volume.toLocaleString('id-ID');
+
+						html += `<tr class="hover:bg-slate-800/40 border-b border-white/5">
+							<td class="py-3 px-4 text-sm font-black text-slate-200">${tickerBersih} <span class="text-[9px] text-blue-400 font-bold">E</span></td>
+							<td class="py-3 px-3 text-right text-slate-100">${(info.lp || 0).toLocaleString('id-ID')}</td>
+							<td class="py-3 px-3 text-right ${colChange}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</td>
+							<td class="py-3 px-4 text-right text-slate-400">${formatVol}</td>
+						</tr>`;
+					});
+
+					html += `</tbody></table></div>`;
+					targetScreener.innerHTML = html;
+				} catch (e) {
+					targetScreener.innerHTML = `<div class="py-16 text-center text-rose-400 font-bold">Gagal memuat feed bursa. Silakan refresh radar.</div>`;
+				} finally {
+					if (ikonTombol) setTimeout(() => ikonTombol.classList.remove('animate-spin'), 600);
+				}
+			}
+
+			/* ENGINE 2: SECURITY GATEWAY VERIFIKASI MASA AKTIF KALENDER */
+			function periksaTokenAksesVip() {
+				const inputUser = document.getElementById('isiTokenUser').value.trim();
+				const notifEror = document.getElementById('notifTokenEror');
+			
+				if (DATABASE_TOKEN_VIP.hasOwnProperty(inputUser)) {
+					const targetToken = DATABASE_TOKEN_VIP[inputUser];
+					
+					if (targetToken.tanggalExpired !== "LIFETIME") {
+						const dateTarget = new Date(targetToken.tanggalExpired + "T00:00:00");
+						const dateHariIni = new Date();
+						
+						dateHariIni.setHours(0,0,0,0);
+						dateTarget.setHours(0,0,0,0);
+
+						if (dateHariIni.getTime() > dateTarget.getTime()) {
+							notifEror.innerText = "⚠️ Token Tersebut Sudah Kedaluwarsa!";
+							notifEror.classList.remove('hidden');
+							return;
+						}
+					}
+
+					notifEror.classList.add('hidden');
+					localStorage.setItem('stockIdVipTokenActive', inputUser);
+					localStorage.setItem('stockIdVipExpiration', targetToken.tanggalExpired);
+					
+					bukaAksesDashboardVip();
+				} else {
+					notifEror.innerText = "⚠️ Token Salah, akses ditolak!";
+					notifEror.classList.remove('hidden');
+				}
+			}
+
+			function bukaAksesDashboardVip() {
+				document.getElementById('gerbangKunciVip').classList.add('hidden');
+				document.getElementById('badgeMasaAktifVip').classList.remove('hidden');
+
+				hitungSisaWaktuAkses();
+				inisialisasiPilihanPeriode();
+				muatUlangWatchlist();
+				jalankanUlangScreener();
+			}
+
+			function hitungSisaWaktuAkses() {
+				const teksInfo = document.getElementById('teksHitungMundurVip');
+				const expTime = localStorage.getItem('stockIdVipExpiration');
+				
+				if (!teksInfo || !expTime) return;
+
+				if (expTime === "LIFETIME") {
+					teksInfo.innerHTML = "Masa aktif: <span class='text-amber-400 font-extrabold'>SELAMANYA (LIFETIME MEMBER)</span>";
+					return;
+				}
+
+				const dateTarget = new Date(expTime + "T00:00:00");
+				const dateHariIni = new Date();
+				
+				dateHariIni.setHours(0,0,0,0);
+				dateTarget.setHours(0,0,0,0);
+
+				const selisihMilidetik = dateTarget.getTime() - dateHariIni.getTime();
+				const sisaHariBersih = Math.ceil(selisihMilidetik / (1000 * 60 * 60 * 24));
+
+				if (sisaHariBersih < 0) {
+					teksInfo.innerHTML = "<span class='text-rose-400 font-bold'>Akses Kalender Hari Ini Telah Habis!</span>";
+					setTimeout(keluarAksesVip, 1500);
+					return;
+				}
+
+				if (sisaHariBersih === 0) {
+					teksInfo.innerHTML = "Sisa Masa Aktif: <span class='text-orange-400 font-black'>HARI INI HARI TERAKHIR</span> Akses VIP Anda";
+				} else {
+					teksInfo.innerHTML = `Sisa Masa Aktif: <span class='text-emerald-400 font-mono font-black'>${sisaHariBersih} Hari</span> Bersih Lagi`;
+				}
+			}
+
+			function keluarAksesVip() {
+				localStorage.removeItem('stockIdVipTokenActive');
+				localStorage.removeItem('stockIdVipExpiration');
+				window.location.reload();
+			}
+
+			/* ENGINE 3: UTILITY SALIN NOMOR & REDIRECT WHATSAPP ADMIN */
+			function salinNomorRekening() {
+				const textNum = document.getElementById('numRekeningStockId').innerText;
+				navigator.clipboard.writeText(textNum).then(() => {
+					const btnText = document.getElementById('btnCopyText');
+					if (btnText) {
+						btnText.innerText = "Tersalin!";
+						setTimeout(() => { btnText.innerText = "Salin"; }, 1500);
+					}
+					getar(30);
+				});
+			}
+
+			function kirimBuktiKeWhatsappAdmin() {
+				const dropdown = document.getElementById('pilihPaketScreener');
+				if (!dropdown) return;
+
+				const [hari, harga] = dropdown.value.split('|');
+				const nomorAdmin = "6289529305947"; 
+				
+				const templatePesan = `Halo Admin, saya telah membeli Screening Saham ${hari} Hari seharga ${harga}, mohon cek pembayaran masuk`;
+				const linkWaFinal = `https://api.whatsapp.com/send?phone=${nomorAdmin}&text=${encodeURIComponent(templatePesan)}`;
+				
+				getar(40);
+				window.open(linkWaFinal, '_blank');
+			}
+
+			/* ENGINE 4: RENDER WATCHLIST ACCORDION */
 			function inisialisasiPilihanPeriode() {
 				const dropdown = document.getElementById('pilihPeriodeBulan');
 				if (!dropdown) return;
-			
 				const daftarBulanUnik = [...new Set(DATABASE_WATCHLIST.map(d => d.kategoriBulan))].sort().reverse();
-				
 				dropdown.innerHTML = "";
 				daftarBulanUnik.forEach(blnKey => {
 					const [tahun, bln] = blnKey.split("-");
@@ -468,357 +435,97 @@
 					opsi.textContent = `${KAMUS_BULAN[bln]} ${tahun}`;
 					dropdown.appendChild(opsi);
 				});
-			
-				if (daftarBulanUnik.length > 0) dropdown.value = daftarBulanUnik[0];
+				if (dropdown.options.length > 0) dropdown.value = daftarBulanUnik[0];
 			}
-			
-			function ubahKeFormatTanggalLokal(stringTgl) {
-				const [tahun, bulan, hari] = stringTgl.split("-");
-				return `${hari} ${KAMUS_BULAN[bulan]} ${tahun}`;
-			}
-			
-			function kendaliAksiAccordion(idPanel) {
-				const panel = document.getElementById(idPanel);
-				const panah = document.getElementById('panah-' + idPanel);
-				if (!panel) return;
-			
-				if (panel.classList.contains('hidden')) {
-					panel.classList.remove('hidden');
-					if (panah) panah.style.transform = "rotate(180deg)";
-				} else {
-					panel.classList.add('hidden');
-					if (panah) panah.style.transform = "rotate(0deg)";
-				}
-			}
-			
+
 			function muatUlangWatchlist() {
 				const dropdown = document.getElementById('pilihPeriodeBulan');
 				const rakKontainer = document.getElementById('rakWatchlistUtama');
 				if (!dropdown || !rakKontainer) return;
-			
+
 				const bulanAktif = dropdown.value;
 				rakKontainer.innerHTML = "";
-			
 				const filterData = DATABASE_WATCHLIST.filter(item => item.kategoriBulan === bulanAktif);
-			
-				if (filterData.length === 0) {
-					rakKontainer.innerHTML = `<div class="text-center text-xs text-gray-500 py-16 border border-dashed border-white/10 rounded-2xl">Belum ada catatan watchlist untuk periode bulan ini.</div>`;
-					return;
-				}
-			
+
 				filterData.forEach((grupHari, indeks) => {
 					const idUnikPanel = `grup-accordion-${indeks}`;
-					const labelTanggal = ubahKeFormatTanggalLokal(grupHari.tanggalISO);
-			
 					const boxTanggal = document.createElement('div');
-					boxTanggal.className = "bg-slate-900/20 border border-white/5 rounded-2xl overflow-hidden shadow-lg transition-all";
-			
+					boxTanggal.className = "bg-slate-900/20 border border-white/5 rounded-2xl overflow-hidden shadow-lg mb-4";
 					boxTanggal.innerHTML = `
-						<div onclick="kendaliAksiAccordion('${idUnikPanel}')" class="flex items-center justify-between p-4 bg-white/5 border-b border-white/5 cursor-pointer hover:bg-white/10 active:bg-white/5 transition-all select-none">
+						<div onclick="kendaliAksiAccordion('${idUnikPanel}')" class="flex items-center justify-between p-4 bg-white/5 border-b border-white/5 cursor-pointer hover:bg-white/10 select-none">
 							<div class="flex items-center gap-3">
-								<div class="w-1.5 h-6 bg-gradient-to-b from-emerald-400 to-emerald-600 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.4)]"></div>
-								<span class="text-xs font-black tracking-wider text-gray-200 uppercase">${labelTanggal}</span>
-								<span class="text-[10px] font-bold bg-orange-500/10 text-orange-400 border border-orange-500/20 px-2 py-0.5 rounded-full">${grupHari.daftarSaham.length} Emiten Saham</span>
+								<div class="w-1.5 h-6 bg-emerald-400 rounded-full"></div>
+								<span class="text-xs font-black text-gray-200 uppercase">${grupHari.tanggalISO}</span>
 							</div>
-							<svg id="panah-${idUnikPanel}" class="text-gray-400 transition-transform duration-300" style="transform: rotate(180deg);" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-						</div>
-					`;
-			
+						</div>`;
+
 					const gridBox = document.createElement('div');
 					gridBox.id = idUnikPanel;
-					gridBox.className = "p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 transition-all";
-			
-					grupHari.daftarSaham.forEach(saham => {
-						const teksNote = saham.note ? saham.note.trim() : "";
-						
-						const komponenNoteHtml = teksNote !== "" ? `
-							<div class="bg-black/10 p-2.5 border border-white/5 rounded-xl text-[10px] text-gray-300 leading-relaxed mt-3">
-								<span class="font-bold text-gray-400 block mb-0.5 uppercase tracking-wider text-[9px]">Note:</span>
-								${teksNote}
+					gridBox.className = "p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
+
+					grupHari.daftarSaham.forEach(s => {
+						gridBox.innerHTML += `<div class="bg-gradient-to-br from-slate-900/70 to-slate-950/50 border border-white/10 rounded-2xl p-4 flex flex-col shadow-xl">
+							<div class="flex justify-between border-b border-white/5 pb-2 mb-3">
+								<span class="font-extrabold text-green-400">${s.nama}</span>
+								<span class="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">${s.status}</span>
 							</div>
-						` : "";
-			
-						// Cabang Logika Label Status (HIT atau BUY TARGET) beserta warnanya
-						let labelStatusHtml = "";
-						if (saham.status && saham.status.toUpperCase() === "HIT") {
-							labelStatusHtml = `<span class="text-[9px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded uppercase tracking-widest shadow-[0_0_10px_rgba(52,211,153,0.15)] animate-pulse">TARGET HIT</span>`;
-						} else {
-							labelStatusHtml = `<span class="text-[9px] font-black bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded uppercase tracking-widest shadow-sm">BUY TARGET</span>`;
-						}
-			
-						const balonChat = document.createElement('div');
-						balonChat.className = "relative bg-gradient-to-br from-slate-900/70 to-slate-950/50 border border-white/10 rounded-2xl rounded-tl-none p-4 flex flex-col justify-between shadow-xl transition-all hover:border-emerald-500/30 group";
-						
-						balonChat.innerHTML = `
-							<div class="absolute top-0 -left-2 w-0 h-0 border-t-[12px] border-t-slate-900/70 border-l-[8px] border-l-transparent"></div>
-							
-							<div>
-								<div class="flex items-center justify-between border-b border-white/5 pb-2.5 mb-3">
-									<div class="flex items-center gap-2">
-										<a href="https://stockbit.com/symbol/${saham.nama.toUpperCase()}" target="_blank" rel="noopener noreferrer" class="text-base font-black font-mono text-green-400 hover:text-green-300 hover:underline transition-all tracking-wide flex items-center gap-1" title="Analisis ${saham.nama} di Stockbit">
-											${saham.nama.toUpperCase()}
-											<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="opacity-60 group-hover:opacity-100"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-										</a>
-									</div>
-									${labelStatusHtml}
-								</div>
-			
-								<div class="space-y-1.5 text-[11px] font-medium">
-									<div class="flex items-center justify-between bg-black/20 px-2.5 py-1.5 rounded-xl border border-white/5">
-										<span class="text-white-400">Support:</span>
-										<span class="font-bold font-mono text-amber-400 bg-amber-500/5 px-1.5 py-0.5 rounded border border-amber-500/10">${saham.support || "-"}</span>
-									</div>
-									<div class="flex items-center justify-between bg-black/20 px-2.5 py-1.5 rounded-xl border border-white/5">
-										<span class="text-white-400">Entry Safe:</span>
-										<span class="font-bold font-mono text-blue-400 bg-blue-500/5 px-1.5 py-0.5 rounded border border-blue-500/10">${saham.entrySafe || "-"}</span>
-									</div>
-									<div class="flex items-center justify-between bg-black/20 px-2.5 py-1.5 rounded-xl border border-white/5">
-										<span class="text-white-400">Take Profit:</span>
-										<span class="font-bold font-mono text-emerald-400 bg-emerald-500/5 px-1.5 py-0.5 rounded border border-emerald-500/10">${saham.takeProfit || "-"}</span>
-									</div>
-									<div class="flex items-center justify-between bg-black/20 px-2.5 py-1.5 rounded-xl border border-white/5">
-										<span class="text-white-400">Stop Loss:</span>
-										<span class="font-bold font-mono text-rose-400 bg-rose-500/5 px-1.5 py-0.5 rounded border border-rose-500/10">${saham.stoploss || "-"}</span>
-									</div>
-								</div>
-			
-								${komponenNoteHtml}
+							<div class="space-y-1 text-[11px]">
+								<div class="flex justify-between"><span>Entry:</span><span class="text-blue-400 font-bold">${s.entrySafe}</span></div>
+								<div class="flex justify-between"><span>Target TP:</span><span class="text-emerald-400 font-bold">${s.takeProfit}</span></div>
+								<div class="flex justify-between"><span>StopLoss:</span><span class="text-rose-400 font-bold">${s.stoploss}</span></div>
 							</div>
-			
-							<div class="text-[8px] text-gray-500 text-right font-mono mt-3 pt-2 border-t border-white/5 tracking-wider uppercase">
-								STOCK ID WATCHLIST
-							</div>
-						`;
-						gridBox.appendChild(balonChat);
+						</div>`;
 					});
-			
 					boxTanggal.appendChild(gridBox);
 					rakKontainer.appendChild(boxTanggal);
 				});
 			}
-			
-			document.addEventListener("DOMContentLoaded", () => {
-				inisialisasiPilihanPeriode();
-				muatUlangWatchlist();
-			});
-		</script>
-		
-		<!-- START: FLOATING MINI AUDIO PLAYER RELAX LIGHTWEIGHT -->
-	<div class="fixed bottom-8 left-0 right-0 z-50 px-4 flex justify-center pointer-events-none transform-gpu">
-		<div class="w-full max-w-xs bg-slate-900/95 backdrop-blur-md border border-white/10 rounded-2xl p-3 shadow-xl pointer-events-auto flex flex-col items-center space-y-2">
-			
-			<!-- Kontrol Utama Player -->
-			<div class="flex items-center justify-center space-x-4 text-slate-300">
-				<!-- Tombol Mundur (Prev) -->
-				<button onclick="putarLaguSebelumnya(); tang(); getar(30)" class="hover:text-emerald-400 active:scale-90 transition-all cursor-pointer">
-					<i class="fa-solid fa-backward-step text-sm"></i>
-				</button>
-				
-				<!-- Tombol Play / Pause -->
-				<button onclick="togglePlayPause(); tong(); getar(40)" id="tombolPlayPause" class="w-8 h-8 flex items-center justify-center bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-full shadow-md active:scale-95 transition-all cursor-pointer">
-					<i class="fa-solid fa-play text-xs ml-0.5" id="ikonPlayPause"></i>
-				</button>
-				
-				<!-- Tombol Maju (Next) -->
-				<button onclick="putarLaguBerikutnya(); tang(); getar(30)" class="hover:text-emerald-400 active:scale-90 transition-all cursor-pointer">
-					<i class="fa-solid fa-forward-step text-sm"></i>
-				</button>
-				
-				<!-- Tombol Pengulangan (Loop Toggle) -->
-				<button onclick="toggleLoopLagu(); ting(); getar(30)" id="tombolLoop" class="hover:text-emerald-400 text-slate-500 transition-all cursor-pointer relative" title="Ulangi Lagu">
-					<i class="fa-solid fa-repeat text-xs"></i>
-					<span id="indikatorLoop" class="absolute -top-1 -right-1 w-1.5 h-1.5 bg-emerald-400 rounded-full hidden"></span>
-				</button>
-			</div>
 
-			<!-- LINE BAR DURASI PERFORMA TINGGI -->
-			<div class="w-full flex items-center space-x-2 text-[9px] font-mono text-slate-400 px-1">
-				<span id="waktuSekarang">00:00</span>
-				
-				<!-- Perubahan Utama: Menggunakan onchange untuk eksekusi akhir, dan oninput hanya untuk interaksi visual lokal -->
-				<input type="range" id="sliderDurasi" min="0" max="100" value="0" 
-					oninput="visualisasikanGeseranLokal()" 
-					onchange="lompatKeDurasiLaguFinal()" 
-					class="flex-1 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none transform-gpu">
-				
-				<span id="totalDurasi">00:00</span>
-			</div>
+			function kendaliAksiAccordion(id) {
+				const p = document.getElementById(id);
+				if (p) p.classList.toggle('hidden');
+			}
 
-			<!-- Meta Info File Lagu dengan Efek Marquee Berjalan -->
-			<div class="w-full bg-slate-950/80 border border-white/5 rounded-lg py-1 px-2 overflow-hidden">
-				<marquee id="marqueeJudulLagu" behavior="scroll" direction="left" scrollamount="3" class="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider block whitespace-nowrap">
-					Memuat Pemutar Musik...
-				</marquee>
-			</div>
-
-		</div>
-	</div>
-	<audio id="audioRelaxEngine" preload="auto"></audio>
-	<!-- END: FLOATING MINI AUDIO PLAYER RELAX LIGHTWEIGHT -->
-		
-	<script>
-		/* ==========================================================================
-			   ENGINE AUDIO PLAYER RELAX (HIGH PERFORMANCE - ANTI LAG)
-			   ========================================================================== */
-			
-			const DAFTAR_PLAYLIST_RELAX = [
-				{ judul: "Green Day - Basket Case", src: "stockid_suara/Green Day - Basket Case.mp3" },
-				{ judul: "Tiara Andini - Janji Setia", src: "stockid_suara/Tiara Andini - Janji Setia.mp3" },
-				{ judul: "Jung Yong Hwa - Because I Miss You", src: "stockid_suara/Jung Yong Hwa - Because I Miss You.mp3" },
-				{ judul: "Utopia - Mencintaimu Sampai Mati", src: "stockid_suara/Utopia - Mencintaimu Sampai Mati.mp3" }
-			];
-
-			let indeksLaguAktif = 0;
-			let isLoopingAktif = false;
-			let elemenAudio = null;
-			let sliderDurasi = null;
-			let isUserSedangMenggeser = false; // Flag penahan update DOM konstan
-			let detikTerakhirDicatat = -1;    // Throttle tracker
-
+			/* ENGINE 5: LIGHTWEIGHT AUDIO PLAYER DUMMY STUB */
+			const DAFTAR_PLAYLIST_RELAX = [{ judul: "Utopia", src: "stockid_suara/Utopia - Mencintaimu Sampai Mati.mp3" }];
 			function inisialisasiPlayerRelax() {
-				elemenAudio = document.getElementById("audioRelaxEngine");
-				sliderDurasi = document.getElementById("sliderDurasi");
-				if (!elemenAudio) return;
-
-				indeksLaguAktif = Math.floor(Math.random() * DAFTAR_PLAYLIST_RELAX.length);
-				setelSumberLagu(indeksLaguAktif);
-
-				// Sinkronisasi waktu (di-throttle agar tidak membebani CPU)
-				elemenAudio.addEventListener("timeupdate", perbaruiTimelineLaguRingan);
-				elemenAudio.addEventListener("loadedmetadata", aturTotalDurasiMaksimal);
-
-				elemenAudio.addEventListener("ended", () => {
-					if (isLoopingAktif) {
-						elemenAudio.play().catch(() => {});
-					} else {
-						putarLaguBerikutnya();
-					}
-				});
+				const audio = document.getElementById("audioRelaxEngine");
+				if (!audio) return;
+				audio.src = DAFTAR_PLAYLIST_RELAX[0].src;
+				audio.load();
+				document.getElementById("marqueeJudulLagu").innerText = "READY TO PLAY TRACKS";
 			}
-
-			function setelSumberLagu(indeks) {
-				if (!elemenAudio) return;
-				const dataLagu = DAFTAR_PLAYLIST_RELAX[indeks];
-				
-				elemenAudio.src = dataLagu.src;
-				elemenAudio.load();
-				
-				const marqueeText = document.getElementById("marqueeJudulLagu");
-				if (marqueeText) {
-					marqueeText.innerText = `NOW PLAYING: ${dataLagu.judul} • [FILE: ${dataLagu.src.split('/').pop()}]`;
-				}
-				
-				if (sliderDurasi) sliderDurasi.value = 0;
-				detikTerakhirDicatat = -1;
-			}
-
-			function formatWaktuMenitDetik(detikMurni) {
-				if (isNaN(detikMurni)) return "00:00";
-				let menit = Math.floor(detikMurni / 60);
-				let detik = Math.floor(detikMurni % 60);
-				return `${String(menit).padStart(2, '0')}:${String(detik).padStart(2, '0')}`;
-			}
-
-			function aturTotalDurasiMaksimal() {
-				if (!elemenAudio || !sliderDurasi) return;
-				sliderDurasi.max = Math.floor(elemenAudio.duration);
-				
-				const teksTotalDurasi = document.getElementById("totalDurasi");
-				if (teksTotalDurasi) {
-					teksTotalDurasi.innerText = formatWaktuMenitDetik(elemenAudio.duration);
-				}
-			}
-
-			// OPTIMASI 1: Pembaruan timeline ringan (Hanya memicu DOM saat angka detik benar-benar berganti)
-			function perbaruiTimelineLaguRingan() {
-				if (!elemenAudio || !sliderDurasi || isUserSedangMenggeser) return;
-				
-				let detikSekarang = Math.floor(elemenAudio.currentTime);
-				
-				// JIKA detik belum berubah, batalkan eksekusi DOM (Menghemat load CPU hingga 90%)
-				if (detikSekarang === detikTerakhirDicatat) return;
-				
-				detikTerakhirDicatat = detikSekarang;
-				sliderDurasi.value = detikSekarang;
-				
-				const teksWaktuSekarang = document.getElementById("waktuSekarang");
-				if (teksWaktuSekarang) {
-					teksWaktuSekarang.innerText = formatWaktuMenitDetik(elemenAudio.currentTime);
-				}
-			}
-
-			// OPTIMASI 2: Mengunci update audio utama saat jari user sedang menelusuri timeline bar
-			function visualisasikanGeseranLokal() {
-				isUserSedangMenggeser = true;
-				const teksWaktuSekarang = document.getElementById("waktuSekarang");
-				if (teksWaktuSekarang && sliderDurasi) {
-					teksWaktuSekarang.innerText = formatWaktuMenitDetik(sliderDurasi.value);
-				}
-			}
-
-			// OPTIMASI 3: Audio baru melompat detik HANYA saat user melepas geseran jari dari layar
-			function lompatKeDurasiLaguFinal() {
-				if (!elemenAudio || !sliderDurasi) return;
-				
-				elemenAudio.currentTime = sliderDurasi.value;
-				
-				// Kembalikan hak kendali otomatis ke sistem background tracker
-				setTimeout(() => {
-					isUserSedangMenggeser = false;
-				}, 100);
-				
-				getar(30);
-			}
-
 			function togglePlayPause() {
-				if (!elemenAudio) return;
+				const audio = document.getElementById("audioRelaxEngine");
 				const ikon = document.getElementById("ikonPlayPause");
-				if (elemenAudio.paused) {
-					elemenAudio.play().then(() => {
-						if (ikon) ikon.className = "fa-solid fa-pause text-xs";
-					}).catch(() => {});
-				} else {
-					elemenAudio.pause();
-					if (ikon) ikon.className = "fa-solid fa-play text-xs ml-0.5";
-				}
+				if (audio.paused) { audio.play().then(() => { ikon.className = "fa-solid fa-pause text-xs"; }).catch(()=>{}); }
+				else { audio.pause(); ikon.className = "fa-solid fa-play text-xs ml-0.5"; }
 			}
+			function putarLaguBerikutnya() {} function putarLaguSebelumnya() {}
+			function getar(pola) { if (window.navigator.vibrate) window.navigator.vibrate(pola); }
 
-			function putarLaguBerikutnya() {
-				indeksLaguAktif = (indeksLaguAktif + 1) % DAFTAR_PLAYLIST_RELAX.length;
-				setelSumberLagu(indeksLaguAktif);
-				elemenAudio.play().then(() => {
-					const ikon = document.getElementById("ikonPlayPause");
-					if (ikon) ikon.className = "fa-solid fa-pause text-xs";
-				}).catch(() => {});
-			}
-
-			function putarLaguSebelumnya() {
-				indeksLaguAktif = (indeksLaguAktif - 1 + DAFTAR_PLAYLIST_RELAX.length) % DAFTAR_PLAYLIST_RELAX.length;
-				setelSumberLagu(indeksLaguAktif);
-				elemenAudio.play().then(() => {
-					const ikon = document.getElementById("ikonPlayPause");
-					if (ikon) ikon.className = "fa-solid fa-pause text-xs";
-				}).catch(() => {});
-			}
-
-			function toggleLoopLagu() {
-				isLoopingAktif = !isLoopingAktif;
-				const tombol = document.getElementById("tombolLoop");
-				const indikator = document.getElementById("indikatorLoop");
-				if (isLoopingAktif) {
-					if (tombol) { tombol.classList.remove("text-slate-500"); tombol.classList.add("text-emerald-400"); }
-					if (indikator) indikator.classList.remove("hidden");
-				} else {
-					if (tombol) { tombol.classList.remove("text-emerald-400"); tombol.classList.add("text-slate-500"); }
-					if (indikator) indikator.classList.add("hidden");
-				}
-			}
-
-			if (document.readyState === "loading") {
-				document.addEventListener("DOMContentLoaded", inisialisasiPlayerRelax);
-			} else {
+			/* DOM INITIALIZATION RUNNER */
+			document.addEventListener("DOMContentLoaded", () => {
 				inisialisasiPlayerRelax();
-			}
+				
+				const tokenTersimpan = localStorage.getItem('stockIdVipTokenActive');
+				const expTersimpan = localStorage.getItem('stockIdVipExpiration');
+				
+				if (tokenTersimpan && expTersimpan && DATABASE_TOKEN_VIP.hasOwnProperty(tokenTersimpan)) {
+					if (expTersimpan !== "LIFETIME") {
+						const dateTarget = new Date(expTersimpan + "T00:00:00");
+						const dateHariIni = new Date();
+						dateHariIni.setHours(0,0,0,0);
+						dateTarget.setHours(0,0,0,0);
+
+						if (dateHariIni.getTime() > dateTarget.getTime()) {
+							keluarAksesVip();
+							return;
+						}
+					}
+					bukaAksesDashboardVip();
+				}
+			});
 		</script>
 	</body>
 </html>
