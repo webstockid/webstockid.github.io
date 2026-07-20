@@ -64,14 +64,17 @@
 	</div>
 	<script>
 		/* ==========================================================================
-		   DAFTAR TOKEN VIP (EDIT LANGSUNG DI SINI UNTUK TAMBAH/GANTI TOKEN)
+		   DATABASE TOKEN PREMIUM DENGAN PARAMETER MASA AKTIF DINAMIS
 		   ========================================================================== */
-		const DAFTAR_TOKEN_SAH = [
-			"123",
-			"STOCKIDVIP",
-			"696969",
-			"MANDITELOR"
-		];
+		const DATABASE_TOKEN_VIP = {
+			"123": { durasiHari: 7 },         // Token pesanan Mas Agung (7 Hari)
+			"VIP5": { durasiHari: 5 },        // Contoh token 5 hari
+			"VIP10": { durasiHari: 10 },      // Contoh token 10 hari
+			"VIP20": { durasiHari: 20 },      // Contoh token 20 hari
+			"VIP30": { durasiHari: 30 },      // Contoh token 30 hari
+			"VIP50": { durasiHari: 50 },      // Contoh token 50 hari
+			"STOCKIDVIP": { durasiHari: null } // Token Tanpa Masa Aktif (Lifetime / Selamanya)
+		};
 		
 		/* ==========================================================================
 		   LOGIKA VERIFIKASI SEBELUM HALAMAN DIMUAT
@@ -79,31 +82,105 @@
 		function periksaTokenAksesVip() {
 			const inputUser = document.getElementById('isiTokenUser').value.trim();
 			const notifEror = document.getElementById('notifTokenEror');
-			const layarKunci = document.getElementById('gerbangKunciVip');
 		
-			// Cek apakah token yang diketik user ada di dalam daftar array DAFTAR_TOKEN_SAH
-			if (DAFTAR_TOKEN_SAH.includes(inputUser)) {
-				layarKunci.classList.add('hidden'); // Sembunyikan layar kunci
+			// Pengecekan apakah token terdaftar di database
+			if (DATABASE_TOKEN_VIP.hasOwnProperty(inputUser)) {
 				notifEror.classList.add('hidden');
 				
-				// Simpan di memori browser agar saat di-refresh tidak perlu isi lagi
+				const dataToken = DATABASE_TOKEN_VIP[inputUser];
+				let waktuKedaluwarsa = null;
+
+				if (dataToken.durasiHari !== null) {
+					// Hitung waktu kedaluwarsa ke depan dari detik ini
+					const sekarang = new Date();
+					sekarang.setDate(sekarang.getDate() + dataToken.durasiHari);
+					waktuKedaluwarsa = sekarang.getTime();
+				} else {
+					waktuKedaluwarsa = "LIFETIME";
+				}
+
+				// Simpan konfigurasi ke penyimpanan lokal browser
 				localStorage.setItem('stockIdVipTokenActive', inputUser);
+				localStorage.setItem('stockIdVipExpiration', waktuKedaluwarsa);
 				
-				// Jalankan fungsi utama web Anda jika ada (misal memuat watchlist)
-				if (typeof muatUlangWatchlist === "function") muatUlangWatchlist();
+				// Eksekusi penayangan antarmuka premium
+				bukaAksesDashboardVip();
 			} else {
-				notifEror.classList.remove('hidden'); // Munculkan pesan salah
+				notifEror.classList.remove('hidden');
 			}
 		}
+
+		function bukaAksesDashboardVip() {
+			document.getElementById('gerbangKunciVip').classList.add('hidden');
+			
+			// Nyalakan panel informasi sisa hari melayang
+			const panelInfo = document.getElementById('badgeMasaAktifVip');
+			if (panelInfo) panelInfo.classList.remove('hidden');
+
+			// Mulai hitung mundur durasi token secara real-time
+			hitungSisaWaktuAkses();
+
+			// Jalankan fungsi automation bawaan halaman web Anda
+			if (typeof muatUlangWatchlist === "function") muatUlangWatchlist();
+			if (typeof jalankanUlangScreener === "function") jalankanUlangScreener();
+		}
+
+		function hitungSisaWaktuAkses() {
+			const teksInfo = document.getElementById('teksHitungMundurVip');
+			const expTime = localStorage.getItem('stockIdVipExpiration');
+			
+			if (!teksInfo || !expTime) return;
+
+			if (expTime === "LIFETIME") {
+				teksInfo.innerHTML = "Masa aktif: <span class='text-amber-400 font-extrabold'>SELAMANYA (LIFETIME MEMBER)</span>";
+				return;
+			}
+
+			// Interval harian dinamis untuk tracking sisa hari/jam/menit
+			const targetMundur = parseInt(expTime);
+			
+			function updateTimer() {
+				const waktuSekarang = new Date().getTime();
+				const jarak = targetMundur - waktuSekarang;
+
+				if (jarak <= 0) {
+					teksInfo.innerHTML = "<span class='text-rose-400 font-bold'>Akses kedaluwarsa!</span>";
+					clearInterval(timerInterval);
+					setTimeout(keluarAksesVip, 2000); // Otomatis log out jika waktu habis
+					return;
+				}
+
+				// Rumus matematika konversi milidetik ke hari, jam, dan menit
+				const hari = Math.floor(jarak / (1000 * 60 * 60 * 24));
+				const jam = Math.floor((jarak % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				const menit = Math.floor((jarak % (1000 * 60 * 60)) / (1000 * 60));
+
+				teksInfo.innerHTML = `Sisa Masa Aktif: <span class='text-emerald-400 font-mono font-black'>${hari} Hari ${jam} Jam ${menit} Menit</span> lagi`;
+			}
+
+			updateTimer();
+			const timerInterval = setInterval(updateTimer, 60000); // Perbarui informasi tiap 1 menit
+		}
+
+		function keluarAksesVip() {
+			localStorage.removeItem('stockIdVipTokenActive');
+			localStorage.removeItem('stockIdVipExpiration');
+			// Refresh halaman untuk mengunci kembali gerbang VIP dari awal
+			window.location.reload();
+		}
 		
-		// Cek session otomatis saat pertama kali file HTML ini dibuka di browser
+		// Driver Bridge Autologin Session Check
 		document.addEventListener("DOMContentLoaded", () => {
 			const tokenTersimpan = localStorage.getItem('stockIdVipTokenActive');
+			const expTersimpan = localStorage.getItem('stockIdVipExpiration');
 			
-			// Pastikan token yang tersimpan di localstorage masih terdaftar sebagai token sah
-			if (tokenTersimpan && DAFTAR_TOKEN_SAH.includes(tokenTersimpan)) {
-				document.getElementById('gerbangKunciVip').classList.add('hidden');
-				if (typeof muatUlangWatchlist === "function") muatUlangWatchlist();
+			if (tokenTersimpan && expTersimpan && DATABASE_TOKEN_VIP.hasOwnProperty(tokenTersimpan)) {
+				// Validasi proteksi sisa waktu saat reload halaman browser
+				if (expTersimpan !== "LIFETIME" && new Date().getTime() > parseInt(expTersimpan)) {
+					keluarAksesVip();
+					return;
+				}
+				bukaAksesDashboardVip();
 			}
 		});
 	</script>
@@ -132,6 +209,27 @@
 				</div>
 			</div>
 		</nav>
+		
+		<!-- START: PANEL MELAYANG INFORMASI MASA AKTIF TOKEN ACCESS VIP -->
+		<div id="badgeMasaAktifVip" class="hidden sticky top-20 z-30 w-full px-4 transform-gpu">
+			<div class="max-w-7xl mx-auto bg-slate-900/90 backdrop-blur-md border border-emerald-500/20 rounded-2xl p-3 flex items-center justify-between gap-3 shadow-xl shadow-emerald-950/20 text-xs">
+				<div class="flex items-center gap-2.5">
+					<div class="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400">
+						<i class="fa-solid fa-clock-history text-sm"></i>
+					</div>
+					<div>
+						<span class="font-bold text-gray-200 block">Status Akses Akun: <span class="text-emerald-400 font-black">PREMIUM VIP</span></span>
+						<p id="teksHitungMundurVip" class="text-[10px] text-gray-400 mt-0.5 font-medium">Menghitung sisa masa aktif...</p>
+					</div>
+				</div>
+				<button onclick="keluarAksesVip()" class="px-3 py-1.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl font-bold text-[10px] uppercase hover:bg-rose-500/20 transition-all cursor-pointer">
+					Logout
+				</button>
+			</div>
+		</div>
+		<!-- END: PANEL MELAYANG INFORMASI MASA AKTIF TOKEN ACCESS VIP -->
+			
+			
 		<!-- START: REAL-TIME STOCK SCREENER VIP COMPONENT -->
 		<div class="w-full max-w-7xl mx-auto px-4 py-6 text-gray-100">
 			<!-- Header & Status Panel -->
