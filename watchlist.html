@@ -67,7 +67,7 @@
 		   DAFTAR TOKEN VIP (EDIT LANGSUNG DI SINI UNTUK TAMBAH/GANTI TOKEN)
 		   ========================================================================== */
 		const DAFTAR_TOKEN_SAH = [
-			"122345678",
+			"123",
 			"STOCKIDVIP",
 			"696969",
 			"MANDITELOR"
@@ -503,6 +503,224 @@
 				inisialisasiPilihanPeriode();
 				muatUlangWatchlist();
 			});
+		</script>
+		
+		<!-- START: FLOATING MINI AUDIO PLAYER RELAX LIGHTWEIGHT -->
+	<div class="fixed bottom-8 left-0 right-0 z-50 px-4 flex justify-center pointer-events-none transform-gpu">
+		<div class="w-full max-w-xs bg-slate-900/95 backdrop-blur-md border border-white/10 rounded-2xl p-3 shadow-xl pointer-events-auto flex flex-col items-center space-y-2">
+			
+			<!-- Kontrol Utama Player -->
+			<div class="flex items-center justify-center space-x-4 text-slate-300">
+				<!-- Tombol Mundur (Prev) -->
+				<button onclick="putarLaguSebelumnya(); tang(); getar(30)" class="hover:text-emerald-400 active:scale-90 transition-all cursor-pointer">
+					<i class="fa-solid fa-backward-step text-sm"></i>
+				</button>
+				
+				<!-- Tombol Play / Pause -->
+				<button onclick="togglePlayPause(); tong(); getar(40)" id="tombolPlayPause" class="w-8 h-8 flex items-center justify-center bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-full shadow-md active:scale-95 transition-all cursor-pointer">
+					<i class="fa-solid fa-play text-xs ml-0.5" id="ikonPlayPause"></i>
+				</button>
+				
+				<!-- Tombol Maju (Next) -->
+				<button onclick="putarLaguBerikutnya(); tang(); getar(30)" class="hover:text-emerald-400 active:scale-90 transition-all cursor-pointer">
+					<i class="fa-solid fa-forward-step text-sm"></i>
+				</button>
+				
+				<!-- Tombol Pengulangan (Loop Toggle) -->
+				<button onclick="toggleLoopLagu(); ting(); getar(30)" id="tombolLoop" class="hover:text-emerald-400 text-slate-500 transition-all cursor-pointer relative" title="Ulangi Lagu">
+					<i class="fa-solid fa-repeat text-xs"></i>
+					<span id="indikatorLoop" class="absolute -top-1 -right-1 w-1.5 h-1.5 bg-emerald-400 rounded-full hidden"></span>
+				</button>
+			</div>
+
+			<!-- LINE BAR DURASI PERFORMA TINGGI -->
+			<div class="w-full flex items-center space-x-2 text-[9px] font-mono text-slate-400 px-1">
+				<span id="waktuSekarang">00:00</span>
+				
+				<!-- Perubahan Utama: Menggunakan onchange untuk eksekusi akhir, dan oninput hanya untuk interaksi visual lokal -->
+				<input type="range" id="sliderDurasi" min="0" max="100" value="0" 
+					oninput="visualisasikanGeseranLokal()" 
+					onchange="lompatKeDurasiLaguFinal()" 
+					class="flex-1 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none transform-gpu">
+				
+				<span id="totalDurasi">00:00</span>
+			</div>
+
+			<!-- Meta Info File Lagu dengan Efek Marquee Berjalan -->
+			<div class="w-full bg-slate-950/80 border border-white/5 rounded-lg py-1 px-2 overflow-hidden">
+				<marquee id="marqueeJudulLagu" behavior="scroll" direction="left" scrollamount="3" class="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider block whitespace-nowrap">
+					Memuat Pemutar Musik...
+				</marquee>
+			</div>
+
+		</div>
+	</div>
+	<audio id="audioRelaxEngine" preload="auto"></audio>
+	<!-- END: FLOATING MINI AUDIO PLAYER RELAX LIGHTWEIGHT -->
+		
+	<script>
+		/* ==========================================================================
+			   ENGINE AUDIO PLAYER RELAX (HIGH PERFORMANCE - ANTI LAG)
+			   ========================================================================== */
+			
+			const DAFTAR_PLAYLIST_RELAX = [
+				{ judul: "Green Day - Basket Case", src: "stockid_suara/Green Day - Basket Case.mp3" },
+				{ judul: "Tiara Andini - Janji Setia", src: "stockid_suara/Tiara Andini - Janji Setia.mp3" },
+				{ judul: "Jung Yong Hwa - Because I Miss You", src: "stockid_suara/Jung Yong Hwa - Because I Miss You.mp3" },
+				{ judul: "Utopia - Mencintaimu Sampai Mati", src: "stockid_suara/Utopia - Mencintaimu Sampai Mati.mp3" }
+			];
+
+			let indeksLaguAktif = 0;
+			let isLoopingAktif = false;
+			let elemenAudio = null;
+			let sliderDurasi = null;
+			let isUserSedangMenggeser = false; // Flag penahan update DOM konstan
+			let detikTerakhirDicatat = -1;    // Throttle tracker
+
+			function inisialisasiPlayerRelax() {
+				elemenAudio = document.getElementById("audioRelaxEngine");
+				sliderDurasi = document.getElementById("sliderDurasi");
+				if (!elemenAudio) return;
+
+				indeksLaguAktif = Math.floor(Math.random() * DAFTAR_PLAYLIST_RELAX.length);
+				setelSumberLagu(indeksLaguAktif);
+
+				// Sinkronisasi waktu (di-throttle agar tidak membebani CPU)
+				elemenAudio.addEventListener("timeupdate", perbaruiTimelineLaguRingan);
+				elemenAudio.addEventListener("loadedmetadata", aturTotalDurasiMaksimal);
+
+				elemenAudio.addEventListener("ended", () => {
+					if (isLoopingAktif) {
+						elemenAudio.play().catch(() => {});
+					} else {
+						putarLaguBerikutnya();
+					}
+				});
+			}
+
+			function setelSumberLagu(indeks) {
+				if (!elemenAudio) return;
+				const dataLagu = DAFTAR_PLAYLIST_RELAX[indeks];
+				
+				elemenAudio.src = dataLagu.src;
+				elemenAudio.load();
+				
+				const marqueeText = document.getElementById("marqueeJudulLagu");
+				if (marqueeText) {
+					marqueeText.innerText = `NOW PLAYING: ${dataLagu.judul} • [FILE: ${dataLagu.src.split('/').pop()}]`;
+				}
+				
+				if (sliderDurasi) sliderDurasi.value = 0;
+				detikTerakhirDicatat = -1;
+			}
+
+			function formatWaktuMenitDetik(detikMurni) {
+				if (isNaN(detikMurni)) return "00:00";
+				let menit = Math.floor(detikMurni / 60);
+				let detik = Math.floor(detikMurni % 60);
+				return `${String(menit).padStart(2, '0')}:${String(detik).padStart(2, '0')}`;
+			}
+
+			function aturTotalDurasiMaksimal() {
+				if (!elemenAudio || !sliderDurasi) return;
+				sliderDurasi.max = Math.floor(elemenAudio.duration);
+				
+				const teksTotalDurasi = document.getElementById("totalDurasi");
+				if (teksTotalDurasi) {
+					teksTotalDurasi.innerText = formatWaktuMenitDetik(elemenAudio.duration);
+				}
+			}
+
+			// OPTIMASI 1: Pembaruan timeline ringan (Hanya memicu DOM saat angka detik benar-benar berganti)
+			function perbaruiTimelineLaguRingan() {
+				if (!elemenAudio || !sliderDurasi || isUserSedangMenggeser) return;
+				
+				let detikSekarang = Math.floor(elemenAudio.currentTime);
+				
+				// JIKA detik belum berubah, batalkan eksekusi DOM (Menghemat load CPU hingga 90%)
+				if (detikSekarang === detikTerakhirDicatat) return;
+				
+				detikTerakhirDicatat = detikSekarang;
+				sliderDurasi.value = detikSekarang;
+				
+				const teksWaktuSekarang = document.getElementById("waktuSekarang");
+				if (teksWaktuSekarang) {
+					teksWaktuSekarang.innerText = formatWaktuMenitDetik(elemenAudio.currentTime);
+				}
+			}
+
+			// OPTIMASI 2: Mengunci update audio utama saat jari user sedang menelusuri timeline bar
+			function visualisasikanGeseranLokal() {
+				isUserSedangMenggeser = true;
+				const teksWaktuSekarang = document.getElementById("waktuSekarang");
+				if (teksWaktuSekarang && sliderDurasi) {
+					teksWaktuSekarang.innerText = formatWaktuMenitDetik(sliderDurasi.value);
+				}
+			}
+
+			// OPTIMASI 3: Audio baru melompat detik HANYA saat user melepas geseran jari dari layar
+			function lompatKeDurasiLaguFinal() {
+				if (!elemenAudio || !sliderDurasi) return;
+				
+				elemenAudio.currentTime = sliderDurasi.value;
+				
+				// Kembalikan hak kendali otomatis ke sistem background tracker
+				setTimeout(() => {
+					isUserSedangMenggeser = false;
+				}, 100);
+				
+				getar(30);
+			}
+
+			function togglePlayPause() {
+				if (!elemenAudio) return;
+				const ikon = document.getElementById("ikonPlayPause");
+				if (elemenAudio.paused) {
+					elemenAudio.play().then(() => {
+						if (ikon) ikon.className = "fa-solid fa-pause text-xs";
+					}).catch(() => {});
+				} else {
+					elemenAudio.pause();
+					if (ikon) ikon.className = "fa-solid fa-play text-xs ml-0.5";
+				}
+			}
+
+			function putarLaguBerikutnya() {
+				indeksLaguAktif = (indeksLaguAktif + 1) % DAFTAR_PLAYLIST_RELAX.length;
+				setelSumberLagu(indeksLaguAktif);
+				elemenAudio.play().then(() => {
+					const ikon = document.getElementById("ikonPlayPause");
+					if (ikon) ikon.className = "fa-solid fa-pause text-xs";
+				}).catch(() => {});
+			}
+
+			function putarLaguSebelumnya() {
+				indeksLaguAktif = (indeksLaguAktif - 1 + DAFTAR_PLAYLIST_RELAX.length) % DAFTAR_PLAYLIST_RELAX.length;
+				setelSumberLagu(indeksLaguAktif);
+				elemenAudio.play().then(() => {
+					const ikon = document.getElementById("ikonPlayPause");
+					if (ikon) ikon.className = "fa-solid fa-pause text-xs";
+				}).catch(() => {});
+			}
+
+			function toggleLoopLagu() {
+				isLoopingAktif = !isLoopingAktif;
+				const tombol = document.getElementById("tombolLoop");
+				const indikator = document.getElementById("indikatorLoop");
+				if (isLoopingAktif) {
+					if (tombol) { tombol.classList.remove("text-slate-500"); tombol.classList.add("text-emerald-400"); }
+					if (indikator) indikator.classList.remove("hidden");
+				} else {
+					if (tombol) { tombol.classList.remove("text-emerald-400"); tombol.classList.add("text-slate-500"); }
+					if (indikator) indikator.classList.add("hidden");
+				}
+			}
+
+			if (document.readyState === "loading") {
+				document.addEventListener("DOMContentLoaded", inisialisasiPlayerRelax);
+			} else {
+				inisialisasiPlayerRelax();
+			}
 		</script>
 	</body>
 </html>
