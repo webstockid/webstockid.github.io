@@ -32,36 +32,73 @@
 				-webkit-backdrop-filter: blur(12px);
 				border: 1px solid rgba(255, 255, 255, .06)
 			}
-			.glow-green {
-				box-shadow: 0 0 20px rgba(16, 185, 129, .2)
-			}
-			.glow-premium {
-				box-shadow: 0 0 30px rgba(245, 158, 11, .25)
-			}
 		</style>
 	</head>
 
 	<!-- START: STOCK ID SIMPLE HARDCODED VIP GATEWAY -->
-	<div id="gerbangKunciVip" class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0b0f19] text-gray-100">
-		<div class="w-full max-w-md bg-gradient-to-br from-slate-900/60 to-slate-950/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-2xl text-center">
-			<div class="w-14 h-14 mx-auto bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20 flex items-center justify-center mb-4">
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-					<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-					<path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-				</svg>
+	<div id="gerbangKunciVip" class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0b0f19] text-gray-100 overflow-y-auto">
+		<div class="w-full max-w-lg bg-gradient-to-br from-slate-900/80 to-slate-950/60 backdrop-blur-md border border-white/10 rounded-3xl p-6 shadow-2xl space-y-6 my-auto">
+			
+			<!-- BAGIAN A: FORM AKSES LOGIN TOKEN -->
+			<div class="text-center border-b border-white/5 pb-5">
+				<div class="w-12 h-12 mx-auto bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/20 flex items-center justify-center mb-3">
+					<i class="fa-solid fa-lock text-base"></i>
+				</div>
+				<h3 class="text-sm font-black tracking-wider uppercase text-gray-100">Stock ID VIP Gateway</h3>
+				<p class="text-[10px] text-gray-400 mt-0.5 mb-4">Silakan masukkan token akses VIP aktif Anda.</p>
+				
+				<div class="space-y-2.5 max-w-sm mx-auto">
+					<input type="password" id="isiTokenUser" placeholder="Ketik token di sini..." class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-center font-mono focus:outline-none focus:border-emerald-500 transition-all text-emerald-400">
+					<button onclick="periksaTokenAksesVip()" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md cursor-pointer">
+						Buka Dashboard VIP
+					</button>
+				</div>
+				<div id="notifTokenEror" class="hidden mt-2.5 text-[9px] font-bold text-rose-400 uppercase tracking-wider">⚠️ Token Salah atau Kedaluwarsa!</div>
 			</div>
-			<h3 class="text-base font-black tracking-wider uppercase text-gray-100">Stock ID VIP Gateway</h3>
-			<p class="text-[11px] text-gray-400 mt-1 mb-5">Konten Eksklusif. Silakan masukkan token akses VIP Anda.</p>
-			<div class="space-y-3">
-				<input type="password" id="isiTokenUser" placeholder="Ketik token di sini..." class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-3 text-sm text-center font-mono focus:outline-none focus:border-emerald-500 transition-all text-emerald-400">
-				<button onclick="periksaTokenAksesVip()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-emerald-500/15 cursor-pointer">
-					Buka Screener VIP
-				</button>
+
+			<!-- BAGIAN B: FORM PEMBELIAN OTOMATIS VIA WHATSAPP -->
+			<div class="space-y-4">
+				<div class="text-center">
+					<h4 class="text-xs font-black tracking-wide text-emerald-400 uppercase">Alat Bantu Screening Saham Secara Real Time</h4>
+					<p class="text-[10px] text-gray-400 mt-0.5">Pantau Saham Incaranmu Secara Akurat Untuk Mematangkan Posisimu</p>
+				</div>
+
+				<!-- Dropdown Paket Layanan -->
+				<div class="space-y-1.5 text-xs font-bold max-w-sm mx-auto">
+					<label class="text-[10px] uppercase text-gray-500 tracking-wider font-black">Pilih Paket Durasi:</label>
+					<select id="pilihPaketScreener" class="w-full bg-slate-950/90 border border-white/10 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none cursor-pointer">
+						<option value="5|5.000">Beli 5 hari > Harga 5,000</option>
+						<option value="10|10.000">Beli 10 hari > Harga 10,000</option>
+						<option value="20|15.000">Beli 20 hari > Harga 15,000</option>
+						<option value="30|25.000">Beli 30 hari > Harga 25,000</option>
+						<option value="50|45.000">Beli 50 hari > Harga 45,000</option>
+					</select>
+				</div>
+
+				<!-- Kotak Info Rekening Digital & Copy Text -->
+				<div class="bg-black/30 border border-white/5 p-3 rounded-2xl text-[10px] font-medium leading-relaxed max-w-sm mx-auto">
+					<p class="text-gray-400 text-center">
+						Silahkan bayar via Dana atau Gopay ke nomor berikut, lalu kirim bukti Transfer ke Tombol dibawah ini:
+					</p>
+					<div class="flex items-center justify-between bg-slate-950/60 border border-white/5 px-3 py-2 rounded-xl mt-2 font-mono font-bold">
+						<span class="text-amber-400" id="numRekeningStockId">089529305947</span>
+						<button onclick="salinNomorRekening()" class="text-emerald-400 hover:text-emerald-300 text-[9px] uppercase tracking-wider flex items-center gap-1 active:scale-90 transition-all cursor-pointer">
+							<i class="fa-solid fa-copy"></i> <span id="btnCopyText">Salin</span>
+						</button>
+					</div>
+				</div>
+
+				<!-- Tombol Hubungi Admin -->
+				<div class="max-w-sm mx-auto">
+					<button onclick="kirimBuktiKeWhatsappAdmin()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-500/10">
+						<i class="fa-brands fa-whatsapp text-sm"></i>
+						<span>Hubungi Admin</span>
+					</button>
+				</div>
 			</div>
-			<div id="notifTokenEror" class="hidden mt-3 text-[10px] font-bold text-rose-400 uppercase tracking-wider">⚠️ Token Salah, akses ditolak!</div>
+
 		</div>
 	</div>
-	<!-- END: STOCK ID SIMPLE HARDCODED VIP GATEWAY -->
 
 	<body class="text-slate-200 antialiased overflow-x-hidden">
 		<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
@@ -71,7 +108,8 @@
 						<i class="fa-solid fa-chart-line text-slate-950 text-xl font-black"></i>
 					</div>
 					<div>
-						<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">WATCHLIST</span></span>
+						<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">WATCHLIST</span>
+						</span>
 						<p class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
 					</div>
 				</div>
@@ -108,6 +146,7 @@
 
 		<!-- START: REAL-TIME STOCK SCREENER VIP COMPONENT -->
 		<div class="w-full max-w-7xl mx-auto px-4 py-6 text-gray-100">
+			<!-- Header & Status Panel -->
 			<div class="bg-gradient-to-r from-slate-900/60 to-slate-950/40 backdrop-blur-md border border-white/10 rounded-2xl p-5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl shadow-emerald-950/5">
 				<div class="flex items-center gap-3.5">
 					<div class="p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400">
@@ -123,9 +162,10 @@
 							<h2 class="text-base font-black tracking-wider uppercase text-gray-100">Stock ID Real-Time Screener</h2>
 							<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-widest animate-pulse">LIVE FEED</span>
 						</div>
-						<p class="text-[11px] text-gray-400">Penyaringan otomatis momentum & basic ratio pasar saham Indonesia (Menggunakan TV Open Engine)</p>
+						<p class="text-[11px] text-gray-400">Penyaringan otomatis momentum & basic ratio pasar saham Indonesia</p>
 					</div>
 				</div>
+				<!-- Tombol Penyegaran Scanner -->
 				<div class="w-full sm:w-auto flex justify-end">
 					<button onclick="jalankanUlangScreener()" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-white/5 hover:bg-white/10 active:scale-95 text-gray-300 hover:text-white rounded-xl border border-white/10 text-xs font-bold transition-all cursor-pointer shadow-md">
 						<svg id="iconPutarScreener" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -136,12 +176,12 @@
 					</button>
 				</div>
 			</div>
+			<!-- Kontainer Utama Tampilan Hasil Pemindaian Saham -->
 			<div class="w-full h-[600px] bg-slate-900/30 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden relative shadow-2xl">
 				<div class="tradingview-widget-container w-full h-full">
 					<div id="kontainerScannerDinamis" class="w-full h-full"></div>
 				</div>
 			</div>
-		</div>
 		<!-- END: REAL-TIME STOCK SCREENER VIP COMPONENT -->
 
 		<!-- Watchlist Grid Archive Display -->
@@ -170,14 +210,14 @@
 		<div class="fixed bottom-8 left-0 right-0 z-50 px-4 flex justify-center pointer-events-none transform-gpu">
 			<div class="w-full max-w-xs bg-slate-900/95 backdrop-blur-md border border-white/10 rounded-2xl p-3 shadow-xl pointer-events-auto flex flex-col items-center space-y-2">
 				<div class="flex items-center justify-center space-x-4 text-slate-300">
-					<button onclick="putarLaguSebelumnya(); tang(); getar(30)" class="hover:text-emerald-400 active:scale-90 transition-all cursor-pointer"><i class="fa-solid fa-backward-step text-sm"></i></button>
-					<button onclick="togglePlayPause(); tong(); getar(40)" id="tombolPlayPause" class="w-8 h-8 flex items-center justify-center bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-full shadow-md active:scale-95 transition-all cursor-pointer"><i class="fa-solid fa-play text-xs ml-0.5" id="ikonPlayPause"></i></button>
-					<button onclick="putarLaguBerikutnya(); tang(); getar(30)" class="hover:text-emerald-400 active:scale-90 transition-all cursor-pointer"><i class="fa-solid fa-forward-step text-sm"></i></button>
-					<button onclick="toggleLoopLagu(); ting(); getar(30)" id="tombolLoop" class="hover:text-emerald-400 text-slate-500 transition-all cursor-pointer relative"><i class="fa-solid fa-repeat text-xs"></i><span id="indikatorLoop" class="absolute -top-1 -right-1 w-1.5 h-1.5 bg-emerald-400 rounded-full hidden"></span></button>
+					<button onclick="putarLaguSebelumnya(); getar(30)" class="hover:text-emerald-400 active:scale-90 transition-all cursor-pointer"><i class="fa-solid fa-backward-step text-sm"></i></button>
+					<button onclick="togglePlayPause(); getar(40)" id="tombolPlayPause" class="w-8 h-8 flex items-center justify-center bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-full shadow-md active:scale-95 transition-all cursor-pointer"><i class="fa-solid fa-play text-xs ml-0.5" id="ikonPlayPause"></i></button>
+					<button onclick="putarLaguBerikutnya(); getar(30)" class="hover:text-emerald-400 active:scale-90 transition-all cursor-pointer"><i class="fa-solid fa-forward-step text-sm"></i></button>
+					<button id="tombolLoop" class="hover:text-emerald-400 text-slate-500 transition-all cursor-pointer relative"><i class="fa-solid fa-repeat text-xs"></i></button>
 				</div>
 				<div class="w-full flex items-center space-x-2 text-[9px] font-mono text-slate-400 px-1">
 					<span id="waktuSekarang">00:00</span>
-					<input type="range" id="sliderDurasi" min="0" max="100" value="0" oninput="visualisasikanGeseranLokal()" onchange="lompatKeDurasiLaguFinal()" class="flex-1 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none transform-gpu">
+					<input type="range" id="sliderDurasi" min="0" max="100" value="0" class="flex-1 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none transform-gpu">
 					<span id="totalDurasi">00:00</span>
 				</div>
 				<div class="w-full bg-slate-950/80 border border-white/5 rounded-lg py-1 px-2 overflow-hidden">
@@ -192,15 +232,15 @@
 		   CORE JAVASCRIPT LOGIC ENGINE (Ditempatkan di bawah agar DOM Aman)
 		   ========================================================================== */ -->
 		<script>
-			/* DATABASE AKSES TOKEN MASA AKTIF VIP */
+			/* DATABASE EXPIRATION TOKEN VIP MENGGUNAKAN FORMAT KALENDER HARI BERSIH (YYYY-MM-DD) */
 			const DATABASE_TOKEN_VIP = {
-				"123": { durasiHari: 7 },
-				"VIP5": { durasiHari: 5 },
-				"VIP10": { durasiHari: 10 },
-				"VIP20": { durasiHari: 20 },
-				"VIP30": { durasiHari: 30 },
-				"VIP50": { durasiHari: 50 },
-				"STOCKIDVIP": { durasiHari: null }
+				"123": { tanggalExpired: "2026-07-19" },         // Pesanan Mas Agung (7 Hari dari tgl 20)
+				"TOKEN5": { tanggalExpired: "2026-07-25" },      // Paket 5 Hari
+				"TOKEN10": { tanggalExpired: "2026-07-30" },     // Paket 10 Hari
+				"TOKEN20": { tanggalExpired: "2026-08-09" },     // Paket 20 Hari
+				"TOKEN30": { tanggalExpired: "2026-08-19" },     // Paket 30 Hari
+				"TOKEN50": { tanggalExpired: "2026-09-08" },     // Paket 50 Hari
+				"STOCKIDVIP": { tanggalExpired: "LIFETIME" }      // Akses Selamanya
 			};
 
 			/* ARSIP DATA WATCHLIST PREMIUM MEMBER */
@@ -231,80 +271,93 @@
 				"07": "Juli", "08": "Agustus", "09": "September", "10": "Oktober", "11": "November", "12": "Desember"
 			};
 
-			/* ENGINE 1: DRIVER WIDGET REAL-TIME SCREENER STOCK (TRADINGVIEW OPEN FEED) */
-			async function jalankanUlangScreener() {
+			/* ENGINE 1: DRIVER WIDGET REAL-TIME SCREENER STOCK (TRADINGVIEW OPEN ENGINE) */
+			/* ==========================================================================
+			   LOGIKA ENGINE DRIVER REAL-TIME STOCK SCREENER
+			   ========================================================================== */
+			
+			/**
+			 * Merender ulang constructor widget screener dengan filter teknikal dan rasio BEI
+			 */
+			function jalankanUlangScreener() {
 				const targetScreener = document.getElementById('kontainerScannerDinamis');
 				const ikonTombol = document.getElementById('iconPutarScreener');
 				
 				if (!targetScreener) return;
+				
+				// Jalankan efek rotasi animasi loading pada tombol
 				if (ikonTombol) ikonTombol.classList.add('animate-spin');
+				
+				// Bersihkan sisa render widget lama secara total
 				targetScreener.innerHTML = "";
 			
-				try {
-					const emitenPilihan = ["BBCA", "BBRI", "BRIS", "TLKM", "GOTO", "ADRO", "SGER", "IKAI", "SQMI", "GULA", "BMSR", "PKPK"];
-					const respon = await fetch('https://quotes.tradingview.com/quotes?symbols=' + emitenPilihan.map(s => 'IDX:' + s).join(','));
-					const hasilJson = await respon.json();
-					
-					if (!hasilJson || !hasilJson.d) throw new Error("Format kosong");
-
-					let html = `<div class="w-full overflow-x-auto bg-[#131722] h-full"><table class="w-full text-left border-collapse min-w-[600px]">
-						<thead><tr class="bg-slate-950/60 text-[10px] uppercase tracking-wider text-slate-500 border-b border-white/5 font-black">
-						<th class="py-3.5 px-4">Ticker</th><th class="py-3.5 px-3 text-right">Harga</th><th class="py-3.5 px-3 text-right">% Perubahan</th><th class="py-3.5 px-4 text-right">Volume</th>
-						</tr></thead><tbody class="divide-y divide-white/5 text-xs font-bold font-mono">`;
-
-					hasilJson.d.forEach(item => {
-						const info = item.v;
-						const tickerBersih = item.s.replace('IDX:', '');
-						const change = info.chp || 0;
-						const colChange = change >= 0 ? 'text-emerald-400' : 'text-rose-400';
-						const formatVol = info.volume >= 1000000 ? (info.volume / 1000000).toFixed(2) + ' M' : info.volume.toLocaleString('id-ID');
-
-						html += `<tr class="hover:bg-slate-800/40 border-b border-white/5">
-							<td class="py-3 px-4 text-sm font-black text-slate-200">${tickerBersih} <span class="text-[9px] text-blue-400 font-bold">E</span></td>
-							<td class="py-3 px-3 text-right text-slate-100">${(info.lp || 0).toLocaleString('id-ID')}</td>
-							<td class="py-3 px-3 text-right ${colChange}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</td>
-							<td class="py-3 px-4 text-right text-slate-400">${formatVol}</td>
-						</tr>`;
-					});
-
-					html += `</tbody></table></div>`;
-					targetScreener.innerHTML = html;
-				} catch (e) {
-					targetScreener.innerHTML = `<div class="py-16 text-center text-rose-400 font-bold">Gagal memuat feed bursa. Silakan refresh radar.</div>`;
-				} finally {
-					if (ikonTombol) setTimeout(() => ikonTombol.classList.remove('animate-spin'), 600);
-				}
+				// Membuat elemen penampung skrip embedding TradingView resmi
+				const skripScreener = document.createElement('script');
+				skripScreener.type = 'text/javascript';
+				skripScreener.src = 'https://s3.tradingview.com/external-embedding/embed-widget-screener.js';
+				skripScreener.async = true;
+			
+				// Rangkaian parameter konfigurasi logika filter basic ratio & ratio vs ratio (Live Stream)
+				skripScreener.text = JSON.stringify({
+					"width": "100%",
+					"height": "100%",
+					"defaultColumn": "overview",
+					"defaultScreen": "most_capitalized",
+					"market": "indonesia",
+					"showToolbar": true,
+					"colorTheme": "dark",
+					"locale": "id",
+					"isTransparent": true
+				});
+			
+				// Tempel elemen skrip ke dalam DOM untuk memicu visualisasi scanner data
+				targetScreener.appendChild(skripScreener);
+			
+				// Hentikan putaran animasi setelah 1 detik proses injeksi skrip
+				setTimeout(() => {
+					if (ikonTombol) ikonTombol.classList.remove('animate-spin');
+				}, 1000);
+			}
+			
+			// Daftarkan ke dalam trigger pemuatan antarmuka saat sistem browser siap
+			if (document.readyState === "loading") {
+				document.addEventListener("DOMContentLoaded", jalankanUlangScreener);
+			} else {
+				jalankanUlangScreener();
 			}
 
-			/* ENGINE 2: GATEWAY KONTROL VERIFIKASI VIP & SECURITY MASA AKTIF */
+			/* ENGINE 2: SECURITY GATEWAY VERIFIKASI MASA AKTIF KALENDER */
 			function periksaTokenAksesVip() {
 				const inputUser = document.getElementById('isiTokenUser').value.trim();
 				const notifEror = document.getElementById('notifTokenEror');
-				const layarKunci = document.getElementById('gerbangKunciVip');
 			
 				if (DATABASE_TOKEN_VIP.hasOwnProperty(inputUser)) {
-					notifEror.classList.add('hidden');
-					const dataToken = DATABASE_TOKEN_VIP[inputUser];
-					let waktuKedaluwarsa = null;
+					const targetToken = DATABASE_TOKEN_VIP[inputUser];
+					
+					if (targetToken.tanggalExpired !== "LIFETIME") {
+						const dateTarget = new Date(targetToken.tanggalExpired + "T00:00:00");
+						const dateHariIni = new Date();
+						
+						dateHariIni.setHours(0,0,0,0);
+						dateTarget.setHours(0,0,0,0);
 
-					if (dataToken.durasiHari !== null) {
-						const sekarang = new Date();
-						sekarang.setDate(sekarang.getDate() + dataToken.durasiHari);
-						waktuKedaluwarsa = ClinicalFormatDate(sekarang.getTime());
-					} else {
-						waktuKedaluwarsa = "LIFETIME";
+						if (dateHariIni.getTime() > dateTarget.getTime()) {
+							notifEror.innerText = "⚠️ Token Tersebut Sudah Kedaluwarsa!";
+							notifEror.classList.remove('hidden');
+							return;
+						}
 					}
 
+					notifEror.classList.add('hidden');
 					localStorage.setItem('stockIdVipTokenActive', inputUser);
-					localStorage.setItem('stockIdVipExpiration', waktuKedaluwarsa);
+					localStorage.setItem('stockIdVipExpiration', targetToken.tanggalExpired);
 					
 					bukaAksesDashboardVip();
 				} else {
+					notifEror.innerText = "⚠️ Token Salah, akses ditolak!";
 					notifEror.classList.remove('hidden');
 				}
 			}
-
-			function ClinicalFormatDate(ms) { return ms.toString(); }
 
 			function bukaAksesDashboardVip() {
 				document.getElementById('gerbangKunciVip').classList.add('hidden');
@@ -327,27 +380,26 @@
 					return;
 				}
 
-				const targetMundur = parseInt(expTime);
+				const dateTarget = new Date(expTime + "T00:00:00");
+				const dateHariIni = new Date();
 				
-				function updateTimer() {
-					const jarak = targetMundur - new Date().getTime();
+				dateHariIni.setHours(0,0,0,0);
+				dateTarget.setHours(0,0,0,0);
 
-					if (jarak <= 0) {
-						teksInfo.innerHTML = "<span class='text-rose-400 font-bold'>Akses kedaluwarsa!</span>";
-						clearInterval(timerInterval);
-						setTimeout(keluarAksesVip, 1500);
-						return;
-					}
+				const selisihMilidetik = dateTarget.getTime() - dateHariIni.getTime();
+				const sisaHariBersih = Math.ceil(selisihMilidetik / (1000 * 60 * 60 * 24));
 
-					const hari = Math.floor(jarak / (1000 * 60 * 60 * 24));
-					const jam = Math.floor((jarak % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-					const menit = Math.floor((jarak % (1000 * 60 * 60)) / (1000 * 60));
-
-					teksInfo.innerHTML = `Sisa Masa Aktif: <span class='text-emerald-400 font-mono font-black'>${hari} Hari ${jam} Jam ${menit} Menit</span> lagi`;
+				if (sisaHariBersih < 0) {
+					teksInfo.innerHTML = "<span class='text-rose-400 font-bold'>Akses Kalender Hari Ini Telah Habis!</span>";
+					setTimeout(keluarAksesVip, 1500);
+					return;
 				}
 
-				updateTimer();
-				const timerInterval = setInterval(updateTimer, 60000);
+				if (sisaHariBersih === 0) {
+					teksInfo.innerHTML = "Sisa Masa Aktif: <span class='text-orange-400 font-black'>HARI INI HARI TERAKHIR</span> Akses VIP Anda";
+				} else {
+					teksInfo.innerHTML = `Sisa Masa Aktif: <span class='text-emerald-400 font-mono font-black'>${sisaHariBersih} Hari</span> Bersih Lagi`;
+				}
 			}
 
 			function keluarAksesVip() {
@@ -356,7 +408,34 @@
 				window.location.reload();
 			}
 
-			/* ENGINE 3: RENDER ANTARMUKA WATCHLIST ACCORDION SYSTEM */
+			/* ENGINE 3: UTILITY SALIN NOMOR & REDIRECT WHATSAPP ADMIN */
+			function salinNomorRekening() {
+				const textNum = document.getElementById('numRekeningStockId').innerText;
+				navigator.clipboard.writeText(textNum).then(() => {
+					const btnText = document.getElementById('btnCopyText');
+					if (btnText) {
+						btnText.innerText = "Tersalin!";
+						setTimeout(() => { btnText.innerText = "Salin"; }, 1500);
+					}
+					getar(30);
+				});
+			}
+
+			function kirimBuktiKeWhatsappAdmin() {
+				const dropdown = document.getElementById('pilihPaketScreener');
+				if (!dropdown) return;
+
+				const [hari, harga] = dropdown.value.split('|');
+				const nomorAdmin = "6289529305947"; 
+				
+				const templatePesan = `Halo Admin, saya telah membeli Screening Saham ${hari} Hari seharga ${harga}, mohon cek pembayaran masuk`;
+				const linkWaFinal = `https://api.whatsapp.com/send?phone=${nomorAdmin}&text=${encodeURIComponent(templatePesan)}`;
+				
+				getar(40);
+				window.open(linkWaFinal, '_blank');
+			}
+
+			/* ENGINE 4: RENDER WATCHLIST ACCORDION */
 			function inisialisasiPilihanPeriode() {
 				const dropdown = document.getElementById('pilihPeriodeBulan');
 				if (!dropdown) return;
@@ -383,8 +462,6 @@
 
 				filterData.forEach((grupHari, indeks) => {
 					const idUnikPanel = `grup-accordion-${indeks}`;
-					const labelTanggal = grupHari.tanggalISO.split("-").reverse().join(" ") + " " + KAMUS_BULAN[grupHari.tanggalISO.split("-")[1]];
-					
 					const boxTanggal = document.createElement('div');
 					boxTanggal.className = "bg-slate-900/20 border border-white/5 rounded-2xl overflow-hidden shadow-lg mb-4";
 					boxTanggal.innerHTML = `
@@ -422,39 +499,25 @@
 				if (p) p.classList.toggle('hidden');
 			}
 
-			/* ENGINE 4: PERFORMANCE FLOATING LIGHTWEIGHT AUDIO PLAYER */
+			/* ENGINE 5: LIGHTWEIGHT AUDIO PLAYER DUMMY STUB */
+			const DAFTAR_PLAYLIST_RELAX = [{ judul: "Utopia", src: "stockid_suara/Utopia - Mencintaimu Sampai Mati.mp3" }];
 			function inisialisasiPlayerRelax() {
 				const audio = document.getElementById("audioRelaxEngine");
 				if (!audio) return;
-				const playlist = DAFTAR_PLAYLIST_RELAX;
-				audio.src = playlist[Math.floor(Math.random() * playlist.length)].src;
+				audio.src = DAFTAR_PLAYLIST_RELAX[0].src;
 				audio.load();
-				document.getElementById("marqueeJudulLagu").innerText = "READY TO PLAY • SELECT SONGS FROM RADAR";
+				document.getElementById("marqueeJudulLagu").innerText = "READY TO PLAY TRACKS";
 			}
-
 			function togglePlayPause() {
 				const audio = document.getElementById("audioRelaxEngine");
 				const ikon = document.getElementById("ikonPlayPause");
-				if (!audio) return;
-				if (audio.paused) {
-					audio.play().then(() => { ikon.className = "fa-solid fa-pause text-xs"; }).catch(()=>{});
-				} else {
-					audio.pause();
-					ikon.className = "fa-solid fa-play text-xs ml-0.5";
-				}
+				if (audio.paused) { audio.play().then(() => { ikon.className = "fa-solid fa-pause text-xs"; }).catch(()=>{}); }
+				else { audio.pause(); ikon.className = "fa-solid fa-play text-xs ml-0.5"; }
 			}
-
-			function putarLaguBerikutnya() { inisialisasiPlayerRelax(); togglePlayPause(); }
-			function putarLaguSebelumnya() { inisialisasiPlayerRelax(); togglePlayPause(); }
-			function toggleLoopLagu() {}
-			function visualisasikanGeseranLokal() {}
-			function lompatKeDurasiLaguFinal() {}
-
-			// Core Sound & Haptic Bridge 
-			function tang() {} function ting() {} function tong() {}
+			function putarLaguBerikutnya() {} function putarLaguSebelumnya() {}
 			function getar(pola) { if (window.navigator.vibrate) window.navigator.vibrate(pola); }
 
-			/* DOM INITIALIZATION MANAGER */
+			/* DOM INITIALIZATION RUNNER */
 			document.addEventListener("DOMContentLoaded", () => {
 				inisialisasiPlayerRelax();
 				
@@ -462,9 +525,16 @@
 				const expTersimpan = localStorage.getItem('stockIdVipExpiration');
 				
 				if (tokenTersimpan && expTersimpan && DATABASE_TOKEN_VIP.hasOwnProperty(tokenTersimpan)) {
-					if (expTersimpan !== "LIFETIME" && new Date().getTime() > parseInt(expTersimpan)) {
-						keluarAksesVip();
-						return;
+					if (expTersimpan !== "LIFETIME") {
+						const dateTarget = new Date(expTersimpan + "T00:00:00");
+						const dateHariIni = new Date();
+						dateHariIni.setHours(0,0,0,0);
+						dateTarget.setHours(0,0,0,0);
+
+						if (dateHariIni.getTime() > dateTarget.getTime()) {
+							keluarAksesVip();
+							return;
+						}
 					}
 					bukaAksesDashboardVip();
 				}
