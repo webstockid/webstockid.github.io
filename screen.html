@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<title>Stock ID - Yahoo Finance Live Screener</title>
+	
+	<!-- Tailwind CSS & FontAwesome CDN -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+	<style>
+		body {
+			font-family: 'Nunito', sans-serif;
+			background-color: #0b0f19;
+		}
+	</style>
+</head>
+<body class="text-slate-200 antialiased select-none p-4">
+
+	<!-- CONTROLLER SCREENER CONTAINER -->
+	<div class="w-full max-w-7xl mx-auto bg-slate-900/40 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden shadow-2xl transform-gpu">
+		
+		<!-- Sub-Header Kontrol Tabel (Semirip Mungkin dengan Tampilan TradingView) -->
+		<div class="bg-[#131722] border-b border-white/5 p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+			
+			<!-- Kelompok Kiri: Pilihan Tab Utama -->
+			<div class="flex items-center space-x-1 bg-slate-950/40 p-1 rounded-xl border border-white/5">
+				<button onclick="gantiTabScreener('overview')" id="tab-overview" class="px-4 py-2 rounded-lg font-bold transition-all bg-slate-800 text-emerald-400">
+					Ikhtisar
+				</button>
+				<button onclick="gantiTabScreener('technical')" id="tab-technical" class="px-4 py-2 rounded-lg font-bold text-slate-400 hover:text-slate-200 transition-all">
+					Peringkat Teknikal
+				</button>
+			</div>
+
+			<!-- Kelompok Kanan: Filter Kategori Otomatis Langsung Dari API Yahoo -->
+			<div class="flex items-center space-x-2">
+				<select id="kategoriScreenerYahoo" onchange="fetchLiveYahooScreener()" class="bg-[#1c2030] border border-white/10 rounded-xl px-3 py-2 font-semibold text-slate-300 focus:outline-none cursor-pointer">
+					<option value="most_actives">Paling Volatil / Teraktif</option>
+					<option value="day_gainers">Top Gainers (%)</option>
+					<option value="day_losers">Top Losers (%)</option>
+				</select>
+				
+				<button onclick="fetchLiveYahooScreener(); getar(40)" class="px-4 py-2.5 bg-[#2962ff] hover:bg-[#1e4ed8] text-white font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-lg shadow-blue-500/10 cursor-pointer">
+					<span>Refresh</span>
+					<i class="fa-solid fa-rotate text-[10px]" id="loadingIcon"></i>
+				</button>
+			</div>
+		</div>
+
+		<!-- Area Utama Tabel Data Grid -->
+		<div class="w-full overflow-x-auto bg-[#131722]">
+			<table class="w-full text-left border-collapse min-w-[700px]">
+				<thead>
+					<tr class="bg-slate-950/60 text-[10px] uppercase tracking-wider text-slate-500 border-b border-white/5 font-black">
+						<th class="py-3.5 px-4 w-[220px]">Ticker</th>
+						<th class="py-3.5 px-3 text-right" id="th-dinamis-1">Harga</th>
+						<th class="py-3.5 px-3 text-right" id="th-dinamis-2">% Perubahan</th>
+						<th class="py-3.5 px-3 text-right" id="th-dinamis-3">Vol</th>
+						<th class="py-3.5 px-4 text-right" id="th-dinamis-4">Market Cap (Valuasi)</th>
+					</tr>
+				</thead>
+				<tbody id="bodyTabelYahooScreener" class="divide-y divide-white/5 text-xs font-bold font-mono">
+					<tr>
+						<td colspan="5" class="py-8 text-center text-slate-400">Menghubungkan ke server Yahoo Finance API...</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<!-- Footer Info Counter -->
+		<div class="bg-[#131722] border-t border-white/5 px-4 py-2.5 flex items-center justify-between text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+			<div>TICKER: <span id="txtJumlahCocok" class="text-slate-300 font-black">0 COCOK</span></div>
+			<div class="flex items-center gap-1 text-emerald-500 font-mono"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> YAHOO FINANCE LIVE AGGREGATOR</div>
+		</div>
+	</div>
+
+	<!-- ENGINE DRIVER LOGIC SCREENER YAHOO REAL-TIME -->
+	<script>
+		let dataScreenerAktif = [];
+		let tabAktif = "overview";
+
+		// Fungsi pengkategorian peringkat teknikal pintar berdasarkan pergerakan harga riil harian
+		function dapatkanRatingTeknikal(changePercent) {
+			if (changePercent >= 4) return { teks: "Pembelian Kuat", warna: "text-blue-400 bg-blue-500/5 border-blue-500/10" };
+			if (changePercent > 0) return { teks: "Pembelian", warna: "text-emerald-400 bg-emerald-500/5 border-emerald-500/10" };
+			if (changePercent <= -4) return { teks: "Penjualan Kuat", warna: "text-rose-400 bg-rose-500/5 border-rose-500/10" };
+			return { teks: "Netral", warna: "text-slate-400 bg-slate-500/5 border-slate-500/10" };
+		}
+
+		// Engine Utama Fetch Data Real-Time Berdasarkan Kategori Dropdown Yahoo Finance
+		// Engine Utama Fetch Data Real-Time Berdasarkan Kategori (Bebas Rate Limit)
+		async function fetchLiveYahooScreener() {
+			const icon = document.getElementById('loadingIcon');
+			const scrType = document.getElementById('kategoriScreenerYahoo').value;
+			if (icon) icon.classList.add('animate-spin');
+
+			try {
+				// URL API Asli Yahoo
+				const urlAsli = `https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?scrIds=${scrType}&count=50`;
+				
+				// JEMBATAN ANTI LIMIT: Menggunakan proxy aggregator agar request di-masking & tidak membebani IP HP Mas Agung
+				const urlBypassAntiLimit = `https://api.allorigins.win/get?url=${encodeURIComponent(urlAsli)}`;
+				
+				const respon = await fetch(urlBypassAntiLimit);
+				const dataBypass = await respon.json();
+				
+				// AllOrigins membungkus data asli di dalam properti .contents berupa string text JSON
+				const dataJson = JSON.parse(dataBypass.contents);
+				const totalQuotes = dataJson.finance.result[0].quotes || [];
+
+				const dataHasilFetch = totalQuotes.slice(0, 20);
+
+				dataScreenerAktif = dataHasilFetch.map(q => ({
+					ticker: q.symbol.split('.')[0],
+					harga: q.regularMarketPrice || 0,
+					perubahan: q.regularMarketChangePercent || 0,
+					volume: q.regularMarketVolume || 0,
+					marketCap: q.marketCap || 0
+				}));
+
+				renderTabelData();
+			} catch (error) {
+				console.error("Gagal menarik live data API Yahoo Finance:", error);
+				document.getElementById('bodyTabelYahooScreener').innerHTML = `
+					<tr>
+						<td colspan="5" class="py-8 text-center text-rose-400">
+							<i class="fa-solid fa-triangle-exclamation mr-1"></i> Gagal memuat data stream. Silakan coba tekan refresh kembali.
+						</td>
+					</tr>`;
+			} finally {
+				if (icon) icon.classList.remove('animate-spin');
+			}
+		}
+
+		// Mengubah tata nama header kolom dinamis sewaktu berganti tab
+		function gantiTabScreener(namaTab) {
+			tabAktif = namaTab;
+			const btnOverview = document.getElementById('tab-overview');
+			const btnTechnical = document.getElementById('tab-technical');
+			
+			const th1 = document.getElementById('th-dinamis-1');
+			const th2 = document.getElementById('th-dinamis-2');
+			const th3 = document.getElementById('th-dinamis-3');
+			const th4 = document.getElementById('th-dinamis-4');
+
+			if (tabAktif === 'technical') {
+				btnTechnical.className = "px-4 py-2 rounded-lg font-bold bg-slate-800 text-emerald-400";
+				btnOverview.className = "px-4 py-2 rounded-lg font-bold text-slate-400 hover:text-slate-200";
+				th1.innerText = "Peringkat Teknikal";
+				th2.innerText = "Vol";
+				th3.innerText = "Market Cap";
+				th4.innerText = "Aksi Perubahan";
+			} else {
+				btnOverview.className = "px-4 py-2 rounded-lg font-bold bg-slate-800 text-emerald-400";
+				btnTechnical.className = "px-4 py-2 rounded-lg font-bold text-slate-400 hover:text-slate-200";
+				th1.innerText = "Harga";
+				th2.innerText = "% Perubahan";
+				th3.innerText = "Vol";
+				th4.innerText = "Market Cap (Valuasi)";
+			}
+			renderTabelData();
+		}
+
+		// Merender tumpukan data objek array ke dalam struktur baris tabel HTML
+		function renderTabelData() {
+			const tbody = document.getElementById('bodyTabelYahooScreener');
+			if (!tbody) return;
+
+			if (dataScreenerAktif.length === 0) {
+				tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500">Tidak ada data emiten aktif terdeteksi.</td></tr>`;
+				return;
+			}
+
+			let html = "";
+			dataScreenerAktif.forEach(s => {
+				const colChange = s.perubahan >= 0 ? 'text-emerald-400' : 'text-rose-400';
+				const tandaPlus = s.perubahan >= 0 ? '+' : '';
+				const rating = dapatkanRatingTeknikal(s.perubahan);
+
+				// Mengonversi notasi nilai jutaan (M), miliar (B), atau triliun (T) agar rapi
+				const formatVol = s.volume >= 1000000000 ? (s.volume / 1000000000).toFixed(2) + ' B' : s.volume >= 1000000 ? (s.volume / 1000000).toFixed(2) + ' M' : s.volume.toLocaleString('id-ID');
+				const formatCap = s.marketCap >= 1000000000000 ? (s.marketCap / 1000000000000).toFixed(2) + ' T' : s.marketCap >= 1000000000 ? (s.marketCap / 1000000000).toFixed(2) + ' B' : (s.marketCap / 1000000).toFixed(2) + ' M';
+
+				if (tabAktif === 'technical') {
+					// STRUKTUR TAB: PERINGKAT TEKNIKAL ALA TRADINGVIEW SCREENSHOT
+					html += `
+						<tr class="hover:bg-slate-800/40 transition-all border-b border-white/5">
+							<td class="py-3 px-4 text-sm font-black text-slate-200 tracking-wide flex items-center gap-2">
+								<div class="w-5 h-5 bg-gradient-to-br from-slate-700 to-slate-800 border border-white/10 rounded-full flex items-center justify-center text-[9px] font-sans text-white">${s.ticker.substring(0, 2)}</div>
+								<span>${s.ticker} <span class="text-[9px] text-blue-400 font-bold">E</span></span>
+							</td>
+							<td class="py-3 px-3 text-right font-sans">
+								<span class="px-2.5 py-1 text-[10px] font-black rounded-lg border ${rating.warna}">
+									<i class="fa-solid fa-angles-up text-[9px] mr-0.5"></i> ${rating.teks}
+								</span>
+							</td>
+							<td class="py-3 px-3 text-right text-slate-300">${formatVol}</td>
+							<td class="py-3 px-3 text-right text-slate-400">${formatCap}</td>
+							<td class="py-3 px-4 text-right ${colChange}">${tandaPlus}${s.perubahan.toFixed(2)}%</td>
+						</tr>
+					`;
+				} else {
+					// STRUKTUR TAB: IKHTISAR DATA DASAR
+					html += `
+						<tr class="hover:bg-slate-800/40 transition-all border-b border-white/5">
+							<td class="py-3 px-4 text-sm font-black text-slate-200 tracking-wide flex items-center gap-2">
+								<div class="w-5 h-5 bg-gradient-to-br from-slate-700 to-slate-800 border border-white/10 rounded-full flex items-center justify-center text-[9px] font-sans text-white">${s.ticker.substring(0, 2)}</div>
+								<span>${s.ticker} <span class="text-[9px] text-blue-400 font-bold">E</span></span>
+							</td>
+							<td class="py-3 px-3 text-right text-slate-100 font-bold">${s.harga.toFixed(2).toLocaleString('id-ID')}</td>
+							<td class="py-3 px-3 text-right font-bold ${colChange}">${tandaPlus}${s.perubahan.toFixed(2)}%</td>
+							<td class="py-3 px-3 text-right text-slate-300">${formatVol}</td>
+							<td class="py-3 px-4 text-right text-slate-400">${formatCap}</td>
+						</tr>
+					`;
+				}
+			});
+
+			tbody.innerHTML = html;
+			document.getElementById('txtJumlahCocok').innerText = `${dataScreenerAktif.length} COCOK`;
+		}
+
+		function getar(pola) { if (window.navigator.vibrate) window.navigator.vibrate(pola); }
+
+		document.addEventListener("DOMContentLoaded", () => {
+			fetchLiveYahooScreener();
+			// Pasang sinkronisasi otomatis latar belakang setiap 60 detik
+			setInterval(fetchLiveYahooScreener, 60000);
+		});
+	</script>
+</body>
+</html>
