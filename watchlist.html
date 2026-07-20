@@ -275,7 +275,7 @@
 			function bukaAksesDashboardVip() {
 				document.getElementById('gerbangKunciVip').classList.add('hidden');
 				document.getElementById('badgeMasaAktifVip').classList.remove('hidden');
-			
+				
 				hitungSisaWaktuAkses();
 				inisialisasiPilihanPeriode();
 				muatUlangWatchlist();
@@ -287,27 +287,27 @@
 				const expTime = localStorage.getItem('stockIdVipExpiration');
 				
 				if (!teksInfo || !expTime) return;
-			
+				
 				if (expTime === "LIFETIME") {
 					teksInfo.innerHTML = "Masa aktif: <span class='text-amber-400 font-extrabold'>SELAMANYA (LIFETIME MEMBER)</span>";
 					return;
 				}
-			
+				
 				const dateTarget = new Date(expTime + "T00:00:00");
 				const dateHariIni = new Date();
 				
 				dateHariIni.setHours(0,0,0,0);
 				dateTarget.setHours(0,0,0,0);
-			
+				
 				const selisihMilidetik = dateTarget.getTime() - dateHariIni.getTime();
 				const sisaHariBersih = Math.ceil(selisihMilidetik / (1000 * 60 * 60 * 24));
-			
+				
 				if (sisaHariBersih < 0) {
 					teksInfo.innerHTML = "<span class='text-rose-400 font-bold'>Akses Kalender Hari Ini Telah Habis!</span>";
 					setTimeout(keluarAksesVip, 1500);
 					return;
 				}
-			
+				
 				if (sisaHariBersih === 0) {
 					teksInfo.innerHTML = "Sisa Masa Aktif: <span class='text-orange-400 font-black'>HARI INI HARI TERAKHIR</span> Akses VIP Anda";
 				} else {
@@ -321,7 +321,7 @@
 				window.location.reload();
 			}
 			
-			/* ENGINE 3: UTILITY SALIN NOMOR & REDIRECT WHATSAPP ADMIN */
+			/* UTILITY SALIN NOMOR & REDIRECT WHATSAPP ADMIN */
 			function salinNomorRekening() {
 				const textNum = document.getElementById('numRekeningStockId').innerText;
 				navigator.clipboard.writeText(textNum).then(() => {
@@ -330,82 +330,24 @@
 						btnText.innerText = "Tersalin!";
 						setTimeout(() => { btnText.innerText = "Salin"; }, 1500);
 					}
-					getar(30);
+					getar(500);
 				});
 			}
 			
 			function kirimBuktiKeWhatsappAdmin() {
 				const dropdown = document.getElementById('pilihPaketScreener');
 				if (!dropdown) return;
-			
+				
 				const [hari, harga] = dropdown.value.split('|');
 				const nomorAdmin = "6289529305947"; 
 				
 				const templatePesan = `Halo Admin, saya telah membeli Screening Saham ${hari} Hari seharga ${harga}, mohon cek pembayaran masuk`;
 				const linkWaFinal = `https://api.whatsapp.com/send?phone=${nomorAdmin}&text=${encodeURIComponent(templatePesan)}`;
 				
-				getar(40);
+				getar(1000);
 				window.open(linkWaFinal, '_blank');
 			}
 			
-			/* ENGINE 4: RENDER WATCHLIST ACCORDION */
-			function inisialisasiPilihanPeriode() {
-				const dropdown = document.getElementById('pilihPeriodeBulan');
-				if (!dropdown) return;
-				const daftarBulanUnik = [...new Set(DATABASE_WATCHLIST.map(d => d.kategoriBulan))].sort().reverse();
-				dropdown.innerHTML = "";
-				daftarBulanUnik.forEach(blnKey => {
-					const [tahun, bln] = blnKey.split("-");
-					const opsi = document.createElement('option');
-					opsi.value = blnKey;
-					opsi.textContent = `${KAMUS_BULAN[bln]} ${tahun}`;
-					dropdown.appendChild(opsi);
-				});
-				if (dropdown.options.length > 0) dropdown.value = daftarBulanUnik[0];
-			}
-			
-			function muatUlangWatchlist() {
-				const dropdown = document.getElementById('pilihPeriodeBulan');
-				const rakKontainer = document.getElementById('rakWatchlistUtama');
-				if (!dropdown || !rakKontainer) return;
-			
-				const bulanAktif = dropdown.value;
-				rakKontainer.innerHTML = "";
-				const filterData = DATABASE_WATCHLIST.filter(item => item.kategoriBulan === bulanAktif);
-			
-				filterData.forEach((grupHari, indeks) => {
-					const idUnikPanel = `grup-accordion-${indeks}`;
-					const boxTanggal = document.createElement('div');
-					boxTanggal.className = "bg-slate-900/20 border border-white/5 rounded-2xl overflow-hidden shadow-lg mb-4";
-					boxTanggal.innerHTML = `
-						<div onclick="kendaliAksiAccordion('${idUnikPanel}')" class="flex items-center justify-between p-4 bg-white/5 border-b border-white/5 cursor-pointer hover:bg-white/10 select-none">
-							<div class="flex items-center gap-3">
-								<div class="w-1.5 h-6 bg-emerald-400 rounded-full"></div>
-								<span class="text-xs font-black text-gray-200 uppercase">${grupHari.tanggalISO}</span>
-							</div>
-						</div>`;
-			
-					const gridBox = document.createElement('div');
-					gridBox.id = idUnikPanel;
-					gridBox.className = "p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
-			
-					grupHari.daftarSaham.forEach(s => {
-						gridBox.innerHTML += `<div class="bg-gradient-to-br from-slate-900/70 to-slate-950/50 border border-white/10 rounded-2xl p-4 flex flex-col shadow-xl">
-							<div class="flex justify-between border-b border-white/5 pb-2 mb-3">
-								<span class="font-extrabold text-green-400">${s.nama}</span>
-								<span class="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">${s.status}</span>
-							</div>
-							<div class="space-y-1 text-[11px]">
-								<div class="flex justify-between"><span>Entry:</span><span class="text-blue-400 font-bold">${s.entrySafe}</span></div>
-								<div class="flex justify-between"><span>Target TP:</span><span class="text-emerald-400 font-bold">${s.takeProfit}</span></div>
-								<div class="flex justify-between"><span>StopLoss:</span><span class="text-rose-400 font-bold">${s.stoploss}</span></div>
-							</div>
-						</div>`;
-					});
-					boxTanggal.appendChild(gridBox);
-					rakKontainer.appendChild(boxTanggal);
-				});
-			}
 			
 			function kendaliAksiAccordion(id) {
 				const p = document.getElementById(id);
