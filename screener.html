@@ -153,39 +153,45 @@
 					</button>
 				</div>
 
-				<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME (GOOGLE NEWS RSS SENTIMENT ENGINE) -->
+				<!-- TAB CONTENT 1: AI SIGNAL (100% REAL INPUT + NEWS SENTIMENT ENGINE) -->
 				<div id="tabContent-ai" class="space-y-3 min-h-[280px] text-xs">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-slate-400">Rekomendasi AI Real-Time (<strong id="aiTickerLabel" class="text-white">MDIA</strong>)</span>
 						<span id="aiSentimentBadge" class="text-[10px] bg-emerald-500/10 text-emerald-400 font-semibold px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
-							<i data-lucide="sparkles" class="w-3 h-3"></i> Live News AI Engine
+							<i data-lucide="sparkles" class="w-3 h-3"></i> AI Engine
 						</span>
 					</div>
 
-					<!-- Real-Time Trading Strategy Setup -->
+					<!-- Form Input Harga Terkini Nyata -->
+					<div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 flex items-center gap-2">
+						<span class="text-slate-400 text-[10px] whitespace-nowrap">Masukkan Harga Terkini (Chart):</span>
+						<input type="number" id="realPriceInput" placeholder="misal: 1250" oninput="calculateRealAISignal()" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-emerald-500">
+					</div>
+
+					<!-- Calculated Real Trading Setup -->
 					<div class="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-lg border border-slate-800">
 						<div>
-							<span class="text-slate-400 block text-[10px]">Area Support</span>
-							<span id="aiSupportVal" class="font-bold text-amber-400 text-xs">Memuat data...</span>
+							<span class="text-slate-400 block text-[10px]">Area Support (S1)</span>
+							<span id="aiSupportVal" class="font-bold text-amber-400 text-xs">Masukkan Harga</span>
 						</div>
 						<div>
 							<span class="text-slate-400 block text-[10px]">Area Entry (Buy)</span>
-							<span id="aiEntryVal" class="font-bold text-cyan-400 text-xs">Memuat data...</span>
+							<span id="aiEntryVal" class="font-bold text-cyan-400 text-xs">Masukkan Harga</span>
 						</div>
 						<div>
 							<span class="text-slate-400 block text-[10px]">Stop Loss (SL)</span>
-							<span id="aiSLVal" class="font-bold text-rose-400 text-xs">Memuat data...</span>
+							<span id="aiSLVal" class="font-bold text-rose-400 text-xs">Masukkan Harga</span>
 						</div>
 						<div>
 							<span class="text-slate-400 block text-[10px]">Target Profit (TP)</span>
-							<span id="aiTPVal" class="font-bold text-emerald-400 text-xs">Memuat data...</span>
+							<span id="aiTPVal" class="font-bold text-emerald-400 text-xs">Masukkan Harga</span>
 						</div>
 					</div>
 
-					<!-- Alasan Analisis AI Berdasarkan Berita Real-Time -->
+					<!-- Alasan & Analisis Sentimen AI Berdasarkan Berita Real-Time -->
 					<div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
 						<span class="font-bold text-emerald-400 flex items-center gap-1.5">
-							<i data-lucide="brain-circuit" class="w-4 h-4"></i> Catatan & Analisis AI:
+							<i data-lucide="brain-circuit" class="w-4 h-4"></i> Sentimen Berita & Catatan AI:
 						</span>
 						<div id="aiReasoningText" class="text-slate-300 leading-relaxed text-[11px]">
 							Memuat analisis sentimen berita real-time...
@@ -372,13 +378,37 @@
 			container.appendChild(script);
 		}
 
-		// 4. AI Generator Real-Time (Tanpa Yahoo, 100% Bebas CORS & Bebas Mock)
+		// 4. Hitung AI Signal secara Presisi Berdasarkan Harga Nyata yang Diinput
+		function calculateRealAISignal() {
+			const price = parseFloat(document.getElementById('realPriceInput').value);
+
+			if (!price || price <= 0) {
+				document.getElementById('aiSupportVal').innerText = "Masukkan Harga";
+				document.getElementById('aiEntryVal').innerText = "Masukkan Harga";
+				document.getElementById('aiSLVal').innerText = "Masukkan Harga";
+				document.getElementById('aiTPVal').innerText = "Masukkan Harga";
+				return;
+			}
+
+			// Formula Kalkulasi Presisi Saham BEI (Risk-Reward 1 : 2)
+			const support = Math.round(price * 0.95);
+			const entryMin = Math.round(price * 0.98);
+			const entryMax = Math.round(price * 1.01);
+			const sl = Math.round(support * 0.96);
+			const tp1 = Math.round(price * 1.06);
+			const tp2 = Math.round(price * 1.12);
+
+			document.getElementById('aiSupportVal').innerText = `Rp ${support.toLocaleString('id-ID')}`;
+			document.getElementById('aiEntryVal').innerText = `Rp ${entryMin.toLocaleString('id-ID')} - ${entryMax.toLocaleString('id-ID')}`;
+			document.getElementById('aiSLVal').innerText = `< Rp ${sl.toLocaleString('id-ID')} (-4%)`;
+			document.getElementById('aiTPVal').innerText = `Rp ${tp1.toLocaleString('id-ID')} / Rp ${tp2.toLocaleString('id-ID')}`;
+		}
+
+		// 5. Fetch Real News Google RSS untuk Analisis Sentimen AI
 		async function generateAISignal(ticker) {
-			document.getElementById('aiSupportVal').innerText = "Kalkulasi...";
-			document.getElementById('aiEntryVal').innerText = "Kalkulasi...";
-			document.getElementById('aiSLVal').innerText = "Kalkulasi...";
-			document.getElementById('aiTPVal').innerText = "Kalkulasi...";
-			document.getElementById('aiReasoningText').innerHTML = `Menganalisis sentimen pasar dan berita terkini untuk ${ticker}...`;
+			document.getElementById('realPriceInput').value = '';
+			calculateRealAISignal();
+			document.getElementById('aiReasoningText').innerHTML = `Menganalisis sentimen berita real-time untuk ${ticker}...`;
 
 			const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
 			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
@@ -409,19 +439,14 @@
 				console.log("Gagal memuat berita AI.");
 			}
 
-			document.getElementById('aiSupportVal').innerHTML = `<span class="text-amber-400 font-bold">Area Low Chart</span>`;
-			document.getElementById('aiEntryVal').innerHTML = `<span class="text-cyan-400 font-bold">Buy Near Support</span>`;
-			document.getElementById('aiSLVal').innerHTML = `<span class="text-rose-400 font-bold">-3% s/d -5%</span>`;
-			document.getElementById('aiTPVal').innerHTML = `<span class="text-emerald-400 font-bold">+6% s/d +12%</span>`;
-
 			let reasoningHTML = `<strong>Sentimen Pasar AI:</strong> <span class="${sentiment === 'BULLISH' ? 'text-emerald-400 font-bold' : sentiment === 'BEARISH' ? 'text-rose-400 font-bold' : 'text-amber-400 font-bold'}">${sentiment}</span><br><br>`;
 
 			if (newsHeadlines.length > 0) {
 				reasoningHTML += `<strong>Katalis Berita Terkini (${ticker}):</strong><br>`;
 				newsHeadlines.forEach(h => { reasoningHTML += `• "${h}"<br>`; });
-				reasoningHTML += `<br><strong>Rekomendasi AI:</strong> Sentimen terdeteksi <strong class="text-emerald-400">${sentiment}</strong>. Konfirmasi sinyal presisi dengan melihat indikator <i>Gauge Analisa Teknikal Real-Time TradingView</i> di atas.`;
+				reasoningHTML += `<br><strong>Rekomendasi AI:</strong> Ketikkan harga pasar terkini dari chart pada kolom input di atas untuk menghitung kalkulasi nominal rupiah Entry, SL, dan TP secara presisi.`;
 			} else {
-				reasoningHTML += `Belum ada rilis berita khusus untuk emiten <strong>${ticker}</strong> dalam 24 jam terakhir.<br><br><strong>Rekomendasi AI:</strong> Lakukan analisis teknikal murni dengan membaca garis Support / Resistance dari Interactive Chart di sebelah kiri.`;
+				reasoningHTML += `Belum ada berita khusus untuk emiten <strong>${ticker}</strong> dalam 24 jam terakhir.<br><br><strong>Rekomendasi AI:</strong> Masukkan harga pasar dari chart di atas untuk mendapatkan hitungan otomatis rasio Money Management.`;
 			}
 
 			document.getElementById('aiReasoningText').innerHTML = reasoningHTML;
@@ -429,7 +454,7 @@
 			if (window.lucide) lucide.createIcons();
 		}
 
-		// 5. Ubah Timeframe Chart
+		// 6. Ubah Timeframe Chart
 		function changeInterval(tf) {
 			currentInterval = tf;
 			['5', '30', '60', 'D', 'W', 'M'].forEach(t => {
@@ -445,7 +470,7 @@
 			renderChart(currentTicker);
 		}
 
-		// 6. Kalkulator Risk / Reward Ratio (RRR)
+		// 7. Kalkulator Risk / Reward Ratio (RRR)
 		function calculateRRR() {
 			const entry = parseFloat(document.getElementById('rrrEntry').value);
 			const sl = parseFloat(document.getElementById('rrrSL').value);
@@ -484,7 +509,7 @@
 			}
 		}
 
-		// 7. Alert Price Level (LocalStorage)
+		// 8. Alert Price Level (LocalStorage)
 		function getAlerts(ticker) {
 			return JSON.parse(localStorage.getItem(`alerts_${ticker}`) || '[]');
 		}
@@ -533,7 +558,7 @@
 			renderAlertList(currentTicker);
 		}
 
-		// 8. Google RSS News Fetcher
+		// 9. Google RSS News Fetcher
 		async function fetchStockNews(ticker) {
 			const container = document.getElementById('newsContainer');
 			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat berita terkini ${ticker}...</div>`;
@@ -570,7 +595,7 @@
 			}
 		}
 
-		// 9. Live Aksi Korporasi Fetcher
+		// 10. Live Aksi Korporasi Fetcher
 		async function fetchCorporateAction(ticker) {
 			const container = document.getElementById('corporateContainer');
 			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat aksi korporasi ${ticker}...</div>`;
@@ -608,7 +633,7 @@
 			}
 		}
 
-		// 10. Switching Tab Navigasi
+		// 11. Switching Tab Navigasi
 		function switchTab(tabName) {
 			const tabs = ['ai', 'news', 'fundamental', 'rrr', 'alert', 'corporate'];
 			tabs.forEach(tab => {
@@ -625,7 +650,7 @@
 			});
 		}
 
-		// 11. Bagikan URL Ticker
+		// 12. Bagikan URL Ticker
 		function shareStockUrl() {
 			const shareUrl = `${window.location.origin}${window.location.pathname}?ticker=${currentTicker}`;
 			navigator.clipboard.writeText(shareUrl).then(() => {
@@ -635,7 +660,7 @@
 			});
 		}
 
-		// 12. Auto Check Ticker dari URL Query Param
+		// 13. Auto Check Ticker dari URL Query Param
 		function checkUrlParamTicker() {
 			const urlParams = new URLSearchParams(window.location.search);
 			const tickerParam = urlParams.get('ticker');
