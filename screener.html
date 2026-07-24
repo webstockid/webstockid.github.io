@@ -79,14 +79,15 @@
 		<!-- Left Column (TradingView Chart) -->
 		<section class="lg:col-span-2 space-y-6">
 			
-			<!-- Header Title Ticker & Tombol Bagikan -->
-			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex justify-between items-center">
+			<!-- Header Title Ticker, Timeframe Selector (FITUR 3B), & Tombol Bagikan -->
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-wrap justify-between items-center gap-3">
 				<div>
 					<h2 class="text-2xl font-bold text-white flex items-center gap-2" id="stockTitle">
 						IDX:MDIA
 					</h2>
 					<p class="text-xs text-slate-400 mt-0.5">Bursa Efek Indonesia • Real-Time Chart</p>
 				</div>
+
 				<div class="flex items-center gap-2">
 					<button onclick="shareStockUrl()" class="text-xs bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition font-medium">
 						<i data-lucide="share-2" class="w-3.5 h-3.5"></i> Bagikan
@@ -121,14 +122,17 @@
 			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
 				
 				<!-- Tab Navigation Buttons -->
-				<div class="flex border-b border-slate-800 mb-4 pb-2 gap-1">
-					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1">
+				<div class="flex border-b border-slate-800 mb-4 pb-2 gap-1 overflow-x-auto">
+					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap">
 						<i data-lucide="newspaper" class="w-3.5 h-3.5"></i> Berita
 					</button>
-					<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1">
-						<i data-lucide="calendar" class="w-3.5 h-3.5"></i> Aksi Korporasi
+					<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+						<i data-lucide="pie-chart" class="w-3.5 h-3.5"></i> Fundamental
 					</button>
-					<button onclick="switchTab('notes')" id="tabBtn-notes" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1">
+					<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+						<i data-lucide="calendar" class="w-3.5 h-3.5"></i> Korporasi
+					</button>
+					<button onclick="switchTab('notes')" id="tabBtn-notes" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
 						<i data-lucide="notebook-pen" class="w-3.5 h-3.5"></i> Catatan
 					</button>
 				</div>
@@ -144,7 +148,18 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 2: AKSI KORPORASI LIVE RSS -->
+				<!-- TAB CONTENT 2: FUNDAMENTAL WIDGET (FITUR 2A) -->
+				<div id="tabContent-fundamental" class="hidden min-h-[300px]">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-xs text-slate-400">Profil Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-purple-400 font-semibold">TradingView Data</span>
+					</div>
+					<div class="tradingview-widget-container">
+						<div id="tv_fundamental_container"></div>
+					</div>
+				</div>
+
+				<!-- TAB CONTENT 3: AKSI KORPORASI LIVE RSS -->
 				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3 text-xs">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs text-slate-400">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
@@ -158,15 +173,20 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 3: CATATAN TRADING PERSONAL -->
+				<!-- TAB CONTENT 4: CATATAN TRADING PERSONAL & SALIN PLAN (FITUR 3C) -->
 				<div id="tabContent-notes" class="hidden min-h-[250px] space-y-3 text-xs">
 					<label class="block text-slate-400 font-medium">Catatan Trading Plan (<span id="noteTickerLabel">MDIA</span>):</label>
 					<textarea id="tradingNoteInput" rows="5" placeholder="Tuliskan plan entry, TP, SL, atau analisa pribadi di sini..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-slate-200 text-xs focus:outline-none focus:border-emerald-500"></textarea>
-					<div class="flex justify-between items-center">
+					<div class="flex justify-between items-center pt-1">
 						<span id="noteSavedStatus" class="text-[10px] text-emerald-400 opacity-0 transition duration-200">✓ Tersimpan otomatis</span>
-						<button onclick="saveTradingNote()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-3 py-1.5 rounded-md font-bold text-xs transition">
-							Simpan Catatan
-						</button>
+						<div class="flex gap-2">
+							<button onclick="exportTradingNote()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 py-1.5 rounded-md font-semibold text-xs transition flex items-center gap-1">
+								<i data-lucide="copy" class="w-3 h-3"></i> Salin Plan
+							</button>
+							<button onclick="saveTradingNote()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-3 py-1.5 rounded-md font-bold text-xs transition">
+								Simpan
+							</button>
+						</div>
 					</div>
 				</div>
 
@@ -181,17 +201,18 @@
 
 	<script>
 		let currentTicker = 'MDIA';
+		let currentInterval = 'D';
 
 		// Init Lucide Icons
 		lucide.createIcons();
 
-		// 1. Render Interactive TradingView Chart
+		// 1. Render Interactive TradingView Chart (Dukungan Dynamic Interval - FITUR 3B)
 		function renderChart(ticker) {
 			document.getElementById('tv_chart_container').innerHTML = '';
 			new TradingView.widget({
 				"autosize": true,
 				"symbol": `IDX:${ticker}`,
-				"interval": "D",
+				"interval": currentInterval,
 				"timezone": "Asia/Jakarta",
 				"theme": "dark",
 				"style": "2",
@@ -233,7 +254,29 @@
 			container.appendChild(script);
 		}
 
-		// 3. Google RSS News Fetcher (Berita Umum)
+		// 3. Render Widget Fundamental Profil Keuangan TradingView (FITUR 2A)
+		function renderFundamentalWidget(ticker) {
+			const container = document.getElementById('tv_fundamental_container');
+			container.innerHTML = '';
+
+			const script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js';
+			script.async = true;
+			script.text = JSON.stringify({
+				"colorTheme": "dark",
+				"isTransparent": true,
+				"largeChartUrl": "",
+				"displayMode": "regular",
+				"width": "100%",
+				"height": "400",
+				"symbol": `IDX:${ticker}`,
+				"locale": "id"
+			});
+			container.appendChild(script);
+		}
+
+		// 5. Google RSS News Fetcher (Berita Umum)
 		async function fetchStockNews(ticker) {
 			const container = document.getElementById('newsContainer');
 			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat berita terkini ${ticker}...</div>`;
@@ -270,12 +313,11 @@
 			}
 		}
 
-		// 4. Live Aksi Korporasi Fetcher (Mengambil Berita Spesifik Dividen / RUPS / Stock Split)
+		// 6. Live Aksi Korporasi Fetcher
 		async function fetchCorporateAction(ticker) {
 			const container = document.getElementById('corporateContainer');
 			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat aksi korporasi ${ticker}...</div>`;
 			
-			// Keyword spesifik untuk Aksi Korporasi Emiten
 			const query = encodeURIComponent(`${ticker} (dividen OR RUPS OR "right issue" OR "stock split" OR buyback)`);
 			const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=id&gl=ID&ceid=ID:id`;
 			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
@@ -309,24 +351,24 @@
 			}
 		}
 
-		// 5. Switching Tab Navigasi
+		// 7. Switching Tab Navigasi
 		function switchTab(tabName) {
-			const tabs = ['news', 'corporate', 'notes'];
+			const tabs = ['news', 'fundamental', 'corporate', 'notes'];
 			tabs.forEach(tab => {
 				const btn = document.getElementById(`tabBtn-${tab}`);
 				const content = document.getElementById(`tabContent-${tab}`);
 				
 				if (tab === tabName) {
-					btn.className = "flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1";
+					btn.className = "flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap";
 					content.classList.remove('hidden');
 				} else {
-					btn.className = "flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1";
+					btn.className = "flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap";
 					content.classList.add('hidden');
 				}
 			});
 		}
 
-		// 6. Simpan & Muat Catatan Trading Personal (LocalStorage)
+		// 8. Simpan & Muat Catatan Trading Personal (LocalStorage)
 		function loadTradingNote(ticker) {
 			const note = localStorage.getItem(`stock_note_${ticker}`) || '';
 			document.getElementById('tradingNoteInput').value = note;
@@ -341,7 +383,21 @@
 			setTimeout(() => status.style.opacity = '0', 2000);
 		}
 
-		// 7. Bagikan URL Ticker
+		// 9. Ekspor / Salin Catatan Trading Plan (FITUR 3C)
+		function exportTradingNote() {
+			const noteText = document.getElementById('tradingNoteInput').value;
+			if (!noteText.trim()) {
+				alert('Catatan masih kosong!');
+				return;
+			}
+			const formattedPlan = `📌 TRADING PLAN STOCK ID (${currentTicker})\n-----------------------------------\n${noteText}\n-----------------------------------\nAnalisis via: https://webstockid.github.io/screener.html?ticker=${currentTicker}`;
+			
+			navigator.clipboard.writeText(formattedPlan).then(() => {
+				alert(`Trading plan ${currentTicker} berhasil disalin! Siap dibagikan.`);
+			});
+		}
+
+		// 10. Bagikan URL Ticker
 		function shareStockUrl() {
 			const shareUrl = `${window.location.origin}${window.location.pathname}?ticker=${currentTicker}`;
 			navigator.clipboard.writeText(shareUrl).then(() => {
@@ -351,7 +407,7 @@
 			});
 		}
 
-		// 8. Auto Check Ticker dari URL Query Param
+		// 11. Auto Check Ticker dari URL Query Param
 		function checkUrlParamTicker() {
 			const urlParams = new URLSearchParams(window.location.search);
 			const tickerParam = urlParams.get('ticker');
@@ -367,11 +423,13 @@
 				currentTicker = input;
 				document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 				document.getElementById('newsTickerLabel').innerText = currentTicker;
+				document.getElementById('fundTickerLabel').innerText = currentTicker;
 				document.getElementById('corpTickerLabel').innerText = currentTicker;
 				document.getElementById('noteTickerLabel').innerText = currentTicker;
 				
 				renderChart(currentTicker);
 				renderTechnicalGauge(currentTicker);
+				renderFundamentalWidget(currentTicker);
 				fetchStockNews(currentTicker);
 				fetchCorporateAction(currentTicker);
 				loadTradingNote(currentTicker);
@@ -387,11 +445,13 @@
 		checkUrlParamTicker();
 		document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 		document.getElementById('newsTickerLabel').innerText = currentTicker;
+		document.getElementById('fundTickerLabel').innerText = currentTicker;
 		document.getElementById('corpTickerLabel').innerText = currentTicker;
 		document.getElementById('noteTickerLabel').innerText = currentTicker;
 
 		renderChart(currentTicker);
 		renderTechnicalGauge(currentTicker);
+		renderFundamentalWidget(currentTicker);
 		fetchStockNews(currentTicker);
 		fetchCorporateAction(currentTicker);
 		loadTradingNote(currentTicker);
