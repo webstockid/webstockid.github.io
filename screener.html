@@ -87,6 +87,16 @@
 					</h2>
 					<p class="text-xs text-slate-400 mt-0.5">Bursa Efek Indonesia • Real-Time Chart</p>
 				</div>
+
+				<!-- Timeframe Selector -->
+				<div class="flex items-center gap-1 bg-slate-950 p-1 rounded-lg border border-slate-800 overflow-x-auto">
+					<button onclick="changeInterval('5')" id="tf-5" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">5m</button>
+					<button onclick="changeInterval('30')" id="tf-30" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">30m</button>
+					<button onclick="changeInterval('60')" id="tf-60" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">1h</button>
+					<button onclick="changeInterval('D')" id="tf-D" class="px-2 py-1 text-xs font-bold rounded bg-emerald-500 text-slate-950">1D</button>
+					<button onclick="changeInterval('W')" id="tf-W" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">1W</button>
+					<button onclick="changeInterval('M')" id="tf-M" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">1M</button>
+				</div>
 				
 				<div class="flex items-center gap-2">
 					<button onclick="shareStockUrl()" class="text-xs bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition font-medium">
@@ -108,7 +118,7 @@
 		<!-- Right Column (Live Technical Meter + TAB NAVIGASI) -->
 		<section class="space-y-6">
 
-			<!-- Live Technical Analysis Gauge TradingView (RSI, MACD, Volume Real-Time) -->
+			<!-- Live Technical Analysis Gauge TradingView -->
 			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
 				<h3 class="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
 					<i data-lucide="gauge" class="w-4 h-4 text-cyan-400"></i> Analisa Teknikal Real-Time (TradingView Engine)
@@ -121,7 +131,7 @@
 			<!-- TAB CONTAINER -->
 			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
 				
-				<!-- Tab Navigation Buttons -->
+				<!-- Tab Navigation Buttons (Fitur Catatan Dihapus) -->
 				<div class="flex border-b border-slate-800 mb-4 pb-2 gap-1 overflow-x-auto">
 					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap">
 						<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> AI Signal
@@ -141,48 +151,45 @@
 					<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
 						<i data-lucide="calendar" class="w-3.5 h-3.5"></i> Korporasi
 					</button>
-					<button onclick="switchTab('notes')" id="tabBtn-notes" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
-						<i data-lucide="notebook-pen" class="w-3.5 h-3.5"></i> Catatan
-					</button>
 				</div>
 
-				<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME (SENTIMEN BERITA + PRICE ACTION PLAN) -->
+				<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME (REAL LIVE DATA YAHOO + GOOGLE RSS) -->
 				<div id="tabContent-ai" class="space-y-3 min-h-[280px] text-xs">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-slate-400">Analisis Sentimen AI (<strong id="aiTickerLabel" class="text-white">MDIA</strong>)</span>
+						<span class="text-slate-400">Rekomendasi AI Real-Time (<strong id="aiTickerLabel" class="text-white">MDIA</strong>)</span>
 						<span id="aiSentimentBadge" class="text-[10px] bg-emerald-500/10 text-emerald-400 font-semibold px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
-							<i data-lucide="sparkles" class="w-3 h-3"></i> Live News AI Engine
+							<i data-lucide="sparkles" class="w-3 h-3"></i> Live Price & News Engine
 						</span>
 					</div>
 
 					<!-- Real-Time Trading Strategy Setup -->
 					<div class="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-lg border border-slate-800">
 						<div>
-							<span class="text-slate-400 block text-[10px]">Strategi Entry</span>
-							<span class="font-bold text-cyan-400 text-xs">Buy on Support / Dip</span>
+							<span class="text-slate-400 block text-[10px]">Area Support</span>
+							<span id="aiSupportVal" class="font-bold text-amber-400 text-xs">Memuat data...</span>
 						</div>
 						<div>
-							<span class="text-slate-400 block text-[10px]">Toleransi Stop Loss (SL)</span>
-							<span class="font-bold text-rose-400 text-xs">-3% s/d -5% dari Entry</span>
+							<span class="text-slate-400 block text-[10px]">Area Entry (Buy)</span>
+							<span id="aiEntryVal" class="font-bold text-cyan-400 text-xs">Memuat data...</span>
 						</div>
 						<div>
-							<span class="text-slate-400 block text-[10px]">Target Profit 1 (TP1)</span>
-							<span class="font-bold text-emerald-400 text-xs">+6% (R : R = 1 : 2)</span>
+							<span class="text-slate-400 block text-[10px]">Stop Loss (SL)</span>
+							<span id="aiSLVal" class="font-bold text-rose-400 text-xs">Memuat data...</span>
 						</div>
 						<div>
-							<span class="text-slate-400 block text-[10px]">Target Profit 2 (TP2)</span>
-							<span class="font-bold text-emerald-400 text-xs">+10% s/d +12%</span>
+							<span class="text-slate-400 block text-[10px]">Target Profit (TP)</span>
+							<span id="aiTPVal" class="font-bold text-emerald-400 text-xs">Memuat data...</span>
 						</div>
 					</div>
 
-					<!-- Alasan Analisis AI Berdasarkan Berita Nyata -->
+					<!-- Alasan Analisis AI Berdasarkan Berita & Harga Nyata -->
 					<div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
 						<span class="font-bold text-emerald-400 flex items-center gap-1.5">
-							<i data-lucide="brain-circuit" class="w-4 h-4"></i> Rangkuman Katalis & Sentimen Berita AI:
+							<i data-lucide="brain-circuit" class="w-4 h-4"></i> Catatan & Analisis AI:
 						</span>
-						<p id="aiReasoningText" class="text-slate-300 leading-relaxed text-[11px]">
-							Memuat analisis sentimen berita nyata...
-						</p>
+						<div id="aiReasoningText" class="text-slate-300 leading-relaxed text-[11px]">
+							Memuat analisis sentimen dan harga pasar real-time...
+						</div>
 					</div>
 				</div>
 
@@ -279,23 +286,6 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 7: CATATAN TRADING PERSONAL & SALIN PLAN -->
-				<div id="tabContent-notes" class="hidden min-h-[250px] space-y-3 text-xs">
-					<label class="block text-slate-400 font-medium">Catatan Trading Plan (<span id="noteTickerLabel">MDIA</span>):</label>
-					<textarea id="tradingNoteInput" rows="5" placeholder="Tuliskan plan entry, TP, SL, atau analisa pribadi di sini..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-slate-200 text-xs focus:outline-none focus:border-emerald-500"></textarea>
-					<div class="flex justify-between items-center pt-1">
-						<span id="noteSavedStatus" class="text-[10px] text-emerald-400 opacity-0 transition duration-200">✓ Tersimpan otomatis</span>
-						<div class="flex gap-2">
-							<button onclick="exportTradingNote()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 py-1.5 rounded-md font-semibold text-xs transition flex items-center gap-1">
-								<i data-lucide="copy" class="w-3 h-3"></i> Salin Plan
-							</button>
-							<button onclick="saveTradingNote()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-3 py-1.5 rounded-md font-bold text-xs transition">
-								Simpan
-							</button>
-						</div>
-					</div>
-				</div>
-
 			</div>
 
 		</section>
@@ -382,36 +372,128 @@
 			container.appendChild(script);
 		}
 
-		// 4. AI Generator Berbasis Data Berita Nyata (100% Bebas Mock Data)
+		// 4. AI Generator Real-Time (Real Live Price via Yahoo Finance API + Real News via Google RSS)
 		async function generateAISignal(ticker) {
-			document.getElementById('aiReasoningText').innerText = `Menganalisis sentimen berita nyata untuk ${ticker}...`;
+			document.getElementById('aiSupportVal').innerText = "Mengambil data...";
+			document.getElementById('aiEntryVal').innerText = "Mengambil data...";
+			document.getElementById('aiSLVal').innerText = "Mengambil data...";
+			document.getElementById('aiTPVal').innerText = "Mengambil data...";
+			document.getElementById('aiReasoningText').innerText = "Memuat analisis harga dan berita pasar real-time...";
 
+			let currentPrice = null;
+			let dayLow = null;
+			let dayHigh = null;
+
+			// A. Fetch Live Price Data dari Yahoo Finance API
+			try {
+				const yfUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}.JK?interval=1d&range=1d`;
+				const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(yfUrl)}`);
+				const result = await response.json();
+				const yfData = JSON.parse(result.contents);
+
+				const meta = yfData.chart.result[0].meta;
+				currentPrice = meta.regularMarketPrice;
+				dayLow = meta.regularMarketDayLow || (currentPrice * 0.96);
+				dayHigh = meta.regularMarketDayHigh || (currentPrice * 1.04);
+			} catch (e) {
+				console.log("Yahoo API Gagal, fallback kalkulasi rasio presisi.");
+			}
+
+			// B. Fetch Real News untuk Analisis Sentimen AI
 			const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
 			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 
-			try {
-				const response = await fetch(apiUrl);
-				const data = await response.json();
+			let newsHeadlines = [];
+			let sentiment = "NETRAL";
+			let positiveCount = 0;
+			let negativeCount = 0;
 
-				if (data.status === 'ok' && data.items && data.items.length > 0) {
-					const titles = data.items.slice(0, 3).map(item => `• "${item.title}"`).join("<br>");
-					document.getElementById('aiReasoningText').innerHTML = `
-						<strong>Katalis & Berita Terkini:</strong><br>${titles}<br><br>
-						<span class="text-emerald-400 font-semibold">Rekomendasi AI:</span> Gunakan indikator <i>Gauge Real-Time TradingView</i> di atas untuk konfirmasi sinyal Buy/Sell. Pasang garis Support & Resistance langsung dari Interactive Chart di sebelah kiri.
-					`;
-				} else {
-					document.getElementById('aiReasoningText').innerHTML = `
-						Saham <strong>${ticker}</strong> saat ini belum memiliki berita khusus dalam 24 jam terakhir.<br><br>
-						<span class="text-cyan-400 font-semibold">Saran Analisis:</span> Pantau pergerakan harga dari Interactive Chart serta indikator RSI / MACD pada widget teknikal di atas.
-					`;
+			try {
+				const newsRes = await fetch(apiUrl);
+				const newsData = await newsRes.json();
+
+				if (newsData.status === 'ok' && newsData.items && newsData.items.length > 0) {
+					newsHeadlines = newsData.items.slice(0, 3).map(item => item.title);
+					
+					// Sentimen Analyzer Sederhana Berdasarkan Kata Kunci Berita
+					const fullText = newsHeadlines.join(" ").toLowerCase();
+					const posWords = ['laba', 'naik', 'untung', 'dividen', 'ekspansi', 'rekord', 'melonjak', 'positif', 'tumbuh', 'stabilitas'];
+					const negWords = ['rugi', 'turun', 'anjlok', 'gugat', 'sanksi', 'saham turun', 'meleset', 'tertekan', 'krisis'];
+
+					posWords.forEach(w => { if (fullText.includes(w)) positiveCount++; });
+					negWords.forEach(w => { if (fullText.includes(w)) negativeCount++; });
+
+					if (positiveCount > negativeCount) sentiment = "BULLISH";
+					else if (negativeCount > positiveCount) sentiment = "BEARISH";
 				}
 			} catch (e) {
-				document.getElementById('aiReasoningText').innerHTML = `
-					Gagal memuat analisis berita. Silakan pantau indikator teknikal langsung pada widget TradingView di atas.
-				`;
+				console.log("Gagal memuat berita AI.");
+			}
+
+			// C. Hitung Setup Trading Real-Time jika Harga Berhasil Diperoleh
+			if (currentPrice) {
+				const support = Math.round(dayLow * 0.99);
+				const entryMin = Math.round(currentPrice * 0.98);
+				const entryMax = Math.round(currentPrice * 1.01);
+				const sl = Math.round(support * 0.96);
+				const tp1 = Math.round(currentPrice * 1.06);
+				const tp2 = Math.round(currentPrice * 1.12);
+
+				document.getElementById('aiSupportVal').innerText = `Rp ${support.toLocaleString('id-ID')}`;
+				document.getElementById('aiEntryVal').innerText = `Rp ${entryMin.toLocaleString('id-ID')} - ${entryMax.toLocaleString('id-ID')}`;
+				document.getElementById('aiSLVal').innerText = `< Rp ${sl.toLocaleString('id-ID')} (-4%)`;
+				document.getElementById('aiTPVal').innerText = `Rp ${tp1.toLocaleString('id-ID')} / Rp ${tp2.toLocaleString('id-ID')}`;
+
+				let reasoningHTML = `<strong>Harga Pasar Terkini:</strong> Rp ${currentPrice.toLocaleString('id-ID')}<br>`;
+				reasoningHTML += `<strong>Sentimen Pasar AI:</strong> <span class="${sentiment === 'BULLISH' ? 'text-emerald-400 font-bold' : sentiment === 'BEARISH' ? 'text-rose-400 font-bold' : 'text-amber-400 font-bold'}">${sentiment}</span><br><br>`;
+
+				if (newsHeadlines.length > 0) {
+					reasoningHTML += `<strong>Katalis Berita Terkini:</strong><br>`;
+					newsHeadlines.forEach(h => { reasoningHTML += `• "${h}"<br>`; });
+				} else {
+					reasoningHTML += `Belum ada rilis berita signifikan dalam 24 jam terakhir.`;
+				}
+
+				reasoningHTML += `<br><strong>Rekomendasi / Catatan AI:</strong> Saham ${ticker} bergerak dengan support terdekat pada Rp ${support.toLocaleString('id-ID')}. Disarankan masuk secara bertahap di area Rp ${entryMin.toLocaleString('id-ID')} - Rp ${entryMax.toLocaleString('id-ID')} dengan disiplin ketat Stop Loss di Rp ${sl.toLocaleString('id-ID')}.`;
+
+				document.getElementById('aiReasoningText').innerHTML = reasoningHTML;
+
+			} else {
+				// Fallback Jika API Yahoo Terkendala CORS / Network
+				document.getElementById('aiSupportVal').innerText = "Lihat Chart";
+				document.getElementById('aiEntryVal').innerText = "Area Support Chart";
+				document.getElementById('aiSLVal').innerText = "-3% s/d -5%";
+				document.getElementById('aiTPVal').innerText = "+6% s/d +12%";
+
+				let fallbackHTML = `<strong>Status Data Real-Time:</strong> Menggunakan live data berita.<br><br>`;
+				if (newsHeadlines.length > 0) {
+					fallbackHTML += `<strong>Berita Terkini ${ticker}:</strong><br>`;
+					newsHeadlines.forEach(h => { fallbackHTML += `• "${h}"<br>`; });
+					fallbackHTML += `<br><strong>Catatan AI:</strong> Gunakan indikator <i>Gauge Analisa Teknikal Real-Time</i> di atas serta penarikan garis Support pada Interactive Chart untuk konfirmasi entry.`;
+				} else {
+					fallbackHTML += `Tidak ada berita khusus ditemukan. Pantau indikator RSI & MACD pada widget teknikal di atas.`;
+				}
+
+				document.getElementById('aiReasoningText').innerHTML = fallbackHTML;
 			}
 
 			if (window.lucide) lucide.createIcons();
+		}
+
+		// 5. Ubah Timeframe Chart
+		function changeInterval(tf) {
+			currentInterval = tf;
+			['5', '30', '60', 'D', 'W', 'M'].forEach(t => {
+				const btn = document.getElementById(`tf-${t}`);
+				if (btn) {
+					if (t === tf) {
+						btn.className = "px-2 py-1 text-xs font-bold rounded bg-emerald-500 text-slate-950";
+					} else {
+						btn.className = "px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white";
+					}
+				}
+			});
+			renderChart(currentTicker);
 		}
 
 		// 6. Kalkulator Risk / Reward Ratio (RRR)
@@ -577,53 +659,24 @@
 			}
 		}
 
-		// 10. Switching Tab Navigasi
+		// 10. Switching Tab Navigasi (Fitur Catatan Dihapus)
 		function switchTab(tabName) {
-			const tabs = ['ai', 'news', 'fundamental', 'rrr', 'alert', 'corporate', 'notes'];
+			const tabs = ['ai', 'news', 'fundamental', 'rrr', 'alert', 'corporate'];
 			tabs.forEach(tab => {
 				const btn = document.getElementById(`tabBtn-${tab}`);
 				const content = document.getElementById(`tabContent-${tab}`);
 				
 				if (tab === tabName) {
 					btn.className = "flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap";
-					content.classList.remove('hidden');
+					if (content) content.classList.remove('hidden');
 				} else {
 					btn.className = "flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap";
-					content.classList.add('hidden');
+					if (content) content.classList.add('hidden');
 				}
 			});
 		}
 
-		// 11. Simpan & Muat Catatan Trading Personal
-		function loadTradingNote(ticker) {
-			const note = localStorage.getItem(`stock_note_${ticker}`) || '';
-			document.getElementById('tradingNoteInput').value = note;
-		}
-
-		function saveTradingNote() {
-			const note = document.getElementById('tradingNoteInput').value;
-			localStorage.setItem(`stock_note_${currentTicker}`, note);
-			
-			const status = document.getElementById('noteSavedStatus');
-			status.style.opacity = '1';
-			setTimeout(() => status.style.opacity = '0', 2000);
-		}
-
-		// 12. Ekspor / Salin Catatan Trading Plan
-		function exportTradingNote() {
-			const noteText = document.getElementById('tradingNoteInput').value;
-			if (!noteText.trim()) {
-				alert('Catatan masih kosong!');
-				return;
-			}
-			const formattedPlan = `📌 TRADING PLAN STOCK ID (${currentTicker})\n-----------------------------------\n${noteText}\n-----------------------------------\nAnalisis via: https://webstockid.github.io/screener.html?ticker=${currentTicker}`;
-			
-			navigator.clipboard.writeText(formattedPlan).then(() => {
-				alert(`Trading plan ${currentTicker} berhasil disalin! Siap dibagikan.`);
-			});
-		}
-
-		// 13. Bagikan URL Ticker
+		// 11. Bagikan URL Ticker
 		function shareStockUrl() {
 			const shareUrl = `${window.location.origin}${window.location.pathname}?ticker=${currentTicker}`;
 			navigator.clipboard.writeText(shareUrl).then(() => {
@@ -633,7 +686,7 @@
 			});
 		}
 
-		// 14. Auto Check Ticker dari URL Query Param
+		// 12. Auto Check Ticker dari URL Query Param
 		function checkUrlParamTicker() {
 			const urlParams = new URLSearchParams(window.location.search);
 			const tickerParam = urlParams.get('ticker');
@@ -654,7 +707,6 @@
 				document.getElementById('rrrTickerLabel').innerText = currentTicker;
 				document.getElementById('alertTickerLabel').innerText = currentTicker;
 				document.getElementById('corpTickerLabel').innerText = currentTicker;
-				document.getElementById('noteTickerLabel').innerText = currentTicker;
 				
 				renderChart(currentTicker);
 				renderTechnicalGauge(currentTicker);
@@ -663,7 +715,6 @@
 				generateAISignal(currentTicker);
 				fetchStockNews(currentTicker);
 				fetchCorporateAction(currentTicker);
-				loadTradingNote(currentTicker);
 			}
 		}
 
@@ -681,7 +732,6 @@
 		document.getElementById('rrrTickerLabel').innerText = currentTicker;
 		document.getElementById('alertTickerLabel').innerText = currentTicker;
 		document.getElementById('corpTickerLabel').innerText = currentTicker;
-		document.getElementById('noteTickerLabel').innerText = currentTicker;
 
 		renderChart(currentTicker);
 		renderTechnicalGauge(currentTicker);
@@ -690,7 +740,6 @@
 		generateAISignal(currentTicker);
 		fetchStockNews(currentTicker);
 		fetchCorporateAction(currentTicker);
-		loadTradingNote(currentTicker);
 	</script>
 </body>
 </html>
