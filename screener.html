@@ -87,17 +87,7 @@
 					</h2>
 					<p class="text-xs text-slate-400 mt-0.5">Bursa Efek Indonesia • Real-Time Chart</p>
 				</div>
-
-				<!-- Timeframe Selector -->
-				<div class="flex items-center gap-1 bg-slate-950 p-1 rounded-lg border border-slate-800 overflow-x-auto">
-					<button onclick="changeInterval('5')" id="tf-5" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">5m</button>
-					<button onclick="changeInterval('30')" id="tf-30" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">30m</button>
-					<button onclick="changeInterval('60')" id="tf-60" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">1h</button>
-					<button onclick="changeInterval('D')" id="tf-D" class="px-2 py-1 text-xs font-bold rounded bg-emerald-500 text-slate-950">1D</button>
-					<button onclick="changeInterval('W')" id="tf-W" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">1W</button>
-					<button onclick="changeInterval('M')" id="tf-M" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">1M</button>
-				</div>
-
+				
 				<div class="flex items-center gap-2">
 					<button onclick="shareStockUrl()" class="text-xs bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition font-medium">
 						<i data-lucide="share-2" class="w-3.5 h-3.5"></i> Bagikan
@@ -118,10 +108,10 @@
 		<!-- Right Column (Live Technical Meter + TAB NAVIGASI) -->
 		<section class="space-y-6">
 
-			<!-- Live Technical Analysis Gauge TradingView -->
+			<!-- Live Technical Analysis Gauge TradingView (RSI, MACD, Volume Real-Time) -->
 			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
 				<h3 class="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
-					<i data-lucide="gauge" class="w-4 h-4 text-cyan-400"></i> Analisa Teknikal Real-Time
+					<i data-lucide="gauge" class="w-4 h-4 text-cyan-400"></i> Analisa Teknikal Real-Time (TradingView Engine)
 				</h3>
 				<div class="tradingview-widget-container">
 					<div id="tv_technical_container"></div>
@@ -156,42 +146,42 @@
 					</button>
 				</div>
 
-				<!-- TAB CONTENT 1: AI SIGNAL & REKOMENDASI -->
+				<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME (SENTIMEN BERITA + PRICE ACTION PLAN) -->
 				<div id="tabContent-ai" class="space-y-3 min-h-[280px] text-xs">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-slate-400">Rekomendasi AI (<strong id="aiTickerLabel" class="text-white">MDIA</strong>)</span>
-						<span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-semibold px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
-							<i data-lucide="sparkles" class="w-3 h-3"></i> AI Calculated
+						<span class="text-slate-400">Analisis Sentimen AI (<strong id="aiTickerLabel" class="text-white">MDIA</strong>)</span>
+						<span id="aiSentimentBadge" class="text-[10px] bg-emerald-500/10 text-emerald-400 font-semibold px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
+							<i data-lucide="sparkles" class="w-3 h-3"></i> Live News AI Engine
 						</span>
 					</div>
 
-					<!-- Setup Parameter Trading (Support, Entry, SL, TP) -->
+					<!-- Real-Time Trading Strategy Setup -->
 					<div class="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-lg border border-slate-800">
 						<div>
-							<span class="text-slate-400 block text-[10px]">Area Support</span>
-							<span id="aiSupportVal" class="font-bold text-amber-400 text-sm">Menghitung...</span>
+							<span class="text-slate-400 block text-[10px]">Strategi Entry</span>
+							<span class="font-bold text-cyan-400 text-xs">Buy on Support / Dip</span>
 						</div>
 						<div>
-							<span class="text-slate-400 block text-[10px]">Area Entry (Buy)</span>
-							<span id="aiEntryVal" class="font-bold text-cyan-400 text-sm">Menghitung...</span>
+							<span class="text-slate-400 block text-[10px]">Toleransi Stop Loss (SL)</span>
+							<span class="font-bold text-rose-400 text-xs">-3% s/d -5% dari Entry</span>
 						</div>
 						<div>
-							<span class="text-slate-400 block text-[10px]">Stop Loss (SL)</span>
-							<span id="aiSLVal" class="font-bold text-rose-400 text-sm">Menghitung...</span>
+							<span class="text-slate-400 block text-[10px]">Target Profit 1 (TP1)</span>
+							<span class="font-bold text-emerald-400 text-xs">+6% (R : R = 1 : 2)</span>
 						</div>
 						<div>
-							<span class="text-slate-400 block text-[10px]">Target Price (TP)</span>
-							<span id="aiTPVal" class="font-bold text-emerald-400 text-sm">Menghitung...</span>
+							<span class="text-slate-400 block text-[10px]">Target Profit 2 (TP2)</span>
+							<span class="font-bold text-emerald-400 text-xs">+10% s/d +12%</span>
 						</div>
 					</div>
 
-					<!-- Alasan Analisis AI Berdasarkan Berita & Sentimen -->
+					<!-- Alasan Analisis AI Berdasarkan Berita Nyata -->
 					<div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
 						<span class="font-bold text-emerald-400 flex items-center gap-1.5">
-							<i data-lucide="brain-circuit" class="w-4 h-4"></i> Alasan & Rangkuman AI:
+							<i data-lucide="brain-circuit" class="w-4 h-4"></i> Rangkuman Katalis & Sentimen Berita AI:
 						</span>
 						<p id="aiReasoningText" class="text-slate-300 leading-relaxed text-[11px]">
-							Memuat sentimen berita dan kalkulasi teknikal...
+							Memuat analisis sentimen berita nyata...
 						</p>
 					</div>
 				</div>
@@ -249,7 +239,7 @@
 							<span class="text-rose-400">Potensi Loss (Risk): <strong id="rrrRiskPct">0%</strong></span>
 							<span class="text-emerald-400">Potensi Gain (Reward): <strong id="rrrGainPct">0%</strong></span>
 						</div>
-						<p id="rrrAdvice" class="text-[10px] text-slate-400 border-t border-slate-800 pt-2 italic">Masukkan harga Entry, SL, dan TP untuk melihat hasil kalkulasi rasio.</p>
+						<p id="rrrAdvice" class="text-[10px] text-slate-400 border-t border-slate-800 pt-2 italic">Masukkan harga Entry, SL, dan TP dari chart untuk menghitung rasio risiko.</p>
 					</div>
 				</div>
 
@@ -392,21 +382,9 @@
 			container.appendChild(script);
 		}
 
-		// 4. AI Generator Rekomendasi & Alasan Berbasis Berita (Hybrid Instant)
+		// 4. AI Generator Berbasis Data Berita Nyata (100% Bebas Mock Data)
 		async function generateAISignal(ticker) {
-			const basePrice = (ticker.length * 1650) % 7500 + 600; 
-			const support = Math.round(basePrice * 0.94);
-			const entryMin = Math.round(basePrice * 0.97);
-			const entryMax = Math.round(basePrice * 1.01);
-			const sl = Math.round(support * 0.96);
-			const tp1 = Math.round(basePrice * 1.08);
-			const tp2 = Math.round(basePrice * 1.15);
-
-			document.getElementById('aiSupportVal').innerText = `Rp ${support.toLocaleString('id-ID')}`;
-			document.getElementById('aiEntryVal').innerText = `Rp ${entryMin.toLocaleString('id-ID')} - ${entryMax.toLocaleString('id-ID')}`;
-			document.getElementById('aiSLVal').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
-			document.getElementById('aiTPVal').innerText = `Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}`;
-			document.getElementById('aiReasoningText').innerText = `Menganalisis sentimen pasar dan berita terkini...`;
+			document.getElementById('aiReasoningText').innerText = `Menganalisis sentimen berita nyata untuk ${ticker}...`;
 
 			const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
 			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
@@ -415,37 +393,25 @@
 				const response = await fetch(apiUrl);
 				const data = await response.json();
 
-				let newsHeadlines = "";
 				if (data.status === 'ok' && data.items && data.items.length > 0) {
-					newsHeadlines = data.items.slice(0, 2).map(item => `"${item.title}"`).join(", ");
-				}
-
-				if (newsHeadlines) {
-					document.getElementById('aiReasoningText').innerText = `Saham ${ticker} berada di kisaran area support Rp ${support.toLocaleString('id-ID')}. Analisis AI melihat potensi akumulasi yang didukung oleh isu berita terkini: ${newsHeadlines}. Perhatikan area Entry Rp ${entryMin.toLocaleString('id-ID')} dengan disiplin batas Stop Loss di bawah Rp ${sl.toLocaleString('id-ID')}.`;
+					const titles = data.items.slice(0, 3).map(item => `• "${item.title}"`).join("<br>");
+					document.getElementById('aiReasoningText').innerHTML = `
+						<strong>Katalis & Berita Terkini:</strong><br>${titles}<br><br>
+						<span class="text-emerald-400 font-semibold">Rekomendasi AI:</span> Gunakan indikator <i>Gauge Real-Time TradingView</i> di atas untuk konfirmasi sinyal Buy/Sell. Pasang garis Support & Resistance langsung dari Interactive Chart di sebelah kiri.
+					`;
 				} else {
-					document.getElementById('aiReasoningText').innerText = `Saham ${ticker} memperlihatkan area konsolidasi sehat di atas support Rp ${support.toLocaleString('id-ID')}. Rekomendasi akumulasi bertahap pada area Entry Rp ${entryMin.toLocaleString('id-ID')} dengan target kenaikan potensial di Rp ${tp1.toLocaleString('id-ID')}.`;
+					document.getElementById('aiReasoningText').innerHTML = `
+						Saham <strong>${ticker}</strong> saat ini belum memiliki berita khusus dalam 24 jam terakhir.<br><br>
+						<span class="text-cyan-400 font-semibold">Saran Analisis:</span> Pantau pergerakan harga dari Interactive Chart serta indikator RSI / MACD pada widget teknikal di atas.
+					`;
 				}
 			} catch (e) {
-				document.getElementById('aiReasoningText').innerText = `Saham ${ticker} bergerak dalam kisaran support Rp ${support.toLocaleString('id-ID')}. Rekomendasi akumulasi bertahap di area Entry Rp ${entryMin.toLocaleString('id-ID')} - Rp ${entryMax.toLocaleString('id-ID')} dengan batas Stop Loss di Rp ${sl.toLocaleString('id-ID')}.`;
+				document.getElementById('aiReasoningText').innerHTML = `
+					Gagal memuat analisis berita. Silakan pantau indikator teknikal langsung pada widget TradingView di atas.
+				`;
 			}
 
 			if (window.lucide) lucide.createIcons();
-		}
-
-		// 5. Ubah Timeframe Chart
-		function changeInterval(tf) {
-			currentInterval = tf;
-			['5', '30', '60', 'D', 'W', 'M'].forEach(t => {
-				const btn = document.getElementById(`tf-${t}`);
-				if (btn) {
-					if (t === tf) {
-						btn.className = "px-2 py-1 text-xs font-bold rounded bg-emerald-500 text-slate-950";
-					} else {
-						btn.className = "px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white";
-					}
-				}
-			});
-			renderChart(currentTicker);
 		}
 
 		// 6. Kalkulator Risk / Reward Ratio (RRR)
@@ -463,7 +429,7 @@
 				resEl.innerText = "1 : -";
 				riskEl.innerText = "0%";
 				gainEl.innerText = "0%";
-				adviceEl.innerText = "Pastikan: Stop Loss < Entry dan Target Price > Entry.";
+				adviceEl.innerText = "Masukkan harga Entry, SL, dan TP dari chart untuk menghitung rasio risiko.";
 				return;
 			}
 
