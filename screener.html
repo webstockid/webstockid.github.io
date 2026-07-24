@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="UTF-8">
+	<title>Stock's ID Screener - Premium Trading & Learning Community</title>
+	<meta name="keyword" content="stock id, stockid, stock id vip, stockid vip, saham, kelas saham">
+	<meta name="HandheldFriendly" content="True">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no">
+	<meta name="author" content="Hardiansyah & Tailwind.css">
+	<meta property="og:title" content="Stock ID Screener #Andaimology">
+	<meta property="og:description" content="Screening Saham Secara Akurat & Real Time">
+	<meta property="og:image" content="stockid_gambar/stockicon.jpg">
+	<meta property="og:url" content="https://webstockid.github.io/screener.html">
+	<meta property="og:type" content="website">
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://unpkg.com/lucide@latest"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Outfit&display=swap" rel="stylesheet">
+	<style>
+		body {
+			font-family: Outfit, sans-serif;
+			background-color: #0b0f19;
+		}
+		.heading-font {
+			font-family: Outfit, sans-serif;
+		}
+		.glassmorphism {
+			background: rgba(17, 24, 39, .7);
+			backdrop-filter: blur(12px);
+			-webkit-backdrop-filter: blur(12px);
+			border: 1px solid rgba(255, 255, 255, .06);
+		}
+	</style>
+</head>
+
+<body class="text-slate-200 antialiased overflow-x-hidden">
+
+	<!-- Navbar -->
+	<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
+			<div class="flex items-center gap-3">
+				<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2.5 rounded-xl shadow-lg shadow-emerald-500/20">
+					<i class="fa-solid fa-chart-line text-slate-950 text-xl font-black"></i>
+				</div>
+				<div>
+					<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">SCREENER</span></span>
+					<p class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
+				</div>
+			</div>
+			<div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+				<a href="#benefit" class="hover:text-emerald-400 transition-colors">Benefit</a>
+				<a href="#stats" class="hover:text-emerald-400 transition-colors">Statistik</a>
+				<a href="#paket" class="hover:text-emerald-400 transition-colors">Paket Belajar</a>
+				<a href="#faq" class="hover:text-emerald-400 transition-colors">FAQ</a>
+			</div>
+			<div>
+				<a href="https://webstockid.github.io/index" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-sm tracking-wide transition shadow-lg shadow-emerald-500/20 block">STOCK ID VIP</a>
+			</div>
+		</div>
+	</nav>
+
+	<!-- Fixed Search Bar Melayang di Bawah Nav -->
+	<div class="fixed top-20 left-0 w-full z-30 glassmorphism border-b border-slate-800/80 py-3 px-4">
+		<div class="max-w-md mx-auto relative">
+			<i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-slate-400"></i>
+			<input type="text" id="stockSearch" placeholder="Cari kode saham (BBCA, TLKM, GOTO...)" 
+				class="w-full bg-slate-800 text-sm border border-slate-700 rounded-lg pl-9 pr-20 py-2 focus:outline-none focus:border-emerald-500 uppercase">
+			<button onclick="searchStock()" class="absolute right-1 top-1 text-xs bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-3 py-1.5 rounded-md transition">
+				Cari
+			</button>
+		</div>
+	</div>
+
+	<!-- Main Content -->
+	<main class="max-w-7xl mx-auto px-4 pt-24 pb-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+		<!-- Left Column (TradingView Chart) -->
+		<section class="lg:col-span-2 space-y-6">
+			
+			<!-- Header Title Ticker -->
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex justify-between items-center">
+				<div>
+					<h2 class="text-2xl font-bold text-white flex items-center gap-2" id="stockTitle">
+						IDX:BBCA
+					</h2>
+					<p class="text-xs text-slate-400 mt-0.5">Bursa Efek Indonesia • Real-Time Chart</p>
+				</div>
+				<span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-medium flex items-center gap-1.5">
+					<span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Market Live
+				</span>
+			</div>
+
+			<!-- Live TradingView Chart Widget (100% Akurat) -->
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-2 h-[500px] overflow-hidden">
+				<div id="tv_chart_container" class="w-full h-full"></div>
+			</div>
+
+		</section>
+
+		<!-- Right Column (Live Technical Meter + Google RSS News) -->
+		<section class="space-y-6">
+
+			<!-- Live Technical Analysis Gauge TradingView -->
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+				<h3 class="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+					<i data-lucide="gauge" class="w-4 h-4 text-cyan-400"></i> Analisa Teknikal Real-Time
+				</h3>
+				<div class="tradingview-widget-container">
+					<div id="tv_technical_container"></div>
+				</div>
+			</div>
+
+			<!-- Live Google RSS News Feed -->
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+				<div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+					<h3 class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+						<i data-lucide="newspaper" class="w-4 h-4 text-emerald-400"></i> Berita Terkini (<span id="newsTickerLabel">BBCA</span>)
+					</h3>
+					<span class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-slate-300">Google News RSS</span>
+				</div>
+
+				<div id="newsContainer" class="space-y-3 min-h-[250px]">
+					<div class="text-center text-slate-500 text-xs py-10">Memuat berita terkini...</div>
+				</div>
+			</div>
+
+		</section>
+
+	</main>
+
+	<!-- Script CDN TradingView -->
+	<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
+	<script>
+		let currentTicker = 'BBCA';
+
+		// Init Lucide Icons
+		lucide.createIcons();
+
+		// 1. Render Interactive TradingView Chart
+		function renderChart(ticker) {
+			document.getElementById('tv_chart_container').innerHTML = '';
+			new TradingView.widget({
+				"autosize": true,
+				"symbol": `IDX:${ticker}`,
+				"interval": "D",
+				"timezone": "Asia/Jakarta",
+				"theme": "dark",
+				"style": "1",
+				"locale": "id",
+				"toolbar_bg": "#f1f3f6",
+				"enable_publishing": false,
+				"allow_symbol_change": false,
+				"container_id": "tv_chart_container",
+				
+				"studies": [
+					"MAExp@tv-basicstudies",
+					"MACD@tv-basicstudies",
+					"VWAP@tv-basicstudies",
+					"BB@tv-basicstudies",
+				]
+			});
+		}
+
+		// 2. Render Technical Gauge Widget TradingView
+		function renderTechnicalGauge(ticker) {
+			const container = document.getElementById('tv_technical_container');
+			container.innerHTML = '';
+
+			const script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
+			script.async = true;
+			script.text = JSON.stringify({
+				"interval": "1D",
+				"width": "100%",
+				"isTransparent": true,
+				"height": "380",
+				"symbol": `IDX:${ticker}`,
+				"showIntervalTabs": true,
+				"displayMode": "single",
+				"locale": "id",
+				"colorTheme": "dark"
+			});
+			container.appendChild(script);
+		}
+
+		// 3. Google RSS News Fetcher
+		async function fetchStockNews(ticker) {
+			const container = document.getElementById('newsContainer');
+			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat berita terkini ${ticker}...</div>`;
+			
+			const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
+			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+			try {
+				const response = await fetch(apiUrl);
+				const data = await response.json();
+
+				if (data.status === 'ok' && data.items.length > 0) {
+					container.innerHTML = '';
+					data.items.slice(0, 5).forEach(item => {
+						const date = new Date(item.pubDate).toLocaleDateString('id-ID', {
+							day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+						});
+
+						container.innerHTML += `
+							<a href="${item.link}" target="_blank" class="block p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
+								<h4 class="text-xs font-semibold text-slate-200 line-clamp-2">${item.title}</h4>
+								<div class="flex justify-between items-center mt-2 text-[10px] text-slate-400">
+									<span>${item.author || 'Google News'}</span>
+									<span>${date}</span>
+								</div>
+							</a>
+						`;
+					});
+				} else {
+					container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8">Tidak ada berita khusus ditemukan untuk ${ticker}.</div>`;
+				}
+			} catch (e) {
+				container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8">Berita tidak dapat dijangkau sementara.</div>`;
+			}
+		}
+
+		// Search Trigger Function
+		function searchStock() {
+			const input = document.getElementById('stockSearch').value.trim().toUpperCase();
+			if (input) {
+				currentTicker = input;
+				document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
+				document.getElementById('newsTickerLabel').innerText = currentTicker;
+				
+				renderChart(currentTicker);
+				renderTechnicalGauge(currentTicker);
+				fetchStockNews(currentTicker);
+			}
+		}
+
+		// Enter Key Trigger
+		document.getElementById('stockSearch').addEventListener('keypress', function(e) {
+			if (e.key === 'Enter') searchStock();
+		});
+
+		// Initial Load Application
+		renderChart(currentTicker);
+		renderTechnicalGauge(currentTicker);
+		fetchStockNews(currentTicker);
+	</script>
+</body>
+</html>
