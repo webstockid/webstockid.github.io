@@ -65,7 +65,7 @@
 	<div class="fixed top-20 left-0 w-full z-30 glassmorphism border-b border-slate-800/80 py-3 px-4">
 		<div class="max-w-md mx-auto relative">
 			<i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-slate-400"></i>
-			<input type="text" id="stockSearch" placeholder="Cari kode saham (BBCA, TLKM, GOTO...)" 
+			<input type="text" id="stockSearch" placeholder="Cari kode saham (MDIA, BNBR, JPFA, TPIA, BUMI...)" 
 				class="w-full bg-slate-800 text-sm border border-slate-700 rounded-lg pl-9 pr-20 py-2 focus:outline-none focus:border-emerald-500 uppercase">
 			<button onclick="searchStock()" class="absolute right-1 top-1 text-xs bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-3 py-1.5 rounded-md transition">
 				Cari
@@ -79,17 +79,22 @@
 		<!-- Left Column (TradingView Chart) -->
 		<section class="lg:col-span-2 space-y-6">
 			
-			<!-- Header Title Ticker -->
+			<!-- Header Title Ticker & Tombol Bagikan -->
 			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex justify-between items-center">
 				<div>
 					<h2 class="text-2xl font-bold text-white flex items-center gap-2" id="stockTitle">
-						IDX:BBCA
+						IDX:MDIA
 					</h2>
 					<p class="text-xs text-slate-400 mt-0.5">Bursa Efek Indonesia • Real-Time Chart</p>
 				</div>
-				<span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-medium flex items-center gap-1.5">
-					<span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Market Live
-				</span>
+				<div class="flex items-center gap-2">
+					<button onclick="shareStockUrl()" class="text-xs bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition font-medium">
+						<i data-lucide="share-2" class="w-3.5 h-3.5"></i> Bagikan
+					</button>
+					<span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-medium flex items-center gap-1.5">
+						<span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Market Live
+					</span>
+				</div>
 			</div>
 
 			<!-- Live TradingView Chart Widget (100% Akurat) -->
@@ -99,7 +104,7 @@
 
 		</section>
 
-		<!-- Right Column (Live Technical Meter + Google RSS News) -->
+		<!-- Right Column (Live Technical Meter + TAB NAVIGASI) -->
 		<section class="space-y-6">
 
 			<!-- Live Technical Analysis Gauge TradingView -->
@@ -112,18 +117,59 @@
 				</div>
 			</div>
 
-			<!-- Live Google RSS News Feed -->
+			<!-- TAB CONTAINER -->
 			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
-				<div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
-					<h3 class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-						<i data-lucide="newspaper" class="w-4 h-4 text-emerald-400"></i> Berita Terkini (<span id="newsTickerLabel">BBCA</span>)
-					</h3>
-					<span class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-slate-300">Google News RSS</span>
+				
+				<!-- Tab Navigation Buttons -->
+				<div class="flex border-b border-slate-800 mb-4 pb-2 gap-1">
+					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1">
+						<i data-lucide="newspaper" class="w-3.5 h-3.5"></i> Berita
+					</button>
+					<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1">
+						<i data-lucide="calendar" class="w-3.5 h-3.5"></i> Aksi Korporasi
+					</button>
+					<button onclick="switchTab('notes')" id="tabBtn-notes" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1">
+						<i data-lucide="notebook-pen" class="w-3.5 h-3.5"></i> Catatan
+					</button>
 				</div>
 
-				<div id="newsContainer" class="space-y-3 min-h-[250px]">
-					<div class="text-center text-slate-500 text-xs py-10">Memuat berita terkini...</div>
+				<!-- TAB CONTENT 1: BERITA RSS -->
+				<div id="tabContent-news" class="space-y-3 min-h-[250px]">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-xs text-slate-400">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-slate-300">Google News RSS</span>
+					</div>
+					<div id="newsContainer" class="space-y-3">
+						<div class="text-center text-slate-500 text-xs py-10">Memuat berita terkini...</div>
+					</div>
 				</div>
+
+				<!-- TAB CONTENT 2: AKSI KORPORASI LIVE RSS -->
+				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3 text-xs">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-xs text-slate-400">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-emerald-400 font-semibold">Dividen / RUPS / Split</span>
+					</div>
+					<div id="corporateContainer" class="space-y-3">
+						<div class="text-center text-slate-500 text-xs py-10">Memuat data aksi korporasi...</div>
+					</div>
+					<div class="border-t border-slate-800 pt-2 text-right">
+						<a href="https://www.idx.co.id/id/perusahaan-tercatat/aksi-korporasi" target="_blank" class="text-[11px] text-cyan-400 hover:underline">Lihat Pengumuman Resmi BEI &rarr;</a>
+					</div>
+				</div>
+
+				<!-- TAB CONTENT 3: CATATAN TRADING PERSONAL -->
+				<div id="tabContent-notes" class="hidden min-h-[250px] space-y-3 text-xs">
+					<label class="block text-slate-400 font-medium">Catatan Trading Plan (<span id="noteTickerLabel">MDIA</span>):</label>
+					<textarea id="tradingNoteInput" rows="5" placeholder="Tuliskan plan entry, TP, SL, atau analisa pribadi di sini..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-slate-200 text-xs focus:outline-none focus:border-emerald-500"></textarea>
+					<div class="flex justify-between items-center">
+						<span id="noteSavedStatus" class="text-[10px] text-emerald-400 opacity-0 transition duration-200">✓ Tersimpan otomatis</span>
+						<button onclick="saveTradingNote()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-3 py-1.5 rounded-md font-bold text-xs transition">
+							Simpan Catatan
+						</button>
+					</div>
+				</div>
+
 			</div>
 
 		</section>
@@ -134,7 +180,7 @@
 	<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
 	<script>
-		let currentTicker = 'BBCA';
+		let currentTicker = 'MDIA';
 
 		// Init Lucide Icons
 		lucide.createIcons();
@@ -148,10 +194,10 @@
 				"interval": "D",
 				"timezone": "Asia/Jakarta",
 				"theme": "dark",
-				"style": "1",
+				"style": "2",
 				"locale": "id",
 				"toolbar_bg": "#f1f3f6",
-				"enable_publishing": false,
+				"enable_publishing": true,
 				"allow_symbol_change": false,
 				"container_id": "tv_chart_container",
 				
@@ -177,7 +223,7 @@
 				"interval": "1D",
 				"width": "100%",
 				"isTransparent": true,
-				"height": "380",
+				"height": "420",
 				"symbol": `IDX:${ticker}`,
 				"showIntervalTabs": true,
 				"displayMode": "single",
@@ -187,7 +233,7 @@
 			container.appendChild(script);
 		}
 
-		// 3. Google RSS News Fetcher
+		// 3. Google RSS News Fetcher (Berita Umum)
 		async function fetchStockNews(ticker) {
 			const container = document.getElementById('newsContainer');
 			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat berita terkini ${ticker}...</div>`;
@@ -224,6 +270,96 @@
 			}
 		}
 
+		// 4. Live Aksi Korporasi Fetcher (Mengambil Berita Spesifik Dividen / RUPS / Stock Split)
+		async function fetchCorporateAction(ticker) {
+			const container = document.getElementById('corporateContainer');
+			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat aksi korporasi ${ticker}...</div>`;
+			
+			// Keyword spesifik untuk Aksi Korporasi Emiten
+			const query = encodeURIComponent(`${ticker} (dividen OR RUPS OR "right issue" OR "stock split" OR buyback)`);
+			const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=id&gl=ID&ceid=ID:id`;
+			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+			try {
+				const response = await fetch(apiUrl);
+				const data = await response.json();
+
+				if (data.status === 'ok' && data.items.length > 0) {
+					container.innerHTML = '';
+					data.items.slice(0, 5).forEach(item => {
+						const date = new Date(item.pubDate).toLocaleDateString('id-ID', {
+							day: 'numeric', month: 'short', year: 'numeric'
+						});
+
+						container.innerHTML += `
+							<a href="${item.link}" target="_blank" class="block p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
+								<div class="flex items-center gap-1.5 mb-1">
+									<span class="text-[9px] bg-emerald-500/20 text-emerald-400 font-semibold px-1.5 py-0.5 rounded border border-emerald-500/30">Aksi Korporasi</span>
+									<span class="text-[10px] text-slate-400">${date}</span>
+								</div>
+								<h4 class="text-xs font-semibold text-slate-200 line-clamp-2">${item.title}</h4>
+							</a>
+						`;
+					});
+				} else {
+					container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8">Belum ada kabar aksi korporasi terbaru untuk ${ticker}.</div>`;
+				}
+			} catch (e) {
+				container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8">Gagal memuat data aksi korporasi.</div>`;
+			}
+		}
+
+		// 5. Switching Tab Navigasi
+		function switchTab(tabName) {
+			const tabs = ['news', 'corporate', 'notes'];
+			tabs.forEach(tab => {
+				const btn = document.getElementById(`tabBtn-${tab}`);
+				const content = document.getElementById(`tabContent-${tab}`);
+				
+				if (tab === tabName) {
+					btn.className = "flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1";
+					content.classList.remove('hidden');
+				} else {
+					btn.className = "flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1";
+					content.classList.add('hidden');
+				}
+			});
+		}
+
+		// 6. Simpan & Muat Catatan Trading Personal (LocalStorage)
+		function loadTradingNote(ticker) {
+			const note = localStorage.getItem(`stock_note_${ticker}`) || '';
+			document.getElementById('tradingNoteInput').value = note;
+		}
+
+		function saveTradingNote() {
+			const note = document.getElementById('tradingNoteInput').value;
+			localStorage.setItem(`stock_note_${currentTicker}`, note);
+			
+			const status = document.getElementById('noteSavedStatus');
+			status.style.opacity = '1';
+			setTimeout(() => status.style.opacity = '0', 2000);
+		}
+
+		// 7. Bagikan URL Ticker
+		function shareStockUrl() {
+			const shareUrl = `${window.location.origin}${window.location.pathname}?ticker=${currentTicker}`;
+			navigator.clipboard.writeText(shareUrl).then(() => {
+				alert(`Link analisis ${currentTicker} berhasil disalin!`);
+			}).catch(() => {
+				alert(`URL: ${shareUrl}`);
+			});
+		}
+
+		// 8. Auto Check Ticker dari URL Query Param
+		function checkUrlParamTicker() {
+			const urlParams = new URLSearchParams(window.location.search);
+			const tickerParam = urlParams.get('ticker');
+			if (tickerParam) {
+				currentTicker = tickerParam.toUpperCase();
+			}
+		}
+
 		// Search Trigger Function
 		function searchStock() {
 			const input = document.getElementById('stockSearch').value.trim().toUpperCase();
@@ -231,10 +367,14 @@
 				currentTicker = input;
 				document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 				document.getElementById('newsTickerLabel').innerText = currentTicker;
+				document.getElementById('corpTickerLabel').innerText = currentTicker;
+				document.getElementById('noteTickerLabel').innerText = currentTicker;
 				
 				renderChart(currentTicker);
 				renderTechnicalGauge(currentTicker);
 				fetchStockNews(currentTicker);
+				fetchCorporateAction(currentTicker);
+				loadTradingNote(currentTicker);
 			}
 		}
 
@@ -244,9 +384,17 @@
 		});
 
 		// Initial Load Application
+		checkUrlParamTicker();
+		document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
+		document.getElementById('newsTickerLabel').innerText = currentTicker;
+		document.getElementById('corpTickerLabel').innerText = currentTicker;
+		document.getElementById('noteTickerLabel').innerText = currentTicker;
+
 		renderChart(currentTicker);
 		renderTechnicalGauge(currentTicker);
 		fetchStockNews(currentTicker);
+		fetchCorporateAction(currentTicker);
+		loadTradingNote(currentTicker);
 	</script>
 </body>
 </html>
