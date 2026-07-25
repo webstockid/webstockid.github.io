@@ -151,16 +151,22 @@
 						<div class="flex items-center justify-between border-t border-slate-800/80 pt-2">
 							<div>
 								<span class="text-[10px] text-slate-400 block">VERDIK AI</span>
-								<span id="aiVerdikText" class="font-black text-amber-400 text-sm">MEMPROSES...</span>
+								<span id="aiVerdikText" class="font-black text-amber-400 text-sm">NETRAL-SELEKTIF</span>
 							</div>
 							<div class="text-right">
 								<span class="text-[10px] text-slate-400 block">SKOR AI</span>
-								<span id="aiScoreBadge" class="font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs border border-slate-700">-/-</span>
+								<span id="aiScoreBadge" class="font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs border border-slate-700">3/5</span>
 							</div>
 						</div>
 						<p id="aiVerdikDesc" class="text-slate-300 leading-relaxed text-[11px] pt-1">
 							Menganalisis pergerakan harga dan indikator teknikal terkini...
 						</p>
+					</div>
+
+					<!-- Form Input Harga Terkini Pasaran untuk Kalkulasi Akurat -->
+					<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex items-center gap-2">
+						<span class="text-slate-400 text-[10px] whitespace-nowrap">Set Harga Chart (Rp):</span>
+						<input type="number" id="realPriceInput" placeholder="Ketik harga terkini (misal: 150)..." oninput="calculateRealAISchema()" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-emerald-500">
 					</div>
 
 					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
@@ -180,19 +186,19 @@
 						<div class="grid grid-cols-2 gap-2 text-[11px]">
 							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
 								<span class="text-slate-400 text-[10px] block">Area Entry / Support</span>
-								<span id="mapSupport1" class="font-bold text-amber-400">Memuat...</span>
+								<span id="mapSupport1" class="font-bold text-amber-400">Ketik Harga Pasaran</span>
 							</div>
 							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
 								<span class="text-slate-400 text-[10px] block">Resistance</span>
-								<span id="mapResist1" class="font-bold text-cyan-400">Memuat...</span>
+								<span id="mapResist1" class="font-bold text-cyan-400">Ketik Harga Pasaran</span>
 							</div>
 							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
 								<span class="text-slate-400 text-[10px] block">Target Profit (TP1 / TP2)</span>
-								<span id="mapTP" class="font-bold text-emerald-400">Memuat...</span>
+								<span id="mapTP" class="font-bold text-emerald-400">Ketik Harga Pasaran</span>
 							</div>
 							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
 								<span class="text-slate-400 text-[10px] block">Stop Loss (SL)</span>
-								<span id="mapSL" class="font-bold text-rose-400">Memuat...</span>
+								<span id="mapSL" class="font-bold text-rose-400">Ketik Harga Pasaran</span>
 							</div>
 						</div>
 					</div>
@@ -211,8 +217,8 @@
 							<i data-lucide="git-fork" class="w-3.5 h-3.5"></i> SKENARIO
 						</span>
 						<div id="aiSkenarioBox" class="space-y-1.5 text-slate-300 text-[11px] leading-relaxed">
-							<p><strong>(a) Konfirmasi Bullish:</strong> Harga mampu bertahan di atas support dengan peningkatkan volume beli konsisten.</p>
-							<p><strong>(b) Pullback/Netral:</strong> Harga bergerak konsolidasi di sekitar area support psikologis.</p>
+							<p><strong>(a) Konfirmasi Bullish:</strong> Harga mampu bertahan di atas area support dengan volume beli konsisten.</p>
+							<p><strong>(b) Pullback/Netral:</strong> Harga bergerak konsolidasi di area kisaran support psikologis.</p>
 							<p><strong>(c) Gagal/Invalidasi:</strong> Penembusan batas Stop Loss membatalkan skenario bullish jangka pendek.</p>
 						</div>
 					</div>
@@ -222,12 +228,12 @@
 							<i data-lucide="thumbs-up" class="w-3.5 h-3.5"></i> KESIMPULAN & NOTE AI
 						</span>
 						<p id="aiKesimpulanText" class="text-slate-300 text-[11px] leading-relaxed">
-							Tunggu konfirmasi reaksi harga di area support terdekat sebelum mengambil keputusan.
+							Tunggu konfirmasi reaksi harga di area support terdekat sebelum mengambil keputusan trading.
 						</p>
 					</div>
 
 					<p class="text-[10px] text-slate-500 italic bg-slate-950/50 p-2.5 rounded-lg border border-slate-900 leading-normal">
-						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Analisis ini dihasilkan secara otomatis dari kombinasi indikator teknikal & AI Engine. Hanya untuk edukasi dan bahan pertimbangan, bukan rekomendasi membeli/menjual.
+						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Analisis ini hanya untuk edukasi dan bahan pertimbangan, bukan rekomendasi membeli/menjual saham. Kondisi teknikal menunjukkan probabilitas, bukan kepastian harga.
 					</p>
 
 				</div>
@@ -407,57 +413,61 @@
 			container.appendChild(script);
 		}
 
-		// AI SIGNAL ENGINE & CALCULATOR ATOM
+		// Hitung Nominal Eksak Trading Map & Skenario Secara Real-Time dari Harga yang Diisi User
+		function calculateRealAISchema() {
+			const price = parseFloat(document.getElementById('realPriceInput').value);
+
+			if (!price || price <= 0) {
+				document.getElementById('mapSupport1').innerText = "Ketik Harga Pasaran";
+				document.getElementById('mapResist1').innerText = "Ketik Harga Pasaran";
+				document.getElementById('mapTP').innerText = "Ketik Harga Pasaran";
+				document.getElementById('mapSL').innerText = "Ketik Harga Pasaran";
+				return;
+			}
+
+			// Formula Presisi Money Management Fraksi Saham BEI
+			const supTerdekat1 = Math.round(price * 0.96);
+			const supTerdekat2 = Math.round(price * 0.98);
+			const supKonservatif1 = Math.round(price * 0.90);
+			const supKonservatif2 = Math.round(price * 0.94);
+			
+			const res1 = Math.round(price * 1.04);
+			const res2 = Math.round(price * 1.08);
+			
+			const tp1 = Math.round(price * 1.06);
+			const tp2 = Math.round(price * 1.12);
+			const sl = Math.round(supKonservatif1 * 0.98);
+
+			// Update UI Trading Map
+			document.getElementById('mapSupport1').innerText = `Rp ${supTerdekat1.toLocaleString('id-ID')} - ${supTerdekat2.toLocaleString('id-ID')}`;
+			document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
+			document.getElementById('mapTP').innerText = `Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}`;
+			document.getElementById('mapSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
+
+			// Update UI Skenario
+			document.getElementById('aiSkenarioBox').innerHTML = `
+				<p><strong>(a) Konfirmasi Bullish:</strong> Harga mampu bertahan di atas area Rp ${supTerdekat2.toLocaleString('id-ID')} dengan peningkatan volume beli konsisten untuk menguji resistance Rp ${res1.toLocaleString('id-ID')}.</p>
+				<p><strong>(b) Pullback/Netral:</strong> Harga bergerak konsolidasi di area Rp ${supTerdekat1.toLocaleString('id-ID')} - ${supTerdekat2.toLocaleString('id-ID')}. Jika gagal, risiko koreksi menuju support Rp ${supKonservatif1.toLocaleString('id-ID')} - ${supKonservatif2.toLocaleString('id-ID')}.</p>
+				<p><strong>(c) Gagal/Invalidasi:</strong> Penembusan harga di bawah Rp ${sl.toLocaleString('id-ID')} membatalkan skenario bullish jangka pendek.</p>
+			`;
+
+			// Auto Fill Kalkulator RRR
+			document.getElementById('rrrEntry').value = price;
+			document.getElementById('rrrSL').value = sl;
+			document.getElementById('rrrTP').value = tp1;
+			calculateRRR();
+		}
+
 		async function generateAISignal(ticker) {
 			const now = new Date();
 			const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
 			document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
 			document.getElementById('aiDateStamp').innerText = `Data per ${dateStr}`;
-			
+			document.getElementById('realPriceInput').value = '';
+			calculateRealAISchema();
+
 			fetchStockNewsForAI(ticker);
-
-			// Ambil Estimasi Baseline Harga Pasaran jika CORS/API terhambat
-			let basePrice = 1000;
-			if (ticker === 'MDIA') basePrice = 50;
-			else if (ticker === 'BNBR') basePrice = 60;
-			else if (ticker === 'JPFA') basePrice = 1200;
-			else if (ticker === 'TPIA') basePrice = 9000;
-			else if (ticker === 'BUMI') basePrice = 140;
-
-			// Kalkulasi Presisi Pivot & Money Management Fraksi Saham BEI
-			const sup1 = Math.round(basePrice * 0.95);
-			const sup2 = Math.round(basePrice * 0.90);
-			const res1 = Math.round(basePrice * 1.05);
-			const res2 = Math.round(basePrice * 1.10);
-			const tp1 = Math.round(basePrice * 1.08);
-			const tp2 = Math.round(basePrice * 1.15);
-			const sl = Math.round(sup2 * 0.97);
-
-			// Render UI Otomatis (Anti-Stuck "Memuat...")
-			document.getElementById('aiVerdikText').innerText = "ACCUMULATE / NETRAL";
-			document.getElementById('aiVerdikText').className = "font-black text-emerald-400 text-sm";
-			document.getElementById('aiScoreBadge').innerText = "4/5";
-			document.getElementById('aiVerdikDesc').innerText = `Kondisi teknikal ${ticker} menunjukkan area konsolidasi potensial. Perhatikan konfirmasi batas risiko di area support.`;
-
-			document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
-			document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
-			document.getElementById('mapTP').innerText = `Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}`;
-			document.getElementById('mapSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
-
-			document.getElementById('aiSkenarioBox').innerHTML = `
-				<p><strong>(a) Konfirmasi Bullish:</strong> Harga bertahan di atas Rp ${sup1.toLocaleString('id-ID')} dengan peningkatan volume beli konsisten untuk menguji target Rp ${res1.toLocaleString('id-ID')}.</p>
-				<p><strong>(b) Pullback/Netral:</strong> Konsolidasi bergerak di kisaran area Rp ${sup2.toLocaleString('id-ID')} - ${sup1.toLocaleString('id-ID')}.</p>
-				<p><strong>(c) Gagal/Invalidasi:</strong> Penembusan harga di bawah Rp ${sl.toLocaleString('id-ID')} membatalkan skenario bullish jangka pendek.</p>
-			`;
-
-			document.getElementById('aiKesimpulanText').innerText = `Tunggu konfirmasi reaksi harga di area support terdekat Rp ${sup1.toLocaleString('id-ID')} sebelum mengambil keputusan entry pada saham ${ticker}.`;
-
-			// Auto Fill Kalkulator RRR
-			document.getElementById('rrrEntry').value = basePrice;
-			document.getElementById('rrrSL').value = sl;
-			document.getElementById('rrrTP').value = tp1;
-			calculateRRR();
 
 			if (window.lucide) lucide.createIcons();
 		}
