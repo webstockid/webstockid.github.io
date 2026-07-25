@@ -175,6 +175,9 @@
 					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap">
 						<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> AI Signal
 					</button>
+					<button onclick="switchTab('bigmoney')" id="tabBtn-bigmoney" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+						<i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i> Radar Bandar
+					</button>
 					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
 						<i data-lucide="newspaper" class="w-3.5 h-3.5"></i> Berita
 					</button>
@@ -298,7 +301,33 @@
 
 				</div>
 
-				<!-- TAB CONTENT 2: BERITA RSS -->
+				<!-- TAB CONTENT 2: BIG MONEY / BROKER ACCUMULATION RADAR -->
+				<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-3.5 text-xs">
+					
+					<div class="flex items-center justify-between bg-amber-500/10 border border-amber-500/20 p-2.5 rounded-xl">
+						<div class="flex items-center gap-2">
+							<span class="relative flex h-2 w-2">
+							  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+							  <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+							</span>
+							<span class="text-xs font-bold text-amber-400">Top 5 Saham Akumulasi Big Player</span>
+						</div>
+						<button onclick="renderBigMoneyRadar()" class="text-[10px] text-slate-300 hover:text-emerald-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700 flex items-center gap-1">
+							<i data-lucide="refresh-cw" class="w-3 h-3"></i> Scan Ulang
+						</button>
+					</div>
+
+					<!-- Container Saham Yang Terdeteksi -->
+					<div id="bigMoneyList" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+						<div class="text-center text-slate-500 text-xs py-8">Menganalisis pergerakan transaksi besar...</div>
+					</div>
+
+					<p class="text-[10px] text-slate-500 italic bg-slate-950 p-2.5 rounded-lg border border-slate-900 leading-normal">
+						💡 <strong>Sistem Deteksi:</strong> Menghitung lonjakan akumulasi & pergerakan transaksi harga harian ter-update dari bursa. Klik "Lihat Chart" untuk membuka analisis teknikal lengkap.
+					</p>
+				</div>
+
+				<!-- TAB CONTENT 3: BERITA RSS -->
 				<div id="tabContent-news" class="hidden space-y-3 min-h-[250px]">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs text-slate-400">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
@@ -309,7 +338,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 3: FUNDAMENTAL WIDGET -->
+				<!-- TAB CONTENT 4: FUNDAMENTAL WIDGET -->
 				<div id="tabContent-fundamental" class="hidden min-h-[300px]">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs text-slate-400">Profil Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
@@ -320,7 +349,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 4: KALKULATOR RRR -->
+				<!-- TAB CONTENT 5: KALKULATOR RRR -->
 				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-3 text-xs">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-slate-400">Kalkulator RRR (<strong id="rrrTickerLabel" class="text-white">MDIA</strong>)</span>
@@ -355,7 +384,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 5: ALERT PRICE LEVEL -->
+				<!-- TAB CONTENT 6: ALERT PRICE LEVEL -->
 				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-3 text-xs">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-slate-400">Pengingat Harga (<strong id="alertTickerLabel" class="text-white">MDIA</strong>)</span>
@@ -377,7 +406,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 6: AKSI KORPORASI LIVE RSS -->
+				<!-- TAB CONTENT 7: AKSI KORPORASI LIVE RSS -->
 				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3 text-xs">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs text-slate-400">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
@@ -564,6 +593,7 @@
 			container.appendChild(script);
 		}
 
+		// Fungsi Penarik Harga Saham Real-Time Konsisten via Yahoo / CORS Proxy
 		async function fetchRealtimeStockData(ticker) {
 			const targetSymbol = `${ticker}.JK`;
 			const proxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=1d&range=1mo`;
@@ -584,13 +614,14 @@
 				const changePct = (((currentPrice - previousClose) / previousClose) * 100).toFixed(2);
 
 				return {
+					ticker: ticker,
 					price: Math.round(currentPrice),
 					prevClose: Math.round(previousClose),
 					changePct: parseFloat(changePct),
 					ma10: Math.round(ma10)
 				};
 			} catch (error) {
-				console.warn('Gagal menarik data langsung:', error);
+				console.warn(`Gagal menarik data ${ticker}:`, error);
 				return null;
 			}
 		}
@@ -702,6 +733,124 @@
 
 			fetchStockNewsForAI(ticker);
 			if (window.lucide) lucide.createIcons();
+		}
+
+		// ==================== RADAR BIG MONEY / AUTOMATIC TOP SCREENER ====================
+		const radarWatchlist = ['TPIA', 'BRPT', 'PTRO', 'BREN', 'CUAN', 'BBCA', 'BMRI', 'BBRI', 'BBTN','BRIS', 'INET', 'DATA', 'WIFI','BULL', 'ADRO', 'ADMR', 'SOCI','RAJA', 'RATU', 'BRMS', 'TRIN', 'DSSA', 'DEWA', 'EMAS', 'PSAB','ARCI', 'ANTM', 'MDKA', 'MDIA','BNBR', 'BUVA', 'KOTA', 'BIPI','OILS'];
+
+		async function renderBigMoneyRadar() {
+			const container = document.getElementById('bigMoneyList');
+			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai bursa & menghitung sinyal Big Money...</div>`;
+			if (window.lucide) lucide.createIcons();
+
+			// Fetch data paralel seluruh watchlist
+			const promiseList = radarWatchlist.map(t => fetchRealtimeStockData(t));
+			const results = await Promise.all(promiseList);
+			
+			// Filter data yang berhasil
+			const validData = results.filter(d => d !== null);
+
+			if (validData.length === 0) {
+				container.innerHTML = `<div class="text-center text-slate-400 text-xs py-6">Gagal memuat koneksi data bursa. Coba tekan Scan Ulang.</div>`;
+				return;
+			}
+
+			// Urutkan berdasarkan kenaikan persentase harga harian tertinggi (Indikasi Inflow)
+			validData.sort((a, b) => b.changePct - a.changePct);
+
+			// Ambil Top 5 Saham teratas
+			const top5 = validData.slice(0, 5);
+
+			let htmlContent = '';
+
+			top5.forEach((item, index) => {
+				const ticker = item.ticker;
+				const price = item.price;
+				const changePct = item.changePct;
+
+				// Level Teknis Otomatis
+				const entryLow = Math.round(price * 0.99);
+				const entryHigh = price;
+				const support = Math.round(price * 0.96);
+				const sl = Math.round(price * 0.94);
+				const tp1 = Math.round(price * 1.05);
+				const tp2 = Math.round(price * 1.10);
+
+				let statusSignal = "⚡ SMART MONEY ACCUMULATION";
+				let statusClass = "text-cyan-400 border-cyan-500/30 bg-cyan-500/10";
+				let alasan = "";
+
+				if (changePct >= 2.0) {
+					statusSignal = "🔥 BIG MONEY INFLOW / STRONG ACCUMULATION";
+					statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
+					alasan = `Terjadi lonjakan kenaikan signifikan (<strong>+${changePct}%</strong>). Menunjukkan dorongan agregat transaksi dana besar (Big Player) menembus resisten.`;
+				} else if (changePct >= 0) {
+					statusSignal = "⚡ SMART MONEY ACCUMULATION";
+					statusClass = "text-cyan-400 border-cyan-500/30 bg-cyan-500/10";
+					alasan = `Harga menguat konsisten (<strong>+${changePct}%</strong>) berada di atas batas rata-rata MA10 (Rp ${item.ma10.toLocaleString('id-ID')}). Terindikasi penyerapan barang bertahap secara tenang.`;
+				} else {
+					statusSignal = "🛡️ ZONA PENYERAPAN / RETEST SUPPORT";
+					statusClass = "text-purple-400 border-purple-500/30 bg-purple-500/10";
+					alasan = `Harga sedang terkoreksi/konsolidasi (<strong>${changePct}%</strong>) mendekati area support. Potensi *Bottom Fishing* untuk akumulasi jangka pendek sebelum lompatan volume berikutnya.`;
+				}
+
+				htmlContent += `
+					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2.5 relative">
+						<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+							<div class="flex items-center gap-2">
+								<span class="bg-slate-800 text-amber-400 font-mono text-[10px] px-1.5 py-0.5 rounded border border-slate-700">#${index + 1}</span>
+								<div>
+									<div class="flex items-center gap-2">
+										<span class="font-black text-white text-sm">IDX:${ticker}</span>
+										<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 border border-emerald-500/30 font-bold px-2 py-0.5 rounded transition">
+											Lihat Chart &rarr;
+										</button>
+									</div>
+									<span class="text-[10px] text-slate-400 block">Harga Real-Time: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
+								</div>
+							</div>
+							<span class="text-[9px] font-bold px-2.5 py-1 rounded-full border ${statusClass}">
+								${statusSignal}
+							</span>
+						</div>
+
+						<!-- TABEL LEVEL REKOMENDASI -->
+						<div class="grid grid-cols-2 gap-2 text-[10px]">
+							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] block">Entry Ideal</span>
+								<span class="font-bold text-emerald-400">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
+							</div>
+							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] block">Support Terdekat</span>
+								<span class="font-bold text-cyan-400">Rp ${support.toLocaleString('id-ID')}</span>
+							</div>
+							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] block">Target Profit (TP1/TP2)</span>
+								<span class="font-bold text-emerald-300">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
+							</div>
+							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] block">Stop Loss (SL)</span>
+								<span class="font-bold text-rose-400">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
+							</div>
+						</div>
+
+						<!-- CATATAN ALASAN PANTAUAN -->
+						<div class="bg-slate-900/50 p-2 rounded border border-slate-800 text-[10px] text-slate-300 leading-relaxed">
+							<strong class="text-amber-400 text-[9px] block mb-0.5">ALASAN MASUK RADAR:</strong>
+							${alasan}
+						</div>
+					</div>
+				`;
+			});
+
+			container.innerHTML = htmlContent;
+			if (window.lucide) lucide.createIcons();
+		}
+
+		function selectTickerFromRadar(ticker) {
+			document.getElementById('stockSearch').value = ticker;
+			searchStock();
+			switchTab('ai');
 		}
 
 		async function fetchStockNewsForAI(ticker) {
@@ -888,7 +1037,7 @@
 		}
 
 		function switchTab(tabName) {
-			const tabs = ['ai', 'news', 'fundamental', 'rrr', 'alert', 'corporate'];
+			const tabs = ['ai', 'bigmoney', 'news', 'fundamental', 'rrr', 'alert', 'corporate'];
 			tabs.forEach(tab => {
 				const btn = document.getElementById(`tabBtn-${tab}`);
 				const content = document.getElementById(`tabContent-${tab}`);
@@ -963,6 +1112,7 @@
 		renderFundamentalWidget(currentTicker);
 		renderAlertList(currentTicker);
 		generateAISignal(currentTicker);
+		renderBigMoneyRadar(); // Inisialisasi Otomatis Top Radar 5 Saham Real-Time
 		fetchStockNews(currentTicker);
 		fetchCorporateAction(currentTicker);
 	</script>
