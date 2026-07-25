@@ -73,10 +73,10 @@
 		</div>
 	</div>
 
-	<!-- Main Content -->
+	<!-- Main Content Grid -->
 	<main class="max-w-7xl mx-auto px-4 pt-24 pb-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-		<!-- Left Column (TradingView Chart) -->
+		<!-- Left Column (TradingView Chart + Heatmap Sektor & Screener Top Volume) -->
 		<section class="lg:col-span-2 space-y-6">
 			
 			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-wrap justify-between items-center gap-3">
@@ -102,6 +102,34 @@
 				<div id="tv_chart_container" class="w-full h-full"></div>
 			</div>
 
+			<!-- FITUR NO 4: HEATMAP SEKTOR SAHAM (SECTORAL PERFORMANCE REAL-TIME) -->
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+				<div class="flex items-center justify-between border-b border-slate-800 pb-2">
+					<h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+						<i data-lucide="layout-grid" class="w-4 h-4 text-emerald-400"></i> Heatmap Sektor Saham BEI (Sectoral Cashflow)
+					</h3>
+					<span class="text-[10px] bg-slate-800 text-emerald-400 px-2 py-0.5 rounded border border-slate-700">Real-Time Data</span>
+				</div>
+				<p class="text-xs text-slate-400">Pantau rotasi arus kas instan untuk melihat sektor saham yang sedang memimpin (*outperform*) bursa hari ini.</p>
+				<div class="h-[450px] w-full rounded-lg overflow-hidden border border-slate-800">
+					<div id="tv_sector_heatmap" class="w-full h-full"></div>
+				</div>
+			</div>
+
+			<!-- FITUR NO 1: TOP VOLUME & TURN OVER SCREENER REAL-TIME -->
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+				<div class="flex items-center justify-between border-b border-slate-800 pb-2">
+					<h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+						<i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i> Top Volume, Turnover & Unusual Movers
+					</h3>
+					<span class="text-[10px] bg-slate-800 text-cyan-400 px-2 py-0.5 rounded border border-slate-700">Live Screener Engine</span>
+				</div>
+				<p class="text-xs text-slate-400">Daftar saham BEI dengan lonjakan volume harian dan nilai transaksi (*turnover*) paling aktif secara live.</p>
+				<div class="h-[480px] w-full rounded-lg overflow-hidden border border-slate-800">
+					<div id="tv_market_screener" class="w-full h-full"></div>
+				</div>
+			</div>
+
 		</section>
 
 		<!-- Right Column (Live Technical Meter + TAB NAVIGASI) -->
@@ -122,6 +150,9 @@
 				<div class="flex border-b border-slate-800 mb-4 pb-2 gap-1 overflow-x-auto">
 					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap">
 						<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> AI Signal
+					</button>
+					<button onclick="switchTab('bandarmology')" id="tabBtn-bandarmology" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+						<i data-lucide="landmark" class="w-3.5 h-3.5"></i> Bandarmology
 					</button>
 					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
 						<i data-lucide="newspaper" class="w-3.5 h-3.5"></i> Berita
@@ -229,7 +260,18 @@
 
 				</div>
 
-				<!-- TAB CONTENT 2: BERITA RSS -->
+				<!-- FITUR NO 3: BANDARMOLOGY & FOREIGN FLOW SUMMARY (TAB BARU) -->
+				<div id="tabContent-bandarmology" class="hidden min-h-[300px] space-y-3">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-xs text-slate-400">Profil Bandar & Asing: <strong id="bandarTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-amber-400 font-semibold">Institutional & Flow</span>
+					</div>
+					<div class="tradingview-widget-container h-[380px]">
+						<div id="tv_bandarmology_container" class="w-full h-full"></div>
+					</div>
+				</div>
+
+				<!-- TAB CONTENT: BERITA RSS -->
 				<div id="tabContent-news" class="hidden space-y-3 min-h-[250px]">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs text-slate-400">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
@@ -240,7 +282,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 3: FUNDAMENTAL WIDGET -->
+				<!-- TAB CONTENT: FUNDAMENTAL WIDGET -->
 				<div id="tabContent-fundamental" class="hidden min-h-[300px]">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs text-slate-400">Profil Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
@@ -251,7 +293,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 4: KALKULATOR RRR -->
+				<!-- TAB CONTENT: KALKULATOR RRR -->
 				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-3 text-xs">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-slate-400">Kalkulator RRR (<strong id="rrrTickerLabel" class="text-white">MDIA</strong>)</span>
@@ -286,7 +328,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 5: ALERT PRICE LEVEL -->
+				<!-- TAB CONTENT: ALERT PRICE LEVEL -->
 				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-3 text-xs">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-slate-400">Pengingat Harga (<strong id="alertTickerLabel" class="text-white">MDIA</strong>)</span>
@@ -308,7 +350,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 6: AKSI KORPORASI LIVE RSS -->
+				<!-- TAB CONTENT: AKSI KORPORASI LIVE RSS -->
 				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3 text-xs">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs text-slate-400">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
@@ -336,6 +378,76 @@
 		let currentInterval = 'D';
 
 		lucide.createIcons();
+
+		// RENDER HEATMAP SEKTOR SAHAM BEI (FITUR NO 4)
+		function renderSectorHeatmap() {
+			const container = document.getElementById('tv_sector_heatmap');
+			container.innerHTML = '';
+
+			const script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js';
+			script.async = true;
+			script.text = JSON.stringify({
+				"exchanges": ["IDX"],
+				"dataSource": "IDX",
+				"grouping": "sector",
+				"blockSize": "market_cap_basic",
+				"blockColor": "change",
+				"locale": "id",
+				"symbolUrl": "",
+				"colorTheme": "dark",
+				"hasTopBar": false,
+				"isDataSetEnabled": false,
+				"isZoomEnabled": true,
+				"hasSymbolTooltip": true,
+				"width": "100%",
+				"height": "100%"
+			});
+			container.appendChild(script);
+		}
+
+		// RENDER TOP VOLUME & MOVERS SCREENER REALTIME (FITUR NO 1)
+		function renderMarketScreener() {
+			const container = document.getElementById('tv_market_screener');
+			container.innerHTML = '';
+
+			const script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-screener.js';
+			script.async = true;
+			script.text = JSON.stringify({
+				"width": "100%",
+				"height": "100%",
+				"defaultColumn": "overview",
+				"defaultScreen": "most_capitalized",
+				"market": "indonesia",
+				"showToolbar": true,
+				"colorTheme": "dark",
+				"locale": "id"
+			});
+			container.appendChild(script);
+		}
+
+		// RENDER PROFIL BANDARMOLOGY & INSTITUSI (FITUR NO 3)
+		function renderBandarmologyWidget(ticker) {
+			const container = document.getElementById('tv_bandarmology_container');
+			container.innerHTML = '';
+
+			const script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js';
+			script.async = true;
+			script.text = JSON.stringify({
+				"width": "100%",
+				"height": "100%",
+				"colorTheme": "dark",
+				"isTransparent": true,
+				"symbol": `IDX:${ticker}`,
+				"locale": "id"
+			});
+			container.appendChild(script);
+		}
 
 		function renderChart(ticker) {
 			document.getElementById('tv_chart_container').innerHTML = '';
@@ -745,7 +857,7 @@
 		}
 
 		function switchTab(tabName) {
-			const tabs = ['ai', 'news', 'fundamental', 'rrr', 'alert', 'corporate'];
+			const tabs = ['ai', 'bandarmology', 'news', 'fundamental', 'rrr', 'alert', 'corporate'];
 			tabs.forEach(tab => {
 				const btn = document.getElementById(`tabBtn-${tab}`);
 				const content = document.getElementById(`tabContent-${tab}`);
@@ -783,6 +895,7 @@
 				currentTicker = input;
 				document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 				document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
+				document.getElementById('bandarTickerLabel').innerText = currentTicker;
 				document.getElementById('newsTickerLabel').innerText = currentTicker;
 				document.getElementById('fundTickerLabel').innerText = currentTicker;
 				document.getElementById('rrrTickerLabel').innerText = currentTicker;
@@ -791,6 +904,7 @@
 				
 				renderChart(currentTicker);
 				renderTechnicalGauge(currentTicker);
+				renderBandarmologyWidget(currentTicker);
 				renderFundamentalWidget(currentTicker);
 				renderAlertList(currentTicker);
 				generateAISignal(currentTicker);
@@ -806,14 +920,18 @@
 		checkUrlParamTicker();
 		document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 		document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
+		document.getElementById('bandarTickerLabel').innerText = currentTicker;
 		document.getElementById('newsTickerLabel').innerText = currentTicker;
 		document.getElementById('fundTickerLabel').innerText = currentTicker;
 		document.getElementById('rrrTickerLabel').innerText = currentTicker;
 		document.getElementById('alertTickerLabel').innerText = currentTicker;
 		document.getElementById('corpTickerLabel').innerText = currentTicker;
 
+		renderSectorHeatmap();
+		renderMarketScreener();
 		renderChart(currentTicker);
 		renderTechnicalGauge(currentTicker);
+		renderBandarmologyWidget(currentTicker);
 		renderFundamentalWidget(currentTicker);
 		renderAlertList(currentTicker);
 		generateAISignal(currentTicker);
