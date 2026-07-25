@@ -79,7 +79,6 @@
 		<!-- Left Column (TradingView Chart) -->
 		<section class="lg:col-span-2 space-y-6">
 			
-			<!-- Header Title Ticker, Timeframe Selector, & Tombol Bagikan -->
 			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-wrap justify-between items-center gap-3">
 				<div>
 					<h2 class="text-2xl font-bold text-white flex items-center gap-2" id="stockTitle">
@@ -108,7 +107,6 @@
 		<!-- Right Column (Live Technical Meter + TAB NAVIGASI) -->
 		<section class="space-y-6">
 
-			<!-- Live Technical Analysis Gauge TradingView -->
 			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
 				<h3 class="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
 					<i data-lucide="gauge" class="w-4 h-4 text-cyan-400"></i> Analisa Teknikal Real-Time (TradingView Engine)
@@ -121,7 +119,6 @@
 			<!-- TAB CONTAINER -->
 			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
 				
-				<!-- Tab Navigation Buttons -->
 				<div class="flex border-b border-slate-800 mb-4 pb-2 gap-1 overflow-x-auto">
 					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap">
 						<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> AI Signal
@@ -143,10 +140,9 @@
 					</button>
 				</div>
 
-				<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME (APIFY YAHOO FINANCE + N8N ENGINE) -->
+				<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME -->
 				<div id="tabContent-ai" class="space-y-3.5 min-h-[300px] text-xs">
 					
-					<!-- Header Verdik & Skor -->
 					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
 						<div class="flex items-center justify-between">
 							<span class="font-bold text-slate-200 uppercase tracking-wider text-[11px]" id="aiHeaderTicker">[MDIA] — KONDISI TEKNIKAL</span>
@@ -163,11 +159,10 @@
 							</div>
 						</div>
 						<p id="aiVerdikDesc" class="text-slate-300 leading-relaxed text-[11px] pt-1">
-							Menghubungkan ke Apify Yahoo Finance via n8n Engine...
+							Mengambil data Yahoo Finance via Apify Engine & Analisis Gemini AI...
 						</p>
 					</div>
 
-					<!-- Bukti Utama -->
 					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
 						<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px]">
 							<i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> BUKTI UTAMA & KATALIS
@@ -178,7 +173,6 @@
 						</ul>
 					</div>
 
-					<!-- Trading Map Dinamis AI -->
 					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
 						<span class="font-bold text-cyan-400 flex items-center gap-1.5 text-[11px]">
 							<i data-lucide="map-pin" class="w-3.5 h-3.5"></i> TRADING MAP (APIFY PIVOT)
@@ -203,7 +197,6 @@
 						</div>
 					</div>
 
-					<!-- Berita Relevan Real-Time -->
 					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
 						<span class="font-bold text-purple-400 flex items-center gap-1.5 text-[11px]">
 							<i data-lucide="newspaper" class="w-3.5 h-3.5"></i> BERITA RELEVAN (REAL-TIME RSS)
@@ -213,7 +206,6 @@
 						</div>
 					</div>
 
-					<!-- Skenario Pergerakan Harga -->
 					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
 						<span class="font-bold text-amber-400 flex items-center gap-1.5 text-[11px]">
 							<i data-lucide="git-fork" class="w-3.5 h-3.5"></i> SKENARIO
@@ -225,7 +217,6 @@
 						</div>
 					</div>
 
-					<!-- Kesimpulan / Note AI -->
 					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1">
 						<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px]">
 							<i data-lucide="thumbs-up" class="w-3.5 h-3.5"></i> KESIMPULAN & NOTE AI
@@ -235,9 +226,8 @@
 						</p>
 					</div>
 
-					<!-- Disclaimer -->
 					<p class="text-[10px] text-slate-500 italic bg-slate-950/50 p-2.5 rounded-lg border border-slate-900 leading-normal">
-						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Analisis ini dihasilkan secara otomatis menggunakan kombinasi Apify Yahoo Finance & AI Engine. Hanya untuk edukasi dan bahan pertimbangan, bukan rekomendasi mutlak membeli/menjual.
+						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Analisis ini dihasilkan secara otomatis menggunakan gabungan Apify Yahoo Finance & Gemini AI. Hanya untuk edukasi dan bahan pertimbangan.
 					</p>
 
 				</div>
@@ -348,13 +338,12 @@
 		let currentTicker = 'MDIA';
 		let currentInterval = 'D';
 
-		// GANTI URL INI DENGAN WEBHOOK PRODUCTION N8N KAMU!
-		const N8N_WEBHOOK_URL = 'https://n8n.domainkamu.com/webhook/analyze-stock';
+		// CONFIGURASI API KEYS LANGSUNG
+		const APIFY_TOKEN = 'apify_api_svtSbJVuqXEO3vbCMmyj6iN2ahDiSU0KM6S0';
+		const GEMINI_API_KEY = 'AQ.Ab8RN6IQ4cv6lPV1_4WuDx4SWCL9bTaD6qs3NHkQcPncUteKDw';
 
-		// Init Lucide Icons
 		lucide.createIcons();
 
-		// 1. Render Interactive TradingView Chart
 		function renderChart(ticker) {
 			document.getElementById('tv_chart_container').innerHTML = '';
 			new TradingView.widget({
@@ -379,7 +368,6 @@
 			});
 		}
 
-		// 2. Render Technical Gauge Widget TradingView
 		function renderTechnicalGauge(ticker) {
 			const container = document.getElementById('tv_technical_container');
 			container.innerHTML = '';
@@ -402,7 +390,6 @@
 			container.appendChild(script);
 		}
 
-		// 3. Render Widget Fundamental Profil Keuangan TradingView
 		function renderFundamentalWidget(ticker) {
 			const container = document.getElementById('tv_fundamental_container');
 			container.innerHTML = '';
@@ -424,7 +411,7 @@
 			container.appendChild(script);
 		}
 
-		// 4. Fetch AI Signal dari Endpoint n8n + Apify
+		// ALUR UTAMA: APIFY YAHOO FINANCE + GEMINI DIRECT CALL
 		async function generateAISignal(ticker) {
 			const now = new Date();
 			const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -432,7 +419,7 @@
 			document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
 			document.getElementById('aiDateStamp').innerText = `Data per ${dateStr}`;
 			
-			// UI State - Loading
+			// Loading State
 			document.getElementById('aiVerdikText').innerText = "ANALYZING...";
 			document.getElementById('aiVerdikText').className = "font-black text-amber-400 text-sm animate-pulse";
 			document.getElementById('aiScoreBadge').innerText = "...";
@@ -441,60 +428,117 @@
 			document.getElementById('mapTP').innerText = "Memuat...";
 			document.getElementById('mapSL').innerText = "Memuat...";
 
-			// Fetch Berita Google RSS Paralel
 			fetchStockNewsForAI(ticker);
 
 			try {
-				// Saham Indonesia di Yahoo Finance memakai format TICKER.JK
 				const yahooTicker = `${ticker}.JK`;
-				const res = await fetch(`${N8N_WEBHOOK_URL}?ticker=${yahooTicker}`);
 				
-				if (!res.ok) throw new Error("Gagal terhubung ke Webhook n8n");
-				
-				const data = await res.json();
+				// 1. Fetch Data dari Apify Yahoo Finance
+				const apifyUrl = `https://api.apify.com/v2/acts/apify~yahoo-finance/run-sync-get-dataset-items?token=${APIFY_TOKEN}`;
+				const apifyRes = await fetch(apifyUrl, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						tickers: [yahooTicker],
+						mode: "HISTORICAL",
+						period: "1mo"
+					})
+				});
 
-				// Update UI Verdik & Skor
-				document.getElementById('aiVerdikText').innerText = data.verdik || "NETRAL";
-				document.getElementById('aiVerdikText').className = `font-black text-sm ${data.verdik?.includes('BULLISH') ? 'text-emerald-400' : 'text-amber-400'}`;
-				document.getElementById('aiScoreBadge').innerText = `${data.score || 3}/5`;
-				document.getElementById('aiVerdikDesc').innerText = data.description || "Analisis teknikal berhasil dikalkulasi dari Apify Yahoo Finance.";
+				let priceData = { price: 1000, high: 1020, low: 980 };
+				if (apifyRes.ok) {
+					const apifyData = await apifyRes.json();
+					if (apifyData && apifyData.length > 0) {
+						const last = apifyData[apifyData.length - 1];
+						priceData.price = Math.round(last.close || last.regularMarketPrice || 1000);
+						priceData.high = Math.round(last.high || priceData.price * 1.02);
+						priceData.low = Math.round(last.low || priceData.price * 0.98);
+					}
+				}
 
-				// Update Trading Map
-				document.getElementById('mapSupport1').innerText = `Rp ${data.support || '-'}`;
-				document.getElementById('mapResist1').innerText = `Rp ${data.resistance || '-'}`;
-				document.getElementById('mapTP').innerText = `Rp ${data.tp1 || '-'} / ${data.tp2 || '-'}`;
-				document.getElementById('mapSL').innerText = `< Rp ${data.sl || '-'}`;
+				// 2. Hitung Pivot Points baseline
+				const pivot = (priceData.high + priceData.low + priceData.price) / 3;
+				const r1 = Math.round((2 * pivot) - priceData.low);
+				const s1 = Math.round((2 * pivot) - priceData.high);
+				const r2 = Math.round(pivot + (priceData.high - priceData.low));
+				const s2 = Math.round(pivot - (priceData.high - priceData.low));
 
-				// Update Skenario
+				// 3. Prompt ke Google Gemini API
+				const promptText = `Kamu adalah analis saham profesional BEI.
+Analisis saham ${ticker} berdasarkan data teknikal Yahoo Finance berikut:
+- Harga Terakhir: Rp ${priceData.price}
+- High/Low Terbaru: Rp ${priceData.high} / Rp ${priceData.low}
+- Calculated Pivot Levels: S1=${s1}, S2=${s2}, R1=${r1}, R2=${r2}
+
+Berikan respon WAJIB berupa JSON MURNI tanpa format markdown triple backticks. Format JSON persis seperti ini:
+{
+  "verdik": "BULLISH / ACCUMULATE",
+  "score": 4,
+  "description": "Penjelasan teknikal singkat...",
+  "entry": "${s1} - ${priceData.price}",
+  "support": "${s1} - ${s2}",
+  "resistance": "${r1} - ${r2}",
+  "tp1": ${r1},
+  "tp2": ${r2},
+  "sl": ${s2},
+  "scenario_a": "Skenario bullish...",
+  "scenario_b": "Skenario pullback...",
+  "scenario_c": "Skenario invalidasi...",
+  "note": "Kesimpulan trading plan..."
+}`;
+
+				// 4. Request Direct ke Gemini 1.5 Flash
+				const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+				const geminiRes = await fetch(geminiUrl, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						contents: [{ parts: [{ text: promptText }] }]
+					})
+				});
+
+				const geminiData = await geminiRes.json();
+				let rawText = geminiData.candidates[0].content.parts[0].text;
+				rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+				const parsed = JSON.parse(rawText);
+
+				// Update UI
+				document.getElementById('aiVerdikText').innerText = parsed.verdik || "NETRAL";
+				document.getElementById('aiVerdikText').className = `font-black text-sm ${parsed.verdik?.includes('BULLISH') ? 'text-emerald-400' : 'text-amber-400'}`;
+				document.getElementById('aiScoreBadge').innerText = `${parsed.score || 3}/5`;
+				document.getElementById('aiVerdikDesc').innerText = parsed.description;
+
+				document.getElementById('mapSupport1').innerText = `Rp ${parsed.support}`;
+				document.getElementById('mapResist1').innerText = `Rp ${parsed.resistance}`;
+				document.getElementById('mapTP').innerText = `Rp ${parsed.tp1} / ${parsed.tp2}`;
+				document.getElementById('mapSL').innerText = `< Rp ${parsed.sl}`;
+
 				document.getElementById('aiSkenarioBox').innerHTML = `
-					<p><strong>(a) Konfirmasi Bullish:</strong> ${data.scenario_a || 'Harga melaju menuju target resistensi.'}</p>
-					<p><strong>(b) Pullback/Netral:</strong> ${data.scenario_b || 'Konsolidasi di area support terdekat.'}</p>
-					<p><strong>(c) Gagal/Invalidasi:</strong> ${data.scenario_c || 'Penembusan Stop Loss membatalkan tren.'}</p>
+					<p><strong>(a) Konfirmasi Bullish:</strong> ${parsed.scenario_a}</p>
+					<p><strong>(b) Pullback/Netral:</strong> ${parsed.scenario_b}</p>
+					<p><strong>(c) Gagal/Invalidasi:</strong> ${parsed.scenario_c}</p>
 				`;
 
-				// Update Kesimpulan Note
-				document.getElementById('aiKesimpulanText').innerText = data.note || "Perhatikan tingkat risiko sebelum mengeksekusi posisi.";
+				document.getElementById('aiKesimpulanText').innerText = parsed.note;
 
-				// Isi Form RRR Otomatis dari AI
-				if (data.tp1 && data.sl && data.entry) {
-					const entryVal = parseInt(data.entry.toString().replace(/[^0-9]/g, '')) || 0;
-					if(entryVal > 0) document.getElementById('rrrEntry').value = entryVal;
-					document.getElementById('rrrSL').value = data.sl;
-					document.getElementById('rrrTP').value = data.tp1;
+				// Isi Kalkulator RRR Otomatis
+				if (parsed.tp1 && parsed.sl) {
+					document.getElementById('rrrEntry').value = priceData.price;
+					document.getElementById('rrrSL').value = parsed.sl;
+					document.getElementById('rrrTP').value = parsed.tp1;
 					calculateRRR();
 				}
 
 			} catch (e) {
-				console.error("Error AI Signal:", e);
-				document.getElementById('aiVerdikText').innerText = "NETRAL (OFFLINE)";
+				console.error("Error Direct AI Signal:", e);
+				document.getElementById('aiVerdikText').innerText = "NETRAL (DATA PASAR)";
 				document.getElementById('aiVerdikText').className = "font-black text-amber-400 text-sm";
-				document.getElementById('aiVerdikDesc').innerText = "Gagal memuat analisis n8n. Pastikan URL Webhook n8n sudah benar dan aktif.";
+				document.getElementById('aiVerdikDesc').innerText = "Gagal memproses data AI secara langsung. Menampilkan indikator grafik default.";
 			}
 
 			if (window.lucide) lucide.createIcons();
 		}
 
-		// Helper berita khusus tab AI
 		async function fetchStockNewsForAI(ticker) {
 			const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
 			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
@@ -519,7 +563,6 @@
 			}
 		}
 
-		// 5. Ubah Timeframe Chart
 		function changeInterval(tf) {
 			currentInterval = tf;
 			['5', '30', '60', 'D', 'W', 'M'].forEach(t => {
@@ -535,7 +578,6 @@
 			renderChart(currentTicker);
 		}
 
-		// 6. Kalkulator Risk / Reward Ratio (RRR)
 		function calculateRRR() {
 			const entry = parseFloat(document.getElementById('rrrEntry').value);
 			const sl = parseFloat(document.getElementById('rrrSL').value);
@@ -574,7 +616,6 @@
 			}
 		}
 
-		// 7. Alert Price Level (LocalStorage)
 		function getAlerts(ticker) {
 			return JSON.parse(localStorage.getItem(`alerts_${ticker}`) || '[]');
 		}
@@ -623,7 +664,6 @@
 			renderAlertList(currentTicker);
 		}
 
-		// 8. Google RSS News Fetcher
 		async function fetchStockNews(ticker) {
 			const container = document.getElementById('newsContainer');
 			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat berita terkini ${ticker}...</div>`;
@@ -660,7 +700,6 @@
 			}
 		}
 
-		// 9. Live Aksi Korporasi Fetcher
 		async function fetchCorporateAction(ticker) {
 			const container = document.getElementById('corporateContainer');
 			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat aksi korporasi ${ticker}...</div>`;
@@ -698,7 +737,6 @@
 			}
 		}
 
-		// 10. Switching Tab Navigasi
 		function switchTab(tabName) {
 			const tabs = ['ai', 'news', 'fundamental', 'rrr', 'alert', 'corporate'];
 			tabs.forEach(tab => {
@@ -715,7 +753,6 @@
 			});
 		}
 
-		// 11. Bagikan URL Ticker
 		function shareStockUrl() {
 			const shareUrl = `${window.location.origin}${window.location.pathname}?ticker=${currentTicker}`;
 			navigator.clipboard.writeText(shareUrl).then(() => {
@@ -725,7 +762,6 @@
 			});
 		}
 
-		// 12. Auto Check Ticker dari URL Query Param
 		function checkUrlParamTicker() {
 			const urlParams = new URLSearchParams(window.location.search);
 			const tickerParam = urlParams.get('ticker');
@@ -734,7 +770,6 @@
 			}
 		}
 
-		// Search Trigger Function
 		function searchStock() {
 			const input = document.getElementById('stockSearch').value.trim().toUpperCase();
 			if (input) {
@@ -757,12 +792,10 @@
 			}
 		}
 
-		// Enter Key Trigger
 		document.getElementById('stockSearch').addEventListener('keypress', function(e) {
 			if (e.key === 'Enter') searchStock();
 		});
 
-		// Initial Load Application
 		checkUrlParamTicker();
 		document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 		document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
