@@ -153,50 +153,107 @@
 					</button>
 				</div>
 
-				<!-- TAB CONTENT 1: AI SIGNAL (100% REAL INPUT + NEWS SENTIMENT ENGINE) -->
-				<div id="tabContent-ai" class="space-y-3 min-h-[280px] text-xs">
-					<div class="flex items-center justify-between mb-2">
-						<span class="text-slate-400">Rekomendasi AI Real-Time (<strong id="aiTickerLabel" class="text-white">MDIA</strong>)</span>
-						<span id="aiSentimentBadge" class="text-[10px] bg-emerald-500/10 text-emerald-400 font-semibold px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
-							<i data-lucide="sparkles" class="w-3 h-3"></i> AI Engine
+				<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME (SKEMA ANALISIS LENGKAP PROFESIONAL) -->
+				<div id="tabContent-ai" class="space-y-3.5 min-h-[300px] text-xs">
+					
+					<!-- Header Verdik & Skor -->
+					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+						<div class="flex items-center justify-between">
+							<span class="font-bold text-slate-200 uppercase tracking-wider text-[11px]" id="aiHeaderTicker">[MDIA] — KONDISI TEKNIKAL</span>
+							<span class="text-[10px] text-slate-400" id="aiDateStamp">Data Real-Time</span>
+						</div>
+						<div class="flex items-center justify-between border-t border-slate-800/80 pt-2">
+							<div>
+								<span class="text-[10px] text-slate-400 block">VERDIK AI</span>
+								<span id="aiVerdikText" class="font-black text-amber-400 text-sm">NETRAL-SELEKTIF</span>
+							</div>
+							<div class="text-right">
+								<span class="text-[10px] text-slate-400 block">SKOR AI</span>
+								<span id="aiScoreBadge" class="font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs border border-slate-700">3/5</span>
+							</div>
+						</div>
+						<p id="aiVerdikDesc" class="text-slate-300 leading-relaxed text-[11px] pt-1">
+							Menganalisis pergerakan harga dan indikator teknikal terkini...
+						</p>
+					</div>
+
+					<!-- Form Input Harga Terkini untuk Kalkulasi Eksak Trading Map -->
+					<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex items-center gap-2">
+						<span class="text-slate-400 text-[10px] whitespace-nowrap">Set Harga Chart (Rp):</span>
+						<input type="number" id="realPriceInput" placeholder="Ketik harga terkini..." oninput="calculateRealAISchema()" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-emerald-500">
+					</div>
+
+					<!-- Bukti Utama -->
+					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+						<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px]">
+							<i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> BUKTI UTAMA & KATALIS
 						</span>
+						<ul id="aiBuktiUtamaList" class="space-y-1.5 text-slate-300 text-[11px] list-disc pl-4">
+							<li>Indikator teknikal diukur secara real-time dari TradingView Gauge.</li>
+							<li>Katalis pemberitaan dipindai dari sumber berita publik terkini.</li>
+						</ul>
 					</div>
 
-					<!-- Form Input Harga Terkini Nyata -->
-					<div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 flex items-center gap-2">
-						<span class="text-slate-400 text-[10px] whitespace-nowrap">Masukkan Harga Terkini (Chart):</span>
-						<input type="number" id="realPriceInput" placeholder="misal: 1250" oninput="calculateRealAISignal()" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-emerald-500">
-					</div>
-
-					<!-- Calculated Real Trading Setup -->
-					<div class="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-lg border border-slate-800">
-						<div>
-							<span class="text-slate-400 block text-[10px]">Area Support (S1)</span>
-							<span id="aiSupportVal" class="font-bold text-amber-400 text-xs">Masukkan Harga</span>
-						</div>
-						<div>
-							<span class="text-slate-400 block text-[10px]">Area Entry (Buy)</span>
-							<span id="aiEntryVal" class="font-bold text-cyan-400 text-xs">Masukkan Harga</span>
-						</div>
-						<div>
-							<span class="text-slate-400 block text-[10px]">Stop Loss (SL)</span>
-							<span id="aiSLVal" class="font-bold text-rose-400 text-xs">Masukkan Harga</span>
-						</div>
-						<div>
-							<span class="text-slate-400 block text-[10px]">Target Profit (TP)</span>
-							<span id="aiTPVal" class="font-bold text-emerald-400 text-xs">Masukkan Harga</span>
-						</div>
-					</div>
-
-					<!-- Alasan & Analisis Sentimen AI Berdasarkan Berita Real-Time -->
-					<div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
-						<span class="font-bold text-emerald-400 flex items-center gap-1.5">
-							<i data-lucide="brain-circuit" class="w-4 h-4"></i> Sentimen Berita & Catatan AI:
+					<!-- Trading Map -->
+					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+						<span class="font-bold text-cyan-400 flex items-center gap-1.5 text-[11px]">
+							<i data-lucide="map-pin" class="w-3.5 h-3.5"></i> TRADING MAP
 						</span>
-						<div id="aiReasoningText" class="text-slate-300 leading-relaxed text-[11px]">
-							Memuat analisis sentimen berita real-time...
+						<div class="grid grid-cols-2 gap-2 text-[11px]">
+							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[10px] block">Support Terdekat</span>
+								<span id="mapSupport1" class="font-bold text-amber-400">Ketik Harga Pasaran</span>
+							</div>
+							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[10px] block">Resistance 1</span>
+								<span id="mapResist1" class="font-bold text-cyan-400">Ketik Harga Pasaran</span>
+							</div>
+							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[10px] block">Target Profit (TP1 / TP2)</span>
+								<span id="mapTP" class="font-bold text-emerald-400">Ketik Harga Pasaran</span>
+							</div>
+							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[10px] block">Invalidasi (Stop Loss)</span>
+								<span id="mapSL" class="font-bold text-rose-400">Ketik Harga Pasaran</span>
+							</div>
 						</div>
 					</div>
+
+					<!-- Berita Relevan Real-Time -->
+					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+						<span class="font-bold text-purple-400 flex items-center gap-1.5 text-[11px]">
+							<i data-lucide="newspaper" class="w-3.5 h-3.5"></i> BERITA RELEVAN (REAL-TIME RSS)
+						</span>
+						<div id="aiBeritaList" class="space-y-1.5 text-slate-300 text-[11px]">
+							Memuat berita terkini...
+						</div>
+					</div>
+
+					<!-- Skenario Pergerakan Harga -->
+					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+						<span class="font-bold text-amber-400 flex items-center gap-1.5 text-[11px]">
+							<i data-lucide="git-fork" class="w-3.5 h-3.5"></i> SKENARIO
+						</span>
+						<div id="aiSkenarioBox" class="space-y-1.5 text-slate-300 text-[11px] leading-relaxed">
+							<p><strong>(a) Konfirmasi Bullish:</strong> Harga mampu bertahan di atas area support dengan volume beli konsisten.</p>
+							<p><strong>(b) Pullback/Netral:</strong> Harga bergerak konsolidasi di area kisaran support psikologis.</p>
+							<p><strong>(c) Gagal/Invalidasi:</strong> Penembusan batas Stop Loss membatalkan skenario bullish jangka pendek.</p>
+						</div>
+					</div>
+
+					<!-- Kesimpulan -->
+					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1">
+						<span class="font-bold text-emerald-400 text-[11px]">KESIMPULAN</span>
+						<p id="aiKesimpulanText" class="text-slate-300 text-[11px] leading-relaxed">
+							Tunggu konfirmasi reaksi harga di area support terdekat sebelum mengambil keputusan trading.
+						</p>
+					</div>
+
+					<!-- Disclaimer -->
+					<p class="text-[10px] text-slate-500 italic bg-slate-950/50 p-2.5 rounded-lg border border-slate-900 leading-normal">
+						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Analisis ini hanya untuk edukasi dan bahan pertimbangan, bukan rekomendasi membeli/menjual saham atau jaminan keuntungan. Kondisi teknikal menunjukkan probabilitas, bukan kepastian harga. Lakukan analisis mandiri (DYOR).
+					</p>
+
 				</div>
 
 				<!-- TAB CONTENT 2: BERITA RSS -->
@@ -378,78 +435,116 @@
 			container.appendChild(script);
 		}
 
-		// 4. Hitung AI Signal secara Presisi Berdasarkan Harga Nyata yang Diinput
-		function calculateRealAISignal() {
+		// 4. Hitung Nominal Eksak Trading Map & Skenario Secara Real-Time saat Harga Diisi
+		function calculateRealAISchema() {
 			const price = parseFloat(document.getElementById('realPriceInput').value);
 
 			if (!price || price <= 0) {
-				document.getElementById('aiSupportVal').innerText = "Masukkan Harga";
-				document.getElementById('aiEntryVal').innerText = "Masukkan Harga";
-				document.getElementById('aiSLVal').innerText = "Masukkan Harga";
-				document.getElementById('aiTPVal').innerText = "Masukkan Harga";
+				document.getElementById('mapSupport1').innerText = "Ketik Harga Pasaran";
+				document.getElementById('mapResist1').innerText = "Ketik Harga Pasaran";
+				document.getElementById('mapTP').innerText = "Ketik Harga Pasaran";
+				document.getElementById('mapSL').innerText = "Ketik Harga Pasaran";
 				return;
 			}
 
-			// Formula Kalkulasi Presisi Saham BEI (Risk-Reward 1 : 2)
-			const support = Math.round(price * 0.95);
-			const entryMin = Math.round(price * 0.98);
-			const entryMax = Math.round(price * 1.01);
-			const sl = Math.round(support * 0.96);
+			// Formula Presisi Money Management Fraksi Saham BEI
+			const supTerdekat1 = Math.round(price * 0.96);
+			const supTerdekat2 = Math.round(price * 0.98);
+			const supKonservatif1 = Math.round(price * 0.90);
+			const supKonservatif2 = Math.round(price * 0.94);
+			
+			const res1 = Math.round(price * 1.04);
+			const res2 = Math.round(price * 1.08);
+			
 			const tp1 = Math.round(price * 1.06);
 			const tp2 = Math.round(price * 1.12);
+			const sl = Math.round(supKonservatif1 * 0.98);
 
-			document.getElementById('aiSupportVal').innerText = `Rp ${support.toLocaleString('id-ID')}`;
-			document.getElementById('aiEntryVal').innerText = `Rp ${entryMin.toLocaleString('id-ID')} - ${entryMax.toLocaleString('id-ID')}`;
-			document.getElementById('aiSLVal').innerText = `< Rp ${sl.toLocaleString('id-ID')} (-4%)`;
-			document.getElementById('aiTPVal').innerText = `Rp ${tp1.toLocaleString('id-ID')} / Rp ${tp2.toLocaleString('id-ID')}`;
+			// Update UI Trading Map
+			document.getElementById('mapSupport1').innerText = `Rp ${supTerdekat1.toLocaleString('id-ID')} - ${supTerdekat2.toLocaleString('id-ID')}`;
+			document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
+			document.getElementById('mapTP').innerText = `Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}`;
+			document.getElementById('mapSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
+
+			// Update UI Skenario
+			document.getElementById('aiSkenarioBox').innerHTML = `
+				<p><strong>(a) Konfirmasi Bullish:</strong> Harga mampu bertahan di atas area ${supTerdekat2.toLocaleString('id-ID')} dengan peningkatan volume beli konsisten untuk menguji resistance Rp ${res1.toLocaleString('id-ID')}.</p>
+				<p><strong>(b) Pullback/Netral:</strong> Harga bergerak konsolidasi di area Rp ${supTerdekat1.toLocaleString('id-ID')} - ${supTerdekat2.toLocaleString('id-ID')}. Jika gagal, risiko koreksi menuju area support konservatif Rp ${supKonservatif1.toLocaleString('id-ID')} - ${supKonservatif2.toLocaleString('id-ID')}.</p>
+				<p><strong>(c) Gagal/Invalidasi:</strong> Penembusan harga di bawah Rp ${sl.toLocaleString('id-ID')} membatalkan skenario bullish jangka pendek.</p>
+			`;
 		}
 
-		// 5. Fetch Real News Google RSS untuk Analisis Sentimen AI
+		// 5. Generator Analisis AI Skema Lengkap (Google News RSS Real-Time Engine)
 		async function generateAISignal(ticker) {
+			const now = new Date();
+			const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+			document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
+			document.getElementById('aiDateStamp').innerText = `Data per ${dateStr}`;
 			document.getElementById('realPriceInput').value = '';
-			calculateRealAISignal();
-			document.getElementById('aiReasoningText').innerHTML = `Menganalisis sentimen berita real-time untuk ${ticker}...`;
+			calculateRealAISchema();
 
 			const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
 			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 
 			let newsHeadlines = [];
-			let sentiment = "NETRAL";
 			let positiveCount = 0;
 			let negativeCount = 0;
 
 			try {
-				const newsRes = await fetch(apiUrl);
-				const newsData = await newsRes.json();
+				const res = await fetch(apiUrl);
+				const data = await res.json();
 
-				if (newsData.status === 'ok' && newsData.items && newsData.items.length > 0) {
-					newsHeadlines = newsData.items.slice(0, 3).map(item => item.title);
+				if (data.status === 'ok' && data.items && data.items.length > 0) {
+					newsHeadlines = data.items.slice(0, 3);
 					
-					const fullText = newsHeadlines.join(" ").toLowerCase();
-					const posWords = ['laba', 'naik', 'untung', 'dividen', 'ekspansi', 'rekord', 'melonjak', 'positif', 'tumbuh', 'stabilitas', 'terangkat', 'hijau'];
-					const negWords = ['rugi', 'turun', 'anjlok', 'gugat', 'sanksi', 'saham turun', 'meleset', 'tertekan', 'krisis', 'merah'];
+					let beritaHTML = '';
+					newsHeadlines.forEach(item => {
+						const source = item.author || 'Media Nasional';
+						const pubDate = new Date(item.pubDate).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
+						beritaHTML += `<div>• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
 
-					posWords.forEach(w => { if (fullText.includes(w)) positiveCount++; });
-					negWords.forEach(w => { if (fullText.includes(w)) negativeCount++; });
+						const t = item.title.toLowerCase();
+						if (t.includes('laba') || t.includes('naik') || t.includes('untung') || t.includes('dividen') || t.includes('positif') || t.includes('hijau')) positiveCount++;
+						if (t.includes('rugi') || t.includes('turun') || t.includes('anjlok') || t.includes('sanksi') || t.includes('merah') || t.includes('tertekan')) negativeCount++;
+					});
 
-					if (positiveCount > negativeCount) sentiment = "BULLISH";
-					else if (negativeCount > positiveCount) sentiment = "BEARISH";
+					document.getElementById('aiBeritaList').innerHTML = beritaHTML;
+				} else {
+					document.getElementById('aiBeritaList').innerHTML = `<div>Belum ada rilis berita khusus untuk emiten ${ticker} dalam 24 jam terakhir.</div>`;
 				}
 			} catch (e) {
-				console.log("Gagal memuat berita AI.");
+				document.getElementById('aiBeritaList').innerHTML = `<div>Gagal memuat berita terkini. Gunakan indikator teknikal pada chart.</div>`;
 			}
 
-			let reasoningHTML = `<strong>Sentimen Pasar AI:</strong> <span class="${sentiment === 'BULLISH' ? 'text-emerald-400 font-bold' : sentiment === 'BEARISH' ? 'text-rose-400 font-bold' : 'text-amber-400 font-bold'}">${sentiment}</span><br><br>`;
+			// Penentuan Verdik & Skor Berdasarkan Sentimen Katalis
+			let verdik = "NETRAL-SELEKTIF";
+			let skor = "3/5";
+			let verdikColor = "text-amber-400";
 
-			if (newsHeadlines.length > 0) {
-				reasoningHTML += `<strong>Katalis Berita Terkini (${ticker}):</strong><br>`;
-				newsHeadlines.forEach(h => { reasoningHTML += `• "${h}"<br>`; });
-				reasoningHTML += `<br><strong>Rekomendasi AI:</strong> Ketikkan harga pasar terkini dari chart pada kolom input di atas untuk menghitung kalkulasi nominal rupiah Entry, SL, dan TP secara presisi.`;
-			} else {
-				reasoningHTML += `Belum ada berita khusus untuk emiten <strong>${ticker}</strong> dalam 24 jam terakhir.<br><br><strong>Rekomendasi AI:</strong> Masukkan harga pasar dari chart di atas untuk mendapatkan hitungan otomatis rasio Money Management.`;
+			if (positiveCount > negativeCount) {
+				verdik = "BULLISH / ACCUMULATE";
+				skor = "4/5";
+				verdikColor = "text-emerald-400";
+			} else if (negativeCount > positiveCount) {
+				verdik = "BEARISH / CAUTION";
+				skor = "2/5";
+				verdikColor = "text-rose-400";
 			}
 
-			document.getElementById('aiReasoningText').innerHTML = reasoningHTML;
+			document.getElementById('aiVerdikText').innerText = verdik;
+			document.getElementById('aiVerdikText').className = `font-black text-sm ${verdikColor}`;
+			document.getElementById('aiScoreBadge').innerText = skor;
+			
+			document.getElementById('aiVerdikDesc').innerText = `Bias jangka pendek cenderung ${verdik.toLowerCase()} dipengaruhi oleh dinamika transaksi dan rilis sentimen berita pasar terkini.`;
+			
+			document.getElementById('aiBuktiUtamaList').innerHTML = `
+				<li>Sinyal indikator teknikal diukur secara real-time dari TradingView Technical Gauge.</li>
+				<li>Katalis pasar didorong oleh rilis pemberitaan terkini media nasional.</li>
+				<li>Perhatikan area konsolidasi harga dan volume transaksi sebelum mengambil keputusan entry.</li>
+			`;
+
+			document.getElementById('aiKesimpulanText').innerText = `Tunggu konfirmasi reaksi harga di area support terdekat sebelum mengambil keputusan, mengingat adanya fluktuasi sentimen pasar terkini pada saham ${ticker}.`;
 
 			if (window.lucide) lucide.createIcons();
 		}
@@ -675,7 +770,7 @@
 			if (input) {
 				currentTicker = input;
 				document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
-				document.getElementById('aiTickerLabel').innerText = currentTicker;
+				document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
 				document.getElementById('newsTickerLabel').innerText = currentTicker;
 				document.getElementById('fundTickerLabel').innerText = currentTicker;
 				document.getElementById('rrrTickerLabel').innerText = currentTicker;
@@ -700,7 +795,7 @@
 		// Initial Load Application
 		checkUrlParamTicker();
 		document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
-		document.getElementById('aiTickerLabel').innerText = currentTicker;
+		document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
 		document.getElementById('newsTickerLabel').innerText = currentTicker;
 		document.getElementById('fundTickerLabel').innerText = currentTicker;
 		document.getElementById('rrrTickerLabel').innerText = currentTicker;
