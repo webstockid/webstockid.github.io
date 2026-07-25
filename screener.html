@@ -87,16 +87,6 @@
 					</h2>
 					<p class="text-xs text-slate-400 mt-0.5">Bursa Efek Indonesia • Real-Time Chart</p>
 				</div>
-
-				<!-- Timeframe Selector -->
-				<div class="flex items-center gap-1 bg-slate-950 p-1 rounded-lg border border-slate-800 overflow-x-auto">
-					<button onclick="changeInterval('5')" id="tf-5" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">5m</button>
-					<button onclick="changeInterval('30')" id="tf-30" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">30m</button>
-					<button onclick="changeInterval('60')" id="tf-60" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">1h</button>
-					<button onclick="changeInterval('D')" id="tf-D" class="px-2 py-1 text-xs font-bold rounded bg-emerald-500 text-slate-950">1D</button>
-					<button onclick="changeInterval('W')" id="tf-W" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">1W</button>
-					<button onclick="changeInterval('M')" id="tf-M" class="px-2 py-1 text-xs font-semibold text-slate-400 hover:text-white">1M</button>
-				</div>
 				
 				<div class="flex items-center gap-2">
 					<button onclick="shareStockUrl()" class="text-xs bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition font-medium">
@@ -153,7 +143,7 @@
 					</button>
 				</div>
 
-				<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME (SKEMA ANALISIS LENGKAP PROFESIONAL) -->
+				<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME (APIFY YAHOO FINANCE + N8N ENGINE) -->
 				<div id="tabContent-ai" class="space-y-3.5 min-h-[300px] text-xs">
 					
 					<!-- Header Verdik & Skor -->
@@ -165,22 +155,16 @@
 						<div class="flex items-center justify-between border-t border-slate-800/80 pt-2">
 							<div>
 								<span class="text-[10px] text-slate-400 block">VERDIK AI</span>
-								<span id="aiVerdikText" class="font-black text-amber-400 text-sm">NETRAL-SELEKTIF</span>
+								<span id="aiVerdikText" class="font-black text-amber-400 text-sm">MEMPROSES...</span>
 							</div>
 							<div class="text-right">
 								<span class="text-[10px] text-slate-400 block">SKOR AI</span>
-								<span id="aiScoreBadge" class="font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs border border-slate-700">3/5</span>
+								<span id="aiScoreBadge" class="font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs border border-slate-700">-/-</span>
 							</div>
 						</div>
 						<p id="aiVerdikDesc" class="text-slate-300 leading-relaxed text-[11px] pt-1">
-							Menganalisis pergerakan harga dan indikator teknikal terkini...
+							Menghubungkan ke Apify Yahoo Finance via n8n Engine...
 						</p>
-					</div>
-
-					<!-- Form Input Harga Terkini untuk Kalkulasi Eksak Trading Map -->
-					<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex items-center gap-2">
-						<span class="text-slate-400 text-[10px] whitespace-nowrap">Set Harga Chart (Rp):</span>
-						<input type="number" id="realPriceInput" placeholder="Ketik harga terkini..." oninput="calculateRealAISchema()" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-white text-xs focus:outline-none focus:border-emerald-500">
 					</div>
 
 					<!-- Bukti Utama -->
@@ -189,32 +173,32 @@
 							<i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> BUKTI UTAMA & KATALIS
 						</span>
 						<ul id="aiBuktiUtamaList" class="space-y-1.5 text-slate-300 text-[11px] list-disc pl-4">
-							<li>Indikator teknikal diukur secara real-time dari TradingView Gauge.</li>
-							<li>Katalis pemberitaan dipindai dari sumber berita publik terkini.</li>
+							<li>Data dikalkulasi dari Yahoo Finance Historical OHLC (Apify Scraper).</li>
+							<li>Katalis pemberitaan dipindai secara otomatis dari RSS Google News.</li>
 						</ul>
 					</div>
 
-					<!-- Trading Map -->
+					<!-- Trading Map Dinamis AI -->
 					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
 						<span class="font-bold text-cyan-400 flex items-center gap-1.5 text-[11px]">
-							<i data-lucide="map-pin" class="w-3.5 h-3.5"></i> TRADING MAP
+							<i data-lucide="map-pin" class="w-3.5 h-3.5"></i> TRADING MAP (APIFY PIVOT)
 						</span>
 						<div class="grid grid-cols-2 gap-2 text-[11px]">
 							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
-								<span class="text-slate-400 text-[10px] block">Support Terdekat</span>
-								<span id="mapSupport1" class="font-bold text-amber-400">Ketik Harga Pasaran</span>
+								<span class="text-slate-400 text-[10px] block">Area Entry / Support</span>
+								<span id="mapSupport1" class="font-bold text-amber-400">Memuat...</span>
 							</div>
 							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
-								<span class="text-slate-400 text-[10px] block">Resistance 1</span>
-								<span id="mapResist1" class="font-bold text-cyan-400">Ketik Harga Pasaran</span>
+								<span class="text-slate-400 text-[10px] block">Resistance</span>
+								<span id="mapResist1" class="font-bold text-cyan-400">Memuat...</span>
 							</div>
 							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
 								<span class="text-slate-400 text-[10px] block">Target Profit (TP1 / TP2)</span>
-								<span id="mapTP" class="font-bold text-emerald-400">Ketik Harga Pasaran</span>
+								<span id="mapTP" class="font-bold text-emerald-400">Memuat...</span>
 							</div>
 							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
-								<span class="text-slate-400 text-[10px] block">Invalidasi (Stop Loss)</span>
-								<span id="mapSL" class="font-bold text-rose-400">Ketik Harga Pasaran</span>
+								<span class="text-slate-400 text-[10px] block">Stop Loss (SL)</span>
+								<span id="mapSL" class="font-bold text-rose-400">Memuat...</span>
 							</div>
 						</div>
 					</div>
@@ -235,23 +219,25 @@
 							<i data-lucide="git-fork" class="w-3.5 h-3.5"></i> SKENARIO
 						</span>
 						<div id="aiSkenarioBox" class="space-y-1.5 text-slate-300 text-[11px] leading-relaxed">
-							<p><strong>(a) Konfirmasi Bullish:</strong> Harga mampu bertahan di atas area support dengan volume beli konsisten.</p>
-							<p><strong>(b) Pullback/Netral:</strong> Harga bergerak konsolidasi di area kisaran support psikologis.</p>
-							<p><strong>(c) Gagal/Invalidasi:</strong> Penembusan batas Stop Loss membatalkan skenario bullish jangka pendek.</p>
+							<p><strong>(a) Konfirmasi Bullish:</strong> Memuat skenario AI...</p>
+							<p><strong>(b) Pullback/Netral:</strong> Memuat skenario AI...</p>
+							<p><strong>(c) Gagal/Invalidasi:</strong> Memuat skenario AI...</p>
 						</div>
 					</div>
 
-					<!-- Kesimpulan -->
+					<!-- Kesimpulan / Note AI -->
 					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1">
-						<span class="font-bold text-emerald-400 text-[11px]">KESIMPULAN</span>
+						<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px]">
+							<i data-lucide="thumbs-up" class="w-3.5 h-3.5"></i> KESIMPULAN & NOTE AI
+						</span>
 						<p id="aiKesimpulanText" class="text-slate-300 text-[11px] leading-relaxed">
-							Tunggu konfirmasi reaksi harga di area support terdekat sebelum mengambil keputusan trading.
+							Menganalisis keputusan trading...
 						</p>
 					</div>
 
 					<!-- Disclaimer -->
 					<p class="text-[10px] text-slate-500 italic bg-slate-950/50 p-2.5 rounded-lg border border-slate-900 leading-normal">
-						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Analisis ini hanya untuk edukasi dan bahan pertimbangan, bukan rekomendasi membeli/menjual saham atau jaminan keuntungan. Kondisi teknikal menunjukkan probabilitas, bukan kepastian harga. Lakukan analisis mandiri (DYOR).
+						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Analisis ini dihasilkan secara otomatis menggunakan kombinasi Apify Yahoo Finance & AI Engine. Hanya untuk edukasi dan bahan pertimbangan, bukan rekomendasi mutlak membeli/menjual.
 					</p>
 
 				</div>
@@ -362,6 +348,9 @@
 		let currentTicker = 'MDIA';
 		let currentInterval = 'D';
 
+		// GANTI URL INI DENGAN WEBHOOK PRODUCTION N8N KAMU!
+		const N8N_WEBHOOK_URL = 'https://n8n.domainkamu.com/webhook/analyze-stock';
+
 		// Init Lucide Icons
 		lucide.createIcons();
 
@@ -435,80 +424,92 @@
 			container.appendChild(script);
 		}
 
-		// 4. Hitung Nominal Eksak Trading Map & Skenario Secara Real-Time saat Harga Diisi
-		function calculateRealAISchema() {
-			const price = parseFloat(document.getElementById('realPriceInput').value);
-
-			if (!price || price <= 0) {
-				document.getElementById('mapSupport1').innerText = "Ketik Harga Pasaran";
-				document.getElementById('mapResist1').innerText = "Ketik Harga Pasaran";
-				document.getElementById('mapTP').innerText = "Ketik Harga Pasaran";
-				document.getElementById('mapSL').innerText = "Ketik Harga Pasaran";
-				return;
-			}
-
-			// Formula Presisi Money Management Fraksi Saham BEI
-			const supTerdekat1 = Math.round(price * 0.96);
-			const supTerdekat2 = Math.round(price * 0.98);
-			const supKonservatif1 = Math.round(price * 0.90);
-			const supKonservatif2 = Math.round(price * 0.94);
-			
-			const res1 = Math.round(price * 1.04);
-			const res2 = Math.round(price * 1.08);
-			
-			const tp1 = Math.round(price * 1.06);
-			const tp2 = Math.round(price * 1.12);
-			const sl = Math.round(supKonservatif1 * 0.98);
-
-			// Update UI Trading Map
-			document.getElementById('mapSupport1').innerText = `Rp ${supTerdekat1.toLocaleString('id-ID')} - ${supTerdekat2.toLocaleString('id-ID')}`;
-			document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
-			document.getElementById('mapTP').innerText = `Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}`;
-			document.getElementById('mapSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
-
-			// Update UI Skenario
-			document.getElementById('aiSkenarioBox').innerHTML = `
-				<p><strong>(a) Konfirmasi Bullish:</strong> Harga mampu bertahan di atas area ${supTerdekat2.toLocaleString('id-ID')} dengan peningkatan volume beli konsisten untuk menguji resistance Rp ${res1.toLocaleString('id-ID')}.</p>
-				<p><strong>(b) Pullback/Netral:</strong> Harga bergerak konsolidasi di area Rp ${supTerdekat1.toLocaleString('id-ID')} - ${supTerdekat2.toLocaleString('id-ID')}. Jika gagal, risiko koreksi menuju area support konservatif Rp ${supKonservatif1.toLocaleString('id-ID')} - ${supKonservatif2.toLocaleString('id-ID')}.</p>
-				<p><strong>(c) Gagal/Invalidasi:</strong> Penembusan harga di bawah Rp ${sl.toLocaleString('id-ID')} membatalkan skenario bullish jangka pendek.</p>
-			`;
-		}
-
-		// 5. Generator Analisis AI Skema Lengkap (Google News RSS Real-Time Engine)
+		// 4. Fetch AI Signal dari Endpoint n8n + Apify
 		async function generateAISignal(ticker) {
 			const now = new Date();
 			const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
 			document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
 			document.getElementById('aiDateStamp').innerText = `Data per ${dateStr}`;
-			document.getElementById('realPriceInput').value = '';
-			calculateRealAISchema();
+			
+			// UI State - Loading
+			document.getElementById('aiVerdikText').innerText = "ANALYZING...";
+			document.getElementById('aiVerdikText').className = "font-black text-amber-400 text-sm animate-pulse";
+			document.getElementById('aiScoreBadge').innerText = "...";
+			document.getElementById('mapSupport1').innerText = "Memuat...";
+			document.getElementById('mapResist1').innerText = "Memuat...";
+			document.getElementById('mapTP').innerText = "Memuat...";
+			document.getElementById('mapSL').innerText = "Memuat...";
 
+			// Fetch Berita Google RSS Paralel
+			fetchStockNewsForAI(ticker);
+
+			try {
+				// Saham Indonesia di Yahoo Finance memakai format TICKER.JK
+				const yahooTicker = `${ticker}.JK`;
+				const res = await fetch(`${N8N_WEBHOOK_URL}?ticker=${yahooTicker}`);
+				
+				if (!res.ok) throw new Error("Gagal terhubung ke Webhook n8n");
+				
+				const data = await res.json();
+
+				// Update UI Verdik & Skor
+				document.getElementById('aiVerdikText').innerText = data.verdik || "NETRAL";
+				document.getElementById('aiVerdikText').className = `font-black text-sm ${data.verdik?.includes('BULLISH') ? 'text-emerald-400' : 'text-amber-400'}`;
+				document.getElementById('aiScoreBadge').innerText = `${data.score || 3}/5`;
+				document.getElementById('aiVerdikDesc').innerText = data.description || "Analisis teknikal berhasil dikalkulasi dari Apify Yahoo Finance.";
+
+				// Update Trading Map
+				document.getElementById('mapSupport1').innerText = `Rp ${data.support || '-'}`;
+				document.getElementById('mapResist1').innerText = `Rp ${data.resistance || '-'}`;
+				document.getElementById('mapTP').innerText = `Rp ${data.tp1 || '-'} / ${data.tp2 || '-'}`;
+				document.getElementById('mapSL').innerText = `< Rp ${data.sl || '-'}`;
+
+				// Update Skenario
+				document.getElementById('aiSkenarioBox').innerHTML = `
+					<p><strong>(a) Konfirmasi Bullish:</strong> ${data.scenario_a || 'Harga melaju menuju target resistensi.'}</p>
+					<p><strong>(b) Pullback/Netral:</strong> ${data.scenario_b || 'Konsolidasi di area support terdekat.'}</p>
+					<p><strong>(c) Gagal/Invalidasi:</strong> ${data.scenario_c || 'Penembusan Stop Loss membatalkan tren.'}</p>
+				`;
+
+				// Update Kesimpulan Note
+				document.getElementById('aiKesimpulanText').innerText = data.note || "Perhatikan tingkat risiko sebelum mengeksekusi posisi.";
+
+				// Isi Form RRR Otomatis dari AI
+				if (data.tp1 && data.sl && data.entry) {
+					const entryVal = parseInt(data.entry.toString().replace(/[^0-9]/g, '')) || 0;
+					if(entryVal > 0) document.getElementById('rrrEntry').value = entryVal;
+					document.getElementById('rrrSL').value = data.sl;
+					document.getElementById('rrrTP').value = data.tp1;
+					calculateRRR();
+				}
+
+			} catch (e) {
+				console.error("Error AI Signal:", e);
+				document.getElementById('aiVerdikText').innerText = "NETRAL (OFFLINE)";
+				document.getElementById('aiVerdikText').className = "font-black text-amber-400 text-sm";
+				document.getElementById('aiVerdikDesc').innerText = "Gagal memuat analisis n8n. Pastikan URL Webhook n8n sudah benar dan aktif.";
+			}
+
+			if (window.lucide) lucide.createIcons();
+		}
+
+		// Helper berita khusus tab AI
+		async function fetchStockNewsForAI(ticker) {
 			const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
 			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
-
-			let newsHeadlines = [];
-			let positiveCount = 0;
-			let negativeCount = 0;
 
 			try {
 				const res = await fetch(apiUrl);
 				const data = await res.json();
 
 				if (data.status === 'ok' && data.items && data.items.length > 0) {
-					newsHeadlines = data.items.slice(0, 3);
-					
 					let beritaHTML = '';
-					newsHeadlines.forEach(item => {
+					data.items.slice(0, 3).forEach(item => {
 						const source = item.author || 'Media Nasional';
 						const pubDate = new Date(item.pubDate).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
 						beritaHTML += `<div>• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
-
-						const t = item.title.toLowerCase();
-						if (t.includes('laba') || t.includes('naik') || t.includes('untung') || t.includes('dividen') || t.includes('positif') || t.includes('hijau')) positiveCount++;
-						if (t.includes('rugi') || t.includes('turun') || t.includes('anjlok') || t.includes('sanksi') || t.includes('merah') || t.includes('tertekan')) negativeCount++;
 					});
-
 					document.getElementById('aiBeritaList').innerHTML = beritaHTML;
 				} else {
 					document.getElementById('aiBeritaList').innerHTML = `<div>Belum ada rilis berita khusus untuk emiten ${ticker} dalam 24 jam terakhir.</div>`;
@@ -516,40 +517,9 @@
 			} catch (e) {
 				document.getElementById('aiBeritaList').innerHTML = `<div>Gagal memuat berita terkini. Gunakan indikator teknikal pada chart.</div>`;
 			}
-
-			// Penentuan Verdik & Skor Berdasarkan Sentimen Katalis
-			let verdik = "NETRAL-SELEKTIF";
-			let skor = "3/5";
-			let verdikColor = "text-amber-400";
-
-			if (positiveCount > negativeCount) {
-				verdik = "BULLISH / ACCUMULATE";
-				skor = "4/5";
-				verdikColor = "text-emerald-400";
-			} else if (negativeCount > positiveCount) {
-				verdik = "BEARISH / CAUTION";
-				skor = "2/5";
-				verdikColor = "text-rose-400";
-			}
-
-			document.getElementById('aiVerdikText').innerText = verdik;
-			document.getElementById('aiVerdikText').className = `font-black text-sm ${verdikColor}`;
-			document.getElementById('aiScoreBadge').innerText = skor;
-			
-			document.getElementById('aiVerdikDesc').innerText = `Bias jangka pendek cenderung ${verdik.toLowerCase()} dipengaruhi oleh dinamika transaksi dan rilis sentimen berita pasar terkini.`;
-			
-			document.getElementById('aiBuktiUtamaList').innerHTML = `
-				<li>Sinyal indikator teknikal diukur secara real-time dari TradingView Technical Gauge.</li>
-				<li>Katalis pasar didorong oleh rilis pemberitaan terkini media nasional.</li>
-				<li>Perhatikan area konsolidasi harga dan volume transaksi sebelum mengambil keputusan entry.</li>
-			`;
-
-			document.getElementById('aiKesimpulanText').innerText = `Tunggu konfirmasi reaksi harga di area support terdekat sebelum mengambil keputusan, mengingat adanya fluktuasi sentimen pasar terkini pada saham ${ticker}.`;
-
-			if (window.lucide) lucide.createIcons();
 		}
 
-		// 6. Ubah Timeframe Chart
+		// 5. Ubah Timeframe Chart
 		function changeInterval(tf) {
 			currentInterval = tf;
 			['5', '30', '60', 'D', 'W', 'M'].forEach(t => {
@@ -565,7 +535,7 @@
 			renderChart(currentTicker);
 		}
 
-		// 7. Kalkulator Risk / Reward Ratio (RRR)
+		// 6. Kalkulator Risk / Reward Ratio (RRR)
 		function calculateRRR() {
 			const entry = parseFloat(document.getElementById('rrrEntry').value);
 			const sl = parseFloat(document.getElementById('rrrSL').value);
@@ -604,7 +574,7 @@
 			}
 		}
 
-		// 8. Alert Price Level (LocalStorage)
+		// 7. Alert Price Level (LocalStorage)
 		function getAlerts(ticker) {
 			return JSON.parse(localStorage.getItem(`alerts_${ticker}`) || '[]');
 		}
@@ -653,7 +623,7 @@
 			renderAlertList(currentTicker);
 		}
 
-		// 9. Google RSS News Fetcher
+		// 8. Google RSS News Fetcher
 		async function fetchStockNews(ticker) {
 			const container = document.getElementById('newsContainer');
 			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat berita terkini ${ticker}...</div>`;
@@ -690,7 +660,7 @@
 			}
 		}
 
-		// 10. Live Aksi Korporasi Fetcher
+		// 9. Live Aksi Korporasi Fetcher
 		async function fetchCorporateAction(ticker) {
 			const container = document.getElementById('corporateContainer');
 			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat aksi korporasi ${ticker}...</div>`;
@@ -728,7 +698,7 @@
 			}
 		}
 
-		// 11. Switching Tab Navigasi
+		// 10. Switching Tab Navigasi
 		function switchTab(tabName) {
 			const tabs = ['ai', 'news', 'fundamental', 'rrr', 'alert', 'corporate'];
 			tabs.forEach(tab => {
@@ -745,7 +715,7 @@
 			});
 		}
 
-		// 12. Bagikan URL Ticker
+		// 11. Bagikan URL Ticker
 		function shareStockUrl() {
 			const shareUrl = `${window.location.origin}${window.location.pathname}?ticker=${currentTicker}`;
 			navigator.clipboard.writeText(shareUrl).then(() => {
@@ -755,7 +725,7 @@
 			});
 		}
 
-		// 13. Auto Check Ticker dari URL Query Param
+		// 12. Auto Check Ticker dari URL Query Param
 		function checkUrlParamTicker() {
 			const urlParams = new URLSearchParams(window.location.search);
 			const tickerParam = urlParams.get('ticker');
