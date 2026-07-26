@@ -864,7 +864,7 @@
 
 				if (data.status === 'ok' && data.items && data.items.length > 0) {
 					let beritaHTML = '';
-					data.items.slice(0, 3).forEach(item => {
+					data.items.slice(0, 5).forEach(item => { // 0, 3
 						const source = item.author || 'Media Nasional';
 						const pubDate = new Date(item.pubDate).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
 						beritaHTML += `<div>• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
@@ -977,7 +977,7 @@
 
 				if (data.status === 'ok' && data.items && data.items.length > 0) {
 					container.innerHTML = '';
-					data.items.slice(0, 5).forEach(item => {
+					data.items.slice(0, 9).forEach(item => { // 0, 5
 						const date = new Date(item.pubDate).toLocaleDateString('id-ID', {
 							day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
 						});
