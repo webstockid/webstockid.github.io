@@ -737,7 +737,7 @@
 		}
 
 		// ==================== RADAR BIG MONEY / AUTOMATIC TOP SCREENER ====================
-		const radarWatchlist = ['TPIA','BRPT','PTRO','BREN','CUAN','TLKM','PGAS','ASII','INCO','JPFA','MBMA','TOBA','BBNI','BBCA','BMRI','BBRI','BBTN','BRIS','INET','DATA','WIFI','BULL','ADRO','ADMR','SOCI','RAJA','RATU','BRMS','TRIN','DSSA','DEWA','EMAS','PSAB','ARCI','ANTM','MDKA','INDY','MDIA','BNBR','JGLE','KOTA','ELTY','ISAT','ESSA','UNVR','INDF','BUVA','MYOR','BIPI','OILS'];
+		const radarWatchlist = ['TPIA','BRPT','PTRO','BREN','CUAN','CDIA','TLKM','PGAS','ASII','INCO','SINI','JPFA','MBMA','TOBA','BBNI','BBCA','BMRI','BBRI','BBTN','BRIS','INET','DATA','WIFI','BULL','ADRO','ADMR','SOCI','RAJA','RATU','BRMS','TRIN','DSSA','DEWA','EMAS','PSAB','ARCI','ANTM','MDKA','INDY','MDIA','BNBR','JGLE','KOTA','ELTY','ISAT','ESSA','UNVR','INDF','BUVA','MYOR','BIPI','ASPR','FUTR','DEFI','MLPT','OILS'];
 
 		async function renderBigMoneyRadar() {
 			const container = document.getElementById('bigMoneyList');
@@ -760,11 +760,11 @@
 			validData.sort((a, b) => b.changePct - a.changePct);
 
 			// Ambil Deretan Saham teratas
-			const top5 = validData.slice(0, 8);
+			const topstock = validData.slice(0, 12);
 
 			let htmlContent = '';
 
-			top5.forEach((item, index) => {
+			topstock.forEach((item, index) => {
 				const ticker = item.ticker;
 				const price = item.price;
 				const changePct = item.changePct;
