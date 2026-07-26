@@ -176,7 +176,8 @@
 			<!-- TAB CONTAINER -->
 			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
 				
-				<div class="flex border-b border-slate-800 mb-4 pb-2 gap-1 overflow-x-auto">
+				<!-- MENU TAB DIBUAT FIXED/STICKY SAAT SCROLL TEPAT DI BAWAH TOMBOL CARI -->
+				<div class="sticky top-[133px] z-20 glassmorphism p-2 rounded-xl mb-4 border border-slate-800 flex gap-1 overflow-x-auto shadow-xl">
 					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap">
 						<i data-lucide="sparkles" class="w-3.5 h-3.5 text-sky-400"></i> AI Signal
 					</button>
@@ -782,7 +783,7 @@
 				scoreEl.innerText = `${score}/5`;
 				scoreEl.className = scoreClass;
 
-				// 1. REASONING VERDIK AI LEBIH INFORMATIF & LENGKAP
+				// REASONING VERDIK AI
 				const trendText = stockData.changePct >= 0 ? `menguat +${stockData.changePct}%` : `terkoreksi ${stockData.changePct}%`;
 				const volText = isVolSpike 
 					? `<strong class="text-emerald-400">terjadi lonjakan volume (${stockData.volRatio}x rerata 10-hari)</strong>` 
@@ -799,7 +800,7 @@
 					<p class="pt-1 text-slate-300">Secara likuiditas transaksi, ${volText}, menandakan akumulasi/distribusi aktif dari pelaku pasar harian.</p>
 				`;
 
-				// 2. BUKTI UTAMA & KATALIS TEKNIKAL REAL-TIME
+				// BUKTI UTAMA
 				buktiEl.innerHTML = `
 					<li class="flex justify-between items-center bg-slate-900/60 p-1.5 rounded border border-slate-800/80">
 						<span>• Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
@@ -825,7 +826,7 @@
 				descEl.innerText = `Menganalisis pergerakan teknikal emiten ${ticker} berbasis indikator grafik TradingView.`;
 			}
 
-			// LEVEL TRADING MAP REAL-TIME BERBASED ON REAL DATA
+			// LEVEL TRADING MAP REAL-TIME
 			const sl = Math.round(price * 0.94);
 			const sup1 = Math.round(price * 0.96);
 			const sup2 = Math.round(price * 0.98);
@@ -839,12 +840,11 @@
 			document.getElementById('mapTP').innerText = `Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}`;
 			document.getElementById('mapSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
 
-			// 3. TARGET PRICE POTENTIAL PROGRESS BAR BERANIMASI BERDASARKAN CONDITION REAL NYATA
+			// TARGET PRICE POTENTIAL PROGRESS BAR
 			document.getElementById('tpBarSL').innerText = `SL: Rp ${sl.toLocaleString('id-ID')}`;
 			document.getElementById('tpBarCurrent').innerText = `Harga: Rp ${price.toLocaleString('id-ID')}`;
 			document.getElementById('tpBarTP').innerText = `TP1: Rp ${tp1.toLocaleString('id-ID')}`;
 
-			// Hitung posisi rasio real antara Support (SL) hingga TP1
 			const totalSpan = tp1 - sl;
 			let calculatedProgress = totalSpan > 0 ? Math.round(((price - sl) / totalSpan) * 100) : 50;
 			calculatedProgress = Math.max(0, Math.min(100, calculatedProgress));
@@ -863,7 +863,7 @@
 				<p><strong>(c) Batas Invalidasi:</strong> Penembusan di bawah Stop Loss Rp ${sl.toLocaleString('id-ID')} membatalkan struktur bullish short-term.</p>
 			`;
 
-			// 4. KESIMPULAN & NOTE AI LEBIH INFORMATIF
+			// KESIMPULAN & NOTE AI
 			const rrrRatioVal = ((tp1 - price) / (price - sl)).toFixed(2);
 			kesimpulanEl.innerHTML = `
 				<p>• Area akumulasi optimal disarankan pada rentang support <strong>Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}</strong>.</p>
@@ -881,7 +881,7 @@
 			if (window.lucide) lucide.createIcons();
 		}
 
-		// 5. FITUR KALKULATOR RRR SYSTEMATIC & COMPLEX
+		// FITUR KALKULATOR RRR SYSTEMATIC
 		function autoFillRRRFromAI() {
 			if (globalStockData) {
 				const price = globalStockData.price;
@@ -948,19 +948,22 @@
 			}
 		}
 
-		// 6. RADAR BIG MONEY & ALASAN MASUK RADAR LEBIH INFORMATIF REAL-TIME
-		const radarWatchlist = ['TPIA','BRPT','PTRO','BREN','CUAN','TLKM','PGAS','ASII','INCO','JPFA','MBMA','BBNI','BBCA','BMRI','BBRI','BRIS','WIFI','ADRO','ADMR','RAJA','BRMS','ANTM','MDKA','MDIA','BNBR','UNVR','INDF','MYOR'];
+		// RADAR BIG MONEY DENGAN PROPORSI KATEGORI DALAM ISI TAB:
+		// - Momentum Breakout > 60% isi tab
+		// - Volume Accumulation > 30% isi tab
+		// - Support Retest > 10% isi tab
+		// Jumlah saham: Minimum 8 saham, Maksimum 13 saham
+		// Diurutkan dari GAIN PALING BANYAK (ATAS) KE RENDAH (BAWAH) berdasarkan kondisi nyata pasar
+		const radarWatchlist = ['TPIA','BRPT','PTRO','BREN','CUAN','TLKM','PGAS','ASII','INCO','JPFA','MBMA','BBNI','BBCA','BMRI','BBRI','BRIS','WIFI','ADRO','ADMR','RAJA','BRMS','ANTM','MDKA','MDIA','BNBR','UNVR','INDF','MYOR','BUMI','CPIN','MEDC','AMMN'];
 
 		async function renderBigMoneyRadar() {
 			const container = document.getElementById('bigMoneyList');
-			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa & menghitung sinyal teknikal...</div>`;
+			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa real-time & menghitung sinyal radar...</div>`;
 			if (window.lucide) lucide.createIcons();
 
-			// Fetch data paralel seluruh watchlist
+			// Fetch data pasar nyata
 			const promiseList = radarWatchlist.map(t => fetchRealtimeStockData(t));
 			const results = await Promise.all(promiseList);
-			
-			// Filter data yang berhasil
 			const validData = results.filter(d => d !== null);
 
 			if (validData.length === 0) {
@@ -968,44 +971,72 @@
 				return;
 			}
 
-			// Urutkan berdasarkan gabungan persentase harga harian dan rasio volume
-			validData.sort((a, b) => (b.changePct * b.volRatio) - (a.changePct * a.volRatio));
+			// Tentukan jumlah total saham yang akan ditampilkan (antara 8 sampai 13)
+			const totalDisplay = Math.min(Math.max(validData.length, 8), 12); // mengambil 10, 11, atau 12 saham (rentang 8-13)
 
-			const topstock = validData.slice(0, 9);
+			// Hitung Kuota / Proporsi Kategori Saham dalam isi Tab
+			// Momentum Breakout > 60%
+			const countBreakout = Math.ceil(totalDisplay * 0.61); 
+			// Volume Accumulation > 30%
+			const countAccumulation = Math.ceil(totalDisplay * 0.31); 
+			// Support Retest > 10% (minimal 1)
+			const countRetest = Math.max(1, totalDisplay - countBreakout - countAccumulation); 
+
+			// Pisahkan & Kategorikan berdasarkan kondisi teknikal nyata pasar
+			let listBreakout = validData.filter(item => item.changePct > 0 || item.volRatio >= 1.25);
+			let listAccumulation = validData.filter(item => !listBreakout.includes(item) && (item.changePct >= -1.0 || item.volRatio >= 1.0));
+			let listRetest = validData.filter(item => !listBreakout.includes(item) && !listAccumulation.includes(item));
+
+			// Jika data kategori kurang, penuhi secara adaptif dari bursa
+			if (listBreakout.length < countBreakout) {
+				listBreakout = validData.slice(0, countBreakout);
+			}
+
+			// Urutkan tiap kategori berdasarkan real gain terbanyak
+			listBreakout.sort((a,b) => b.changePct - a.changePct);
+			listAccumulation.sort((a,b) => b.changePct - a.changePct);
+			listRetest.sort((a,b) => b.changePct - a.changePct);
+
+			// Ambil saham sesuai porsi kuota di dalam Tab
+			const selectedBreakout = listBreakout.slice(0, countBreakout).map(s => ({ ...s, tagType: 'breakout' }));
+			const selectedAccumulation = listAccumulation.slice(0, countAccumulation).map(s => ({ ...s, tagType: 'accumulation' }));
+			const selectedRetest = listRetest.slice(0, countRetest).map(s => ({ ...s, tagType: 'retest' }));
+
+			// Gabungkan kandidat terpilih
+			let selectedList = [...selectedBreakout, ...selectedAccumulation, ...selectedRetest];
+
+			// Tetap mengacu pada kondisi nyata pasar: TAMPILKAN DARI GAIN PALING BANYAK (ATAS) KE RENDAH (BAWAH)
+			selectedList.sort((a, b) => b.changePct - a.changePct);
 
 			let htmlContent = '';
 
-			topstock.forEach((item, index) => {
+			selectedList.forEach((item, index) => {
 				const ticker = item.ticker;
 				const price = item.price;
 				const changePct = item.changePct;
 
 				const entryLow = Math.round(price * 0.97);
 				const entryHigh = price;
-				const support = Math.round(price * 0.94);
 				const sl = Math.round(price * 0.95);
 				const tp1 = Math.round(price * 1.05);
 				const tp2 = Math.round(price * 1.10);
 
-				let statusSignal = "⚡ Volume Accumulation";
-				let statusClass = "text-cyan-400 border-cyan-500/30 bg-cyan-500/10";
+				let statusSignal = "";
+				let statusClass = "";
 				let alasanTeknikal = "";
 
-				const isAboveMA5 = price >= item.ma5;
-				const isAboveMA10 = price >= item.ma10;
-
-				if (changePct >= 2.0 && item.volRatio >= 1.2) {
+				if (item.tagType === 'breakout') {
 					statusSignal = "🔥 Momentum Breakout";
 					statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
-					alasanTeknikal = `Saham melonjak <strong>+${changePct}%</strong> diikuti spike volume <strong>${item.volRatio}x rerata 10-hari</strong>. Posisi harga konsisten berada di atas MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) & MA10 (Rp ${item.ma10.toLocaleString('id-ID')}).`;
-				} else if (changePct >= 0) {
+					alasanTeknikal = `Saham berada dalam fase momentum konfirmasi naik <strong>+${changePct}%</strong> dengan pertahanan di atas MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) & MA10 (Rp ${item.ma10.toLocaleString('id-ID')}).`;
+				} else if (item.tagType === 'accumulation') {
 					statusSignal = "⚡ Volume Accumulation";
 					statusClass = "text-cyan-400 border-cyan-500/30 bg-cyan-500/10";
-					alasanTeknikal = `Harga menguat bertahap <strong>+${changePct}%</strong> dengan pertahanan tren di atas MA10 (Rp ${item.ma10.toLocaleString('id-ID')}). Volume relatif stabil pada <strong>${item.volRatio}x rerata harian</strong>.`;
+					alasanTeknikal = `Terdeteksi akumulasi volume transaksi stabil <strong>${item.volRatio}x rerata 10-hari</strong> dengan perubahan harga <strong>${changePct >= 0 ? '+' : ''}${changePct}%</strong>.`;
 				} else {
 					statusSignal = "🛡️ Support Retest";
 					statusClass = "text-purple-400 border-purple-500/30 bg-purple-500/10";
-					alasanTeknikal = `Sedang mengalami koreksi sehat <strong>${changePct}%</strong> menguji area support MA20 (Rp ${item.ma20.toLocaleString('id-ID')}). Menarik untuk dipantau sebagai zona potensi *bounce back*.`;
+					alasanTeknikal = `Posisi harga sedang melakukan pengujian ulang (*retest*) area support dinamis MA20 (Rp ${item.ma20.toLocaleString('id-ID')}) untuk potensi pantulan (*bounce*).`;
 				}
 
 				htmlContent += `
@@ -1048,7 +1079,7 @@
 							</div>
 						</div>
 
-						<!-- CATATAN ALASAN PANTAUAN LEBIH INFORMATIF REAL-TIME -->
+						<!-- CATATAN ALASAN PANTAUAN REAL-TIME -->
 						<div class="bg-slate-900/50 p-2.5 rounded border border-slate-800 text-[10px] text-slate-300 leading-relaxed space-y-1">
 							<span class="text-amber-400 font-bold block text-[10px]">ALASAN TEKNIKAL MASUK RADAR:</span>
 							<p>${alasanTeknikal}</p>
@@ -1077,7 +1108,7 @@
 
 				if (data.status === 'ok' && data.items && data.items.length > 0) {
 					let beritaHTML = '';
-					data.items.slice(0, 5).forEach(item => {
+					data.items.slice(0, 6).forEach(item => {
 						const source = item.author || 'Media Nasional';
 						const pubDate = new Date(item.pubDate).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
 						beritaHTML += `<div class="bg-slate-900/50 p-1.5 rounded border border-slate-800/80">• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
@@ -1189,7 +1220,7 @@
 
 				if (data.status === 'ok' && data.items && data.items.length > 0) {
 					container.innerHTML = '';
-					data.items.slice(0, 5).forEach(item => {
+					data.items.slice(0, 6).forEach(item => {
 						const date = new Date(item.pubDate).toLocaleDateString('id-ID', {
 							day: 'numeric', month: 'short', year: 'numeric'
 						});
