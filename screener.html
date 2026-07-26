@@ -310,7 +310,7 @@
 					</div>
 
 					<p class="text-[10px] text-slate-500 italic bg-slate-950/50 p-2.5 rounded-lg border border-slate-900 leading-normal">
-						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa real-time tanpa angka dummy. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
+						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa real-time. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
 					</p>
 
 				</div>
@@ -802,7 +802,7 @@
 				// 2. BUKTI UTAMA & KATALIS TEKNIKAL REAL-TIME
 				buktiEl.innerHTML = `
 					<li class="flex justify-between items-center bg-slate-900/60 p-1.5 rounded border border-slate-800/80">
-						<span>• Harga Real-Time: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
+						<span>• Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
 						<span class="text-[10px] text-slate-400">Close</span>
 					</li>
 					<li class="flex justify-between items-center bg-slate-900/60 p-1.5 rounded border border-slate-800/80">
@@ -855,7 +855,7 @@
 				progressBar.style.width = `${calculatedProgress}%`;
 			}, 100);
 
-			document.getElementById('tpProgressPercent').innerText = `Posisi Real-Time: ${calculatedProgress}% dari Rentang SL - TP1`;
+			document.getElementById('tpProgressPercent').innerText = `Posisi: ${calculatedProgress}% dari Rentang SL - TP1`;
 
 			document.getElementById('aiSkenarioBox').innerHTML = `
 				<p><strong>(a) Konfirmasi Bullish:</strong> Jika harga bertahan di atas support Rp ${sup2.toLocaleString('id-ID')} dengan volume stabil, target uji resistance berada di Rp ${res1.toLocaleString('id-ID')}.</p>
@@ -971,7 +971,7 @@
 			// Urutkan berdasarkan gabungan persentase harga harian dan rasio volume
 			validData.sort((a, b) => (b.changePct * b.volRatio) - (a.changePct * a.volRatio));
 
-			const topstock = validData.slice(0, 8);
+			const topstock = validData.slice(0, 9);
 
 			let htmlContent = '';
 
@@ -982,8 +982,8 @@
 
 				const entryLow = Math.round(price * 0.97);
 				const entryHigh = price;
-				const support = Math.round(price * 0.93);
-				const sl = Math.round(price * 0.94);
+				const support = Math.round(price * 0.94);
+				const sl = Math.round(price * 0.95);
 				const tp1 = Math.round(price * 1.05);
 				const tp2 = Math.round(price * 1.10);
 
@@ -1020,7 +1020,7 @@
 											Lihat Chart &rarr;
 										</button>
 									</div>
-									<span class="text-[10px] text-slate-400 block">Harga Real-Time: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
+									<span class="text-[10px] text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
 								</div>
 							</div>
 							<span class="text-[9px] font-bold px-2.5 py-1 rounded-full border ${statusClass}">
@@ -1077,7 +1077,7 @@
 
 				if (data.status === 'ok' && data.items && data.items.length > 0) {
 					let beritaHTML = '';
-					data.items.slice(0, 4).forEach(item => {
+					data.items.slice(0, 5).forEach(item => {
 						const source = item.author || 'Media Nasional';
 						const pubDate = new Date(item.pubDate).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
 						beritaHTML += `<div class="bg-slate-900/50 p-1.5 rounded border border-slate-800/80">• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
@@ -1152,7 +1152,7 @@
 
 				if (data.status === 'ok' && data.items && data.items.length > 0) {
 					container.innerHTML = '';
-					data.items.slice(0, 8).forEach(item => {
+					data.items.slice(0, 9).forEach(item => {
 						const date = new Date(item.pubDate).toLocaleDateString('id-ID', {
 							day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
 						});
