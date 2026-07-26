@@ -947,14 +947,114 @@
 				evalEl.innerHTML = `✕ <strong>Risiko Terlalu Tinggi / Kurang Ideal (RRR 1 : ${rrr})</strong><br><span class="text-[10px] font-normal text-slate-300">Potensi keuntungan tidak sebanding dengan risiko penurunan modal.</span>`;
 			}
 		}
+		
+		const radarWatchlist = [
+		// Grup Prajogo Pangestu (Barito Group)
+		'TPIA', 'BRPT', 'PTRO', 'BREN', 'CUAN',
+		// Grup Bakrie
+		'BUMI', 'BRMS', 'BNBR', 'ENRG', 'DEWA', 'VKTR', 'MDIA', 'VIVA', 'BTEL', 'UNSP',
+		// Grup Happy Hapsoro
+		'RAJA', 'FORU', 'MINA', 'PSKT', 'CBRE', 'STRT',
+	
+		// Grup Salim
+		'INDF', 'ICBP', 'INTP', 'LSIP', 'SIMP', 'AMRT', 'MIDI', 'DNET', 'META', 'BMSI',
+	
+		// Grup Aguan / Pantai Indah Kapuk (PIK)
+		'PANI',
+	
+		// Grup Sinarmas
+		'BSDE', 'INKP', 'TKIM', 'FREN', 'SMMA', 'DUTI', 'DMAS', 'DSSA', 'BSIM', 'NOBU',
+	
+		// Grup Astra
+		'ASII', 'UNTR', 'AALI', 'AUTO', 'ASET', 'ASGR',
+	
+		// Grup Djarum / BCA
+		'BBCA', 'TOWR', 'RANC', 'BELI',
+	
+		// Grup Lippo
+		'LPKR', 'LPCK', 'MPPA', 'MLPL', 'SILO', 'LINK', 'NOBU',
+	
+		// Grup MNC (Hary Tanoesoedibjo)
+		'MNCN', 'BHIT', 'KPIG', 'MSKY', 'BCAP', 'BABP', 'IPTV',
+	
+		// Grup Emtek (Eddy Sariaatmadja)
+		'EMTK', 'SCMA', 'BUKA',
+	
+		// Grup CT Corp (Chairul Tanjung)
+		'MEGA', 'BANK',
+	
+		// Grup Saratoga / Sandiaga-Saratoga
+		'SRTG', 'ADRO', 'MDKA', 'MBMA', 'PALM', 'MPMX',
 
-		// RADAR BIG MONEY DENGAN PROPORSI KATEGORI DALAM ISI TAB:
-		// - Momentum Breakout > 60% isi tab
-		// - Volume Accumulation > 30% isi tab
-		// - Support Retest > 10% isi tab
-		// Jumlah saham: Minimum 8 saham, Maksimum 13 saham
-		// Diurutkan dari GAIN PALING BANYAK (ATAS) KE RENDAH (BAWAH) berdasarkan kondisi nyata pasar
-		const radarWatchlist = ['TPIA','BRPT','PTRO','BREN','CUAN','TLKM','PGAS','ASII','INCO','JPFA','MBMA','BBNI','BBCA','BMRI','BBRI','BRIS','WIFI','ADRO','ADMR','RAJA','BRMS','ANTM','MDKA','MDIA','BNBR','UNVR','INDF','MYOR','BUMI','CPIN','MEDC','AMMN'];
+		// ==========================================
+		// 2. PERBANKAN & KEUANGAN (FINANCIALS)
+		// ==========================================
+		// Big 4 Banks
+		'BBCA', 'BBRI', 'BMRI', 'BBNI',
+		// BUMN & Bank Daerah / Syariah
+		'BRIS', 'BBTN', 'BJTM', 'BJBR', 'AGRO', 'BSIM', 'BDMN', 'BNLI', 'PNBN', 'NISP', 
+		'BNGA', 'BTPN', 'ARTO', 'BBYB', 'BBHI', 'DNAR', 'BVIC', 'BABP', 'MASB', 'MCOR',
+		// Multifinance & Fintech
+		'ADMF', 'CFIN', 'BFIN', 'AMAG', 'PNLF', 'APIC',
+
+		// ==========================================
+		// 3. TAMBANG, MIGAS, MINYAK & ENERGI (ENERGY & MINING)
+		// ==========================================
+		// Batubara
+		'ADRO', 'PTBA', 'ITMG', 'HRUM', 'BYAN', 'GEMS', 'INDY', 'TOBA', 'ABMM', 'MBAP', 
+		'BUMI', 'DEWA', 'AIMS', 'KKGI', 'SMMT', 'DOID', 'BSSR', 'TEBE',
+		// Minyak & Gas (Migas)
+		'MEDC', 'PGAS', 'ENRG', 'AKRA', 'RAJA', 'WINS', 'LEAD', 'ARTI', 'ELSA', 'SOCI', 'RUIS',
+		// Logam, Emas, Nikel & Tembaga
+		'ANTM', 'MDKA', 'INCO', 'AMMN', 'MBMA', 'NCKL', 'DKFT', 'TINS', 'CITA', 'PSAB', 
+		'BRMS', 'ZINC', 'IFSH', 'NICK', 'KAEF',
+
+		// ==========================================
+		// 4. TEKNOLOGI, DIGITAL & MEDIA (TECH & TELECOM)
+		// ==========================================
+		'GOTO', 'BUKA', 'BELI', 'MTDL', 'WIFI', 'AXIO', 'MCAS', 'DIVA', 'NFCX', 'HDIT', 
+		'EMTK', 'SCMA', 'MNCN', 'TLKM', 'ISAT', 'EXCL', 'FREN', 'TOWR', 'TBIG', 'CENT', 
+		'GHON', 'IBST', 'OASA',
+
+		// ==========================================
+		// 5. PROPERTI, REAL ESTATE & KONSTRUKSI
+		// ==========================================
+		// Properti & Real Estate
+		'PANI', 'BSDE', 'CTRA', 'PWON', 'SMRA', 'ASRI', 'LPKR', 'LPCK', 'DMAS', 'DUTI', 
+		'DIRA', 'BKSL', 'AALR', 'BEST', 'MKPI', 'NZIA', 'DILD', 'KIJA', 'MMLP', 'CITY', 
+		'RDTX', 'GWSA', 'RODA', 'BCIP',
+		// Konstruksi BUMN & Swasta
+		'ADHI', 'PTPP', 'WEGE', 'WTON', 'TOTL', 'ACST', 'NRCA', 'IDPR',
+
+		// ==========================================
+		// 6. INFRASTRUKTUR, UTILITAS & LOGISTIK
+		// ==========================================
+		'JSMR', 'KEEN', 'POWR', 'TGRA', 'BREN', 'PGAS', 'CMNP', 'META', 'CASS', 'KOPI', 
+		'BIRD', 'ASSA', 'SMDR', 'TMAS', 'IPCM', 'PORT', 'BAYU', 'HUMP',
+
+		// ==========================================
+		// 7. KESEHATAN, FARMASI & HOSPITALITY
+		// ==========================================
+		// Farmasi & Alat Kesehatan
+		'KLBF', 'KAEF', 'INAF', 'SIDO', 'PEHA', 'DVLA', 'TSPC', 'IRRA', 'SAME',
+		// Rumah Sakit (Hospital)
+		'MIKA', 'HEAL', 'SILO', 'PRDA', 'PRIM', 'CARE', 'RSGK', 'OMED',
+
+		// ==========================================
+		// 8. KONSUMER, RETAIL & MANUFAKTUR (CONSUMER GOODS)
+		// ==========================================
+		// Makanan & Minuman (F&B)
+		'UNVR', 'INDF', 'ICBP', 'MYOR', 'CMRY', 'GOOD', 'ROTI', 'ULTJ', 'STTP', 'CEKA', 
+		'MLBI', 'DLTA', 'ALTO', 'CAMP', 'ADES', 'CLEO', 'PANI',
+		// Perkebunan & Sawit (CPO)
+		'AALI', 'LSIP', 'SIMP', 'SSMS', 'TAPG', 'DSNG', 'SGRO', 'BWPT', 'PALM', 'CSRA', 'ANJT',
+		// Peternakan & Unggas (Poultry)
+		'CPIN', 'JPFA', 'MAIN', 'SIPD',
+		// Rokok & Tembakau
+		'GGRM', 'HMSP', 'WIIM',
+		// Retail & Perdagangan
+		'ACES', 'MAPI', 'MAPA', 'AMRT', 'MIDI', 'RALS', 'LPPF', 'MPPA', 'ERAA', 'GLOB', 'KAEF'
+		];
 
 		async function renderBigMoneyRadar() {
 			const container = document.getElementById('bigMoneyList');
