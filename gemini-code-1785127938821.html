@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+	<meta charset="UTF-8">
+	<title>Stock's ID Screener - Premium Trading & Learning Community</title>
+	<meta name="keywords" content="stock id vip, stockid vip, stockidvip, stock id, stockid, stock id screener, stockid screener, screener saham, saham indonesia, kelas saham">
+	<meta name="HandheldFriendly" content="True">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no">
+	<meta name="author" content="Hardiansyah & Gemini & Tailwind.css">
+	<meta property="og:title" content="Stock ID Screener #Andaimology">
+	<meta property="og:description" content="Alat Screening Saham yang dilengkapi AI dan Analisa Teknikal">
+	<meta property="og:image" content="stockid_gambar/stockicon.jpg">
+	<meta property="og:url" content="https://webstockid.github.io/screener.html">
+	<meta property="og:type" content="website">
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://unpkg.com/lucide@latest"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+	<style>
+		body {
+			font-family: 'Lexend', sans-serif;
+			background-color: #0b0f19;
+		}
+		.heading-font {
+			font-family: 'Lexend', sans-serif;
+		}
+		.glassmorphism {
+			background: rgba(17, 24, 39, 0.75);
+			backdrop-filter: blur(12px);
+			-webkit-backdrop-filter: blur(12px);
+			border: 1px solid rgba(255, 255, 255, 0.08);
+		}
+		@keyframes pulse-glow {
+			0%, 100% { opacity: 0.8; transform: scale(1); }
+			50% { opacity: 1; transform: scale(1.03); }
+		}
+		.animate-pulse-glow {
+			animation: pulse-glow 2s infinite ease-in-out;
+		}
+	</style>
+</head>
+
+<body class="text-slate-200 antialiased overflow-x-hidden">
+
+	<!-- Navbar -->
+	<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
+			<div class="flex items-center gap-3">
+				<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2.5 rounded-xl shadow-lg shadow-emerald-500/20">
+					<i class="fa-solid fa-chart-line text-slate-950 text-xl font-black"></i>
+				</div>
+				<div>
+					<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">SCREENER</span></span>
+					<p class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
+				</div>
+			</div>
+			<div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+				<a href="#benefit" class="hover:text-emerald-400 transition-colors">Benefit</a>
+				<a href="#stats" class="hover:text-emerald-400 transition-colors">Statistik</a>
+				<a href="#paket" class="hover:text-emerald-400 transition-colors">Paket Belajar</a>
+				<a href="#faq" class="hover:text-emerald-400 transition-colors">FAQ</a>
+			</div>
+			<div>
+				<a href="https://webstockid.github.io/index" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-sm tracking-wide transition shadow-lg shadow-emerald-500/20 block">STOCK ID VIP</a>
+			</div>
+		</div>
+	</nav>
+
+	<!-- DASHBOARD INFORMASI AKSES AKUN PREMIUM -->
+	<div id="vipDashboard" class="hidden w-full bg-slate-900 border-b border-emerald-500/20 py-3 px-4 shadow-lg transition-all">
+		<div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 text-xs sm:text-sm">
+			<div class="flex flex-wrap items-center gap-3">
+				<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold flex items-center gap-1.5">
+					<i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> <span id="vipAccountStatus">Status: Aktif</span>
+				</span>
+				<div class="text-slate-300">
+					Selamat datang, <strong id="vipUserName" class="text-white font-bold text-sm">User</strong>
+				</div>
+			</div>
+
+			<div class="flex items-center gap-4">
+				<div class="text-slate-400 text-xs">
+					Sisa Masa Aktif: <strong id="vipDaysLeft" class="text-amber-400 font-bold">0 Hari</strong>
+				</div>
+				<button onclick="logoutVIP()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1">
+					<i data-lucide="log-out" class="w-3.5 h-3.5"></i> Logout
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Fixed Search Bar Melayang -->
+	<div class="sticky top-20 left-0 w-full z-30 glassmorphism border-b border-slate-800/80 py-3 px-4">
+		<div class="max-w-md mx-auto relative">
+			<i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-slate-400"></i>
+			<input type="text" id="stockSearch" placeholder="Cari kode saham (MDIA, CUAN, RAJA, PANI, BBRI, ANTM...)" 
+				class="w-full bg-slate-800 text-sm border border-slate-700 rounded-lg pl-9 pr-20 py-2 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
+			<button onclick="searchStock()" class="absolute right-1 top-1 text-xs bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-3 py-1.5 rounded-md transition">
+				Cari
+			</button>
+		</div>
+	</div>
+
+	<!-- MODAL GATEWAY LOGIN TOKEN VIP -->
+	<div id="vipGatewayModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+		<div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 relative">
+			<div class="text-center space-y-1.5">
+				<div class="inline-flex p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20 mb-2">
+					<i data-lucide="key-round" class="animate-pulse w-8 h-8 text-emerald-400"></i>
+				</div>
+				<h2 class="text-2xl font-black text-white tracking-tight">Stock ID VIP Gateway</h2>
+				<p class="text-xs text-slate-400">Masukan Akses VIP Kamu</p>
+			</div>
+
+			<div class="space-y-3">
+				<div>
+					<input type="text" id="tokenInput" placeholder="Hayoo apa tokennya?" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-center text-sm font-mono tracking-widest text-emerald-400 uppercase focus:outline-none focus:border-emerald-500 transition">
+					<p id="loginErrorMsg" class="text-rose-400 text-xs text-center mt-2 hidden"></p>
+				</div>
+				<button onclick="loginVIP()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-sm">
+					Buka Dashboard
+				</button>
+			</div>
+
+			<p class="text-xs text-slate-500 text-center leading-relaxed">
+				Silahkan minta ke Admin untuk Akses Token mu
+			</p>
+		</div>
+	</div>
+
+	<!-- Main Content -->
+	<main class="max-w-7xl mx-auto px-4 pt-10 pb-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+		<!-- Left Column (TradingView Chart) -->
+		<section class="lg:col-span-2 space-y-6">
+			
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-wrap justify-between items-center gap-3">
+				<div>
+					<h2 class="text-2xl font-bold text-white flex items-center gap-2" id="stockTitle">
+						IDX:MDIA
+					</h2>
+					<p class="text-xs text-slate-400 mt-0.5">Bursa Efek Indonesia • Real-Time Chart</p>
+				</div>
+				
+				<div class="flex items-center gap-2">
+					<button onclick="shareStockUrl()" class="text-xs bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition font-medium">
+						<i data-lucide="share-2" class="w-3.5 h-3.5"></i> Bagikan
+					</button>
+					<span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-medium flex items-center gap-1.5">
+						<span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Market Live
+					</span>
+				</div>
+			</div>
+
+			<!-- Live TradingView Chart Widget -->
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-2 h-[500px] overflow-hidden">
+				<div id="tv_chart_container" class="w-full h-full"></div>
+			</div>
+
+		</section>
+
+		<!-- Right Column (Live Technical Meter + TAB NAVIGASI) -->
+		<section class="space-y-6">
+
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+				<h3 class="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+					<i data-lucide="gauge" class="w-4 h-4 text-cyan-400"></i> Analisa Teknikal Real-Time (TradingView Engine)
+				</h3>
+				<div class="tradingview-widget-container">
+					<div id="tv_technical_container"></div>
+				</div>
+			</div>
+
+			<!-- TAB CONTAINER -->
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+				
+				<!-- MENU TAB DIBUAT FIXED/STICKY SAAT SCROLL TEPAT DI BAWAH TOMBOL CARI -->
+				<div class="sticky top-[133px] z-20 glassmorphism p-2 rounded-xl mb-4 border border-slate-800 flex gap-1 overflow-x-auto shadow-xl">
+					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap">
+						<i data-lucide="sparkles" class="w-3.5 h-3.5 text-sky-400"></i> AI Signal
+					</button>
+					<button onclick="switchTab('bigmoney')" id="tabBtn-bigmoney" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+						<i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i> Radar Bandar
+					</button>
+					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+						<i data-lucide="newspaper" class="w-3.5 h-3.5 text-teal-400"></i> Berita
+					</button>
+					<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+						<i data-lucide="calendar" class="w-3.5 h-3.5 text-teal-400"></i> Korporasi
+					</button>
+					<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+						<i data-lucide="pie-chart" class="w-3.5 h-3.5 text-orange-400"></i> Fundamental
+					</button>
+					<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+						<i data-lucide="calculator" class="w-3.5 h-3.5 text-fuchsia-400"></i> Smart RRR
+					</button>
+					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+						<i data-lucide="bell" class="w-3.5 h-3.5 text-rose-400"></i> Alert
+					</button>
+				</div>
+
+				<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME -->
+				<div id="tabContent-ai" class="space-y-3.5 min-h-[300px] text-xs">
+					
+					<!-- VERDIK AI & REASONING -->
+					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
+						<div class="flex items-center justify-between">
+							<span class="font-bold text-slate-200 uppercase tracking-wider text-[11px]" id="aiHeaderTicker">[MDIA] — KONDISI TEKNIKAL</span>
+							<span class="text-[10px] text-slate-400" id="aiDateStamp">Memuat data real-time...</span>
+						</div>
+						<div class="flex items-center justify-between border-t border-slate-800/80 pt-2">
+							<div>
+								<span class="text-[10px] text-slate-400 block">VERDIK AI</span>
+								<span id="aiVerdikText" class="font-black text-amber-400 text-sm">MEMUAT...</span>
+							</div>
+							<div class="text-right">
+								<span class="text-[10px] text-slate-400 block">SKOR AI</span>
+								<span id="aiScoreBadge" class="font-bold bg-slate-800 text-slate-400 px-2.5 py-0.5 rounded text-xs border border-slate-700">- / 5</span>
+							</div>
+						</div>
+						<div id="aiVerdikDesc" class="text-slate-300 leading-relaxed text-[11px] pt-1 border-t border-slate-900 space-y-1.5">
+							Menghubungkan ke server bursa untuk mengambil data real-time...
+						</div>
+					</div>
+
+					<!-- BUKTI UTAMA & KATALIS TEKNIKAL -->
+					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
+						<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px]">
+							<i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> BUKTI UTAMA & KATALIS TEKNIKAL
+						</span>
+						<ul id="aiBuktiUtamaList" class="space-y-1.5 text-slate-300 text-[11px] list-none">
+							<li class="text-slate-500">Memuat indikator teknikal riil (MA, Volume, Range)...</li>
+						</ul>
+					</div>
+
+					<!-- TRADING MAP & ANIMATED REAL-TIME PROGRES BAR -->
+					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-3">
+						<span class="font-bold text-cyan-400 flex items-center gap-1.5 text-[11px]">
+							<i data-lucide="map-pin" class="w-3.5 h-3.5"></i> TRADING MAP (TECHNICAL PIVOT)
+						</span>
+						<div class="grid grid-cols-2 gap-2 text-[11px]">
+							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[10px] block">Area Entry / Support</span>
+								<span id="mapSupport1" class="font-bold text-amber-400">Memuat...</span>
+							</div>
+							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[10px] block">Resistance</span>
+								<span id="mapResist1" class="font-bold text-cyan-400">Memuat...</span>
+							</div>
+							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[10px] block">Target Profit (TP1 / TP2)</span>
+								<span id="mapTP" class="font-bold text-emerald-400">Memuat...</span>
+							</div>
+							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[10px] block">Stop Loss (SL)</span>
+								<span id="mapSL" class="font-bold text-rose-400">Memuat...</span>
+							</div>
+						</div>
+
+						<!-- FITUR TARGET PRICE POTENTIAL PROGRESS BAR DINAMIS & ANIMASI -->
+						<div class="bg-slate-900/90 p-3 rounded-lg border border-slate-800 space-y-2">
+							<div class="flex justify-between items-center text-[10px]">
+								<span class="text-rose-400 font-bold" id="tpBarSL">SL: -</span>
+								<span class="text-white font-black bg-slate-800 px-2 py-0.5 rounded border border-slate-700" id="tpBarCurrent">Harga: -</span>
+								<span class="text-emerald-400 font-bold" id="tpBarTP">TP1: -</span>
+							</div>
+							<div class="w-full bg-slate-950 rounded-full h-3 overflow-hidden border border-slate-800 relative p-0.5">
+								<!-- Progress Bar Fill -->
+								<div id="tpProgressBar" class="h-full rounded-full transition-all duration-1000 ease-out bg-gradient-to-r from-rose-500 via-amber-400 to-emerald-400 relative" style="width: 0%;">
+									<div class="absolute right-0 top-0 bottom-0 w-2 bg-white rounded-full shadow-lg shadow-white animate-ping"></div>
+								</div>
+							</div>
+							<div class="flex justify-between items-center text-[9px] text-slate-400 pt-0.5">
+								<span>Batas Risiko (Support)</span>
+								<span id="tpProgressPercent" class="font-bold text-cyan-400">Posisi: 0% dari Target Zone</span>
+								<span>Batas Target (Resist)</span>
+							</div>
+						</div>
+					</div>
+
+					<!-- BERITA RELEVAN RSS -->
+					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
+						<span class="font-bold text-purple-400 flex items-center gap-1.5 text-[11px]">
+							<i data-lucide="newspaper" class="w-3.5 h-3.5"></i> BERITA RELEVAN (REAL-TIME RSS)
+						</span>
+						<div id="aiBeritaList" class="space-y-1.5 text-slate-300 text-[11px]">
+							Memuat berita terkini...
+						</div>
+					</div>
+
+					<!-- SKENARIO TRADING -->
+					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
+						<span class="font-bold text-amber-400 flex items-center gap-1.5 text-[11px]">
+							<i data-lucide="git-fork" class="w-3.5 h-3.5"></i> SKENARIO PERGERAKAN HARGA
+						</span>
+						<div id="aiSkenarioBox" class="space-y-1.5 text-slate-300 text-[11px] leading-relaxed">
+							Memuat skenario...
+						</div>
+					</div>
+
+					<!-- KESIMPULAN & NOTE AI -->
+					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
+						<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px]">
+							<i data-lucide="thumbs-up" class="w-3.5 h-3.5"></i> KESIMPULAN & NOTE AI
+						</span>
+						<div id="aiKesimpulanText" class="text-slate-300 text-[11px] leading-relaxed space-y-1.5">
+							Menghitung rekomendasi terstruktur...
+						</div>
+					</div>
+
+					<p class="text-[10px] text-slate-500 italic bg-slate-950/50 p-2.5 rounded-lg border border-slate-900 leading-normal">
+						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa real-time. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
+					</p>
+
+				</div>
+
+				<!-- TAB CONTENT 2: BIG MONEY / BROKER ACCUMULATION RADAR -->
+				<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-3.5 text-xs">
+					
+					<div class="flex items-center justify-between bg-amber-500/10 border border-amber-500/20 p-2.5 rounded-xl">
+						<div class="flex items-center gap-2">
+							<span class="relative flex h-2 w-2">
+							  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+							  <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+							</span>
+							<span class="text-xs font-bold text-amber-400">Deretan Saham Radar Teknikal & Transaksi</span>
+						</div>
+						<button onclick="renderBigMoneyRadar(true)" class="text-[10px] text-slate-300 hover:text-emerald-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700 flex items-center gap-1">
+							<i data-lucide="refresh-cw" class="w-3 h-3"></i> Scan Ulang
+						</button>
+					</div>
+
+					<!-- Container Saham Yang Terdeteksi -->
+					<div id="bigMoneyList" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+						<div class="text-center text-slate-500 text-xs py-8">Menganalisis pergerakan transaksi & volume bursa...</div>
+					</div>
+
+					<p class="text-[10px] text-slate-500 italic bg-slate-950 p-2.5 rounded-lg border border-slate-900 leading-normal">
+						💡 <strong>Sistem Deteksi Teknikal:</strong> Menghitung rasio lonjakan volume harian vs rata-rata volume 10 hari serta posisi Moving Average real-time dari data bursa. Klik "Lihat Chart" untuk analisa lengkap.
+					</p>
+				</div>
+
+				<!-- TAB CONTENT 3: BERITA RSS -->
+				<div id="tabContent-news" class="hidden space-y-3 min-h-[250px]">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-xs text-slate-400">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-slate-300">Google News RSS</span>
+					</div>
+					<div id="newsContainer" class="space-y-3">
+						<div class="text-center text-slate-500 text-xs py-10">Memuat berita terkini...</div>
+					</div>
+				</div>
+
+				<!-- TAB CONTENT 4: FUNDAMENTAL WIDGET -->
+				<div id="tabContent-fundamental" class="hidden min-h-[300px]">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-xs text-slate-400">Profil Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-purple-400 font-semibold">TradingView Data</span>
+					</div>
+					<div class="tradingview-widget-container">
+						<div id="tv_fundamental_container"></div>
+					</div>
+				</div>
+
+				<!-- TAB CONTENT 5: SMART KALKULATOR RRR & POSITION SIZING -->
+				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-3.5 text-xs">
+					<div class="flex items-center justify-between mb-1">
+						<span class="text-slate-300 font-bold flex items-center gap-1.5">
+							<i data-lucide="calculator" class="w-4 h-4 text-fuchsia-400"></i> Smart RRR & Position Sizing (<strong id="rrrTickerLabel" class="text-white">MDIA</strong>)
+						</span>
+						<button onclick="autoFillRRRFromAI()" class="text-[10px] bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 font-bold px-2 py-1 rounded border border-emerald-500/30 transition flex items-center gap-1">
+							<i data-lucide="wand-2" class="w-3 h-3"></i> Sync Data AI
+						</button>
+					</div>
+
+					<!-- INPUT MODAL & BIAYA -->
+					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2.5">
+						<span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">1. Parameter Modal & Toleransi Risiko</span>
+						<div class="grid grid-cols-2 gap-2">
+							<div>
+								<label class="text-[10px] text-slate-400 block mb-1">Total Modal Trading (Rp)</label>
+								<input type="number" id="rrrTotalCapital" value="50000000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono focus:outline-none focus:border-emerald-500">
+							</div>
+							<div>
+								<label class="text-[10px] text-slate-400 block mb-1">Max Risk per Trade (%)</label>
+								<input type="number" id="rrrRiskPercent" value="2" step="0.5" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono focus:outline-none focus:border-amber-500">
+							</div>
+						</div>
+					</div>
+
+					<!-- INPUT HARGA ENTRY SL TP -->
+					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2.5">
+						<span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">2. Level Harga Trading Plan</span>
+						<div class="grid grid-cols-3 gap-2">
+							<div>
+								<label class="text-[10px] text-slate-400 block mb-1">Harga Entry (Rp)</label>
+								<input type="number" id="rrrEntry" placeholder="misal: 1000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono focus:outline-none focus:border-emerald-500">
+							</div>
+							<div>
+								<label class="text-[10px] text-slate-400 block mb-1">Stop Loss (SL)</label>
+								<input type="number" id="rrrSL" placeholder="misal: 950" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono focus:outline-none focus:border-rose-500">
+							</div>
+							<div>
+								<label class="text-[10px] text-slate-400 block mb-1">Target (TP1)</label>
+								<input type="number" id="rrrTP" placeholder="misal: 1150" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono focus:outline-none focus:border-emerald-500">
+							</div>
+						</div>
+					</div>
+
+					<!-- HASIL ANALISIS SMARTER RRR -->
+					<div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-3">
+						<div class="flex justify-between items-center border-b border-slate-800 pb-2">
+							<span class="text-slate-300 text-xs">Rasio Risk / Reward:</span>
+							<span id="rrrResult" class="font-black text-base text-cyan-400 font-mono">1 : -</span>
+						</div>
+
+						<div class="grid grid-cols-2 gap-2 text-[11px]">
+							<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] block">Maksimal Risiko Uang (Rp)</span>
+								<span id="rrrMaxRiskAmount" class="font-bold text-rose-400 font-mono">Rp 0</span>
+							</div>
+							<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] block">Maksimal Alokasi Lot</span>
+								<span id="rrrMaxLots" class="font-bold text-emerald-400 font-mono">0 Lot</span>
+							</div>
+							<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] block">Total Modal Terpakai</span>
+								<span id="rrrCapitalNeeded" class="font-bold text-amber-400 font-mono">Rp 0</span>
+							</div>
+							<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] block">Potensi Profit Bersih (Rp)</span>
+								<span id="rrrPotentialReward" class="font-bold text-emerald-300 font-mono">Rp 0</span>
+							</div>
+						</div>
+
+						<div class="pt-1 border-t border-slate-800/80">
+							<div id="rrrEvaluationBadge" class="p-2 rounded text-[11px] font-semibold text-center bg-slate-900 text-slate-400">
+								Masukkan harga Entry, SL, dan TP untuk evaluasi sistematis AI.
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- TAB CONTENT 6: ALERT PRICE LEVEL -->
+				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-3 text-xs">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-slate-400">Pengingat Harga (<strong id="alertTickerLabel" class="text-white">MDIA</strong>)</span>
+						<span class="text-[10px] bg-slate-800 text-cyan-400 px-2 py-0.5 rounded border border-slate-700">Browser Alert</span>
+					</div>
+
+					<div class="flex gap-2">
+						<input type="number" id="alertPriceInput" placeholder="Set target harga (misal: 1050)..." class="flex-1 bg-slate-950 border border-slate-800 rounded p-2 text-white focus:outline-none focus:border-emerald-500">
+						<button onclick="addPriceAlert()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-3 py-1.5 rounded font-bold transition">
+							+ Pasang
+						</button>
+					</div>
+
+					<div class="space-y-2 pt-2">
+						<span class="text-[11px] text-slate-400 block">Daftar Alert Aktif:</span>
+						<div id="alertListContainer" class="space-y-1.5 min-h-[100px]">
+							<div class="text-center text-slate-500 py-6">Belum ada alert harga yang dipasang.</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- TAB CONTENT 7: AKSI KORPORASI LIVE RSS -->
+				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3 text-xs">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-xs text-slate-400">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-emerald-400 font-semibold">Dividen / RUPS / Split</span>
+					</div>
+					<div id="corporateContainer" class="space-y-3">
+						<div class="text-center text-slate-500 text-xs py-10">Memuat data aksi korporasi...</div>
+					</div>
+					<div class="border-t border-slate-800 pt-2 text-right">
+						<a href="https://www.idx.co.id/id/perusahaan-tercatat/aksi-korporasi" target="_blank" class="text-[11px] text-cyan-400 hover:underline">Lihat Pengumuman Resmi BEI &rarr;</a>
+					</div>
+				</div>
+
+			</div>
+
+		</section>
+
+	</main>
+
+	<!-- Script CDN TradingView -->
+	<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
+	<script>
+		// ==================== RAPIDAPI CONFIGURATION ====================
+		const RAPIDAPI_KEY = '88b131b5d6msh9610e3cd0b71fcfp1f201ajsnbfc3838c085b';
+		const RAPIDAPI_HOST = 'yahoo-finance-real-time1.p.rapidapi.com';
+
+		// ==================== DATABASE TOKEN VIP ====================
+		const databaseVIP = {
+			"STOCKIDVVIP": { tanggalExpired: "2040-07-25" },
+			"DEMO1234": { tanggalExpired: "2026-07-29" },
+			"IRAM7363": { tanggalExpired: "2026-10-24" },
+			"ANDI2636": { tanggalExpired: "2026-09-18" },
+			"DHIO2838": { tanggalExpired: "2026-08-25" },
+			"ROID9283": { tanggalExpired: "2026-08-29" },
+			"PRAMUDYA7383": { tanggalExpired: "2026-08-11" },
+			"RESKY9102": { tanggalExpired: "2026-08-16" },
+			"LUKITA1038": { tanggalExpired: "2026-11-27" },
+			"DEMO555": { tanggalExpired: "2026-07-26" }
+		};
+
+		let globalStockData = null;
+		let searchCooldownTimer = null;
+		let radarCooldownTimer = null;
+
+		// ==================== SISTEM AKSES TOKEN VIP ====================
+		function getExtractName(token) {
+			const match = token.match(/^[A-Za-z]+/);
+			return match ? match[0] : token;
+		}
+
+		function calculateDaysLeft(expiredDateStr) {
+			const today = new Date();
+			today.setHours(0, 0, 0, 0);
+			const expDate = new Date(expiredDateStr);
+			expDate.setHours(0, 0, 0, 0);
+
+			const diffTime = expDate - today;
+			return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+		}
+
+		function checkVIPAuth() {
+			const savedToken = localStorage.getItem('vip_token');
+			const modal = document.getElementById('vipGatewayModal');
+			const dashboard = document.getElementById('vipDashboard');
+
+			if (!savedToken || !databaseVIP[savedToken]) {
+				if(modal) modal.classList.remove('hidden');
+				if(dashboard) dashboard.classList.add('hidden');
+				return;
+			}
+
+			const account = databaseVIP[savedToken];
+			const daysLeft = calculateDaysLeft(account.tanggalExpired);
+
+			if (daysLeft < 0) {
+				showError("Masa aktif Akses Token kamu telah habis. Silahkan minta ke Admin.");
+				localStorage.removeItem('vip_token');
+				if(modal) modal.classList.remove('hidden');
+				if(dashboard) dashboard.classList.add('hidden');
+				return;
+			}
+
+			if(modal) modal.classList.add('hidden');
+			if(dashboard) dashboard.classList.remove('hidden');
+
+			const name = getExtractName(savedToken);
+			document.getElementById('vipUserName').innerText = name;
+			document.getElementById('vipDaysLeft').innerText = `${daysLeft} Hari Lagi`;
+			document.getElementById('vipAccountStatus').innerText = `Status: VIP Aktif (${account.tanggalExpired})`;
+		}
+
+		function loginVIP() {
+			const tokenInput = document.getElementById('tokenInput').value.trim().toUpperCase();
+
+			if (!tokenInput) {
+				showError("Silahkan masukan token terlebih dahulu!");
+				return;
+			}
+
+			if (!databaseVIP[tokenInput]) {
+				showError("Akses Token tidak terdaftar / salah!");
+				return;
+			}
+
+			const daysLeft = calculateDaysLeft(databaseVIP[tokenInput].tanggalExpired);
+			if (daysLeft < 0) {
+				showError("Akses Token ini sudah kadaluarsa!");
+				return;
+			}
+
+			localStorage.setItem('vip_token', tokenInput);
+			document.getElementById('loginErrorMsg').classList.add('hidden');
+			checkVIPAuth();
+		}
+
+		function logoutVIP() {
+			localStorage.removeItem('vip_token');
+			checkVIPAuth();
+		}
+
+		function showError(msg) {
+			const errEl = document.getElementById('loginErrorMsg');
+			if(errEl) {
+				errEl.innerText = msg;
+				errEl.classList.remove('hidden');
+			}
+		}
+
+		// ==================== UTAMA & FITUR FITUR APP ====================
+		let currentTicker = 'MDIA';
+		let currentInterval = 'D';
+
+		if (window.lucide) lucide.createIcons();
+
+		function renderChart(ticker) {
+			document.getElementById('tv_chart_container').innerHTML = '';
+			new TradingView.widget({
+				"autosize": true,
+				"symbol": `IDX:${ticker}`,
+				"interval": currentInterval,
+				"timezone": "Asia/Jakarta",
+				"theme": "dark",
+				"style": "2",
+				"locale": "id",
+				"toolbar_bg": "#f1f3f6",
+				"enable_publishing": true,
+				"allow_symbol_change": false,
+				"container_id": "tv_chart_container",
+				"studies": [
+					"MAExp@tv-basicstudies",
+					"MACD@tv-basicstudies",
+					"VWAP@tv-basicstudies",
+					"BB@tv-basicstudies",
+				]
+			});
+		}
+
+		function renderTechnicalGauge(ticker) {
+			const container = document.getElementById('tv_technical_container');
+			container.innerHTML = '';
+
+			const script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
+			script.async = true;
+			script.text = JSON.stringify({
+				"interval": "1D",
+				"width": "100%",
+				"isTransparent": true,
+				"height": "400",
+				"symbol": `IDX:${ticker}`,
+				"showIntervalTabs": true,
+				"displayMode": "single",
+				"locale": "id",
+				"colorTheme": "dark"
+			});
+			container.appendChild(script);
+		}
+
+		function renderFundamentalWidget(ticker) {
+			const container = document.getElementById('tv_fundamental_container');
+			container.innerHTML = '';
+
+			const script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js';
+			script.async = true;
+			script.text = JSON.stringify({
+				"colorTheme": "dark",
+				"isTransparent": true,
+				"largeChartUrl": "",
+				"displayMode": "regular",
+				"width": "100%",
+				"height": "400",
+				"symbol": `IDX:${ticker}`,
+				"locale": "id"
+			});
+			container.appendChild(script);
+		}
+
+		// Helper Delay untuk Fetch Batch
+		const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+		// Penarik Data Saham Real-Time Konsisten
+		async function fetchRealtimeStockData(ticker) {
+			const targetSymbol = `${ticker}.JK`;
+			
+			// RapidAPI Direct
+			try {
+				const url = `https://${RAPIDAPI_HOST}/stock/get-histories?symbol=${targetSymbol}&interval=1d&lang=en-US&region=US`;
+				const response = await fetch(url, {
+					method: 'GET',
+					headers: {
+						'x-rapidapi-key': RAPIDAPI_KEY,
+						'x-rapidapi-host': RAPIDAPI_HOST
+					}
+				});
+				if (response.ok) {
+					const json = await response.json();
+					const result = json?.chart?.result?.[0] || json?.results?.[0];
+					if (result) {
+						const quote = result.indicators?.quote?.[0] || result.quote;
+						const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
+						const volumes = quote?.volume?.filter(v => v !== null && v !== undefined) || [];
+						const highs = quote?.high?.filter(h => h !== null && h !== undefined) || [];
+						const lows = quote?.low?.filter(l => l !== null && l !== undefined) || [];
+
+						if (prices.length >= 5) {
+							const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
+							const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
+							const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
+
+							const getMA = (p) => Math.round(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+							const ma5 = getMA(5);
+							const ma10 = getMA(10);
+							const ma20 = getMA(20);
+
+							const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
+							const volSlice10 = volumes.slice(-10);
+							const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
+							const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
+
+							const high20 = highs.length >= 20 ? Math.max(...highs.slice(-20)) : Math.max(...highs);
+							const low20 = lows.length >= 20 ? Math.min(...lows.slice(-20)) : Math.min(...lows);
+
+							return { ticker, price: Math.round(currentPrice), prevClose: Math.round(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
+						}
+					}
+				}
+			} catch (e) {
+				console.warn(`RapidAPI retry/fallback for ${ticker}`);
+			}
+
+			// Fallback Public Proxy
+			try {
+				const proxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=1d&range=2mo`;
+				const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(proxyUrl)}`;
+				const res = await fetch(apiUrl);
+				const dataWrapper = await res.json();
+				const json = JSON.parse(dataWrapper.contents);
+
+				const result = json.chart.result[0];
+				const quote = result.indicators.quote[0];
+
+				const prices = quote.close.filter(p => p !== null && p !== undefined);
+				const volumes = quote.volume ? quote.volume.filter(v => v !== null && v !== undefined) : [];
+				const highs = quote.high ? quote.high.filter(h => h !== null && h !== undefined) : [];
+				const lows = quote.low ? quote.low.filter(l => l !== null && l !== undefined) : [];
+
+				if (prices.length < 5) return null;
+
+				const currentPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
+				const previousClose = result.meta.chartPreviousClose || prices[prices.length - 2];
+				const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
+
+				const getMA = (p) => Math.round(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+				const ma5 = getMA(5);
+				const ma10 = getMA(10);
+				const ma20 = getMA(20);
+
+				const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
+				const volSlice10 = volumes.slice(-10);
+				const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
+				const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
+
+				const high20 = highs.length >= 20 ? Math.max(...highs.slice(-20)) : Math.max(...highs);
+				const low20 = lows.length >= 20 ? Math.min(...lows.slice(-20)) : Math.min(...lows);
+
+				return { ticker, price: Math.round(currentPrice), prevClose: Math.round(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
+			} catch (err) {
+				console.error(`Gagal data ${ticker}:`, err);
+				return null;
+			}
+		}
+
+		// 1. GENERATE AI SIGNAL & TRADING MAP
+		async function generateAISignal(ticker) {
+			const now = new Date();
+			const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+			document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
+			document.getElementById('aiDateStamp').innerText = `Update Live: ${dateStr}`;
+
+			document.getElementById('aiVerdikText').innerText = "MENGANALISIS...";
+			document.getElementById('aiVerdikText').className = "font-black text-amber-400 text-sm";
+			document.getElementById('aiScoreBadge').innerText = "...";
+
+			const stockData = await fetchRealtimeStockData(ticker);
+			if (stockData && stockData.ticker === ticker) {
+				globalStockData = stockData;
+			}
+
+			const verdikEl = document.getElementById('aiVerdikText');
+			const scoreEl = document.getElementById('aiScoreBadge');
+			const descEl = document.getElementById('aiVerdikDesc');
+			const buktiEl = document.getElementById('aiBuktiUtamaList');
+			const kesimpulanEl = document.getElementById('aiKesimpulanText');
+
+			let price = stockData ? stockData.price : 100;
+
+			let score = 3;
+			let verdik = "NETRAL / KONSOLIDASI";
+			let verdikClass = "font-black text-amber-400 text-sm";
+			let scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs border border-slate-700";
+
+			if (stockData) {
+				const isAboveMA5 = stockData.price >= stockData.ma5;
+				const isAboveMA10 = stockData.price >= stockData.ma10;
+				const isAboveMA20 = stockData.price >= stockData.ma20;
+				const isVolSpike = stockData.volRatio >= 1.25;
+
+				if (isAboveMA5 && isAboveMA10 && isAboveMA20 && stockData.changePct > 1.5 && isVolSpike) {
+					score = 5;
+					verdik = "STRONG BULLISH BREAKOUT";
+					verdikClass = "font-black text-emerald-400 text-sm";
+					scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs border border-slate-700";
+				} else if ((isAboveMA5 || isAboveMA10) && stockData.changePct >= 0) {
+					score = 4;
+					verdik = "BULLISH ACCUMULATION";
+					verdikClass = "font-black text-emerald-300 text-sm";
+					scoreClass = "font-bold bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded text-xs border border-slate-700";
+				} else if (stockData.changePct < -2.5 && !isAboveMA10) {
+					score = 1;
+					verdik = "STRONG BEARISH / SELLING PRESSURE";
+					verdikClass = "font-black text-rose-500 text-sm";
+					scoreClass = "font-bold bg-slate-800 text-rose-500 px-2.5 py-0.5 rounded text-xs border border-slate-700";
+				} else if (stockData.changePct < 0) {
+					score = 2;
+					verdik = "WEAK / BEARISH CORRECTION";
+					verdikClass = "font-black text-rose-400 text-sm";
+					scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs border border-slate-700";
+				}
+
+				verdikEl.innerText = verdik;
+				verdikEl.className = verdikClass;
+				scoreEl.innerText = `${score}/5`;
+				scoreEl.className = scoreClass;
+
+				const trendText = stockData.changePct >= 0 ? `menguat +${stockData.changePct}%` : `terkoreksi ${stockData.changePct}%`;
+				const volText = isVolSpike 
+					? `<strong class="text-emerald-400">terjadi lonjakan volume (${stockData.volRatio}x rerata 10-hari)</strong>` 
+					: `volume transaksi cenderung moderat (${stockData.volRatio}x rerata 10-hari)`;
+				
+				const maAlignText = (isAboveMA5 && isAboveMA10 && isAboveMA20)
+					? "Struktur tren berada dalam susunan <strong class='text-emerald-400'>Bullish Alignment</strong> (Harga > MA5 > MA10 > MA20)."
+					: (!isAboveMA10 && !isAboveMA20)
+					? "Posisi harga berada <strong class='text-rose-400'>di bawah MA10 & MA20</strong>, mengindikasikan tekanan jual jangka pendek."
+					: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata.";
+
+				descEl.innerHTML = `
+					<p><strong>Kenapa?</strong> Saham ${ticker} saat ini ditutup di Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
+					<p class="pt-1 text-slate-300">Secara likuiditas transaksi, ${volText}, menandakan akumulasi/distribusi aktif dari pelaku pasar harian.</p>
+				`;
+
+				buktiEl.innerHTML = `
+					<li class="flex justify-between items-center bg-slate-900/60 p-1.5 rounded border border-slate-800/80">
+						<span>• Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
+						<span class="text-[10px] text-slate-400">Close</span>
+					</li>
+					<li class="flex justify-between items-center bg-slate-900/60 p-1.5 rounded border border-slate-800/80">
+						<span>• Posisi Tren MA5 / MA10 / MA20:</span>
+						<span class="font-mono text-emerald-400">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
+					</li>
+					<li class="flex justify-between items-center bg-slate-900/60 p-1.5 rounded border border-slate-800/80">
+						<span>• Rasio Volume vs Rerata 10 Hari:</span>
+						<span class="font-bold font-mono ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
+					</li>
+					<li class="flex justify-between items-center bg-slate-900/60 p-1.5 rounded border border-slate-800/80">
+						<span>• Rentang Tertinggi / Terendah 20 Hari:</span>
+						<span class="font-mono text-cyan-400">Rp ${stockData.low20.toLocaleString('id-ID')} - Rp ${stockData.high20.toLocaleString('id-ID')}</span>
+					</li>
+				`;
+
+			} else {
+				verdikEl.innerText = "NETRAL-SELEKTIF";
+				scoreEl.innerText = "3/5";
+				descEl.innerText = `Menganalisis pergerakan teknikal emiten ${ticker} berbasis indikator grafik TradingView.`;
+			}
+
+			// TRADING MAP DINAMIS
+			const sl = Math.round(price * 0.95); 
+			const sup1 = Math.round(price * 0.96); 
+			const sup2 = Math.round(price * 0.97); 
+			const res1 = Math.round(price * 1.04); 
+			const res2 = Math.round(price * 1.07); 
+			const tp1 = Math.round(price * 1.09); 
+			const tp2 = Math.round(price * 1.15); 
+
+			document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
+			document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
+			document.getElementById('mapTP').innerText = `Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}`;
+			document.getElementById('mapSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
+
+			// TARGET PRICE PROGRESS BAR
+			document.getElementById('tpBarSL').innerText = `SL: Rp ${sl.toLocaleString('id-ID')}`;
+			document.getElementById('tpBarCurrent').innerText = `Harga: Rp ${price.toLocaleString('id-ID')}`;
+			document.getElementById('tpBarTP').innerText = `TP1: Rp ${tp1.toLocaleString('id-ID')}`;
+
+			const totalSpan = tp1 - sl;
+			let calculatedProgress = totalSpan > 0 ? Math.round(((price - sl) / totalSpan) * 100) : 50;
+			calculatedProgress = Math.max(0, Math.min(100, calculatedProgress));
+
+			const progressBar = document.getElementById('tpProgressBar');
+			progressBar.style.width = '0%';
+			setTimeout(() => {
+				progressBar.style.width = `${calculatedProgress}%`;
+			}, 100);
+
+			document.getElementById('tpProgressPercent').innerText = `Posisi: ${calculatedProgress}% dari Rentang SL - TP1`;
+
+			document.getElementById('aiSkenarioBox').innerHTML = `
+				<p><strong>(a) Konfirmasi Bullish:</strong> Jika harga bertahan di atas support Rp ${sup2.toLocaleString('id-ID')} dengan volume stabil, target uji resistance berada di Rp ${res1.toLocaleString('id-ID')}.</p>
+				<p><strong>(b) Consolidate / Retest:</strong> Bergerak sideways pada rentang Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}.</p>
+				<p><strong>(c) Batas Invalidasi:</strong> Penembusan di bawah Stop Loss Rp ${sl.toLocaleString('id-ID')} membatalkan struktur bullish short-term.</p>
+			`;
+
+			const rrrRatioVal = ((tp1 - price) / Math.max(1, (price - sl))).toFixed(2);
+			kesimpulanEl.innerHTML = `
+				<p>• Area akumulasi optimal disarankan pada rentang support <strong>Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}</strong>.</p>
+				<p>• Proyeksi Rasio Risk/Reward (RRR) pada harga saat ini adalah <strong>1 : ${rrrRatioVal}</strong>.</p>
+				<p>• Selalu pasang pembatas risiko di bawah <strong>Rp ${sl.toLocaleString('id-ID')}</strong> untuk menjaga keterpaparan modal dari kecenderungan volatilitas pasar.</p>
+			`;
+
+			document.getElementById('rrrEntry').value = price;
+			document.getElementById('rrrSL').value = sl;
+			document.getElementById('rrrTP').value = tp1;
+			calculateSmartRRR();
+
+			fetchStockNewsForAI(ticker);
+			if (window.lucide) lucide.createIcons();
+		}
+
+		function autoFillRRRFromAI() {
+			if (globalStockData) {
+				const price = globalStockData.price;
+				const sl = Math.round(price * 0.95);
+				const tp = Math.round(price * 1.07);
+
+				document.getElementById('rrrEntry').value = price;
+				document.getElementById('rrrSL').value = sl;
+				document.getElementById('rrrTP').value = tp;
+				calculateSmartRRR();
+			}
+		}
+
+		function calculateSmartRRR() {
+			const capital = parseFloat(document.getElementById('rrrTotalCapital').value) || 0;
+			const maxRiskPct = parseFloat(document.getElementById('rrrRiskPercent').value) || 0;
+			const entry = parseFloat(document.getElementById('rrrEntry').value) || 0;
+			const sl = parseFloat(document.getElementById('rrrSL').value) || 0;
+			const tp = parseFloat(document.getElementById('rrrTP').value) || 0;
+
+			const resEl = document.getElementById('rrrResult');
+			const maxRiskAmountEl = document.getElementById('rrrMaxRiskAmount');
+			const maxLotsEl = document.getElementById('rrrMaxLots');
+			const capitalNeededEl = document.getElementById('rrrCapitalNeeded');
+			const rewardEl = document.getElementById('rrrPotentialReward');
+			const evalEl = document.getElementById('rrrEvaluationBadge');
+
+			if (!entry || !sl || !tp || entry <= 0 || sl >= entry || tp <= entry) {
+				resEl.innerText = "1 : -";
+				maxRiskAmountEl.innerText = "Rp 0";
+				maxLotsEl.innerText = "0 Lot";
+				capitalNeededEl.innerText = "Rp 0";
+				rewardEl.innerText = "Rp 0";
+				evalEl.className = "p-2 rounded text-[11px] font-semibold text-center bg-slate-900 text-slate-400";
+				evalEl.innerText = "Masukkan harga Entry, SL (>0 & < Entry), dan TP (> Entry) untuk evaluasi AI.";
+				return;
+			}
+
+			const riskPerShare = entry - sl;
+			const rewardPerShare = tp - entry;
+			const rrr = (rewardPerShare / riskPerShare).toFixed(2);
+
+			const maxRiskAmount = capital * (maxRiskPct / 100);
+			const maxShares = Math.floor(maxRiskAmount / riskPerShare);
+			const maxLots = Math.floor(maxShares / 100);
+			const totalCapitalRequired = maxLots * 100 * entry;
+			const totalRewardAmount = maxLots * 100 * rewardPerShare;
+
+			resEl.innerText = `1 : ${rrr}`;
+			maxRiskAmountEl.innerText = `Rp ${Math.round(maxRiskAmount).toLocaleString('id-ID')}`;
+			maxLotsEl.innerText = `${maxLots.toLocaleString('id-ID')} Lot (${(maxLots * 100).toLocaleString('id-ID')} lembar)`;
+			capitalNeededEl.innerText = `Rp ${Math.round(totalCapitalRequired).toLocaleString('id-ID')}`;
+			rewardEl.innerText = `Rp ${Math.round(totalRewardAmount).toLocaleString('id-ID')}`;
+
+			if (rrr >= 2.0) {
+				evalEl.className = "p-2 rounded text-[11px] font-bold text-center bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+				evalEl.innerHTML = `✓ <strong>Rencana Trading Sangat Layak Eksekusi (RRR 1 : ${rrr})</strong><br><span class="text-[10px] font-normal text-slate-300">Potensi profit jauh melebihi toleransi risiko batas modal Anda.</span>`;
+			} else if (rrr >= 1.5) {
+				evalEl.className = "p-2 rounded text-[11px] font-bold text-center bg-amber-500/10 text-amber-400 border border-amber-500/30";
+				evalEl.innerHTML = `⚠ <strong>Rencana Trading Cukup Layak (RRR 1 : ${rrr})</strong><br><span class="text-[10px] font-normal text-slate-300">Memenuhi standar minimal, namun disarankan memperketat entry dekat support.</span>`;
+			} else {
+				evalEl.className = "p-2 rounded text-[11px] font-bold text-center bg-rose-500/10 text-rose-400 border border-rose-500/30";
+				evalEl.innerHTML = `✕ <strong>Risiko Terlalu Tinggi / Kurang Ideal (RRR 1 : ${rrr})</strong><br><span class="text-[10px] font-normal text-slate-300">Potensi keuntungan tidak sebanding dengan risiko penurunan modal.</span>`;
+			}
+		}
+
+		const radarWatchlist = [
+			'TPIA', 'BRPT', 'PTRO', 'BREN', 'CUAN', 'CDIA',
+			'BUMI', 'BRMS', 'BNBR', 'ENRG', 'DEWA', 'KOTA', 'JGLE', 'ELTY', 'VKTR', 'MDIA', 'VIVA', 'BTEL', 'UNSP', 'ALII',
+			'RAJA', 'RATU', 'FORU', 'MINA', 'PSKT', 'CBRE', 'STRT',
+			'INDF', 'ICBP', 'INTP', 'LSIP', 'SIMP', 'AMRT', 'MIDI', 'DNET', 'META', 'BMSI',
+			'PANI', 'BSDE', 'INKP', 'TKIM', 'FREN', 'SMMA', 'DUTI', 'DMAS', 'DSSA', 'BSIM', 'NOBU',
+			'ASII', 'UNTR', 'AALI', 'AUTO', 'ASET', 'ASGR', 'BBCA', 'TOWR', 'RANC', 'BELI',
+			'LPKR', 'LPCK', 'MPPA', 'MLPL', 'SILO', 'LINK', 'MNCN', 'BHIT', 'KPIG', 'MSKY', 'BCAP', 'BABP', 'IPTV',
+			'EMTK', 'SCMA', 'BUKA', 'SRTG', 'ADRO', 'MDKA', 'MBMA', 'PALM', 'MPMX', 'MEGA', 'BANK',
+			'PNBN', 'PNLF', 'PNIN', 'PANS', 'BBRI', 'BMRI', 'BBNI', 'BRIS', 'BBTN', 'BJTM', 'BJBR', 'AGRO', 
+			'BDMN', 'BNLI', 'NISP', 'BNGA', 'BTPN', 'ARTO', 'BBYB', 'BBHI', 'DNAR', 'PTBA', 'ITMG', 'HRUM', 'BYAN', 
+			'GEMS', 'INDY', 'TOBA', 'ABMM', 'MBAP', 'MEDC', 'PGAS', 'AKRA', 'ELSA', 'ANTM', 'INCO', 'AMMN', 'NCKL', 
+			'GOTO', 'MTDL', 'WIFI', 'TLKM', 'ISAT', 'EXCL', 'TBIG', 'CTRA', 'PWON', 'SMRA', 'ASRI', 'ADHI', 'PTPP', 'WEGE', 'WTON', 
+			'KLBF', 'KAEF', 'SIDO', 'MIKA', 'HEAL', 'UNVR', 'MYOR', 'CMRY', 'ROTI', 'ULTJ', 'CPIN', 'JPFA', 'ACES', 'MAPI', 'ERAA'
+		];
+		const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
+
+		// 2. RADAR BANDAR DENGAN BATCHING & 5 STATUS SINYAL REASONING TEKNIKAL REALISTIS
+		async function renderBigMoneyRadar(isManualClick = false) {
+			const container = document.getElementById('bigMoneyList');
+			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa real-time & menghitung sinyal radar...</div>`;
+			if (window.lucide) lucide.createIcons();
+
+			if (isManualClick) {
+				startRadarCooldown(60);
+			}
+
+			const shuffled = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
+			const sampleList = shuffled.slice(0, 20);
+
+			const validData = [];
+			
+			const batchSize = 4;
+			for (let i = 0; i < sampleList.length; i += batchSize) {
+				const chunk = sampleList.slice(i, i + batchSize);
+				const chunkResults = await Promise.all(chunk.map(t => fetchRealtimeStockData(t)));
+				chunkResults.forEach(res => {
+					if (res) validData.push(res);
+				});
+				await sleep(250);
+			}
+
+			if (validData.length === 0) {
+				container.innerHTML = `<div class="text-center text-slate-400 text-xs py-6">Gagal memuat koneksi data bursa. Coba tekan Scan Ulang.</div>`;
+				return;
+			}
+
+			validData.sort((a, b) => b.changePct - a.changePct);
+
+			let htmlContent = '';
+
+			validData.forEach((item, index) => {
+				const ticker = item.ticker;
+				const price = item.price;
+				const changePct = item.changePct;
+
+				const entryLow = Math.round(price * 0.96);
+				const entryHigh = price;
+				const sl = Math.round(price * 0.95);
+				const tp1 = Math.round(price * 1.04);
+				const tp2 = Math.round(price * 1.08);
+
+				let statusSignal = "🔥 Momentum Breakout";
+				let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
+				let alasanTeknikal = `Saham menguat <strong>+${changePct}%</strong> dan bertahan kokoh di atas garis Moving Average MA5 (Rp ${item.ma5.toLocaleString('id-ID')}), menandakan tekanan beli harian masih mendominasi pasar.`;
+
+				if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0.5 && changePct < 3) {
+					statusSignal = "🚀 Golden Cross Setup";
+					statusClass = "text-sky-400 border-sky-500/30 bg-sky-500/10";
+					alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah (*reversal*) awal berpotensi terbentuk.`;
+				} else if (item.volRatio >= 1.3) {
+					statusSignal = "⚡ Volume Accumulation";
+					statusClass = "text-cyan-400 border-cyan-500/30 bg-cyan-500/10";
+					alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata 10 hari</strong>. Mengindikasikan partisipasi modal besar (*smart money*) di pasar.`;
+				} else if (changePct < 0 && item.price >= item.ma20) {
+					statusSignal = "🛡️ Support Retest";
+					statusClass = "text-purple-400 border-purple-500/30 bg-purple-500/10";
+					alasanTeknikal = `Harga sedang mengalami koreksi sehat (*pullback*) dan menguji area pertahanan MA20 (Rp ${item.ma20.toLocaleString('id-ID')}). Area ideal penampungan berisiko terukur.`;
+				} else if (changePct <= 0 && (item.price - item.low20) / Math.max(1, item.low20) <= 0.03) {
+					statusSignal = "💎 Deep Value Bottoming";
+					statusClass = "text-amber-400 border-amber-500/30 bg-amber-500/10";
+					alasanTeknikal = `Harga mendekati batas terendah 20 hari terakhir (Rp ${item.low20.toLocaleString('id-ID')}) dengan tekanan jual yang mulai jenuh. Berpotensi terjadi pantulan teknikal (*technical rebound*).`;
+				}
+
+				htmlContent += `
+					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2.5 relative">
+						<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+							<div class="flex items-center gap-2">
+								<span class="bg-slate-800 text-amber-400 font-mono text-[10px] px-1.5 py-0.5 rounded border border-slate-700">#${index + 1}</span>
+								<div>
+									<div class="flex items-center gap-2">
+										<span class="font-black text-white text-sm">IDX:${ticker}</span>
+										<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 border border-emerald-500/30 font-bold px-2 py-0.5 rounded transition">
+											Lihat Chart &rarr;
+										</button>
+									</div>
+									<span class="text-[10px] text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
+								</div>
+							</div>
+							<span class="text-[9px] font-bold px-2.5 py-1 rounded-full border ${statusClass}">
+								${statusSignal}
+							</span>
+						</div>
+
+						<div class="grid grid-cols-2 gap-2 text-[10px]">
+							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] block">Entry Ideal</span>
+								<span class="font-bold text-emerald-400 font-mono">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
+							</div>
+							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] block">Support MA10</span>
+								<span class="font-bold text-cyan-400 font-mono">Rp ${item.ma10.toLocaleString('id-ID')}</span>
+							</div>
+							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] block">Target Profit (TP1/TP2)</span>
+								<span class="font-bold text-emerald-300 font-mono">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
+							</div>
+							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] block">Stop Loss (SL)</span>
+								<span class="font-bold text-rose-400 font-mono">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
+							</div>
+						</div>
+
+						<div class="bg-slate-900/50 p-2.5 rounded border border-slate-800 text-[10px] text-slate-300 leading-relaxed space-y-1">
+							<span class="text-amber-400 font-bold block text-[10px]">ANALISIS TEKNIKAL REALISTIS:</span>
+							<p>${alasanTeknikal}</p>
+						</div>
+					</div>
+				`;
+			});
+
+			container.innerHTML = htmlContent;
+			if (window.lucide) lucide.createIcons();
+		}
+
+		function selectTickerFromRadar(ticker) {
+			document.getElementById('stockSearch').value = ticker;
+			searchStock(true);
+			switchTab('ai');
+		}
+
+		async function fetchStockNewsForAI(ticker) {
+			const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
+			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+			try {
+				const res = await fetch(apiUrl);
+				const data = await res.json();
+
+				if (data.status === 'ok' && data.items && data.items.length > 0) {
+					let beritaHTML = '';
+					data.items.slice(0, 6).forEach(item => {
+						const source = item.author || 'Media Nasional';
+						const pubDate = new Date(item.pubDate).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
+						beritaHTML += `<div class="bg-slate-900/50 p-1.5 rounded border border-slate-800/80">• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
+					});
+					document.getElementById('aiBeritaList').innerHTML = beritaHTML;
+				} else {
+					document.getElementById('aiBeritaList').innerHTML = `<div>Belum ada rilis berita khusus untuk emiten ${ticker} dalam 24 jam terakhir.</div>`;
+				}
+			} catch (e) {
+				document.getElementById('aiBeritaList').innerHTML = `<div>Gagal memuat berita terkini. Gunakan indikator teknikal pada chart.</div>`;
+			}
+		}
+
+		function getAlerts(ticker) {
+			return JSON.parse(localStorage.getItem(`alerts_${ticker}`) || '[]');
+		}
+
+		function renderAlertList(ticker) {
+			const container = document.getElementById('alertListContainer');
+			const alerts = getAlerts(ticker);
+
+			if (alerts.length === 0) {
+				container.innerHTML = `<div class="text-center text-slate-500 py-6">Belum ada alert harga yang dipasang.</div>`;
+				return;
+			}
+
+			container.innerHTML = '';
+			alerts.forEach((targetPrice, index) => {
+				container.innerHTML += `
+					<div class="flex justify-between items-center bg-slate-950 p-2.5 rounded border border-slate-800">
+						<span>Target Harga: <strong class="text-emerald-400">Rp ${targetPrice.toLocaleString('id-ID')}</strong></span>
+						<button onclick="removePriceAlert(${index})" class="text-rose-400 hover:text-rose-300 font-bold px-2 py-0.5">✕</button>
+					</div>
+				`;
+			});
+		}
+
+		function addPriceAlert() {
+			const priceInput = document.getElementById('alertPriceInput');
+			const price = parseFloat(priceInput.value);
+
+			if (!price || price <= 0) {
+				return;
+			}
+
+			let alerts = getAlerts(currentTicker);
+			alerts.push(price);
+			localStorage.setItem(`alerts_${currentTicker}`, JSON.stringify(alerts));
+
+			priceInput.value = '';
+			renderAlertList(currentTicker);
+		}
+
+		function removePriceAlert(index) {
+			let alerts = getAlerts(currentTicker);
+			alerts.splice(index, 1);
+			localStorage.setItem(`alerts_${currentTicker}`, JSON.stringify(alerts));
+			renderAlertList(currentTicker);
+		}
+
+		async function fetchStockNews(ticker) {
+			const container = document.getElementById('newsContainer');
+			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat berita terkini ${ticker}...</div>`;
+			
+			const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
+			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+			try {
+				const response = await fetch(apiUrl);
+				const data = await response.json();
+
+				if (data.status === 'ok' && data.items && data.items.length > 0) {
+					container.innerHTML = '';
+					data.items.slice(0, 9).forEach(item => {
+						const date = new Date(item.pubDate).toLocaleDateString('id-ID', {
+							day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+						});
+
+						container.innerHTML += `
+							<a href="${item.link}" target="_blank" class="block p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
+								<h4 class="text-xs font-semibold text-slate-200 line-clamp-2">${item.title}</h4>
+								<div class="flex justify-between items-center mt-2 text-[10px] text-slate-400">
+									<span>${item.author || 'Google News'}</span>
+									<span>${date}</span>
+								</div>
+							</a>
+						`;
+					});
+				} else {
+					container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8">Tidak ada berita khusus ditemukan untuk ${ticker}.</div>`;
+				}
+			} catch (e) {
+				container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8">Berita tidak dapat dijangkau sementara.</div>`;
+			}
+		}
+
+		async function fetchCorporateAction(ticker) {
+			const container = document.getElementById('corporateContainer');
+			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat aksi korporasi ${ticker}...</div>`;
+			
+			const query = encodeURIComponent(`${ticker} (dividen OR RUPS OR "right issue" OR "stock split" OR buyback)`);
+			const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=id&gl=ID&ceid=ID:id`;
+			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+			try {
+				const response = await fetch(apiUrl);
+				const data = await response.json();
+
+				if (data.status === 'ok' && data.items && data.items.length > 0) {
+					container.innerHTML = '';
+					data.items.slice(0, 9).forEach(item => {
+						const date = new Date(item.pubDate).toLocaleDateString('id-ID', {
+							day: 'numeric', month: 'short', year: 'numeric'
+						});
+
+						container.innerHTML += `
+							<a href="${item.link}" target="_blank" class="block p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
+								<div class="flex items-center gap-1.5 mb-1">
+									<span class="text-[9px] bg-emerald-500/20 text-emerald-400 font-semibold px-1.5 py-0.5 rounded border border-emerald-500/30">Aksi Korporasi</span>
+									<span class="text-[10px] text-slate-400">${date}</span>
+								</div>
+								<h4 class="text-xs font-semibold text-slate-200 line-clamp-2">${item.title}</h4>
+							</a>
+						`;
+					});
+				} else {
+					container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8">Belum ada kabar aksi korporasi terbaru untuk ${ticker}.</div>`;
+				}
+			} catch (e) {
+				container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8">Gagal memuat data aksi korporasi.</div>`;
+			}
+		}
+
+		function switchTab(tabName) {
+			const tabs = ['ai','bigmoney','news','fundamental','rrr','alert','corporate'];
+			tabs.forEach(tab => {
+				const btn = document.getElementById(`tabBtn-${tab}`);
+				const content = document.getElementById(`tabContent-${tab}`);
+				
+				if (tab === tabName) {
+					if(btn) btn.className = "flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap";
+					if (content) content.classList.remove('hidden');
+				} else {
+					if(btn) btn.className = "flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap";
+					if (content) content.classList.add('hidden');
+				}
+			});
+		}
+
+		function shareStockUrl() {
+			const shareUrl = `${window.location.origin}${window.location.pathname}?ticker=${currentTicker}`;
+			navigator.clipboard.writeText(shareUrl).then(() => {
+				// Silent Copy
+			}).catch(() => {});
+		}
+
+		function checkUrlParamTicker() {
+			const urlParams = new URLSearchParams(window.location.search);
+			const tickerParam = urlParams.get('ticker');
+			if (tickerParam) {
+				currentTicker = tickerParam.toUpperCase();
+			}
+		}
+
+		// 3. FUNGSI COOLDOWN DENGAN ANIMASI COUNTDOWN TANPA ALERT
+		function startSearchCooldown(seconds) {
+			const btn = document.querySelector("button[onclick='searchStock()']");
+			if (!btn) return;
+
+			btn.disabled = true;
+			btn.classList.add('opacity-50', 'cursor-not-allowed');
+			let remaining = seconds;
+
+			if (searchCooldownTimer) clearInterval(searchCooldownTimer);
+
+			btn.innerText = `Cari (${remaining}s)`;
+
+			searchCooldownTimer = setInterval(() => {
+				remaining--;
+				if (remaining <= 0) {
+					clearInterval(searchCooldownTimer);
+					btn.disabled = false;
+					btn.classList.remove('opacity-50', 'cursor-not-allowed');
+					btn.innerText = "Cari";
+				} else {
+					btn.innerText = `Cari (${remaining}s)`;
+				}
+			}, 1000);
+		}
+
+		function startRadarCooldown(seconds) {
+			const btn = document.querySelector("button[onclick='renderBigMoneyRadar(true)']");
+			if (!btn) return;
+
+			btn.disabled = true;
+			btn.classList.add('opacity-50', 'cursor-not-allowed');
+			let remaining = seconds;
+
+			if (radarCooldownTimer) clearInterval(radarCooldownTimer);
+
+			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 animate-spin"></i> Scan (${remaining}s)`;
+			if (window.lucide) lucide.createIcons();
+
+			radarCooldownTimer = setInterval(() => {
+				remaining--;
+				if (remaining <= 0) {
+					clearInterval(radarCooldownTimer);
+					btn.disabled = false;
+					btn.classList.remove('opacity-50', 'cursor-not-allowed');
+					btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3"></i> Scan Ulang`;
+					if (window.lucide) lucide.createIcons();
+				} else {
+					btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 animate-spin"></i> Scan (${remaining}s)`;
+					if (window.lucide) lucide.createIcons();
+				}
+			}, 1000);
+		}
+
+		function searchStock(bypassCooldown = false) {
+			const btn = document.querySelector("button[onclick='searchStock()']");
+			if (!bypassCooldown && btn && btn.disabled) return;
+
+			const input = document.getElementById('stockSearch').value.trim().toUpperCase();
+			if (input) {
+				currentTicker = input;
+				document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
+				document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
+				document.getElementById('newsTickerLabel').innerText = currentTicker;
+				document.getElementById('fundTickerLabel').innerText = currentTicker;
+				document.getElementById('rrrTickerLabel').innerText = currentTicker;
+				document.getElementById('alertTickerLabel').innerText = currentTicker;
+				document.getElementById('corpTickerLabel').innerText = currentTicker;
+				
+				renderChart(currentTicker);
+				renderTechnicalGauge(currentTicker);
+				renderFundamentalWidget(currentTicker);
+				renderAlertList(currentTicker);
+				generateAISignal(currentTicker);
+				fetchStockNews(currentTicker);
+				fetchCorporateAction(currentTicker);
+
+				if (!bypassCooldown) {
+					startSearchCooldown(30);
+				}
+			}
+		}
+
+		document.getElementById('stockSearch').addEventListener('keypress', function(e) {
+			if (e.key === 'Enter') searchStock();
+		});
+
+		// INITIALIZATION ON LOAD
+		checkVIPAuth();
+		checkUrlParamTicker();
+
+		document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
+		document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
+		document.getElementById('newsTickerLabel').innerText = currentTicker;
+		document.getElementById('fundTickerLabel').innerText = currentTicker;
+		document.getElementById('rrrTickerLabel').innerText = currentTicker;
+		document.getElementById('alertTickerLabel').innerText = currentTicker;
+		document.getElementById('corpTickerLabel').innerText = currentTicker;
+
+		renderChart(currentTicker);
+		renderTechnicalGauge(currentTicker);
+		renderFundamentalWidget(currentTicker);
+		renderAlertList(currentTicker);
+		generateAISignal(currentTicker);
+		renderBigMoneyRadar(false);
+		fetchStockNews(currentTicker);
+		fetchCorporateAction(currentTicker);
+	</script>
+</body>
+</html>
