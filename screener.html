@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="id" class="scroll-smooth">
 <head>
 	<meta charset="UTF-8">
 	<title>Stock's ID Screener - Premium Trading & Learning Community</title>
-	<meta name="keyword" content="stock id vip, stockid vip, stockidvip, stock id, stockid, stock id screener, stockid screener, screener saham, saham indonesia, kelas saham">
+	<meta name="keywords" content="stock id vip, stockid vip, stockidvip, stock id, stockid, stock id screener, stockid screener, screener saham, saham indonesia, kelas saham">
 	<meta name="HandheldFriendly" content="True">
 	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no">
 	<meta name="author" content="Hardiansyah & Gemini & Tailwind.css">
@@ -95,7 +95,7 @@
 	<div class="sticky top-20 left-0 w-full z-30 glassmorphism border-b border-slate-800/80 py-3 px-4">
 		<div class="max-w-md mx-auto relative">
 			<i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-slate-400"></i>
-			<input type="text" id="stockSearch" placeholder="Cari kode saham (MDIA, BNBR, JPFA, TPIA, BUMI...)" 
+			<input type="text" id="stockSearch" placeholder="Cari kode saham (MDIA, CUAN, RAJA, PANI, BBRI, ANTM...)" 
 				class="w-full bg-slate-800 text-sm border border-slate-700 rounded-lg pl-9 pr-20 py-2 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
 			<button onclick="searchStock()" class="absolute right-1 top-1 text-xs bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-3 py-1.5 rounded-md transition">
 				Cari
@@ -489,6 +489,10 @@
 	<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
 	<script>
+		// ==================== RAPIDAPI YAHOO FINANCE CONFIG ====================
+		const RAPIDAPI_KEY = '88b131b5d6msh9610e3cd0b71fcfp1f201ajsnbfc3838c085b';
+		const RAPIDAPI_HOST = 'yahoo-finance-real-time1.p.rapidapi.com';
+
 		// ==================== DATABASE TOKEN VIP ====================
 		const databaseVIP = {
 			"STOCKIDVVIP": { tanggalExpired: "2040-07-25" },
@@ -656,30 +660,38 @@
 			container.appendChild(script);
 		}
 
-		// Fungsi Penarik Data Saham Real-Time Konsisten via Yahoo / CORS Proxy dengan Kalkulasi MA5, MA10, MA20 & Volume
+		// Fungsi Penarik Data Saham Real-Time Konsisten via RapidAPI Yahoo Finance
 		async function fetchRealtimeStockData(ticker) {
 			const targetSymbol = `${ticker}.JK`;
-			const proxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=1d&range=2mo`;
-			const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(proxyUrl)}`;
+			const url = `https://${RAPIDAPI_HOST}/api/v1/markets/stock/history?symbol=${targetSymbol}&interval=1d&diffandspline=false`;
+
+			const options = {
+				method: 'GET',
+				headers: {
+					'x-rapidapi-key': RAPIDAPI_KEY,
+					'x-rapidapi-host': RAPIDAPI_HOST
+				}
+			};
 
 			try {
-				const response = await fetch(apiUrl);
-				const dataWrapper = await response.json();
-				const json = JSON.parse(dataWrapper.contents);
+				const response = await fetch(url, options);
+				const json = await response.json();
 				
-				const result = json.chart.result[0];
-				const quote = result.indicators.quote[0];
-				
-				// Clean arrays from nulls
-				const prices = quote.close.filter(p => p !== null && p !== undefined);
-				const volumes = quote.volume ? quote.volume.filter(v => v !== null && v !== undefined) : [];
-				const highs = quote.high ? quote.high.filter(h => h !== null && h !== undefined) : [];
-				const lows = quote.low ? quote.low.filter(l => l !== null && l !== undefined) : [];
+				const body = json.body || json;
+				const timestamps = Object.keys(body).filter(k => !isNaN(k));
 
-				if (prices.length < 5) return null;
+				if (timestamps.length < 5) return null;
 
-				const currentPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
-				const previousClose = result.meta.chartPreviousClose || prices[prices.length - 2];
+				// Urutkan rentang tanggal historis secara ascending
+				timestamps.sort((a, b) => parseInt(a) - parseInt(b));
+
+				const prices = timestamps.map(ts => body[ts].close).filter(p => p !== null && p !== undefined);
+				const volumes = timestamps.map(ts => body[ts].volume).filter(v => v !== null && v !== undefined);
+				const highs = timestamps.map(ts => body[ts].high).filter(h => h !== null && h !== undefined);
+				const lows = timestamps.map(ts => body[ts].low).filter(l => l !== null && l !== undefined);
+
+				const currentPrice = prices[prices.length - 1];
+				const previousClose = prices[prices.length - 2];
 				const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
 
 				// Kalkulasi Moving Averages
@@ -717,7 +729,7 @@
 					low20: low20
 				};
 			} catch (error) {
-				console.warn(`Gagal menarik data ${ticker}:`, error);
+				console.warn(`Gagal menarik data ${ticker} via RapidAPI Yahoo:`, error);
 				return null;
 			}
 		}
@@ -827,13 +839,13 @@
 			}
 
 			// LEVEL TRADING MAP REAL-TIME
-			const sl = Math.round(price * 0.94);
-			const sup1 = Math.round(price * 0.96);
-			const sup2 = Math.round(price * 0.98);
-			const res1 = Math.round(price * 1.04);
-			const res2 = Math.round(price * 1.08);
-			const tp1 = Math.round(price * 1.06);
-			const tp2 = Math.round(price * 1.12);
+			const sl = Math.round(price * 0.94); //0.94
+			const sup1 = Math.round(price * 0.95); //0.96
+			const sup2 = Math.round(price * 0.96); //0.98
+			const res1 = Math.round(price * 1.04); //1.04
+			const res2 = Math.round(price * 1.07); //1.08
+			const tp1 = Math.round(price * 1.09); //1.06
+			const tp2 = Math.round(price * 1.15); //1.12
 
 			document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 			document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
@@ -885,8 +897,8 @@
 		function autoFillRRRFromAI() {
 			if (globalStockData) {
 				const price = globalStockData.price;
-				const sl = Math.round(price * 0.94);
-				const tp = Math.round(price * 1.06);
+				const sl = Math.round(price * 0.96); //0.94
+				const tp = Math.round(price * 1.07); //1.06
 
 				document.getElementById('rrrEntry').value = price;
 				document.getElementById('rrrSL').value = sl;
@@ -949,111 +961,126 @@
 		}
 		
 		const radarWatchlist = [
-		// Grup Prajogo Pangestu (Barito Group)
-		'TPIA', 'BRPT', 'PTRO', 'BREN', 'CUAN',
+		// ==========================================
+		// 1. GRUP KONGLOMERAT & EMITEN POPULER
+		// ==========================================
+		// Grup Prajogo Pangestu
+		'TPIA', 'BRPT', 'PTRO', 'BREN', 'CUAN', 'CDIA',
 		// Grup Bakrie
-		'BUMI', 'BRMS', 'BNBR', 'ENRG', 'DEWA', 'VKTR', 'MDIA', 'VIVA', 'BTEL', 'UNSP',
-		// Grup Happy Hapsoro
-		'RAJA', 'FORU', 'MINA', 'PSKT', 'CBRE', 'STRT',
-	
+		'BUMI', 'BRMS', 'BNBR', 'ENRG', 'DEWA', 'KOTA', 'JGLE', 'ELTY', 'VKTR', 'MDIA', 'VIVA', 'BTEL', 'UNSP', 'ALII',
+		// Grup Happy Hapsoro & Relasi
+		'RAJA', 'RATU', 'FORU', 'MINA', 'PSKT', 'CBRE', 'STRT',
 		// Grup Salim
 		'INDF', 'ICBP', 'INTP', 'LSIP', 'SIMP', 'AMRT', 'MIDI', 'DNET', 'META', 'BMSI',
-	
-		// Grup Aguan / Pantai Indah Kapuk (PIK)
+		// Grup Aguan / PIK / Agung Sedayu
 		'PANI',
-	
 		// Grup Sinarmas
 		'BSDE', 'INKP', 'TKIM', 'FREN', 'SMMA', 'DUTI', 'DMAS', 'DSSA', 'BSIM', 'NOBU',
-	
 		// Grup Astra
 		'ASII', 'UNTR', 'AALI', 'AUTO', 'ASET', 'ASGR',
-	
 		// Grup Djarum / BCA
 		'BBCA', 'TOWR', 'RANC', 'BELI',
-	
 		// Grup Lippo
-		'LPKR', 'LPCK', 'MPPA', 'MLPL', 'SILO', 'LINK', 'NOBU',
-	
-		// Grup MNC (Hary Tanoesoedibjo)
+		'LPKR', 'LPCK', 'MPPA', 'MLPL', 'SILO', 'LINK',
+		// Grup MNC
 		'MNCN', 'BHIT', 'KPIG', 'MSKY', 'BCAP', 'BABP', 'IPTV',
-	
-		// Grup Emtek (Eddy Sariaatmadja)
+		// Grup Emtek
 		'EMTK', 'SCMA', 'BUKA',
-	
-		// Grup CT Corp (Chairul Tanjung)
-		'MEGA', 'BANK',
-	
-		// Grup Saratoga / Sandiaga-Saratoga
+		// Grup Saratoga & Sandiaga
 		'SRTG', 'ADRO', 'MDKA', 'MBMA', 'PALM', 'MPMX',
-
+		// Grup CT Corp
+		'MEGA', 'BANK',
+		// Grup Panin
+		'PNBN', 'PNLF', 'PNIN', 'PANS',
 		// ==========================================
-		// 2. PERBANKAN & KEUANGAN (FINANCIALS)
+		// 2. PERBANKAN, KEUANGAN & ASURANSI
 		// ==========================================
-		// Big 4 Banks
-		'BBCA', 'BBRI', 'BMRI', 'BBNI',
-		// BUMN & Bank Daerah / Syariah
-		'BRIS', 'BBTN', 'BJTM', 'BJBR', 'AGRO', 'BSIM', 'BDMN', 'BNLI', 'PNBN', 'NISP', 
-		'BNGA', 'BTPN', 'ARTO', 'BBYB', 'BBHI', 'DNAR', 'BVIC', 'BABP', 'MASB', 'MCOR',
-		// Multifinance & Fintech
-		'ADMF', 'CFIN', 'BFIN', 'AMAG', 'PNLF', 'APIC',
-
+		'BBRI', 'BMRI', 'BBNI', 'BRIS', 'BBTN', 'BJTM', 'BJBR', 'AGRO', 
+		'BDMN', 'BNLI', 'NISP', 'BNGA', 'BTPN', 'ARTO', 'BBYB', 'BBHI', 'DNAR', 
+		'BVIC', 'MASB', 'MCOR', 'AMAG', 'BFIN', 'CFIN', 'ADMF', 'APIC', 
+		'BCIC', 'BGTG', 'BINA', 'BSWD', 'BACA', 'BNOO', 'INPC', 'MAYBB', 
+		'TRIM', 'WOMF', 'BPFI', 'FUJI', 'HDFA', 'MFIN', 'GSMF', 'AHAP', 'ASBI', 'ASDM', 
+		'ASJT', 'ASMI', 'ASRM', 'LPGI', 'MREI', 'VINS',
 		// ==========================================
-		// 3. TAMBANG, MIGAS, MINYAK & ENERGI (ENERGY & MINING)
+		// 3. TAMBANG, MIGAS & ENERGI
 		// ==========================================
-		// Batubara
-		'ADRO', 'PTBA', 'ITMG', 'HRUM', 'BYAN', 'GEMS', 'INDY', 'TOBA', 'ABMM', 'MBAP', 
-		'BUMI', 'DEWA', 'AIMS', 'KKGI', 'SMMT', 'DOID', 'BSSR', 'TEBE',
+		// Batubara & Energi Fosil
+		'PTBA', 'ITMG', 'HRUM', 'BYAN', 'GEMS', 'INDY', 'TOBA', 'ABMM', 'MBAP', 
+		'AIMS', 'KKGI', 'SMMT', 'DOID', 'BSSR', 'TEBE', 'SREI', 'BHRU', 
+		'BOSS', 'FIRE', 'GTBO', 'IATA', 'KRMJ', 'MITI', 'MYOH', 'PETS', 'TCPI', 'WINS', 
+		'SOCI', 'LEAD', 'ARTI', 'BESS',
 		// Minyak & Gas (Migas)
-		'MEDC', 'PGAS', 'ENRG', 'AKRA', 'RAJA', 'WINS', 'LEAD', 'ARTI', 'ELSA', 'SOCI', 'RUIS',
-		// Logam, Emas, Nikel & Tembaga
-		'ANTM', 'MDKA', 'INCO', 'AMMN', 'MBMA', 'NCKL', 'DKFT', 'TINS', 'CITA', 'PSAB', 
-		'BRMS', 'ZINC', 'IFSH', 'NICK', 'KAEF',
+		'MEDC', 'PGAS', 'AKRA', 'ELSA', 'RUIS', 'SHIP', 'HUMP', 'BIGW', 
+		'CASS', 'HUMI',
+		// Logam, Emas, Nikel, Tembaga & Mineral
+		'ANTM', 'INCO', 'AMMN', 'NCKL', 'DKFT', 'TINS', 'CITA', 'PSAB', 
+		'ZINC', 'IFSH', 'NICK', 'CUSO', 'SQMI', 'PURE', 'ARCI', 'MOPP', 'TMAA', 
+		'NSSM', 'SOLA',
+		// ==========================================
+		// 4. TEKNOLOGI, TELEKOMUNIKASI & DIGITAL
+		// ==========================================
+		'GOTO', 'MTDL', 'WIFI', 'AXIO', 'MCAS', 'DIVA', 'NFCX', 'HDIT', 
+		'TLKM', 'ISAT', 'EXCL', 'TBIG', 'CENT', 
+		'GHON', 'IBST', 'OASA', 'MLPT', 'ATIC', 'GLVA', 'K2JA', 'KREN', 
+		'MVTN', 'SKYB', 'TECH', 'TRON', 'UCID', 'WIRE', 'DCII', 'INET', 'PACK',
 
-		// ==========================================
-		// 4. TEKNOLOGI, DIGITAL & MEDIA (TECH & TELECOM)
-		// ==========================================
-		'GOTO', 'BUKA', 'BELI', 'MTDL', 'WIFI', 'AXIO', 'MCAS', 'DIVA', 'NFCX', 'HDIT', 
-		'EMTK', 'SCMA', 'MNCN', 'TLKM', 'ISAT', 'EXCL', 'FREN', 'TOWR', 'TBIG', 'CENT', 
-		'GHON', 'IBST', 'OASA',
+	// ==========================================
+	// 5. PROPERTI, REAL ESTATE & KONSTRUKSI
+	// ==========================================
+	// Properti & Real Estate
+	'CTRA', 'PWON', 'SMRA', 'ASRI', 'DIRA', 'BKSL', 'BEST', 'MKPI', 'NZIA', 'DILD', 'KIJA', 'MMLP', 'CITY', 'RDTX', 
+	'GWSA', 'RODA', 'BCIP', 'AALR', 'APLN', 'ARMY', 'BAPA', 'BBSS', 
+	'BDEB', 'BIKA', 'BIPP', 'BTEK', 'CSIS', 'GPRA', 'HOMI', 'INPP', 'JRPT', 'KBAG', 
+	'LAND', 'LCGP', 'MDLN', 'MTLA', 'MOKO', 'NIRO', 'OMRE', 'PPRO', 'RISE', 
+	'ROCK', 'SAID', 'SATU', 'TARA', 'URBN', 'VIPO',
+	// Konstruksi, Semen & Material
+	'ADHI', 'PTPP', 'WEGE', 'WTON', 'TOTL', 'ACST', 'NRCA', 'IDPR', 'WSKT', 'WIKA', 
+	'SMGR', 'SMCB', 'AMFG', 'ARNA', 'MARK', 'TOTO', 'CMNP',
 
-		// ==========================================
-		// 5. PROPERTI, REAL ESTATE & KONSTRUKSI
-		// ==========================================
-		// Properti & Real Estate
-		'PANI', 'BSDE', 'CTRA', 'PWON', 'SMRA', 'ASRI', 'LPKR', 'LPCK', 'DMAS', 'DUTI', 
-		'DIRA', 'BKSL', 'AALR', 'BEST', 'MKPI', 'NZIA', 'DILD', 'KIJA', 'MMLP', 'CITY', 
-		'RDTX', 'GWSA', 'RODA', 'BCIP',
-		// Konstruksi BUMN & Swasta
-		'ADHI', 'PTPP', 'WEGE', 'WTON', 'TOTL', 'ACST', 'NRCA', 'IDPR',
+	// ==========================================
+	// 6. INFRASTRUKTUR, TRANSPORTASI & LOGISTIK
+	// ==========================================
+	'JSMR', 'KEEN', 'POWR', 'TGRA', 'KOPI', 'BIRD', 
+	'ASSA', 'SMDR', 'TMAS', 'IPCM', 'PORT', 'BAYU', 'BLTA', 'CMPP', 'GIAA', 
+	'HELI', 'LRNA', 'MIRA', 'NELY', 'SAFE', 'SAPX', 'TAXI', 'TRUK', 'WEHA', 
+	'MPOW', 'LAJU', 'HAIS', 'ELPI', 'KETR',
 
-		// ==========================================
-		// 6. INFRASTRUKTUR, UTILITAS & LOGISTIK
-		// ==========================================
-		'JSMR', 'KEEN', 'POWR', 'TGRA', 'BREN', 'PGAS', 'CMNP', 'META', 'CASS', 'KOPI', 
-		'BIRD', 'ASSA', 'SMDR', 'TMAS', 'IPCM', 'PORT', 'BAYU', 'HUMP',
+	// ==========================================
+	// 7. KESEHATAN, FARMASI & RUMAH SAKIT
+	// ==========================================
+	'KLBF', 'KAEF', 'INAF', 'SIDO', 'PEHA', 'DVLA', 'TSPC', 'IRRA', 'SAME', 'MIKA', 
+	'HEAL', 'PRDA', 'PRIM', 'CARE', 'RSGK', 'OMED', 'BMHS', 'SMTM', 'PRAY', 
+	'HALO', 'CHIP',
 
-		// ==========================================
-		// 7. KESEHATAN, FARMASI & HOSPITALITY
-		// ==========================================
-		// Farmasi & Alat Kesehatan
-		'KLBF', 'KAEF', 'INAF', 'SIDO', 'PEHA', 'DVLA', 'TSPC', 'IRRA', 'SAME',
-		// Rumah Sakit (Hospital)
-		'MIKA', 'HEAL', 'SILO', 'PRDA', 'PRIM', 'CARE', 'RSGK', 'OMED',
+	// ==========================================
+	// 8. KONSUMER, RETAIL & MANUFAKTUR
+	// ==========================================
+	// Consumer Goods (F&B)
+	'UNVR', 'MYOR', 'CMRY', 'GOOD', 'ROTI', 'ULTJ', 'STTP', 'CEKA', 
+	'MLBI', 'DLTA', 'ALTO', 'CAMP', 'ADES', 'CLEO', 'AISA', 'BUDI', 'FOOD', 
+	'IIKP', 'IKBI', 'INCF', 'KINO', 'MGNA', 'PCAR', 'SKBM', 'SKLT', 
+	'TGKA', 'TLDN',
+	// Perkebunan & Sawit (CPO)
+	'SSMS', 'TAPG', 'DSNG', 'SGRO', 'BWPT', 'CSRA', 
+	'ANJT', 'GAAA', 'GZCO', 'JAWA', 'MAGP', 'MGRO', 'SMAR', 'TBLA',
+	// Unggas & Peternakan
+	'CPIN', 'JPFA', 'MAIN', 'SIPD', 'CPRO',
+	// Tekstil & Pakaian
+	'BELL', 'CNTX', 'ERTX', 'ESTI', 'HDTX', 'INDR', 'IPOL', 'MYTX', 'SRIL', 'TFCO', 
+	'TRIS', 'UNIT',
+	// Retail & Supermarket
+	'ACES', 'MAPI', 'MAPA', 'RALS', 'LPPF', 'ERAA', 'GLOB', 
+	'HERO', 'MKNT', 'TELE', 'TRIO', 'ZONE', 'TUGU', 'BABY',
+	// Otomotif & Komponen
+	'DRMA', 'GJTL', 'IMAS', 'INDS', 'MASA', 'SMSM', 'BOLT', 'BRAM', 
+	'GDYR', 'PRAS',
 
-		// ==========================================
-		// 8. KONSUMER, RETAIL & MANUFAKTUR (CONSUMER GOODS)
-		// ==========================================
-		// Makanan & Minuman (F&B)
-		'UNVR', 'INDF', 'ICBP', 'MYOR', 'CMRY', 'GOOD', 'ROTI', 'ULTJ', 'STTP', 'CEKA', 
-		'MLBI', 'DLTA', 'ALTO', 'CAMP', 'ADES', 'CLEO', 'PANI',
-		// Perkebunan & Sawit (CPO)
-		'AALI', 'LSIP', 'SIMP', 'SSMS', 'TAPG', 'DSNG', 'SGRO', 'BWPT', 'PALM', 'CSRA', 'ANJT',
-		// Peternakan & Unggas (Poultry)
-		'CPIN', 'JPFA', 'MAIN', 'SIPD',
-		// Rokok & Tembakau
-		'GGRM', 'HMSP', 'WIIM',
-		// Retail & Perdagangan
-		'ACES', 'MAPI', 'MAPA', 'AMRT', 'MIDI', 'RALS', 'LPPF', 'MPPA', 'ERAA', 'GLOB', 'KAEF'
+	// ==========================================
+	// 9. INDUSTRI DASAR, KIMIA & LAINNYA
+	// ==========================================
+	'APLI', 'DAPD', 'DPNS', 'EKAD', 'ETWA', 'INCI', 'MOLI', 'SRSN', 
+	'UNIC', 'FASW', 'IFII', 'KBRI', 'KDSI', 'KIAS', 'LION', 'LMSH', 'NIKL', 
+	'PICO', 'SPMA', 'TDPM', 'ALDO', 'KMTR', 'SWAT'
 		];
 
 		async function renderBigMoneyRadar() {
@@ -1115,11 +1142,11 @@
 				const price = item.price;
 				const changePct = item.changePct;
 
-				const entryLow = Math.round(price * 0.97);
+				const entryLow = Math.round(price * 0.97); //0.97
 				const entryHigh = price;
-				const sl = Math.round(price * 0.95);
-				const tp1 = Math.round(price * 1.05);
-				const tp2 = Math.round(price * 1.10);
+				const sl = Math.round(price * 0.96); //0.95
+				const tp1 = Math.round(price * 1.04); //1.05
+				const tp2 = Math.round(price * 1.08); //1.10
 
 				let statusSignal = "";
 				let statusClass = "";
