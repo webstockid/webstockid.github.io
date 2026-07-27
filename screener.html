@@ -492,6 +492,15 @@
 	<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
 	<script>
+		// Global Event Listener Efek Getar (Vibration) 1 Detik pada Setiap Tombol
+		document.addEventListener('click', function(e) {
+			if (e.target.closest('button, a')) {
+				if ('vibrate' in navigator) {
+					navigator.vibrate(1000);
+				}
+			}
+		});
+
 		// ==================== RAPIDAPI CONFIGURATION ====================
 		const RAPIDAPI_KEY = '88b131b5d6msh9610e3cd0b71fcfp1f201ajsnbfc3838c085b';
 		const RAPIDAPI_HOST = 'yahoo-finance-real-time1.p.rapidapi.com';
@@ -675,14 +684,14 @@
 			container.appendChild(script);
 		}
 
-		// Helper Delay untuk Fetch Batch
+		// Helper Delay untuk Batch Processing
 		const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 		// Penarik Data Saham Real-Time Konsisten
 		async function fetchRealtimeStockData(ticker) {
 			const targetSymbol = `${ticker}.JK`;
 			
-			// RapidAPI Direct
+			// 1. Coba RapidAPI Direct
 			try {
 				const url = `https://${RAPIDAPI_HOST}/stock/get-histories?symbol=${targetSymbol}&interval=1d&lang=en-US&region=US`;
 				const response = await fetch(url, {
@@ -728,7 +737,7 @@
 				console.warn(`RapidAPI retry/fallback for ${ticker}`);
 			}
 
-			// Fallback Public Proxy
+			// 2. Fallback Public Proxy
 			try {
 				const proxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=1d&range=2mo`;
 				const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(proxyUrl)}`;
@@ -770,7 +779,7 @@
 			}
 		}
 
-		// 1. GENERATE AI SIGNAL & TRADING MAP
+		// 1. GENERATE AI SIGNAL & TRADING MAP (AKURAT BERSUMBER BURSA REAL-TIME)
 		async function generateAISignal(ticker) {
 			const now = new Date();
 			const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -781,6 +790,8 @@
 			document.getElementById('aiVerdikText').innerText = "MENGANALISIS...";
 			document.getElementById('aiVerdikText').className = "font-black text-amber-400 text-sm";
 			document.getElementById('aiScoreBadge').innerText = "...";
+
+			fetchStockNewsForAI(ticker);
 
 			const stockData = await fetchRealtimeStockData(ticker);
 			if (stockData && stockData.ticker === ticker) {
@@ -923,7 +934,6 @@
 			document.getElementById('rrrTP').value = tp1;
 			calculateSmartRRR();
 
-			fetchStockNewsForAI(ticker);
 			if (window.lucide) lucide.createIcons();
 		}
 	</script>
@@ -932,7 +942,7 @@
 		function autoFillRRRFromAI() {
 			if (globalStockData) {
 				const price = globalStockData.price;
-				const entryLow = Math.round(price * 0.96); //baru
+				const entryLow = Math.round(price * 0.96);
 				const sl = Math.round(price * 0.95);
 				const tp = Math.round(price * 1.07);
 
@@ -1013,7 +1023,7 @@
 		];
 		const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
 
-		// 2. RADAR BANDAR DENGAN BATCHING & 5 STATUS SINYAL REASONING TEKNIKAL REALISTIS
+		// 2. RADAR BANDAR (MINIMAL 8 SAHAM, MAKSIMAL 13 SAHAM)
 		async function renderBigMoneyRadar(isManualClick = false) {
 			const container = document.getElementById('bigMoneyList');
 			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa real-time & menghitung sinyal radar...</div>`;
@@ -1024,18 +1034,34 @@
 			}
 
 			const shuffled = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
-			const sampleList = shuffled.slice(0, 20);
-
-			const validData = [];
 			
-			const batchSize = 4;
-			for (let i = 0; i < sampleList.length; i += batchSize) {
-				const chunk = sampleList.slice(i, i + batchSize);
+			const validData = [];
+			const batchSize = 5;
+
+			// Scanning bertahap sampai jumlah saham valid berada di rentang 8 - 13 saham
+			for (let i = 0; i < shuffled.length; i += batchSize) {
+				const chunk = shuffled.slice(i, i + batchSize);
 				const chunkResults = await Promise.all(chunk.map(t => fetchRealtimeStockData(t)));
+				
 				chunkResults.forEach(res => {
-					if (res) validData.push(res);
+					if (res && res.price > 0) {
+						validData.push(res);
+					}
 				});
-				await sleep(60); //250
+
+				if (validData.length >= 13) {
+					break;
+				}
+				await sleep(150);
+			}
+
+			if (validData.length < 8) {
+				// Jikalau jaringan belum mencukupi 8, panggil sisa cadangan
+				const remainingToFetch = shuffled.filter(t => !validData.some(v => v.ticker === t)).slice(0, 10);
+				const extraResults = await Promise.all(remainingToFetch.map(t => fetchRealtimeStockData(t)));
+				extraResults.forEach(res => {
+					if (res && res.price > 0) validData.push(res);
+				});
 			}
 
 			if (validData.length === 0) {
@@ -1043,17 +1069,21 @@
 				return;
 			}
 
+			// Sortir berdasarkan persentase kenaikan (paling potensial di atas)
 			validData.sort((a, b) => b.changePct - a.changePct);
+
+			// Batasi jumlah rekomendasi minimal 8 dan maksimal 13
+			const finalDisplayList = validData.slice(0, Math.min(13, Math.max(8, validData.length)));
 
 			let htmlContent = '';
 
-			validData.forEach((item, index) => {
+			finalDisplayList.forEach((item, index) => {
 				const ticker = item.ticker;
 				const price = item.price;
 				const changePct = item.changePct;
 
 				const entryLow = Math.round(price * 0.96);
-				const entryHigh = Math.round(price * 0.97); //price
+				const entryHigh = Math.round(price * 0.97);
 				const sl = Math.round(price * 0.95);
 				const tp1 = Math.round(price * 1.06);
 				const tp2 = Math.round(price * 1.09);
@@ -1423,4 +1453,4 @@
 		fetchCorporateAction(currentTicker);
 	</script>
 </body>
-</html>>
+</html>
