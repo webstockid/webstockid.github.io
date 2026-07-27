@@ -922,6 +922,7 @@
 		function autoFillRRRFromAI() {
 			if (globalStockData) {
 				const price = globalStockData.price;
+				const entryLow = Math.round(price * 0.96); //baru
 				const sl = Math.round(price * 0.95);
 				const tp = Math.round(price * 1.06);
 
@@ -1042,7 +1043,7 @@
 				const changePct = item.changePct;
 
 				const entryLow = Math.round(price * 0.96);
-				const entryHigh = price;
+				const entryHigh = Match.round(price * 0.97); //price
 				const sl = Math.round(price * 0.95);
 				const tp1 = Math.round(price * 1.06);
 				const tp2 = Math.round(price * 1.09);
