@@ -859,9 +859,9 @@
 			}
 
 			// LEVEL TRADING MAP REAL-TIME
-			const sl = Math.round(price * 0.94); 
-			const sup1 = Math.round(price * 0.95); 
-			const sup2 = Math.round(price * 0.96); 
+			const sl = Math.round(price * 0.95); 
+			const sup1 = Math.round(price * 0.96); 
+			const sup2 = Math.round(price * 0.97); 
 			const res1 = Math.round(price * 1.04); 
 			const res2 = Math.round(price * 1.07); 
 			const tp1 = Math.round(price * 1.09); 
@@ -917,7 +917,7 @@
 		function autoFillRRRFromAI() {
 			if (globalStockData) {
 				const price = globalStockData.price;
-				const sl = Math.round(price * 0.96);
+				const sl = Math.round(price * 0.95);
 				const tp = Math.round(price * 1.07);
 
 				document.getElementById('rrrEntry').value = price;
@@ -1077,9 +1077,9 @@ const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
         const price = item.price;
         const changePct = item.changePct;
 
-        const entryLow = Math.round(price * 0.97);
+        const entryLow = Math.round(price * 0.96);
         const entryHigh = price;
-        const sl = Math.round(price * 0.96);
+        const sl = Math.round(price * 0.95);
         const tp1 = Math.round(price * 1.04);
         const tp2 = Math.round(price * 1.08);
 
@@ -1276,7 +1276,7 @@ const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
 
 				if (data.status === 'ok' && data.items && data.items.length > 0) {
 					container.innerHTML = '';
-					data.items.slice(0, 6).forEach(item => {
+					data.items.slice(0, 9).forEach(item => {
 						const date = new Date(item.pubDate).toLocaleDateString('id-ID', {
 							day: 'numeric', month: 'short', year: 'numeric'
 						});
