@@ -489,7 +489,7 @@
 	<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
 	<script>
-		// ==================== RAPIDAPI YAHOO FINANCE CONFIG ====================
+		// ==================== RAPIDAPI CONFIGURATION ====================
 		const RAPIDAPI_KEY = '88b131b5d6msh9610e3cd0b71fcfp1f201ajsnbfc3838c085b';
 		const RAPIDAPI_HOST = 'yahoo-finance-real-time1.p.rapidapi.com';
 
@@ -660,76 +660,96 @@
 			container.appendChild(script);
 		}
 
-		// Fungsi Penarik Data Saham Real-Time Konsisten via RapidAPI Yahoo Finance
+		// Fungsi Penarik Data Saham Real-Time Konsisten (RapidAPI + Fallback Publik)
 		async function fetchRealtimeStockData(ticker) {
 			const targetSymbol = `${ticker}.JK`;
-			const url = `https://${RAPIDAPI_HOST}/api/v1/markets/stock/history?symbol=${targetSymbol}&interval=1d&diffandspline=false`;
-
-			const options = {
-				method: 'GET',
-				headers: {
-					'x-rapidapi-key': RAPIDAPI_KEY,
-					'x-rapidapi-host': RAPIDAPI_HOST
-				}
-			};
-
+			
+			// Try RapidAPI First
 			try {
-				const response = await fetch(url, options);
-				const json = await response.json();
-				
-				const body = json.body || json;
-				const timestamps = Object.keys(body).filter(k => !isNaN(k));
-
-				if (timestamps.length < 5) return null;
-
-				// Urutkan rentang tanggal historis secara ascending
-				timestamps.sort((a, b) => parseInt(a) - parseInt(b));
-
-				const prices = timestamps.map(ts => body[ts].close).filter(p => p !== null && p !== undefined);
-				const volumes = timestamps.map(ts => body[ts].volume).filter(v => v !== null && v !== undefined);
-				const highs = timestamps.map(ts => body[ts].high).filter(h => h !== null && h !== undefined);
-				const lows = timestamps.map(ts => body[ts].low).filter(l => l !== null && l !== undefined);
-
-				const currentPrice = prices[prices.length - 1];
-				const previousClose = prices[prices.length - 2];
-				const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
-
-				// Kalkulasi Moving Averages
-				const getMA = (period) => {
-					const slice = prices.slice(-period);
-					return Math.round(slice.reduce((a, b) => a + b, 0) / slice.length);
+				const url = `https://${RAPIDAPI_HOST}/stock/get-histories?symbol=${targetSymbol}&interval=1d&lang=en-US&region=US`;
+				const options = {
+					method: 'GET',
+					headers: {
+						'x-rapidapi-key': RAPIDAPI_KEY,
+						'x-rapidapi-host': RAPIDAPI_HOST
+					}
 				};
 
-				const ma5 = getMA(Math.min(5, prices.length));
-				const ma10 = getMA(Math.min(10, prices.length));
-				const ma20 = getMA(Math.min(20, prices.length));
+				const response = await fetch(url, options);
+				if (response.ok) {
+					const json = await response.json();
+					const result = json?.chart?.result?.[0] || json?.results?.[0];
+					if (result) {
+						const quote = result.indicators?.quote?.[0] || result.quote;
+						const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
+						const volumes = quote?.volume?.filter(v => v !== null && v !== undefined) || [];
+						const highs = quote?.high?.filter(h => h !== null && h !== undefined) || [];
+						const lows = quote?.low?.filter(l => l !== null && l !== undefined) || [];
 
-				// Volume Analysis
+						if (prices.length >= 5) {
+							const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
+							const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
+							const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
+
+							const getMA = (p) => Math.round(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+							const ma5 = getMA(5);
+							const ma10 = getMA(10);
+							const ma20 = getMA(20);
+
+							const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
+							const volSlice10 = volumes.slice(-10);
+							const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
+							const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
+
+							const high20 = highs.length >= 20 ? Math.max(...highs.slice(-20)) : Math.max(...highs);
+							const low20 = lows.length >= 20 ? Math.min(...lows.slice(-20)) : Math.min(...lows);
+
+							return { ticker, price: Math.round(currentPrice), prevClose: Math.round(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
+						}
+					}
+				}
+			} catch (e) {
+				console.warn(`RapidAPI gagal untuk ${ticker}, mencoba fallback...`);
+			}
+
+			// Fallback ke Public Proxy jika RapidAPI Limit / Error
+			try {
+				const proxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=1d&range=2mo`;
+				const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(proxyUrl)}`;
+				const res = await fetch(apiUrl);
+				const dataWrapper = await res.json();
+				const json = JSON.parse(dataWrapper.contents);
+
+				const result = json.chart.result[0];
+				const quote = result.indicators.quote[0];
+
+				const prices = quote.close.filter(p => p !== null && p !== undefined);
+				const volumes = quote.volume ? quote.volume.filter(v => v !== null && v !== undefined) : [];
+				const highs = quote.high ? quote.high.filter(h => h !== null && h !== undefined) : [];
+				const lows = quote.low ? quote.low.filter(l => l !== null && l !== undefined) : [];
+
+				if (prices.length < 5) return null;
+
+				const currentPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
+				const previousClose = result.meta.chartPreviousClose || prices[prices.length - 2];
+				const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
+
+				const getMA = (p) => Math.round(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+				const ma5 = getMA(5);
+				const ma10 = getMA(10);
+				const ma20 = getMA(20);
+
 				const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
 				const volSlice10 = volumes.slice(-10);
 				const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
 				const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
 
-				// Range 20 Hari
 				const high20 = highs.length >= 20 ? Math.max(...highs.slice(-20)) : Math.max(...highs);
 				const low20 = lows.length >= 20 ? Math.min(...lows.slice(-20)) : Math.min(...lows);
 
-				return {
-					ticker: ticker,
-					price: Math.round(currentPrice),
-					prevClose: Math.round(previousClose),
-					changePct: changePct,
-					ma5: ma5,
-					ma10: ma10,
-					ma20: ma20,
-					currentVolume: currentVolume,
-					volMA10: volMA10,
-					volRatio: volRatio,
-					high20: high20,
-					low20: low20
-				};
-			} catch (error) {
-				console.warn(`Gagal menarik data ${ticker} via RapidAPI Yahoo:`, error);
+				return { ticker, price: Math.round(currentPrice), prevClose: Math.round(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
+			} catch (err) {
+				console.error(`Gagal total memuat data ${ticker}:`, err);
 				return null;
 			}
 		}
@@ -839,13 +859,13 @@
 			}
 
 			// LEVEL TRADING MAP REAL-TIME
-			const sl = Math.round(price * 0.94); //0.94
-			const sup1 = Math.round(price * 0.95); //0.96
-			const sup2 = Math.round(price * 0.96); //0.98
-			const res1 = Math.round(price * 1.04); //1.04
-			const res2 = Math.round(price * 1.07); //1.08
-			const tp1 = Math.round(price * 1.09); //1.06
-			const tp2 = Math.round(price * 1.15); //1.12
+			const sl = Math.round(price * 0.94); 
+			const sup1 = Math.round(price * 0.95); 
+			const sup2 = Math.round(price * 0.96); 
+			const res1 = Math.round(price * 1.04); 
+			const res2 = Math.round(price * 1.07); 
+			const tp1 = Math.round(price * 1.09); 
+			const tp2 = Math.round(price * 1.15); 
 
 			document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 			document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
@@ -897,8 +917,8 @@
 		function autoFillRRRFromAI() {
 			if (globalStockData) {
 				const price = globalStockData.price;
-				const sl = Math.round(price * 0.96); //0.94
-				const tp = Math.round(price * 1.07); //1.06
+				const sl = Math.round(price * 0.96);
+				const tp = Math.round(price * 1.07);
 
 				document.getElementById('rrrEntry').value = price;
 				document.getElementById('rrrSL').value = sl;
@@ -961,263 +981,172 @@
 		}
 		
 		const radarWatchlist = [
-		// ==========================================
-		// 1. GRUP KONGLOMERAT & EMITEN POPULER
-		// ==========================================
-		// Grup Prajogo Pangestu
-		'TPIA', 'BRPT', 'PTRO', 'BREN', 'CUAN', 'CDIA',
-		// Grup Bakrie
-		'BUMI', 'BRMS', 'BNBR', 'ENRG', 'DEWA', 'KOTA', 'JGLE', 'ELTY', 'VKTR', 'MDIA', 'VIVA', 'BTEL', 'UNSP', 'ALII',
-		// Grup Happy Hapsoro & Relasi
-		'RAJA', 'RATU', 'FORU', 'MINA', 'PSKT', 'CBRE', 'STRT',
-		// Grup Salim
-		'INDF', 'ICBP', 'INTP', 'LSIP', 'SIMP', 'AMRT', 'MIDI', 'DNET', 'META', 'BMSI',
-		// Grup Aguan / PIK / Agung Sedayu
-		'PANI',
-		// Grup Sinarmas
-		'BSDE', 'INKP', 'TKIM', 'FREN', 'SMMA', 'DUTI', 'DMAS', 'DSSA', 'BSIM', 'NOBU',
-		// Grup Astra
-		'ASII', 'UNTR', 'AALI', 'AUTO', 'ASET', 'ASGR',
-		// Grup Djarum / BCA
-		'BBCA', 'TOWR', 'RANC', 'BELI',
-		// Grup Lippo
-		'LPKR', 'LPCK', 'MPPA', 'MLPL', 'SILO', 'LINK',
-		// Grup MNC
-		'MNCN', 'BHIT', 'KPIG', 'MSKY', 'BCAP', 'BABP', 'IPTV',
-		// Grup Emtek
-		'EMTK', 'SCMA', 'BUKA',
-		// Grup Saratoga & Sandiaga
-		'SRTG', 'ADRO', 'MDKA', 'MBMA', 'PALM', 'MPMX',
-		// Grup CT Corp
-		'MEGA', 'BANK',
-		// Grup Panin
-		'PNBN', 'PNLF', 'PNIN', 'PANS',
-		// ==========================================
-		// 2. PERBANKAN, KEUANGAN & ASURANSI
-		// ==========================================
-		'BBRI', 'BMRI', 'BBNI', 'BRIS', 'BBTN', 'BJTM', 'BJBR', 'AGRO', 
-		'BDMN', 'BNLI', 'NISP', 'BNGA', 'BTPN', 'ARTO', 'BBYB', 'BBHI', 'DNAR', 
-		'BVIC', 'MASB', 'MCOR', 'AMAG', 'BFIN', 'CFIN', 'ADMF', 'APIC', 
-		'BCIC', 'BGTG', 'BINA', 'BSWD', 'BACA', 'BNOO', 'INPC', 'MAYBB', 
-		'TRIM', 'WOMF', 'BPFI', 'FUJI', 'HDFA', 'MFIN', 'GSMF', 'AHAP', 'ASBI', 'ASDM', 
-		'ASJT', 'ASMI', 'ASRM', 'LPGI', 'MREI', 'VINS',
-		// ==========================================
-		// 3. TAMBANG, MIGAS & ENERGI
-		// ==========================================
-		// Batubara & Energi Fosil
-		'PTBA', 'ITMG', 'HRUM', 'BYAN', 'GEMS', 'INDY', 'TOBA', 'ABMM', 'MBAP', 
-		'AIMS', 'KKGI', 'SMMT', 'DOID', 'BSSR', 'TEBE', 'SREI', 'BHRU', 
-		'BOSS', 'FIRE', 'GTBO', 'IATA', 'KRMJ', 'MITI', 'MYOH', 'PETS', 'TCPI', 'WINS', 
-		'SOCI', 'LEAD', 'ARTI', 'BESS',
-		// Minyak & Gas (Migas)
-		'MEDC', 'PGAS', 'AKRA', 'ELSA', 'RUIS', 'SHIP', 'HUMP', 'BIGW', 
-		'CASS', 'HUMI',
-		// Logam, Emas, Nikel, Tembaga & Mineral
-		'ANTM', 'INCO', 'AMMN', 'NCKL', 'DKFT', 'TINS', 'CITA', 'PSAB', 
-		'ZINC', 'IFSH', 'NICK', 'CUSO', 'SQMI', 'PURE', 'ARCI', 'MOPP', 'TMAA', 
-		'NSSM', 'SOLA',
-		// ==========================================
-		// 4. TEKNOLOGI, TELEKOMUNIKASI & DIGITAL
-		// ==========================================
-		'GOTO', 'MTDL', 'WIFI', 'AXIO', 'MCAS', 'DIVA', 'NFCX', 'HDIT', 
-		'TLKM', 'ISAT', 'EXCL', 'TBIG', 'CENT', 
-		'GHON', 'IBST', 'OASA', 'MLPT', 'ATIC', 'GLVA', 'K2JA', 'KREN', 
-		'MVTN', 'SKYB', 'TECH', 'TRON', 'UCID', 'WIRE', 'DCII', 'INET', 'PACK',
-
-	// ==========================================
-	// 5. PROPERTI, REAL ESTATE & KONSTRUKSI
-	// ==========================================
-	// Properti & Real Estate
-	'CTRA', 'PWON', 'SMRA', 'ASRI', 'DIRA', 'BKSL', 'BEST', 'MKPI', 'NZIA', 'DILD', 'KIJA', 'MMLP', 'CITY', 'RDTX', 
-	'GWSA', 'RODA', 'BCIP', 'AALR', 'APLN', 'ARMY', 'BAPA', 'BBSS', 
-	'BDEB', 'BIKA', 'BIPP', 'BTEK', 'CSIS', 'GPRA', 'HOMI', 'INPP', 'JRPT', 'KBAG', 
-	'LAND', 'LCGP', 'MDLN', 'MTLA', 'MOKO', 'NIRO', 'OMRE', 'PPRO', 'RISE', 
-	'ROCK', 'SAID', 'SATU', 'TARA', 'URBN', 'VIPO',
-	// Konstruksi, Semen & Material
-	'ADHI', 'PTPP', 'WEGE', 'WTON', 'TOTL', 'ACST', 'NRCA', 'IDPR', 'WSKT', 'WIKA', 
-	'SMGR', 'SMCB', 'AMFG', 'ARNA', 'MARK', 'TOTO', 'CMNP',
-
-	// ==========================================
-	// 6. INFRASTRUKTUR, TRANSPORTASI & LOGISTIK
-	// ==========================================
-	'JSMR', 'KEEN', 'POWR', 'TGRA', 'KOPI', 'BIRD', 
-	'ASSA', 'SMDR', 'TMAS', 'IPCM', 'PORT', 'BAYU', 'BLTA', 'CMPP', 'GIAA', 
-	'HELI', 'LRNA', 'MIRA', 'NELY', 'SAFE', 'SAPX', 'TAXI', 'TRUK', 'WEHA', 
-	'MPOW', 'LAJU', 'HAIS', 'ELPI', 'KETR',
-
-	// ==========================================
-	// 7. KESEHATAN, FARMASI & RUMAH SAKIT
-	// ==========================================
-	'KLBF', 'KAEF', 'INAF', 'SIDO', 'PEHA', 'DVLA', 'TSPC', 'IRRA', 'SAME', 'MIKA', 
-	'HEAL', 'PRDA', 'PRIM', 'CARE', 'RSGK', 'OMED', 'BMHS', 'SMTM', 'PRAY', 
-	'HALO', 'CHIP',
-
-	// ==========================================
-	// 8. KONSUMER, RETAIL & MANUFAKTUR
-	// ==========================================
-	// Consumer Goods (F&B)
-	'UNVR', 'MYOR', 'CMRY', 'GOOD', 'ROTI', 'ULTJ', 'STTP', 'CEKA', 
-	'MLBI', 'DLTA', 'ALTO', 'CAMP', 'ADES', 'CLEO', 'AISA', 'BUDI', 'FOOD', 
-	'IIKP', 'IKBI', 'INCF', 'KINO', 'MGNA', 'PCAR', 'SKBM', 'SKLT', 
-	'TGKA', 'TLDN',
-	// Perkebunan & Sawit (CPO)
-	'SSMS', 'TAPG', 'DSNG', 'SGRO', 'BWPT', 'CSRA', 
-	'ANJT', 'GAAA', 'GZCO', 'JAWA', 'MAGP', 'MGRO', 'SMAR', 'TBLA',
-	// Unggas & Peternakan
-	'CPIN', 'JPFA', 'MAIN', 'SIPD', 'CPRO',
-	// Tekstil & Pakaian
-	'BELL', 'CNTX', 'ERTX', 'ESTI', 'HDTX', 'INDR', 'IPOL', 'MYTX', 'SRIL', 'TFCO', 
-	'TRIS', 'UNIT',
-	// Retail & Supermarket
-	'ACES', 'MAPI', 'MAPA', 'RALS', 'LPPF', 'ERAA', 'GLOB', 
-	'HERO', 'MKNT', 'TELE', 'TRIO', 'ZONE', 'TUGU', 'BABY',
-	// Otomotif & Komponen
-	'DRMA', 'GJTL', 'IMAS', 'INDS', 'MASA', 'SMSM', 'BOLT', 'BRAM', 
-	'GDYR', 'PRAS',
-
-	// ==========================================
-	// 9. INDUSTRI DASAR, KIMIA & LAINNYA
-	// ==========================================
-	'APLI', 'DAPD', 'DPNS', 'EKAD', 'ETWA', 'INCI', 'MOLI', 'SRSN', 
-	'UNIC', 'FASW', 'IFII', 'KBRI', 'KDSI', 'KIAS', 'LION', 'LMSH', 'NIKL', 
-	'PICO', 'SPMA', 'TDPM', 'ALDO', 'KMTR', 'SWAT'
-		];
+    // Grup Prajogo Pangestu
+    'TPIA', 'BRPT', 'PTRO', 'BREN', 'CUAN', 'CDIA',
+    // Grup Bakrie
+    'BUMI', 'BRMS', 'BNBR', 'ENRG', 'DEWA', 'KOTA', 'JGLE', 'ELTY', 'VKTR', 'MDIA', 'VIVA', 'BTEL', 'UNSP', 'ALII',
+    // Grup Happy Hapsoro & Relasi
+    'RAJA', 'RATU', 'FORU', 'MINA', 'PSKT', 'CBRE', 'STRT',
+    // Grup Salim
+    'INDF', 'ICBP', 'INTP', 'LSIP', 'SIMP', 'AMRT', 'MIDI', 'DNET', 'META', 'BMSI',
+    // Grup Aguan / PIK / Agung Sedayu
+    'PANI',
+    // Grup Sinarmas
+    'BSDE', 'INKP', 'TKIM', 'FREN', 'SMMA', 'DUTI', 'DMAS', 'DSSA', 'BSIM', 'NOBU',
+    // Grup Astra
+    'ASII', 'UNTR', 'AALI', 'AUTO', 'ASET', 'ASGR',
+    // Grup Djarum / BCA
+    'BBCA', 'TOWR', 'RANC', 'BELI',
+    // Grup Lippo
+    'LPKR', 'LPCK', 'MPPA', 'MLPL', 'SILO', 'LINK',
+    // Grup MNC
+    'MNCN', 'BHIT', 'KPIG', 'MSKY', 'BCAP', 'BABP', 'IPTV',
+    // Grup Emtek
+    'EMTK', 'SCMA', 'BUKA',
+    // Grup Saratoga & Sandiaga
+    'SRTG', 'ADRO', 'MDKA', 'MBMA', 'PALM', 'MPMX',
+    // Grup CT Corp
+    'MEGA', 'BANK',
+    // Grup Panin
+    'PNBN', 'PNLF', 'PNIN', 'PANS',
+    // Perbankan & Keuangan
+    'BBRI', 'BMRI', 'BBNI', 'BRIS', 'BBTN', 'BJTM', 'BJBR', 'AGRO', 
+    'BDMN', 'BNLI', 'NISP', 'BNGA', 'BTPN', 'ARTO', 'BBYB', 'BBHI', 'DNAR', 
+    'BVIC', 'MASB', 'MCOR', 'AMAG', 'BFIN', 'CFIN', 'ADMF', 'APIC', 
+    'BCIC', 'BGTG', 'BINA', 'BSWD', 'BACA', 'BNOO', 'INPC', 'MAYBB', 
+    'TRIM', 'WOMF', 'BPFI', 'FUJI', 'HDFA', 'MFIN', 'GSMF', 'AHAP', 'ASBI', 'ASDM', 
+    'ASJT', 'ASMI', 'ASRM', 'LPGI', 'MREI', 'VINS',
+    // Tambang, Migas & Energi
+    'PTBA', 'ITMG', 'HRUM', 'BYAN', 'GEMS', 'INDY', 'TOBA', 'ABMM', 'MBAP', 
+    'AIMS', 'KKGI', 'SMMT', 'DOID', 'BSSR', 'TEBE', 'SREI', 'BHRU', 
+    'BOSS', 'FIRE', 'GTBO', 'IATA', 'KRMJ', 'MITI', 'MYOH', 'PETS', 'TCPI', 'WINS', 
+    'SOCI', 'LEAD', 'ARTI', 'BESS', 'MEDC', 'PGAS', 'AKRA', 'ELSA', 'RUIS', 'SHIP', 'HUMP', 'BIGW', 
+    'CASS', 'HUMI', 'ANTM', 'INCO', 'AMMN', 'NCKL', 'DKFT', 'TINS', 'CITA', 'PSAB', 
+    'ZINC', 'IFSH', 'NICK', 'CUSO', 'SQMI', 'PURE', 'ARCI', 'MOPP', 'TMAA', 'NSSM', 'SOLA',
+    // Teknologi & Telecom
+    'GOTO', 'MTDL', 'WIFI', 'AXIO', 'MCAS', 'DIVA', 'NFCX', 'HDIT', 
+    'TLKM', 'ISAT', 'EXCL', 'TBIG', 'CENT', 'GHON', 'IBST', 'OASA', 'MLPT', 'ATIC', 'GLVA', 'K2JA', 'KREN', 
+    'MVTN', 'SKYB', 'TECH', 'TRON', 'UCID', 'WIRE', 'DCII', 'INET', 'PACK',
+    // Properti & Konstruksi
+    'CTRA', 'PWON', 'SMRA', 'ASRI', 'DIRA', 'BKSL', 'BEST', 'MKPI', 'NZIA', 'DILD', 'KIJA', 'MMLP', 'CITY', 'RDTX', 
+    'GWSA', 'RODA', 'BCIP', 'AALR', 'APLN', 'ARMY', 'BAPA', 'BBSS', 'BDEB', 'BIKA', 'BIPP', 'BTEK', 'CSIS', 'GPRA', 'HOMI', 'INPP', 'JRPT', 'KBAG', 
+    'LAND', 'LCGP', 'MDLN', 'MTLA', 'MOKO', 'NIRO', 'OMRE', 'PPRO', 'RISE', 'ROCK', 'SAID', 'SATU', 'TARA', 'URBN', 'VIPO',
+    'ADHI', 'PTPP', 'WEGE', 'WTON', 'TOTL', 'ACST', 'NRCA', 'IDPR', 'WSKT', 'WIKA', 'SMGR', 'SMCB', 'AMFG', 'ARNA', 'MARK', 'TOTO', 'CMNP',
+    // Infrastruktur & Logistik
+    'JSMR', 'KEEN', 'POWR', 'TGRA', 'KOPI', 'BIRD', 'ASSA', 'SMDR', 'TMAS', 'IPCM', 'PORT', 'BAYU', 'BLTA', 'CMPP', 'GIAA', 
+    'HELI', 'LRNA', 'MIRA', 'NELY', 'SAFE', 'SAPX', 'TAXI', 'TRUK', 'WEHA', 'MPOW', 'LAJU', 'HAIS', 'ELPI', 'KETR',
+    // Kesehatan & Farmasi
+    'KLBF', 'KAEF', 'INAF', 'SIDO', 'PEHA', 'DVLA', 'TSPC', 'IRRA', 'SAME', 'MIKA', 'HEAL', 'PRDA', 'PRIM', 'CARE', 'RSGK', 'OMED', 'BMHS', 'SMTM', 'PRAY', 'HALO', 'CHIP',
+    // Konsumer & Retail
+    'UNVR', 'MYOR', 'CMRY', 'GOOD', 'ROTI', 'ULTJ', 'STTP', 'CEKA', 'MLBI', 'DLTA', 'ALTO', 'CAMP', 'ADES', 'CLEO', 'AISA', 'BUDI', 'FOOD', 
+    'IIKP', 'IKBI', 'INCF', 'KINO', 'MGNA', 'PCAR', 'SKBM', 'SKLT', 'TGKA', 'TLDN',
+    'SSMS', 'TAPG', 'DSNG', 'SGRO', 'BWPT', 'CSRA', 'ANJT', 'GAAA', 'GZCO', 'JAWA', 'MAGP', 'MGRO', 'SMAR', 'TBLA',
+    'CPIN', 'JPFA', 'MAIN', 'SIPD', 'CPRO', 'BELL', 'CNTX', 'ERTX', 'ESTI', 'HDTX', 'INDR', 'IPOL', 'MYTX', 'SRIL', 'TFCO', 'TRIS', 'UNIT',
+    'ACES', 'MAPI', 'MAPA', 'RALS', 'LPPF', 'ERAA', 'GLOB', 'HERO', 'MKNT', 'TELE', 'TRIO', 'ZONE', 'TUGU', 'BABY',
+    'DRMA', 'GJTL', 'IMAS', 'INDS', 'MASA', 'SMSM', 'BOLT', 'BRAM', 'GDYR', 'PRAS',
+    // Industri Dasar & Kimia
+    'APLI', 'DAPD', 'DPNS', 'EKAD', 'ETWA', 'INCI', 'MOLI', 'SRSN', 'UNIC', 'FASW', 'IFII', 'KBRI', 'KDSI', 'KIAS', 'LION', 'LMSH', 'NIKL', 'PICO', 'SPMA', 'TDPM', 'ALDO', 'KMTR', 'SWAT'
+];
+// Menghilangkan duplikat otomatis
+const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
 
 		async function renderBigMoneyRadar() {
-			const container = document.getElementById('bigMoneyList');
-			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa real-time & menghitung sinyal radar...</div>`;
-			if (window.lucide) lucide.createIcons();
+    const container = document.getElementById('bigMoneyList');
+    container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa real-time & menghitung sinyal radar...</div>`;
+    if (window.lucide) lucide.createIcons();
 
-			// Fetch data pasar nyata
-			const promiseList = radarWatchlist.map(t => fetchRealtimeStockData(t));
-			const results = await Promise.all(promiseList);
-			const validData = results.filter(d => d !== null);
+    // Acak daftar saham dan ambil 30 sampel saham setiap kali scan agar API lancar & aman dari rate limit
+    const shuffled = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
+    const sampleList = shuffled.slice(0, 30);
 
-			if (validData.length === 0) {
-				container.innerHTML = `<div class="text-center text-slate-400 text-xs py-6">Gagal memuat koneksi data bursa. Coba tekan Scan Ulang.</div>`;
-				return;
-			}
+    const promiseList = sampleList.map(t => fetchRealtimeStockData(t));
+    const results = await Promise.all(promiseList);
+    const validData = results.filter(d => d !== null);
 
-			// Tentukan jumlah total saham yang akan ditampilkan (antara 8 sampai 13)
-			const totalDisplay = Math.min(Math.max(validData.length, 8), 12); // mengambil 10, 11, atau 12 saham (rentang 8-13)
+    if (validData.length === 0) {
+        container.innerHTML = `<div class="text-center text-slate-400 text-xs py-6">Gagal memuat koneksi data bursa. Coba tekan Scan Ulang.</div>`;
+        return;
+    }
 
-			// Hitung Kuota / Proporsi Kategori Saham dalam isi Tab
-			// Momentum Breakout > 60%
-			const countBreakout = Math.ceil(totalDisplay * 0.61); 
-			// Volume Accumulation > 30%
-			const countAccumulation = Math.ceil(totalDisplay * 0.31); 
-			// Support Retest > 10% (minimal 1)
-			const countRetest = Math.max(1, totalDisplay - countBreakout - countAccumulation); 
+    validData.sort((a, b) => b.changePct - a.changePct);
 
-			// Pisahkan & Kategorikan berdasarkan kondisi teknikal nyata pasar
-			let listBreakout = validData.filter(item => item.changePct > 0 || item.volRatio >= 1.25);
-			let listAccumulation = validData.filter(item => !listBreakout.includes(item) && (item.changePct >= -1.0 || item.volRatio >= 1.0));
-			let listRetest = validData.filter(item => !listBreakout.includes(item) && !listAccumulation.includes(item));
+    let htmlContent = '';
 
-			// Jika data kategori kurang, penuhi secara adaptif dari bursa
-			if (listBreakout.length < countBreakout) {
-				listBreakout = validData.slice(0, countBreakout);
-			}
+    validData.forEach((item, index) => {
+        const ticker = item.ticker;
+        const price = item.price;
+        const changePct = item.changePct;
 
-			// Urutkan tiap kategori berdasarkan real gain terbanyak
-			listBreakout.sort((a,b) => b.changePct - a.changePct);
-			listAccumulation.sort((a,b) => b.changePct - a.changePct);
-			listRetest.sort((a,b) => b.changePct - a.changePct);
+        const entryLow = Math.round(price * 0.97);
+        const entryHigh = price;
+        const sl = Math.round(price * 0.96);
+        const tp1 = Math.round(price * 1.04);
+        const tp2 = Math.round(price * 1.08);
 
-			// Ambil saham sesuai porsi kuota di dalam Tab
-			const selectedBreakout = listBreakout.slice(0, countBreakout).map(s => ({ ...s, tagType: 'breakout' }));
-			const selectedAccumulation = listAccumulation.slice(0, countAccumulation).map(s => ({ ...s, tagType: 'accumulation' }));
-			const selectedRetest = listRetest.slice(0, countRetest).map(s => ({ ...s, tagType: 'retest' }));
+        let statusSignal = "🔥 Momentum Breakout";
+        let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
+        let alasanTeknikal = `Saham berada dalam fase momentum konfirmasi naik <strong>+${changePct}%</strong> dengan pertahanan di atas MA5 (Rp ${item.ma5.toLocaleString('id-ID')}).`;
 
-			// Gabungkan kandidat terpilih
-			let selectedList = [...selectedBreakout, ...selectedAccumulation, ...selectedRetest];
+        if (changePct < 0) {
+            statusSignal = "🛡️ Support Retest";
+            statusClass = "text-purple-400 border-purple-500/30 bg-purple-500/10";
+            alasanTeknikal = `Posisi harga sedang melakukan pengujian ulang (*retest*) support MA20 (Rp ${item.ma20.toLocaleString('id-ID')}).`;
+        } else if (item.volRatio >= 1.2) {
+            statusSignal = "⚡ Volume Accumulation";
+            statusClass = "text-cyan-400 border-cyan-500/30 bg-cyan-500/10";
+            alasanTeknikal = `Terdeteksi akumulasi volume transaksi <strong>${item.volRatio}x rerata 10-hari</strong>.`;
+        }
 
-			// Tetap mengacu pada kondisi nyata pasar: TAMPILKAN DARI GAIN PALING BANYAK (ATAS) KE RENDAH (BAWAH)
-			selectedList.sort((a, b) => b.changePct - a.changePct);
+        htmlContent += `
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2.5 relative">
+                <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-slate-800 text-amber-400 font-mono text-[10px] px-1.5 py-0.5 rounded border border-slate-700">#${index + 1}</span>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-black text-white text-sm">IDX:${ticker}</span>
+                                <button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 border border-emerald-500/30 font-bold px-2 py-0.5 rounded transition">
+                                    Lihat Chart &rarr;
+                                </button>
+                            </div>
+                            <span class="text-[10px] text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
+                        </div>
+                    </div>
+                    <span class="text-[9px] font-bold px-2.5 py-1 rounded-full border ${statusClass}">
+                        ${statusSignal}
+                    </span>
+                </div>
 
-			let htmlContent = '';
+                <div class="grid grid-cols-2 gap-2 text-[10px]">
+                    <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+                        <span class="text-slate-400 text-[9px] block">Entry Ideal</span>
+                        <span class="font-bold text-emerald-400 font-mono">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
+                    </div>
+                    <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+                        <span class="text-slate-400 text-[9px] block">Support MA10</span>
+                        <span class="font-bold text-cyan-400 font-mono">Rp ${item.ma10.toLocaleString('id-ID')}</span>
+                    </div>
+                    <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+                        <span class="text-slate-400 text-[9px] block">Target Profit (TP1/TP2)</span>
+                        <span class="font-bold text-emerald-300 font-mono">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
+                    </div>
+                    <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+                        <span class="text-slate-400 text-[9px] block">Stop Loss (SL)</span>
+                        <span class="font-bold text-rose-400 font-mono">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
+                    </div>
+                </div>
 
-			selectedList.forEach((item, index) => {
-				const ticker = item.ticker;
-				const price = item.price;
-				const changePct = item.changePct;
+                <div class="bg-slate-900/50 p-2.5 rounded border border-slate-800 text-[10px] text-slate-300 leading-relaxed space-y-1">
+                    <span class="text-amber-400 font-bold block text-[10px]">ALASAN TEKNIKAL MASUK RADAR:</span>
+                    <p>${alasanTeknikal}</p>
+                </div>
+            </div>
+        `;
+    });
 
-				const entryLow = Math.round(price * 0.97); //0.97
-				const entryHigh = price;
-				const sl = Math.round(price * 0.96); //0.95
-				const tp1 = Math.round(price * 1.04); //1.05
-				const tp2 = Math.round(price * 1.08); //1.10
-
-				let statusSignal = "";
-				let statusClass = "";
-				let alasanTeknikal = "";
-
-				if (item.tagType === 'breakout') {
-					statusSignal = "🔥 Momentum Breakout";
-					statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
-					alasanTeknikal = `Saham berada dalam fase momentum konfirmasi naik <strong>+${changePct}%</strong> dengan pertahanan di atas MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) & MA10 (Rp ${item.ma10.toLocaleString('id-ID')}).`;
-				} else if (item.tagType === 'accumulation') {
-					statusSignal = "⚡ Volume Accumulation";
-					statusClass = "text-cyan-400 border-cyan-500/30 bg-cyan-500/10";
-					alasanTeknikal = `Terdeteksi akumulasi volume transaksi stabil <strong>${item.volRatio}x rerata 10-hari</strong> dengan perubahan harga <strong>${changePct >= 0 ? '+' : ''}${changePct}%</strong>.`;
-				} else {
-					statusSignal = "🛡️ Support Retest";
-					statusClass = "text-purple-400 border-purple-500/30 bg-purple-500/10";
-					alasanTeknikal = `Posisi harga sedang melakukan pengujian ulang (*retest*) area support dinamis MA20 (Rp ${item.ma20.toLocaleString('id-ID')}) untuk potensi pantulan (*bounce*).`;
-				}
-
-				htmlContent += `
-					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2.5 relative">
-						<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
-							<div class="flex items-center gap-2">
-								<span class="bg-slate-800 text-amber-400 font-mono text-[10px] px-1.5 py-0.5 rounded border border-slate-700">#${index + 1}</span>
-								<div>
-									<div class="flex items-center gap-2">
-										<span class="font-black text-white text-sm">IDX:${ticker}</span>
-										<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 border border-emerald-500/30 font-bold px-2 py-0.5 rounded transition">
-											Lihat Chart &rarr;
-										</button>
-									</div>
-									<span class="text-[10px] text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
-								</div>
-							</div>
-							<span class="text-[9px] font-bold px-2.5 py-1 rounded-full border ${statusClass}">
-								${statusSignal}
-							</span>
-						</div>
-
-						<!-- TABEL LEVEL REKOMENDASI -->
-						<div class="grid grid-cols-2 gap-2 text-[10px]">
-							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
-								<span class="text-slate-400 text-[9px] block">Entry Ideal</span>
-								<span class="font-bold text-emerald-400 font-mono">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
-							</div>
-							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
-								<span class="text-slate-400 text-[9px] block">Support MA10</span>
-								<span class="font-bold text-cyan-400 font-mono">Rp ${item.ma10.toLocaleString('id-ID')}</span>
-							</div>
-							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
-								<span class="text-slate-400 text-[9px] block">Target Profit (TP1/TP2)</span>
-								<span class="font-bold text-emerald-300 font-mono">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
-							</div>
-							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
-								<span class="text-slate-400 text-[9px] block">Stop Loss (SL)</span>
-								<span class="font-bold text-rose-400 font-mono">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
-							</div>
-						</div>
-
-						<!-- CATATAN ALASAN PANTAUAN REAL-TIME -->
-						<div class="bg-slate-900/50 p-2.5 rounded border border-slate-800 text-[10px] text-slate-300 leading-relaxed space-y-1">
-							<span class="text-amber-400 font-bold block text-[10px]">ALASAN TEKNIKAL MASUK RADAR:</span>
-							<p>${alasanTeknikal}</p>
-						</div>
-					</div>
-				`;
-			});
-
-			container.innerHTML = htmlContent;
-			if (window.lucide) lucide.createIcons();
-		}
+    container.innerHTML = htmlContent;
+    if (window.lucide) lucide.createIcons();
+}
 
 		function selectTickerFromRadar(ticker) {
 			document.getElementById('stockSearch').value = ticker;
