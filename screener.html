@@ -597,7 +597,9 @@
 				errEl.classList.remove('hidden');
 			}
 		}
-
+	</script>
+	
+	<script>
 		// ==================== UTAMA & FITUR FITUR APP ====================
 		let currentTicker = 'MDIA';
 		let currentInterval = 'D';
@@ -921,7 +923,9 @@
 			fetchStockNewsForAI(ticker);
 			if (window.lucide) lucide.createIcons();
 		}
-
+	</script>
+	
+	<script>
 		function autoFillRRRFromAI() {
 			if (globalStockData) {
 				const price = globalStockData.price;
@@ -1177,7 +1181,9 @@
 				`;
 			});
 		}
-
+	</script>
+	
+	<script>
 		function addPriceAlert() {
 			const priceInput = document.getElementById('alertPriceInput');
 			const price = parseFloat(priceInput.value);
