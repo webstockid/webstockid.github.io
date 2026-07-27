@@ -497,18 +497,17 @@
 		const RAPIDAPI_HOST = 'yahoo-finance-real-time1.p.rapidapi.com';
 
 		// ==================== DATABASE TOKEN VIP ====================
-		const databaseVIP = {
-			"STOCKIDVVIP": { tanggalExpired: "2040-07-25" },
-			"DEMO1234": { tanggalExpired: "2026-07-29" },
-			"IRAM7363": { tanggalExpired: "2026-10-24" },
-			"ANDI2636": { tanggalExpired: "2026-09-18" },
-			"DHIO2838": { tanggalExpired: "2026-08-25" },
-			"ROID9283": { tanggalExpired: "2026-08-29" },
-			"PRAMUDYA7383": { tanggalExpired: "2026-08-11" },
-			"RESKY9102": { tanggalExpired: "2026-08-16" },
-			"LUKITA1038": { tanggalExpired: "2026-11-27" },
-			"DEMO555": { tanggalExpired: "2026-07-26" }
-		};
+		let databaseVIP = null;
+
+		async function loadVIPDatabase() {
+			try {
+				const response = await fetch('telorpipis.json');
+				if (!response.ok) throw new Error("Gagal memuat Database");
+				databaseVIP = await response.json();
+			} catch (err) {
+				console.error("Error loading VIP database:", err);
+			}
+		}
 
 		let globalStockData = null;
 		let searchCooldownTimer = null;
@@ -530,12 +529,16 @@
 			return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 		}
 
-		function checkVIPAuth() {
+		async function checkVIPAuth() {
+			if (!databaseVIP) {
+				await loadVIPDatabase();
+			}
+
 			const savedToken = localStorage.getItem('vip_token');
 			const modal = document.getElementById('vipGatewayModal');
 			const dashboard = document.getElementById('vipDashboard');
 
-			if (!savedToken || !databaseVIP[savedToken]) {
+			if (!savedToken || !databaseVIP || !databaseVIP[savedToken]) {
 				if(modal) modal.classList.remove('hidden');
 				if(dashboard) dashboard.classList.add('hidden');
 				return;
@@ -561,7 +564,11 @@
 			document.getElementById('vipAccountStatus').innerText = `Status: VIP Aktif (${account.tanggalExpired})`;
 		}
 
-		function loginVIP() {
+		async function loginVIP() {
+			if (!databaseVIP) {
+				await loadVIPDatabase();
+			}
+
 			const tokenInput = document.getElementById('tokenInput').value.trim().toUpperCase();
 
 			if (!tokenInput) {
@@ -569,7 +576,7 @@
 				return;
 			}
 
-			if (!databaseVIP[tokenInput]) {
+			if (!databaseVIP || !databaseVIP[tokenInput]) {
 				showError("Akses Token tidak terdaftar / salah!");
 				return;
 			}
