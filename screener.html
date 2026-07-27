@@ -496,7 +496,7 @@
 		document.addEventListener('click', function(e) {
 			if (e.target.closest('button, a')) {
 				if ('vibrate' in navigator) {
-					navigator.vibrate(1000);
+					navigator.vibrate(500);
 				}
 			}
 		});
@@ -525,6 +525,51 @@
 		let globalStockData = null;
 		let searchCooldownTimer = null;
 		let radarCooldownTimer = null;
+
+		// ==================== LOGIKA CACHING SAHAM & JAM BURSA (09.00 - 16.00 WIB) ====================
+		function isMarketHours() {
+			const now = new Date();
+			const day = now.getDay(); // 0 = Minggu, 6 = Sabtu
+			if (day === 0 || day === 6) return false;
+
+			const hours = now.getHours();
+			return hours >= 9 && hours < 16;
+		}
+
+		function getCachedStockData(ticker) {
+			const cacheKey = `stock_cache_${ticker}`;
+			const cachedRaw = localStorage.getItem(cacheKey);
+			if (!cachedRaw) return null;
+
+			try {
+				const cache = JSON.parse(cachedRaw);
+				const now = Date.now();
+				const THIRTY_MINUTES = 30 * 60 * 1000;
+
+				// Jika di luar jam bursa, pakai cache terakhir (penutupan) tanpa kadaluarsa
+				if (!isMarketHours()) {
+					return cache.data;
+				}
+
+				// Jika di dalam jam bursa, perbarui jika sudah lebih dari 30 menit
+				if (now - cache.timestamp < THIRTY_MINUTES) {
+					return cache.data;
+				}
+			} catch (e) {
+				console.warn(`Error parsing cache for ${ticker}`);
+			}
+			return null;
+		}
+
+		function setCachedStockData(ticker, data) {
+			if (!data) return;
+			const cacheKey = `stock_cache_${ticker}`;
+			const cachePayload = {
+				timestamp: Date.now(),
+				data: data
+			};
+			localStorage.setItem(cacheKey, JSON.stringify(cachePayload));
+		}
 
 		// ==================== SISTEM AKSES TOKEN VIP ====================
 		function getExtractName(token) {
@@ -677,19 +722,26 @@
 				"largeChartUrl": "",
 				"displayMode": "regular",
 				"width": "100%",
-				"height": "400",
+				"height": "500",
 				"symbol": `IDX:${ticker}`,
 				"locale": "id"
 			});
 			container.appendChild(script);
 		}
 
-		// Helper Delay untuk Batch Processing
+		// Helper Delay
 		const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-		// Penarik Data Saham Real-Time Konsisten
+		// Penarik Data Saham Real-Time Konsisten dengan Caching
 		async function fetchRealtimeStockData(ticker) {
+			// Cek apakah data tersedia di cache lokal
+			const cached = getCachedStockData(ticker);
+			if (cached) {
+				return cached;
+			}
+
 			const targetSymbol = `${ticker}.JK`;
+			let freshData = null;
 			
 			// 1. Coba RapidAPI Direct
 			try {
@@ -729,7 +781,7 @@
 							const high20 = highs.length >= 20 ? Math.max(...highs.slice(-20)) : Math.max(...highs);
 							const low20 = lows.length >= 20 ? Math.min(...lows.slice(-20)) : Math.min(...lows);
 
-							return { ticker, price: Math.round(currentPrice), prevClose: Math.round(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
+							freshData = { ticker, price: Math.round(currentPrice), prevClose: Math.round(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
 						}
 					}
 				}
@@ -738,45 +790,52 @@
 			}
 
 			// 2. Fallback Public Proxy
-			try {
-				const proxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=1d&range=2mo`;
-				const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(proxyUrl)}`;
-				const res = await fetch(apiUrl);
-				const dataWrapper = await res.json();
-				const json = JSON.parse(dataWrapper.contents);
+			if (!freshData) {
+				try {
+					const proxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=1d&range=2mo`;
+					const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(proxyUrl)}`;
+					const res = await fetch(apiUrl);
+					const dataWrapper = await res.json();
+					const json = JSON.parse(dataWrapper.contents);
 
-				const result = json.chart.result[0];
-				const quote = result.indicators.quote[0];
+					const result = json.chart.result[0];
+					const quote = result.indicators.quote[0];
 
-				const prices = quote.close.filter(p => p !== null && p !== undefined);
-				const volumes = quote.volume ? quote.volume.filter(v => v !== null && v !== undefined) : [];
-				const highs = quote.high ? quote.high.filter(h => h !== null && h !== undefined) : [];
-				const lows = quote.low ? quote.low.filter(l => l !== null && l !== undefined) : [];
+					const prices = quote.close.filter(p => p !== null && p !== undefined);
+					const volumes = quote.volume ? quote.volume.filter(v => v !== null && v !== undefined) : [];
+					const highs = quote.high ? quote.high.filter(h => h !== null && h !== undefined) : [];
+					const lows = quote.low ? quote.low.filter(l => l !== null && l !== undefined) : [];
 
-				if (prices.length < 5) return null;
+					if (prices.length >= 5) {
+						const currentPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
+						const previousClose = result.meta.chartPreviousClose || prices[prices.length - 2];
+						const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
 
-				const currentPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
-				const previousClose = result.meta.chartPreviousClose || prices[prices.length - 2];
-				const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
+						const getMA = (p) => Math.round(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+						const ma5 = getMA(5);
+						const ma10 = getMA(10);
+						const ma20 = getMA(20);
 
-				const getMA = (p) => Math.round(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
-				const ma5 = getMA(5);
-				const ma10 = getMA(10);
-				const ma20 = getMA(20);
+						const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
+						const volSlice10 = volumes.slice(-10);
+						const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
+						const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
 
-				const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
-				const volSlice10 = volumes.slice(-10);
-				const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
-				const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
+						const high20 = highs.length >= 20 ? Math.max(...highs.slice(-20)) : Math.max(...highs);
+						const low20 = lows.length >= 20 ? Math.min(...lows.slice(-20)) : Math.min(...lows);
 
-				const high20 = highs.length >= 20 ? Math.max(...highs.slice(-20)) : Math.max(...highs);
-				const low20 = lows.length >= 20 ? Math.min(...lows.slice(-20)) : Math.min(...lows);
-
-				return { ticker, price: Math.round(currentPrice), prevClose: Math.round(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
-			} catch (err) {
-				console.error(`Gagal data ${ticker}:`, err);
-				return null;
+						freshData = { ticker, price: Math.round(currentPrice), prevClose: Math.round(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
+					}
+				} catch (err) {
+					console.error(`Gagal data ${ticker}:`, err);
+				}
 			}
+
+			if (freshData) {
+				setCachedStockData(ticker, freshData);
+			}
+
+			return freshData;
 		}
 
 		// 1. GENERATE AI SIGNAL & TRADING MAP (AKURAT BERSUMBER BURSA REAL-TIME)
@@ -1038,7 +1097,6 @@
 			const validData = [];
 			const batchSize = 5;
 
-			// Scanning bertahap sampai jumlah saham valid berada di rentang 8 - 13 saham
 			for (let i = 0; i < shuffled.length; i += batchSize) {
 				const chunk = shuffled.slice(i, i + batchSize);
 				const chunkResults = await Promise.all(chunk.map(t => fetchRealtimeStockData(t)));
@@ -1056,7 +1114,6 @@
 			}
 
 			if (validData.length < 8) {
-				// Jikalau jaringan belum mencukupi 8, panggil sisa cadangan
 				const remainingToFetch = shuffled.filter(t => !validData.some(v => v.ticker === t)).slice(0, 10);
 				const extraResults = await Promise.all(remainingToFetch.map(t => fetchRealtimeStockData(t)));
 				extraResults.forEach(res => {
@@ -1069,11 +1126,8 @@
 				return;
 			}
 
-			// Sortir berdasarkan persentase kenaikan (paling potensial di atas)
 			validData.sort((a, b) => b.changePct - a.changePct);
-
-			// Batasi jumlah rekomendasi minimal 8 dan maksimal 13
-			const finalDisplayList = validData.slice(0, Math.min(13, Math.max(8, validData.length)));
+			const finalDisplayList = validData.slice(0, Math.min(10, Math.max(5, validData.length)));
 
 			let htmlContent = '';
 
@@ -1344,7 +1398,7 @@
 			}
 		}
 
-		// 3. FUNGSI COOLDOWN DENGAN ANIMASI COUNTDOWN TANPA ALERT
+		// FUNGSI COOLDOWN DENGAN ANIMASI COUNTDOWN TANPA ALERT
 		function startSearchCooldown(seconds) {
 			const btn = document.querySelector("button[onclick='searchStock()']");
 			if (!btn) return;
@@ -1422,7 +1476,7 @@
 				fetchCorporateAction(currentTicker);
 
 				if (!bypassCooldown) {
-					startSearchCooldown(15);
+					startSearchCooldown(20);
 				}
 			}
 		}
