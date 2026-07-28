@@ -42,6 +42,16 @@
 		.animate-pulse-glow {
 			animation: pulse-glow 2s infinite ease-in-out;
 		}
+		/* EFLEK LOADING SKELETON SHIMMER */
+		@keyframes shimmer {
+			0% { background-position: -200% 0; }
+			100% { background-position: 200% 0; }
+		}
+		.skeleton {
+			background: linear-gradient(90deg, rgba(30, 41, 59, 0.6) 25%, rgba(51, 65, 85, 0.8) 50%, rgba(30, 41, 59, 0.6) 75%);
+			background-size: 200% 100%;
+			animation: shimmer 1.5s infinite;
+		}
 	</style>
 </head>
 
@@ -496,7 +506,7 @@
 		document.addEventListener('click', function(e) {
 			if (e.target.closest('button, a')) {
 				if ('vibrate' in navigator) {
-					navigator.vibrate(500);
+					navigator.vibrate(300);
 				}
 			}
 		});
@@ -526,6 +536,7 @@
 		let globalStockData = null;
 		let searchCooldownTimer = null;
 		let radarCooldownTimer = null;
+		let hasRadarLoaded = false; // Flag penanda apakah Radar Bandar sudah pernah dimuat
 
 		// ==================== LOGIKA CACHING SAHAM & JAM BURSA (09.00 - 16.00 WIB) ====================
 		function isMarketHours() {
@@ -839,6 +850,37 @@
 			return freshData;
 		}
 
+		// FUNGSI MEMBENTUK SKELETON LOADING ELEGAN DI TAB AI SIGNAL
+		function showAISkeletonLoading() {
+			document.getElementById('aiVerdikText').innerHTML = `<span class="inline-block w-32 h-5 skeleton rounded"></span>`;
+			document.getElementById('aiScoreBadge').innerHTML = `<span class="inline-block w-12 h-4 skeleton rounded"></span>`;
+			
+			document.getElementById('aiVerdikDesc').innerHTML = `
+				<div class="space-y-2 py-1">
+					<div class="w-full h-3 skeleton rounded"></div>
+					<div class="w-4/5 h-3 skeleton rounded"></div>
+				</div>
+			`;
+
+			document.getElementById('aiBuktiUtamaList').innerHTML = `
+				<li class="h-6 skeleton rounded w-full"></li>
+				<li class="h-6 skeleton rounded w-full"></li>
+				<li class="h-6 skeleton rounded w-full"></li>
+				<li class="h-6 skeleton rounded w-full"></li>
+			`;
+
+			document.getElementById('mapSupport1').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
+			document.getElementById('mapResist1').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
+			document.getElementById('mapTP').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
+			document.getElementById('mapSL').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
+
+			document.getElementById('tpBarSL').innerHTML = `<span class="inline-block w-12 h-3 skeleton rounded"></span>`;
+			document.getElementById('tpBarCurrent').innerHTML = `<span class="inline-block w-16 h-3 skeleton rounded"></span>`;
+			document.getElementById('tpBarTP').innerHTML = `<span class="inline-block w-12 h-3 skeleton rounded"></span>`;
+			document.getElementById('tpProgressBar').style.width = '0%';
+			document.getElementById('tpProgressPercent').innerText = `Menghitung posisi teknikal...`;
+		}
+
 		// 1. GENERATE AI SIGNAL & TRADING MAP (AKURAT BERSUMBER BURSA REAL-TIME)
 		async function generateAISignal(ticker) {
 			const now = new Date();
@@ -847,9 +889,8 @@
 			document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
 			document.getElementById('aiDateStamp').innerText = `Update Live: ${dateStr}`;
 
-			document.getElementById('aiVerdikText').innerText = "MENGANALISIS...";
-			document.getElementById('aiVerdikText').className = "font-black text-amber-400 text-sm";
-			document.getElementById('aiScoreBadge').innerText = "...";
+			// MENAMPILKAN ANIMASI SKELETON LOADING
+			showAISkeletonLoading();
 
 			fetchStockNewsForAI(ticker);
 
@@ -946,9 +987,9 @@
 			}
 
 			// TRADING MAP DINAMIS
-			const sl = Math.round(price * 0.95); 
-			const sup1 = Math.round(price * 0.96); 
-			const sup2 = Math.round(price * 0.98); 
+			const sl = Math.round(price * 0.92); 
+			const sup1 = Math.round(price * 0.94); 
+			const sup2 = Math.round(price * 0.96); 
 			const res1 = Math.round(price * 1.05); 
 			const res2 = Math.round(price * 1.08); 
 			const tp1 = Math.round(price * 1.06); 
@@ -1002,9 +1043,9 @@
 		function autoFillRRRFromAI() {
 			if (globalStockData) {
 				const price = globalStockData.price;
-				const entryLow = Math.round(price * 0.96);
-				const sl = Math.round(price * 0.95);
-				const tp = Math.round(price * 1.07);
+				const entryLow = Math.round(price * 0.94);
+				const sl = Math.round(price * 0.92);
+				const tp = Math.round(price * 1.06);
 
 				document.getElementById('rrrEntry').value = price;
 				document.getElementById('rrrSL').value = sl;
@@ -1085,6 +1126,7 @@
 
 		// 2. RADAR BANDAR (MINIMAL 8 SAHAM, MAKSIMAL 13 SAHAM)
 		async function renderBigMoneyRadar(isManualClick = false) {
+			hasRadarLoaded = true; // Tandai bahwa radar sudah berhasil dipanggil sekali
 			const container = document.getElementById('bigMoneyList');
 			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa real-time & menghitung sinyal radar...</div>`;
 			if (window.lucide) lucide.createIcons();
@@ -1137,11 +1179,11 @@
 				const price = item.price;
 				const changePct = item.changePct;
 
-				const entryLow = Math.round(price * 0.96);
-				const entryHigh = Math.round(price * 0.97);
-				const sl = Math.round(price * 0.95);
+				const entryLow = Math.round(price * 0.94);
+				const entryHigh = Math.round(price * 0.96);
+				const sl = Math.round(price * 0.92);
 				const tp1 = Math.round(price * 1.06);
-				const tp2 = Math.round(price * 1.09);
+				const tp2 = Math.round(price * 1.10);
 
 				let statusSignal = "🔥 Momentum Breakout";
 				let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
@@ -1382,6 +1424,11 @@
 					if (content) content.classList.add('hidden');
 				}
 			});
+
+			// Pengecekan hasRadarLoaded memastikan request hanya berjalan SEKALI SAJA saat tab diklik pertama kali
+			if (tabName === 'bigmoney' && !hasRadarLoaded) {
+				renderBigMoneyRadar(false);
+			}
 		}
 
 		function shareStockUrl() {
@@ -1503,7 +1550,6 @@
 		renderFundamentalWidget(currentTicker);
 		renderAlertList(currentTicker);
 		generateAISignal(currentTicker);
-		renderBigMoneyRadar(false);
 		fetchStockNews(currentTicker);
 		fetchCorporateAction(currentTicker);
 	</script>
