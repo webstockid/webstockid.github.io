@@ -957,7 +957,7 @@
 					: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata.";
 
 				descEl.innerHTML = `
-					<p><strong>Kenapa?</strong> Saham ${ticker} saat ini ditutup di Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
+					<p><strong>Kenapa?</strong> Saham ${ticker} saat ini berada di Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
 					<p class="pt-1 text-slate-300">Secara likuiditas transaksi, ${volText}, menandakan akumulasi/distribusi aktif dari pelaku pasar harian.</p>
 				`;
 
@@ -1042,7 +1042,7 @@
 	<script>
 		function autoFillRRRFromAI() {
 			if (globalStockData) {
-				const price = globalStockData.price;
+				const price = Math.round(price * 0.96);
 				const entryLow = Math.round(price * 0.94);
 				const sl = Math.round(price * 0.92);
 				const tp = Math.round(price * 1.06);
@@ -1187,7 +1187,7 @@
 
 				let statusSignal = "🔥 Momentum Breakout";
 				let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
-				let alasanTeknikal = `Saham menguat <strong>+${changePct}%</strong> dan bertahan kokoh di atas garis Moving Average MA5 (Rp ${item.ma5.toLocaleString('id-ID')}), menandakan tekanan beli harian masih mendominasi pasar.`;
+				let alasanTeknikal = `Perubahan <strong>${changePct}%</strong> dan bertahan kokoh di atas garis Moving Average MA5 (Rp ${item.ma5.toLocaleString('id-ID')}), menandakan tekanan beli harian masih mendominasi pasar.`;
 
 				if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0.5 && changePct < 3) {
 					statusSignal = "🚀 Golden Cross Setup";
