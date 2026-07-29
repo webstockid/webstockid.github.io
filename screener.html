@@ -6,11 +6,11 @@
 	<meta name="keywords" content="stock id vip, stockid vip, stockidvip, stock id, stockid, stock id screener, stockid screener, screener saham, saham indonesia, kelas saham">
 	<meta name="HandheldFriendly" content="True">
 	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no">
-	<meta name="author" content="Hardiansyah & Gemini & Tailwind.css">
-	<meta property="og:title" content="Stock ID Screener #Andaimology">
-	<meta property="og:description" content="Alat Screening Saham yang dilengkapi AI dan Analisa Teknikal">
+	<meta name="author" content="Hardiansyah & Gemini & Tailwind">
 	<meta property="og:image" content="https://webstockid.github.io/stockid_gambar/admin2.jpg">
 	<meta property="og:url" content="https://webstockid.github.io/screener.html">
+	<meta property="og:title" content="Stock ID Screener #Andaimology">
+	<meta property="og:description" content="Alat Screening Saham yang dilengkapi AI dan Analisa Teknikal">
 	<meta property="og:type" content="website">
 	<script src="https://cdn.tailwindcss.com"></script>
 	<script src="https://unpkg.com/lucide@latest"></script>
@@ -50,7 +50,7 @@
 		.skeleton {
 			background: linear-gradient(90deg, rgba(30, 41, 59, 0.6) 25%, rgba(51, 65, 85, 0.8) 50%, rgba(30, 41, 59, 0.6) 75%);
 			background-size: 200% 100%;
-			animation: shimmer 1.5s infinite;
+			animation: shimmer 2.5s infinite;
 		}
 	</style>
 </head>
@@ -76,7 +76,7 @@
 				<a href="#faq" class="hover:text-emerald-400 transition-colors">FAQ</a>
 			</div>
 			<div>
-				<a href="https://webstockid.github.io/index" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-sm font-bold text-sm tracking-wide transition shadow-lg shadow-emerald-500/20 block">STOCK ID VIP</a>
+				<a href="https://webstockid.github.io/index" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-lg font-bold text-sm tracking-wide transition shadow-lg shadow-emerald-500/20 block">STOCK ID VIP</a>
 			</div>
 		</div>
 	</nav>
@@ -154,7 +154,7 @@
 					<h2 class="text-2xl font-bold text-white flex items-center gap-2" id="stockTitle">
 						IDX:MDIA
 					</h2>
-					<p class="text-xs text-slate-400 mt-0.5">Bursa Efek Indonesia • Real-Time Chart</p>
+					<p class="text-xs text-slate-400 mt-0.5">Bursa Efek Indonesia • 1-Day Chart</p>
 				</div>
 				
 				<div class="flex items-center gap-2">
@@ -1524,7 +1524,7 @@
 				fetchCorporateAction(currentTicker);
 
 				if (!bypassCooldown) {
-					startSearchCooldown(20);
+					startSearchCooldown(3);
 				}
 			}
 		}
