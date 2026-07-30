@@ -59,45 +59,45 @@
 
 	<!-- Navbar -->
 	<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
+		<div class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
 			<div class="flex items-center gap-3">
 				<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2.5 rounded-xl shadow-lg shadow-emerald-500/20">
 					<i class="fa-solid fa-chart-line text-slate-950 text-xl font-black"></i>
 				</div>
 				<div>
-					<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">SCREENER</span></span>
-					<p class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
+					<span class="heading-font text-xl lg:text-2xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">SCREENER</span></span>
+					<p class="text-[9px] lg:text-[10px] font-mono tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
 				</div>
 			</div>
-			<div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+			<div class="hidden md:flex items-center gap-8 text-sm lg:text-base font-medium text-slate-400">
 				<a href="#benefit" class="hover:text-emerald-400 transition-colors">Benefit</a>
 				<a href="#stats" class="hover:text-emerald-400 transition-colors">Statistik</a>
 				<a href="#paket" class="hover:text-emerald-400 transition-colors">Paket Belajar</a>
 				<a href="#faq" class="hover:text-emerald-400 transition-colors">FAQ</a>
 			</div>
 			<div>
-				<a href="https://webstockid.github.io/index" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-lg font-bold text-sm tracking-wide transition shadow-lg shadow-emerald-500/20 block">STOCK ID VIP</a>
+				<a href="https://webstockid.github.io/index" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-lg font-bold text-sm lg:text-base tracking-wide transition shadow-lg shadow-emerald-500/20 block">STOCK ID VIP</a>
 			</div>
 		</div>
 	</nav>
 
 	<!-- DASHBOARD INFORMASI AKSES AKUN PREMIUM -->
 	<div id="vipDashboard" class="hidden w-full bg-slate-900 border-b border-emerald-500/20 py-3 px-4 shadow-lg transition-all">
-		<div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 text-xs sm:text-sm">
+		<div class="max-w-7xl 2xl:max-w-[1600px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 text-xs sm:text-sm lg:text-base">
 			<div class="flex flex-wrap items-center gap-3">
 				<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold flex items-center gap-1.5">
 					<i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> <span id="vipAccountStatus">Status: Aktif</span>
 				</span>
 				<div class="text-slate-300">
-					Selamat datang, <strong id="vipUserName" class="text-white font-bold text-sm">User</strong>
+					Selamat datang, <strong id="vipUserName" class="text-white font-bold text-sm lg:text-base">User</strong>
 				</div>
 			</div>
 
 			<div class="flex items-center gap-4">
-				<div class="text-slate-400 text-xs">
+				<div class="text-slate-400 text-xs lg:text-sm">
 					Sisa Masa Aktif: <strong id="vipDaysLeft" class="text-amber-400 font-bold">0 Hari</strong>
 				</div>
-				<button onclick="logoutVIP()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1">
+				<button onclick="logoutVIP()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs lg:text-sm font-semibold transition flex items-center gap-1">
 					<i data-lucide="log-out" class="w-3.5 h-3.5"></i> Logout
 				</button>
 			</div>
@@ -106,11 +106,11 @@
 
 	<!-- Fixed Search Bar Melayang -->
 	<div class="sticky top-20 left-0 w-full z-30 glassmorphism border-b border-slate-800/80 py-3 px-4">
-		<div class="max-w-md mx-auto relative">
-			<i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-slate-400"></i>
+		<div class="max-w-md lg:max-w-xl mx-auto relative">
+			<i data-lucide="search" class="absolute left-3.5 top-3 lg:top-3.5 w-4 h-4 lg:w-5 lg:h-5 text-slate-400"></i>
 			<input type="text" id="stockSearch" placeholder="Cari kode saham (MDIA, CUAN, RAJA, PANI, BBRI, ANTM...)" 
-				class="w-full bg-slate-800 text-sm border border-slate-700 rounded-lg pl-9 pr-20 py-2 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
-			<button onclick="searchStock()" class="absolute right-1 top-1 text-xs bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-3 py-1.5 rounded-md transition">
+				class="w-full bg-slate-800 text-sm lg:text-base border border-slate-700 rounded-lg pl-10 lg:pl-11 pr-24 py-2 lg:py-2.5 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
+			<button onclick="searchStock()" class="absolute right-1.5 top-1.5 text-xs lg:text-sm bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-4 py-1.5 lg:py-2 rounded-md transition">
 				Cari
 			</button>
 		</div>
@@ -144,42 +144,42 @@
 	</div>
 
 	<!-- Main Content -->
-	<main class="max-w-7xl mx-auto px-4 pt-10 pb-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+	<main class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 lg:px-8 pt-6 lg:pt-10 pb-6 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
 
 		<!-- Left Column (TradingView Chart) -->
-		<section class="lg:col-span-2 space-y-6">
+		<section class="lg:col-span-7 2xl:col-span-8 space-y-6">
 			
-			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-wrap justify-between items-center gap-3">
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5 flex flex-wrap justify-between items-center gap-3">
 				<div>
-					<h2 class="text-2xl font-bold text-white flex items-center gap-2" id="stockTitle">
+					<h2 class="text-2xl lg:text-3xl font-bold text-white flex items-center gap-2" id="stockTitle">
 						IDX:MDIA
 					</h2>
-					<p class="text-xs text-slate-400 mt-0.5">Bursa Efek Indonesia • 1-Day Chart</p>
+					<p class="text-xs lg:text-sm text-slate-400 mt-0.5">Bursa Efek Indonesia • 1-Day Chart</p>
 				</div>
 				
 				<div class="flex items-center gap-2">
-					<button onclick="shareStockUrl()" class="text-xs bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition font-medium">
-						<i data-lucide="share-2" class="w-3.5 h-3.5"></i> Bagikan
+					<button onclick="shareStockUrl()" class="text-xs lg:text-sm bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 lg:px-4 py-1.5 rounded-lg flex items-center gap-1.5 transition font-medium">
+						<i data-lucide="share-2" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Bagikan
 					</button>
-					<span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-medium flex items-center gap-1.5">
+					<span class="text-xs lg:text-sm bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 lg:px-4 py-1 rounded-full font-medium flex items-center gap-1.5">
 						<span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Market Live
 					</span>
 				</div>
 			</div>
 
 			<!-- Live TradingView Chart Widget -->
-			<div class="bg-slate-900 border border-slate-800 rounded-xl p-2 h-[500px] overflow-hidden">
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-2 lg:p-3 h-[500px] lg:h-[650px] 2xl:h-[720px] overflow-hidden shadow-xl">
 				<div id="tv_chart_container" class="w-full h-full"></div>
 			</div>
 
 		</section>
 
 		<!-- Right Column (Live Technical Meter + TAB NAVIGASI) -->
-		<section class="space-y-6">
+		<section class="lg:col-span-5 2xl:col-span-4 space-y-6">
 
-			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
-				<h3 class="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
-					<i data-lucide="gauge" class="w-4 h-4 text-cyan-400"></i> Analisa Teknikal Real-Time (TradingView Engine)
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5 shadow-xl">
+				<h3 class="text-sm lg:text-base font-semibold text-slate-300 mb-3 flex items-center gap-2">
+					<i data-lucide="gauge" class="w-4 h-4 lg:w-5 lg:h-5 text-cyan-400"></i> Analisa Teknikal Real-Time (TradingView Engine)
 				</h3>
 				<div class="tradingview-widget-container">
 					<div id="tv_technical_container"></div>
@@ -187,105 +187,105 @@
 			</div>
 
 			<!-- TAB CONTAINER -->
-			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+			<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5 shadow-xl">
 				
 				<!-- MENU TAB DIBUAT FIXED/STICKY SAAT SCROLL TEPAT DI BAWAH TOMBOL CARI -->
-				<div class="sticky top-[133px] z-20 glassmorphism p-2 rounded-xl mb-4 border border-slate-800 flex gap-1 overflow-x-auto shadow-xl">
-					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap">
+				<div class="sticky top-[133px] lg:top-[140px] z-20 glassmorphism p-2 rounded-xl mb-4 border border-slate-800 flex gap-1.5 overflow-x-auto shadow-xl scrollbar-thin">
+					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-1.5 lg:py-2 text-xs lg:text-sm font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap px-2 transition">
 						<i data-lucide="sparkles" class="w-3.5 h-3.5 text-sky-400"></i> AI Signal
 					</button>
-					<button onclick="switchTab('bigmoney')" id="tabBtn-bigmoney" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+					<button onclick="switchTab('bigmoney')" id="tabBtn-bigmoney" class="flex-1 py-1.5 lg:py-2 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap px-2 transition">
 						<i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i> Radar Bandar
 					</button>
-					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-1.5 lg:py-2 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap px-2 transition">
 						<i data-lucide="newspaper" class="w-3.5 h-3.5 text-teal-400"></i> Berita
 					</button>
-					<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+					<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-1 py-1.5 lg:py-2 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap px-2 transition">
 						<i data-lucide="calendar" class="w-3.5 h-3.5 text-teal-400"></i> Korporasi
 					</button>
-					<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+					<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-1.5 lg:py-2 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap px-2 transition">
 						<i data-lucide="pie-chart" class="w-3.5 h-3.5 text-orange-400"></i> Fundamental
 					</button>
-					<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+					<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-1.5 lg:py-2 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap px-2 transition">
 						<i data-lucide="calculator" class="w-3.5 h-3.5 text-fuchsia-400"></i> Smart RRR
 					</button>
-					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap">
+					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-1.5 lg:py-2 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap px-2 transition">
 						<i data-lucide="bell" class="w-3.5 h-3.5 text-rose-400"></i> Alert
 					</button>
 				</div>
 
 				<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME -->
-				<div id="tabContent-ai" class="space-y-3.5 min-h-[300px] text-xs">
+				<div id="tabContent-ai" class="space-y-4 min-h-[300px] text-xs lg:text-sm">
 					
 					<!-- VERDIK AI & REASONING -->
-					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
+					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
 						<div class="flex items-center justify-between">
-							<span class="font-bold text-slate-200 uppercase tracking-wider text-[11px]" id="aiHeaderTicker">[MDIA] — KONDISI TEKNIKAL</span>
-							<span class="text-[10px] text-slate-400" id="aiDateStamp">Memuat data real-time...</span>
+							<span class="font-bold text-slate-200 uppercase tracking-wider text-[11px] lg:text-xs" id="aiHeaderTicker">[MDIA] — KONDISI TEKNIKAL</span>
+							<span class="text-[10px] lg:text-[11px] text-slate-400" id="aiDateStamp">Memuat data real-time...</span>
 						</div>
-						<div class="flex items-center justify-between border-t border-slate-800/80 pt-2">
+						<div class="flex items-center justify-between border-t border-slate-800/80 pt-2.5">
 							<div>
-								<span class="text-[10px] text-slate-400 block">VERDIK AI</span>
-								<span id="aiVerdikText" class="font-black text-amber-400 text-sm">MEMUAT...</span>
+								<span class="text-[10px] lg:text-xs text-slate-400 block">VERDIK AI</span>
+								<span id="aiVerdikText" class="font-black text-amber-400 text-sm lg:text-base">MEMUAT...</span>
 							</div>
 							<div class="text-right">
-								<span class="text-[10px] text-slate-400 block">SKOR AI</span>
-								<span id="aiScoreBadge" class="font-bold bg-slate-800 text-slate-400 px-2.5 py-0.5 rounded text-xs border border-slate-700">- / 5</span>
+								<span class="text-[10px] lg:text-xs text-slate-400 block">SKOR AI</span>
+								<span id="aiScoreBadge" class="font-bold bg-slate-800 text-slate-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700">- / 5</span>
 							</div>
 						</div>
-						<div id="aiVerdikDesc" class="text-slate-300 leading-relaxed text-[11px] pt-1 border-t border-slate-900 space-y-1.5">
+						<div id="aiVerdikDesc" class="text-slate-300 leading-relaxed text-[11px] lg:text-xs pt-1 border-t border-slate-900 space-y-1.5">
 							Menghubungkan ke server bursa untuk mengambil data real-time...
 						</div>
 					</div>
 
 					<!-- BUKTI UTAMA & KATALIS TEKNIKAL -->
-					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
-						<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px]">
-							<i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> BUKTI UTAMA & KATALIS TEKNIKAL
+					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
+						<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
+							<i data-lucide="check-circle-2" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> BUKTI UTAMA & KATALIS TEKNIKAL
 						</span>
-						<ul id="aiBuktiUtamaList" class="space-y-1.5 text-slate-300 text-[11px] list-none">
+						<ul id="aiBuktiUtamaList" class="space-y-2 text-slate-300 text-[11px] lg:text-xs list-none">
 							<li class="text-slate-500">Memuat indikator teknikal riil (MA, Volume, Range)...</li>
 						</ul>
 					</div>
 
 					<!-- TRADING MAP & ANIMATED REAL-TIME PROGRES BAR -->
-					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-3">
-						<span class="font-bold text-cyan-400 flex items-center gap-1.5 text-[11px]">
-							<i data-lucide="map-pin" class="w-3.5 h-3.5"></i> TRADING MAP (TECHNICAL PIVOT)
+					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3.5">
+						<span class="font-bold text-cyan-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
+							<i data-lucide="map-pin" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> TRADING MAP (TECHNICAL PIVOT)
 						</span>
-						<div class="grid grid-cols-2 gap-2 text-[11px]">
-							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
-								<span class="text-slate-400 text-[10px] block">Area Entry / Support</span>
+						<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs">
+							<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[10px] lg:text-[11px] block">Area Entry / Support</span>
 								<span id="mapSupport1" class="font-bold text-amber-400">Memuat...</span>
 							</div>
-							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
-								<span class="text-slate-400 text-[10px] block">Resistance</span>
+							<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[10px] lg:text-[11px] block">Resistance</span>
 								<span id="mapResist1" class="font-bold text-cyan-400">Memuat...</span>
 							</div>
-							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
-								<span class="text-slate-400 text-[10px] block">Target Profit (TP1 / TP2)</span>
+							<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[10px] lg:text-[11px] block">Target Profit (TP1 / TP2)</span>
 								<span id="mapTP" class="font-bold text-emerald-400">Memuat...</span>
 							</div>
-							<div class="bg-slate-900/60 p-2 rounded border border-slate-800">
-								<span class="text-slate-400 text-[10px] block">Stop Loss (SL)</span>
+							<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[10px] lg:text-[11px] block">Stop Loss (SL)</span>
 								<span id="mapSL" class="font-bold text-rose-400">Memuat...</span>
 							</div>
 						</div>
 
 						<!-- FITUR TARGET PRICE POTENTIAL PROGRESS BAR DINAMIS & ANIMASI -->
-						<div class="bg-slate-900/90 p-3 rounded-lg border border-slate-800 space-y-2">
-							<div class="flex justify-between items-center text-[10px]">
+						<div class="bg-slate-900/90 p-3 lg:p-3.5 rounded-lg border border-slate-800 space-y-2">
+							<div class="flex justify-between items-center text-[10px] lg:text-[11px]">
 								<span class="text-rose-400 font-bold" id="tpBarSL">SL: -</span>
-								<span class="text-white font-black bg-slate-800 px-2 py-0.5 rounded border border-slate-700" id="tpBarCurrent">Harga: -</span>
+								<span class="text-white font-black bg-slate-800 px-2.5 py-0.5 rounded border border-slate-700" id="tpBarCurrent">Harga: -</span>
 								<span class="text-emerald-400 font-bold" id="tpBarTP">TP1: -</span>
 							</div>
-							<div class="w-full bg-slate-950 rounded-full h-3 overflow-hidden border border-slate-800 relative p-0.5">
+							<div class="w-full bg-slate-950 rounded-full h-3 lg:h-3.5 overflow-hidden border border-slate-800 relative p-0.5">
 								<!-- Progress Bar Fill -->
 								<div id="tpProgressBar" class="h-full rounded-full transition-all duration-1000 ease-out bg-gradient-to-r from-rose-500 via-amber-400 to-emerald-400 relative" style="width: 0%;">
 									<div class="absolute right-0 top-0 bottom-0 w-2 bg-white rounded-full shadow-lg shadow-white animate-ping"></div>
 								</div>
 							</div>
-							<div class="flex justify-between items-center text-[9px] text-slate-400 pt-0.5">
+							<div class="flex justify-between items-center text-[9px] lg:text-[10px] text-slate-400 pt-0.5">
 								<span>Batas Risiko (Support)</span>
 								<span id="tpProgressPercent" class="font-bold text-cyan-400">Posisi: 0% dari Target Zone</span>
 								<span>Batas Target (Resist)</span>
@@ -294,63 +294,63 @@
 					</div>
 
 					<!-- BERITA RELEVAN RSS -->
-					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
-						<span class="font-bold text-purple-400 flex items-center gap-1.5 text-[11px]">
-							<i data-lucide="newspaper" class="w-3.5 h-3.5"></i> BERITA RELEVAN (REAL-TIME RSS)
+					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
+						<span class="font-bold text-purple-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
+							<i data-lucide="newspaper" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> BERITA RELEVAN (REAL-TIME RSS)
 						</span>
-						<div id="aiBeritaList" class="space-y-1.5 text-slate-300 text-[11px]">
+						<div id="aiBeritaList" class="space-y-2 text-slate-300 text-[11px] lg:text-xs">
 							Memuat berita terkini...
 						</div>
 					</div>
 
 					<!-- SKENARIO TRADING -->
-					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
-						<span class="font-bold text-amber-400 flex items-center gap-1.5 text-[11px]">
-							<i data-lucide="git-fork" class="w-3.5 h-3.5"></i> SKENARIO PERGERAKAN HARGA
+					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
+						<span class="font-bold text-amber-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
+							<i data-lucide="git-fork" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> SKENARIO PERGERAKAN HARGA
 						</span>
-						<div id="aiSkenarioBox" class="space-y-1.5 text-slate-300 text-[11px] leading-relaxed">
+						<div id="aiSkenarioBox" class="space-y-2 text-slate-300 text-[11px] lg:text-xs leading-relaxed">
 							Memuat skenario...
 						</div>
 					</div>
 
 					<!-- KESIMPULAN & NOTE AI -->
-					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
-						<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px]">
-							<i data-lucide="thumbs-up" class="w-3.5 h-3.5"></i> KESIMPULAN & NOTE AI
+					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
+						<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
+							<i data-lucide="thumbs-up" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> KESIMPULAN & NOTE AI
 						</span>
-						<div id="aiKesimpulanText" class="text-slate-300 text-[11px] leading-relaxed space-y-1.5">
+						<div id="aiKesimpulanText" class="text-slate-300 text-[11px] lg:text-xs leading-relaxed space-y-2">
 							Menghitung rekomendasi terstruktur...
 						</div>
 					</div>
 
-					<p class="text-[10px] text-slate-500 italic bg-slate-950/50 p-2.5 rounded-lg border border-slate-900 leading-normal">
-						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa real-time. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
+					<p class="text-[10px] lg:text-[11px] text-slate-500 italic bg-slate-950/50 p-3 rounded-lg border border-slate-900 leading-normal">
+						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data yang diupdate 30 menit sekali. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
 					</p>
 
 				</div>
 
 				<!-- TAB CONTENT 2: BIG MONEY / BROKER ACCUMULATION RADAR -->
-				<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-3.5 text-xs">
+				<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					
-					<div class="flex items-center justify-between bg-amber-500/10 border border-amber-500/20 p-2.5 rounded-xl">
+					<div class="flex items-center justify-between bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl">
 						<div class="flex items-center gap-2">
 							<span class="relative flex h-2 w-2">
 							  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
 							  <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
 							</span>
-							<span class="text-xs font-bold text-amber-400">Deretan Saham Radar Teknikal & Transaksi</span>
+							<span class="text-xs lg:text-sm font-bold text-amber-400">Deretan Saham Radar Teknikal & Transaksi</span>
 						</div>
-						<button onclick="renderBigMoneyRadar(true)" class="text-[10px] text-slate-300 hover:text-emerald-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700 flex items-center gap-1">
-							<i data-lucide="refresh-cw" class="w-3 h-3"></i> Scan Ulang
+						<button onclick="renderBigMoneyRadar(true)" class="text-[10px] lg:text-xs text-slate-300 hover:text-emerald-400 bg-slate-800 px-2.5 py-1 rounded border border-slate-700 flex items-center gap-1 transition">
+							<i data-lucide="refresh-cw" class="w-3 h-3 lg:w-3.5 lg:h-3.5"></i> Scan Ulang
 						</button>
 					</div>
 
 					<!-- Container Saham Yang Terdeteksi -->
-					<div id="bigMoneyList" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
-						<div class="text-center text-slate-500 text-xs py-8">Menganalisis pergerakan transaksi & volume bursa...</div>
+					<div id="bigMoneyList" class="space-y-3.5 max-h-[550px] lg:max-h-[650px] overflow-y-auto pr-1.5 scrollbar-thin">
+						<div class="text-center text-slate-500 text-xs lg:text-sm py-8">Menganalisis pergerakan transaksi & volume bursa...</div>
 					</div>
 
-					<p class="text-[10px] text-slate-500 italic bg-slate-950 p-2.5 rounded-lg border border-slate-900 leading-normal">
+					<p class="text-[10px] lg:text-[11px] text-slate-500 italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
 						💡 <strong>Sistem Deteksi Teknikal:</strong> Menghitung rasio lonjakan volume harian vs rata-rata volume 10 hari serta posisi Moving Average real-time dari data bursa. Klik "Lihat Chart" untuk analisa lengkap.
 					</p>
 				</div>
@@ -358,19 +358,19 @@
 				<!-- TAB CONTENT 3: BERITA RSS -->
 				<div id="tabContent-news" class="hidden space-y-3 min-h-[250px]">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs text-slate-400">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
-						<span class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-slate-300">Google News RSS</span>
+						<span class="text-xs lg:text-sm text-slate-400">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-slate-300">Google News RSS</span>
 					</div>
 					<div id="newsContainer" class="space-y-3">
-						<div class="text-center text-slate-500 text-xs py-10">Memuat berita terkini...</div>
+						<div class="text-center text-slate-500 text-xs lg:text-sm py-10">Memuat berita terkini...</div>
 					</div>
 				</div>
 
 				<!-- TAB CONTENT 4: FUNDAMENTAL WIDGET -->
 				<div id="tabContent-fundamental" class="hidden min-h-[300px]">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs text-slate-400">Profil Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
-						<span class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-purple-400 font-semibold">TradingView Data</span>
+						<span class="text-xs lg:text-sm text-slate-400">Profil Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-purple-400 font-semibold">TradingView Data</span>
 					</div>
 					<div class="tradingview-widget-container">
 						<div id="tv_fundamental_container"></div>
@@ -378,78 +378,78 @@
 				</div>
 
 				<!-- TAB CONTENT 5: SMART KALKULATOR RRR & POSITION SIZING -->
-				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-3.5 text-xs">
+				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
 					<div class="flex items-center justify-between mb-1">
-						<span class="text-slate-300 font-bold flex items-center gap-1.5">
-							<i data-lucide="calculator" class="w-4 h-4 text-fuchsia-400"></i> Smart RRR & Position Sizing (<strong id="rrrTickerLabel" class="text-white">MDIA</strong>)
+						<span class="text-slate-300 font-bold flex items-center gap-1.5 text-xs lg:text-sm">
+							<i data-lucide="calculator" class="w-4 h-4 lg:w-5 lg:h-5 text-fuchsia-400"></i> Smart RRR & Position Sizing (<strong id="rrrTickerLabel" class="text-white">MDIA</strong>)
 						</span>
-						<button onclick="autoFillRRRFromAI()" class="text-[10px] bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 font-bold px-2 py-1 rounded border border-emerald-500/30 transition flex items-center gap-1">
-							<i data-lucide="wand-2" class="w-3 h-3"></i> Sync Data AI
+						<button onclick="autoFillRRRFromAI()" class="text-[10px] lg:text-xs bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 font-bold px-2.5 py-1 rounded border border-emerald-500/30 transition flex items-center gap-1">
+							<i data-lucide="wand-2" class="w-3 h-3 lg:w-3.5 lg:h-3.5"></i> Sync Data AI
 						</button>
 					</div>
 
 					<!-- INPUT MODAL & BIAYA -->
-					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2.5">
-						<span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">1. Parameter Modal & Toleransi Risiko</span>
-						<div class="grid grid-cols-2 gap-2">
+					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
+						<span class="text-[10px] lg:text-[11px] font-bold text-slate-400 uppercase tracking-wider block">1. Parameter Modal & Toleransi Risiko</span>
+						<div class="grid grid-cols-2 gap-2.5">
 							<div>
-								<label class="text-[10px] text-slate-400 block mb-1">Total Modal Trading (Rp)</label>
-								<input type="number" id="rrrTotalCapital" value="50000000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono focus:outline-none focus:border-emerald-500">
+								<label class="text-[10px] lg:text-[11px] text-slate-400 block mb-1">Total Modal Trading (Rp)</label>
+								<input type="number" id="rrrTotalCapital" value="50000000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
 							</div>
 							<div>
-								<label class="text-[10px] text-slate-400 block mb-1">Max Risk per Trade (%)</label>
-								<input type="number" id="rrrRiskPercent" value="2" step="0.5" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono focus:outline-none focus:border-amber-500">
+								<label class="text-[10px] lg:text-[11px] text-slate-400 block mb-1">Max Risk per Trade (%)</label>
+								<input type="number" id="rrrRiskPercent" value="2" step="0.5" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-amber-500">
 							</div>
 						</div>
 					</div>
 
 					<!-- INPUT HARGA ENTRY SL TP -->
-					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2.5">
-						<span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">2. Level Harga Trading Plan</span>
-						<div class="grid grid-cols-3 gap-2">
+					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
+						<span class="text-[10px] lg:text-[11px] font-bold text-slate-400 uppercase tracking-wider block">2. Level Harga Trading Plan</span>
+						<div class="grid grid-cols-3 gap-2.5">
 							<div>
-								<label class="text-[10px] text-slate-400 block mb-1">Harga Entry (Rp)</label>
-								<input type="number" id="rrrEntry" placeholder="misal: 1000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono focus:outline-none focus:border-emerald-500">
+								<label class="text-[10px] lg:text-[11px] text-slate-400 block mb-1">Harga Entry (Rp)</label>
+								<input type="number" id="rrrEntry" placeholder="misal: 1000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
 							</div>
 							<div>
-								<label class="text-[10px] text-slate-400 block mb-1">Stop Loss (SL)</label>
-								<input type="number" id="rrrSL" placeholder="misal: 950" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono focus:outline-none focus:border-rose-500">
+								<label class="text-[10px] lg:text-[11px] text-slate-400 block mb-1">Stop Loss (SL)</label>
+								<input type="number" id="rrrSL" placeholder="misal: 950" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-rose-500">
 							</div>
 							<div>
-								<label class="text-[10px] text-slate-400 block mb-1">Target (TP1)</label>
-								<input type="number" id="rrrTP" placeholder="misal: 1150" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono focus:outline-none focus:border-emerald-500">
+								<label class="text-[10px] lg:text-[11px] text-slate-400 block mb-1">Target (TP1)</label>
+								<input type="number" id="rrrTP" placeholder="misal: 1150" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
 							</div>
 						</div>
 					</div>
 
 					<!-- HASIL ANALISIS SMARTER RRR -->
-					<div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-3">
-						<div class="flex justify-between items-center border-b border-slate-800 pb-2">
-							<span class="text-slate-300 text-xs">Rasio Risk / Reward:</span>
-							<span id="rrrResult" class="font-black text-base text-cyan-400 font-mono">1 : -</span>
+					<div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3.5">
+						<div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+							<span class="text-slate-300 text-xs lg:text-sm">Rasio Risk / Reward:</span>
+							<span id="rrrResult" class="font-black text-base lg:text-lg text-cyan-400 font-mono">1 : -</span>
 						</div>
 
-						<div class="grid grid-cols-2 gap-2 text-[11px]">
-							<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-								<span class="text-slate-400 text-[9px] block">Maksimal Risiko Uang (Rp)</span>
+						<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs">
+							<div class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] lg:text-[10px] block">Maksimal Risiko Uang (Rp)</span>
 								<span id="rrrMaxRiskAmount" class="font-bold text-rose-400 font-mono">Rp 0</span>
 							</div>
-							<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-								<span class="text-slate-400 text-[9px] block">Maksimal Alokasi Lot</span>
+							<div class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] lg:text-[10px] block">Maksimal Alokasi Lot</span>
 								<span id="rrrMaxLots" class="font-bold text-emerald-400 font-mono">0 Lot</span>
 							</div>
-							<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-								<span class="text-slate-400 text-[9px] block">Total Modal Terpakai</span>
+							<div class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] lg:text-[10px] block">Total Modal Terpakai</span>
 								<span id="rrrCapitalNeeded" class="font-bold text-amber-400 font-mono">Rp 0</span>
 							</div>
-							<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-								<span class="text-slate-400 text-[9px] block">Potensi Profit Bersih (Rp)</span>
+							<div class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] lg:text-[10px] block">Potensi Profit Bersih (Rp)</span>
 								<span id="rrrPotentialReward" class="font-bold text-emerald-300 font-mono">Rp 0</span>
 							</div>
 						</div>
 
 						<div class="pt-1 border-t border-slate-800/80">
-							<div id="rrrEvaluationBadge" class="p-2 rounded text-[11px] font-semibold text-center bg-slate-900 text-slate-400">
+							<div id="rrrEvaluationBadge" class="p-2.5 rounded text-[11px] lg:text-xs font-semibold text-center bg-slate-900 text-slate-400">
 								Masukkan harga Entry, SL, dan TP untuk evaluasi sistematis AI.
 							</div>
 						</div>
@@ -457,38 +457,38 @@
 				</div>
 
 				<!-- TAB CONTENT 6: ALERT PRICE LEVEL -->
-				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-3 text-xs">
+				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-3.5 text-xs lg:text-sm">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-slate-400">Pengingat Harga (<strong id="alertTickerLabel" class="text-white">MDIA</strong>)</span>
-						<span class="text-[10px] bg-slate-800 text-cyan-400 px-2 py-0.5 rounded border border-slate-700">Browser Alert</span>
+						<span class="text-[10px] lg:text-xs bg-slate-800 text-cyan-400 px-2 py-0.5 rounded border border-slate-700">Browser Alert</span>
 					</div>
 
 					<div class="flex gap-2">
-						<input type="number" id="alertPriceInput" placeholder="Set target harga (misal: 1050)..." class="flex-1 bg-slate-950 border border-slate-800 rounded p-2 text-white focus:outline-none focus:border-emerald-500">
-						<button onclick="addPriceAlert()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-3 py-1.5 rounded font-bold transition">
+						<input type="number" id="alertPriceInput" placeholder="Set target harga (misal: 1050)..." class="flex-1 bg-slate-950 border border-slate-800 rounded p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
+						<button onclick="addPriceAlert()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-4 py-2.5 rounded font-bold transition">
 							+ Pasang
 						</button>
 					</div>
 
 					<div class="space-y-2 pt-2">
-						<span class="text-[11px] text-slate-400 block">Daftar Alert Aktif:</span>
-						<div id="alertListContainer" class="space-y-1.5 min-h-[100px]">
+						<span class="text-[11px] lg:text-xs text-slate-400 block">Daftar Alert Aktif:</span>
+						<div id="alertListContainer" class="space-y-2 min-h-[100px]">
 							<div class="text-center text-slate-500 py-6">Belum ada alert harga yang dipasang.</div>
 						</div>
 					</div>
 				</div>
 
 				<!-- TAB CONTENT 7: AKSI KORPORASI LIVE RSS -->
-				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3 text-xs">
+				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3.5 text-xs lg:text-sm">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs text-slate-400">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
-						<span class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-emerald-400 font-semibold">Dividen / RUPS / Split</span>
+						<span class="text-xs lg:text-sm text-slate-400">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-emerald-400 font-semibold">Dividen / RUPS / Split</span>
 					</div>
 					<div id="corporateContainer" class="space-y-3">
-						<div class="text-center text-slate-500 text-xs py-10">Memuat data aksi korporasi...</div>
+						<div class="text-center text-slate-500 text-xs lg:text-sm py-10">Memuat data aksi korporasi...</div>
 					</div>
-					<div class="border-t border-slate-800 pt-2 text-right">
-						<a href="https://www.idx.co.id/id/perusahaan-tercatat/aksi-korporasi" target="_blank" class="text-[11px] text-cyan-400 hover:underline">Lihat Pengumuman Resmi BEI &rarr;</a>
+					<div class="border-t border-slate-800 pt-2.5 text-right">
+						<a href="https://www.idx.co.id/id/perusahaan-tercatat/aksi-korporasi" target="_blank" class="text-[11px] lg:text-xs text-cyan-400 hover:underline">Lihat Pengumuman Resmi BEI &rarr;</a>
 					</div>
 				</div>
 
@@ -909,8 +909,8 @@
 
 			let score = 3;
 			let verdik = "NETRAL / KONSOLIDASI";
-			let verdikClass = "font-black text-amber-400 text-sm";
-			let scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs border border-slate-700";
+			let verdikClass = "font-black text-amber-400 text-sm lg:text-base";
+			let scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 
 			if (stockData) {
 				const isAboveMA5 = stockData.price >= stockData.ma5;
@@ -921,23 +921,23 @@
 				if (isAboveMA5 && isAboveMA10 && isAboveMA20 && stockData.changePct > 1.5 && isVolSpike) {
 					score = 5;
 					verdik = "STRONG BULLISH BREAKOUT";
-					verdikClass = "font-black text-emerald-400 text-sm";
-					scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs border border-slate-700";
+					verdikClass = "font-black text-emerald-400 text-sm lg:text-base";
+					scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 				} else if ((isAboveMA5 || isAboveMA10) && stockData.changePct >= 0) {
 					score = 4;
 					verdik = "BULLISH ACCUMULATION";
-					verdikClass = "font-black text-emerald-300 text-sm";
-					scoreClass = "font-bold bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded text-xs border border-slate-700";
+					verdikClass = "font-black text-emerald-300 text-sm lg:text-base";
+					scoreClass = "font-bold bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 				} else if (stockData.changePct < -2.5 && !isAboveMA10) {
 					score = 1;
 					verdik = "STRONG BEARISH / SELLING PRESSURE";
-					verdikClass = "font-black text-rose-500 text-sm";
-					scoreClass = "font-bold bg-slate-800 text-rose-500 px-2.5 py-0.5 rounded text-xs border border-slate-700";
+					verdikClass = "font-black text-rose-500 text-sm lg:text-base";
+					scoreClass = "font-bold bg-slate-800 text-rose-500 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 				} else if (stockData.changePct < 0) {
 					score = 2;
 					verdik = "WEAK / BEARISH CORRECTION";
-					verdikClass = "font-black text-rose-400 text-sm";
-					scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs border border-slate-700";
+					verdikClass = "font-black text-rose-400 text-sm lg:text-base";
+					scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 				}
 
 				verdikEl.innerText = verdik;
@@ -962,19 +962,19 @@
 				`;
 
 				buktiEl.innerHTML = `
-					<li class="flex justify-between items-center bg-slate-900/60 p-1.5 rounded border border-slate-800/80">
+					<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 						<span>• Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
-						<span class="text-[10px] text-slate-400">Close</span>
+						<span class="text-[10px] lg:text-[11px] text-slate-400">Close</span>
 					</li>
-					<li class="flex justify-between items-center bg-slate-900/60 p-1.5 rounded border border-slate-800/80">
+					<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 						<span>• Posisi Tren MA5 / MA10 / MA20:</span>
 						<span class="font-mono text-emerald-400">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 					</li>
-					<li class="flex justify-between items-center bg-slate-900/60 p-1.5 rounded border border-slate-800/80">
+					<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 						<span>• Rasio Volume vs Rerata 10 Hari:</span>
 						<span class="font-bold font-mono ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
 					</li>
-					<li class="flex justify-between items-center bg-slate-900/60 p-1.5 rounded border border-slate-800/80">
+					<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 						<span>• Rentang Tertinggi / Terendah 20 Hari:</span>
 						<span class="font-mono text-cyan-400">Rp ${stockData.low20.toLocaleString('id-ID')} - Rp ${stockData.high20.toLocaleString('id-ID')}</span>
 					</li>
@@ -1073,7 +1073,7 @@
 				maxLotsEl.innerText = "0 Lot";
 				capitalNeededEl.innerText = "Rp 0";
 				rewardEl.innerText = "Rp 0";
-				evalEl.className = "p-2 rounded text-[11px] font-semibold text-center bg-slate-900 text-slate-400";
+				evalEl.className = "p-2.5 rounded text-[11px] lg:text-xs font-semibold text-center bg-slate-900 text-slate-400";
 				evalEl.innerText = "Masukkan harga Entry, SL (>0 & < Entry), dan TP (> Entry) untuk evaluasi AI.";
 				return;
 			}
@@ -1095,14 +1095,14 @@
 			rewardEl.innerText = `Rp ${Math.round(totalRewardAmount).toLocaleString('id-ID')}`;
 
 			if (rrr >= 2.0) {
-				evalEl.className = "p-2 rounded text-[11px] font-bold text-center bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
-				evalEl.innerHTML = `✓ <strong>Rencana Trading Sangat Layak Eksekusi (RRR 1 : ${rrr})</strong><br><span class="text-[10px] font-normal text-slate-300">Potensi profit jauh melebihi toleransi risiko batas modal Anda.</span>`;
+				evalEl.className = "p-2.5 rounded text-[11px] lg:text-xs font-bold text-center bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+				evalEl.innerHTML = `✓ <strong>Rencana Trading Sangat Layak Eksekusi (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Potensi profit jauh melebihi toleransi risiko batas modal Anda.</span>`;
 			} else if (rrr >= 1.5) {
-				evalEl.className = "p-2 rounded text-[11px] font-bold text-center bg-amber-500/10 text-amber-400 border border-amber-500/30";
-				evalEl.innerHTML = `⚠ <strong>Rencana Trading Cukup Layak (RRR 1 : ${rrr})</strong><br><span class="text-[10px] font-normal text-slate-300">Memenuhi standar minimal, namun disarankan memperketat entry dekat support.</span>`;
+				evalEl.className = "p-2.5 rounded text-[11px] lg:text-xs font-bold text-center bg-amber-500/10 text-amber-400 border border-amber-500/30";
+				evalEl.innerHTML = `⚠ <strong>Rencana Trading Cukup Layak (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Memenuhi standar minimal, namun disarankan memperketat entry dekat support.</span>`;
 			} else {
-				evalEl.className = "p-2 rounded text-[11px] font-bold text-center bg-rose-500/10 text-rose-400 border border-rose-500/30";
-				evalEl.innerHTML = `✕ <strong>Risiko Terlalu Tinggi / Kurang Ideal (RRR 1 : ${rrr})</strong><br><span class="text-[10px] font-normal text-slate-300">Potensi keuntungan tidak sebanding dengan risiko penurunan modal.</span>`;
+				evalEl.className = "p-2.5 rounded text-[11px] lg:text-xs font-bold text-center bg-rose-500/10 text-rose-400 border border-rose-500/30";
+				evalEl.innerHTML = `✕ <strong>Risiko Terlalu Tinggi / Kurang Ideal (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Potensi keuntungan tidak sebanding dengan risiko penurunan modal.</span>`;
 			}
 		}
 
@@ -1183,7 +1183,7 @@
 		async function renderBigMoneyRadar(isManualClick = false) {
 			hasRadarLoaded = true; // Tandai bahwa radar sudah berhasil dipanggil sekali
 			const container = document.getElementById('bigMoneyList');
-			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa real-time & menghitung sinyal radar...</div>`;
+			container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa real-time & menghitung sinyal radar...</div>`;
 			if (window.lucide) lucide.createIcons();
 
 			if (isManualClick) {
@@ -1225,7 +1225,7 @@
 			}
 
 			if (validData.length === 0) {
-				container.innerHTML = `<div class="text-center text-slate-400 text-xs py-6">Gagal memuat koneksi data bursa. Coba tekan Scan Ulang.</div>`;
+				container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-6">Gagal memuat koneksi data bursa. Coba tekan Scan Ulang.</div>`;
 				return;
 			}
 
@@ -1268,46 +1268,46 @@
 				}
 
 				htmlContent += `
-					<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2.5 relative">
+					<div class="bg-slate-950 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative">
 						<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
 							<div class="flex items-center gap-2">
-								<span class="bg-slate-800 text-amber-400 font-mono text-[10px] px-1.5 py-0.5 rounded border border-slate-700">#${index + 1}</span>
+								<span class="bg-slate-800 text-amber-400 font-mono text-[10px] lg:text-xs px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
 								<div>
 									<div class="flex items-center gap-2">
-										<span class="font-black text-white text-sm">IDX:${ticker}</span>
-										<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 border border-emerald-500/30 font-bold px-2 py-0.5 rounded transition">
+										<span class="font-black text-white text-sm lg:text-base">IDX:${ticker}</span>
+										<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] lg:text-[10px] bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 border border-emerald-500/30 font-bold px-2 py-0.5 rounded transition">
 											Lihat Chart &rarr;
 										</button>
 									</div>
-									<span class="text-[10px] text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
+									<span class="text-[10px] lg:text-xs text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
 								</div>
 							</div>
-							<span class="text-[9px] font-bold px-2.5 py-1 rounded-full border ${statusClass}">
+							<span class="text-[9px] lg:text-[10px] font-bold px-2.5 py-1 rounded-full border ${statusClass}">
 								${statusSignal}
 							</span>
 						</div>
 
-						<div class="grid grid-cols-2 gap-2 text-[10px]">
-							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
-								<span class="text-slate-400 text-[9px] block">Entry Ideal</span>
+						<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs">
+							<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] lg:text-[10px] block">Entry Ideal</span>
 								<span class="font-bold text-emerald-400 font-mono">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 							</div>
-							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
-								<span class="text-slate-400 text-[9px] block">Support MA10</span>
+							<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] lg:text-[10px] block">Support MA10</span>
 								<span class="font-bold text-cyan-400 font-mono">Rp ${item.ma10.toLocaleString('id-ID')}</span>
 							</div>
-							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
-								<span class="text-slate-400 text-[9px] block">Target Profit (TP1/TP2)</span>
+							<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] lg:text-[10px] block">Target Profit (TP1/TP2)</span>
 								<span class="font-bold text-emerald-300 font-mono">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 							</div>
-							<div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
-								<span class="text-slate-400 text-[9px] block">Stop Loss (SL)</span>
+							<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+								<span class="text-slate-400 text-[9px] lg:text-[10px] block">Stop Loss (SL)</span>
 								<span class="font-bold text-rose-400 font-mono">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
 							</div>
 						</div>
 
-						<div class="bg-slate-900/50 p-2.5 rounded border border-slate-800 text-[10px] text-slate-300 leading-relaxed space-y-1">
-							<span class="text-amber-400 font-bold block text-[10px]">ANALISIS TEKNIKAL REALISTIS:</span>
+						<div class="bg-slate-900/50 p-2.5 lg:p-3 rounded border border-slate-800 text-[10px] lg:text-xs text-slate-300 leading-relaxed space-y-1">
+							<span class="text-amber-400 font-bold block text-[10px] lg:text-[11px]">ANALISIS TEKNIKAL REALISTIS:</span>
 							<p>${alasanTeknikal}</p>
 						</div>
 					</div>
@@ -1337,7 +1337,7 @@
 					data.items.slice(0, 6).forEach(item => {
 						const source = item.author || 'Media Nasional';
 						const pubDate = new Date(item.pubDate).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
-						beritaHTML += `<div class="bg-slate-900/50 p-1.5 rounded border border-slate-800/80">• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
+						beritaHTML += `<div class="bg-slate-900/50 p-2 rounded border border-slate-800/80">• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
 					});
 					document.getElementById('aiBeritaList').innerHTML = beritaHTML;
 				} else {
@@ -1364,7 +1364,7 @@
 			container.innerHTML = '';
 			alerts.forEach((targetPrice, index) => {
 				container.innerHTML += `
-					<div class="flex justify-between items-center bg-slate-950 p-2.5 rounded border border-slate-800">
+					<div class="flex justify-between items-center bg-slate-950 p-3 rounded border border-slate-800">
 						<span>Target Harga: <strong class="text-emerald-400">Rp ${targetPrice.toLocaleString('id-ID')}</strong></span>
 						<button onclick="removePriceAlert(${index})" class="text-rose-400 hover:text-rose-300 font-bold px-2 py-0.5">✕</button>
 					</div>
@@ -1399,7 +1399,7 @@
 
 		async function fetchStockNews(ticker) {
 			const container = document.getElementById('newsContainer');
-			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat berita terkini ${ticker}...</div>`;
+			container.innerHTML = `<div class="text-center text-slate-500 text-xs lg:text-sm py-10">Memuat berita terkini ${ticker}...</div>`;
 			
 			const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
 			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
@@ -1416,9 +1416,9 @@
 						});
 
 						container.innerHTML += `
-							<a href="${item.link}" target="_blank" class="block p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
-								<h4 class="text-xs font-semibold text-slate-200 line-clamp-2">${item.title}</h4>
-								<div class="flex justify-between items-center mt-2 text-[10px] text-slate-400">
+							<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
+								<h4 class="text-xs lg:text-sm font-semibold text-slate-200 line-clamp-2">${item.title}</h4>
+								<div class="flex justify-between items-center mt-2 text-[10px] lg:text-xs text-slate-400">
 									<span>${item.author || 'Google News'}</span>
 									<span>${date}</span>
 								</div>
@@ -1426,16 +1426,16 @@
 						`;
 					});
 				} else {
-					container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8">Tidak ada berita khusus ditemukan untuk ${ticker}.</div>`;
+					container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8">Tidak ada berita khusus ditemukan untuk ${ticker}.</div>`;
 				}
 			} catch (e) {
-				container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8">Berita tidak dapat dijangkau sementara.</div>`;
+				container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8">Berita tidak dapat dijangkau sementara.</div>`;
 			}
 		}
 
 		async function fetchCorporateAction(ticker) {
 			const container = document.getElementById('corporateContainer');
-			container.innerHTML = `<div class="text-center text-slate-500 text-xs py-10">Memuat aksi korporasi ${ticker}...</div>`;
+			container.innerHTML = `<div class="text-center text-slate-500 text-xs lg:text-sm py-10">Memuat aksi korporasi ${ticker}...</div>`;
 			
 			const query = encodeURIComponent(`${ticker} (dividen OR RUPS OR "right issue" OR "stock split" OR buyback)`);
 			const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=id&gl=ID&ceid=ID:id`;
@@ -1453,20 +1453,20 @@
 						});
 
 						container.innerHTML += `
-							<a href="${item.link}" target="_blank" class="block p-3 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
+							<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 								<div class="flex items-center gap-1.5 mb-1">
-									<span class="text-[9px] bg-emerald-500/20 text-emerald-400 font-semibold px-1.5 py-0.5 rounded border border-emerald-500/30">Aksi Korporasi</span>
-									<span class="text-[10px] text-slate-400">${date}</span>
+									<span class="text-[9px] lg:text-[10px] bg-emerald-500/20 text-emerald-400 font-semibold px-2 py-0.5 rounded border border-emerald-500/30">Aksi Korporasi</span>
+									<span class="text-[10px] lg:text-xs text-slate-400">${date}</span>
 								</div>
-								<h4 class="text-xs font-semibold text-slate-200 line-clamp-2">${item.title}</h4>
+								<h4 class="text-xs lg:text-sm font-semibold text-slate-200 line-clamp-2">${item.title}</h4>
 							</a>
 						`;
 					});
 				} else {
-					container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8">Belum ada kabar aksi korporasi terbaru untuk ${ticker}.</div>`;
+					container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8">Belum ada kabar aksi korporasi terbaru untuk ${ticker}.</div>`;
 				}
 			} catch (e) {
-				container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8">Gagal memuat data aksi korporasi.</div>`;
+				container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8">Gagal memuat data aksi korporasi.</div>`;
 			}
 		}
 
@@ -1477,10 +1477,10 @@
 				const content = document.getElementById(`tabContent-${tab}`);
 				
 				if (tab === tabName) {
-					if(btn) btn.className = "flex-1 py-1.5 text-xs font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap";
+					if(btn) btn.className = "flex-1 py-1.5 lg:py-2 text-xs lg:text-sm font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1 whitespace-nowrap px-2 transition";
 					if (content) content.classList.remove('hidden');
 				} else {
-					if(btn) btn.className = "flex-1 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap";
+					if(btn) btn.className = "flex-1 py-1.5 lg:py-2 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1 whitespace-nowrap px-2 transition";
 					if (content) content.classList.add('hidden');
 				}
 			});
@@ -1542,7 +1542,7 @@
 
 			if (radarCooldownTimer) clearInterval(radarCooldownTimer);
 
-			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 animate-spin"></i> Scan (${remaining}s)`;
+			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 lg:w-3.5 lg:h-3.5 animate-spin"></i> Scan (${remaining}s)`;
 			if (window.lucide) lucide.createIcons();
 
 			radarCooldownTimer = setInterval(() => {
@@ -1551,10 +1551,10 @@
 					clearInterval(radarCooldownTimer);
 					btn.disabled = false;
 					btn.classList.remove('opacity-50', 'cursor-not-allowed');
-					btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3"></i> Scan Ulang`;
+					btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 lg:w-3.5 lg:h-3.5"></i> Scan Ulang`;
 					if (window.lucide) lucide.createIcons();
 				} else {
-					btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 animate-spin"></i> Scan (${remaining}s)`;
+					btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3 h-3 lg:w-3.5 lg:h-3.5 animate-spin"></i> Scan (${remaining}s)`;
 					if (window.lucide) lucide.createIcons();
 				}
 			}, 1000);
