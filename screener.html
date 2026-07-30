@@ -681,7 +681,7 @@
 	<script>
 		// ==================== UTAMA & FITUR FITUR APP ====================
 		let currentTicker = 'MDIA';
-		let currentInterval = '15M';
+		let currentInterval = 'D';
 
 		if (window.lucide) lucide.createIcons();
 
@@ -717,7 +717,7 @@
 			script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
 			script.async = true;
 			script.text = JSON.stringify({
-				"interval": "15M",
+				"interval": "D",
 				"width": "100%",
 				"isTransparent": true,
 				"height": "400",
