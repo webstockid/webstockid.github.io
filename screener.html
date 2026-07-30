@@ -681,7 +681,7 @@
 	<script>
 		// ==================== UTAMA & FITUR FITUR APP ====================
 		let currentTicker = 'MDIA';
-		let currentInterval = 'D';
+		let currentInterval = '15M';
 
 		if (window.lucide) lucide.createIcons();
 
@@ -717,7 +717,7 @@
 			script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
 			script.async = true;
 			script.text = JSON.stringify({
-				"interval": "1D",
+				"interval": "15M",
 				"width": "100%",
 				"isTransparent": true,
 				"height": "400",
@@ -767,7 +767,7 @@
 			
 			// 1. RapidAPI Direct
 			try {
-				const url = `https://${RAPIDAPI_HOST}/stock/get-histories?symbol=${targetSymbol}&interval=1d&lang=en-US&region=US`;
+				const url = `https://${RAPIDAPI_HOST}/stock/get-histories?symbol=${targetSymbol}&interval=15m&lang=en-US&region=US`;
 				const response = await fetch(url, {
 					method: 'GET',
 					headers: {
@@ -814,7 +814,7 @@
 			// 2. Fallback Public Proxy
 			if (!freshData) {
 				try {
-					const proxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=1d&range=2mo`;
+					const proxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
 					const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(proxyUrl)}`;
 					const res = await fetch(apiUrl);
 					const dataWrapper = await res.json();
