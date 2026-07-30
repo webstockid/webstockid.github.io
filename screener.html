@@ -894,11 +894,11 @@
 		// 1. GENERATE AI SIGNAL & TRADING MAP
 		async function generateAISignal(ticker) {
 			const now = new Date();
-			const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+			const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', /*second: '2-digit'*/ });
 			const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
 			document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
-			document.getElementById('aiDateStamp').innerText = `Update Live: ${dateStr} ${timeStr}`;
+			document.getElementById('aiDateStamp').innerText = `Update Live: ${dateStr} ${timeStr} WIB`;
 
 			// SKELETON LOADING
 			showAISkeletonLoading();
