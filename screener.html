@@ -331,7 +331,7 @@
 				</div>
 
 				<p class="text-[10px] lg:text-[11px] text-slate-500 italic bg-slate-950/50 p-3 rounded-lg border border-slate-900 leading-normal">
-					⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa yang diupdate 30 menit sekali. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
+					⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa yang diupdate secara real-time (jeda 1 menit) mengikuti pergerakan harga bursa. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
 				</p>
 
 			</div>
@@ -548,7 +548,7 @@
 		let radarCooldownTimer = null;
 		let hasRadarLoaded = false; // Flag penanda apakah Radar Bandar sudah pernah dimuat
 
-		// ==================== LOGIKA CACHING SAHAM & JAM BURSA (09.00 - 16.00 WIB) ====================
+		// ==================== LOGIKA CACHING REAL-TIME SAHAM & JAM BURSA (09.00 - 16.00 WIB) ====================
 		function isMarketHours() {
 			const now = new Date();
 			const day = now.getDay(); // 0 = Minggu, 6 = Sabtu
@@ -566,15 +566,15 @@
 			try {
 				const cache = JSON.parse(cachedRaw);
 				const now = Date.now();
-				const THIRTY_MINUTES = 30 * 60 * 1000;
+				const ONE_MINUTE = 60 * 1000; // Logika diubah ke 1 menit untuk pembaruan real-time
 
-				// REVISI: Jika di luar jam bursa, gunakan data cache penutupan secara permanen tanpa timer 30 menit
+				// Jika di luar jam bursa, gunakan data cache penutupan secara permanen tanpa timer
 				if (!isMarketHours()) {
 					return cache.data;
 				}
 
-				// Jika di dalam jam bursa, gunakan cache jika umurnya kurang dari 30 menit
-				if (now - cache.timestamp < THIRTY_MINUTES) {
+				// Jika di dalam jam bursa, perbarui cache secara real-time apabila usianya > 1 menit
+				if (now - cache.timestamp < ONE_MINUTE) {
 					return cache.data;
 				}
 			} catch (e) {
@@ -894,10 +894,11 @@
 		// 1. GENERATE AI SIGNAL & TRADING MAP
 		async function generateAISignal(ticker) {
 			const now = new Date();
+			const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 			const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
 			document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
-			document.getElementById('aiDateStamp').innerText = `Update Live: ${dateStr}`;
+			document.getElementById('aiDateStamp').innerText = `Update Live: ${dateStr} ${timeStr}`;
 
 			// SKELETON LOADING
 			showAISkeletonLoading();
@@ -1003,7 +1004,7 @@
 			const res1 = Math.round(price * 1.05); 
 			const res2 = Math.round(price * 1.08); 
 			const tp1 = Math.round(price * 1.06); 
-			const tp2 = Math.round(price * 1.12); 
+			const tp2 = Math.round(price * 1.14); 
 
 			document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 			document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
@@ -1054,7 +1055,7 @@
 			if (globalStockData) {
 				const price = globalStockData.price;
 				const sl = Math.round(price * 0.96);
-				const tp = Math.round(price * 1.10);
+				const tp = Math.round(price * 1.15);
 
 				document.getElementById('rrrEntry').value = price;
 				document.getElementById('rrrSL').value = sl;
@@ -1253,7 +1254,7 @@
 				const entryHigh = Math.round(price * 0.96);
 				const sl = Math.round(price * 0.92);
 				const tp1 = Math.round(price * 1.06);
-				const tp2 = Math.round(price * 1.12);
+				const tp2 = Math.round(price * 1.14);
 
 				let statusSignal = "🔥 Momentum Breakout";
 				let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
@@ -1621,6 +1622,13 @@
 		generateAISignal(currentTicker);
 		fetchStockNews(currentTicker);
 		fetchCorporateAction(currentTicker);
+
+		// Auto Refresh Real-Time setiap 60 detik selama jam bursa aktif
+		setInterval(() => {
+			if (isMarketHours()) {
+				generateAISignal(currentTicker);
+			}
+		}, 60000);
 	</script>
 </body>
 </html>
