@@ -42,7 +42,7 @@
 			.animate-pulse-glow {
 				animation: pulse-glow 2s infinite ease-in-out;
 			}
-			/* EFLEK LOADING SKELETON SHIMMER */
+			/* EFEK LOADING SKELETON SHIMMER */
 			@keyframes shimmer {
 				0% { background-position: -200% 0; }
 				100% { background-position: 200% 0; }
@@ -138,7 +138,7 @@
 			</div>
 
 			<p class="text-xs text-slate-500 text-center leading-relaxed">
-				Silahkan minta ke Admin untuk Akses Token mu
+				Silakan minta ke Admin untuk Akses Token mu
 			</p>
 		</div>
 	</div>
@@ -164,7 +164,7 @@
 							<i data-lucide="share-2" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Bagikan
 						</button>
 						<span class="text-xs lg:text-sm bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 lg:px-4 py-1 rounded-full font-medium flex items-center gap-1.5">
-							<span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Market Live
+							<span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Market Live Real-Time
 						</span>
 					</div>
 				</div>
@@ -193,30 +193,30 @@
 			
 			<!-- MENU TAB DIBUAT STICKY & MEMANJANG FULL WIDTH -->
 			<div class="sticky top-[133px] lg:top-[140px] z-20 glassmorphism p-2 lg:p-2.5 rounded-xl mb-6 border border-slate-800 flex gap-1.5 lg:gap-3 overflow-x-auto shadow-xl scrollbar-thin">
-				<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+				<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 					<i data-lucide="sparkles" class="w-4 h-4 text-sky-400"></i> AI Signal
 				</button>
-				<button onclick="switchTab('bigmoney')" id="tabBtn-bigmoney" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 hover:text-white-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+				<button onclick="switchTab('bigmoney')" id="tabBtn-bigmoney" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 					<i data-lucide="zap" class="w-4 h-4 text-amber-400"></i> Radar Bandar
 				</button>
-				<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 hover:text-white-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+				<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 					<i data-lucide="newspaper" class="w-4 h-4 text-teal-400"></i> Berita
 				</button>
-				<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 hover:text-white-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+				<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 					<i data-lucide="calendar" class="w-4 h-4 text-green-400"></i> Korporasi
 				</button>
-				<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 hover:text-white-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+				<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 					<i data-lucide="pie-chart" class="w-4 h-4 text-orange-400"></i> Fundamental
 				</button>
-				<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 hover:text-white-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+				<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 					<i data-lucide="calculator" class="w-4 h-4 text-fuchsia-400"></i> Smart RRR
 				</button>
-				<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 hover:text-white-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+				<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 					<i data-lucide="bell" class="w-4 h-4 text-rose-400"></i> Alert
 				</button>
 			</div>
 
-			<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME (GRID 2 KOLOM PADA DESKTOP UNTUK EFISIENSI RUANG) -->
+			<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME (PRIORITAS PENCARIAN MANUAL) -->
 			<div id="tabContent-ai" class="space-y-4 min-h-[300px] text-xs lg:text-sm">
 				
 				<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
@@ -331,12 +331,12 @@
 				</div>
 
 				<p class="text-[10px] lg:text-[11px] text-slate-500 italic bg-slate-950/50 p-3 rounded-lg border border-slate-900 leading-normal">
-					⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa yang diupdate secara real-time (jeda 1 menit) mengikuti pergerakan harga bursa. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
+					⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa real-time secara langsung mengikuti pergerakan harga pasar saat ini. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
 				</p>
 
 			</div>
 
-			<!-- TAB CONTENT 2: RADAR BANDAR (DISUSUN DENGAN GRID 2 KOLOM DI PC) -->
+			<!-- TAB CONTENT 2: RADAR BANDAR (TOMBOL KESEDIAAN & PENETAPAN DURATION 200 DETIK) -->
 			<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 				
 				<div class="flex items-center justify-between bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl">
@@ -345,19 +345,21 @@
 						  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
 						  <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
 						</span>
-						<span class="text-xs lg:text-sm font-bold text-amber-400">Deretan Saham Radar Teknikal & Transaksi</span>
+						<span class="text-xs lg:text-sm font-bold text-amber-400">Deretan Saham Potensial</span>
 					</div>
-					<button onclick="renderBigMoneyRadar(true)" class="text-[10px] lg:text-xs text-slate-300 hover:text-emerald-400 bg-slate-800 px-2.5 py-1 rounded border border-slate-700 flex items-center gap-1 transition">
-						<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Scan Ulang
+					<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-slate-950 font-bold bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded border border-amber-500/50 flex items-center gap-1.5 transition shadow-md">
+						<i data-lucide="search" class="w-3.5 h-3.5"></i> Mulai Pindai
 					</button>
 				</div>
 
 				<div id="bigMoneyList" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-1.5 scrollbar-thin">
-					<div class="text-center text-slate-500 text-xs lg:text-sm py-8 lg:col-span-2">Menganalisis pergerakan transaksi & volume bursa...</div>
+					<div class="text-center text-slate-500 text-xs lg:text-sm py-12 lg:col-span-2">
+						Klik tombol <strong class="text-amber-400">"Mulai Pindai"</strong> di atas untuk memulai pemindaian bursa real-time selama 200 detik.
+					</div>
 				</div>
 
 				<p class="text-[10px] lg:text-[11px] text-slate-500 italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
-					💡 <strong>Sistem Deteksi Teknikal:</strong> Menghitung rasio lonjakan volume harian vs rata-rata volume 10 hari serta posisi Moving Average real-time dari data bursa. Klik "Lihat Chart" untuk analisa lengkap.
+					💡 <strong>Sistem Deteksi Teknikal:</strong> Menghitung rasio lonjakan volume harian vs rata-rata volume 10 hari serta posisi Moving Average real-time langsung dari bursa. Klik "Lihat Chart" untuk analisa lengkap.
 				</p>
 			</div>
 
@@ -625,53 +627,8 @@
 
 		let globalStockData = null;
 		let searchCooldownTimer = null;
-		let radarCooldownTimer = null;
-		let hasRadarLoaded = false; // Flag penanda apakah Radar Bandar sudah pernah dimuat
-
-		// ==================== LOGIKA CACHING REAL-TIME SAHAM & JAM BURSA (09.00 - 16.00 WIB) ====================
-		function isMarketHours() {
-			const now = new Date();
-			const day = now.getDay(); // 0 = Minggu, 6 = Sabtu
-			if (day === 0 || day === 6) return false;
-
-			const hours = now.getHours();
-			return hours >= 9 && hours < 16;
-		}
-
-		function getCachedStockData(ticker) {
-			const cacheKey = `stock_cache_${ticker}`;
-			const cachedRaw = localStorage.getItem(cacheKey);
-			if (!cachedRaw) return null;
-
-			try {
-				const cache = JSON.parse(cachedRaw);
-				const now = Date.now();
-				const ONE_MINUTE = 60 * 1000; // Logika diubah ke 1 menit untuk pembaruan real-time
-
-				// Jika di luar jam bursa, gunakan data cache penutupan secara permanen tanpa timer
-				if (!isMarketHours()) {
-					return cache.data;
-				}
-
-				// Jika di dalam jam bursa, perbarui cache secara real-time apabila usianya > 1 menit
-				if (now - cache.timestamp < ONE_MINUTE) {
-					return cache.data;
-				}
-			} catch (e) {
-				console.warn(`Error parsing cache for ${ticker}`);
-			}
-			return null;
-		}
-
-		function setCachedStockData(ticker, data) {
-			if (!data) return;
-			const cacheKey = `stock_cache_${ticker}`;
-			const cachePayload = {
-				timestamp: Date.now(),
-				data: data
-			};
-			localStorage.setItem(cacheKey, JSON.stringify(cachePayload));
-		}
+		let radarTimer = null;
+		let isRadarScanning = false;
 
 		// ==================== SISTEM AKSES TOKEN VIP ====================
 		function getExtractName(token) {
@@ -704,7 +661,7 @@
 			const daysLeft = calculateDaysLeft(account.tanggalExpired);
 
 			if (daysLeft < 0) {
-				showError("Masa aktif Akses Token kamu telah habis. Silahkan minta ke Admin.");
+				showError("Masa aktif Akses Token kamu telah habis. Silakan minta ke Admin.");
 				localStorage.removeItem('vip_token');
 				if(modal) modal.classList.remove('hidden');
 				if(dashboard) dashboard.classList.add('hidden');
@@ -724,7 +681,7 @@
 			const tokenInput = document.getElementById('tokenInput').value.trim().toUpperCase();
 
 			if (!tokenInput) {
-				showError("Silahkan masukan token terlebih dahulu!");
+				showError("Silakan masukan token terlebih dahulu!");
 				return;
 			}
 
@@ -735,7 +692,7 @@
 
 			const daysLeft = calculateDaysLeft(databaseVIP[tokenInput].tanggalExpired);
 			if (daysLeft < 0) {
-				showError("Akses Token ini sudah kadaluarsa!");
+				showError("Akses Token ini sudah kedaluwarsa!");
 				return;
 			}
 
@@ -836,18 +793,12 @@
 		// Helper Delay
 		const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-		// Penarik Data Saham Real-Time Konsisten dengan Caching
+		// Penarik Data Saham REAL-TIME TANPA CACHING
 		async function fetchRealtimeStockData(ticker) {
-			// Cek apakah data tersedia di cache lokal
-			const cached = getCachedStockData(ticker);
-			if (cached) {
-				return cached;
-			}
-
 			const targetSymbol = `${ticker}.JK`;
 			let freshData = null;
 			
-			// 1. RapidAPI Direct
+			// 1. RapidAPI Direct (Live Market)
 			try {
 				const url = `https://${RAPIDAPI_HOST}/stock/get-histories?symbol=${targetSymbol}&interval=15m&lang=en-US&region=US`;
 				const response = await fetch(url, {
@@ -893,7 +844,7 @@
 				console.warn(`RapidAPI retry/fallback for ${ticker}`);
 			}
 
-			// 2. Fallback Public Proxy
+			// 2. Fallback Public Live Proxy
 			if (!freshData) {
 				try {
 					const proxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
@@ -931,12 +882,8 @@
 						freshData = { ticker, price: Math.round(currentPrice), prevClose: Math.round(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
 					}
 				} catch (err) {
-					console.error(`Gagal data ${ticker}:`, err);
+					console.error(`Gagal data real-time ${ticker}:`, err);
 				}
-			}
-
-			if (freshData) {
-				setCachedStockData(ticker, freshData);
 			}
 
 			return freshData;
@@ -973,10 +920,10 @@
 			document.getElementById('tpProgressPercent').innerText = `Menghitung posisi teknikal...`;
 		}
 
-		// 1. GENERATE AI SIGNAL & TRADING MAP
+		// 1. GENERATE AI SIGNAL & TRADING MAP (REAL-TIME LIVE DATA)
 		async function generateAISignal(ticker) {
 			const now = new Date();
-			const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', /*second: '2-digit'*/ });
+			const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 			const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
 			document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
@@ -1051,13 +998,13 @@
 
 				descEl.innerHTML = `
 					<p><strong>Kenapa?</strong> Saham ${ticker} saat ini berada di Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
-					<p class="pt-1 text-slate-300">Secara likuiditas transaksi, ${volText}, menandakan akumulasi/distribusi aktif dari pelaku pasar harian.</p>
+					<p class="pt-1 text-slate-300">Secara likuiditas transaksi real-time, ${volText}, menandakan akumulasi/distribusi aktif dari pelaku pasar harian.</p>
 				`;
 
 				buktiEl.innerHTML = `
 					<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-						<span>• Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
-						<span class="text-[10px] lg:text-[11px] text-slate-400">Close</span>
+						<span>• Harga Market Live: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
+						<span class="text-[10px] lg:text-[11px] text-slate-400">Real-Time</span>
 					</li>
 					<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 						<span>• Posisi Tren MA5 / MA10 / MA20:</span>
@@ -1206,85 +1153,68 @@
 			'KPIG', 'ELTY', 'KOTA', 'JGLE', 'MKPI', 'BEST', 'BKSL', 'SSIA', 'AURN', 'RDTX',
 			'DILD', 'GWSA', 'GPRA', 'JRPT', 'KIJA', 'MDRN', 'MTLA', 'NIRO', 'PLIN', 'RODA',
 			'AMAN', 'ARMY', 'ATPK', 'BAPA', 'BBSS', 'BCIP', 'BIKA', 'BIPP', 'BSBK', 'CITY', 
-			'CPRI', 'CSIS', 'MMLP', 'NZIA', 'POLI', 'POLL', 'PPRO', 'RISE',
 
 			// Energy
 			'ADRO', 'PTBA', 'ITMG', 'HRUM', 'BYAN', 'GEMS', 'INDY', 'TOBA', 'ABMM', 'MBAP',
 			'MEDC', 'PGAS', 'AKRA', 'ELSA', 'BUMI', 'BRMS', 'BNBR', 'ENRG', 'DEWA', 'VKTR',
 			'RAJA', 'RATU', 'FORU', 'MINA', 'PSKT', 'CBRE', 'STRT', 'CUAN', 'BREN', 'PTRO',
-			'APEX', 'ARTI', 'AIMS', 'ARII', 'BIPI', 'BSSR', 'BULL', 'CNKO', 'DSSA', 'DWGL', 
-			'FIRE', 'GTBO', 'HUMP', 'IATA', 'INPS', 'ITMA', 'KKGI', 'KOCI', 'KOPI',
 
 			// Technology
 			'GOTO', 'EMTK', 'BUKA', 'BELI', 'MTDL', 'WIFI', 'MCAS', 'DIVA', 'NFCX', 'HDIT',
 			'MLPT', 'DNET', 'AXIO', 'GLVA', 'KIOS', 'MTCX', 'PTSN', 'SKYB', 'TFAS', 'TRIN',
-			'UCID', 'UVCR', 'WIRE', 'AWAN', 'CHIP', 'CYBR', 'DCII', 'ELIT', 'IRSX', 'JATI',
-			'METI', 'PACK', 'SOUL', 'TLDN', 'TOSK', 'VAST', 'WINR', 'ZYRX', 'ATIC', 'CINO',
-			'RUNS', 'TECH', 'TINF', 'VRNA', 'WIMS', 'XPTX', 'YELO', 'ZBRA',
 
 			// Basic Materials
 			'TPIA', 'BRPT', 'CDIA', 'INKP', 'TKIM', 'ANTM', 'INCO', 'AMMN', 'NCKL', 'MDKA',
 			'MBMA', 'INTP', 'SMGR', 'SMCB', 'SMBR', 'AVIA', 'UNIC', 'AGII', 'ALDO', 'ALKA', 
-			'ALMI', 'APLI', 'ARCI', 'BAJA', 'BTON', 'CLPI', 'CPIN', 'CTBN', 'DPNS', 'EKAD', 
-			'ESSA', 'FASW', 'GDST', 'IFSH', 'IGAR', 'IMPC', 'INCF', 'INAI', 'INCI', 'IPOL', 
-			'ISSP', 'KBRI', 'KDSI', 'KIAS', 'KMTR', 'LION', 'LMSH', 'MDKI',
 
 			// Finance
 			'BBCA', 'BBRI', 'BMRI', 'BBNI', 'BRIS', 'BBTN', 'BJTM', 'BJBR', 'AGRO', 'BDMN',
 			'BNLI', 'NISP', 'BNGA', 'BTPN', 'ARTO', 'BBYB', 'BBHI', 'DNAR', 'MEGA', 'BANK',
-			'PNBN', 'PNLF', 'PNIN', 'PANS', 'BCAP', 'BABP', 'SMMA', 'BSIM', 'NOBU', 'SRTG',
-			'BFIN', 'CFIN', 'ADMF', 'WOMF', 'MFIN', 'APIC', 'BPFI', 'BPII', 'AMAG', 'ASBI',
-			'ASDM', 'ASJT', 'ASRM', 'BHAT', 'BINA', 'BLTZ', 'BSWD', 'BVIC', 'BTPS', 'CASA',
 
 			// Consumer Non-Cyclicals
 			'INDF', 'ICBP', 'UNVR', 'MYOR', 'CMRY', 'ROTI', 'ULTJ', 'JPFA', 'AALI', 'LSIP', 
 			'SIMP', 'AMRT', 'MIDI', 'RANC', 'UNSP', 'ALII', 'TAPG', 'DSNG', 'BWPT', 'SGRO', 
-			'SSMS', 'GZCO', 'PALM', 'STAA', 'ANJT', 'CSRA', 'MAGP', 'JAWA', 'TBLA', 'SMAR', 
-			'GOOD', 'CLEO', 'STTP', 'CEKA', 'AISA', 'CAMP', 'DLTA', 'IKAN', 'KEJU', 'MLBI', 
-			'PCAR', 'SKBM', 'SKLT', 'SUCOR', 'TCID', 'TEBE', 'WOOD',
 
 			// Consumer Cyclicals
 			'ASII', 'AUTO', 'ACES', 'MAPI', 'ERAA', 'MNCN', 'SCMA', 'MPPA', 'MLPL', 'MDIA', 
-			'VIVA', 'MSKY', 'IPTV', 'FILM', 'KINO', 'LPPF', 'RALS', 'CSAP', 'GLOB', 'SOCI', 
-			'SONA', 'SPTO', 'SRIL', 'TFCO', 'TRIS', 'UNIT', 'MICE', 'AGAR', 'AMAR', 'BOLT', 
-			'BRAM', 'CINT', 'CNTX', 'DOOID', 'DRMA', 'EAST', 'GHON', 'GMS', 'HOTL', 'IMAS', 
-			'INDR', 'KBLM', 'MASA', 'MGB', 'PMMP',
-
-			// Industrials
-			'UNTR', 'ASGR', 'ASET', 'MPMX', 'HEXA', 'INDS', 'KBLI', 'SCCO', 'SPMA', 'TIRA', 
-			'TOTL', 'TRST', 'TSPC', 'VOKS', 'WEHA', 'AKPI', 'AMIN', 'ARNA', 'CCSI', 'CRSN', 
-			'DYAN', 'FPNI',
-
-			// Healthcare
-			'KLBF', 'KAEF', 'SIDO', 'MIKA', 'HEAL', 'SILO', 'PRDA', 'SAME', 'PEHA', 'INAF',
-			'IRRA', 'DVLA', 'MERK', 'SCPI', 'PYFA', 'SMTU', 'CARE', 'OASA', 'OMRE', 'SOPR', 
-			'TARA',
 
 			// Infrastructure
 			'TLKM', 'ISAT', 'EXCL', 'TOWR', 'TBIG', 'CENT', 'IBST', 'LINK', 'META', 'ADHI', 
-			'PTPP', 'WEGE', 'WTON', 'JSMR', 'ACST', 'CMNP', 'IPCC', 'KARW', 'KETR', 'MPOW', 
-			'MTPS', 'NRCA', 'PBID', 'PPRE', 'TAMU', 'BOMF', 'BUKK', 'CASS', 'DSET', 'DTT', 
-			'GAMA', 'HITS', 'IDPR', 'IMJS',
-
-			// Transportation & Logistics
-			'BIRD', 'ASSA', 'SMDR', 'TMAS', 'CMPP', 'GIAA', 'HELI', 'LPI', 'MIRA', 'NELY', 
-			'PORT', 'SAFE', 'SAPX', 'SHIP', 'TCPI', 'TNCA', 'TRUK', 'HAIS', 'PSSI', 'RUIS', 
-			'SDMU'
+			'PTPP', 'WEGE', 'WTON', 'JSMR', 'ACST', 'CMNP', 'IPCC', 'KARW', 'KETR', 'MPOW'
 		];
 		const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
 
-		// RADAR BANDAR LOGIKA ACAK MURNI (FISHER-YATES SHUFFLE)
-		async function renderBigMoneyRadar(isManualClick = false) {
-			hasRadarLoaded = true; // Tandai bahwa radar sudah berhasil dipanggil sekali
+		// RADAR BANDAR: PENALARAN PROSES MANUAL & SKENARIO TIMER MAKS. 200 DETIK
+		async function startRadarProcess() {
+			if (isRadarScanning) return;
+			isRadarScanning = true;
+
+			const btn = document.getElementById('btnStartRadar');
 			const container = document.getElementById('bigMoneyList');
-			container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-2"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa real-time & menghitung sinyal radar...</div>`;
+			let remainingSeconds = 200;
+
+			btn.disabled = true;
+			btn.className = "text-[10px] lg:text-xs text-slate-400 font-bold bg-slate-800 border border-slate-700 px-3 py-1.5 rounded flex items-center gap-1.5 cursor-not-allowed";
+			
+			const updateBtnText = () => {
+				btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-amber-400"></i> Memindai (${remainingSeconds}s)`;
+				if (window.lucide) lucide.createIcons();
+			};
+
+			updateBtnText();
+			radarTimer = setInterval(() => {
+				remainingSeconds--;
+				if (remainingSeconds <= 0) {
+					clearInterval(radarTimer);
+				} else {
+					updateBtnText();
+				}
+			}, 1000);
+
+			container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa real-time... Hasil akan langsung ditampilkan secara berkala.</div>`;
 			if (window.lucide) lucide.createIcons();
 
-			if (isManualClick) {
-				startRadarCooldown(50);
-			}
-
-			// (Fisher-Yates Shuffle)
+			// Shuffle daftar pencarian
 			const shuffled = [...uniqueRadarWatchlist];
 			for (let i = shuffled.length - 1; i > 0; i--) {
 				const j = Math.floor(Math.random() * (i + 1));
@@ -1292,43 +1222,49 @@
 			}
 			
 			const validData = [];
-			const batchSize = 5;
+			const startTime = Date.now();
+			const maxScanDuration = 200 * 1000; // 200 Detik
 
-			for (let i = 0; i < shuffled.length; i += batchSize) {
-				const chunk = shuffled.slice(i, i + batchSize);
-				const chunkResults = await Promise.all(chunk.map(t => fetchRealtimeStockData(t)));
-				
-				chunkResults.forEach(res => {
-					if (res && res.price > 0) {
-						validData.push(res);
-					}
-				});
-
-				if (validData.length >= 13) {
-					break;
+			for (let i = 0; i < shuffled.length; i++) {
+				if (Date.now() - startTime >= maxScanDuration) {
+					break; // Batas waktu 200 detik tercapai
 				}
-				await sleep(90); //150
+
+				const ticker = shuffled[i];
+				const res = await fetchRealtimeStockData(ticker);
+				if (res && res.price > 0) {
+					validData.push(res);
+					renderRadarItems(validData); // Render realtime hasil yang didapatkan saat itu juga
+				}
+
+				if (validData.length >= 10) {
+					break; // Stop jika sudah mendapatkan 10 item terbaik
+				}
+
+				await sleep(150);
 			}
 
-			if (validData.length < 8) {
-				const remainingToFetch = shuffled.filter(t => !validData.some(v => v.ticker === t)).slice(0, 10);
-				const extraResults = await Promise.all(remainingToFetch.map(t => fetchRealtimeStockData(t)));
-				extraResults.forEach(res => {
-					if (res && res.price > 0) validData.push(res);
-				});
-			}
+			// Penyelesaian proses
+			clearInterval(radarTimer);
+			isRadarScanning = false;
+			btn.disabled = false;
+			btn.className = "text-[10px] lg:text-xs text-slate-950 font-bold bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded border border-amber-500/50 flex items-center gap-1.5 transition shadow-md";
+			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Mulai Pindai`;
+			if (window.lucide) lucide.createIcons();
 
 			if (validData.length === 0) {
-				container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-6 lg:col-span-2">Gagal memuat koneksi data bursa. Coba tekan Scan Ulang.</div>`;
-				return;
+				container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada data bursa yang berhasil ditangkap dalam 200 detik. Silakan coba kembali.</div>`;
+			} else {
+				AudioFX.playSuccess();
 			}
+		}
 
-			validData.sort((a, b) => b.changePct - a.changePct);
-			const finalDisplayList = validData.slice(0, Math.min(10, Math.max(5, validData.length)));
-
+		function renderRadarItems(dataList) {
+			const container = document.getElementById('bigMoneyList');
+			const sorted = [...dataList].sort((a, b) => b.changePct - a.changePct);
 			let htmlContent = '';
 
-			finalDisplayList.forEach((item, index) => {
+			sorted.forEach((item, index) => {
 				const ticker = item.ticker;
 				const price = item.price;
 				const changePct = item.changePct;
@@ -1373,7 +1309,7 @@
 											Lihat Chart &rarr;
 										</button>
 									</div>
-									<span class="text-[10px] lg:text-xs text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
+									<span class="text-[10px] lg:text-xs text-slate-400 block">Harga Real-Time: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
 								</div>
 							</div>
 							<span class="text-[9px] lg:text-[10px] font-bold px-2.5 py-1 rounded-full border ${statusClass}">
@@ -1410,7 +1346,6 @@
 
 			container.innerHTML = htmlContent;
 			if (window.lucide) lucide.createIcons();
-			AudioFX.playSuccess();
 		}
 
 		function selectTickerFromRadar(ticker) {
@@ -1583,10 +1518,6 @@
 					if (content) content.classList.add('hidden');
 				}
 			});
-
-			if (tabName === 'bigmoney' && !hasRadarLoaded) {
-				renderBigMoneyRadar(false);
-			}
 		}
 
 		function shareStockUrl() {
@@ -1604,7 +1535,7 @@
 			}
 		}
 
-		// COOLDOWN TOMBOL
+		// COOLDOWN TOMBOL SEARCH
 		function startSearchCooldown(seconds) {
 			const btn = document.querySelector("button[onclick='searchStock()']");
 			if (!btn) return;
@@ -1626,34 +1557,6 @@
 					btn.innerText = "Cari";
 				} else {
 					btn.innerText = `Cari (${remaining}s)`;
-				}
-			}, 1000);
-		}
-
-		function startRadarCooldown(seconds) {
-			const btn = document.querySelector("button[onclick='renderBigMoneyRadar(true)']");
-			if (!btn) return;
-
-			btn.disabled = true;
-			btn.classList.add('opacity-50', 'cursor-not-allowed');
-			let remaining = seconds;
-
-			if (radarCooldownTimer) clearInterval(radarCooldownTimer);
-
-			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5 animate-spin"></i> Scan (${remaining}s)`;
-			if (window.lucide) lucide.createIcons();
-
-			radarCooldownTimer = setInterval(() => {
-				remaining--;
-				if (remaining <= 0) {
-					clearInterval(radarCooldownTimer);
-					btn.disabled = false;
-					btn.classList.remove('opacity-50', 'cursor-not-allowed');
-					btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Scan Ulang`;
-					if (window.lucide) lucide.createIcons();
-				} else {
-					btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5 animate-spin"></i> Scan (${remaining}s)`;
-					if (window.lucide) lucide.createIcons();
 				}
 			}, 1000);
 		}
@@ -1691,7 +1594,7 @@
 			if (e.key === 'Enter') searchStock();
 		});
 
-		// INITIALIZATION ON LOAD
+		// INITIALIZATION ON LOAD (MEMUAT AI SIGNAL TERLEBIH DAHULU)
 		checkVIPAuth();
 		checkUrlParamTicker();
 
@@ -1710,13 +1613,6 @@
 		generateAISignal(currentTicker);
 		fetchStockNews(currentTicker);
 		fetchCorporateAction(currentTicker);
-
-		// Auto Refresh Real-Time setiap 60 detik selama jam bursa aktif
-		setInterval(() => {
-			if (isMarketHours()) {
-				generateAISignal(currentTicker);
-			}
-		}, 60000);
 	</script>
 </body>
 </html>
