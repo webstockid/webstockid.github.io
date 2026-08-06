@@ -57,6 +57,33 @@
 
 	<body class="text-slate-200 antialiased overflow-x-hidden">
 
+	<!-- Modal Pop-up Awal -->
+	<div id="welcomeModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+		<div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 text-center">
+			<div class="inline-flex p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20 mb-1">
+				<i data-lucide="info" class="w-8 h-8 text-emerald-400"></i>
+			</div>
+			<h3 class="text-xl font-bold text-white">Informasi Layanan Screener</h3>
+			<p class="text-xs text-slate-300 leading-relaxed">
+				Selamat datang di Stock's ID Screener.<br>Data pasar diperbarui secara real-time pada jam bursa (09:00 - 16:00 WIB) dan disimpan dalam cache untuk pengalaman akses yang lebih cepat.
+			</p>
+			<p class="text-xs text-slate-300 leading-relaxed">
+				Disclaimer: Jika kamu baru pertama kali membuka web ini, kamu harus sering kembali buka web ini dan cari nama saham secara random agar sistem dapat menyimpan data untuk digunakan dikemudian hari.
+			</p>
+			<p class="text-xs text-slate-300 leading-relaxed">
+				<i>AI dapat membuat kesalahan, jangan jadikan AI sebagai patokan untuk Entry dan TP, gunakan prinsip dan kemandirian, analisa manual sebelum menentukan pilihan.</i>
+			</p>
+			<div class="flex flex-col sm:flex-row gap-3 pt-2">
+				<button onclick="closeWelcomeModal(false)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">
+					Oke
+				</button>
+				<button onclick="closeWelcomeModal(true)" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-emerald-500/20">
+					Jangan Tampilkan Lagi
+				</button>
+			</div>
+		</div>
+	</div>
+
 	<!-- Navbar -->
 	<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
 		<div class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
@@ -597,6 +624,23 @@
 	</script>
 
 	<script>
+		// ==================== POP-UP WELCOME CONTROL ====================
+		function checkWelcomeModal() {
+			const hideModal = localStorage.getItem('hide_welcome_modal');
+			if (!hideModal) {
+				const modal = document.getElementById('welcomeModal');
+				if (modal) modal.classList.remove('hidden');
+			}
+		}
+
+		function closeWelcomeModal(dontShowAgain) {
+			const modal = document.getElementById('welcomeModal');
+			if (modal) modal.classList.add('hidden');
+			if (dontShowAgain) {
+				localStorage.setItem('hide_welcome_modal', 'true');
+			}
+		}
+
 		// ==================== RAPIDAPI CONFIGURATION ====================
 		const RAPIDAPI_KEY = '88b131b5d6msh9610e3cd0b71fcfp1f201ajsnbfc3838c085b';
 		const RAPIDAPI_HOST = 'yahoo-finance-real-time1.p.rapidapi.com';
@@ -630,16 +674,16 @@
 		let radarTimer = null;
 		let isRadarScanning = false;
 
-		// ==================== LOGIKA CACHING MARKET CLOSING (17:00 - 09:00 WIB) ====================
+		// ==================== LOGIKA CACHING MARKET CLOSING (16:00 - 09:00 WIB) ====================
 		
-		// Cek apakah bursa sedang buka (09:00 - 17:00 WIB, Senin - Jumat)
+		// Cek apakah bursa sedang buka (09:00 - 16:00 WIB, Senin - Jumat)
 		function isMarketOpen() {
 			const now = new Date();
 			const day = now.getDay(); // 0 = Minggu, 6 = Sabtu
 			if (day === 0 || day === 6) return false;
 
 			const hours = now.getHours();
-			return hours >= 9 && hours < 17;
+			return hours >= 9 && hours < 16;
 		}
 
 		// Otomatis hapus cache saat jam 09:00 WIB tiba
@@ -655,19 +699,23 @@
 		}
 
 		function getCachedStockData(ticker) {
-			// Jika market open (09:00 - 17:00 WIB), tidak pakai cache (ambil data live)
-			if (isMarketOpen()) {
-				return null;
-			}
-
-			// Jika bursa tutup (17:00 - 09:00 WIB), pakai data cache harga penutupan (closing)
 			const cacheKey = `stock_cache_${ticker}`;
 			const cachedRaw = localStorage.getItem(cacheKey);
 			if (!cachedRaw) return null;
 
 			try {
 				const cache = JSON.parse(cachedRaw);
-				return cache.data;
+				
+				// 1. Jika pasar tutup (16:00 - 09:00 WIB): gunakan data closing dalam cache
+				if (!isMarketOpen()) {
+					return cache.data;
+				}
+
+				// 2. Jika pasar buka (09:00 - 16:00 WIB): gunakan cache jika usianya kurang dari 5 menit (300.000 ms)
+				const FIVE_MINUTES = 5 * 60 * 1000;
+				if (Date.now() - cache.timestamp < FIVE_MINUTES) {
+					return cache.data;
+				}
 			} catch (e) {
 				console.warn(`Error parsing cache for ${ticker}`);
 			}
@@ -859,11 +907,13 @@
 		const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 		// Penarik Data Saham (LOGIKA CLOSING PRICE CACHE vs LIVE MARKET)
-		async function fetchRealtimeStockData(ticker) {
-			// Jika bursa TUTUP (17:00 - 09:00 WIB), coba pakai data cache closing market jika tersedia
-			const cachedData = getCachedStockData(ticker);
-			if (cachedData) {
-				return cachedData;
+		async function fetchRealtimeStockData(ticker, forceFetch = false) {
+			// Jika tidak dipaksa (bukan manual search oleh user), prioritaskan cache terlebih dahulu
+			if (!forceFetch) {
+				const cachedData = getCachedStockData(ticker);
+				if (cachedData) {
+					return cachedData;
+				}
 			}
 
 			const targetSymbol = `${ticker}.JK`;
@@ -957,7 +1007,7 @@
 				}
 			}
 
-			// Simpan data harga closing ke cache lokal untuk dipakai jam 17:00 - 09:00 WIB
+			// Simpan data ke cache lokal
 			if (freshData) {
 				setCachedStockData(ticker, freshData);
 			}
@@ -997,7 +1047,7 @@
 		}
 
 		// 1. GENERATE AI SIGNAL & TRADING MAP
-		async function generateAISignal(ticker) {
+		async function generateAISignal(ticker, isManualSearch = false) {
 			const now = new Date();
 			const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 			const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -1014,7 +1064,7 @@
 
 			fetchStockNewsForAI(ticker);
 
-			const stockData = await fetchRealtimeStockData(ticker);
+			const stockData = await fetchRealtimeStockData(ticker, isManualSearch);
 			if (stockData && stockData.ticker === ticker) {
 				globalStockData = stockData;
 			}
@@ -1659,7 +1709,7 @@
 				renderTechnicalGauge(currentTicker);
 				renderFundamentalWidget(currentTicker);
 				renderAlertList(currentTicker);
-				generateAISignal(currentTicker);
+				generateAISignal(currentTicker, true);
 				fetchStockNews(currentTicker);
 				fetchCorporateAction(currentTicker);
 
@@ -1674,6 +1724,7 @@
 		});
 
 		// INITIALIZATION ON LOAD
+		checkWelcomeModal();
 		checkVIPAuth();
 		cleanExpiredCache();
 		updateMarketBadge();
