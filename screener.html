@@ -1084,7 +1084,7 @@
 				buktiEl.innerHTML = `
 					<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 						<span>• Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
-						<span class="text-[10px] lg:text-[11px] text-slate-400">${isCached ? 'Closing Price' : 'Real-Time'}</span>
+						<span class="text-[10px] lg:text-[11px] text-slate-400">${isCached ? 'Penutupan' : 'Saat ini'}</span>
 					</li>
 					<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 						<span>• Posisi Tren MA5 / MA10 / MA20:</span>
@@ -1095,7 +1095,7 @@
 						<span class="font-bold font-mono ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
 					</li>
 					<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-						<span>• Rentang Tertinggi / Terendah 20 Hari:</span>
+						<span>• Terendah 20 Hari / Rentang Tertinggi:</span>
 						<span class="font-mono text-cyan-400">Rp ${stockData.low20.toLocaleString('id-ID')} - Rp ${stockData.high20.toLocaleString('id-ID')}</span>
 					</li>
 				`;
