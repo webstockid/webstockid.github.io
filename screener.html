@@ -58,7 +58,7 @@
 	<body class="text-slate-200 antialiased overflow-x-hidden">
 
 	<!-- Modal Pop-up Awal -->
-	<div id="welcomeModal" class="hidden fixed inset-0 z-70 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+	<div id="welcomeModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
 		<div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 text-center">
 			<div class="inline-flex p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20 mb-1">
 				<i data-lucide="info" class="w-8 h-8 text-emerald-400"></i>
@@ -431,11 +431,11 @@
 							<div class="grid grid-cols-2 gap-2.5">
 								<div>
 									<label class="text-[10px] lg:text-[11px] text-slate-400 block mb-1">Total Modal Trading (Rp)</label>
-									<input type="number" id="rrrTotalCapital" value="50000000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
+									<input type="number" id="rrrTotalCapital" value="25000000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
 								</div>
 								<div>
 									<label class="text-[10px] lg:text-[11px] text-slate-400 block mb-1">Max Risk per Trade (%)</label>
-									<input type="number" id="rrrRiskPercent" value="2" step="0.5" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-amber-500">
+									<input type="number" id="rrrRiskPercent" value="5" step="0.5" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-amber-500">
 								</div>
 							</div>
 						</div>
@@ -896,7 +896,7 @@
 				"largeChartUrl": "",
 				"displayMode": "regular",
 				"width": "100%",
-				"height": "500",
+				"height": "480",
 				"symbol": `IDX:${ticker}`,
 				"locale": "id"
 			});
@@ -1214,7 +1214,7 @@
 		function autoFillRRRFromAI() {
 			if (globalStockData) {
 				const price = globalStockData.price;
-				const sl = Math.round(price * 0.96);
+				const sl = Math.round(price * 0.95);
 				const tp = Math.round(price * 1.15);
 
 				document.getElementById('rrrEntry').value = price;
@@ -1724,7 +1724,6 @@
 		});
 
 		// INITIALIZATION ON LOAD
-		checkWelcomeModal();
 		checkVIPAuth();
 		cleanExpiredCache();
 		updateMarketBadge();
@@ -1745,6 +1744,9 @@
 		generateAISignal(currentTicker);
 		fetchStockNews(currentTicker);
 		fetchCorporateAction(currentTicker);
+
+		// Dipanggil paling akhir agar berada di paling atas UI
+		checkWelcomeModal();
 	</script>
 </body>
 </html>
