@@ -216,17 +216,17 @@
 				}
 			});
 
-			// Deteksi Otomatis Halaman Aktif (screener.html)
+			// Deteksi Otomatis Halaman Aktif (exp.html)
 			document.addEventListener("DOMContentLoaded", function() {
 				const path = window.location.pathname;
-				const isScreenerPage = path.includes("screener.html") || path.endsWith("/screener");
+				const isExpPage = path.includes("watchlist.html") || path.endsWith("/watchlist");
 
-				if (isScreenerPage) {
-					const linkScreener = document.getElementById("navLinkScreener");
-					if (linkScreener) {
-						linkScreener.className = "flex items-center justify-between px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs transition-all duration-200 group cursor-pointer";
+				if (isExpPage) {
+					const linkVIP = document.getElementById("navLinkVIP");
+					if (linkVIP) {
+						linkVIP.className = "flex items-center justify-between px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs transition-all duration-200 group cursor-pointer";
 						
-						const statusContainer = linkScreener.querySelector(".nav-status-container");
+						const statusContainer = linkVIP.querySelector(".nav-status-container");
 						if (statusContainer) {
 							statusContainer.innerHTML = `
 								<span class="flex items-center gap-1.5 bg-emerald-500/20 text-emerald-400 text-[10px] font-extrabold px-2 py-0.5 rounded-md border border-emerald-500/30">
