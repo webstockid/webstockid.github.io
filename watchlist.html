@@ -97,27 +97,163 @@
 	<body class="text-slate-200 antialiased overflow-x-hidden">
 		<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
+				<!-- Brand / Logo -->
 				<div class="flex items-center gap-3">
-					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2.5 rounded-xl shadow-lg shadow-emerald-500/20">
-						<i class="fa-solid fa-chart-line text-slate-950 text-xl font-black"></i>
+					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2 rounded-2xl shadow-lg shadow-emerald-500/20 transition-transform duration-300 hover:scale-110 hover:rotate-6 cursor-pointer">
+						<i class="fa-solid fa-biohazard text-slate-950 text-xl font-black"></i>
 					</div>
 					<div>
-						<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">SCREENER</span>
+						<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+							STOCK ID <span class="text-emerald-400 font-bold">WATCHLIST</span>
 						</span>
 						<p class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
 					</div>
 				</div>
-				<div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-					<a href="#benefit" class="hover:text-emerald-400 transition-colors">Benefit</a>
-					<a href="#stats" class="hover:text-emerald-400 transition-colors">Statistik</a>
-					<a href="#paket" class="hover:text-emerald-400 transition-colors">Paket Belajar</a>
-					<a href="#faq" class="hover:text-emerald-400 transition-colors">FAQ</a>
-				</div>
-				<div>
-					<a href="https://webstockid.github.io/index" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-sm tracking-wide transition shadow-lg shadow-emerald-500/20 block">STOCK ID VIP</a>
+
+				<!-- Menu Navigasi Dropdown -->
+				<div class="relative inline-block text-left" id="navDropdownContainer">
+					<!-- Tombol Utama Menu Dropdown -->
+					<button id="menuDropdownBtn" onclick="toggleNavDropdown()" type="button" class="bg-slate-900/80 hover:bg-slate-800 active:scale-95 text-slate-200 px-4 py-2.5 rounded-xl border border-slate-700/70 hover:border-emerald-500/60 text-xs font-bold tracking-wide transition-all duration-200 flex items-center gap-2.5 shadow-md hover:shadow-emerald-500/10 cursor-pointer select-none">
+						<i class="fa-solid fa-bars text-emerald-400 transition-transform duration-300 group-hover:scale-110"></i>
+						<span>Menu Navigasi</span>
+						<i id="dropdownChevron" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300 ease-out"></i>
+					</button>
+
+					<!-- Isi Dropdown Menu dengan Animasi Smooth Pop-Up -->
+					<div id="navDropdownMenu" class="hidden opacity-0 scale-95 duration-200 ease-out absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-2xl backdrop-blur-xl p-2 z-50 transform origin-top-right transition-all divide-y divide-slate-800/80">
+						<!-- Seksi 1: Platform / Layanan Utama Stock ID -->
+						<div class="pb-1.5 space-y-1">
+							<div class="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+								Aplikasi & Layanan
+							</div>
+
+							<!-- Tautan VIP / Expired Member -->
+							<a id="navLinkVIP" href="https://webstockid.github.io/watchlist" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-200 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-eye text-amber-400 group-hover:scale-110 transition-transform w-4 text-center"></i>
+									<span>Stock ID Watchlist</span>
+								</div>
+								<div class="nav-status-container flex items-center gap-1.5">
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
+								</div>
+							</a>
+							
+							<!-- Tautan Index -->
+							<a id="navLinkTools" href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-crown text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<span>Stock ID VIP</span>
+								</div>
+								<div class="nav-status-container flex items-center gap-1.5">
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
+								</div>
+							</a>
+
+							<!-- Tautan Tools -->
+							<a id="navLinkTools" href="https://webstockid.github.io/tools" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-screwdriver-wrench text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<span>Stock ID Tools</span>
+								</div>
+								<div class="nav-status-container flex items-center gap-1.5">
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
+								</div>
+							</a>
+
+							<!-- Tautan Screener -->
+							<a id="navLinkScreener" href="https://webstockid.github.io/screener" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-wand-magic-sparkles text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<span>Stock ID Screener</span>
+								</div>
+								<div class="nav-status-container flex items-center gap-1.5">
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
+								</div>
+							</a>
+
+							<!-- Tautan Watchlist -->
+							<a id="navLinkWatchlist" href="https://webstockid.github.io/exp" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-circle-user text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<span>Stock ID Member</span>
+								</div>
+								<div class="nav-status-container flex items-center gap-1.5">
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
+								</div>
+							</a>
+						</div>
+					</div>
 				</div>
 			</div>
 		</nav>
+
+		<!-- Script Kontrol Dropdown & Pendeteksi Halaman Aktif -->
+		<script>
+			function toggleNavDropdown() {
+				const menu = document.getElementById("navDropdownMenu");
+				const chevron = document.getElementById("dropdownChevron");
+				const isHidden = menu.classList.contains("hidden");
+
+				if (isHidden) {
+					menu.classList.remove("hidden");
+					setTimeout(() => {
+						menu.classList.remove("opacity-0", "scale-95");
+						menu.classList.add("opacity-100", "scale-100");
+					}, 10);
+					chevron.classList.add("rotate-180");
+				} else {
+					closeNavDropdown();
+				}
+			}
+
+			function closeNavDropdown() {
+				const menu = document.getElementById("navDropdownMenu");
+				const chevron = document.getElementById("dropdownChevron");
+				if (menu && chevron) {
+					menu.classList.remove("opacity-100", "scale-100");
+					menu.classList.add("opacity-0", "scale-95");
+					chevron.classList.remove("rotate-180");
+					
+					setTimeout(() => {
+						menu.classList.add("hidden");
+					}, 200);
+				}
+			}
+
+			// Tutup dropdown jika mengklik di luar area menu
+			document.addEventListener("click", function(event) {
+				const container = document.getElementById("navDropdownContainer");
+				if (container && !container.contains(event.target)) {
+					closeNavDropdown();
+				}
+			});
+
+			// Deteksi Otomatis Halaman Aktif (exp.html)
+			document.addEventListener("DOMContentLoaded", function() {
+				const path = window.location.pathname;
+				const isExpPage = path.includes("exp.html") || path.endsWith("/exp");
+
+				if (isExpPage) {
+					const linkVIP = document.getElementById("navLinkVIP");
+					if (linkVIP) {
+						linkVIP.className = "flex items-center justify-between px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs transition-all duration-200 group cursor-pointer";
+						
+						const statusContainer = linkVIP.querySelector(".nav-status-container");
+						if (statusContainer) {
+							statusContainer.innerHTML = `
+								<span class="flex items-center gap-1.5 bg-emerald-500/20 text-emerald-400 text-[10px] font-extrabold px-2 py-0.5 rounded-md border border-emerald-500/30">
+									<span class="relative flex h-2 w-2">
+										<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+										<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+									</span>
+									Aktif
+								</span>
+							`;
+						}
+					}
+				}
+			});
+		</script>
 		
 		<!-- START: PANEL MELAYANG INFORMASI MASA AKTIF TOKEN ACCESS VIP -->
 		<div id="badgeMasaAktifVip" class="hidden sticky top-24 z-30 w-full px-4 mt-2 transform-gpu">

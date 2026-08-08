@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full scroll-smooth">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Stock ID Screener - Memuat Data</title>
+		
+		<!-- Tailwind CSS, Font Comfortaa & Lucide/FontAwesome Icons -->
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://unpkg.com/lucide@latest"></script>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700;900&display=swap">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		
+		<!-- Favicon -->
+		<link rel="icon" type="image/x-icon" href="stockid_gambar/stockicon.jpg">
+
+		<style>
+			body {
+				font-family: 'Comfortaa', sans-serif;
+				background-color: #0b0f19;
+			}
+			.glassmorphism {
+				background: rgba(17, 24, 39, 0.75);
+				backdrop-filter: blur(16px);
+				-webkit-backdrop-filter: blur(16px);
+				border: 1px solid rgba(255, 255, 255, 0.08);
+			}
+			@keyframes orbit {
+				0% { transform: rotate(0deg); }
+				100% { transform: rotate(360deg); }
+			}
+			.animate-orbit {
+				animation: orbit 3s linear infinite;
+			}
+			@keyframes orbit-reverse {
+				0% { transform: rotate(360deg); }
+				100% { transform: rotate(0deg); }
+			}
+			.animate-orbit-reverse {
+				animation: orbit-reverse 2s linear infinite;
+			}
+			@keyframes pulse-ring {
+				0% { transform: scale(0.95); opacity: 0.8; }
+				50% { transform: scale(1.15); opacity: 0.3; }
+				100% { transform: scale(0.95); opacity: 0.8; }
+			}
+			.animate-pulse-ring {
+				animation: pulse-ring 2.5s ease-in-out infinite;
+			}
+			@keyframes shimmer-fast {
+				0% { background-position: -200% 0; }
+				100% { background-position: 200% 0; }
+			}
+			.shimmer-bar {
+				background: linear-gradient(90deg, #10b981 0%, #34d399 50%, #10b981 100%);
+				background-size: 200% 100%;
+				animation: shimmer-fast 1.5s infinite;
+			}
+		</style>
+	</head>
+
+	<body class="h-full text-slate-200 antialiased flex items-center justify-center p-4 selection:bg-emerald-500 selection:text-slate-950 overflow-hidden">
+
+		<div id="loadingCard" class="w-full max-w-sm sm:max-w-md mx-auto relative transition-all duration-500">
+			
+			<div class="absolute -top-12 -left-12 w-48 h-48 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+			<div class="absolute -bottom-12 -right-12 w-48 h-48 bg-teal-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+			<div class="glassmorphism rounded-3xl p-8 sm:p-10 text-center shadow-2xl relative overflow-hidden space-y-7 border border-slate-800">
+				
+				<div class="flex items-center justify-center gap-3">
+					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2 rounded-2xl shadow-lg shadow-emerald-500/20">
+						<i class="fa-solid fa-biohazard text-slate-950 text-xl font-black"></i>
+					</div>
+					<div class="text-left">
+						<div class="text-lg font-black tracking-tight text-white leading-none">
+							STOCK ID <span class="text-emerald-400">SCREENER</span>
+						</div>
+						<p class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase mt-1">#Andaimology Edition</p>
+					</div>
+				</div>
+
+				<div class="py-2 flex justify-center items-center">
+					<div class="relative w-32 h-32 flex items-center justify-center">
+						
+						<div class="absolute inset-0 rounded-full border border-emerald-500/20 animate-pulse-ring"></div>
+						
+						<div class="absolute inset-1 rounded-full border-2 border-slate-800/80 border-t-emerald-400 border-r-teal-400 animate-orbit"></div>
+						
+						<div class="absolute inset-4 rounded-full border-2 border-slate-800/60 border-b-emerald-300 border-l-cyan-400 animate-orbit-reverse"></div>
+						
+						<div class="relative w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30">
+							<i data-lucide="sparkles" class="w-6 h-6 text-slate-950 animate-pulse"></i>
+							<div class="absolute inset-0 bg-white/20 rounded-full animate-ping opacity-30"></div>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="space-y-2">
+					<div class="text-sm sm:text-base font-bold text-white flex items-center justify-center gap-2">
+						<span id="loadingText">Menghubungkan ke Bursa</span>
+						<span class="flex h-2 w-2 relative">
+							<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+							<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+						</span>
+					</div>
+					<p id="subLoadingText" class="text-xs text-slate-400 font-mono transition-opacity duration-300">
+						Memuat indikator teknikal real-time...
+					</p>
+				</div>
+
+				<div class="space-y-1.5">
+					<div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800/80 p-0.5 relative">
+						<div id="loadingProgressBar" class="h-full rounded-full shimmer-bar transition-all duration-300 ease-out" style="width: 0%;"></div>
+					</div>
+					<div class="flex justify-between items-center text-[10px] text-slate-500 font-mono">
+						<span>Sistem AI Active</span>
+						<span id="progressPercent" class="text-emerald-400 font-bold">0%</span>
+					</div>
+				</div>
+
+				<div class="pt-2 border-t border-slate-800/80">
+					<a href="https://webstockid.github.io/screener" 
+					   class="text-[11px] font-mono text-slate-400 hover:text-emerald-400 transition-colors flex items-center justify-center gap-1">
+						<i data-lucide="globe" class="w-3 h-3 text-emerald-400"></i>
+						<span>webstockid.github.io/screener</span>
+					</a>
+				</div>
+
+			</div>
+		</div>
+
+		<script>
+			if (window.lucide) lucide.createIcons();
+
+			const loadingText = document.getElementById('loadingText');
+			const subLoadingText = document.getElementById('subLoadingText');
+			const progressBar = document.getElementById('loadingProgressBar');
+			const progressPercent = document.getElementById('progressPercent');
+
+			const TARGET_URL = "https://webstockid.github.io/screener.html";
+
+			const MAX_DURATION = 12000;
+			const INTERVAL_STEP = 100;
+			let elapsedTime = 0;
+			let isPageFullyLoaded = false;
+
+			window.addEventListener('load', () => {
+				isPageFullyLoaded = true;
+			});
+
+			const progressInterval = setInterval(() => {
+				elapsedTime += INTERVAL_STEP;
+				
+				let percentage = Math.floor((elapsedTime / MAX_DURATION) * 100);
+
+				if (isPageFullyLoaded && percentage < 90) {
+					elapsedTime += 200; 
+				}
+
+				if (percentage > 100) percentage = 100;
+
+				progressBar.style.width = percentage + '%';
+				progressPercent.innerText = percentage + '%';
+
+				if (percentage < 35) {
+					loadingText.innerText = "Menghubungkan ke Bursa";
+					subLoadingText.innerText = "Memuat data indikator real-time...";
+				} else if (percentage < 60) {
+					loadingText.innerText = "Menyiapkan AI Signal Engine";
+					subLoadingText.innerText = "Menghitung Moving Average & Volume...";
+				} else if (percentage < 90) {
+					loadingText.innerText = "Menyiapkan Sistem Screener";
+					subLoadingText.innerText = "Menata data yang diperoleh...";
+				} else {
+					loadingText.innerText = "Data Siap Digunakan";
+					subLoadingText.innerText = "Membuka dashboard screener...";
+				}
+
+				if (percentage >= 100) {
+					clearInterval(progressInterval);
+					
+					document.getElementById('loadingCard').classList.add('opacity-0', 'scale-95');
+					
+					setTimeout(() => {
+						window.location.href = TARGET_URL;
+					}, 400);
+				}
+			}, INTERVAL_STEP);
+		</script>
+	</body>
+</html>
