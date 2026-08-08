@@ -122,7 +122,7 @@
 							</a>
 							
 							<!-- Tautan Index -->
-							<a id="navLinkTools" href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+							<a href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-crown text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
 									<span>Stock ID VIP</span>
@@ -133,7 +133,7 @@
 							</a>
 
 							<!-- Tautan Tools -->
-							<a id="navLinkTools" href="https://webstockid.github.io/exp" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+							<a href="https://webstockid.github.io/exp" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-circle-user text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
 									<span>Stock ID Member</span>
@@ -144,7 +144,7 @@
 							</a>
 
 							<!-- Tautan Screener -->
-							<a id="navLinkScreener" href="https://webstockid.github.io/screener" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+							<a href="https://webstockid.github.io/screener" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-wand-magic-sparkles text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
 									<span>Stock ID Screener</span>
@@ -155,7 +155,7 @@
 							</a>
 
 							<!-- Tautan Watchlist -->
-							<a id="navLinkWatchlist" href="https://webstockid.github.io/watchlist" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+							<a href="https://webstockid.github.io/watchlist" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-eye text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
 									<span>Stock ID Watchlist</span>
@@ -226,7 +226,7 @@
 			// Deteksi Otomatis Halaman Aktif (exp.html)
 			document.addEventListener("DOMContentLoaded", function() {
 				const path = window.location.pathname;
-				const isExpPage = path.includes("exp.html") || path.endsWith("/exp");
+				const isExpPage = path.includes("tools.html") || path.endsWith("/tools");
 
 				if (isExpPage) {
 					const linkVIP = document.getElementById("navLinkVIP");
