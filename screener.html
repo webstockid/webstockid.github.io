@@ -759,6 +759,26 @@
 		</script>
 
 		<script>
+			// ==================== LOGIKA FRAKSI HARGA BURSA EFEK INDONESIA (BEI) ====================
+			function getBEITickSize(price) {
+				if (price < 200) return 1;
+				if (price < 500) return 2;
+				if (price < 2000) return 5;
+				if (price < 5000) return 10;
+				return 25;
+			}
+
+			function roundToBEITick(price, direction = 'round') {
+				if (!price || price <= 0) return 0;
+				const tick = getBEITickSize(price);
+				if (direction === 'floor') {
+					return Math.floor(price / tick) * tick;
+				} else if (direction === 'ceil') {
+					return Math.ceil(price / tick) * tick;
+				}
+				return Math.round(price / tick) * tick;
+			}
+
 			// ==================== POP-UP WELCOME CONTROL ====================
 			function checkWelcomeModal() {
 				const hideModal = localStorage.getItem('hide_welcome_modal');
@@ -1081,7 +1101,7 @@
 								const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
 								const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
 
-								const getMA = (p) => Math.round(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+								const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
 								const ma5 = getMA(5);
 								const ma10 = getMA(10);
 								const ma20 = getMA(20);
@@ -1091,10 +1111,10 @@
 								const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
 								const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
 
-								const high20 = highs.length >= 20 ? Math.max(...highs.slice(-20)) : Math.max(...highs);
-								const low20 = lows.length >= 20 ? Math.min(...lows.slice(-20)) : Math.min(...lows);
+								const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
+								const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
 
-								freshData = { ticker, price: Math.round(currentPrice), prevClose: Math.round(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
+								freshData = { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
 							}
 						}
 					}
@@ -1124,7 +1144,7 @@
 							const previousClose = result.meta.chartPreviousClose || prices[prices.length - 2];
 							const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
 
-							const getMA = (p) => Math.round(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+							const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
 							const ma5 = getMA(5);
 							const ma10 = getMA(10);
 							const ma20 = getMA(20);
@@ -1134,10 +1154,10 @@
 							const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
 							const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
 
-							const high20 = highs.length >= 20 ? Math.max(...highs.slice(-20)) : Math.max(...highs);
-							const low20 = lows.length >= 20 ? Math.min(...lows.slice(-20)) : Math.min(...lows);
+							const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
+							const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
 
-							freshData = { ticker, price: Math.round(currentPrice), prevClose: Math.round(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
+							freshData = { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
 						}
 					} catch (err) {
 						console.error(`Gagal data ${ticker}:`, err);
@@ -1210,7 +1230,7 @@
 				const buktiEl = document.getElementById('aiBuktiUtamaList');
 				const kesimpulanEl = document.getElementById('aiKesimpulanText');
 
-				let price = stockData ? stockData.price : 100;
+				let price = stockData ? roundToBEITick(stockData.price) : 100;
 
 				let score = 3;
 				let verdik = "NETRAL / KONSOLIDASI";
@@ -1291,14 +1311,14 @@
 					descEl.innerText = `Menganalisis pergerakan teknikal emiten ${ticker} berbasis indikator grafik TradingView.`;
 				}
 
-				// TRADING MAP DINAMIS
-				const sl = Math.round(price * 0.92); 
-				const sup1 = Math.round(price * 0.94); 
-				const sup2 = Math.round(price * 0.96); 
-				const res1 = Math.round(price * 1.05); 
-				const res2 = Math.round(price * 1.08); 
-				const tp1 = Math.round(price * 1.06); 
-				const tp2 = Math.round(price * 1.14); 
+				// TRADING MAP DINAMIS DENGAN FRAKSI BEI
+				const sl = roundToBEITick(price * 0.92, 'floor'); 
+				const sup1 = roundToBEITick(price * 0.94, 'floor'); 
+				const sup2 = roundToBEITick(price * 0.96, 'floor'); 
+				const res1 = roundToBEITick(price * 1.05, 'ceil'); 
+				const res2 = roundToBEITick(price * 1.08, 'ceil'); 
+				const tp1 = roundToBEITick(price * 1.06, 'ceil'); 
+				const tp2 = roundToBEITick(price * 1.14, 'ceil'); 
 
 				document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 				document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
@@ -1348,9 +1368,9 @@
 		<script>
 			function autoFillRRRFromAI() {
 				if (globalStockData) {
-					const price = globalStockData.price;
-					const sl = Math.round(price * 0.95);
-					const tp = Math.round(price * 1.15);
+					const price = roundToBEITick(globalStockData.price);
+					const sl = roundToBEITick(price * 0.95, 'floor');
+					const tp = roundToBEITick(price * 1.15, 'ceil');
 
 					document.getElementById('rrrEntry').value = price;
 					document.getElementById('rrrSL').value = sl;
@@ -1362,9 +1382,13 @@
 			function calculateSmartRRR() {
 				const capital = parseFloat(document.getElementById('rrrTotalCapital').value) || 0;
 				const maxRiskPct = parseFloat(document.getElementById('rrrRiskPercent').value) || 0;
-				const entry = parseFloat(document.getElementById('rrrEntry').value) || 0;
-				const sl = parseFloat(document.getElementById('rrrSL').value) || 0;
-				const tp = parseFloat(document.getElementById('rrrTP').value) || 0;
+				const rawEntry = parseFloat(document.getElementById('rrrEntry').value) || 0;
+				const rawSL = parseFloat(document.getElementById('rrrSL').value) || 0;
+				const rawTP = parseFloat(document.getElementById('rrrTP').value) || 0;
+
+				const entry = roundToBEITick(rawEntry);
+				const sl = roundToBEITick(rawSL, 'floor');
+				const tp = roundToBEITick(rawTP, 'ceil');
 
 				const resEl = document.getElementById('rrrResult');
 				const maxRiskAmountEl = document.getElementById('rrrMaxRiskAmount');
@@ -1513,14 +1537,14 @@
 
 				sorted.forEach((item, index) => {
 					const ticker = item.ticker;
-					const price = item.price;
+					const price = roundToBEITick(item.price);
 					const changePct = item.changePct;
 
-					const entryLow = Math.round(price * 0.94);
-					const entryHigh = Math.round(price * 0.96);
-					const sl = Math.round(price * 0.92);
-					const tp1 = Math.round(price * 1.06);
-					const tp2 = Math.round(price * 1.14);
+					const entryLow = roundToBEITick(price * 0.94, 'floor');
+					const entryHigh = roundToBEITick(price * 0.96, 'floor');
+					const sl = roundToBEITick(price * 0.92, 'floor');
+					const tp1 = roundToBEITick(price * 1.06, 'ceil');
+					const tp2 = roundToBEITick(price * 1.14, 'ceil');
 
 					let statusSignal = "🔥 Momentum Breakout";
 					let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
@@ -1653,7 +1677,8 @@
 		<script>
 			function addPriceAlert() {
 				const priceInput = document.getElementById('alertPriceInput');
-				const price = parseFloat(priceInput.value);
+				const rawPrice = parseFloat(priceInput.value);
+				const price = roundToBEITick(rawPrice);
 
 				if (!price || price <= 0) {
 					AudioFX.playAlert();
