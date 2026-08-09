@@ -1586,7 +1586,7 @@
 			}, 1000);
 
 			if ('serviceWorker' in navigator) {
-				navigator.serviceWorker.register('/sw.js').then(reg => {
+				navigator.serviceWorker.register('sw.js').then(reg => {
 					if ('periodicSync' in reg) {
 						try {
 							reg.periodicSync.register('check-expiry-sync', {
