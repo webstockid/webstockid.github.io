@@ -100,22 +100,17 @@
 
 				<!-- Menu Navigasi Dropdown -->
 				<div class="relative inline-block text-left" id="navDropdownContainer">
-					<!-- Tombol Utama Menu Dropdown -->
 					<button id="menuDropdownBtn" onclick="toggleNavDropdown()" type="button" class="bg-slate-900/80 hover:bg-slate-800 active:scale-95 text-slate-200 px-4 py-2.5 rounded-xl border border-slate-700/70 hover:border-emerald-500/60 text-xs font-bold tracking-wide transition-all duration-200 flex items-center gap-2.5 shadow-md hover:shadow-emerald-500/10 cursor-pointer select-none">
 						<i class="fa-solid fa-bars text-emerald-400 transition-transform duration-300 group-hover:scale-110"></i>
 						<span>Menu Navigasi</span>
 						<i id="dropdownChevron" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300 ease-out"></i>
 					</button>
 
-					<!-- Isi Dropdown Menu dengan Animasi Smooth Pop-Up -->
 					<div id="navDropdownMenu" class="hidden opacity-0 scale-95 duration-200 ease-out absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-2xl backdrop-blur-xl p-2 z-50 transform origin-top-right transition-all divide-y divide-slate-800/80">
-						<!-- Seksi 1: Platform / Layanan Utama Stock ID -->
 						<div class="pb-1.5 space-y-1">
 							<div class="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
 								Aplikasi & Layanan
 							</div>
-
-							<!-- Tautan VIP / Expired Member -->
 							<a id="navLinkVIP" href="https://webstockid.github.io/exp" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-200 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-circle-user text-amber-400 group-hover:scale-110 transition-transform w-4 text-center"></i>
@@ -125,8 +120,6 @@
 									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
-							
-							<!-- Tautan Index -->
 							<a id="navLinkTools" href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-crown text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -136,8 +129,6 @@
 									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
-
-							<!-- Tautan Tools -->
 							<a id="navLinkTools" href="https://webstockid.github.io/tools" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-screwdriver-wrench text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -147,8 +138,6 @@
 									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
-
-							<!-- Tautan Screener -->
 							<a id="navLinkScreener" href="https://webstockid.github.io/screener" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-wand-magic-sparkles text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -158,8 +147,6 @@
 									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
-
-							<!-- Tautan Watchlist -->
 							<a id="navLinkWatchlist" href="https://webstockid.github.io/watchlist" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-eye text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -170,13 +157,10 @@
 								</div>
 							</a>
 						</div>
-
-						<!-- Seksi 2: Navigasi Internal Halaman Ini -->
 						<div class="pt-1.5 space-y-0.5">
 							<div class="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
 								Navigasi Halaman
 							</div>
-
 							<a href="#stats" onclick="closeNavDropdown()" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<i class="fa-solid fa-hand-point-right text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all duration-200 w-4 text-center"></i> 
 								<span>Statistik</span>
@@ -187,7 +171,6 @@
 			</div>
 		</nav>
 
-		<!-- Script Kontrol Dropdown & Pendeteksi Halaman Aktif -->
 		<script>
 			function toggleNavDropdown() {
 				const menu = document.getElementById("navDropdownMenu");
@@ -213,31 +196,21 @@
 					menu.classList.remove("opacity-100", "scale-100");
 					menu.classList.add("opacity-0", "scale-95");
 					chevron.classList.remove("rotate-180");
-					
-					setTimeout(() => {
-						menu.classList.add("hidden");
-					}, 200);
+					setTimeout(() => { menu.classList.add("hidden"); }, 200);
 				}
 			}
 
-			// Tutup dropdown jika mengklik di luar area menu
 			document.addEventListener("click", function(event) {
 				const container = document.getElementById("navDropdownContainer");
-				if (container && !container.contains(event.target)) {
-					closeNavDropdown();
-				}
+				if (container && !container.contains(event.target)) closeNavDropdown();
 			});
 
-			// Deteksi Otomatis Halaman Aktif (exp.html)
 			document.addEventListener("DOMContentLoaded", function() {
 				const path = window.location.pathname;
-				const isExpPage = path.includes("exp.html") || path.endsWith("/exp");
-
-				if (isExpPage) {
+				if (path.includes("exp.html") || path.endsWith("/exp")) {
 					const linkVIP = document.getElementById("navLinkVIP");
 					if (linkVIP) {
 						linkVIP.className = "flex items-center justify-between px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs transition-all duration-200 group cursor-pointer";
-						
 						const statusContainer = linkVIP.querySelector(".nav-status-container");
 						if (statusContainer) {
 							statusContainer.innerHTML = `
@@ -255,25 +228,59 @@
 			});
 		</script>
 		
-		<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 space-y-8">
-			<header class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-900/40 p-6 rounded-2xl border border-slate-800/60 backdrop-blur-md">
-				<div class="flex items-center gap-4 text-center sm:text-left">
-					<div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 shadow-lg shadow-emerald-500/10">
-						<i class="fa-solid fa-id-card-clip text-xl"></i>
+		<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-5">
+			<!-- DASHBOARD COMPACT & MODERN (NON-FIXED) -->
+			<section id="userDashboard" class="hidden relative overflow-hidden bg-slate-900/90 border border-emerald-500/30 rounded-2xl px-4 py-3 shadow-xl shadow-emerald-500/5 backdrop-blur-md transition-all">
+				<div class="flex flex-wrap md:flex-nowrap justify-between items-center gap-3">
+					
+					<!-- Profil Pengguna -->
+					<div class="flex items-center gap-3">
+						<div class="relative flex-shrink-0">
+							<div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-sm font-bold">
+								<i class="fa-solid fa-user-check"></i>
+							</div>
+							<span class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+								<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+								<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+							</span>
+						</div>
+						<div>
+							<span class="text-[9px] font-bold uppercase tracking-wider text-emerald-400 block leading-tight">Pengguna Aktif</span>
+							<h2 id="dashNama" class="heading-font text-xs sm:text-sm font-black text-white tracking-wide leading-snug">-</h2>
+						</div>
 					</div>
-					<div>
-						<h1 class="heading-font text-xl font-extrabold text-white tracking-tight">Masa Aktif Member VIP</h1>
-						<p class="text-xs text-slate-400 mt-0.5">Grup Premium Trading & Learning Community <span class="text-emerald-400 font-mono">Stock ID</span></p>
-					</div>
-				</div>
-				<div class="flex gap-2">
-					<button onclick="enableNotif()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-700/60 transition flex items-center gap-2 cursor-pointer">
-						<i class="fa-solid fa-bullhorn text-emerald-400"></i>Reminder
-					</button>
-					<button id="themeToggle" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-700/60 transition cursor-pointer">🌙 Soft Mode</button>
-				</div>
-			</header>
 
+					<!-- Detail Ringkas Expired & Sisa Waktu -->
+					<div class="flex items-center gap-2 sm:gap-4 ml-auto md:ml-0 text-xs">
+						<!-- Tanggal Expired -->
+						<div class="flex items-center gap-2 bg-slate-950/60 border border-slate-800/80 rounded-xl px-3 py-1.5">
+							<i class="fa-solid fa-calendar-days text-orange-400 text-[11px]"></i>
+							<div>
+								<span class="text-[8px] uppercase font-bold text-slate-500 block leading-none">Expired</span>
+								<span id="dashExpired" class="text-[11px] font-bold text-orange-400 font-mono leading-tight">-</span>
+							</div>
+						</div>
+
+						<!-- Sisa Masa Aktif (Countdown) -->
+						<div class="flex items-center gap-2 bg-slate-950/60 border border-slate-800/80 rounded-xl px-3 py-1.5">
+							<i class="fa-solid fa-hourglass-half text-yellow-400 text-[11px]"></i>
+							<div>
+								<span class="text-[8px] uppercase font-bold text-slate-500 block leading-none">Sisa Waktu</span>
+								<span id="dashCountdown" class="text-[11px] font-bold text-yellow-400 font-mono leading-tight">-</span>
+							</div>
+						</div>
+
+						<!-- Tombol Ganti User -->
+						<button onclick="bukaReminderModal()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 border border-slate-700 hover:border-emerald-500/50 text-[11px] font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+							<i class="fa-solid fa-arrows-rotate text-emerald-400 text-[10px]"></i>
+							<span class="hidden sm:inline">Ganti</span>
+						</button>
+					</div>
+
+				</div>
+			</section>
+
+			<!-- SECTION FILTER & SEARCH MEMBER -->
 			<section class="bg-slate-900/30 p-4 rounded-2xl border border-slate-800/80 flex flex-col md:flex-row items-center gap-3">
 				<div class="relative w-full md:flex-1">
 					<span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 text-xs">
@@ -300,8 +307,10 @@
 				</div>
 			</section>
 
+			<!-- KONTEN DAFTAR MEMBER -->
 			<main class="grid grid-cols-1 md:grid-cols-2 gap-4" id="list"></main>
 
+			<!-- STATISTIK & REKAP KELAS -->
 			<section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 				<div class="lg:col-span-7 glassmorphism p-5 rounded-2xl flex flex-col justify-between min-h-[300px]">
 					<h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
@@ -328,16 +337,26 @@
 			</section>
 		</div>
 
+		<!-- MODAL REMINDER DENGAN FITUR PENCARIAN PROFIL -->
 		<div id="reminderModal" style="z-index:99999;display:none" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm justify-center items-center p-4">
 			<div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 relative shadow-2xl">
 				<h3 class="heading-font text-base font-bold text-white mb-2 flex items-center gap-2">
 					<i class="fa-solid fa-circle-exclamation text-amber-400"></i>Setup Device Reminder
 				</h3>
-				<p class="text-xs text-slate-400 leading-relaxed mb-4">Pilih profil nama Anda di bawah ini untuk mengaktifkan notifikasi peringatan otomatis sebelum masa langganan habis.</p>
-				<select id="memberSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500 mb-4 font-medium"></select>
+				<p class="text-xs text-slate-400 leading-relaxed mb-4">Cari & pilih profil nama Anda untuk mengaktifkan notifikasi pengingat sebelum masa langganan habis.</p>
+				
+				<div class="relative mb-3">
+					<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 text-xs">
+						<i class="fa-solid fa-magnifying-glass"></i>
+					</span>
+					<input id="modalSearchMember" oninput="filterModalMembers()" type="text" placeholder="Ketik nama kamu disini..." class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-9 pr-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-medium">
+				</div>
+
+				<select id="memberSelect" size="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-emerald-500 mb-4 font-medium overflow-y-auto"></select>
+				
 				<div class="flex justify-end gap-2 text-xs font-bold">
 					<button onclick='document.getElementById("reminderModal").style.display="none"' class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-4 py-2 rounded-lg transition cursor-pointer">Batal</button>
-					<button onclick="simpanReminder()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2 rounded-lg transition shadow-md shadow-emerald-500/10 cursor-pointer">Simpan Pengingat</button>
+					<button onclick="simpanReminder()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2 rounded-lg transition shadow-md shadow-emerald-500/10 cursor-pointer">Simpan & Aktifkan</button>
 				</div>
 			</div>
 		</div>
@@ -346,55 +365,6 @@
 		<audio id="audiocari" src="stockid_suara/cari.mp3"></audio>
 		<audio id="audiofilter" src="stockid_suara/filter.mp3"></audio>
 		<audio id="notifSound" src="stockid_suara/notif.mp3"></audio>
-
-		<script type="text/javascript">
-			function bukaReminderModal() {
-				const select = document.getElementById("memberSelect");
-				select.innerHTML = "";
-				members.forEach((m, index) => {
-					select.innerHTML += `
-					<option value="${index}">${m.nama}</option>
-					`;
-				});
-				document.getElementById("reminderModal").style.display = "flex";
-			}
-
-			function simpanReminder() {
-				const index = document.getElementById("memberSelect").value;
-				localStorage.setItem("reminderMember", index);
-				document.getElementById("reminderModal").style.display = "none";
-			}
-
-			function cekReminder() {
-				const index = localStorage.getItem("reminderMember");
-				if (index === null) return;
-				const m = members[index];
-				if (!m || !m.expired) return;
-				const today = new Date();
-				const exp = new Date(m.expired);
-				const diffTime = exp - today;
-				const sisaHari = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-				const levels = [10, 5, 3];
-				const sudahNotif = JSON.parse(localStorage.getItem("notifSent") || "{}");
-				if (levels.includes(sisaHari) && !sudahNotif[sisaHari]) {
-					Notification.requestPermission().then(permission => {
-						if (permission === "granted") {
-							new Notification(`Reminder ${m.nama}`, {
-								body: `Masa aktif tersisa ${sisaHari} hari`
-							});
-						}
-					});
-					sudahNotif[sisaHari] = true;
-					localStorage.setItem("notifSent", JSON.stringify(sudahNotif));
-				}
-			}
-			window.addEventListener("load", () => {
-				if (!localStorage.getItem("reminderMember")) {
-					bukaReminderModal();
-				}
-				cekReminder();
-			});
-		</script>
 
 		<script type="text/javascript">
 			const members = [{
@@ -1278,28 +1248,9 @@
 				expired: "2025-04-20",
 				history: [1, 1]
 			}];
-		</script>
 
-		<script type="text/javascript">
-			function hitungRekapKelas() {
-				const rekap = {};
-				members.forEach(m => {
-					if (Array.isArray(m.history)) {
-						m.history.forEach(kelas => {
-							rekap[kelas] = (rekap[kelas] || 0) + 1;
-						});
-					}
-				});
-				return rekap;
-			}
 			let isAdmin = false;
-		</script>
-
-		<script type="text/javascript">
-			const DAY = 86400000,
-				HOUR = 3600000,
-				MIN = 60000,
-				SEC = 1000;
+			const DAY = 86400000, HOUR = 3600000, MIN = 60000, SEC = 1000;
 			const lastMonth = m => m.history.at(-1) || 0;
 			const target = d => new Date(d + "T00:00:00").getTime();
 
@@ -1312,26 +1263,128 @@
 				return `${h}H ${j}J ${m}M ${d}D`;
 			}
 
-			function badge(arr) {
-				if (arr.length == 1) return `+${arr[0]} bulan`;
-				return `+${arr.slice(0, -1).join(", ")} & ${arr.at(-1)} bulan`;
-			}
-
 			function join(arr) {
 				return arr.map(b => `${b} Bulan`).join(" + ");
+			}
+
+			function hitungRekapKelas() {
+				const rekap = {};
+				members.forEach(m => {
+					if (Array.isArray(m.history)) {
+						m.history.forEach(kelas => { rekap[kelas] = (rekap[kelas] || 0) + 1; });
+					}
+				});
+				return rekap;
+			}
+
+			function filterModalMembers() {
+				const query = document.getElementById("modalSearchMember").value.toLowerCase();
+				const select = document.getElementById("memberSelect");
+				select.innerHTML = "";
+				
+				members.forEach((m, index) => {
+					if (m.nama.toLowerCase().includes(query)) {
+						const opt = document.createElement("option");
+						opt.value = index;
+						opt.className = "p-2 hover:bg-slate-800 rounded cursor-pointer";
+						opt.textContent = `${m.nama} (${m.expired})`;
+						select.appendChild(opt);
+					}
+				});
+			}
+
+			function bukaReminderModal() {
+				document.getElementById("modalSearchMember").value = "";
+				filterModalMembers();
+				const savedIndex = localStorage.getItem("reminderMember");
+				if (savedIndex !== null) {
+					document.getElementById("memberSelect").value = savedIndex;
+				}
+				document.getElementById("reminderModal").style.display = "flex";
+			}
+
+			function simpanReminder() {
+				const select = document.getElementById("memberSelect");
+				const index = select.value;
+				if (index === "" || index === null) {
+					alert("Silakan pilih nama profil Anda terlebih dahulu.");
+					return;
+				}
+				localStorage.setItem("reminderMember", index);
+				document.getElementById("reminderModal").style.display = "none";
+				
+				enableNotif();
+				updateDashboard();
+				cekReminder();
+			}
+
+			function updateDashboard() {
+				const index = localStorage.getItem("reminderMember");
+				const dash = document.getElementById("userDashboard");
+				if (index === null || !members[index]) {
+					dash.classList.add("hidden");
+					return;
+				}
+				const m = members[index];
+				dash.classList.remove("hidden");
+				document.getElementById("dashNama").textContent = m.nama;
+				document.getElementById("dashExpired").textContent = m.expired;
+				
+				const ms = target(m.expired) - Date.now();
+				document.getElementById("dashCountdown").textContent = sisa(ms);
+			}
+
+			function pushNotif(title, body) {
+				if (Notification.permission !== "granted") return;
+				new Notification(title, {
+					body: body,
+					icon: "stockid_gambar/stockicon.jpg",
+					vibrate: [200, 100, 200]
+				});
+				const sound = document.getElementById("notifSound");
+				if (sound) sound.play().catch(() => {});
+			}
+
+			function enableNotif() {
+				if (!("Notification" in window)) {
+					alert("Browser tidak mendukung notifikasi");
+					return;
+				}
+				if (Notification.permission !== "granted") {
+					Notification.requestPermission().then(p => {
+						if (p === "granted") alert("Sistem reminder notifikasi berhasil diaktifkan! 🐿️");
+					});
+				}
+			}
+
+			function cekReminder() {
+				const index = localStorage.getItem("reminderMember");
+				if (index === null) return;
+				const m = members[index];
+				if (!m || !m.expired) return;
+
+				const now = Date.now();
+				const expMs = target(m.expired);
+				const diffTime = expMs - now;
+				const sisaHari = Math.ceil(diffTime / DAY);
+				const todayKey = new Date().toISOString().split('T')[0];
+
+				if (sisaHari <= 10 && sisaHari >= 0) {
+					const notifLog = JSON.parse(localStorage.getItem("notifSentHistory") || "{}");
+					if (!notifLog[todayKey]) {
+						if (Notification.permission === "granted") {
+							pushNotif(`Reminder VIP: ${m.nama}`, `Masa aktif Stock ID VIP Anda tersisa ${sisaHari} hari lagi. Segera perpanjang agar tidak terputus!`);
+							notifLog[todayKey] = true;
+							localStorage.setItem("notifSentHistory", JSON.stringify(notifLog));
+						}
+					}
+				}
 			}
 
 			function renderStat(data) {
 				const box = document.getElementById("statistik");
 				box.innerHTML = "";
-				const map = {
-					1: 0,
-					2: 0,
-					3: 0,
-					6: 0,
-					12: 0,
-					x: 0
-				};
+				const map = { 1: 0, 2: 0, 3: 0, 6: 0, 12: 0, x: 0 };
 				data.forEach(m => {
 					if (m.ms <= 0) map.x++;
 					else map[lastMonth(m)]++;
@@ -1352,11 +1405,11 @@
 					el.className = "space-y-1";
 					el.innerHTML = `
 					<div class="flex justify-between text-xs font-semibold">
-					<span class="text-slate-400">${r[1]}</span>
-					<span class="text-white font-mono">${val} Member</span>
+						<span class="text-slate-400">${r[1]}</span>
+						<span class="text-white font-mono">${val} Member</span>
 					</div>
 					<div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-900">
-					<div class="${r[2]} h-full rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(255,255,255,0.05)]" style="width: ${percent}%"></div>
+						<div class="${r[2]} h-full rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(255,255,255,0.05)]" style="width: ${percent}%"></div>
 					</div>
 					`;
 					box.appendChild(el);
@@ -1370,8 +1423,8 @@
 				Object.keys(rekapData).sort((a, b) => Number(a) - Number(b)).forEach(kelas => {
 					rekapBody.innerHTML += `
 					<tr class="hover:bg-slate-900/40 transition-colors">
-					<td class="p-3 font-semibold text-slate-300">Kelas VIP ${kelas} Bulan</td>
-					<td class="p-3 text-center font-mono font-bold text-emerald-400 bg-emerald-500/5">${rekapData[kelas]}x Pembelian</td>
+						<td class="p-3 font-semibold text-slate-300">Kelas VIP ${kelas} Bulan</td>
+						<td class="p-3 text-center font-mono font-bold text-emerald-400 bg-emerald-500/5">${rekapData[kelas]}x Pembelian</td>
 					</tr>
 					`;
 				});
@@ -1384,7 +1437,6 @@
 				
 				let sorted = [...members];
 
-				// PEMUTUSAN DATA FILTER DI AWAL (MUTLAK)
 				if (mode === "bentar") {
 					sorted = sorted.filter(m => {
 						const dLeft = Math.floor(m.ms / DAY);
@@ -1398,7 +1450,6 @@
 					}
 				}
 
-				// LOGIKA SORTING DATA
 				if (mode === "active") sorted.sort((a, b) => b.ms - a.ms);
 				if (mode === "bentar") sorted.sort((a, b) => a.ms - b.ms);
 				if (mode === "nameAZ") sorted.sort((a, b) => a.nama.localeCompare(b.nama));
@@ -1406,7 +1457,6 @@
 
 				sorted.forEach((m) => {
 					const index = members.indexOf(m);
-					const lm = lastMonth(m);
 					const daysLeft = Math.floor(m.ms / DAY);
 
 					if (!m.nama.toLowerCase().includes(key)) return;
@@ -1497,15 +1547,24 @@
 				const sorted = [...members].sort((a, b) => b.ms - a.ms);
 				renderStat(sorted);
 			}
+
+			window.addEventListener("load", () => {
+				if (!localStorage.getItem("reminderMember")) {
+					bukaReminderModal();
+				} else {
+					updateDashboard();
+				}
+				cekReminder();
+			});
+
 			search.oninput = render;
 			filter.onchange = render;
 			sortMode.onchange = render;
 			initStat();
 			render();
-		</script>
 
-		<script type="text/javascript">
 			setInterval(() => {
+				updateDashboard();
 				const countdowns = document.querySelectorAll(".countdown");
 				countdowns.forEach(el => {
 					const expiredDate = el.getAttribute("data-expired");
@@ -1525,108 +1584,29 @@
 					el.textContent = `${h}H ${j}J ${m}M ${d}D`;
 				});
 			}, 1000);
-		</script>
 
-		<script type="text/javascript">
-			function enableNotif() {
-				if (!("Notification" in window)) {
-					alert("Browser tidak mendukung notifikasi");
-					return;
-				}
-				Notification.requestPermission().then(p => {
-					if (p === "granted") alert("Sistem reminder notifikasi aktif! 🐿️");
-				});
-			}
-
-			function pushNotif(title, body) {
-				if (Notification.permission !== "granted") return;
-				new Notification(title, {
-					body: body,
-					icon: "stockid_gambar/alert.jpg",
-					vibrate: [200, 100, 200]
-				});
-				document.getElementById("notifSound").play().catch(() => {});
-			}
 			if ('serviceWorker' in navigator) {
 				navigator.serviceWorker.register('/sw.js').then(reg => {
-					const swNotifShown = localStorage.getItem("swNotifShown");
-					if (!swNotifShown) {
-						alert("Service Worker berhasil diaktifkan 🦤");
-						localStorage.setItem("swNotifShown", "true");
+					if ('periodicSync' in reg) {
+						try {
+							reg.periodicSync.register('check-expiry-sync', {
+								minInterval: 12 * 60 * 60 * 1000
+							});
+						} catch (e) {
+							console.log("Periodic Sync tidak diizinkan/didukung");
+						}
 					}
 				}).catch(err => {
 					console.log("SW Registration failed:", err);
 				});
+				
 				navigator.serviceWorker.addEventListener('message', e => {
 					if (e.data.type === 'check-reminder') {
 						render();
+						cekReminder();
 					}
 				});
 			}
-		</script>
-
-		<script type="text/javascript">
-			function exportData() {
-				const dataStr = JSON.stringify(members, null, 2);
-				const blob = new Blob([dataStr], {
-					type: "application/json"
-				});
-				const url = URL.createObjectURL(blob);
-				const a = document.createElement("a");
-				a.href = url;
-				a.download = "backup_members.json";
-				a.click();
-			}
-
-			function importData(event) {
-				const file = event.target.files[0];
-				if (!file) return;
-				const reader = new FileReader();
-				reader.onload = function(e) {
-					const imported = JSON.parse(e.target.result);
-					if (Array.isArray(imported)) {
-						members.length = 0;
-						imported.forEach(m => members.push(m));
-						alert("Data member berhasil di-import dari cadangan! 🖨️");
-						render();
-					}
-				};
-				reader.readAsText(file);
-			}
-		</script>
-
-		<script type="text/javascript">
-			function applyTheme(theme) {
-				document.body.setAttribute("data-theme", theme);
-				localStorage.setItem("theme", theme);
-				const btn = document.getElementById("themeToggle");
-				if (btn) {
-					btn.textContent = theme === "dark" ? "☀ Light Mode" : "🌙 Soft Mode";
-				}
-				if (theme === "light") {
-					document.body.classList.remove("bg-slate-950", "text-slate-200");
-					document.body.classList.add("bg-slate-50", "text-slate-800");
-				} else {
-					document.body.classList.remove("bg-slate-50", "text-slate-800");
-					document.body.classList.add("bg-slate-950", "text-slate-200");
-				}
-			}
-			document.addEventListener("DOMContentLoaded", () => {
-				const btn = document.getElementById("themeToggle");
-				if (btn) {
-					btn.onclick = () => {
-						const current = document.body.getAttribute("data-theme") || "dark";
-						applyTheme(current === "dark" ? "light" : "dark");
-					};
-				}
-				const savedTheme = localStorage.getItem("theme");
-				if (savedTheme) {
-					applyTheme(savedTheme);
-				} else {
-					const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-					applyTheme(prefersDark ? "dark" : "light");
-				}
-			});
 		</script>
 	</body>
 </html>
