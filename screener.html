@@ -1625,8 +1625,8 @@
 									<div>
 										<div class="flex items-center gap-2">
 											<span class="font-black text-white text-sm lg:text-base">&dollar;${ticker}</span>
-											<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] lg:text-[10px] bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 border border-emerald-500/30 font-bold px-2 py-0.5 rounded transition">
-												Lihat Chart &rarr;
+											<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] lg:text-[10px] bg-blue-500/20 text-blue-400 hover:bg-emerald-500 hover:text-slate-950 border border-emerald-500/30 font-bold px-2 py-0.5 rounded transition">
+												Lihat Chart
 											</button>
 										</div>
 										<span class="text-[10px] lg:text-xs text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
@@ -1889,7 +1889,7 @@
 				const input = document.getElementById('stockSearch').value.trim().toUpperCase();
 				if (input) {
 					currentTicker = input;
-					document.getElementById('stockTitle').innerText = `&dollar;${currentTicker}`;
+					document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 					document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
 					document.getElementById('newsTickerLabel').innerText = currentTicker;
 					document.getElementById('fundTickerLabel').innerText = currentTicker;
@@ -1921,7 +1921,7 @@
 			updateMarketBadge();
 			checkUrlParamTicker();
 
-			document.getElementById('stockTitle').innerText = `&dollar;${currentTicker}`;
+			document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 			document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
 			document.getElementById('newsTickerLabel').innerText = currentTicker;
 			document.getElementById('fundTickerLabel').innerText = currentTicker;
