@@ -776,10 +776,6 @@
 				}
 			}
 
-			// ==================== RAPIDAPI CONFIGURATION ====================
-			const RAPIDAPI_KEY = '88b131b5d6msh9610e3cd0b71fcfp1f201ajsnbfc3838c085b';
-			const RAPIDAPI_HOST = 'yahoo-finance-real-time1.p.rapidapi.com';
-
 			// ==================== DATABASE TOKEN VIP ====================
 			const databaseVIP = {
 				"1": { "tanggalExpired": "2040-07-25" },
@@ -1060,16 +1056,12 @@
 				const targetSymbol = `${ticker}.JK`;
 				let freshData = null;
 				
-				// 1. RapidAPI Direct
+				// UBAH URL DI BAWAH SESUAI URL CLOUDFLARE WORKER MILIKMU!
+				const WORKER_URL = 'stockid-api-proxy.accespy-mail.workers.dev';
+				
+				// 1. Panggil Cloudflare Worker Proxy (Aman & Tanpa API Key di Frontend)
 				try {
-					const url = `https://${RAPIDAPI_HOST}/stock/get-histories?symbol=${targetSymbol}&interval=15m&lang=en-US&region=US`;
-					const response = await fetch(url, {
-						method: 'GET',
-						headers: {
-							'x-rapidapi-key': RAPIDAPI_KEY,
-							'x-rapidapi-host': RAPIDAPI_HOST
-						}
-					});
+					const response = await fetch(`${WORKER_URL}?symbol=${targetSymbol}`);
 					if (response.ok) {
 						const json = await response.json();
 						const result = json?.chart?.result?.[0] || json?.results?.[0];
@@ -1103,7 +1095,7 @@
 						}
 					}
 				} catch (e) {
-					console.warn(`RapidAPI retry/fallback for ${ticker}`);
+					console.warn(`Worker proxy retry/fallback for ${ticker}`);
 				}
 
 				// 2. Fallback Public Live Proxy
