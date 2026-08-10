@@ -1272,8 +1272,8 @@
 
 					const trendText = stockData.changePct >= 0 ? `menguat +${stockData.changePct}%` : `terkoreksi ${stockData.changePct}%`;
 					const volText = isVolSpike 
-						? `<strong class="text-emerald-400">terjadi lonjakan volume (${stockData.volRatio}x rerata 5-hari)</strong>` 
-						: `volume transaksi cenderung moderat (${stockData.volRatio}x rerata 5-hari)`;
+						? `<strong class="text-emerald-400">terjadi lonjakan volume (${stockData.volRatio}x rerata volume harian)</strong>` 
+						: `volume transaksi cenderung moderat (${stockData.volRatio}x rerata volume harian)`;
 					
 					const maAlignText = (isAboveMA5 && isAboveMA10 && isAboveMA20)
 						? "Struktur tren berada dalam susunan <strong class='text-emerald-400'>Bullish Alignment</strong> (Harga > MA5 > MA10 > MA20)."
@@ -1296,7 +1296,7 @@
 							<span class="font-mono text-emerald-400">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 						</li>
 						<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-							<span>• Rasio Volume vs Rerata 5 Hari:</span>
+							<span>• Rasio Volume vs Rerata Volume Harian:</span>
 							<span class="font-bold font-mono ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
 						</li>
 						<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
