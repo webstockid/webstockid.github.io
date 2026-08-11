@@ -23,22 +23,22 @@
 		<style>
 			body {
 				font-family: "Comfortaa", sans-serif;
-				background-color: #0b0f19
+				background-color: #0b0f19;
 			}
 			.heading-font {
-				font-family: "Comfortaa", sans-serif
+				font-family: "Comfortaa", sans-serif;
 			}
 			.glassmorphism {
 				background: rgba(17, 24, 39, .7);
 				backdrop-filter: blur(12px);
 				-webkit-backdrop-filter: blur(12px);
-				border: 1px solid rgba(255, 255, 255, .06)
+				border: 1px solid rgba(255, 255, 255, .06);
 			}
 			.glow-green {
-				box-shadow: 0 0 20px rgba(16, 185, 129, .2)
+				box-shadow: 0 0 20px rgba(16, 185, 129, .2);
 			}
 			.glow-premium {
-				box-shadow: 0 0 30px rgba(245, 158, 11, .25)
+				box-shadow: 0 0 30px rgba(245, 158, 11, .25);
 			}
 			.glass-menu {
 				background: rgba(15, 23, 42, 0.95);
@@ -75,12 +75,31 @@
 		document.addEventListener('click', inisialisasiAudioPremium);
 		document.addEventListener('keydown', inisialisasiAudioPremium);
 		document.addEventListener('touchstart', inisialisasiAudioPremium);
+
+		// HELPER UTAMA PEMBERSIH ANGKA KONSISTEN
+		function bersihkanAngka(stringFormat) {
+			if (!stringFormat) return 0;
+			return parseFloat(stringFormat.toString().replace(/\./g, '').replace(/,/g, '.')) || 0;
+		}
+		function formatRupiahInput(input) {
+			let value = input.value.replace(/[^,\d]/g, '').toString();
+			let split = value.split(',');
+			let sisa = split[0].length % 3;
+			let rupiah = split[0].substr(0, sisa);
+			let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+			if (ribuan) {
+				let separator = sisa ? '.' : '';
+				rupiah += separator + ribuan.join('.');
+			}
+			rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+			input.value = rupiah;
+		}
 	</script>
 	
 	<body class="text-slate-200 antialiased overflow-x-hidden">
+		<!-- NAVBAR -->
 		<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
-				<!-- Brand / Logo -->
 				<div class="flex items-center gap-3">
 					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2 rounded-2xl shadow-lg shadow-emerald-500/20 transition-transform duration-300 hover:scale-110 hover:rotate-6 cursor-pointer">
 						<i class="fa-solid fa-biohazard text-slate-950 text-xl font-black"></i>
@@ -93,24 +112,17 @@
 					</div>
 				</div>
 
-				<!-- Navigasi Dropdown -->
 				<div class="relative inline-block text-left" id="navDropdownContainer">
-					<!-- Tombol Utama Menu Dropdown -->
 					<button id="menuDropdownBtn" onclick="toggleNavDropdown()" type="button" class="bg-slate-900/80 hover:bg-slate-800 active:scale-95 text-slate-200 px-4 py-2.5 rounded-xl border border-slate-700/70 hover:border-emerald-500/60 text-xs font-bold tracking-wide transition-all duration-200 flex items-center gap-2.5 shadow-md hover:shadow-emerald-500/10 cursor-pointer select-none">
 						<i class="fa-solid fa-bars text-emerald-400 transition-transform duration-300 group-hover:scale-110"></i>
 						<span>Navigasi</span>
 						<i id="dropdownChevron" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300 ease-out"></i>
 					</button>
 
-					<!-- Isi Dropdown Menu dengan Animasi Smooth Pop-Up -->
 					<div id="navDropdownMenu" class="hidden opacity-0 scale-95 duration-200 ease-out absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-2xl backdrop-blur-xl p-2 z-50 transform origin-top-right transition-all divide-y divide-slate-800/80">
-						<!-- Seksi 1: Platform / Layanan Utama Stock ID -->
 						<div class="pb-1.5 space-y-1">
-							<div class="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-								Aplikasi & Layanan
-							</div>
+							<div class="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Aplikasi & Layanan</div>
 
-							<!-- Tautan VIP / Expired Member -->
 							<a id="navLinkVIP" href="https://webstockid.github.io/tools" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-200 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-screwdriver-wrench text-amber-400 group-hover:scale-110 transition-transform w-4 text-center"></i>
@@ -121,7 +133,6 @@
 								</div>
 							</a>
 							
-							<!-- Tautan Index -->
 							<a href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-crown text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -132,7 +143,6 @@
 								</div>
 							</a>
 
-							<!-- Tautan Tools -->
 							<a href="https://webstockid.github.io/exp" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-circle-user text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -143,7 +153,6 @@
 								</div>
 							</a>
 
-							<!-- Tautan Screener -->
 							<a href="https://webstockid.github.io/screener" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-wand-magic-sparkles text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -154,7 +163,6 @@
 								</div>
 							</a>
 
-							<!-- Tautan Watchlist -->
 							<a href="https://webstockid.github.io/watchlist" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-eye text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -166,12 +174,8 @@
 							</a>
 						</div>
 
-						<!-- Seksi 2: Navigasi Internal Halaman Ini -->
 						<div class="pt-1.5 space-y-0.5">
-							<div class="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-								Navigasi Halaman
-							</div>
-
+							<div class="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Navigasi Halaman</div>
 							<a href="#stats" onclick="toggleMenuTools(); tong(); getar(40)" id="btnUtamaTools" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<i class="fa-solid fa-hand-point-right text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all duration-200 w-4 text-center"></i> 
 								<span>Menu</span>
@@ -182,7 +186,6 @@
 			</div>
 		</nav>
 
-		<!-- Script Kontrol Dropdown & Pendeteksi Halaman Aktif -->
 		<script>
 			function toggleNavDropdown() {
 				const menu = document.getElementById("navDropdownMenu");
@@ -215,7 +218,6 @@
 				}
 			}
 
-			// Tutup dropdown jika mengklik di luar area menu
 			document.addEventListener("click", function(event) {
 				const container = document.getElementById("navDropdownContainer");
 				if (container && !container.contains(event.target)) {
@@ -223,7 +225,6 @@
 				}
 			});
 
-			// Deteksi Otomatis Halaman Aktif (exp.html)
 			document.addEventListener("DOMContentLoaded", function() {
 				const path = window.location.pathname;
 				const isExpPage = path.includes("tools.html") || path.endsWith("/tools");
@@ -250,6 +251,7 @@
 			});
 		</script>
 		
+		<!-- FLOATING MENU BUTTON & MODAL -->
 		<div class="fixed bottom-4 right-4 z-[999] transform-gpu">
 			<button onclick="toggleMenuTools(); tong(); getar(40)" id="btnUtamaTools" class="w-12 h-12 flex items-center justify-center bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 rounded-2xl shadow-lg shadow-emerald-500/20 active:scale-90 transition-all cursor-pointer border border-emerald-400/20">
 				<i id="ikonUtamaTools" class="fa-solid fa-layer-group text-lg"></i>
@@ -268,77 +270,63 @@
 					</button>
 				</div>
 				
-				<div class="grid grid-cols-1 gap-2 text-xs font-bold">
+				<div class="grid grid-cols-1 gap-2 text-xs font-bold max-h-[70vh] overflow-y-auto pr-1">
 					<a href="#fitur-ai-chat" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-brands fa-bots text-sm w-4 text-center"></i>
 						<span>STOCK ID AI ASSISTANT</span>
 					</a>
-					
 					<a href="#market-radar-section" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-tower-broadcast text-sm w-4 text-center"></i>
 						<span>Arah & Sentimen Pasar Global</span>
 					</a>
-					
 					<a href="#kalkulator-right-issue" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-calculator text-sm w-4 text-center"></i>
 						<span>Kalkulator Right Issue & Delusi</span>
 					</a>
-					
 					<a href="#kalkulator-profit" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-calculator text-sm w-4 text-center"></i>
 						<span>Kalkulator Proyeksi & Target Profit</span>
 					</a>
-					
 					<a href="#kalkulator-saham" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-calculator text-sm w-4 text-center"></i>
 						<span>Kalkulator Average Up & Down</span>
 					</a>
-					
 					<a href="#kalkulator-target-average" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-calculator text-sm w-4 text-center"></i>
 						<span>Kalkulator Target Average</span>
 					</a>
-					
 					<a href="#kalkulator-position-sizing" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-calculator text-sm w-4 text-center"></i>
 						<span>Kalkulator Position Sizing</span>
 					</a>
-					
 					<a href="#kalkulator-rapor-trading" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-calculator text-sm w-4 text-center"></i>
 						<span>Kalkulator Rapor & Diagnostik Trading</span>
 					</a>
-					
 					<a href="#fitur-trading-journal" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-book text-sm w-4 text-center"></i>
 						<span>Jurnal Trading Harian</span>
 					</a>
-					
 					<a href="#watchlist-notes" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-list-check text-sm w-4 text-center"></i>
 						<span>Trading Watchlist & Notes</span>
 					</a>
-					
 					<a href="#ara-arb-simulator" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-scale-balanced text-sm w-4 text-center"></i>
 						<span>ARA / ARB Simulator</span>
 					</a>
-					
 					<a href="#fitur-plan-generator" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-clipboard-list text-sm w-4 text-center"></i>
 						<span>Trading Plan Generator</span>
 					</a>
-					
 					<a href="#sentimen-pasar-bei" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-face-angry text-sm w-4 text-center"></i>
 						<span>Sentimen Pasar BEI</span>
 					</a>
-					
 					<a href="#fitur-chart-pattern" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-book-open-reader text-sm w-4 text-center"></i>
 						<span>Edukasi Chart Pattern</span>
 					</a>
-					
 					<a href="#fitur-news-feed" onclick="toggleMenuTools(); ting(); getar(25)" class="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-emerald-500/10 border border-white/5 hover:border-emerald-500/20 text-slate-300 hover:text-emerald-400 rounded-xl transition-all">
 						<i class="fa-solid fa-satellite-dish text-sm w-4 text-center"></i>
 						<span>Live Market News Feed</span>
@@ -364,13 +352,11 @@
 			isMenuToolsTerbuka = !isMenuToolsTerbuka;
 
 			if (isMenuToolsTerbuka) {
-				// Munculkan overlay & zoom in kotak menu ke tengah layar
 				overlay.classList.remove("opacity-0", "pointer-events-none");
 				kotakMenu.classList.remove("scale-90");
 				kotakMenu.classList.add("scale-100");
 				if (ikonUtama) ikonUtama.className = "fa-solid fa-xmark text-lg";
 			} else {
-				// Sembunyikan kembali modal ke latar belakang
 				overlay.classList.add("opacity-0", "pointer-events-none");
 				kotakMenu.classList.remove("scale-100");
 				kotakMenu.classList.add("scale-90");
@@ -378,7 +364,6 @@
 			}
 		}
 
-		// Fungsi Audio click & Haptic bawaan agar selaras dengan file lokalmu
 		function tang() { document.getElementById("01")?.play().catch(()=>{}); }
 		function ting() { document.getElementById("02")?.play().catch(()=>{}); }
 		function tong() { document.getElementById("05")?.play().catch(()=>{}); }
@@ -386,63 +371,70 @@
 		</script>
 		
 		<!-- FITUR: AI CHAT ASSISTANT -->
-		<section id="fitur-ai-chat" class="max-w-5xl mx-auto px-4 my-8">
-			<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl h-[600px] flex flex-col relative overflow-hidden">
-				<div id="aiChatAuthScreen" class="absolute inset-0 z-10 bg-slate-950/90 backdrop-blur-lg flex flex-col items-center justify-center p-6 text-center transition-all duration-300">
-					<div class="max-w-md space-y-5">
-						<div class="w-16 h-16 mx-auto bg-gradient-to-tr from-cyan-500 to-emerald-400 text-slate-950 rounded-2xl shadow-xl shadow-emerald-500/20 flex items-center justify-center">
-							<i class="fa-solid fa-user-shield text-2xl font-black"></i>
-						</div>
-						<div>
-							<h4 class="text-xl font-bold text-white tracking-tight">Masukan Nama Panggilan Kamu</h4>
-							<p class="text-xs text-gray-400 mt-1">Halo Member VIP! Silakan masukkan nama Kamu untuk memulai sesi diskusi eksklusif bersama Asisten AI.</p>
-						</div>
-						<div class="flex gap-2 max-w-sm mx-auto">
-							<input type="text" id="aiChatUsernameInput" onkeydown="checkAiAuthEnter(event)" placeholder="Masukkan nama panggilan Kamu..." class="flex-1 bg-white/5 border border-white/10 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-white placeholder-gray-600 focus:outline-none text-sm transition-all font-medium">
-							<button onclick="simpanNamaMemberVIP()" class="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-bold px-5 rounded-xl text-sm transition-all duration-300 shadow-md">Masuk</button>
-						</div>
-					</div>
+		<section id="fitur-ai-chat" class="py-12 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-8">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">AI Assistant</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Stock ID AI Assistant</h2>
+					<p class="mt-2 text-sm text-slate-400">Diskusi analisis bursa dan strategi trading plan secara real-time bersama AI.</p>
 				</div>
-				<!-- SCREEN 2: INTERFAS UTAMA CHATBOT (STANDBY) -->
-				<div class="flex items-center justify-between mb-4 shrink-0 border-b border-white/10 pb-4">
-					<div class="flex items-center gap-3">
-						<div class="p-2 bg-gradient-to-tr from-cyan-500 to-emerald-400 text-slate-950 rounded-xl shadow-lg shadow-emerald-500/20">
-							<i class="fa-solid fa-robot text-base font-black"></i>
+				<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl h-[600px] flex flex-col relative overflow-hidden">
+					<div id="aiChatAuthScreen" class="absolute inset-0 z-10 bg-slate-950/90 backdrop-blur-lg flex flex-col items-center justify-center p-6 text-center transition-all duration-300">
+						<div class="max-w-md space-y-5">
+							<div class="w-16 h-16 mx-auto bg-gradient-to-tr from-cyan-500 to-emerald-400 text-slate-950 rounded-2xl shadow-xl shadow-emerald-500/20 flex items-center justify-center">
+								<i class="fa-solid fa-user-shield text-2xl font-black"></i>
+							</div>
+							<div>
+								<h4 class="text-xl font-bold text-white tracking-tight">Masukan Nama Panggilan Kamu</h4>
+								<p class="text-xs text-slate-400 mt-1">Halo Member VIP! Silakan masukkan nama Kamu untuk memulai sesi diskusi eksklusif bersama Asisten AI.</p>
+							</div>
+							<div class="flex gap-2 max-w-sm mx-auto">
+								<input type="text" id="aiChatUsernameInput" onkeydown="checkAiAuthEnter(event)" placeholder="Masukkan nama panggilan Kamu..." class="flex-1 bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none text-sm transition-all font-medium">
+								<button onclick="simpanNamaMemberVIP()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold px-5 rounded-xl text-sm transition-all duration-300 shadow-md cursor-pointer">Masuk</button>
+							</div>
 						</div>
-						<div>
-							<h3 class="text-base font-bold text-white flex items-center gap-2 tracking-wide uppercase">
-								STOCK ID AI ASSISTANT
-								<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-widest animate-pulse normal-case">Online</span>
-							</h3>
-							<p class="text-[11px] text-gray-400">Tanya seputar analisa bursa dan strategi trading plan</p>
+					</div>
+
+					<div class="flex items-center justify-between mb-4 shrink-0 border-b border-slate-800/80 pb-4">
+						<div class="flex items-center gap-3">
+							<div class="p-2.5 bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 rounded-xl shadow-lg shadow-emerald-500/20">
+								<i class="fa-solid fa-robot text-base font-black"></i>
+							</div>
+							<div>
+								<h3 class="text-base font-bold text-white flex items-center gap-2 tracking-wide uppercase">
+									STOCK ID AI ASSISTANT
+									<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-widest animate-pulse normal-case">Online</span>
+								</h3>
+								<p class="text-[11px] text-slate-400">Tanya seputar analisa bursa dan strategi trading plan</p>
+							</div>
+						</div>
+						<div class="flex flex-col items-end gap-1 shrink-0">
+							<button onclick="logoutNamaMemberVIP()" class="text-[10px] text-slate-400 hover:text-rose-400 transition-colors flex items-center gap-1 cursor-pointer" title="Ganti Nama Pengguna">
+								<i class="fa-solid fa-user-pen text-[9px]"></i> Ganti User
+							</button>
+							<button onclick="clearChatHistory()" class="text-[10px] text-slate-400 hover:text-rose-400 transition-colors flex items-center gap-1 cursor-pointer" title="Bersihkan Isi Obrolan">
+								<i class="fa-solid fa-broom text-[9px]"></i> Bersihkan
+							</button>
 						</div>
 					</div>
-					<div class="flex flex-col items-end gap-1 shrink-0">
-						<button onclick="logoutNamaMemberVIP()" class="text-[10px] text-gray-400 hover:text-rose-400 transition-colors flex items-center gap-1" title="Ganti Nama Pengguna">
-						<i class="fa-solid fa-user-pen text-[9px]"></i> Ganti User
-						</button>
-						<button onclick="clearChatHistory()" class="text-[10px] text-gray-400 hover:text-rose-400 transition-colors flex items-center gap-1" title="Bersihkan Isi Obrolan">
-						<i class="fa-solid fa-broom text-[9px]"></i> Bersihkan
-						</button>
+
+					<div id="aiChatWindow" class="flex-1 overflow-y-auto pr-1 space-y-4 mb-4 p-3 bg-slate-950/60 rounded-xl border border-slate-800/60"></div>
+
+					<div class="shrink-0">
+						<div class="flex gap-2">
+							<input type="text" id="aiChatInputField" onkeydown="checkAiChatEnter(event)" placeholder="Ketik pertanyaan sahammu di sini..." class="flex-1 bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none text-sm transition-all shadow-inner">
+							<button onclick="kirimPesanKeAi()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold px-5 rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 flex items-center justify-center cursor-pointer">
+								<i class="fa-solid fa-paper-plane text-sm"></i>
+							</button>
+						</div>
+						<p class="text-[10px] text-slate-500 mt-2 text-center">💡 Catatan: Jawaban AI bersifat edukasi. Selalu cross-check kembali dengan data kalkulator utama kami.</p>
+						<p class="text-[10px] font-black text-rose-500 mt-1 text-center">❤️ Diberdayakan oleh: GROQ AI.</p>
 					</div>
-				</div>
-				<div id="aiChatWindow" class="flex-1 overflow-y-auto pr-1 space-y-4 custom-scrollbar mb-4 p-2 bg-black/20 rounded-xl border border-white/5">
-				</div>
-				<div class="shrink-0">
-					<div class="flex gap-2">
-						<input type="text" id="aiChatInputField" onkeydown="checkAiChatEnter(event)" placeholder="Ketik pertanyaan sahammu di sini..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500 text-sm transition-all shadow-inner">
-						<button onclick="kirimPesanKeAi()" class="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-bold px-5 rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 flex items-center justify-center">
-						<i class="fa-solid fa-paper-plane text-sm"></i>
-						</button>
-					</div>
-					<p class="text-[10px] text-gray-500 mt-2 text-center">💡 Catatan: Jawaban AI bersifat edukasi. Selalu cross-check kembali dengan data kalkulator utama kami.</p>
-					<p class="text-[10px] font-black text-rose-500 mt-2 text-center">❤️ Diberdayakan oleh: GROQ AI.</p>
 				</div>
 			</div>
 		</section>
 		
 		<script>
-			// LOGIKA FITUR: STOCK ID AI CHATBOT SYSTEM REAL HIGH-SPEED API
 			let NAMA_MEMBER_VIP = localStorage.getItem('stockIdVipChatUser') || "";
 			const API_KEY_ALT = "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";
 			function cekOtorisasiNamaChat() {
@@ -488,7 +480,7 @@
 					<div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
 						<i class="fa-solid fa-robot text-xs"></i>
 					</div>
-					<div class="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3.5 text-xs text-gray-200 leading-relaxed shadow-md">
+					<div class="bg-slate-900/80 border border-slate-800 rounded-2xl rounded-tl-none p-3.5 text-xs text-slate-200 leading-relaxed shadow-md">
 						<p class="font-bold text-emerald-400 mb-1">StockID AI</p>
 						Halo <strong>${NAMA_MEMBER_VIP}</strong>! 👋 Selamat datang di ruang analisis premium Stock ID VIP. Sesi obrolan real-time berkecepatan tinggi siap digunakan. Ada saham, emiten, atau strategi trading yang mau kita bahas hari ini?
 					</div>
@@ -509,11 +501,11 @@
 				const userMessageDiv = document.createElement('div');
 				userMessageDiv.className = "flex items-start gap-2.5 max-w-[85%] ml-auto justify-end";
 				userMessageDiv.innerHTML = `
-				<div class="bg-emerald-600/20 border border-emerald-500/30 rounded-2xl rounded-tr-none p-3.5 text-xs text-gray-200 leading-relaxed shadow-md text-right">
+				<div class="bg-emerald-600/20 border border-emerald-500/30 rounded-2xl rounded-tr-none p-3.5 text-xs text-slate-200 leading-relaxed shadow-md text-right">
 					<p class="font-bold text-emerald-400 mb-1">${NAMA_MEMBER_VIP} (Member VIP)</p>
 					<p>${pesanUser}</p>
 				</div>
-				<div class="w-8 h-8 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center text-gray-300 shrink-0">
+				<div class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
 					<i class="fa-solid fa-user text-xs"></i>
 				</div>
 				`;
@@ -527,7 +519,7 @@
 				<div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
 					<i class="fa-solid fa-robot text-xs"></i>
 				</div>
-				<div class="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3.5 text-xs text-gray-400 italic flex items-center gap-2">
+				<div class="bg-slate-900/80 border border-slate-800 rounded-2xl rounded-tl-none p-3.5 text-xs text-slate-400 italic flex items-center gap-2">
 					<i class="fa-solid fa-circle-notch animate-spin text-emerald-400"></i> StockID AI sedang menganalisa pasar...
 				</div>
 				`;
@@ -552,7 +544,6 @@
 					});
 					const data = await response.json();
 					let jawabanAi = data.choices[0].message.content;
-					// Format teks markdown ke HTML render
 					jawabanAi = jawabanAi.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 					jawabanAi = jawabanAi.replace(/\n/g, '<br>');
 					const currentLoading = document.getElementById('ai-loading-bubble');
@@ -563,7 +554,7 @@
 					<div class="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
 						<i class="fa-solid fa-robot text-xs"></i>
 					</div>
-					<div class="bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3.5 text-xs text-gray-200 leading-relaxed shadow-md">
+					<div class="bg-slate-900/80 border border-slate-800 rounded-2xl rounded-tl-none p-3.5 text-xs text-slate-200 leading-relaxed shadow-md">
 						<p class="font-bold text-cyan-400 mb-1">StockID AI</p>
 						<p>${jawabanAi}</p>
 					</div>
@@ -601,9 +592,9 @@
 		</script>
 		
 		<!-- FITUR: KALKULATOR RIGHT ISSUE & DELUSI -->
-		<section id="kalkulator-right-issue" class="py-16 bg-slate-950 border-t border-slate-900/60">
+		<section id="kalkulator-right-issue" class="py-12 bg-slate-950 border-t border-slate-900/60">
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-12">
+				<div class="text-center mb-8">
 					<span class="px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase tracking-wider">Corporate Action Calc</span>
 					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Kalkulator Right Issue & Delusi</h2>
 					<p class="mt-2 text-sm text-slate-400">Hitung harga teoretis, kebutuhan dana tebus HMETD, serta estimasi persentase delusi dan penyesuaian average kepemilikan saham Kamu secara presisi.</p>
@@ -621,13 +612,13 @@
 								</div>
 								<div>
 									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Harga Pelaksanaan (Rp)</label>
-									<input type="text" id="riHargaTebus" oninput="formatRupiahInput(this); hitungRightIssue();" placeholder="500" value=" 300" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+									<input type="text" id="riHargaTebus" oninput="formatRupiahInput(this); hitungRightIssue();" placeholder="500" value="300" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
 								</div>
 							</div>
 							<div class="grid grid-cols-2 gap-4">
 								<div>
 									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Rasio Saham Lama</label>
-									<input type="number" id="riRasioLama" oninput="hitungRightIssue()" placeholder="25" value ="30" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+									<input type="number" id="riRasioLama" oninput="hitungRightIssue()" placeholder="25" value="30" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
 								</div>
 								<div>
 									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Rasio Saham Baru</label>
@@ -650,7 +641,7 @@
 									<input type="text" id="riAvgLama" oninput="formatRupiahInput(this); hitungRightIssue();" placeholder="600" value="400" class="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
 								</div>
 							</div>
-							<!--<button onclick="hitungRightIssue()" class="w-full py-3 mt-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-orange-600/10 transform hover:-translate-y-0.5">Kalkulasi Aksi Korporasi</button>-->
+							<button onclick="hitungRightIssue()" class="w-full py-3 mt-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 transform hover:-translate-y-0.5 cursor-pointer">Hitung Kalkulasi Aksi Korporasi</button>
 						</div>
 						<div class="bg-slate-950/60 border border-slate-800/60 rounded-2xl p-5 flex flex-col justify-between">
 							<div>
@@ -689,7 +680,6 @@
 			</div>
 		</section>
 		
-		<!-- LOGIKA: KALKULATOR RIGHT ISSUE & DELUSI -->
 		<script>
 			function hitungRightIssue() {
 				const hargaCum = bersihkanAngka(document.getElementById('riHargaCum').value);
@@ -699,7 +689,7 @@
 				const lotSedia = bersihkanAngka(document.getElementById('riLotKepemilikan').value);
 				const inputAvgLama = document.getElementById('riAvgLama');
 				const avgLama = inputAvgLama ? bersihkanAngka(inputAvgLama.value) : 0;
-				// Validasi Input Dasar
+				
 				if (hargaCum === 0 || rasioLama === 0 || rasioBaru === 0) {
 					document.getElementById('res-ri-teoretis').innerText = "Rp 0";
 					document.getElementById('res-ri-hak-lot').innerText = "0 Lot";
@@ -708,12 +698,11 @@
 					document.getElementById('res-ri-avg-baru').innerText = "Rp 0";
 					return;
 				}
-				// 1. Matematika Harga Teoretis
+				
 				const hargaTeoretisRaw = ((rasioLama * hargaCum) + (rasioBaru * hargaTebus)) / (rasioLama + rasioBaru);
 				const hargaTeoretis = Math.round(hargaTeoretisRaw);
-				// 2. Hitung Persentase Delusi
 				const persentaseDelusi = (rasioBaru / (rasioLama + rasioBaru)) * 100;
-				// 3. Hitung Jumlah Lembar Hak, Amunisi Dana, dan New Average Cost
+				
 				let jumlahRightLot = 0;
 				let totalDanaTebus = 0;
 				let estimasiAvgBaru = 0;
@@ -745,19 +734,19 @@
 		</script>
 		
 		<!-- FITUR: ARAH & SENTIMEN PASAR GLOBAL -->
-		<section id="market-radar-section" class="py-16 bg-slate-950 border-t border-slate-900">
+		<section id="market-radar-section" class="py-12 bg-slate-950 border-t border-slate-900/60">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-12">
+				<div class="text-center mb-8">
 					<span class="px-3 py-1 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 uppercase tracking-wider">Market Radar</span>
 					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Arah & Sentimen Pasar Global</h2>
 					<p class="mt-2 text-sm text-slate-400">Klik pada kategori untuk memuat data pasar secara real-time untuk mendapat gambaran arah market.</p>
 				</div>
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-					<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-bluechip">
+					<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-sm shadow-xl flex flex-col transition-all duration-300" id="card-bluechip">
 						<div class="flex items-center justify-between w-full">
 							<div class="flex items-center gap-3">
 								<span class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
-								<i class="fa-solid fa-gem text-xs"></i>
+									<i class="fa-solid fa-gem text-xs"></i>
 								</span>
 								<div>
 									<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Blue Chip (IDX)</h3>
@@ -765,19 +754,19 @@
 								</div>
 							</div>
 							<button onclick='toggleRadarWidget("bluechip")' id="btn-bluechip" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-							<span>Pantau</span>
-							<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-bluechip"></i>
+								<span>Pantau</span>
+								<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-bluechip"></i>
 							</button>
 						</div>
 						<div id="wrapper-bluechip" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
 							<div id="container-bluechip" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
 						</div>
 					</div>
-					<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-index">
+					<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-sm shadow-xl flex flex-col transition-all duration-300" id="card-index">
 						<div class="flex items-center justify-between w-full">
 							<div class="flex items-center gap-3">
 								<span class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-								<i class="fa-solid fa-globe text-xs"></i>
+									<i class="fa-solid fa-globe text-xs"></i>
 								</span>
 								<div>
 									<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Index Pasar Global</h3>
@@ -785,19 +774,19 @@
 								</div>
 							</div>
 							<button onclick='toggleRadarWidget("index")' id="btn-index" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-							<span>Pantau</span>
-							<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-index"></i>
+								<span>Pantau</span>
+								<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-index"></i>
 							</button>
 						</div>
 						<div id="wrapper-index" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
 							<div id="container-index" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
 						</div>
 					</div>
-					<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-komoditas">
+					<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-sm shadow-xl flex flex-col transition-all duration-300" id="card-komoditas">
 						<div class="flex items-center justify-between w-full">
 							<div class="flex items-center gap-3">
 								<span class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
-								<i class="fa-solid fa-fire-flame-simple text-xs"></i>
+									<i class="fa-solid fa-fire-flame-simple text-xs"></i>
 								</span>
 								<div>
 									<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Komoditas Dunia</h3>
@@ -805,19 +794,19 @@
 								</div>
 							</div>
 							<button onclick='toggleRadarWidget("komoditas")' id="btn-komoditas" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-							<span>Pantau</span>
-							<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-komoditas"></i>
+								<span>Pantau</span>
+								<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-komoditas"></i>
 							</button>
 						</div>
 						<div id="wrapper-komoditas" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
 							<div id="container-komoditas" class="w-full h-[380px] bg-slate-950/30 rounded-xl overflow-hidden"></div>
 						</div>
 					</div>
-					<div class="glassmorphism p-5 rounded-2xl border border-slate-800/80 shadow-xl flex flex-col transition-all duration-300" id="card-kripto">
+					<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-sm shadow-xl flex flex-col transition-all duration-300" id="card-kripto">
 						<div class="flex items-center justify-between w-full">
 							<div class="flex items-center gap-3">
 								<span class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400">
-								<i class="fa-brands fa-bitcoin text-xs"></i>
+									<i class="fa-brands fa-bitcoin text-xs"></i>
 								</span>
 								<div>
 									<h3 class="heading-font text-sm font-bold text-white uppercase tracking-wider">Aset Kripto</h3>
@@ -825,8 +814,8 @@
 								</div>
 							</div>
 							<button onclick='toggleRadarWidget("kripto")' id="btn-kripto" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-							<span>Pantau</span>
-							<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-kripto"></i>
+								<span>Pantau</span>
+								<i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-kripto"></i>
 							</button>
 						</div>
 						<div id="wrapper-kripto" class="hidden w-full mt-4 pt-4 border-t border-slate-900">
@@ -837,118 +826,12 @@
 			</div>
 		</section>
 		
-		<!-- LOGIKA: ARAH & SENTIMEN PASAR GLOBAL -->
 		<script>
-			// Konfigurasi Simbol TradingView Ticker Data 
 			const radarSymbolsData = {
-				bluechip: [{
-					"s": "IDX:BBCA"
-				}, {
-					"s": "IDX:BBRI"
-				}, {
-					"s": "IDX:BMRI"
-				}, {
-					"s": "IDX:INCO"
-				}, {
-					"s": "IDX:BREN"
-				}, {
-					"s": "IDX:TPIA"
-				}, {
-					"s": "IDX:DSSA"
-				}, {
-					"s": "IDX:AMRT"
-				}, {
-					"s": "IDX:TLKM"
-				}, {
-					"s": "IDX:ASII"
-				}, {
-					"s": "IDX:UNTR"
-				}, {
-					"s": "IDX:ANTM"
-				}, {
-					"s": "IDX:ARCI"
-				}, {
-					"s": "IDX:INDY"
-				}, {
-					"s": "IDX:MDIA"
-				}],
-				index: [{
-					"s": "IDX:COMPOSITE",
-					"d": "Bursa Indo (IHSG)"
-				}, {
-					"s": "FOREXCOM:SPXUSD",
-					"d": "Bursa AS"
-				}, {
-					"s": "INDEX:NKY",
-					"d": "Bursa Jepang"
-				}, {
-					"s": "SSE:000001",
-					"d": "Bursa China"
-				}, {
-					"s": "HSI:HSI",
-					"d": "Bursa Hongkong"
-				}, {
-					"s": "BSE:SENSEX",
-					"d": "Bursa India"
-				}, {
-					"s": "TWSE:TAIEX",
-					"d": "Bursa Taiwan"
-				}, {
-					"s": "SZSE:399001",
-				}, {
-					"s": "INDEX:DAX",
-					"d": "Bursa Jerman"
-				}, {
-					"s": "INDEX:XJO",
-					"d": "Bursa Australia"
-				}],
-				komoditas: [{
-					"s": "TVC:GOLD",
-					"d": "Harga Emas Dunia"
-				}, {
-					"s": "OANDA:XAUUSD",
-					"d": "Spot Emas Dunia"
-				}, {
-					"s": "NCDEX:COPPER",
-					"d": "Harga Tembaga Dunia"
-				}, {
-					"s": "OANDA:XCUUSD",
-					"d": "Spot Tembaga Dunia"
-				}, {
-					"s": "AMEX:COAL",
-					"d": "Batu Bara"
-				}, {
-					"s": "TVC:SILVER",
-					"d": "Harga Perak Dunia"
-				}, {
-					"s": "TVC:USOIL",
-					"d": "Minyak Mentah US"
-				}, {
-					"s": "TVC:UKOIL",
-					"d": "Minyak Mentah Eropa"
-				}, {
-					"s": "NYBOT:KC1!",
-					"d": "Harga Kopi Global (Softs)"
-				}],
-				kripto: [{
-					"s": "BINANCE:BTCUSDT",
-					"d": "BTC"
-				}, {
-					"s": "BINANCE:ETHUSDT",
-					"d": "ETH"
-				}, {
-					"s": "BINANCE:BNBUSDT",
-					"d": "BNB"
-				}, {
-					"s": "BINANCE:SOLUSDT",
-					"d": "SOL"
-				}, {
-					"s": "BINANCE:ADAUSDT",
-					"d": "ADA"
-				}, {
-					"s": "BINANCE:TRXUSDT",
-					"d": "TRX"
-				}]
+				bluechip: [{"s": "IDX:BBCA"}, {"s": "IDX:BBRI"}, {"s": "IDX:BMRI"}, {"s": "IDX:INCO"}, {"s": "IDX:BREN"}, {"s": "IDX:TPIA"}, {"s": "IDX:DSSA"}, {"s": "IDX:AMRT"}, {"s": "IDX:TLKM"}, {"s": "IDX:ASII"}, {"s": "IDX:UNTR"}, {"s": "IDX:ANTM"}, {"s": "IDX:ARCI"}, {"s": "IDX:INDY"}, {"s": "IDX:MDIA"}],
+				index: [{"s": "IDX:COMPOSITE","d": "Bursa Indo (IHSG)"}, {"s": "FOREXCOM:SPXUSD","d": "Bursa AS"}, {"s": "INDEX:NKY","d": "Bursa Jepang"}, {"s": "SSE:000001","d": "Bursa China"}, {"s": "HSI:HSI","d": "Bursa Hongkong"}, {"s": "BSE:SENSEX","d": "Bursa India"}, {"s": "TWSE:TAIEX","d": "Bursa Taiwan"}, {"s": "SZSE:399001"}, {"s": "INDEX:DAX","d": "Bursa Jerman"}, {"s": "INDEX:XJO","d": "Bursa Australia"}],
+				komoditas: [{"s": "TVC:GOLD","d": "Harga Emas Dunia"}, {"s": "OANDA:XAUUSD","d": "Spot Emas Dunia"}, {"s": "NCDEX:COPPER","d": "Harga Tembaga Dunia"}, {"s": "OANDA:XCUUSD","d": "Spot Tembaga Dunia"}, {"s": "AMEX:COAL","d": "Batu Bara"}, {"s": "TVC:SILVER","d": "Harga Perak Dunia"}, {"s": "TVC:USOIL","d": "Minyak Mentah US"}, {"s": "TVC:UKOIL","d": "Minyak Mentah Eropa"}, {"s": "NYBOT:KC1!","d": "Harga Kopi Global (Softs)"}],
+				kripto: [{"s": "BINANCE:BTCUSDT","d": "BTC"}, {"s": "BINANCE:ETHUSDT","d": "ETH"}, {"s": "BINANCE:BNBUSDT","d": "BNB"}, {"s": "BINANCE:SOLUSDT","d": "SOL"}, {"s": "BINANCE:ADAUSDT","d": "ADA"}, {"s": "BINANCE:TRXUSDT","d": "TRX"}]
 			};
 			
 			function toggleRadarWidget(category) {
@@ -1005,16 +888,16 @@
 		</script>
 		
 		<!-- FITUR: KALKULATOR PROYEKSI & TARGET PROFIT -->
-		<section id="kalkulator-profit" class="py-16 bg-slate-950 border-t border-slate-900/60">
+		<section id="kalkulator-profit" class="py-12 bg-slate-950 border-t border-slate-900/60">
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-12">
+				<div class="text-center mb-8">
 					<span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">Investment Planner</span>
 					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Kalkulator Proyeksi & Target Profit</h2>
 					<p class="mt-2 text-sm text-slate-400">Simulasikan pertumbuhan modal investasi Kamu berdasarkan target profit harian, mingguan, atau bulanan.</p>
 				</div>
 				<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
 					<div class="grid md:grid-cols-2 gap-8">
-						<div class="space-y-6">
+						<div class="space-y-5">
 							<div>
 								<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Modal Awal (Rp)</label>
 								<input type="text" id="profit-modal-input" oninput="formatRupiahInput(this)" placeholder="25.000.000" value="10.000.000" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
@@ -1044,7 +927,7 @@
 									</label>
 								</div>
 							</div>
-							<button onclick="hitungProyeksiProfit()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 transform hover:-translate-y-0.5">Hitung Proyeksi Keuntungan</button>
+							<button onclick="hitungProyeksiProfit()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 transform hover:-translate-y-0.5 cursor-pointer">Hitung Proyeksi Keuntungan</button>
 						</div>
 						<div class="bg-slate-950/60 border border-slate-800/60 rounded-2xl p-5 flex flex-col justify-between">
 							<div>
@@ -1077,32 +960,17 @@
 			</div>
 		</section>
 		
-		<!-- LOGIKA: KALKULATOR PROYEKSI & TARGET PROFIT -->
 		<script>
-			function formatRupiahInput(input) {
-				let value = input.value.replace(/[^,\d]/g, '').toString();
-				let split = value.split(',');
-				let sisa = split[0].length % 3;
-				let rupiah = split[0].substr(0, sisa);
-				let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-				if (ribuan) {
-					let separator = sisa ? '.' : '';
-					rupiah += separator + ribuan.join('.');
-				}
-				rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-				input.value = rupiah;
-			}
 			function hitungProyeksiProfit() {
 				const modalRaw = document.getElementById('profit-modal-input').value;
-				const modalAwal = parseFloat(modalRaw.replace(/\./g, '')) || 0;
+				const modalAwal = bersihkanAngka(modalRaw);
 				const targetPersen = parseFloat(document.getElementById('profit-target').value) || 0;
 				const durasiRadio = document.querySelector('input[name="profit-durasi"]:checked');
-				const totalHari = parseInt(durasiRadio.value) || 1;
+				const totalHari = parseInt(durasiRadio ? durasiRadio.value : 1) || 1;
 				if (modalAwal === 0 || targetPersen === 0) {
 					alert("Silakan masukkan jumlah modal awal dan target persen keuntungan.");
 					return;
 				}
-				// Rumus Compound Interest (Efek Gulung): Modal Akhir = Modal Awal * (1 + rate)^waktu
 				const rate = targetPersen / 100;
 				const modalAkhir = modalAwal * Math.pow((1 + rate), totalHari);
 				const nominalProfit = modalAkhir - modalAwal;
@@ -1117,9 +985,9 @@
 		</script>
 		
 		<!-- FITUR: KALKULATOR AVERAGE UP & DOWN -->
-		<section id="kalkulator-saham" class="py-16 bg-slate-950 border-t border-slate-900/60">
+		<section id="kalkulator-saham" class="py-12 bg-slate-950 border-t border-slate-900/60">
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-12">
+				<div class="text-center mb-8">
 					<span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">Calc Average Pro</span>
 					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Kalkulator Average Up & Down</h2>
 					<p class="mt-2 text-sm text-slate-400">Hitung rata-rata modal baru dan estimasi total pengeluaran Kamu termasuk komisi broker secara akurat.</p>
@@ -1166,7 +1034,7 @@
 									<input type="number" id="fee-jual" placeholder="0.50" value="0.50" step="0.01" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
 								</div>
 							</div>
-							<button onclick="hitungAverageSaham()" class="w-full py-3 mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-blue-600/10 transform hover:-translate-y-0.5">Hitung Kalkulasi Rata-Rata</button>
+							<button onclick="hitungAverageSaham()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 transform hover:-translate-y-0.5 cursor-pointer">Hitung Kalkulasi Rata-Rata</button>
 						</div>
 						<div class="bg-slate-950/60 border border-slate-800/60 rounded-2xl p-5 flex flex-col justify-between">
 							<div>
@@ -1209,7 +1077,6 @@
 			</div>
 		</section>
 		
-		<!-- LOGIKA: KALKULATOR AVERAGE UP & DOWN -->
 		<script>
 			function hitungAverageSaham() {
 				const p1 = parseFloat(document.getElementById('avg-price-1').value) || 0;
@@ -1218,7 +1085,6 @@
 				const l2 = parseFloat(document.getElementById('avg-lot-2').value) || 0;
 				const feeBeliPersen = parseFloat(document.getElementById('fee-beli').value) || 0;
 				const feeJualPersen = parseFloat(document.getElementById('fee-jual').value) || 0;
-				// Validasi Dasar
 				if ((l1 === 0 && l2 === 0) || (p1 === 0 && p2 === 0)) {
 					alert("Silakan masukkan harga saham dan jumlah lot terlebih dahulu.");
 					return;
@@ -1230,12 +1096,9 @@
 				const totalLot = l1 + l2;
 				const totalLembar = lembar1 + lembar2;
 				const totalModalBersih = modal1 + modal2;
-				// Hitung Komisi/Fee Broker
 				const totalFeeBeli = (modal1 * (feeBeliPersen / 100)) + (modal2 * (feeBeliPersen / 100));
 				const grandTotalModal = totalModalBersih + totalFeeBeli;
-				// Hitung Harga Average Murni
 				const hargaAvgBaru = totalLembar > 0 ? Math.round(totalModalBersih / totalLembar) : 0;
-				// Estimasi Pengeluaran Fee Jual jika nanti di-exit di harga avg tersebut
 				const estimasiFeeJual = totalModalBersih * (feeJualPersen / 100);
 				const formatRupiah = (angka) => {
 					return "Rp " + Math.round(angka).toLocaleString('id-ID');
@@ -1251,9 +1114,9 @@
 		</script>
 		
 		<!-- FITUR: KALKULATOR TARGET AVERAGE -->
-		<section id="kalkulator-target-average" class="py-16 bg-slate-950 border-t border-slate-900/60">
+		<section id="kalkulator-target-average" class="py-12 bg-slate-950 border-t border-slate-900/60">
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-12">
+				<div class="text-center mb-8">
 					<span class="px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">Average Target Pro</span>
 					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Kalkulator Target Average</h2>
 					<p class="mt-2 text-sm text-slate-400">Hitung berapa lot dan dana tambahan yang Kamu butuhkan secara presisi untuk menggeser rata-rata ke harga tertentu.</p>
@@ -1287,12 +1150,11 @@
 									<input type="text" id="targetAvgHargaTarget" oninput="formatRupiahInput(this); eksekusiTargetAvg();" placeholder="400" value="500" class="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all">
 								</div>
 							</div>
-							<!--<button onclick="eksekusiTargetAvg()" class="w-full py-3 mt-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-indigo-600/10 transform hover:-translate-y-0.5">Hitung Rencana Target</button>-->
+							<button onclick="eksekusiTargetAvg()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 transform hover:-translate-y-0.5 cursor-pointer">Hitung Target Average</button>
 						</div>
 						<div class="bg-slate-950/60 border border-slate-800/60 rounded-2xl p-5 flex flex-col justify-between">
 							<div>
 								<h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">Hasil Analisis Amunisi</h3>
-								<!-- Konten Utama Hasil (Standby) -->
 								<div id="targetAvgHasilKalkulasi" class="space-y-3.5">
 									<div class="flex justify-between items-center text-sm border-b border-slate-900 pb-2.5">
 										<span class="text-slate-400">Jenis Strategi</span>
@@ -1307,7 +1169,6 @@
 										<span id="targetAvgHasilDana" class="font-mono font-black text-amber-400 text-lg">Rp 0</span>
 									</div>
 								</div>
-								<!-- Kotak Pesan Error (Tersembunyi secara default) -->
 								<div id="targetAvgAlertBox" class="hidden mt-4 p-3.5 bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs rounded-xl text-center font-medium leading-relaxed">
 									⚠️ Target harga tidak valid atau tidak mungkin dicapai dengan harga pasar/baru saat ini.
 								</div>
@@ -1323,7 +1184,6 @@
 			</div>
 		</section>
 		
-		<!-- LOGIKA: KALKULATOR TARGET AVERAGE -->
 		<script>
 			function eksekusiTargetAvg() {
 				const inputAvg = document.getElementById('targetAvgHargaAvg');
@@ -1333,10 +1193,10 @@
 				const hasilLayout = document.getElementById('targetAvgHasilKalkulasi');
 				const alertLayout = document.getElementById('targetAvgAlertBox');
 				if (!inputAvg || !inputLot || !inputBaru || !inputTarget) return;
-				const pAvg = parseFloat(inputAvg.value.replace(/\./g, '')) || 0;
-				const pLot = parseFloat(inputLot.value.replace(/\./g, '')) || 0;
-				const pBaru = parseFloat(inputBaru.value.replace(/\./g, '')) || 0;
-				const pTarget = parseFloat(inputTarget.value.replace(/\./g, '')) || 0;
+				const pAvg = bersihkanAngka(inputAvg.value);
+				const pLot = bersihkanAngka(inputLot.value);
+				const pBaru = bersihkanAngka(inputBaru.value);
+				const pTarget = bersihkanAngka(inputTarget.value);
 				if (pAvg === 0 || pLot === 0 || pBaru === 0 || pTarget === 0) {
 					alertLayout.classList.add('hidden');
 					hasilLayout.classList.remove('hidden');
@@ -1379,10 +1239,208 @@
 			});
 		</script>
 		
+		<!-- FITUR: KALKULATOR POSITION SIZING -->
+		<section id="kalkulator-position-sizing" class="py-12 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-8">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">Risk Manager</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Kalkulator Position Sizing</h2>
+					<p class="mt-2 text-sm text-slate-400">Batasi lot pembelian secara ketat demi mengamankan ekuitas modal Kamu.</p>
+				</div>
+				<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
+					<div class="grid md:grid-cols-2 gap-8">
+						<div class="space-y-5">
+							<div>
+								<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Total Modal Kulakan (Rp)</label>
+								<input type="text" id="psInputModal" placeholder="1.000.000" value="10.000.000" oninput="formatRupiahInput(this); eksekusiSizing();" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+							</div>
+							<div>
+								<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Maksimal Risiko per Trade (%)</label>
+								<select id="psSelectRisk" onchange="eksekusiSizing()" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:outline-none transition-all">
+									<option value="1">1% (Sangat Konservatif)</option>
+									<option value="2.5">2,5% (Rekomendasi Trader Pro)</option>
+									<option value="5" selected="selected">5% (Agresif)</option>
+									<option value="7">7% (High Risk)</option>
+									<option value="10">10% (Sedekah)</option>
+									<option value="15">15% (Stresss)</option>
+								</select>
+							</div>
+							<div class="grid grid-cols-2 gap-4">
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Harga Entry (Rp)</label>
+									<input type="text" id="psInputEntry" placeholder="200" value="200" oninput="formatRupiahInput(this); eksekusiSizing();" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+								</div>
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Harga Stop Loss (Rp)</label>
+									<input type="text" id="psInputSL" placeholder="180" value="180" oninput="formatRupiahInput(this); eksekusiSizing();" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+								</div>
+							</div>
+							<button onclick="eksekusiSizing()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 transform hover:-translate-y-0.5 cursor-pointer">Hitung Ukuran Posisi</button>
+						</div>
+						<div class="bg-slate-950/60 border border-slate-800/60 rounded-2xl p-5 flex flex-col justify-between">
+							<div>
+								<span class="text-xs font-bold uppercase tracking-wider text-emerald-400 block mb-1">Rekomendasi Entry Maksimal:</span>
+								<div class="text-4xl font-black text-white" id="outMaksLot">0 <span class="text-base font-normal text-slate-400">Lot</span></div>
+								<p class="text-xs text-slate-400 mt-2 italic" id="outTotalBeli">Total Alokasi Pembelian: Rp 0</p>
+							</div>
+							<div class="border-t border-slate-800/80 pt-4 mt-4 space-y-2.5">
+								<div class="flex justify-between text-xs">
+									<span class="text-slate-400">Uang yang Dipertaruhkan (Max Loss):</span>
+									<span class="text-rose-400 font-bold font-mono" id="outUangRisiko">Rp 0</span>
+								</div>
+								<div class="flex justify-between text-xs">
+									<span class="text-slate-400">Jarak Batas Pengaman (SL %):</span>
+									<span class="text-amber-400 font-bold font-mono" id="outPersenSL">0%</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<script>
+			function eksekusiSizing() {
+				const modalInput = document.getElementById('psInputModal');
+				if (!modalInput) return;
+				const modal = bersihkanAngka(modalInput.value);
+				const riskPercent = parseFloat(document.getElementById('psSelectRisk').value) || 0;
+				const entry = bersihkanAngka(document.getElementById('psInputEntry').value);
+				const sl = bersihkanAngka(document.getElementById('psInputSL').value);
+				const outLot = document.getElementById('outMaksLot');
+				const outTotal = document.getElementById('outTotalBeli');
+				const outRisk = document.getElementById('outUangRisiko');
+				const outSlPct = document.getElementById('outPersenSL');
+				if (entry <= 0 || sl <= 0 || entry <= sl) {
+					outLot.innerHTML = `<span class="text-sm text-rose-400 font-normal">Harga SL harus di bawah Entry!</span>`;
+					outTotal.innerText = "Total Alokasi Pembelian: Rp 0";
+					outRisk.innerText = "Rp 0";
+					outSlPct.innerText = "0%";
+					return;
+				}
+				const nominalRisiko = modal * (riskPercent / 100);
+				const selisihHarga = entry - sl;
+				const persentaseSL = (selisihHarga / entry) * 100;
+				let hitungLot = Math.floor((nominalRisiko / selisihHarga) / 100);
+				while ((hitungLot * 100 * entry) > modal && hitungLot > 0) {
+					hitungLot--;
+				}
+				const totalDanaBeli = hitungLot * 100 * entry;
+				outLot.innerHTML = `${hitungLot.toLocaleString('id-ID')} <span class="text-base font-normal text-slate-400">Lot</span>`;
+				outTotal.innerText = `Total Alokasi Pembelian: Rp ${totalDanaBeli.toLocaleString('id-ID')}`;
+				outRisk.innerText = `Rp ${nominalRisiko.toLocaleString('id-ID')}`;
+				outSlPct.innerText = `${persentaseSL.toFixed(2)}%`;
+			}
+		</script>
+
+		<!-- FITUR: KALKULATOR RAPOR & DIAGNOSTIK TRADING -->
+		<section id="kalkulator-rapor-trading" class="py-12 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-8">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase tracking-wider">Trading Diagnostic</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Kalkulator Rapor & Diagnostik Trading</h2>
+					<p class="mt-2 text-sm text-slate-400">Analisis metrik Win Rate, Profit Factor, dan Expectancy akurasi strategi Kamu.</p>
+				</div>
+				<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
+					<div class="grid md:grid-cols-2 gap-8">
+						<div class="space-y-5">
+							<div class="grid grid-cols-2 gap-4">
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Trade Profit (Win)</label>
+									<input type="number" id="rpWinCount" placeholder="100" value="800" oninput="eksekusiRaporTrading()" class="w-full bg-slate-950 border border-slate-800 focus:border-purple-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+								</div>
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Trade Rugi (Loss)</label>
+									<input type="number" id="rpLossCount" placeholder="50" value="100" oninput="eksekusiRaporTrading()" class="w-full bg-slate-950 border border-slate-800 focus:border-purple-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+								</div>
+							</div>
+							<div class="grid grid-cols-2 gap-4">
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Rata-rata Cuan (Rp)</label>
+									<input type="text" id="rpAvgWin" placeholder="500.000" value="2.000.000" oninput="formatRupiahInput(this); eksekusiRaporTrading();" class="w-full bg-slate-950 border border-slate-800 focus:border-purple-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+								</div>
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Rata-rata Rugi (Rp)</label>
+									<input type="text" id="rpAvgLoss" placeholder="100.000" value="500.000" oninput="formatRupiahInput(this); eksekusiRaporTrading();" class="w-full bg-slate-950 border border-slate-800 focus:border-purple-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+								</div>
+							</div>
+							<button onclick="eksekusiRaporTrading()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 transform hover:-translate-y-0.5 cursor-pointer">Analisis Rapor Trading</button>
+						</div>
+						<div class="bg-slate-950/60 border border-slate-800/60 rounded-2xl p-5 flex flex-col justify-between">
+							<div class="grid grid-cols-3 gap-2 text-center mb-4">
+								<div class="bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+									<span class="block text-[10px] text-slate-400 font-medium uppercase">Win Rate</span>
+									<span id="outRpWinRate" class="text-base font-bold text-emerald-400 font-mono">0%</span>
+								</div>
+								<div class="bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+									<span class="block text-[10px] text-slate-400 font-medium uppercase">Profit Factor</span>
+									<span id="outRpFactor" class="text-base font-bold text-purple-400 font-mono">0.0</span>
+								</div>
+								<div class="bg-slate-900/50 p-2.5 rounded-xl border border-slate-800">
+									<span class="block text-[10px] text-slate-400 font-medium uppercase">Expectancy</span>
+									<span id="outRpExpectancy" class="text-base font-bold text-amber-400 font-mono">Rp 0</span>
+								</div>
+							</div>
+							<div class="border-t border-slate-800/80 pt-3 flex-1 flex flex-col justify-center">
+								<span class="text-[11px] font-bold uppercase tracking-wider text-purple-400 block mb-2">Diagnosis Komprehensif Sistem:</span>
+								<div id="outRpDiagnosis" class="text-xs text-slate-300 leading-relaxed bg-slate-950 p-3.5 rounded-xl border border-slate-800 min-h-[90px]"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<script>
+			function eksekusiRaporTrading() {
+				const wins = parseFloat(document.getElementById('rpWinCount').value) || 0;
+				const losses = parseFloat(document.getElementById('rpLossCount').value) || 0;
+				const avgWin = bersihkanAngka(document.getElementById('rpAvgWin').value);
+				const avgLoss = bersihkanAngka(document.getElementById('rpAvgLoss').value);
+				const outWinRate = document.getElementById('outRpWinRate');
+				const outFactor = document.getElementById('outRpFactor');
+				const outExpectancy = document.getElementById('outRpExpectancy');
+				const outDiagnosis = document.getElementById('outRpDiagnosis');
+				const totalTrade = wins + losses;
+				if (totalTrade === 0) {
+					outDiagnosis.innerHTML = "Silakan masukkan data histori trade Kamu untuk memulai analisis sistem.";
+					return;
+				}
+				const winRate = (wins / totalTrade) * 100;
+				const totalProfit = wins * avgWin;
+				const totalLoss = losses * avgLoss;
+				const profitFactor = totalLoss > 0 ? (totalProfit / totalLoss) : totalProfit;
+				const pWin = wins / totalTrade;
+				const pLoss = losses / totalTrade;
+				const expectancyValue = (pWin * avgWin) - (pLoss * avgLoss);
+				outWinRate.innerText = `${winRate.toFixed(1)}%`;
+				outFactor.innerText = profitFactor.toFixed(2);
+				outExpectancy.innerText = expectancyValue >= 0 ? `+Rp ${Math.round(expectancyValue).toLocaleString('id-ID')}` : `-Rp ${Math.round(Math.abs(expectancyValue)).toLocaleString('id-ID')}`;
+				
+				let narasiHtml = "";
+				if (profitFactor >= 2.0 && expectancyValue > 0) {
+					narasiHtml = `<strong class="text-emerald-400">SISTEM KELAS ATAS (Excellent):</strong> Strategi trading Kamu memiliki keunggulan statistik (edge) yang sangat kuat di pasar modal. Kombinasi parameter saat ini menghasilkan pertumbuhan ekuitas portofolio yang stabil dalam jangka panjang. Pertahankan manajemen ukuran posisi Kamu saat ini.`;
+				} else if (profitFactor >= 1.0 && profitFactor < 2.0 && expectancyValue > 0) {
+					if (winRate < 45 && avgWin > (avgLoss * 2)) {
+						narasiHtml = `<strong class="text-cyan-400">STRATEGI TREND FOLLOWER (Good Profitability):</strong> Meskipun persentase Win Rate Kamu tergolong rendah, sistem Kamu diselamatkan oleh rasio Risk-Reward yang lebar (Rata-rata profit jauh lebih tinggi dari kerugian). Sistem ini aman dijalankan selama psikologi Kamu tahan menghadapi loss beruntun.`;
+					} else {
+						narasiHtml = `<strong class="text-amber-400">SISTEM AMBANG BATAS (Moderate Profitability):</strong> Strategi ini menghasilkan uang, tetapi kinerjanya tipis dan rentan tergerus oleh biaya komisi sekuritas jika frekuensi perdagangan terlalu tinggi. Cobalah tingkatkan kualitas seleksi emiten untuk memperlebar profit rata-rata Kamu.`;
+					}
+				} else if (profitFactor < 1.0 || expectancyValue <= 0) {
+					if (winRate > 60 && avgWin < (avgLoss * 0.5)) {
+						narasiHtml = `<strong class="text-rose-400">JEBAKAN WIN RATE TINGGI (Negative Edge):</strong> Sinyal Bahaya. Kamu memiliki Win Rate tinggi namun sistem tetap merugi karena perilaku trading Kamu sering membiarkan kerugian membengkak besar (*holding losers*) dan memotong keuntungan terlalu cepat. Perbaiki disiplin Stop Loss Kamu segera!`;
+					} else {
+						narasiHtml = `<strong class="text-rose-500">STRATEGI MERUGI (Negative Expectancy):</strong> Sistem trading ini memiliki ekspektasi matematis negatif. Dalam jangka panjang, mengeksekusi strategi ini hanya akan menguras saldo modal Kamu. Hentikan trading real account, evaluasi kembali titik entri, jurnalkan trading Kamu, dan gunakan kembali demo account.`;
+					}
+				}
+				outDiagnosis.innerHTML = narasiHtml;
+			}
+		</script>
+		
 		<!-- FITUR: JURNAL TRADING HARIAN -->
-		<section id="fitur-trading-journal" class="py-16 bg-slate-950 border-t border-slate-900/60">
+		<section id="fitur-trading-journal" class="py-12 bg-slate-950 border-t border-slate-900/60">
 			<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-12">
+				<div class="text-center mb-8">
 					<span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">Trading Performance</span>
 					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Jurnal Trading Harian</h2>
 					<p class="mt-2 text-sm text-slate-400">Catat histori transaksi yang sudah closed untuk memantau Win Rate dan pertumbuhan portofolio Kamu secara real-time.</p>
@@ -1411,7 +1469,7 @@
 								<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Jumlah Lot</label>
 								<input type="text" id="jurnalTotalLot" oninput="formatRupiahInput(this)" class="w-full bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all" placeholder="800">
 							</div>
-							<button onclick="simpanLogJurnalTrading()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 transform hover:-translate-y-0.5">Simpan ke Jurnal</button>
+							<button onclick="simpanLogJurnalTrading()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 transform hover:-translate-y-0.5 cursor-pointer">Simpan ke Jurnal</button>
 						</div>
 					</div>
 					<div class="lg:col-span-2 flex flex-col gap-6">
@@ -1449,7 +1507,6 @@
 				</div>
 			</div>
 			
-			<!-- LOGIKA: JURNAL TRADING HARIAN -->
 			<script>
 				let DB_JURNAL_TRADING = JSON.parse(localStorage.getItem('stockIdVipJurnal')) || [];
 				function muatDataJurnalKeUi() {
@@ -1481,7 +1538,7 @@
 						<td class="py-3 text-right font-mono font-semibold ${warnaTeks}">${tandaPlus}${persentasePl.toFixed(2)}%</td>
 						<td class="py-3 text-right font-mono ${warnaTeks}">${tandaPlus}Rp ${cuanRupiah.toLocaleString('id-ID')}</td>
 						<td class="py-3 text-center">
-							<button onclick="hapusBarisJurnal(${index})" class="text-slate-600 hover:text-rose-400 transition-all px-2 py-1">
+							<button onclick="hapusBarisJurnal(${index})" class="text-slate-600 hover:text-rose-400 transition-all px-2 py-1 cursor-pointer">
 								<i class="fa-solid fa-trash-can text-[11px]"></i>
 							</button>
 						</td>
@@ -1511,9 +1568,9 @@
 					const nodeLot = document.getElementById('jurnalTotalLot');
 					if (!nodeEmiten || !nodeBeli || !nodeJual || !nodeLot) return;
 					const valEmiten = nodeEmiten.value.trim().toUpperCase();
-					const valBeli = parseFloat(nodeBeli.value.replace(/\./g, '')) || 0;
-					const valJual = parseFloat(nodeJual.value.replace(/\./g, '')) || 0;
-					const valLot = parseFloat(nodeLot.value.replace(/\./g, '')) || 0;
+					const valBeli = bersihkanAngka(nodeBeli.value);
+					const valJual = bersihkanAngka(nodeJual.value);
+					const valLot = bersihkanAngka(nodeLot.value);
 					if (valEmiten === "" || valBeli === 0 || valJual === 0 || valLot === 0) {
 						alert("Harap isi semua kolom log jurnal dengan benar!");
 						return;
@@ -1541,23 +1598,23 @@
 		</section>
 		
 		<!-- FITUR: TRADING WATCHLIST & NOTE -->
-		<section id="watchlist-notes" class="py-16 bg-slate-950 border-t border-slate-900/60">
+		<section id="watchlist-notes" class="py-12 bg-slate-950 border-t border-slate-900/60">
 			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div class="text-center mb-10">
+				<div class="text-center mb-8">
 					<span class="px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">Personal Workspace</span>
 					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Trading Watchlist & Notes</h2>
 					<p class="mt-2 text-sm text-slate-400">Catat saham incaran dan rencana trading Kamu di sini. Data otomatis tersimpan dengan aman di browser Kamu.</p>
 				</div>
 				<div class="grid md:grid-cols-3 gap-8">
-					<div class="md:col-span-1 bg-slate-900/40 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-sm h-fit space-y-4">
+					<div class="md:col-span-1 bg-slate-900/40 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-sm h-fit space-y-4 shadow-xl">
 						<h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider border-b border-slate-800 pb-2">Tambah Rencana</h3>
 						<div>
 							<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Kode Saham</label>
-							<input type="text" id="note-ticker" placeholder="GOTO" value="BBCA" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-sm text-white uppercase font-mono placeholder-slate-600 focus:outline-none transition-all">
+							<input type="text" id="note-ticker" placeholder="GOTO" value="BBCA" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-3.5 py-2.5 text-sm text-white uppercase font-mono placeholder-slate-600 focus:outline-none transition-all">
 						</div>
 						<div>
 							<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5 font-sans">Status Rencana</label>
-							<select id="note-status" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-3 py-2 text-sm text-slate-300 focus:outline-none transition-all">
+							<select id="note-status" class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-3.5 py-2.5 text-sm text-slate-300 focus:outline-none transition-all">
 								<option value="WATCH" class="text-amber-400">👀 WATCHLIST</option>
 								<option value="BUY" class="text-emerald-400">🎯 BUY PLAN</option>
 								<option value="HOLD" class="text-blue-400">💎 HOLD</option>
@@ -1566,14 +1623,14 @@
 						</div>
 						<div>
 							<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Catatan / Strategi Trading</label>
-							<textarea id="note-text" rows="4" placeholder="Contoh: Tunggu pantulan di area support 4300, target profit ke 4600. Stop loss kalau breakdown 4200." class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-600 focus:outline-none transition-all leading-relaxed"></textarea>
+							<textarea id="note-text" rows="4" placeholder="Contoh: Tunggu pantulan di area support 4300, target profit ke 4600. Stop loss kalau breakdown 4200." class="w-full bg-slate-950 border border-slate-800 focus:border-indigo-500 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none transition-all leading-relaxed"></textarea>
 						</div>
-						<button onclick="simpanCatatanSaham()" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-md shadow-indigo-600/10">Simpan ke Radar</button>
+						<button onclick="simpanCatatanSaham()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-md cursor-pointer">Simpan ke Radar</button>
 					</div>
 					<div class="md:col-span-2 space-y-4">
 						<div class="flex items-center justify-between border-b border-slate-900 pb-2">
 							<h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">📋 Radar Pantauan Saham ( <span id="total-notes-count">0</span>) </h3>
-							<button onclick="hapusSemuaCatatan()" class="text-xs text-rose-400 hover:text-rose-300 transition-colors font-medium">Hapus Semua</button>
+							<button onclick="hapusSemuaCatatan()" class="text-xs text-rose-400 hover:text-rose-300 transition-colors font-medium cursor-pointer">Hapus Semua</button>
 						</div>
 						<div id="watchlist-cards-container" class="grid sm:grid-cols-2 gap-4 max-h-[520px] overflow-y-auto pr-1"></div>
 					</div>
@@ -1581,7 +1638,6 @@
 			</div>
 		</section>
 		
-		<!-- LOGIKA: TRADING WATCHLIST & NOTE -->
 		<script>
 			let daftarNotes = JSON.parse(localStorage.getItem('stocks_id_notes')) || [];
 			function renderWatchlistCards() {
@@ -1624,7 +1680,7 @@
 						</div>
 						<div class="flex items-center justify-between mt-4 pt-2 border-t border-slate-950 text-[10px] text-slate-500">
 							<span>${item.date}</span>
-							<button onclick="hapusSatuCatatan(${index})" class="text-rose-500 hover:text-rose-400 font-semibold transition-colors">Hapus</button>
+							<button onclick="hapusSatuCatatan(${index})" class="text-rose-500 hover:text-rose-400 font-semibold transition-colors cursor-pointer">Hapus</button>
 						</div>
 					</div>
 					`;
@@ -1675,281 +1731,57 @@
 			window.addEventListener('DOMContentLoaded', renderWatchlistCards);
 		</script>
 		
-		<!-- FITUR: KALKULATOR POSITION SIZING -->
-		<section id="kalkulator-position-sizing" class="max-w-5xl mx-auto px-4 my-8">
-			<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl">
-				<div class="flex items-center gap-3 mb-6">
-					<div class="p-2 bg-emerald-500/20 text-emerald-400 rounded-lg">
-						<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-						</svg>
-					</div>
-					<div>
-						<h3 class="text-xl font-bold text-white">Kalkulator Position Sizing</h3>
-						<p class="text-xs text-gray-400">Batasi lot pembelian secara ketat demi mengamankan ekuitas modal</p>
-					</div>
-				</div>
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-					<div class="space-y-4">
-						<div>
-							<label class="block text-xs font-semibold text-gray-300 mb-1">Total Modal Kulakan (Rp)</label>
-							<input type="text" id="psInputModal" placeholder="1.000.000" value="10.000.000" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
-						</div>
-						<div>
-							<label class="block text-xs font-semibold text-gray-300 mb-1">Maksimal Risiko per Trade (%)</label>
-							<select id="psSelectRisk" onchange="eksekusiSizing()" class="w-full bg-slate-800 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm">
-								<option value="1">1% (Sangat Konservatif)</option>
-								<option value="2.5">2,5% (Rekomendasi Trader Pro)</option>
-								<option value="5" selected="selected">5% (Agresif)</option>
-								<option value="7">7% (High Risk)</option>
-								<option value="10">10% (Sedekah)</option>
-								<option value="15">15% (Stresss)</option>
-							</select>
-						</div>
-						<div class="grid grid-cols-2 gap-3">
-							<div>
-								<label class="block text-xs font-semibold text-gray-300 mb-1">Harga Entry (Rp)</label>
-								<input type="text" id="psInputEntry" placeholder="200" value="200" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
-							</div>
-							<div>
-								<label class="block text-xs font-semibold text-gray-300 mb-1">Harga Stop Loss (Rp)</label>
-								<input type="text" id="psInputSL" placeholder="180" value="180" oninput="formatRupiahInput(this),eksekusiSizing()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm font-mono">
-							</div>
-						</div>
-					</div>
-					<div class="bg-black/20 border border-white/5 rounded-xl p-5 flex flex-col justify-between">
-						<div>
-							<span class="text-xs font-bold uppercase tracking-wider text-emerald-400 block mb-1">Rekomendasi Entry Maksimal:</span>
-							<div class="text-4xl font-black text-white" id="outMaksLot">0 <span class="text-base font-normal text-gray-400">Lot</span>
-							</div>
-							<p class="text-xs text-gray-400 mt-2 italic" id="outTotalBeli">Total Alokasi Pembelian: Rp 0</p>
-						</div>
-						<div class="border-t border-white/10 pt-4 mt-4 space-y-2.5">
-							<div class="flex justify-between text-xs">
-								<span class="text-gray-400">Uang yang Dipertaruhkan (Max Loss):</span>
-								<span class="text-red-400 font-bold font-mono" id="outUangRisiko">Rp 0</span>
-							</div>
-							<div class="flex justify-between text-xs">
-								<span class="text-gray-400">Jarak Batas Pengaman (SL %):</span>
-								<span class="text-yellow-400 font-bold font-mono" id="outPersenSL">0%</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		
-		<!-- LOGIKA: KALKULATOR POSITION SIZING -->
-		<script>
-			function formatRupiahInput(element) {
-				let value = element.value.replace(/[^0-9]/g, '');
-				if (value) {
-					element.value = Number(value).toLocaleString('id-ID');
-				} else {
-					element.value = '';
-				}
-			}
-			
-			function bersihkanAngka(stringFormat) {
-				return parseFloat(stringFormat.replace(/\./g, '')) || 0;
-			}
-			function eksekusiSizing() {
-				const modalInput = document.getElementById('psInputModal');
-				if (!modalInput) return;
-				const modal = bersihkanAngka(modalInput.value);
-				const riskPercent = parseFloat(document.getElementById('psSelectRisk').value) || 0;
-				const entry = bersihkanAngka(document.getElementById('psInputEntry').value);
-				const sl = bersihkanAngka(document.getElementById('psInputSL').value);
-				const outLot = document.getElementById('outMaksLot');
-				const outTotal = document.getElementById('outTotalBeli');
-				const outRisk = document.getElementById('outUangRisiko');
-				const outSlPct = document.getElementById('outPersenSL');
-				if (entry <= 0 || sl <= 0 || entry <= sl) {
-					outLot.innerHTML = `<span class="text-sm text-red-400 font-normal">Harga SL harus di bawah Entry!</span>`;
-					outTotal.innerText = "Total Alokasi Pembelian: Rp 0";
-					return;
-				}
-				const nominalRisiko = modal * (riskPercent / 100);
-				const selisihHarga = entry - sl;
-				const persentaseSL = (selisihHarga / entry) * 100;
-				let hitungLot = Math.floor((nominalRisiko / selisihHarga) / 100);
-				while ((hitungLot * 100 * entry) > modal && hitungLot > 0) {
-					hitungLot--;
-				}
-				const totalDanaBeli = hitungLot * 100 * entry;
-				outLot.innerHTML = `${hitungLot.toLocaleString('id-ID')} <span class="text-base font-normal text-gray-400">Lot</span>`;
-				outTotal.innerText = `Total Alokasi Pembelian: Rp ${totalDanaBeli.toLocaleString('id-ID')}`;
-				outRisk.innerText = `Rp ${nominalRisiko.toLocaleString('id-ID')}`;
-				outSlPct.innerText = `${persentaseSL.toFixed(2)}%`;
-			}
-		</script>
-		
-		<!-- FITUR: KALKULATOR RAPOR & DIAGNOSTIK TRADING -->
-		<section id="kalkulator-rapor-trading" class="max-w-5xl mx-auto px-4 my-8">
-			<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl">
-				<div class="flex items-center gap-3 mb-6">
-					<div class="p-2 bg-purple-500/20 text-purple-400 rounded-lg">
-						<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-						</svg>
-					</div>
-					<div>
-						<h3 class="text-xl font-bold text-white">Kalkulator Rapor & Diagnostik Trading</h3>
-						<p class="text-xs text-gray-400">Analisis metrik Win Rate, Profit Factor, dan Expectancy akurasi strategi Kamu</p>
-					</div>
-				</div>
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-					<div class="space-y-4">
-						<div class="grid grid-cols-2 gap-3">
-							<div>
-								<label class="block text-xs font-semibold text-gray-300 mb-1">Jumlah Trade Profit (Win)</label>
-								<input type="number" id="rpWinCount" placeholder="100" value="800" oninput="eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
-							</div>
-							<div>
-								<label class="block text-xs font-semibold text-gray-300 mb-1">Jumlah Trade Rugi (Loss)</label>
-								<input type="number" id="rpLossCount" placeholder="50" value="100" oninput="eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
-							</div>
-						</div>
-						<div class="grid grid-cols-2 gap-3">
-							<div>
-								<label class="block text-xs font-semibold text-gray-300 mb-1">Rata-rata Cuan (Rp)</label>
-								<input type="text" id="rpAvgWin" placeholder="500.000" value="2.000.000" oninput="formatRupiahInput(this),eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
-							</div>
-							<div>
-								<label class="block text-xs font-semibold text-gray-300 mb-1">Rata-rata Rugi (Rp)</label>
-								<input type="text" id="rpAvgLoss" placeholder="100.000" value="500.000" oninput="formatRupiahInput(this),eksekusiRaporTrading()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500 text-sm font-mono">
-							</div>
-						</div>
-					</div>
-					<div class="bg-black/20 border border-white/5 rounded-xl p-5 flex flex-col justify-between">
-						<div class="grid grid-cols-3 gap-2 text-center mb-4">
-							<div class="bg-white/5 p-2 rounded-lg border border-white/5">
-								<span class="block text-[10px] text-gray-400 font-medium">Win Rate</span>
-								<span id="outRpWinRate" class="text-base font-bold text-emerald-400">0%</span>
-							</div>
-							<div class="bg-white/5 p-2 rounded-lg border border-white/5">
-								<span class="block text-[10px] text-gray-400 font-medium">Profit Factor</span>
-								<span id="outRpFactor" class="text-base font-bold text-purple-400">0.0</span>
-							</div>
-							<div class="bg-white/5 p-2 rounded-lg border border-white/5">
-								<span class="block text-[10px] text-gray-400 font-medium">Expectancy</span>
-								<span id="outRpExpectancy" class="text-base font-bold text-yellow-400">Rp 0</span>
-							</div>
-						</div>
-						<div class="border-t border-white/10 pt-3 flex-1 flex flex-col justify-center">
-							<span class="text-[11px] font-bold uppercase tracking-wider text-purple-400 block mb-1">Diagnosis Komprehensif Sistem:</span>
-							<div id="outRpDiagnosis" class="text-xs text-gray-300 leading-relaxed bg-black/40 p-3 rounded-xl border border-white/5 min-h-[90px]"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		
-		<script>
-			function eksekusiRaporTrading() {
-				const wins = parseFloat(document.getElementById('rpWinCount').value) || 0;
-				const losses = parseFloat(document.getElementById('rpLossCount').value) || 0;
-				const avgWin = bersihkanAngka(document.getElementById('rpAvgWin').value);
-				const avgLoss = bersihkanAngka(document.getElementById('rpAvgLoss').value);
-				const outWinRate = document.getElementById('outRpWinRate');
-				const outFactor = document.getElementById('outRpFactor');
-				const outExpectancy = document.getElementById('outRpExpectancy');
-				const outDiagnosis = document.getElementById('outRpDiagnosis');
-				const totalTrade = wins + losses;
-				if (totalTrade === 0) {
-					outDiagnosis.innerHTML = "Silakan masukkan data histori trade Kamu untuk memulai analisis sistem.";
-					return;
-				}
-				// Metrik Core
-				const winRate = (wins / totalTrade) * 100;
-				const totalProfit = wins * avgWin;
-				const totalLoss = losses * avgLoss;
-				const profitFactor = totalLoss > 0 ? (totalProfit / totalLoss) : totalProfit;
-				// Rumus Matematika Expectancy Trading Value
-				const pWin = wins / totalTrade;
-				const pLoss = losses / totalTrade;
-				const expectancyValue = (pWin * avgWin) - (pLoss * avgLoss);
-				outWinRate.innerText = `${winRate.toFixed(1)}%`;
-				outFactor.innerText = profitFactor.toFixed(2);
-				outExpectancy.innerText = expectancyValue >= 0 ? `+Rp ${Math.round(expectancyValue).toLocaleString('id-ID')}` : `-Rp ${Math.round(Math.abs(expectancyValue)).toLocaleString('id-ID')}`;
-				// ENGINE DIAGNOSIS KOMPLEKS
-				let narasiHtml = "";
-				if (profitFactor >= 2.0 && expectancyValue > 0) {
-					narasiHtml = `<strong class="text-emerald-400">SISTEM KELAS ATAS (Excellent):</strong> Strategi trading Kamu memiliki keunggulan statistik (edge) yang sangat kuat di pasar modal. Kombinasi parameter saat ini menghasilkan pertumbuhan ekuitas portofolio yang stabil dalam jangka panjang. Pertahankan manajemen ukuran posisi Kamu saat ini.
-					`;
-				} else if (profitFactor >= 1.0 && profitFactor < 2.0 && expectancyValue > 0) {
-					if (winRate < 45 && avgWin > (avgLoss * 2)) {
-						narasiHtml = `<strong class="text-cyan-400">STRATEGI TREND FOLLOWER (Good Profitability):</strong> Meskipun persentase Win Rate Kamu tergolong rendah, sistem Kamu diselamatkan oleh rasio Risk-Reward yang lebar (Rata-rata profit jauh lebih tinggi dari kerugian). Sistem ini aman dijalankan selama psikologi Kamu tahan menghadapi loss beruntun.`;
-					} else {
-						narasiHtml = `<strong class="text-yellow-400">SISTEM AMBANG BATAS (Moderate Profitability):</strong> Strategi ini menghasilkan uang, tetapi kinerjanya tipis dan rentan tergerus oleh biaya komisi sekuritas jika frekuensi perdagangan terlalu tinggi. Cobalah tingkatkan kualitas seleksi emiten untuk memperlebar profit rata-rata Kamu.`;
-					}
-				} else if (profitFactor < 1.0 || expectancyValue <= 0) {
-					if (winRate > 60 && avgWin < (avgLoss * 0.5)) {
-						narasiHtml = `<strong class="text-red-400">JEBAKAN WIN RATE TINGGI (Negative Edge):</strong> Sinyal Bahaya. Kamu memiliki Win Rate tinggi namun sistem tetap merugi karena perilaku trading Kamu sering membiarkan kerugian membengkak besar (*holding losers*) dan memotong keuntungan terlalu cepat. Perbaiki disiplin Stop Loss Kamu segera!`;
-					} else {
-						narasiHtml = `<strong class="text-red-500">STRATEGI MERUGI (Negative Expectancy):</strong> Sistem trading ini memiliki ekspektasi matematis negatif. Dalam jangka panjang, mengeksekusi strategi ini hanya akan menguras saldo modal Kamu. Hentikan trading real account, evaluasi kembali titik entri, jurnalkan trading Kamu, dan gunakan kembali demo account.`;
-					}
-				}
-				outDiagnosis.innerHTML = narasiHtml;
-			}
-		</script>
-		
 		<!-- FITUR: TRADING PLAN GENERATOR -->
-		<section id="fitur-plan-generator" class="max-w-5xl mx-auto px-4 my-8">
-			<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl">
-				<div class="flex items-center gap-3 mb-6">
-					<div class="p-2 bg-cyan-500/20 text-cyan-400 rounded-lg">
-						<svg xmlns="http://www.w3.org/2000/xl" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-						</svg>
-					</div>
-					<div>
-						<h3 class="text-xl font-bold text-white">Trading Plan Generator</h3>
-						<p class="text-xs text-gray-400">Rancang rencana trading yang terstruktur dan siap dibagikan dalam satu klik</p>
-					</div>
+		<section id="fitur-plan-generator" class="py-12 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-8">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 uppercase tracking-wider">Plan Architect</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Trading Plan Generator</h2>
+					<p class="mt-2 text-sm text-slate-400">Rancang rencana trading yang terstruktur dan siap dibagikan dalam satu klik.</p>
 				</div>
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-					<div class="space-y-3">
-						<div class="grid grid-cols-3 gap-2">
-							<div class="col-span-1">
-								<label class="block text-xs font-semibold text-gray-300 mb-1">Kode Emiten</label>
-								<input type="text" id="tpEmiten" placeholder="0" value="MDIA" oninput="generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm uppercase font-bold">
+				<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<div class="space-y-4">
+							<div class="grid grid-cols-3 gap-3">
+								<div class="col-span-1">
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Kode Emiten</label>
+									<input type="text" id="tpEmiten" placeholder="MDIA" value="MDIA" oninput="generateTradingPlanText()" class="w-full bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono uppercase font-bold focus:outline-none transition-all">
+								</div>
+								<div class="col-span-2">
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Buy Zone (Rp)</label>
+									<input type="text" id="tpBuyZone" placeholder="55-60" value="55-60" oninput="generateTradingPlanText()" class="w-full bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+								</div>
 							</div>
-							<div class="col-span-2">
-								<label class="block text-xs font-semibold text-gray-300 mb-1">Area Beli / Buy Zone (Rp)</label>
-								<input type="text" id="tpBuyZone" placeholder="0" value="55-60" oninput="generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm font-mono">
+							<div class="grid grid-cols-3 gap-3">
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Target 1</label>
+									<input type="text" id="tpTarget1" placeholder="200" value="200" oninput="formatRupiahInput(this); generateTradingPlanText();" class="w-full bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl px-3 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+								</div>
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Target 2</label>
+									<input type="text" id="tpTarget2" placeholder="300" value="300" oninput="formatRupiahInput(this); generateTradingPlanText();" class="w-full bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl px-3 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+								</div>
+								<div>
+									<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Stop Loss</label>
+									<input type="text" id="tpStopLoss" placeholder="50" value="50" oninput="formatRupiahInput(this); generateTradingPlanText();" class="w-full bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl px-3 py-2.5 text-sm text-white font-mono focus:outline-none transition-all">
+								</div>
 							</div>
-						</div>
-						<div class="grid grid-cols-3 gap-2">
 							<div>
-								<label class="block text-xs font-semibold text-gray-300 mb-1">Target Price 1</label>
-								<input type="text" id="tpTarget1" placeholder="0" value="200" oninput="formatRupiahInput(this),generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm font-mono">
+								<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Catatan Tambahan / Analisis Singkat</label>
+								<textarea id="tpCatatan" rows="3" oninput="generateTradingPlanText()" class="w-full bg-slate-950 border border-slate-800 focus:border-cyan-500 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none resize-none leading-relaxed" placeholder="Contoh: Menunggu akumulasi di area support..."></textarea>
 							</div>
-							<div>
-								<label class="block text-xs font-semibold text-gray-300 mb-1">Target Price 2</label>
-								<input type="text" id="tpTarget2" placeholder="0" value="300" oninput="formatRupiahInput(this),generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm font-mono">
+							<button onclick="generateTradingPlanText()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 transform hover:-translate-y-0.5 cursor-pointer">Generate Trading Plan</button>
+						</div>
+						<div class="bg-slate-950/60 border border-slate-800/60 rounded-2xl p-5 flex flex-col justify-between">
+							<div class="flex-1">
+								<span class="text-[10px] font-bold uppercase tracking-wider text-cyan-400 block mb-2">Hasil Output Teks Rencana:</span>
+								<textarea id="outTpTextara" readonly="readonly" class="w-full h-[150px] bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-200 focus:outline-none resize-none leading-relaxed"></textarea>
 							</div>
-							<div>
-								<label class="block text-xs font-semibold text-gray-300 mb-1">Stop Loss (SL)</label>
-								<input type="text" id="tpStopLoss" placeholder="0" value="50" oninput="formatRupiahInput(this),generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-sm font-mono">
-							</div>
+							<button onclick="salinTradingPlan()" class="w-full mt-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg text-xs flex items-center justify-center gap-2 cursor-pointer">
+								<i class="fa-solid fa-copy"></i>
+								Salin Rencana Teks
+							</button>
 						</div>
-						<div>
-							<label class="block text-xs font-semibold text-gray-300 mb-1">Catatan Tambahan / Analisis Singkat</label>
-							<textarea id="tpCatatan" rows="2" oninput="generateTradingPlanText()" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-500 text-xs resize-none" placeholder="Contoh: Menunggu akumulasi di area support, pantau volume break out..."></textarea>
-						</div>
-					</div>
-					<div class="bg-black/20 border border-white/5 rounded-xl p-4 flex flex-col justify-between">
-						<div class="flex-1">
-							<span class="text-[10px] font-bold uppercase tracking-wider text-cyan-400 block mb-1">Hasil Output Teks Rencana:</span>
-							<textarea id="outTpTextara" readonly="readonly" class="w-full h-[140px] bg-black/40 border border-white/5 rounded-xl p-3 text-xs font-mono text-gray-200 focus:outline-none resize-none leading-relaxed"></textarea>
-						</div>
-						<button onclick="salinTradingPlan()" class="w-full mt-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold py-2 rounded-xl transition-all shadow-lg text-xs flex items-center justify-center gap-2">
-							<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-							</svg>
-							Salin Rencana Teks 
-						</button>
 					</div>
 				</div>
 			</div>
@@ -1972,7 +1804,7 @@
 				const textara = document.getElementById('outTpTextara');
 				if (!textara) return;
 				textara.select();
-				textara.setSelectionRange(0, 99999); // Skala HP/Mobile
+				textara.setSelectionRange(0, 99999);
 				navigator.clipboard.writeText(textara.value).then(() => {
 					alert("Trading Plan sukses disalin ke Clipboard!");
 				}).catch(err => {
@@ -1986,63 +1818,61 @@
 		</script>
 		
 		<!-- FITUR: ARA / ARB SIMULATOR -->
-		<section id="ara-arb-simulator" class="p-6 border-t border-slate-900">
-			<div class="flex items-center space-x-3 mb-6">
-				<div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/10">
-					<i class="fa-solid fa-chart-line text-lg"></i>
+		<section id="ara-arb-simulator" class="py-12 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-8">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">IPO Simulator</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">ARA / ARB Simulator</h2>
+					<p class="mt-2 text-sm text-slate-400">Simulasi proyeksi keuntungan berantai dari saham IPO berdasarkan batas Auto Rejection BEI.</p>
 				</div>
-				<div>
-					<h2 class="text-base font-bold text-slate-100 tracking-wide">ARA / ARB Simulator</h2>
-					<p class="text-[11px] text-slate-400">Simulasi proyeksi keuntungan berantai dari saham IPO</p>
-				</div>
-			</div>
-			<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 items-end">
-				<div>
-					<label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Harga Listing / Awal (Rp)</label>
-					<div class="relative">
-						<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 text-xs">Rp</div>
-						<input type="text" id="ipoHargaAwal" class="w-full pl-9 pr-4 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition font-mono" placeholder="Contoh: 200" onkeyup="formatRupiahInput(this)">
+				<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
+					<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 items-end">
+						<div>
+							<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Harga Listing / Awal (Rp)</label>
+							<div class="relative">
+								<input type="text" id="ipoHargaAwal" class="w-full pl-4 pr-4 py-2.5 bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all" placeholder="200" onkeyup="formatRupiahInput(this)">
+							</div>
+						</div>
+						<div>
+							<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Jumlah Kepemilikan (Lot)</label>
+							<div class="relative">
+								<input type="number" id="ipoJumlahLot" class="w-full pl-4 pr-12 py-2.5 bg-slate-950 border border-slate-800 focus:border-emerald-500 rounded-xl text-sm text-white font-mono placeholder-slate-600 focus:outline-none transition-all" placeholder="10" min="1">
+								<div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-500 text-xs">Lot</div>
+							</div>
+						</div>
+						<div>
+							<button onclick="hitungProyeksiIpo()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/10 cursor-pointer">
+								<i class="fa-solid fa-calculator mr-1"></i> Hitung Proyeksi
+							</button>
+						</div>
 					</div>
-				</div>
-				<div>
-					<label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Jumlah Kepemilikan (Lot)</label>
-					<div class="relative">
-						<input type="number" id="ipoJumlahLot" class="w-full px-4 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition font-mono" placeholder="Contoh: 10" min="1">
-						<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-500 text-xs">Lot</div>
-					</div>
-				</div>
-				<div>
-					<button onclick="hitungProyeksiIpo()" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-900/20 active:scale-[0.98] transition cursor-pointer">
-						<i class="fa-solid fa-calculator mr-1"></i> Hitung Proyeksi
-					</button>
-				</div>
-			</div>
-			<div id="hasilProyeksiIpoContainer" class="hidden space-y-4">
-				<div class="p-3 bg-slate-900/40 rounded-xl border border-slate-800/60 text-center text-[11px] text-slate-400">
-					Estimasi nilai aset awal: <span id="txtAsetAwal" class="font-bold text-slate-200 font-mono">-</span>
-				</div>
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-					<div>
-						<h3 class="text-xs font-bold text-emerald-400 mb-2 flex items-center"><i class="fa-solid fa-angles-up mr-1.5 text-[10px]"></i> Proyeksi Berantai ARA (Naik)</h3>
-						<div id="daftarAraIpo" class="space-y-2 max-h-[480px] overflow-y-auto pr-1"></div>
-					</div>
-					<div>
-						<h3 class="text-xs font-bold text-rose-400 mb-2 flex items-center"><i class="fa-solid fa-angles-down mr-1.5 text-[10px]"></i> Proyeksi Berantai ARB (Turun)</h3>
-						<div id="daftarArbIpo" class="space-y-2 max-h-[480px] overflow-y-auto pr-1"></div>
+					<div id="hasilProyeksiIpoContainer" class="hidden space-y-4">
+						<div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl text-center text-xs text-slate-400">
+							Estimasi nilai aset awal: <span id="txtAsetAwal" class="font-bold text-emerald-400 font-mono text-sm">-</span>
+						</div>
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<div>
+								<h3 class="text-xs font-bold text-emerald-400 mb-3 flex items-center uppercase tracking-wider"><i class="fa-solid fa-angles-up mr-1.5"></i> Proyeksi Berantai ARA (Naik)</h3>
+								<div id="daftarAraIpo" class="space-y-2.5 max-h-[480px] overflow-y-auto pr-1"></div>
+							</div>
+							<div>
+								<h3 class="text-xs font-bold text-rose-400 mb-3 flex items-center uppercase tracking-wider"><i class="fa-solid fa-angles-down mr-1.5"></i> Proyeksi Berantai ARB (Turun)</h3>
+								<div id="daftarArbIpo" class="space-y-2.5 max-h-[480px] overflow-y-auto pr-1"></div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</section>
 		
 		<script>
-			// LOGIKA FITUR: SIMULATOR ARA/ARB BERANTAI
 			function dapatkanPersentaseAutoRejection(harga) {
 				if (harga >= 50 && harga <= 200) {
-					return 0.35; // Pas 35%
+					return 0.35;
 				} else if (harga > 200 && harga <= 5000) {
-					return 0.25; // Pas 25%
+					return 0.25;
 				} else {
-					return 0.20; // Pas 20%
+					return 0.20;
 				}
 			}
 			function bulatkanKeFraksiBEI(hargaTarget, hargaAwal) {
@@ -2067,8 +1897,8 @@
 				const boxAra = document.getElementById('daftarAraIpo');
 				const boxArb = document.getElementById('daftarArbIpo');
 				if (!inputHarga || !inputLot) return;
-				let hargaAwal = parseInt(inputHarga.value.replace(/\./g, '')) || 0;
-				let jumlahLot = parseInt(inputLot.value) || 0;
+				let hargaAwal = bersihkanAngka(inputHarga.value);
+				let jumlahLot = parseFloat(inputLot.value) || 0;
 				if (hargaAwal < 50 || jumlahLot <= 0) {
 					alert('Silakan masukkan harga awal minimal Rp 50 dan jumlah lot minimal 1.');
 					return;
@@ -2078,41 +1908,37 @@
 				document.getElementById('txtAsetAwal').innerText = 'Rp ' + nilaiAsetAwal.toLocaleString('id-ID');
 				boxAra.innerHTML = '';
 				boxArb.innerHTML = '';
-				// 1. GENERATE JALUR ARA
+
 				let hargaCurrentAra = hargaAwal;
 				for (let hari = 1; hari <= 18; hari++) {
 					let pPersen = dapatkanPersentaseAutoRejection(hargaCurrentAra);
-					// Hitung target mentah lalu bulatkan ke fraksi bursa terdekat
 					let hargaTargetMentah = hargaCurrentAra * (1 + pPersen);
 					let hargaTargetAra = bulatkanKeFraksiBEI(hargaTargetMentah, hargaCurrentAra);
-					// Poin didapat dari selisih harga bersih
 					let kenaikanPoin = hargaTargetAra - hargaCurrentAra;
 					let totalAsetAra = hargaTargetAra * jumlahLot * 100;
 					let profitNominal = totalAsetAra - nilaiAsetAwal;
 					let profitPersenKumulatif = ((hargaTargetAra - hargaAwal) / hargaAwal) * 100;
 					boxAra.innerHTML += `
-					<div class="p-3 bg-emerald-950/20 border border-emerald-900/40 rounded-xl flex flex-col space-y-1.5">
-						<div class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded w-fit">Hari ${hari}</div>
-						<!-- Baris 1: Kenaikan harga saham Rp (ARA) + kenaikan poin <-> persentase pas BEI -->
+					<div class="p-3.5 bg-slate-950 border border-emerald-900/40 rounded-xl flex flex-col space-y-1.5">
+						<div class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded w-fit border border-emerald-500/20">Hari ${hari}</div>
 						<div class="flex justify-between items-center text-xs">
-							<span class="font-bold text-base text-emerald-300">Rp ${hargaTargetAra.toLocaleString('id-ID')} (+${kenaikanPoin})</span>
-							<span class="font-bold text-base text-emerald-300">+ ${(pPersen * 100)}%</span>
+							<span class="font-bold text-sm text-emerald-300 font-mono">Rp ${hargaTargetAra.toLocaleString('id-ID')} (+${kenaikanPoin})</span>
+							<span class="font-bold text-sm text-emerald-300 font-mono">+ ${(pPersen * 100)}%</span>
 						</div>
-						<!-- Baris 2: Total modal (profit / gulung) <-> profit nominal -->
-						<div class="flex justify-between items-center text-base text-[10px]">
-							<span class="font-bold-mono text-base text-emerald-400">Rp ${totalAsetAra.toLocaleString('id-ID')}</span></span>
-							<span class="font-bold-mono text-base text-emerald-400">+Rp ${profitNominal.toLocaleString('id-ID')} (+${profitPersenKumulatif.toFixed(1)}%)</span>
+						<div class="flex justify-between items-center text-[10px]">
+							<span class="font-bold font-mono text-emerald-400">Rp ${totalAsetAra.toLocaleString('id-ID')}</span>
+							<span class="font-bold font-mono text-emerald-400">+Rp ${profitNominal.toLocaleString('id-ID')} (+${profitPersenKumulatif.toFixed(1)}%)</span>
 						</div>
 					</div>
 					`;
 					hargaCurrentAra = hargaTargetAra;
 				}
-				// 2. GENERATE JALUR ARB
+
 				let hargaCurrentArb = hargaAwal;
 				for (let hari = 1; hari <= 10; hari++) {
 					if (hargaCurrentArb <= 50) {
 						boxArb.innerHTML += `
-						<div class="p-3 bg-slate-900/20 border border-slate-800 rounded-xl flex flex-col justify-center items-center py-4">
+						<div class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl flex flex-col justify-center items-center py-4">
 							<span class="text-[10px] font-bold text-slate-500">Hari ${hari} - Mentok Batas Bawah BEI (Rp 50)</span>
 						</div>
 						`;
@@ -2121,24 +1947,21 @@
 					let pPersen = dapatkanPersentaseAutoRejection(hargaCurrentArb);
 					let hargaTargetMentah = hargaCurrentArb * (1 - pPersen);
 					let hargaTargetArb = bulatkanKeFraksiBEI(hargaTargetMentah, hargaCurrentArb);
-					// Proteksi batas bawah Rp 50
 					if (hargaTargetArb < 50) hargaTargetArb = 50;
 					let penurunanPoin = hargaCurrentArb - hargaTargetArb;
 					let totalAsetArb = hargaTargetArb * jumlahLot * 100;
 					let lossNominal = totalAsetArb - nilaiAsetAwal;
 					let lossPersenKumulatif = ((hargaTargetArb - hargaAwal) / hargaAwal) * 100;
 					boxArb.innerHTML += `
-					<div class="p-3 bg-rose-950/20 border border-rose-900/40 rounded-xl flex flex-col space-y-1.5">
-						<div class="text-[9px] font-bold text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded w-fit">Hari ${hari}</div>
-						<!-- Baris 1: Penurunan harga saham Rp (ARB) - penurunan poin <-> persentase pas BEI -->
+					<div class="p-3.5 bg-slate-950 border border-rose-900/40 rounded-xl flex flex-col space-y-1.5">
+						<div class="text-[9px] font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded w-fit border border-rose-500/20">Hari ${hari}</div>
 						<div class="flex justify-between items-center text-xs">
-							<span class="font-bold text-base text-rose-300">Rp ${hargaTargetArb.toLocaleString('id-ID')} (-${penurunanPoin})</span>
-							<span class="font-bold text-base text-rose-300">- ${(pPersen * 100)}%</span>
+							<span class="font-bold text-sm text-rose-300 font-mono">Rp ${hargaTargetArb.toLocaleString('id-ID')} (-${penurunanPoin})</span>
+							<span class="font-bold text-sm text-rose-300 font-mono">- ${(pPersen * 100)}%</span>
 						</div>
-						<!-- Baris 2: Total modal (loss / gulung) <-> loss nominal -->
-						<div class="flex justify-between items-center text-base text-[10px]">
-							<span class="font-bold-mono text-base text-rose-400">Rp ${totalAsetArb.toLocaleString('id-ID')}</span>
-							<span class="font-bold-mono text-base text-rose-400">Rp ${lossNominal.toLocaleString('id-ID')} (${lossPersenKumulatif.toFixed(1)}%)</span>
+						<div class="flex justify-between items-center text-[10px]">
+							<span class="font-bold font-mono text-rose-400">Rp ${totalAsetArb.toLocaleString('id-ID')}</span>
+							<span class="font-bold font-mono text-rose-400">Rp ${lossNominal.toLocaleString('id-ID')} (${lossPersenKumulatif.toFixed(1)}%)</span>
 						</div>
 					</div>
 					`;
@@ -2147,9 +1970,10 @@
 			}
 		</script>
 		
-		<section id="sentimen-pasar-bei" class="py-16 bg-slate-950 border-t border-slate-900">
-			<div class="w-full max-w-7xl mx-auto px-4 mb-6">
-				<div class="bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl p-5 shadow-xl shadow-emerald-950/5">
+		<!-- FITUR: SENTIMEN PASAR BEI -->
+		<section id="sentimen-pasar-bei" class="py-12 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="bg-slate-900/40 backdrop-blur-md border border-slate-800/80 rounded-2xl p-6 shadow-xl">
 					<div class="flex flex-col lg:flex-row items-center justify-between gap-6">
 						<div class="flex items-center gap-3 w-full lg:w-auto shrink-0">
 							<div class="p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400">
@@ -2157,19 +1981,19 @@
 							</div>
 							<div>
 								<div class="flex items-center gap-2">
-									<h3 class="text-sm font-bold text-gray-100 tracking-wide uppercase">Sentimen Pasar BEI</h3>
+									<h3 class="text-sm font-bold text-slate-100 tracking-wide uppercase">Sentimen Pasar BEI</h3>
 									<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-widest animate-pulse">LIVE</span>
 								</div>
-								<p class="text-[11px] text-gray-400">Analisis agregat volatilitas & arah 900+ saham Indonesia</p>
+								<p class="text-[11px] text-slate-400">Analisis agregat volatilitas & arah 900+ saham Indonesia</p>
 							</div>
 						</div>
-						<div class="w-full max-w-xl flex-1 h-[220px] overflow-hidden bg-black/10 rounded-xl border border-white/5 relative">
+						<div class="w-full max-w-xl flex-1 h-[220px] overflow-hidden bg-slate-950 rounded-xl border border-slate-800 relative">
 							<div class="tradingview-widget-container w-full h-full">
 								<div id="tradingview-realtime-sentiment" class="w-full h-full"></div>
 							</div>
 						</div>
-						<div class="w-full lg:w-auto flex justify-end shrink-0 border-t border-white/5 lg:border-t-0 pt-3 lg:pt-0">
-							<button onclick="segarkanSentimenRealTime()" class="w-full lg:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 active:scale-95 text-gray-300 hover:text-white rounded-xl border border-white/10 text-xs font-bold transition-all cursor-pointer" title="Sinkronisasi Data Bursa">
+						<div class="w-full lg:w-auto flex justify-end shrink-0 border-t border-slate-800 lg:border-t-0 pt-3 lg:pt-0">
+							<button onclick="segarkanSentimenRealTime()" class="w-full lg:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 active:scale-95 text-slate-300 hover:text-white rounded-xl border border-slate-800 text-xs font-bold transition-all cursor-pointer" title="Sinkronisasi Data Bursa">
 								<svg id="iconPutarRealTime" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
 								<span>Muat Ulang</span>
 							</button>
@@ -2216,51 +2040,51 @@
 			</script>
 		</section>
 		
-		<section id="fitur-chart-pattern" class="max-w-5xl mx-auto px-4 my-8">
-			<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl">
-				<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-					<div class="flex items-center gap-3">
-						<div class="p-2 bg-blue-500/20 text-blue-400 rounded-lg">
-							<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-							</svg>
-						</div>
-						<div>
-							<h3 class="text-xl font-bold text-white">Edukasi Chart Pattern</h3>
-							<p class="text-xs text-gray-400">Kuasai arah breakout pergerakan harga pasar secara visual</p>
-						</div>
-					</div>
-					<div class="flex bg-black/30 p-1 rounded-xl border border-white/5 self-start md:self-auto">
-						<button onclick='gantiKategoriPattern("all")' id="btn-pt-all" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-white bg-white/10 transition-all">Semua</button>
-						<button onclick='gantiKategoriPattern("bullish")' id="btn-pt-bullish" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition-all">Bullish</button>
-						<button onclick='gantiKategoriPattern("bearish")' id="btn-pt-bearish" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition-all">Bearish</button>
-					</div>
+		<!-- FITUR: EDUKASI CHART PATTERN -->
+		<section id="fitur-chart-pattern" class="py-12 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-8">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wider">Pattern Academy</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Edukasi Chart Pattern</h2>
+					<p class="mt-2 text-sm text-slate-400">Kuasai arah breakout pergerakan harga pasar secara visual.</p>
 				</div>
-				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="patternGridWrapper"></div>
+				<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
+					<div class="flex justify-center mb-6">
+						<div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800">
+							<button onclick='gantiKategoriPattern("all")' id="btn-pt-all" class="px-4 py-1.5 text-xs font-semibold rounded-lg text-white bg-slate-800 transition-all cursor-pointer">Semua</button>
+							<button onclick='gantiKategoriPattern("bullish")' id="btn-pt-bullish" class="px-4 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer">Bullish</button>
+							<button onclick='gantiKategoriPattern("bearish")' id="btn-pt-bearish" class="px-4 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer">Bearish</button>
+						</div>
+					</div>
+					<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="patternGridWrapper"></div>
+				</div>
 			</div>
 		</section>
 		
-		<section id="fitur-news-feed" class="max-w-5xl mx-auto px-4 my-8">
-			<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl h-[400px] flex flex-col">
-				<div class="flex items-center justify-between mb-4 shrink-0">
-					<div class="flex items-center gap-3">
-						<div class="p-2 bg-amber-500/20 text-amber-400 rounded-lg">
-							<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1M19 20a2 2 0 002-2V8a2 2 0 00-2-2h-5M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m12 4a2 2 0 11-4 0 2 2 0 014 0z" />
-							</svg>
-						</div>
-						<div>
-							<h3 class="text-xl font-bold text-white">Live Market News Feed</h3>
-							<p class="text-xs text-gray-400">Arus data berita ekonomi utama & aksi korporasi emiten</p>
-						</div>
-					</div>
-					<button onclick="refreshManualBerita()" class="p-2 hover:bg-white/10 text-gray-400 hover:text-white rounded-xl transition-all" title="Segarkan Berita">
-						<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.212 15M4 20v-5h.581m0 0a8.003 8.003 0 0015.357-2" />
-						</svg>
-					</button>
+		<!-- FITUR: LIVE MARKET NEWS FEED -->
+		<section id="fitur-news-feed" class="py-12 bg-slate-950 border-t border-slate-900/60">
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-8">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase tracking-wider">Live Feed</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Live Market News Feed</h2>
+					<p class="mt-2 text-sm text-slate-400">Arus data berita ekonomi utama & aksi korporasi emiten secara real-time.</p>
 				</div>
-				<div class="overflow-y-auto flex-1 pr-1 space-y-3 custom-scrollbar" id="liveNewsLayoutContainer"></div>
+				<div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl h-[450px] flex flex-col">
+					<div class="flex items-center justify-between mb-4 shrink-0 border-b border-slate-800/80 pb-3">
+						<div class="flex items-center gap-3">
+							<div class="p-2 bg-amber-500/10 text-amber-400 rounded-lg border border-amber-500/20">
+								<i class="fa-solid fa-satellite-dish text-base"></i>
+							</div>
+							<div>
+								<h3 class="text-sm font-bold text-white uppercase">Kabar Pasar Terkini</h3>
+							</div>
+						</div>
+						<button onclick="refreshManualBerita()" class="p-2 bg-slate-950 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl border border-slate-800 transition-all cursor-pointer" title="Segarkan Berita">
+							<i class="fa-solid fa-rotate text-xs"></i>
+						</button>
+					</div>
+					<div class="overflow-y-auto flex-1 pr-1 space-y-3" id="liveNewsLayoutContainer"></div>
+				</div>
 			</div>
 		</section>
 		
@@ -2303,17 +2127,17 @@
 				container.innerHTML = "";
 				dataPolaSaham.forEach(pola => {
 					if (filter !== 'all' && pola.tipe !== filter) return;
-					const warnaLabel = pola.tipe === 'bullish' ? 'text-emerald-400 bg-emerald-500/10' : 'text-red-400 bg-red-500/10';
+					const warnaLabel = pola.tipe === 'bullish' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20';
 					const card = document.createElement('div');
-					card.className = "bg-white/5 border border-white/10 rounded-xl p-4 hover:border-white/20 transition-all flex flex-col justify-between";
+					card.className = "bg-slate-950 border border-slate-800 rounded-2xl p-4 hover:border-slate-700 transition-all flex flex-col justify-between";
 					card.innerHTML = `
 					<div>
 						<div class="flex justify-between items-center mb-2">
-							<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-md ${warnaLabel}">${pola.tipe}</span>
-							<span class="text-[11px] text-gray-400 font-medium">${pola.s}</span>
+							<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-md border ${warnaLabel}">${pola.tipe}</span>
+							<span class="text-[11px] text-slate-400 font-medium">${pola.s}</span>
 						</div>
 						<h4 class="text-base font-bold text-white mb-2">${pola.nama}</h4>
-						<p class="text-xs text-gray-300 leading-relaxed">${pola.d}</p>
+						<p class="text-xs text-slate-300 leading-relaxed">${pola.d}</p>
 					</div>
 					`;
 					container.appendChild(card);
@@ -2324,14 +2148,14 @@
 				['all', 'bullish', 'bearish'].forEach(kat => {
 					const btn = document.getElementById(`btn-pt-${kat}`);
 					if (btn) {
-						btn.classList.remove('bg-white/10', 'text-white');
-						btn.classList.add('text-gray-400');
+						btn.classList.remove('bg-slate-800', 'text-white');
+						btn.classList.add('text-slate-400');
 					}
 				});
 				const targetBtn = document.getElementById(`btn-pt-${kategori}`);
 				if (targetBtn) {
-					targetBtn.classList.remove('text-gray-400');
-					targetBtn.classList.add('bg-white/10', 'text-white');
+					targetBtn.classList.remove('text-slate-400');
+					targetBtn.classList.add('bg-slate-800', 'text-white');
 				}
 				renderPolaSaham(kategori);
 			}
@@ -2368,16 +2192,16 @@
 				box.innerHTML = "";
 				bankDataBerita.forEach(feed => {
 					const divNode = document.createElement('div');
-					divNode.className = "p-3.5 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl transition-all cursor-pointer flex flex-col gap-1.5";
+					divNode.className = "p-3.5 bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-xl transition-all cursor-pointer flex flex-col gap-1.5";
 					divNode.innerHTML = `
 					<div class="flex items-center justify-between">
 						<div class="flex items-center gap-2">
-							<span class="text-[9px] font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded">${feed.waktu}</span>
-							<span class="text-[9px] font-medium text-gray-400 bg-white/10 px-1.5 py-0.5 rounded">${feed.tags}</span>
+							<span class="text-[9px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">${feed.waktu}</span>
+							<span class="text-[9px] font-medium text-slate-400 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">${feed.tags}</span>
 						</div>
-						<span class="text-[10px] text-gray-400 font-mono">${feed.asal}</span>
+						<span class="text-[10px] text-slate-500 font-mono">${feed.asal}</span>
 					</div>
-					<p class="text-xs text-gray-200 font-semibold leading-snug hover:text-white">${feed.judul}</p>
+					<p class="text-xs text-slate-200 font-semibold leading-snug hover:text-white">${feed.judul}</p>
 					`;
 					box.appendChild(divNode);
 				});
@@ -2386,7 +2210,7 @@
 			function refreshManualBerita() {
 				const box = document.getElementById('liveNewsLayoutContainer');
 				if (box) {
-					box.innerHTML = `<div class="text-center text-xs text-gray-400 py-6 animate-pulse">Memperbarui sentimen bursa...</div>`;
+					box.innerHTML = `<div class="text-center text-xs text-slate-400 py-6 animate-pulse">Memperbarui sentimen bursa...</div>`;
 					setTimeout(bangunFeedBerita, 600);
 				}
 			}
@@ -2397,6 +2221,7 @@
 			});
 		</script>
 		
+		<!-- FOOTER -->
 		<footer class="bg-slate-950 border-t border-slate-900 py-12 text-center text-xs text-slate-500">
 			<p class="mb-2">&copy; 2026 Stock ID VIP #Andaimology. All Rights Reserved.</p>
 			<p class="max-w-xl mx-auto leading-relaxed px-4">Disclaimer: Perdagangan saham memiliki risiko kerugian finansial. Seluruh data rekomendasi bersifat edukasi dan analisa mandiri ritel, keputusan beli/jual ada di tangan investor masing-masing.</p>

@@ -216,7 +216,7 @@
 				}
 			});
 
-			// Deteksi Otomatis Halaman Aktif (exp.html)
+			// Deteksi Otomatis Halaman Aktif
 			document.addEventListener("DOMContentLoaded", function() {
 				const path = window.location.pathname;
 				const isExpPage = path.includes("screener.html") || path.endsWith("/screener");
@@ -710,7 +710,7 @@
 						this.init();
 						if (!this.ctx) return;
 						const now = this.ctx.currentTime;
-						const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (Futuristic Chime)
+						const notes = [523.25, 659.25, 783.99, 1046.50];
 						notes.forEach((freq, idx) => {
 							const osc = this.ctx.createOscillator();
 							const gain = this.ctx.createGain();
@@ -746,13 +746,12 @@
 				}
 			};
 
-			// Global Event Listener Efek Getar (Vibration) & Efek Suara Click pada Setiap Tombol
 			document.addEventListener('click', function(e) {
 				const target = e.target.closest('button, a, [onclick]');
 				if (target) {
 					AudioFX.playClick();
 					if ('vibrate' in navigator) {
-						navigator.vibrate(300);
+						navigator.vibrate(50);
 					}
 				}
 			});
@@ -836,19 +835,14 @@
 			let radarTimer = null;
 			let isRadarScanning = false;
 
-			// ==================== LOGIKA CACHING MARKET CLOSING (16:00 - 09:00 WIB) ====================
-			
-			// Cek apakah bursa sedang buka (09:00 - 16:00 WIB, Senin - Jumat)
 			function isMarketOpen() {
 				const now = new Date();
-				const day = now.getDay(); // 0 = Minggu, 6 = Sabtu
+				const day = now.getDay();
 				if (day === 0 || day === 6) return false;
-
 				const hours = now.getHours();
 				return hours >= 9 && hours < 16;
 			}
 
-			// Otomatis hapus cache saat jam 09:00 WIB tiba
 			function cleanExpiredCache() {
 				if (isMarketOpen()) {
 					for (let i = localStorage.length - 1; i >= 0; i--) {
@@ -867,13 +861,9 @@
 
 				try {
 					const cache = JSON.parse(cachedRaw);
-					
-					// 1. Jika pasar tutup (16:00 - 09:00 WIB): gunakan data closing dalam cache
 					if (!isMarketOpen()) {
 						return cache.data;
 					}
-
-					// 2. Jika pasar buka (09:00 - 16:00 WIB): gunakan cache jika usianya kurang dari 5 menit (300.000 ms)
 					const FIVE_MINUTES = 5 * 60 * 1000;
 					if (Date.now() - cache.timestamp < FIVE_MINUTES) {
 						return cache.data;
@@ -894,7 +884,6 @@
 				localStorage.setItem(cacheKey, JSON.stringify(cachePayload));
 			}
 
-			// ==================== SISTEM AKSES TOKEN VIP ====================
 			function getExtractName(token) {
 				const match = token.match(/^[A-Za-z]+/);
 				return match ? match[0] : token;
@@ -905,7 +894,6 @@
 				today.setHours(0, 0, 0, 0);
 				const expDate = new Date(expiredDateStr);
 				expDate.setHours(0, 0, 0, 0);
-
 				const diffTime = expDate - today;
 				return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 			}
@@ -1065,25 +1053,18 @@
 				container.appendChild(script);
 			}
 
-			// Helper Delay
 			const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-			// Penarik Data Saham (LOGIKA CLOSING PRICE CACHE vs LIVE MARKET)
 			async function fetchRealtimeStockData(ticker, forceFetch = false) {
 				if (!forceFetch) {
 					const cachedData = getCachedStockData(ticker);
-					if (cachedData) {
-						return cachedData;
-					}
+					if (cachedData) return cachedData;
 				}
 
 				const targetSymbol = `${ticker}.JK`;
 				let freshData = null;
+				const WORKER_URL = 'https://stockid-api-proxy.accespy-mail.workers.dev';
 				
-				// CLOUDFLARE WORKER!
-				const WORKER_URL = 'stockid-api-proxy.accespy-mail.workers.dev';
-				
-				// 1. Panggil Cloudflare Worker Proxy (Aman & Tanpa API Key di Frontend)
 				try {
 					const response = await fetch(`${WORKER_URL}?symbol=${targetSymbol}`);
 					if (response.ok) {
@@ -1122,7 +1103,6 @@
 					console.warn(`Worker proxy retry/fallback for ${ticker}`);
 				}
 
-				// 2. Fallback Public Live Proxy
 				if (!freshData) {
 					try {
 						const proxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
@@ -1171,7 +1151,6 @@
 				return freshData;
 			}
 
-			// SKELETON LOADING
 			function showAISkeletonLoading() {
 				document.getElementById('aiVerdikText').innerHTML = `<span class="inline-block w-32 h-5 skeleton rounded"></span>`;
 				document.getElementById('aiScoreBadge').innerHTML = `<span class="inline-block w-12 h-4 skeleton rounded"></span>`;
@@ -1180,6 +1159,7 @@
 					<div class="space-y-2 py-1">
 						<div class="w-full h-3 skeleton rounded"></div>
 						<div class="w-4/5 h-3 skeleton rounded"></div>
+						<div class="w-3/4 h-3 skeleton rounded"></div>
 					</div>
 				`;
 
@@ -1202,7 +1182,7 @@
 				document.getElementById('tpProgressPercent').innerText = `Menghitung posisi teknikal...`;
 			}
 
-			// 1. GENERATE AI SIGNAL & TRADING MAP
+			// GENERATE AI SIGNAL & TRADING MAP TERPERINCI PERANJANG
 			async function generateAISignal(ticker, isManualSearch = false) {
 				const now = new Date();
 				const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
@@ -1211,12 +1191,9 @@
 				document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
 				
 				const isCached = !isMarketOpen() && localStorage.getItem(`stock_cache_${ticker}`);
-				document.getElementById('aiDateStamp').innerText = isCached 
-					? `Update Live: ${dateStr} ${timeStr} WIB` 
-					: `Update Live: ${dateStr} ${timeStr} WIB`;
+				document.getElementById('aiDateStamp').innerText = `Update Live: ${dateStr} ${timeStr} WIB`;
 
 				showAISkeletonLoading();
-
 				fetchStockNewsForAI(ticker);
 
 				const stockData = await fetchRealtimeStockData(ticker, isManualSearch);
@@ -1276,14 +1253,16 @@
 						: `volume transaksi cenderung moderat (${stockData.volRatio}x rerata volume harian)`;
 					
 					const maAlignText = (isAboveMA5 && isAboveMA10 && isAboveMA20)
-						? "Struktur tren berada dalam susunan <strong class='text-emerald-400'>Bullish Alignment</strong> (Harga > MA5 > MA10 > MA20)."
+						? "Struktur tren berada dalam susunan <strong class='text-emerald-400'>Bullish Alignment</strong> (Harga > MA5 > MA10 > MA20). Ini menandakan partisipasi pembeli mendominasi penuh seluruh horizon waktu jangka pendek."
 						: (!isAboveMA10 && !isAboveMA20)
-						? "Posisi harga berada <strong class='text-rose-400'>di bawah MA10 & MA20</strong>, mengindikasikan tekanan jual jangka pendek."
-						: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata.";
+						? "Posisi harga berada <strong class='text-rose-400'>di bawah MA10 & MA20</strong>, mengindikasikan tekanan jual jangka pendek yang intensif dan kurva pergerakan dalam fase penurunan beruntun (*downtrend*)."
+						: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata, mengisyaratkan perebutan momentum antara kubu *bulls* dan *bears*.";
 
+					// INFORMASI VERDIK AI LEBIH INFORMATIF DAN PANJANG
 					descEl.innerHTML = `
-						<p><strong>Kenapa?</strong> Saham ${ticker} saat ini berada di Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
-						<p class="pt-1 text-slate-300">Secara likuiditas transaksi, ${volText}, menandakan akumulasi/distribusi aktif dari pelaku pasar harian.</p>
+						<p class="text-justify leading-relaxed"><strong>Mengapa Verdik Ini Diberikan?</strong> Saham ${ticker} saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
+						<p class="text-justify leading-relaxed pt-1.5 border-t border-slate-900/60"><strong>Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
+						<p class="text-justify leading-relaxed pt-1.5 border-t border-slate-900/60"><strong>Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} (Support Kuat 20 Hari) hingga Rp ${stockData.high20.toLocaleString('id-ID')} (Resistance Tertinggi 20 Hari). Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksekusi *Trading Plan*.</p>
 					`;
 
 					buktiEl.innerHTML = `
@@ -1308,10 +1287,9 @@
 				} else {
 					verdikEl.innerText = "NETRAL-SELEKTIF";
 					scoreEl.innerText = "3/5";
-					descEl.innerText = `Menganalisis pergerakan teknikal emiten ${ticker} berbasis indikator grafik TradingView.`;
+					descEl.innerText = `Menganalisis pergerakan teknikal emiten ${ticker} berbasis indikator grafik TradingView. Silakan evaluasi struktur pola harga harian sebelum melakukan transaksi.`;
 				}
 
-				// TRADING MAP DINAMIS DENGAN FRAKSI BEI
 				const sl = roundToBEITick(price * 0.92, 'floor'); 
 				const sup1 = roundToBEITick(price * 0.94, 'floor'); 
 				const sup2 = roundToBEITick(price * 0.96, 'floor'); 
@@ -1325,7 +1303,6 @@
 				document.getElementById('mapTP').innerText = `Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}`;
 				document.getElementById('mapSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
 
-				// TARGET PRICE PROGRESS BAR
 				document.getElementById('tpBarSL').innerText = `SL: Rp ${sl.toLocaleString('id-ID')}`;
 				document.getElementById('tpBarCurrent').innerText = `Harga: Rp ${price.toLocaleString('id-ID')}`;
 				document.getElementById('tpBarTP').innerText = `TP1: Rp ${tp1.toLocaleString('id-ID')}`;
@@ -1343,9 +1320,9 @@
 				document.getElementById('tpProgressPercent').innerText = `Posisi: ${calculatedProgress}% dari Rentang SL - TP1`;
 
 				document.getElementById('aiSkenarioBox').innerHTML = `
-					<p><strong>(a) Konfirmasi Bullish:</strong> Jika harga bertahan di atas support Rp ${sup2.toLocaleString('id-ID')} dengan volume stabil, target uji resistance berada di Rp ${res1.toLocaleString('id-ID')}.</p>
-					<p><strong>(b) Consolidate / Retest:</strong> Bergerak sideways pada rentang Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}.</p>
-					<p><strong>(c) Batas Invalidasi:</strong> Penembusan di bawah Stop Loss Rp ${sl.toLocaleString('id-ID')} membatalkan struktur bullish short-term.</p>
+					<p><strong>(a) Konfirmasi Bullish:</strong> Jika harga bertahan di atas support Rp ${sup2.toLocaleString('id-ID')} dengan volume stabil, target uji resistance berada di Rp ${res1.toLocaleString('id-ID')}. Penembusan resistance dapat memicu akselerasi ke TP2 Rp ${tp2.toLocaleString('id-ID')}.</p>
+					<p><strong>(b) Consolidate / Retest:</strong> Apabila terjadi tekanan koreksi, perhatikan reaksi akumulasi pada rentang Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}.</p>
+					<p><strong>(c) Batas Invalidasi:</strong> Penembusan di bawah Stop Loss Rp ${sl.toLocaleString('id-ID')} membatalkan struktur bullish short-term dan berisiko melanjutkan penurunan.</p>
 				`;
 
 				const rrrRatioVal = ((tp1 - price) / Math.max(1, (price - sl))).toFixed(2);
@@ -1436,73 +1413,60 @@
 				}
 			}
 
+			// DAFTAR RADARWATCHLIST ~400 SAHAM FAMOUS & LIQUID (SAHAM GUREM < RP 30 DIHAPUS, MDIA, KOTA, BNBR, JGLE, ELTY TETAP TERSEDIA)
 			const radarWatchlist = [
-			'PANI', 'BSDE', 'CTRA', 'PWON', 'SMRA', 'ASRI', 'LPKR', 'LPCK', 'DUTI', 'DMAS',
-			'KPIG', 'ELTY', 'KOTA', 'JGLE', 'MKPI', 'BEST', 'BKSL', 'SSIA', 'AURN', 'RDTX',
-			'DILD', 'GWSA', 'GPRA', 'JRPT', 'KIJA', 'MDRN', 'MTLA', 'NIRO', 'PLIN', 'RODA',
-			'ADRO', 'PTBA', 'ITMG', 'HRUM', 'BYAN', 'GEMS', 'INDY', 'TOBA', 'ABMM', 'MBAP',
-			'MEDC', 'PGAS', 'AKRA', 'ELSA', 'BUMI', 'BRMS', 'BNBR', 'ENRG', 'DEWA', 'VKTR',
-			'RAJA', 'RATU', 'FORU', 'MINA', 'PSKT', 'CBRE', 'STRT', 'CUAN', 'BREN', 'PTRO',
-			'GOTO', 'EMTK', 'BUKA', 'BELI', 'MTDL', 'WIFI', 'MCAS', 'DIVA', 'NFCX', 'HDIT',
-			'MLPT', 'DNET', 'AXIO', 'GLVA', 'KIOS', 'MTCX', 'PTSN', 'SKYB', 'TFAS', 'TRIN',
-			'TPIA', 'BRPT', 'CDIA', 'INKP', 'TKIM', 'ANTM', 'INCO', 'AMMN', 'NCKL', 'MDKA',
-			'MBMA', 'INTP', 'SMGR', 'SMCB', 'SMBR', 'AVIA', 'UNIC', 'AGII', 'ALDO', 'ALKA',
-			'BBCA', 'BBRI', 'BMRI', 'BBNI', 'BRIS', 'BBTN', 'BJTM', 'BJBR', 'AGRO', 'BDMN',
-			'BNLI', 'NISP', 'BNGA', 'BTPN', 'ARTO', 'BBYB', 'BBHI', 'DNAR', 'MEGA', 'BANK',
-			'INDF', 'ICBP', 'UNVR', 'MYOR', 'CMRY', 'ROTI', 'ULTJ', 'JPFA', 'AALI', 'LSIP',
-			'SIMP', 'AMRT', 'MIDI', 'RANC', 'UNSP', 'ALII', 'TAPG', 'DSNG', 'BWPT', 'SGRO',
-			'ASII', 'AUTO', 'ACES', 'MAPI', 'ERAA', 'MNCN', 'SCMA', 'MPPA', 'MLPL', 'MDIA',
-			'TLKM', 'ISAT', 'EXCL', 'TOWR', 'TBIG', 'CENT', 'IBST', 'LINK', 'META', 'ADHI',
-			'PTPP', 'WEGE', 'WTON', 'JSMR', 'ACST', 'CMNP', 'IPCC', 'KARW', 'KETR', 'MPOW',
-			'CPIN', 'MAIN', 'STAA', 'SMSM', 'DRMA', 'GJTL', 'IMAS', 'HEAL', 'MIKA', 'SILO',
-			'SAME', 'KLBF', 'KAEF', 'IRRA', 'TSPC', 'SIDO', 'MAPA', 'RALS', 'FILM', 'WOOD',
-			'SPTO', 'NSSS', 'SSMS', 'PSGO', 'TBLA', 'DOID', 'BSSR', 'KKGI', 'PTME', 'HUMI',
-			'LEAD', 'PSSI', 'SMDR', 'BIRD', 'ASSA', 'OASA', 'KEEN', 'POWR', 'TGRA', 'PUDP',
-			'AISA', 'AKPI', 'ALDO', 'ALKA', 'AMAG', 'APIC', 'APLN', 'ARNA', 'ARTI', 'ASBI',
-			'ASDM', 'ASGR', 'ASRM', 'BABP', 'BACA', 'BAJA', 'BALI', 'BATA', 'BAYU', 'BBCA',
-			'BBLD', 'BBMD', 'BBRM', 'BCAP', 'BCIC', 'BDMN', 'BEEF', 'BELL', 'BFIN', 'BGTG',
-			'BHIT', 'BIKA', 'BINA', 'BIPI', 'BIRD', 'BISR', 'BJBR', 'BJTM', 'BKDP', 'BKSL',
-			'BKSW', 'BLTZ', 'BLUE', 'BMAS', 'BMSR', 'BMTR', 'BNBA', 'BNGA', 'BNII', 'BNLI',
-			'BOLA', 'BOLT', 'BOOT', 'BPII', 'BRPT', 'BSIM', 'BSWD', 'BTEK', 'BTEL', 'BTPN',
-			'BUKK', 'BULL', 'BVIC', 'BWPT', 'BYAN', 'CASS', 'CAST', 'CEKA', 'CENT', 'CFIN',
-			'CINT', 'CITA', 'CITY', 'CLPI', 'CMNP', 'CMPP', 'CNKO', 'CNTX', 'COWL', 'CPIN',
-			'CSAP', 'CSIS', 'CSRA', 'CTBN', 'CTRA', 'CTTH', 'DART', 'DEFI', 'DEWA', 'DGIK',
-			'DIGI', 'DILD', 'DIVA', 'DKFT', 'DLTA', 'DMAS', 'DNAR', 'DNET', 'DOID', 'DPNS',
-			'DSFI', 'DSNG', 'DSSA', 'DUTI', 'DVLA', 'DWGL', 'DYAN', 'ECII', 'EKAD', 'ELTY',
-			'EMTK', 'ENRG', 'EPMT', 'ERAA', 'ERTX', 'ESSA', 'ESTI', 'EXCL', 'FAST', 'FASW',
-			'FOOD', 'FORU', 'FPNI', 'FRENT', 'GAMA', 'GDST', 'GDYR', 'GEMA', 'GEMS', 'GGRM',
-			'GIGAM', 'GJTLA', 'GLOB', 'GLVA', 'GMTD', 'GOLD', 'GPRA', 'GSMF', 'GTBO', 'GWSA',
-			'GZTLA', 'HADE', 'HDFA', 'HDTX', 'HERO', 'HEXA', 'HITS', 'HMSP', 'HOKI', 'HOME',
-			'HOTL', 'HRTA', 'HRUM', 'IATA', 'IBFN', 'IBST', 'ICBP', 'ICON', 'IGAR', 'IIKP',
-			'IKAI', 'IKBI', 'IMAS', 'IMJS', 'INAF', 'INAI', 'INCF', 'INCI', 'INDF', 'INDS',
-			'INDY', 'INKP', 'INPC', 'INPP', 'INRU', 'INTA', 'INTD', 'INTP', 'IPCC', 'IPOL',
-			'IPTV', 'IRRA', 'ISAT', 'ISSP', 'ITMA', 'ITMG', 'JAWA', 'JECC', 'JGLE', 'JIHD',
-			'JKON', 'JKSW', 'JPFA', 'JRPT', 'JSMR', 'JSPT', 'JTPE', 'KAEF', 'KARW', 'KAYU',
-			'KBAG', 'KBLI', 'KBLM', 'KBLV', 'KBRI', 'KDSI', 'KIAS', 'KICI', 'KIJA', 'KINR',
-			'KINO', 'KIOS', 'KJEN', 'KKGI', 'KLBF', 'KMDS', 'KMTR', 'KOBX', 'KOIN', 'KONI',
-			'KOPI', 'KOTA', 'KPIG', 'KRAS', 'KREN', 'LPCK', 'LPGI', 'LPIN', 'LPKR', 'LPLI',
-			'LPCK', 'LMSH', 'LSIP', 'LTLS', 'LUCK', 'MAGP', 'MAHA', 'MAIN', 'MAPA', 'MAPI',
-			'MASA', 'MDIA', 'MDKA', 'MDRN', 'MEDC', 'MEGA', 'METR', 'MFIN', 'MFMI', 'MGNA',
-			'BHAT', 'MICE', 'MIDI', 'MIKA', 'MINS', 'MIRA', 'MITI', 'MKPI', 'MLBI', 'MLIA',
-			'MLPT', 'MMFA', 'MNCN', 'MPMX', 'MPPA', 'MRAT', 'MREI', 'MSKY', 'MTDL', 'MTFN',
-			'MTLA', 'MTPS', 'MTSM', 'MYOH', 'MYOR', 'MYRX', 'MYTX', 'NELY', 'NESS', 'NETV',
-			'NFCX', 'NIPP', 'NISP', 'NOBU', 'NRCA', 'NTPX', 'OASA', 'OBMD', 'OCAP', 'OKAS',
-			'OMRE', 'OPMS', 'PALM', 'PAMP', 'PANI', 'PANR', 'PANS', 'PBID', 'PBSA', 'PCAR',
-			'PDES', 'PEGE', 'PGAS', 'PGJO', 'PGLI', 'PJAA', 'PKPK', 'PLIN', 'PLAS', 'PNBN',
-			'PNIN', 'PNLF', 'POLA', 'POLI', 'POLL', 'POLU', 'POLY', 'POWR', 'PPGL', 'PPRE',
-			'PPRO', 'PTPP', 'PTRO', 'PTSN', 'PTSP', 'PUDP', 'PWON', 'PYFA', 'RAJA', 'RALS',
-			'RANC', 'RBMS', 'RDTX', 'RELI', 'RICY', 'RIGS', 'RIMO', 'RODA', 'ROTI', 'RUIS',
-			'SAFE', 'SAME', 'SCCO', 'SCMA', 'SCNP', 'SDRA', 'SEAT', 'SFIG', 'SGER', 'SGRO',
-			'SHID', 'SIAP', 'SILO', 'SIMP', 'SINK', 'SIPD', 'SKBM', 'SKLT', 'SKYB', 'SMAR',
-			'SMBR', 'SMCB', 'SMDM', 'SMDR', 'SMGR', 'SMKL', 'SMMA', 'SMRA', 'SMSM', 'SOCI',
-			'SOFA', 'SONA', 'SOSI', 'SOTN', 'SPMA', 'SPTO', 'SQMI', 'SRET', 'SRIL', 'SRSN',
-			'SRTG', 'SSIA', 'SSMS', 'SSTR', 'STAA', 'STAR', 'STEI', 'SUGI', 'SULI', 'SUPR',
-			'SURE', 'TDPM', 'TELE', 'TFCO', 'TGKA', 'TGRA', 'TIFA', 'TINS', 'TIRA', 'TISC',
-			'TKIM', 'TLKM', 'TMAS', 'TMPO', 'TOBA', 'TOTL', 'TOTO', 'TOWR', 'TPIA', 'TPMA',
-			'TRAM', 'TRIL', 'TRIM', 'TRIN', 'TRIS', 'TRST', 'TRUE', 'TRUS', 'TSPC', 'ULTJ',
-			'UNIC', 'UNIT', 'UNS', 'UNTR', 'UNVR', 'URBN', 'VICI', 'VICO', 'VINS', 'VION',
-			'VOKS', 'VRNA', 'WAPO', 'WEGE', 'WEHA', 'WICN', 'WIIM', 'WIKM', 'WINS', 'WOMF',
-			'WOOD', 'WOWS', 'WSBP', 'WTON', 'YPAS', 'YULE', 'ZBRA', 'ZINC', 'ZONE', 'ZYRX'
+				'MDIA', 'KOTA', 'BNBR', 'JGLE', 'ELTY', 'BBCA', 'BBRI', 'BMRI', 'BBNI', 'TLKM',
+				'ASII', 'GOTO', 'AMMN', 'BREN', 'TPIA', 'BYAN', 'BRPT', 'MDKA', 'PGAS', 'ANTM',
+				'INCO', 'MEDC', 'ADRO', 'PTBA', 'ITMG', 'HRUM', 'INDY', 'AKRA', 'UNVR', 'ICBP',
+				'INDF', 'CPIN', 'JPFA', 'AMRT', 'ACES', 'MAPI', 'ERAA', 'KLBF', 'MIKA', 'HEAL',
+				'SILO', 'SIDO', 'EMTK', 'SCMA', 'BUKA', 'BELI', 'WIFI', 'MTDL', 'CUAN', 'PTRO',
+				'PANI', 'BSDE', 'CTRA', 'PWON', 'SMRA', 'KPIG', 'ASRI', 'LPKR', 'LPCK', 'DMAS',
+				'SSIA', 'KIJA', 'DILD', 'JRPT', 'MKPI', 'BKSL', 'GWSA', 'GPRA', 'AURN', 'RDTX',
+				'BBTN', 'BRIS', 'ARTO', 'BBYB', 'BBHI', 'BJTM', 'BJBR', 'AGRO', 'BDMN', 'BNLI',
+				'NISP', 'BNGA', 'BTPN', 'DNAR', 'MEGA', 'BANK', 'BACA', 'BABP', 'BCIC', 'NOBU',
+				'MYOR', 'CMRY', 'ROTI', 'ULTJ', 'AALI', 'LSIP', 'SIMP', 'TAPG', 'DSNG', 'BWPT',
+				'SGRO', 'SSMS', 'NSSS', 'TBLA', 'ALII', 'MIDI', 'RANC', 'UNSP', 'AISA', 'FOOD',
+				'AUTO', 'DRMA', 'SMSM', 'GJTL', 'IMAS', 'MPMX', 'CASS', 'BIRD', 'ASSA', 'OASA',
+				'DOID', 'BSSR', 'KKGI', 'HUMI', 'LEAD', 'PSSI', 'SMDR', 'TMAS', 'WINS', 'HITS',
+				'INKP', 'TKIM', 'AVIA', 'INTP', 'SMGR', 'SMCB', 'SMBR', 'NCKL', 'MBMA', 'TINS',
+				'UNIC', 'AGII', 'ALDO', 'BRMS', 'ENRG', 'DEWA', 'VKTR', 'RAJA', 'RATU', 'FORU',
+				'MNCN', 'FILM', 'WOOD', 'SPTO', 'MAPA', 'RALS', 'MPPA', 'MLPL', 'EXCL', 'ISAT',
+				'TOWR', 'TBIG', 'CENT', 'IBST', 'LINK', 'META', 'ADHI', 'PTPP', 'WEGE', 'WTON',
+				'JSMR', 'ACST', 'CMNP', 'IPCC', 'KARW', 'KETR', 'MPOW', 'POWR', 'KEEN', 'TGRA',
+				'SGER', 'ABMM', 'MBAP', 'TOBA', 'MINA', 'PSKT', 'CBRE', 'STRT', 'MCAS', 'DIVA',
+				'NFCX', 'HDIT', 'MLPT', 'DNET', 'AXIO', 'GLVA', 'KIOS', 'MTCX', 'PTSN', 'TFAS',
+				'TRIN', 'CDIA', 'MAIN', 'STAA', 'SAME', 'KAEF', 'IRRA', 'TSPC', 'PTME', 'PUDP',
+				'AKPI', 'AMAG', 'APIC', 'APLN', 'ARNA', 'ARTI', 'ASBI', 'ASDM', 'ASGR', 'ASRM',
+				'BAJA', 'BALI', 'BATA', 'BAYU', 'BBLD', 'BBMD', 'BBRM', 'BCAP', 'BEEF', 'BELL',
+				'BFIN', 'BGTG', 'BHIT', 'BIKA', 'BINA', 'BIPI', 'BISR', 'BKDP', 'BKSW', 'BLTZ',
+				'BLUE', 'BMAS', 'BMSR', 'BMTR', 'BNBA', 'BNII', 'BOLA', 'BOLT', 'BOOT', 'BPII',
+				'BSIM', 'BSWD', 'BTEK', 'BTEL', 'BUKK', 'BULL', 'BVIC', 'CAST', 'CEKA', 'CFIN',
+				'CINT', 'CITA', 'CITY', 'CLPI', 'CMPP', 'CNKO', 'CNTX', 'CSAP', 'CSIS', 'CSRA',
+				'CTBN', 'CTTH', 'DART', 'DEFI', 'DGIK', 'DIGI', 'DKFT', 'DLTA', 'DPNS', 'DSFI',
+				'DSSA', 'DUTI', 'DVLA', 'DWGL', 'DYAN', 'ECII', 'EKAD', 'EPMT', 'ERTX', 'ESSA',
+				'ESTI', 'FAST', 'FASW', 'FPNI', 'FRENT', 'GDST', 'GDYR', 'GEMA', 'GEMS', 'GGRM',
+				'GLOB', 'GMTD', 'GOLD', 'GSMF', 'GTBO', 'HDFA', 'HDTX', 'HERO', 'HEXA', 'HMSP',
+				'HOKI', 'HOME', 'HOTL', 'HRTA', 'IATA', 'IBFN', 'ICON', 'IGAR', 'IIKP', 'IKAI',
+				'IKBI', 'IMJS', 'INAF', 'INAI', 'INCF', 'INCI', 'INDS', 'INPC', 'INPP', 'INRU',
+				'INTA', 'INTD', 'IPOL', 'IPTV', 'ISSP', 'ITMA', 'JAWA', 'JECC', 'JIHD', 'JKON',
+				'JKSW', 'JSPT', 'JTPE', 'KAYU', 'KBAG', 'KBLI', 'KBLM', 'KBLV', 'KBRI', 'KDSI',
+				'KIAS', 'KICI', 'KINR', 'KINO', 'KJEN', 'KMDS', 'KMTR', 'KOBX', 'KOIN', 'KONI',
+				'KOPI', 'KRAS', 'KREN', 'LPGI', 'LPIN', 'LPLI', 'LMSH', 'LTLS', 'LUCK', 'MAHA',
+				'MASA', 'MDRN', 'MEGA', 'METR', 'MFIN', 'MFMI', 'MGNA', 'BHAT', 'MICE', 'MINS',
+				'MIRA', 'MITI', 'MLBI', 'MLIA', 'MMFA', 'MRAT', 'MREI', 'MSKY', 'MTFN', 'MTPS',
+				'MTSM', 'MYOH', 'MYRX', 'MYTX', 'NELY', 'NESS', 'NETV', 'NIPP', 'NRCA', 'NTPX',
+				'OBMD', 'OCAP', 'OKAS', 'OMRE', 'OPMS', 'PALM', 'PAMP', 'PANR', 'PANS', 'PBID',
+				'PBSA', 'PCAR', 'PDES', 'PEGE', 'PGJO', 'PGLI', 'PJAA', 'PKPK', 'PLIN', 'PLAS',
+				'PNBN', 'PNIN', 'PNLF', 'POLA', 'POLI', 'POLL', 'POLU', 'POLY', 'PPGL', 'PPRE',
+				'PPRO', 'PTSP', 'PYFA', 'RBMS', 'RELI', 'RICY', 'RIGS', 'RODA', 'RUIS', 'SAFE',
+				'SCCO', 'SCNP', 'SDRA', 'SEAT', 'SFIG', 'SHID', 'SIAP', 'SINK', 'SIPD', 'SKBM',
+				'SKLT', 'SKYB', 'SMAR', 'SMDM', 'SMKL', 'SMMA', 'SOCI', 'SOFA', 'SONA', 'SOSI',
+				'SOTN', 'SPMA', 'SQMI', 'SRET', 'SRIL', 'SRSN', 'SRTG', 'SSTR', 'STAR', 'STEI',
+				'SUGI', 'SULI', 'SUPR', 'SURE', 'TDPM', 'TELE', 'TFCO', 'TGKA', 'TIFA', 'TIRA',
+				'TISC', 'TMPO', 'TOTL', 'TOTO', 'TPMA', 'TRAM', 'TRIL', 'TRIM', 'TRIS', 'TRST',
+				'TRUE', 'TRUS', 'UNIT', 'UNS', 'UNTR', 'URBN', 'VICI', 'VICO', 'VINS', 'VION',
+				'VOKS', 'VRNA', 'WAPO', 'WEHA', 'WICN', 'WIIM', 'WIKM', 'WOMF', 'WOWS', 'WSBP',
+				'YPAS', 'YULE', 'ZBRA', 'ZINC', 'ZONE', 'ZYRX'
 			];
 			const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
 
@@ -1856,7 +1820,6 @@
 				}
 			}
 
-			// COOLDOWN TOMBOL SEARCH
 			function startSearchCooldown(seconds) {
 				const btn = document.querySelector("button[onclick='searchStock()']");
 				if (!btn) return;
@@ -1937,7 +1900,6 @@
 			fetchStockNews(currentTicker);
 			fetchCorporateAction(currentTicker);
 
-			// Dipanggil paling akhir agar berada di paling atas UI
 			checkWelcomeModal();
 		</script>
 	</body>
