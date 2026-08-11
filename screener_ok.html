@@ -55,7 +55,7 @@
 		</style>
 	</head>
 
-	<body class="text-slate-200 antialiased overflow-x-hidden">
+	<body class="text-white-200 antialiased overflow-x-hidden">
 
 		<!-- Modal Pop-up Awal -->
 		<div id="welcomeModal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
@@ -64,20 +64,20 @@
 					<i data-lucide="info" class="w-8 h-8 text-emerald-400"></i>
 				</div>
 				<h3 class="text-xl font-bold text-white">Informasi Layanan Screener</h3>
-				<p class="text-xs text-slate-300 leading-relaxed">
+				<p class="text-xs text-white-300 leading-relaxed">
 					Selamat datang di Stock's ID Screener.<br>Data pasar diperbarui secara real-time pada jam bursa (09:00 - 16:00 WIB) dan disimpan dalam cache untuk pengalaman akses yang lebih cepat.
 				</p>
-				<p class="text-xs text-slate-300 leading-relaxed">
+				<p class="text-xs text-white-300 leading-relaxed">
 					Disclaimer: Jika kamu baru pertama kali membuka web ini, kamu harus sering kembali buka web ini dan cari nama saham secara random agar sistem dapat menyimpan data untuk digunakan dikemudian hari.
 				</p>
-				<p class="text-xs text-slate-300 leading-relaxed">
+				<p class="text-xs text-white-300 leading-relaxed">
 					<i>AI dapat membuat kesalahan, jangan jadikan AI sebagai patokan untuk Entry dan TP, gunakan prinsip dan kemandirian, analisa manual sebelum menentukan pilihan.</i>
 				</p>
 				<div class="flex flex-col sm:flex-row gap-3 pt-2">
-					<button onclick="closeWelcomeModal(false)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">
+					<button onclick="closeWelcomeModal(false)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">
 						Oke
 					</button>
-					<button onclick="closeWelcomeModal(true)" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-emerald-500/20">
+					<button onclick="closeWelcomeModal(true)" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white-950 text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-emerald-500/20">
 						Jangan Tampilkan Lagi
 					</button>
 				</div>
@@ -90,7 +90,7 @@
 				<!-- Brand / Logo -->
 				<div class="flex items-center gap-3">
 					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2 rounded-2xl shadow-lg shadow-emerald-500/20 transition-transform duration-300 hover:scale-110 hover:rotate-6 cursor-pointer">
-						<i class="fa-solid fa-biohazard text-slate-950 text-xl font-black"></i>
+						<i class="fa-solid fa-biohazard text-white-950 text-xl font-black"></i>
 					</div>
 					<div>
 						<span class="heading-font text-xl lg:text-2xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">SCREENER</span></span>
@@ -101,72 +101,72 @@
 				<!-- Navigasi Dropdown -->
 				<div class="relative inline-block text-left" id="navDropdownContainer">
 					<!-- Tombol Utama Menu Dropdown -->
-					<button id="menuDropdownBtn" onclick="toggleNavDropdown()" type="button" class="bg-slate-900/80 hover:bg-slate-800 active:scale-95 text-slate-200 px-4 py-2.5 rounded-xl border border-slate-700/70 hover:border-emerald-500/60 text-xs font-bold tracking-wide transition-all duration-200 flex items-center gap-2.5 shadow-md hover:shadow-emerald-500/10 cursor-pointer select-none">
+					<button id="menuDropdownBtn" onclick="toggleNavDropdown()" type="button" class="bg-slate-900/80 hover:bg-slate-800 active:scale-95 text-white-200 px-4 py-2.5 rounded-xl border border-slate-700/70 hover:border-emerald-500/60 text-xs font-bold tracking-wide transition-all duration-200 flex items-center gap-2.5 shadow-md hover:shadow-emerald-500/10 cursor-pointer select-none">
 						<i class="fa-solid fa-bars text-emerald-400 transition-transform duration-300 group-hover:scale-110"></i>
 						<span>Navigasi</span>
-						<i id="dropdownChevron" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300 ease-out"></i>
+						<i id="dropdownChevron" class="fa-solid fa-chevron-down text-[10px] text-white-400 transition-transform duration-300 ease-out"></i>
 					</button>
 
 					<!-- Isi Dropdown Menu dengan Animasi Smooth Pop-Up -->
 					<div id="navDropdownMenu" class="hidden opacity-0 scale-95 duration-200 ease-out absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-2xl backdrop-blur-xl p-2 z-50 transform origin-top-right transition-all divide-y divide-slate-800/80">
 						<!-- Seksi 1: Platform / Layanan Utama Stock ID -->
 						<div class="pb-1.5 space-y-1">
-							<div class="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+							<div class="px-2 py-1 text-[10px] font-bold text-white-500 uppercase tracking-wider">
 								Aplikasi & Layanan
 							</div>
 
 							<!-- Tautan VIP / Expired Member -->
-							<a id="navLinkVIP" href="https://webstockid.github.io/screener" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-200 group cursor-pointer">
+							<a id="navLinkVIP" href="https://webstockid.github.io/screener" class="flex items-center justify-between px-3 py-2 rounded-xl text-white-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-200 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-wand-magic-sparkles text-amber-400 group-hover:scale-110 transition-transform w-4 text-center"></i>
 									<span>Stock ID Screener</span>
 								</div>
 								<div class="nav-status-container flex items-center gap-1.5">
-									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
 							
 							<!-- Tautan Index -->
-							<a href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+							<a href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-white-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
-									<i class="fa-solid fa-crown text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<i class="fa-solid fa-crown text-white-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
 									<span>Stock ID VIP</span>
 								</div>
 								<div class="nav-status-container flex items-center gap-1.5">
-									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
 
 							<!-- Tautan Tools -->
-							<a href="https://webstockid.github.io/tools" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+							<a href="https://webstockid.github.io/tools" class="flex items-center justify-between px-3 py-2 rounded-xl text-white-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
-									<i class="fa-solid fa-screwdriver-wrench text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<i class="fa-solid fa-screwdriver-wrench text-white-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
 									<span>Stock ID Tools</span>
 								</div>
 								<div class="nav-status-container flex items-center gap-1.5">
-									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
 
 							<!-- Tautan Screener -->
-							<a href="https://webstockid.github.io/watchlist" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+							<a href="https://webstockid.github.io/watchlist" class="flex items-center justify-between px-3 py-2 rounded-xl text-white-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
-									<i class="fa-solid fa-eye text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<i class="fa-solid fa-eye text-white-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
 									<span>Stock ID Watchlist</span>
 								</div>
 								<div class="nav-status-container flex items-center gap-1.5">
-									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
 
 							<!-- Tautan Watchlist -->
-							<a href="https://webstockid.github.io/exp" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+							<a href="https://webstockid.github.io/exp" class="flex items-center justify-between px-3 py-2 rounded-xl text-white-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
-									<i class="fa-solid fa-circle-user text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<i class="fa-solid fa-circle-user text-white-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
 									<span>Stock ID Member</span>
 								</div>
 								<div class="nav-status-container flex items-center gap-1.5">
-									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
 						</div>
@@ -250,13 +250,13 @@
 					<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold flex items-center gap-1.5">
 						<i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> <span id="vipAccountStatus">Status: Aktif</span>
 					</span>
-					<div class="text-slate-300">
+					<div class="text-white-300">
 						Selamat datang, <strong id="vipUserName" class="text-white font-bold text-sm lg:text-base">User</strong>
 					</div>
 				</div>
 
 				<div class="flex items-center gap-4">
-					<div class="text-slate-400 text-xs lg:text-sm">
+					<div class="text-white-400 text-xs lg:text-sm">
 						Sisa Masa Aktif: <strong id="vipDaysLeft" class="text-amber-400 font-bold">0 Hari</strong>
 					</div>
 					<button onclick="logoutVIP()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs lg:text-sm font-semibold transition flex items-center gap-1">
@@ -269,10 +269,10 @@
 		<!-- Fixed Search Bar Melayang -->
 		<div class="sticky top-20 left-0 w-full z-20 glassmorphism border-b border-slate-800/80 py-3 px-4">
 			<div class="max-w-md lg:max-w-xl mx-auto relative">
-				<i data-lucide="search" class="absolute left-3.5 top-3 lg:top-3.5 w-4 h-4 lg:w-5 lg:h-5 text-slate-400"></i>
+				<i data-lucide="search" class="absolute left-3.5 top-3 lg:top-3.5 w-4 h-4 lg:w-5 lg:h-5 text-white-400"></i>
 				<input type="text" id="stockSearch" placeholder="Cari kode saham (MDIA, CUAN, RAJA, PANI, BBRI, ANTM...)" 
 					class="w-full bg-slate-800 text-sm lg:text-base border border-slate-700 rounded-lg pl-10 lg:pl-11 pr-24 py-2 lg:py-2.5 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
-				<button onclick="searchStock()" class="absolute right-1.5 top-1.5 text-xs lg:text-sm bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-4 py-1.5 lg:py-2 rounded-md transition">
+				<button onclick="searchStock()" class="absolute right-1.5 top-1.5 text-xs lg:text-sm bg-emerald-500 hover:bg-emerald-600 text-white-950 font-semibold px-4 py-1.5 lg:py-2 rounded-md transition">
 					Cari
 				</button>
 			</div>
@@ -286,7 +286,7 @@
 						<i data-lucide="key-round" class="animate-pulse w-8 h-8 text-emerald-400"></i>
 					</div>
 					<h2 class="text-2xl font-black text-white tracking-tight">Stock ID VIP Gateway</h2>
-					<p class="text-xs text-slate-400">Masukan Akses VIP Kamu</p>
+					<p class="text-xs text-white-400">Masukan Akses VIP Kamu</p>
 				</div>
 
 				<div class="space-y-3">
@@ -294,12 +294,12 @@
 						<input type="text" id="tokenInput" placeholder="Hayoo apa tokennya?" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-center text-sm font-mono tracking-widest text-emerald-400 uppercase focus:outline-none focus:border-emerald-500 transition">
 						<p id="loginErrorMsg" class="text-rose-400 text-xs text-center mt-2 hidden"></p>
 					</div>
-					<button onclick="loginVIP()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-sm">
+					<button onclick="loginVIP()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-white-950 font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-sm">
 						Buka Dashboard
 					</button>
 				</div>
 
-				<p class="text-xs text-slate-500 text-center leading-relaxed">
+				<p class="text-xs text-white-500 text-center leading-relaxed">
 					Silakan minta ke Admin untuk Akses Token mu
 				</p>
 			</div>
@@ -318,7 +318,7 @@
 							<h2 class="text-2xl lg:text-3xl font-bold text-white flex items-center gap-2" id="stockTitle">
 								IDX:MDIA
 							</h2>
-							<p class="text-xs lg:text-sm text-slate-400 mt-0.5">Bursa Efek Indonesia • 1-Day Chart</p>
+							<p class="text-xs lg:text-sm text-white-400 mt-0.5">Bursa Efek Indonesia • 1-Day Chart</p>
 						</div>
 						
 						<div class="flex items-center gap-2">
@@ -339,7 +339,7 @@
 				<!-- Right: Live Technical Meter Engine -->
 				<section class="lg:col-span-4 h-full">
 					<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5 shadow-xl h-full flex flex-col justify-between">
-						<h3 class="text-sm lg:text-base font-semibold text-slate-300 mb-3 flex items-center gap-2">
+						<h3 class="text-sm lg:text-base font-semibold text-white-300 mb-3 flex items-center gap-2">
 							<i data-lucide="gauge" class="w-4 h-4 lg:w-5 lg:h-5 text-cyan-400"></i> Analisa Teknikal Real-Time
 						</h3>
 						<div class="tradingview-widget-container flex-1 flex items-center">
@@ -358,22 +358,22 @@
 					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="sparkles" class="w-4 h-4 text-sky-400"></i> AI Signal
 					</button>
-					<button onclick="switchTab('bigmoney')" id="tabBtn-bigmoney" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+					<button onclick="switchTab('bigmoney')" id="tabBtn-bigmoney" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 hover:text-white-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="zap" class="w-4 h-4 text-amber-400"></i> Radar Bandar
 					</button>
-					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 hover:text-white-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="newspaper" class="w-4 h-4 text-teal-400"></i> Berita
 					</button>
-					<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+					<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 hover:text-white-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="calendar" class="w-4 h-4 text-green-400"></i> Korporasi
 					</button>
-					<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+					<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 hover:text-white-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="pie-chart" class="w-4 h-4 text-orange-400"></i> Fundamental
 					</button>
-					<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+					<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 hover:text-white-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="calculator" class="w-4 h-4 text-fuchsia-400"></i> Smart RRR
 					</button>
-					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 hover:text-white-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="bell" class="w-4 h-4 text-rose-400"></i> Alert
 					</button>
 				</div>
@@ -385,20 +385,20 @@
 						<!-- VERDIK AI & REASONING -->
 						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3">
 							<div class="flex items-center justify-between">
-								<span class="font-bold text-slate-200 uppercase tracking-wider text-[11px] lg:text-xs" id="aiHeaderTicker">[MDIA] — KONDISI TEKNIKAL</span>
-								<span class="text-[10px] lg:text-[11px] text-slate-400" id="aiDateStamp">Memuat data real-time...</span>
+								<span class="font-bold text-white-200 uppercase tracking-wider text-[11px] lg:text-xs" id="aiHeaderTicker">[MDIA] — KONDISI TEKNIKAL</span>
+								<span class="text-[10px] lg:text-[11px] text-white-400" id="aiDateStamp">Memuat data real-time...</span>
 							</div>
 							<div class="flex items-center justify-between border-t border-slate-800/80 pt-2.5">
 								<div>
-									<span class="text-[10px] lg:text-xs text-slate-400 block">VERDIK AI</span>
+									<span class="text-[10px] lg:text-xs text-white-400 block">VERDIK AI</span>
 									<span id="aiVerdikText" class="font-black text-amber-400 text-sm lg:text-base">MEMUAT...</span>
 								</div>
 								<div class="text-right">
-									<span class="text-[10px] lg:text-xs text-slate-400 block">SKOR AI</span>
-									<span id="aiScoreBadge" class="font-bold bg-slate-800 text-slate-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700">- / 5</span>
+									<span class="text-[10px] lg:text-xs text-white-400 block">SKOR AI</span>
+									<span id="aiScoreBadge" class="font-bold bg-slate-800 text-white-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700">- / 5</span>
 								</div>
 							</div>
-							<div id="aiVerdikDesc" class="text-slate-300 leading-relaxed text-[11px] lg:text-xs pt-1 border-t border-slate-900 space-y-1.5">
+							<div id="aiVerdikDesc" class="text-white-300 leading-relaxed text-[11px] lg:text-xs pt-1 border-t border-slate-900 space-y-1.5">
 								Menghubungkan ke server bursa untuk mengambil data real-time...
 							</div>
 						</div>
@@ -408,8 +408,8 @@
 							<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="check-circle-2" class="w-4 h-4"></i> BUKTI UTAMA & KATALIS TEKNIKAL
 							</span>
-							<ul id="aiBuktiUtamaList" class="space-y-2 text-slate-300 text-[11px] lg:text-xs list-none">
-								<li class="text-slate-500">Memuat indikator teknikal riil (MA, Volume, Range)...</li>
+							<ul id="aiBuktiUtamaList" class="space-y-2 text-white-300 text-[11px] lg:text-xs list-none">
+								<li class="text-white-500">Memuat indikator teknikal riil (MA, Volume, Range)...</li>
 							</ul>
 						</div>
 					</div>
@@ -422,19 +422,19 @@
 							</span>
 							<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs">
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
-									<span class="text-slate-400 text-[10px] lg:text-[11px] block">Area Entry / Support</span>
+									<span class="text-white-400 text-[10px] lg:text-[11px] block">Area Entry / Support</span>
 									<span id="mapSupport1" class="font-bold text-amber-400">Memuat...</span>
 								</div>
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
-									<span class="text-slate-400 text-[10px] lg:text-[11px] block">Resistance</span>
+									<span class="text-white-400 text-[10px] lg:text-[11px] block">Resistance</span>
 									<span id="mapResist1" class="font-bold text-cyan-400">Memuat...</span>
 								</div>
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
-									<span class="text-slate-400 text-[10px] lg:text-[11px] block">Target Profit (TP1 / TP2)</span>
+									<span class="text-white-400 text-[10px] lg:text-[11px] block">Target Profit (TP1 / TP2)</span>
 									<span id="mapTP" class="font-bold text-emerald-400">Memuat...</span>
 								</div>
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
-									<span class="text-slate-400 text-[10px] lg:text-[11px] block">Stop Loss (SL)</span>
+									<span class="text-white-400 text-[10px] lg:text-[11px] block">Stop Loss (SL)</span>
 									<span id="mapSL" class="font-bold text-rose-400">Memuat...</span>
 								</div>
 							</div>
@@ -451,7 +451,7 @@
 										<div class="absolute right-0 top-0 bottom-0 w-2 bg-white rounded-full shadow-lg shadow-white animate-ping"></div>
 									</div>
 								</div>
-								<div class="flex justify-between items-center text-[9px] lg:text-[10px] text-slate-400 pt-0.5">
+								<div class="flex justify-between items-center text-[9px] lg:text-[10px] text-white-400 pt-0.5">
 									<span>Batas Risiko (Support)</span>
 									<span id="tpProgressPercent" class="font-bold text-cyan-400">Posisi: 0% dari Target Zone</span>
 									<span>Batas Target (Resist)</span>
@@ -464,7 +464,7 @@
 							<span class="font-bold text-purple-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="newspaper" class="w-4 h-4"></i> BERITA RELEVAN
 							</span>
-							<div id="aiBeritaList" class="space-y-2 text-slate-300 text-[11px] lg:text-xs">
+							<div id="aiBeritaList" class="space-y-2 text-white-300 text-[11px] lg:text-xs">
 								Memuat berita terkini...
 							</div>
 						</div>
@@ -476,7 +476,7 @@
 							<span class="font-bold text-amber-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="git-fork" class="w-4 h-4"></i> SKENARIO PERGERAKAN HARGA
 							</span>
-							<div id="aiSkenarioBox" class="space-y-2 text-slate-300 text-[11px] lg:text-xs leading-relaxed">
+							<div id="aiSkenarioBox" class="space-y-2 text-white-300 text-[11px] lg:text-xs leading-relaxed">
 								Memuat skenario...
 							</div>
 						</div>
@@ -486,13 +486,13 @@
 							<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="thumbs-up" class="w-4 h-4"></i> KESIMPULAN
 							</span>
-							<div id="aiKesimpulanText" class="text-slate-300 text-[11px] lg:text-xs leading-relaxed space-y-2">
+							<div id="aiKesimpulanText" class="text-white-300 text-[11px] lg:text-xs leading-relaxed space-y-2">
 								Menghitung rekomendasi terstruktur...
 							</div>
 						</div>
 					</div>
 
-					<p class="text-[10px] lg:text-[11px] text-slate-500 italic bg-slate-950/50 p-3 rounded-lg border border-slate-900 leading-normal">
+					<p class="text-[10px] lg:text-[11px] text-white-500 italic bg-slate-950/50 p-3 rounded-lg border border-slate-900 leading-normal">
 						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa harian. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
 					</p>
 
@@ -509,18 +509,18 @@
 							</span>
 							<span class="text-xs lg:text-sm font-bold text-amber-400">Deretan Saham Potensial</span>
 						</div>
-						<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-slate-950 font-bold bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded border border-amber-500/50 flex items-center gap-1.5 transition shadow-md">
+						<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-white-950 font-bold bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded border border-amber-500/50 flex items-center gap-1.5 transition shadow-md">
 							<i data-lucide="search" class="w-3.5 h-3.5"></i> Mulai Pindai
 						</button>
 					</div>
 
 					<div id="bigMoneyList" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-1.5 scrollbar-thin">
-						<div class="text-center text-slate-500 text-xs lg:text-sm py-12 lg:col-span-2">
+						<div class="text-center text-white-500 text-xs lg:text-sm py-12 lg:col-span-2">
 							Klik tombol <strong class="text-amber-400">"Mulai Pindai"</strong> di atas untuk memulai pemindaian bursa selama 200 detik.
 						</div>
 					</div>
 
-					<p class="text-[10px] lg:text-[11px] text-slate-500 italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
+					<p class="text-[10px] lg:text-[11px] text-white-500 italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
 						💡 <strong>Sistem Deteksi Teknikal:</strong> Menghitung rasio lonjakan volume harian vs rata-rata volume 10 hari serta posisi Moving Average harian dari bursa. Klik "Lihat Chart" untuk analisa lengkap.
 					</p>
 				</div>
@@ -528,18 +528,18 @@
 				<!-- TAB CONTENT 3: BERITA RSS (GRID 3 KOLOM DI PC) -->
 				<div id="tabContent-news" class="hidden space-y-3 min-h-[250px]">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs lg:text-sm text-slate-400">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
-						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-slate-300">Google News RSS</span>
+						<span class="text-xs lg:text-sm text-white-400">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-white-300">Google News RSS</span>
 					</div>
 					<div id="newsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-						<div class="text-center text-slate-500 text-xs lg:text-sm py-10 lg:col-span-3">Memuat berita terkini...</div>
+						<div class="text-center text-white-500 text-xs lg:text-sm py-10 lg:col-span-3">Memuat berita terkini...</div>
 					</div>
 				</div>
 
 				<!-- TAB CONTENT 4: FUNDAMENTAL WIDGET -->
 				<div id="tabContent-fundamental" class="hidden min-h-[300px]">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs lg:text-sm text-slate-400">Profil Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-xs lg:text-sm text-white-400">Profil Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
 						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-purple-400 font-semibold">TradingView Data</span>
 					</div>
 					<div class="tradingview-widget-container">
@@ -550,10 +550,10 @@
 				<!-- TAB CONTENT 5: SMART KALKULATOR RRR -->
 				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
 					<div class="flex items-center justify-between mb-1">
-						<span class="text-slate-300 font-bold flex items-center gap-1.5 text-xs lg:text-sm">
+						<span class="text-white-300 font-bold flex items-center gap-1.5 text-xs lg:text-sm">
 							<i data-lucide="calculator" class="w-4 h-4 lg:w-5 lg:h-5 text-fuchsia-400"></i> Smart RRR & Position Sizing (<strong id="rrrTickerLabel" class="text-white">MDIA</strong>)
 						</span>
-						<button onclick="autoFillRRRFromAI()" class="text-[10px] lg:text-xs bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 font-bold px-2.5 py-1 rounded border border-emerald-500/30 transition flex items-center gap-1">
+						<button onclick="autoFillRRRFromAI()" class="text-[10px] lg:text-xs bg-emerald-500/20 hover:bg-emerald-500 hover:text-white-950 text-emerald-400 font-bold px-2.5 py-1 rounded border border-emerald-500/30 transition flex items-center gap-1">
 							<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Data AI
 						</button>
 					</div>
@@ -562,14 +562,14 @@
 						<div class="space-y-4">
 							<!-- INPUT MODAL & BIAYA -->
 							<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
-								<span class="text-[10px] lg:text-[11px] font-bold text-slate-400 uppercase tracking-wider block">1. Parameter Modal & Toleransi Risiko</span>
+								<span class="text-[10px] lg:text-[11px] font-bold text-white-400 uppercase tracking-wider block">1. Parameter Modal & Toleransi Risiko</span>
 								<div class="grid grid-cols-2 gap-2.5">
 									<div>
-										<label class="text-[10px] lg:text-[11px] text-slate-400 block mb-1">Total Modal Trading (Rp)</label>
+										<label class="text-[10px] lg:text-[11px] text-white-400 block mb-1">Total Modal Trading (Rp)</label>
 										<input type="number" id="rrrTotalCapital" value="25000000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
 									</div>
 									<div>
-										<label class="text-[10px] lg:text-[11px] text-slate-400 block mb-1">Max Risk per Trade (%)</label>
+										<label class="text-[10px] lg:text-[11px] text-white-400 block mb-1">Max Risk per Trade (%)</label>
 										<input type="number" id="rrrRiskPercent" value="5" step="0.5" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-amber-500">
 									</div>
 								</div>
@@ -577,18 +577,18 @@
 
 							<!-- INPUT HARGA ENTRY SL TP -->
 							<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
-								<span class="text-[10px] lg:text-[11px] font-bold text-slate-400 uppercase tracking-wider block">2. Level Harga Trading Plan</span>
+								<span class="text-[10px] lg:text-[11px] font-bold text-white-400 uppercase tracking-wider block">2. Level Harga Trading Plan</span>
 								<div class="grid grid-cols-3 gap-2.5">
 									<div>
-										<label class="text-[10px] lg:text-[11px] text-slate-400 block mb-1">Harga Entry (Rp)</label>
+										<label class="text-[10px] lg:text-[11px] text-white-400 block mb-1">Harga Entry (Rp)</label>
 										<input type="number" id="rrrEntry" placeholder="misal: 1000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
 									</div>
 									<div>
-										<label class="text-[10px] lg:text-[11px] text-slate-400 block mb-1">Stop Loss (SL)</label>
+										<label class="text-[10px] lg:text-[11px] text-white-400 block mb-1">Stop Loss (SL)</label>
 										<input type="number" id="rrrSL" placeholder="misal: 950" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-rose-500">
 									</div>
 									<div>
-										<label class="text-[10px] lg:text-[11px] text-slate-400 block mb-1">Target (TP1)</label>
+										<label class="text-[10px] lg:text-[11px] text-white-400 block mb-1">Target (TP1)</label>
 										<input type="number" id="rrrTP" placeholder="misal: 1150" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
 									</div>
 								</div>
@@ -599,32 +599,32 @@
 						<div class="bg-slate-950 border border-slate-800 rounded-xl p-4 lg:p-5 space-y-3.5 flex flex-col justify-between">
 							<div>
 								<div class="flex justify-between items-center border-b border-slate-800 pb-2.5 mb-3">
-									<span class="text-slate-300 text-xs lg:text-sm">Rasio Risk / Reward:</span>
+									<span class="text-white-300 text-xs lg:text-sm">Rasio Risk / Reward:</span>
 									<span id="rrrResult" class="font-black text-base lg:text-lg text-cyan-400 font-mono">1 : -</span>
 								</div>
 
 								<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs">
 									<div class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
-										<span class="text-slate-400 text-[9px] lg:text-[10px] block">Maksimal Risiko Uang (Rp)</span>
+										<span class="text-white-400 text-[9px] lg:text-[10px] block">Maksimal Risiko Uang (Rp)</span>
 										<span id="rrrMaxRiskAmount" class="font-bold text-rose-400 font-mono">Rp 0</span>
 									</div>
 									<div class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
-										<span class="text-slate-400 text-[9px] lg:text-[10px] block">Maksimal Alokasi Lot</span>
+										<span class="text-white-400 text-[9px] lg:text-[10px] block">Maksimal Alokasi Lot</span>
 										<span id="rrrMaxLots" class="font-bold text-emerald-400 font-mono">0 Lot</span>
 									</div>
 									<div class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
-										<span class="text-slate-400 text-[9px] lg:text-[10px] block">Total Modal Terpakai</span>
+										<span class="text-white-400 text-[9px] lg:text-[10px] block">Total Modal Terpakai</span>
 										<span id="rrrCapitalNeeded" class="font-bold text-amber-400 font-mono">Rp 0</span>
 									</div>
 									<div class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
-										<span class="text-slate-400 text-[9px] lg:text-[10px] block">Potensi Profit Bersih (Rp)</span>
+										<span class="text-white-400 text-[9px] lg:text-[10px] block">Potensi Profit Bersih (Rp)</span>
 										<span id="rrrPotentialReward" class="font-bold text-emerald-300 font-mono">Rp 0</span>
 									</div>
 								</div>
 							</div>
 
 							<div class="pt-2 border-t border-slate-800/80">
-								<div id="rrrEvaluationBadge" class="p-2.5 rounded text-[11px] lg:text-xs font-semibold text-center bg-slate-900 text-slate-400">
+								<div id="rrrEvaluationBadge" class="p-2.5 rounded text-[11px] lg:text-xs font-semibold text-center bg-slate-900 text-white-400">
 									Masukkan harga Entry, SL, dan TP untuk evaluasi AI.
 								</div>
 							</div>
@@ -635,21 +635,21 @@
 				<!-- TAB CONTENT 6: ALERT PRICE LEVEL -->
 				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-3.5 text-xs lg:text-sm">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-slate-400">Pengingat Harga (<strong id="alertTickerLabel" class="text-white">MDIA</strong>)</span>
+						<span class="text-white-400">Pengingat Harga (<strong id="alertTickerLabel" class="text-white">MDIA</strong>)</span>
 						<span class="text-[10px] lg:text-xs bg-slate-800 text-cyan-400 px-2 py-0.5 rounded border border-slate-700">Browser Alert</span>
 					</div>
 
 					<div class="flex gap-2 max-w-lg">
 						<input type="number" id="alertPriceInput" placeholder="Set target harga (misal: 1050)..." class="flex-1 bg-slate-950 border border-slate-800 rounded p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
-						<button onclick="addPriceAlert()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-4 py-2.5 rounded font-bold transition">
+						<button onclick="addPriceAlert()" class="bg-emerald-500 hover:bg-emerald-600 text-white-950 px-4 py-2.5 rounded font-bold transition">
 							+ Pasang
 						</button>
 					</div>
 
 					<div class="space-y-2 pt-2">
-						<span class="text-[11px] lg:text-xs text-slate-400 block">Daftar Alert Aktif:</span>
+						<span class="text-[11px] lg:text-xs text-white-400 block">Daftar Alert Aktif:</span>
 						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 min-h-[100px]">
-							<div class="text-center text-slate-500 py-6 lg:col-span-3">Belum ada alert harga yang dipasang.</div>
+							<div class="text-center text-white-500 py-6 lg:col-span-3">Belum ada alert harga yang dipasang.</div>
 						</div>
 					</div>
 				</div>
@@ -657,11 +657,11 @@
 				<!-- TAB CONTENT 7: AKSI KORPORASI LIVE RSS (GRID 3 KOLOM DI PC) -->
 				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3.5 text-xs lg:text-sm">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs lg:text-sm text-slate-400">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-xs lg:text-sm text-white-400">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
 						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-emerald-400 font-semibold">RUPS / RI / DIVIDEN / SPLIT</span>
 					</div>
 					<div id="corporateContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-						<div class="text-center text-slate-500 text-xs lg:text-sm py-10 lg:col-span-3">Memuat data aksi korporasi...</div>
+						<div class="text-center text-white-500 text-xs lg:text-sm py-10 lg:col-span-3">Memuat data aksi korporasi...</div>
 					</div>
 					<div class="border-t border-slate-800 pt-2.5 text-right">
 						<a href="https://www.idx.co.id/id/perusahaan-tercatat/aksi-korporasi" target="_blank" class="text-[11px] lg:text-xs text-cyan-400 hover:underline">Lihat Pengumuman Resmi BEI &rarr;</a>
@@ -1279,15 +1279,15 @@
 
 					// INFORMASI VERDIK AI LEBIH INFORMATIF DAN PANJANG
 					descEl.innerHTML = `
-						<p class="leading-relaxed"><strong class="text-amber-500">Mengapa?</strong> Saham ${ticker} saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
-						<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-amber-500">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
-						<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-amber-500">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} (Support Kuat 20 Hari) hingga Rp ${stockData.high20.toLocaleString('id-ID')} (Resistance Tertinggi 20 Hari). Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksekusi *Trading Plan*.</p>
+						<p class="leading-relaxed"><strong class="text-blue-400">Mengapa?</strong> Saham ${ticker} saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
+						<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-blue-400">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
+						<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-blue-400">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} (Support Kuat 20 Hari) hingga Rp ${stockData.high20.toLocaleString('id-ID')} (Resistance Tertinggi 20 Hari). Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksekusi *Trading Plan*.</p>
 					`;
 
 					buktiEl.innerHTML = `
 						<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 							<span>• Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
-							<span class="text-[10px] lg:text-[11px] text-slate-400">${isCached ? 'Terakhir' : 'Saat ini'}</span>
+							<span class="text-[10px] lg:text-[11px] text-white-400">${isCached ? 'Terakhir' : 'Saat ini'}</span>
 						</li>
 						<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 							<span>• Posisi Tren MA5 / MA10 / MA20:</span>
@@ -1399,7 +1399,7 @@
 					maxLotsEl.innerText = "0 Lot";
 					capitalNeededEl.innerText = "Rp 0";
 					rewardEl.innerText = "Rp 0";
-					evalEl.className = "p-2.5 rounded text-[11px] lg:text-xs font-semibold text-center bg-slate-900 text-slate-400";
+					evalEl.className = "p-2.5 rounded text-[11px] lg:text-xs font-semibold text-center bg-slate-900 text-white-400";
 					evalEl.innerText = "Masukkan harga Entry, SL (>0 & < Entry), dan TP (> Entry) untuk evaluasi AI.";
 					return;
 				}
@@ -1422,13 +1422,13 @@
 
 				if (rrr >= 2.0) {
 					evalEl.className = "p-2.5 rounded text-[11px] lg:text-xs font-bold text-center bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
-					evalEl.innerHTML = `✓ <strong>Rencana Trading Sangat Layak Eksekusi (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Potensi profit jauh melebihi toleransi risiko batas modal Anda.</span>`;
+					evalEl.innerHTML = `✓ <strong>Rencana Trading Sangat Layak Eksekusi (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-white-300">Potensi profit jauh melebihi toleransi risiko batas modal Anda.</span>`;
 				} else if (rrr >= 1.5) {
 					evalEl.className = "p-2.5 rounded text-[11px] lg:text-xs font-bold text-center bg-amber-500/10 text-amber-400 border border-amber-500/30";
-					evalEl.innerHTML = `⚠ <strong>Rencana Trading Cukup Layak (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Memenuhi standar minimal, namun disarankan memperketat entry dekat support.</span>`;
+					evalEl.innerHTML = `⚠ <strong>Rencana Trading Cukup Layak (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-white-300">Memenuhi standar minimal, namun disarankan memperketat entry dekat support.</span>`;
 				} else {
 					evalEl.className = "p-2.5 rounded text-[11px] lg:text-xs font-bold text-center bg-rose-500/10 text-rose-400 border border-rose-500/30";
-					evalEl.innerHTML = `✕ <strong>Risiko Terlalu Tinggi / Kurang Ideal (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Potensi keuntungan tidak sebanding dengan risiko penurunan modal.</span>`;
+					evalEl.innerHTML = `✕ <strong>Risiko Terlalu Tinggi / Kurang Ideal (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-white-300">Potensi keuntungan tidak sebanding dengan risiko penurunan modal.</span>`;
 				}
 			}
 
@@ -1499,7 +1499,7 @@
 				let remainingSeconds = 200;
 
 				btn.disabled = true;
-				btn.className = "text-[10px] lg:text-xs text-slate-400 font-bold bg-slate-800 border border-slate-700 px-3 py-1.5 rounded flex items-center gap-1.5 cursor-not-allowed";
+				btn.className = "text-[10px] lg:text-xs text-white-400 font-bold bg-slate-800 border border-slate-700 px-3 py-1.5 rounded flex items-center gap-1.5 cursor-not-allowed";
 				
 				const updateBtnText = () => {
 					btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-amber-400"></i> Memindai (${remainingSeconds}s)`;
@@ -1516,7 +1516,7 @@
 					}
 				}, 1000);
 
-				container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa... Hasil akan langsung ditampilkan secara berkala.</div>`;
+				container.innerHTML = `<div class="text-center text-white-400 text-xs lg:text-sm py-12 lg:col-span-2"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa... Hasil akan langsung ditampilkan secara berkala.</div>`;
 				if (window.lucide) lucide.createIcons();
 
 				const shuffled = [...uniqueRadarWatchlist];
@@ -1551,12 +1551,12 @@
 				clearInterval(radarTimer);
 				isRadarScanning = false;
 				btn.disabled = false;
-				btn.className = "text-[10px] lg:text-xs text-slate-950 font-bold bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded border border-amber-500/50 flex items-center gap-1.5 transition shadow-md";
+				btn.className = "text-[10px] lg:text-xs text-white-950 font-bold bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded border border-amber-500/50 flex items-center gap-1.5 transition shadow-md";
 				btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Mulai Pindai`;
 				if (window.lucide) lucide.createIcons();
 
 				if (validData.length === 0) {
-					container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada data bursa yang berhasil ditangkap dalam 200 detik. Silakan coba kembali.</div>`;
+					container.innerHTML = `<div class="text-center text-white-400 text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada data bursa yang berhasil ditangkap dalam 200 detik. Silakan coba kembali.</div>`;
 				} else {
 					AudioFX.playSuccess();
 				}
@@ -1608,11 +1608,11 @@
 									<div>
 										<div class="flex items-center gap-2">
 											<span class="font-black text-white text-sm lg:text-base">&dollar;${ticker}</span>
-											<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] lg:text-[10px] bg-blue-500/20 text-blue-400 hover:bg-emerald-500 hover:text-slate-950 border border-emerald-500/30 font-bold px-2 py-0.5 rounded transition">
+											<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] lg:text-[10px] bg-blue-500/20 text-blue-400 hover:bg-emerald-500 hover:text-white-950 border border-emerald-500/30 font-bold px-2 py-0.5 rounded transition">
 												Lihat Chart
 											</button>
 										</div>
-										<span class="text-[10px] lg:text-xs text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
+										<span class="text-[10px] lg:text-xs text-white-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
 									</div>
 								</div>
 								<span class="text-[9px] lg:text-[10px] font-bold px-2.5 py-1 rounded-full border ${statusClass}">
@@ -1622,24 +1622,24 @@
 
 							<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs">
 								<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-									<span class="text-slate-400 text-[9px] lg:text-[10px] block">Entry Ideal</span>
+									<span class="text-white-400 text-[9px] lg:text-[10px] block">Entry Ideal</span>
 									<span class="font-bold text-amber-400 font-mono">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 								</div>
 								<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-									<span class="text-slate-400 text-[9px] lg:text-[10px] block">Support MA10</span>
+									<span class="text-white-400 text-[9px] lg:text-[10px] block">Support MA10</span>
 									<span class="font-bold text-cyan-400 font-mono">Rp ${item.ma10.toLocaleString('id-ID')}</span>
 								</div>
 								<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-									<span class="text-slate-400 text-[9px] lg:text-[10px] block">Target Profit (TP1/TP2)</span>
+									<span class="text-white-400 text-[9px] lg:text-[10px] block">Target Profit (TP1/TP2)</span>
 									<span class="font-bold text-emerald-300 font-mono">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 								</div>
 								<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-									<span class="text-slate-400 text-[9px] lg:text-[10px] block">Stop Loss (SL)</span>
+									<span class="text-white-400 text-[9px] lg:text-[10px] block">Stop Loss (SL)</span>
 									<span class="font-bold text-rose-400 font-mono">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
 								</div>
 							</div>
 
-							<div class="bg-slate-900/50 p-2.5 lg:p-3 rounded border border-slate-800 text-[10px] lg:text-xs text-slate-300 leading-relaxed space-y-1">
+							<div class="bg-slate-900/50 p-2.5 lg:p-3 rounded border border-slate-800 text-[10px] lg:text-xs text-white-300 leading-relaxed space-y-1">
 								<span class="text-amber-400 font-bold block text-[10px] lg:text-[11px]">ANALISIS TEKNIKAL REALISTIS:</span>
 								<p>${alasanTeknikal}</p>
 							</div>
@@ -1690,7 +1690,7 @@
 				const alerts = getAlerts(ticker);
 
 				if (alerts.length === 0) {
-					container.innerHTML = `<div class="text-center text-slate-500 py-6 lg:col-span-3">Belum ada alert harga yang dipasang.</div>`;
+					container.innerHTML = `<div class="text-center text-white-500 py-6 lg:col-span-3">Belum ada alert harga yang dipasang.</div>`;
 					return;
 				}
 
@@ -1735,7 +1735,7 @@
 
 			async function fetchStockNews(ticker) {
 				const container = document.getElementById('newsContainer');
-				container.innerHTML = `<div class="text-center text-slate-500 text-xs lg:text-sm py-10 lg:col-span-3">Memuat berita terkini ${ticker}...</div>`;
+				container.innerHTML = `<div class="text-center text-white-500 text-xs lg:text-sm py-10 lg:col-span-3">Memuat berita terkini ${ticker}...</div>`;
 				
 				const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
 				const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
@@ -1753,8 +1753,8 @@
 
 							container.innerHTML += `
 								<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
-									<h4 class="text-xs lg:text-sm font-semibold text-slate-200 line-clamp-2">${item.title}</h4>
-									<div class="flex justify-between items-center mt-2 text-[10px] lg:text-xs text-slate-400">
+									<h4 class="text-xs lg:text-sm font-semibold text-white-200 line-clamp-2">${item.title}</h4>
+									<div class="flex justify-between items-center mt-2 text-[10px] lg:text-xs text-white-400">
 										<span>${item.author || 'Google News'}</span>
 										<span>${date}</span>
 									</div>
@@ -1763,16 +1763,16 @@
 						});
 						AudioFX.playSuccess();
 					} else {
-						container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-3">Tidak ada berita khusus ditemukan untuk ${ticker}.</div>`;
+						container.innerHTML = `<div class="text-center text-white-400 text-xs lg:text-sm py-8 lg:col-span-3">Tidak ada berita khusus ditemukan untuk ${ticker}.</div>`;
 					}
 				} catch (e) {
-					container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-3">Berita tidak dapat dijangkau sementara.</div>`;
+					container.innerHTML = `<div class="text-center text-white-400 text-xs lg:text-sm py-8 lg:col-span-3">Berita tidak dapat dijangkau sementara.</div>`;
 				}
 			}
 
 			async function fetchCorporateAction(ticker) {
 				const container = document.getElementById('corporateContainer');
-				container.innerHTML = `<div class="text-center text-slate-500 text-xs lg:text-sm py-10 lg:col-span-3">Memuat aksi korporasi ${ticker}...</div>`;
+				container.innerHTML = `<div class="text-center text-white-500 text-xs lg:text-sm py-10 lg:col-span-3">Memuat aksi korporasi ${ticker}...</div>`;
 				
 				const query = encodeURIComponent(`${ticker} (dividen OR RUPS OR "right issue" OR "stock split" OR buyback)`);
 				const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=id&gl=ID&ceid=ID:id`;
@@ -1793,18 +1793,18 @@
 								<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 									<div class="flex items-center gap-1.5 mb-1">
 										<span class="text-[9px] lg:text-[10px] bg-emerald-500/20 text-emerald-400 font-semibold px-2 py-0.5 rounded border border-emerald-500/30">Aksi Korporasi</span>
-										<span class="text-[10px] lg:text-xs text-slate-400">${date}</span>
+										<span class="text-[10px] lg:text-xs text-white-400">${date}</span>
 									</div>
-									<h4 class="text-xs lg:text-sm font-semibold text-slate-200 line-clamp-2">${item.title}</h4>
+									<h4 class="text-xs lg:text-sm font-semibold text-white-200 line-clamp-2">${item.title}</h4>
 								</a>
 							`;
 						});
 						AudioFX.playSuccess();
 					} else {
-						container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-3">Belum ada kabar aksi korporasi terbaru untuk ${ticker}.</div>`;
+						container.innerHTML = `<div class="text-center text-white-400 text-xs lg:text-sm py-8 lg:col-span-3">Belum ada kabar aksi korporasi terbaru untuk ${ticker}.</div>`;
 					}
 				} catch (e) {
-					container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-3">Gagal memuat data aksi korporasi.</div>`;
+					container.innerHTML = `<div class="text-center text-white-400 text-xs lg:text-sm py-8 lg:col-span-3">Gagal memuat data aksi korporasi.</div>`;
 				}
 			}
 
@@ -1818,7 +1818,7 @@
 						if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition";
 						if (content) content.classList.remove('hidden');
 					} else {
-						if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition";
+						if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white-400 hover:text-white-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition";
 						if (content) content.classList.add('hidden');
 					}
 				});
