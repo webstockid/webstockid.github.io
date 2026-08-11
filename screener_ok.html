@@ -1069,7 +1069,7 @@
 				const WORKER_URL = 'https://stockid-api-proxy.accespy-mail.workers.dev';
 				
 				// Helper dengan timeout untuk mempercepat fallback jika terjadi bottleneck
-				const fetchWithTimeout = (url, timeoutMs = 3000) => {
+				const fetchWithTimeout = (url, timeoutMs = 10000) => {
 					return Promise.race([
 						fetch(url),
 						new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), timeoutMs))
