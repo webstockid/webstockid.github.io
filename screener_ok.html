@@ -509,7 +509,7 @@
 							</span>
 							<span class="text-xs lg:text-sm font-bold text-amber-400">Deretan Saham Potensial</span>
 						</div>
-						<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-white-200 font-bold bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded border border-amber-500/50 flex items-center gap-1.5 transition shadow-md">
+						<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-slate-800 font-bold bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded border border-amber-500/50 flex items-center gap-1.5 transition shadow-md">
 							<i data-lucide="search" class="w-3.5 h-3.5"></i> Mulai Pindai
 						</button>
 					</div>
@@ -553,7 +553,7 @@
 						<span class="text-white font-bold flex items-center gap-1.5 text-xs lg:text-sm">
 							<i data-lucide="calculator" class="w-4 h-4 lg:w-5 lg:h-5 text-fuchsia-400"></i> Smart RRR & Position Sizing (<strong id="rrrTickerLabel" class="text-white">MDIA</strong>)
 						</span>
-						<button onclick="autoFillRRRFromAI()" class="text-[10px] lg:text-xs bg-emerald-500/20 hover:bg-emerald-500 hover:text-white-200 text-emerald-400 font-bold px-2.5 py-1 rounded border border-emerald-500/30 transition flex items-center gap-1">
+						<button onclick="autoFillRRRFromAI()" class="text-[10px] lg:text-xs bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-600 text-emerald-400 font-bold px-2.5 py-1 rounded border border-emerald-500/30 transition flex items-center gap-1">
 							<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Data AI
 						</button>
 					</div>
@@ -1549,7 +1549,7 @@
 				clearInterval(radarTimer);
 				isRadarScanning = false;
 				btn.disabled = false;
-				btn.className = "text-[10px] lg:text-xs text-white-950 font-bold bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded border border-amber-500/50 flex items-center gap-1.5 transition shadow-md";
+				btn.className = "text-[10px] lg:text-xs text-slate-800 font-bold bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded border border-amber-500/50 flex items-center gap-1.5 transition shadow-md";
 				btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Mulai Pindai`;
 				if (window.lucide) lucide.createIcons();
 
