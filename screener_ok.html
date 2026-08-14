@@ -252,32 +252,36 @@
 			</div>
 		</div>
 
-		<!-- Fixed Search Bar Melayang -->
+		<!-- Fixed Search Bar Melayang dengan Dropdown Suggestion -->
 		<div class="sticky top-20 left-0 w-full z-20 glassmorphism border-b border-slate-800/80 py-3 px-4">
-			<div class="max-w-md lg:max-w-xl mx-auto relative">
-				<i data-lucide="search" class="absolute left-3.5 top-3 lg:top-3.5 w-4 h-4 lg:w-5 lg:h-5 text-white"></i>
-				<input type="text" id="stockSearch" placeholder="Cari kode saham (MDIA, CUAN, RAJA, PANI, BBRI, ANTM...)" 
+			<div class="max-w-md lg:max-w-xl mx-auto relative" id="searchContainer">
+				<i data-lucide="search" class="absolute left-3.5 top-3 lg:top-3.5 w-4 h-4 lg:w-5 lg:h-5 text-white z-10"></i>
+				<input type="text" id="stockSearch" autocomplete="off" placeholder="Cari kode saham (MDIA, CUAN, RAJA, PANI, BBRI, ANTM...)" 
 					class="w-full bg-slate-800 text-sm lg:text-base border border-slate-700 rounded-lg pl-10 lg:pl-11 pr-24 py-2 lg:py-2.5 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
-				<button onclick="searchStock()" class="absolute right-1.5 top-1.5 text-xs lg:text-sm bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-4 py-1.5 lg:py-2 rounded-md transition">
+				
+				<!-- Dropdown Menu Suggestions -->
+				<div id="searchSuggestionsBox" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl backdrop-blur-xl max-h-60 overflow-y-auto z-50 divide-y divide-slate-800/60 scrollbar-thin"></div>
+
+				<button onclick="searchStock()" class="absolute right-1.5 top-1.5 text-xs lg:text-sm bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-4 py-1.5 lg:py-2 rounded-md transition z-10">
 					Cari
 				</button>
 			</div>
 		</div>
 
 		<!-- MODAL GATEWAY LOGIN TOKEN VIP -->
-		<div id="vipGatewayModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-			<div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 relative">
+		<div id="vipGatewayModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+			<div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 relative my-8">
 				<div class="text-center space-y-1.5">
 					<div class="inline-flex p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20 mb-2">
 						<i data-lucide="key-round" class="animate-pulse w-8 h-8 text-emerald-400"></i>
 					</div>
-					<h2 class="text-2xl font-black text-white tracking-tight">Stock ID VIP Gateway</h2>
-					<p class="text-xs text-white">Masukan Akses VIP Kamu</p>
+					<h2 class="text-2xl font-black text-white tracking-tight">Stock ID Screener</h2>
+					<p class="text-xs text-slate-300">Masukan Akses Token Kamu</p>
 				</div>
 
 				<div class="space-y-3">
 					<div>
-						<input type="text" id="tokenInput" placeholder="Hayoo apa tokennya?" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-center text-sm font-mono tracking-widest text-emerald-400 uppercase focus:outline-none focus:border-emerald-500 transition">
+						<input type="text" id="tokenInput" placeholder="Masukan Token..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-center text-sm font-mono tracking-widest text-emerald-400 uppercase focus:outline-none focus:border-emerald-500 transition">
 						<p id="loginErrorMsg" class="text-rose-400 text-xs text-center mt-2 hidden"></p>
 					</div>
 					<button onclick="loginVIP()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-sm">
@@ -285,9 +289,48 @@
 					</button>
 				</div>
 
-				<p class="text-xs text-white text-center leading-relaxed">
-					Silakan minta ke Admin untuk Akses Token mu
+				<!-- RINGKASAN FITUR DALAM APLIKASI -->
+				<div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3.5 space-y-2.5 text-left">
+					<span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
+						<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Fitur Unggulan Yang Didapat:
+					</span>
+					<div class="grid grid-cols-2 gap-2 text-[10px] text-slate-300">
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> AI Signal Real-Time
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Radar Bandar & Vol
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Berita Live RSS
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Aksi Korporasi BEI
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Profil Fundamental
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Smart RRR Calculator
+						</div>
+						<div class="flex items-center gap-1.5 col-span-2">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Browser Price Alert
+						</div>
+					</div>
+				</div>
+
+				<p class="text-xs text-slate-400 text-center leading-relaxed">
+					Silakan hubungi Admin untuk mendapatkan Akses Token
 				</p>
+
+				<div class="border-t border-slate-800/80 pt-4 mt-2 space-y-3 text-center">
+					<p class="text-xs text-slate-300 font-medium leading-relaxed">
+						Dapatkan paket Stock ID Screener tanpa limit selama 100 hari penuh
+					</p>
+					<a href="https://wa.me/6289529305947?text=Halo%20admin%2C%20saya%20ingin%20membeli%20fitur%20Stock%20ID%20Screener%20100%20hari." target="_blank" class="inline-flex items-center justify-center gap-2 w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl transition shadow-lg shadow-amber-500/20 text-xs">
+						<i class="fa-brands fa-whatsapp text-sm"></i> Beli Rp. 250,000
+					</a>
+				</div>
 			</div>
 		</div>
 
@@ -1160,7 +1203,7 @@
 				document.getElementById('tpProgressPercent').innerText = `Menghitung posisi teknikal...`;
 			}
 
-			// LOGIKA GENERATE AI SIGNAL DIPERCEPAT
+			// LOGIKA GENERATE AI SIGNAL
 			async function generateAISignal(ticker, isManualSearch = false) {
 				const now = new Date();
 				const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
@@ -1169,17 +1212,14 @@
 				document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
 				document.getElementById('aiDateStamp').innerText = `Update Live: ${dateStr} ${timeStr} WIB`;
 
-				// Memuat berita secara async non-blocking
 				setTimeout(() => fetchStockNewsForAI(ticker), 10);
 
 				const cachedData = getCachedStockData(ticker);
 				
-				// JIKA ADA CACHE, RENDER SEGERA
 				if (cachedData) {
 					globalStockData = cachedData;
 					renderAISignalUI(ticker, cachedData, true);
 
-					// Refresh data di background
 					fetchRealtimeStockData(ticker, true).then(freshData => {
 						if (freshData) {
 							globalStockData = freshData;
@@ -1412,7 +1452,7 @@
 				}
 			}
 
-			// DAFTAR RADARWATCHLIST ~400 SAHAM FAMOUS & LIQUID
+			// DAFTAR RADARWATCHLIST
 			const radarWatchlist = [
     'MDIA', 'KOTA', 'BNBR', 'JGLE', 'ELTY', 'BBCA', 'BBRI', 'BMRI', 'BBNI', 'BBTN',
     'BRIS', 'ARTO', 'BJTM', 'BJBR', 'BDMN', 'NISP', 'BNGA', 'BTPN', 'PNBN', 'PNLF',
@@ -1436,6 +1476,56 @@
     'BISR', 'BMAS', 'BMTR', 'BOLA', 'CSAP', 'CSRA', 'DLTA', 'DYAN', 'HERO', 'HEXA'
 ];
 			const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
+
+			// LOGIKA DROPDOWN SUGGESTION PENCARIAN
+			function initSearchSuggestions() {
+				const input = document.getElementById('stockSearch');
+				const box = document.getElementById('searchSuggestionsBox');
+
+				if (!input || !box) return;
+
+				input.addEventListener('input', function() {
+					const val = this.value.trim().toUpperCase();
+					if (!val) {
+						box.classList.add('hidden');
+						box.innerHTML = '';
+						return;
+					}
+
+					const matches = uniqueRadarWatchlist.filter(item => item.includes(val)).slice(0, 10);
+
+					if (matches.length > 0) {
+						box.innerHTML = matches.map(ticker => `
+							<div onclick="selectSuggestion('${ticker}')" class="px-4 py-2.5 hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-200 text-xs font-mono font-bold cursor-pointer transition flex items-center justify-between group">
+								<span class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-arrow-right text-[10px] text-emerald-400 opacity-60 group-hover:opacity-100"></i>
+									${ticker}
+								</span>
+								<span class="text-[9px] text-slate-500 group-hover:text-emerald-400 font-sans">IDX</span>
+							</div>
+						`).join('');
+						box.classList.remove('hidden');
+					} else {
+						box.classList.add('hidden');
+						box.innerHTML = '';
+					}
+				});
+
+				document.addEventListener('click', function(e) {
+					const searchContainer = document.getElementById('searchContainer');
+					if (searchContainer && !searchContainer.contains(e.target)) {
+						box.classList.add('hidden');
+					}
+				});
+			}
+
+			function selectSuggestion(ticker) {
+				const input = document.getElementById('stockSearch');
+				const box = document.getElementById('searchSuggestionsBox');
+				if (input) input.value = ticker;
+				if (box) box.classList.add('hidden');
+				searchStock(true);
+			}
 
 			// RADAR BANDAR PROCESS
 			async function startRadarProcess() {
@@ -1814,6 +1904,9 @@
 				if (!bypassCooldown && btn && btn.disabled) return;
 
 				const input = document.getElementById('stockSearch').value.trim().toUpperCase();
+				const box = document.getElementById('searchSuggestionsBox');
+				if (box) box.classList.add('hidden');
+
 				if (input) {
 					currentTicker = input;
 					document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
@@ -1838,25 +1931,21 @@
 				}
 			}
 
-			// FITUR PINTAR: SYSTEM BACKGROUND PRE-FETCHER TIAP 5 MENIT
+			// FITUR: SYSTEM BACKGROUND PRE-FETCHER
 			function startBackgroundAutoCache() {
 				const FIVE_MINUTES = 5 * 60 * 1000;
 				
 				const runBackgroundFetch = async () => {
-					// 1. Refresh saham aktif saat ini
 					await fetchRealtimeStockData(currentTicker, true);
-
-					// 2. Refresh beberapa saham populer di latar belakang secara bertahap
 					const popularTickers = ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'CUAN', 'ANTM', 'PANI'];
 					for (const ticker of popularTickers) {
 						if (ticker !== currentTicker) {
 							await fetchRealtimeStockData(ticker, true);
-							await sleep(180); // Penjeda background aman
+							await sleep(200);
 						}
 					}
 				};
 
-				// Jalankan awal dan pasang interval berkala
 				runBackgroundFetch();
 				setInterval(runBackgroundFetch, FIVE_MINUTES);
 			}
@@ -1866,11 +1955,12 @@
 			});
 
 			// INITIALIZATION ON LOAD
+			initSearchSuggestions();
 			checkVIPAuth();
 			cleanExpiredCache();
 			updateMarketBadge();
 			checkUrlParamTicker();
-
+			
 			document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 			document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
 			document.getElementById('newsTickerLabel').innerText = currentTicker;
@@ -1878,7 +1968,7 @@
 			document.getElementById('rrrTickerLabel').innerText = currentTicker;
 			document.getElementById('alertTickerLabel').innerText = currentTicker;
 			document.getElementById('corpTickerLabel').innerText = currentTicker;
-
+			
 			renderChart(currentTicker);
 			renderTechnicalGauge(currentTicker);
 			renderFundamentalWidget(currentTicker);
@@ -1886,10 +1976,7 @@
 			generateAISignal(currentTicker);
 			fetchStockNews(currentTicker);
 			fetchCorporateAction(currentTicker);
-
 			checkWelcomeModal();
-
-			// Jalankan Pre-Fetcher Latar Belakang Setiap 5 Menit
 			startBackgroundAutoCache();
 		</script>
 	</body>
