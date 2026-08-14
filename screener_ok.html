@@ -15,6 +15,7 @@
 		<script src="https://cdn.tailwindcss.com"></script>
 		<script src="https://unpkg.com/lucide@latest"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+		<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito&display=swap">
@@ -56,6 +57,12 @@
 	</head>
 
 	<body class="text-slate-200 antialiased overflow-x-hidden">
+		
+		<form action="/submit-form" method="POST">
+			<input type="text" name="username" placeholder="Nama Anda">
+			<div class="cf-turnstile" data-sitekey="0x4AAAAAAEQDKus_A93r9ltq"></div>
+			<button type="submit">Kirim</button>
+		</form>
 
 		<!-- Modal Pop-up Awal -->
 		<div id="welcomeModal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
