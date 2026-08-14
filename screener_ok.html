@@ -42,7 +42,6 @@
 			.animate-pulse-glow {
 				animation: pulse-glow 2s infinite ease-in-out;
 			}
-			/* EFEK LOADING SKELETON SHIMMER */
 			@keyframes shimmer {
 				0% { background-position: -200% 0; }
 				100% { background-position: 200% 0; }
@@ -87,7 +86,6 @@
 		<!-- Navbar -->
 		<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
 			<div class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
-				<!-- Brand / Logo -->
 				<div class="flex items-center gap-3">
 					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2 rounded-2xl shadow-lg shadow-emerald-500/20 transition-transform duration-300 hover:scale-110 hover:rotate-6 cursor-pointer">
 						<i class="fa-solid fa-biohazard text-slate-950 text-xl font-black"></i>
@@ -98,24 +96,19 @@
 					</div>
 				</div>
 
-				<!-- Navigasi Dropdown -->
 				<div class="relative inline-block text-left" id="navDropdownContainer">
-					<!-- Tombol Utama Menu Dropdown -->
 					<button id="menuDropdownBtn" onclick="toggleNavDropdown()" type="button" class="bg-slate-900/80 hover:bg-slate-800 active:scale-95 text-slate-200 px-4 py-2.5 rounded-xl border border-slate-700/70 hover:border-emerald-500/60 text-xs font-bold tracking-wide transition-all duration-200 flex items-center gap-2.5 shadow-md hover:shadow-emerald-500/10 cursor-pointer select-none">
 						<i class="fa-solid fa-bars text-emerald-400 transition-transform duration-300 group-hover:scale-110"></i>
 						<span>Navigasi</span>
 						<i id="dropdownChevron" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300 ease-out"></i>
 					</button>
 
-					<!-- Isi Dropdown Menu dengan Animasi Smooth Pop-Up -->
 					<div id="navDropdownMenu" class="hidden opacity-0 scale-95 duration-200 ease-out absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-2xl backdrop-blur-xl p-2 z-50 transform origin-top-right transition-all divide-y divide-slate-800/80">
-						<!-- Seksi 1: Platform / Layanan Utama Stock ID -->
 						<div class="pb-1.5 space-y-1">
 							<div class="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
 								Aplikasi & Layanan
 							</div>
 
-							<!-- Tautan VIP / Expired Member -->
 							<a id="navLinkVIP" href="https://webstockid.github.io/screener" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-200 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-wand-magic-sparkles text-amber-400 group-hover:scale-110 transition-transform w-4 text-center"></i>
@@ -126,7 +119,6 @@
 								</div>
 							</a>
 							
-							<!-- Tautan Index -->
 							<a href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-crown text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -137,7 +129,6 @@
 								</div>
 							</a>
 
-							<!-- Tautan Tools -->
 							<a href="https://webstockid.github.io/tools" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-screwdriver-wrench text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -148,7 +139,6 @@
 								</div>
 							</a>
 
-							<!-- Tautan Screener -->
 							<a href="https://webstockid.github.io/watchlist" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-eye text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -159,7 +149,6 @@
 								</div>
 							</a>
 
-							<!-- Tautan Watchlist -->
 							<a href="https://webstockid.github.io/exp" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-circle-user text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -175,7 +164,6 @@
 			</div>
 		</nav>
 
-		<!-- Script Kontrol Dropdown & Pendeteksi Halaman Aktif -->
 		<script>
 			function toggleNavDropdown() {
 				const menu = document.getElementById("navDropdownMenu");
@@ -208,7 +196,6 @@
 				}
 			}
 
-			// Tutup dropdown jika mengklik di luar area menu
 			document.addEventListener("click", function(event) {
 				const container = document.getElementById("navDropdownContainer");
 				if (container && !container.contains(event.target)) {
@@ -216,7 +203,6 @@
 				}
 			});
 
-			// Deteksi Otomatis Halaman Aktif
 			document.addEventListener("DOMContentLoaded", function() {
 				const path = window.location.pathname;
 				const isExpPage = path.includes("screener.html") || path.endsWith("/screener");
@@ -308,10 +294,9 @@
 		<!-- Main Content -->
 		<main class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 lg:px-8 pt-6 lg:pt-8 pb-12 space-y-6 lg:space-y-8">
 
-			<!-- BARIS ATAS: CHART & METERAN TEKNIKAL SEJAJAR (2 KOLOM DESKTOP) -->
+			<!-- BARIS ATAS: CHART & METERAN TEKNIKAL SEJAJAR -->
 			<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 				
-				<!-- Left: TradingView Chart Widget -->
 				<section class="lg:col-span-8 space-y-4">
 					<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5 flex flex-wrap justify-between items-center gap-3">
 						<div>
@@ -336,7 +321,6 @@
 					</div>
 				</section>
 
-				<!-- Right: Live Technical Meter Engine -->
 				<section class="lg:col-span-4 h-full">
 					<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5 shadow-xl h-full flex flex-col justify-between">
 						<h3 class="text-sm lg:text-base font-semibold text-slate-300 mb-3 flex items-center gap-2">
@@ -353,7 +337,6 @@
 			<!-- BARIS BAWAH: TAB NAVIGASI & KONTEN MEMANJANG LENGKAP -->
 			<section class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-6 shadow-xl">
 				
-				<!-- MENU TAB DIBUAT STICKY & MEMANJANG FULL WIDTH -->
 				<div class="sticky top-[133px] lg:top-[140px] z-10 glassmorphism p-2 lg:p-2.5 rounded-xl mb-6 border border-slate-800 flex gap-1.5 lg:gap-3 overflow-x-auto shadow-xl scrollbar-thin">
 					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="sparkles" class="w-4 h-4 text-sky-400"></i> AI Signal
@@ -382,7 +365,6 @@
 				<div id="tabContent-ai" class="space-y-4 min-h-[300px] text-xs lg:text-sm">
 					
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-						<!-- VERDIK AI & REASONING -->
 						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3">
 							<div class="flex items-center justify-between">
 								<span class="font-bold text-slate-200 uppercase tracking-wider text-[11px] lg:text-xs" id="aiHeaderTicker">[MDIA] — KONDISI TEKNIKAL</span>
@@ -403,7 +385,6 @@
 							</div>
 						</div>
 
-						<!-- BUKTI UTAMA & KATALIS TEKNIKAL -->
 						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="check-circle-2" class="w-4 h-4"></i> BUKTI UTAMA & KATALIS TEKNIKAL
@@ -415,7 +396,6 @@
 					</div>
 
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-						<!-- TRADING MAP & ANIMATED REAL-TIME PROGRES BAR -->
 						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3.5">
 							<span class="font-bold text-cyan-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="map-pin" class="w-4 h-4"></i> TRADING MAP (TECHNICAL PIVOT)
@@ -439,7 +419,6 @@
 								</div>
 							</div>
 
-							<!-- FITUR TARGET PRICE POTENTIAL PROGRESS BAR DINAMIS & ANIMASI -->
 							<div class="bg-slate-900/90 p-3 lg:p-3.5 rounded-lg border border-slate-800 space-y-2">
 								<div class="flex justify-between items-center text-[10px] lg:text-[11px]">
 									<span class="text-rose-400 font-bold" id="tpBarSL">SL: -</span>
@@ -459,7 +438,6 @@
 							</div>
 						</div>
 
-						<!-- BERITA RELEVAN RSS -->
 						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-purple-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="newspaper" class="w-4 h-4"></i> BERITA RELEVAN (REAL-TIME RSS)
@@ -471,7 +449,6 @@
 					</div>
 
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-						<!-- SKENARIO TRADING -->
 						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-amber-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="git-fork" class="w-4 h-4"></i> SKENARIO PERGERAKAN HARGA
@@ -481,7 +458,6 @@
 							</div>
 						</div>
 
-						<!-- KESIMPULAN & NOTE AI -->
 						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="thumbs-up" class="w-4 h-4"></i> KESIMPULAN & NOTE AI
@@ -500,7 +476,6 @@
 
 				<!-- TAB CONTENT 2: RADAR BANDAR -->
 				<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
-					
 					<div class="flex items-center justify-between bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl">
 						<div class="flex items-center gap-2">
 							<span class="relative flex h-2 w-2">
@@ -516,7 +491,7 @@
 
 					<div id="bigMoneyList" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-1.5 scrollbar-thin">
 						<div class="text-center text-slate-500 text-xs lg:text-sm py-12 lg:col-span-2">
-							Klik tombol <strong class="text-amber-400">"Mulai Pindai"</strong> di atas untuk memulai pemindaian bursa selama 200 detik.
+							Klik tombol <strong class="text-amber-400">"Mulai Pindai"</strong> di atas untuk memulai pemindaian bursa instan.
 						</div>
 					</div>
 
@@ -525,7 +500,7 @@
 					</p>
 				</div>
 
-				<!-- TAB CONTENT 3: BERITA RSS (GRID 3 KOLOM DI PC) -->
+				<!-- TAB CONTENT 3: BERITA RSS -->
 				<div id="tabContent-news" class="hidden space-y-3 min-h-[250px]">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs lg:text-sm text-slate-400">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
@@ -560,7 +535,6 @@
 
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 						<div class="space-y-4">
-							<!-- INPUT MODAL & BIAYA -->
 							<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
 								<span class="text-[10px] lg:text-[11px] font-bold text-slate-400 uppercase tracking-wider block">1. Parameter Modal & Toleransi Risiko</span>
 								<div class="grid grid-cols-2 gap-2.5">
@@ -575,7 +549,6 @@
 								</div>
 							</div>
 
-							<!-- INPUT HARGA ENTRY SL TP -->
 							<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
 								<span class="text-[10px] lg:text-[11px] font-bold text-slate-400 uppercase tracking-wider block">2. Level Harga Trading Plan</span>
 								<div class="grid grid-cols-3 gap-2.5">
@@ -595,7 +568,6 @@
 							</div>
 						</div>
 
-						<!-- HASIL ANALISIS SMARTER RRR -->
 						<div class="bg-slate-950 border border-slate-800 rounded-xl p-4 lg:p-5 space-y-3.5 flex flex-col justify-between">
 							<div>
 								<div class="flex justify-between items-center border-b border-slate-800 pb-2.5 mb-3">
@@ -654,7 +626,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 7: AKSI KORPORASI LIVE RSS (GRID 3 KOLOM DI PC) -->
+				<!-- TAB CONTENT 7: AKSI KORPORASI LIVE RSS -->
 				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3.5 text-xs lg:text-sm">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs lg:text-sm text-slate-400">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
@@ -675,7 +647,7 @@
 		<!-- Script CDN TradingView -->
 		<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
-		<!-- ==================== WEB AUDIO ENGINE (EFEK SUARA ULTRALIGHT) ==================== -->
+		<!-- WEB AUDIO ENGINE -->
 		<script>
 			const AudioFX = {
 				ctx: null,
@@ -846,7 +818,6 @@
 			}
 
 			function cleanExpiredCache() {
-				// Pembersihan berkala cache yang sudah melebihi 5 menit
 				const FIVE_MINUTES = 5 * 60 * 1000;
 				for (let i = localStorage.length - 1; i >= 0; i--) {
 					const key = localStorage.key(i);
@@ -1061,106 +1032,98 @@
 
 			const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+			// OPTIMASI: PARALLEL FETCHING + TIMEOUT UNTUK KECEPATAN MAKSIMAL
 			async function fetchRealtimeStockData(ticker, forceFetch = false) {
-				// Cek ketersediaan cache 5 menit
 				const cachedData = getCachedStockData(ticker);
 				if (cachedData && !forceFetch) return cachedData;
 
 				const targetSymbol = `${ticker}.JK`;
-				let freshData = null;
 				const WORKER_URL = 'https://stockid-api-proxy.accespy-mail.workers.dev';
 				
-				// Helper dengan timeout untuk mempercepat fallback jika terjadi bottleneck
-				const fetchWithTimeout = (url, timeoutMs = 3000) => {
-					return Promise.race([
-						fetch(url),
-						new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), timeoutMs))
-					]);
+				const fetchWithTimeout = (url, timeoutMs = 2000) => {
+					return new Promise((resolve, reject) => {
+						const timer = setTimeout(() => reject(new Error('Timeout')), timeoutMs);
+						fetch(url)
+							.then(res => {
+								clearTimeout(timer);
+								if (res.ok) resolve(res);
+								else reject(new Error('Response not OK'));
+							})
+							.catch(err => {
+								clearTimeout(timer);
+								reject(err);
+							});
+					});
 				};
 
+				const parseYahooJSON = (json) => {
+					const result = json?.chart?.result?.[0] || json?.results?.[0];
+					if (!result) return null;
+
+					const quote = result.indicators?.quote?.[0] || result.quote;
+					const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
+					const volumes = quote?.volume?.filter(v => v !== null && v !== undefined) || [];
+					const highs = quote?.high?.filter(h => h !== null && h !== undefined) || [];
+					const lows = quote?.low?.filter(l => l !== null && l !== undefined) || [];
+
+					if (prices.length < 5) return null;
+
+					const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
+					const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
+					const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
+
+					const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+					const ma5 = getMA(5);
+					const ma10 = getMA(10);
+					const ma20 = getMA(20);
+
+					const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
+					const volSlice10 = volumes.slice(-10);
+					const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
+					const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
+
+					const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
+					const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
+
+					return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
+				};
+
+				// PARALLEL CALL: Worker API & Direct Yahoo AllOrigins
+				const workerPromise = fetchWithTimeout(`${WORKER_URL}?symbol=${targetSymbol}`, 2000)
+					.then(res => res.json())
+					.then(json => parseYahooJSON(json));
+
+				const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
+				const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
+				
+				const yahooPromise = fetchWithTimeout(allOriginsUrl, 2500)
+					.then(res => res.json())
+					.then(wrapper => JSON.parse(wrapper.contents))
+					.then(json => parseYahooJSON(json));
+
+				let freshData = null;
 				try {
-					const response = await fetchWithTimeout(`${WORKER_URL}?symbol=${targetSymbol}`, 3000);
-					if (response.ok) {
-						const json = await response.json();
-						const result = json?.chart?.result?.[0] || json?.results?.[0];
-						if (result) {
-							const quote = result.indicators?.quote?.[0] || result.quote;
-							const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
-							const volumes = quote?.volume?.filter(v => v !== null && v !== undefined) || [];
-							const highs = quote?.high?.filter(h => h !== null && h !== undefined) || [];
-							const lows = quote?.low?.filter(l => l !== null && l !== undefined) || [];
+					freshData = await Promise.race([
+						workerPromise.catch(() => null),
+						yahooPromise.catch(() => null)
+					]);
 
-							if (prices.length >= 5) {
-								const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
-								const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
-								const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
-
-								const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
-								const ma5 = getMA(5);
-								const ma10 = getMA(10);
-								const ma20 = getMA(20);
-
-								const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
-								const volSlice10 = volumes.slice(-10);
-								const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
-								const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
-
-								const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
-								const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
-
-								freshData = { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
+					if (!freshData) {
+						const results = await Promise.allSettled([workerPromise, yahooPromise]);
+						for (const res of results) {
+							if (res.status === 'fulfilled' && res.value) {
+								freshData = res.value;
+								break;
 							}
 						}
 					}
 				} catch (e) {
-					console.warn(`Worker proxy timeout/retry for ${ticker}`);
-				}
-
-				if (!freshData) {
-					try {
-						const proxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
-						const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(proxyUrl)}`;
-						const res = await fetchWithTimeout(apiUrl, 4000);
-						const dataWrapper = await res.json();
-						const json = JSON.parse(dataWrapper.contents);
-
-						const result = json.chart.result[0];
-						const quote = result.indicators.quote[0];
-
-						const prices = quote.close.filter(p => p !== null && p !== undefined);
-						const volumes = quote.volume ? quote.volume.filter(v => v !== null && v !== undefined) : [];
-						const highs = quote.high ? quote.high.filter(h => h !== null && h !== undefined) : [];
-						const lows = quote.low ? quote.low.filter(l => l !== null && l !== undefined) : [];
-
-						if (prices.length >= 5) {
-							const currentPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
-							const previousClose = result.meta.chartPreviousClose || prices[prices.length - 2];
-							const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
-
-							const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
-							const ma5 = getMA(5);
-							const ma10 = getMA(10);
-							const ma20 = getMA(20);
-
-							const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
-							const volSlice10 = volumes.slice(-10);
-							const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
-							const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
-
-							const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
-							const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
-
-							freshData = { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
-						}
-					} catch (err) {
-						console.error(`Gagal data ${ticker}:`, err);
-					}
+					console.warn(`Fetch error for ${ticker}`);
 				}
 
 				if (freshData) {
 					setCachedStockData(ticker, freshData);
 				} else if (cachedData) {
-					// Fallback ke data cache jika jaringan eksternal error
 					return cachedData;
 				}
 
@@ -1198,23 +1161,34 @@
 				document.getElementById('tpProgressPercent').innerText = `Menghitung posisi teknikal...`;
 			}
 
-			// GENERATE AI SIGNAL & TRADING MAP TERPERINCI PERANJANG
+			// LOGIKA UTAMA GENERATE AI SIGNAL DENGAN SWR (STALE-WHILE-REVALIDATE)
 			async function generateAISignal(ticker, isManualSearch = false) {
 				const now = new Date();
 				const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 				const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
 				document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
-				
-				const isCached = getCachedStockData(ticker) !== null;
 				document.getElementById('aiDateStamp').innerText = `Update Live: ${dateStr} ${timeStr} WIB`;
 
-				// Ambil data cache terlebih dahulu tanpa menampilkan loading skeleton jika data cache 5 menit tersedia
-				const cached = getCachedStockData(ticker);
-				if (!cached) {
-					showAISkeletonLoading();
-				}
+				const cachedData = getCachedStockData(ticker);
 				
+				// JIKA ADA CACHE, RENDER INSTAN TANPA LOADING
+				if (cachedData) {
+					renderAISignalUI(ticker, cachedData, true);
+					fetchStockNewsForAI(ticker);
+
+					// Revalidate di background secara async
+					fetchRealtimeStockData(ticker, true).then(freshData => {
+						if (freshData) {
+							globalStockData = freshData;
+							renderAISignalUI(ticker, freshData, false);
+						}
+					});
+					return;
+				}
+
+				// JIKA TIDAK ADA CACHE, SHOW SKELETON
+				showAISkeletonLoading();
 				fetchStockNewsForAI(ticker);
 
 				const stockData = await fetchRealtimeStockData(ticker, false);
@@ -1222,6 +1196,11 @@
 					globalStockData = stockData;
 				}
 
+				renderAISignalUI(ticker, stockData, false);
+			}
+
+			// RENDER UI HASIL ANALISA SECEPAT MUNGKIN
+			function renderAISignalUI(ticker, stockData, isCached) {
 				const verdikEl = document.getElementById('aiVerdikText');
 				const scoreEl = document.getElementById('aiScoreBadge');
 				const descEl = document.getElementById('aiVerdikDesc');
@@ -1279,7 +1258,6 @@
 						? "Posisi harga berada <strong class='text-rose-400'>di bawah MA10 & MA20</strong>, mengindikasikan tekanan jual jangka pendek yang intensif dan kurva pergerakan dalam fase penurunan beruntun (*downtrend*)."
 						: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata, mengisyaratkan perebutan momentum antara kubu *bulls* dan *bears*.";
 
-					// INFORMASI VERDIK AI LEBIH INFORMATIF DAN PANJANG
 					descEl.innerHTML = `
 						<p class="text-justify leading-relaxed"><strong>Mengapa Verdik Ini Diberikan?</strong> Saham ${ticker} saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
 						<p class="text-justify leading-relaxed pt-1.5 border-t border-slate-900/60"><strong>Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
@@ -1289,7 +1267,7 @@
 					buktiEl.innerHTML = `
 						<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 							<span>• Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
-							<span class="text-[10px] lg:text-[11px] text-slate-400">${isCached ? 'Cache 5m' : 'Saat ini'}</span>
+							<span class="text-[10px] lg:text-[11px] text-slate-400">${isCached ? 'Cache Fast' : 'Live Data'}</span>
 						</li>
 						<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 							<span>• Posisi Tren MA5 / MA10 / MA20:</span>
@@ -1491,35 +1469,20 @@
 			];
 			const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
 
-			// RADAR BANDAR PROCESS
+			// RADAR BANDAR PROCESS (OPTIMIZED WITH BATCH PROMISES)
 			async function startRadarProcess() {
 				if (isRadarScanning) return;
 				isRadarScanning = true;
 
 				const btn = document.getElementById('btnStartRadar');
 				const container = document.getElementById('bigMoneyList');
-				let remainingSeconds = 200;
 
 				btn.disabled = true;
 				btn.className = "text-[10px] lg:text-xs text-slate-400 font-bold bg-slate-800 border border-slate-700 px-3 py-1.5 rounded flex items-center gap-1.5 cursor-not-allowed";
-				
-				const updateBtnText = () => {
-					btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-amber-400"></i> Memindai (${remainingSeconds}s)`;
-					if (window.lucide) lucide.createIcons();
-				};
-
-				updateBtnText();
-				radarTimer = setInterval(() => {
-					remainingSeconds--;
-					if (remainingSeconds <= 0) {
-						clearInterval(radarTimer);
-					} else {
-						updateBtnText();
-					}
-				}, 1000);
-
-				container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa... Hasil akan langsung ditampilkan secara berkala.</div>`;
+				btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-amber-400"></i> Memindai Instan...`;
 				if (window.lucide) lucide.createIcons();
+
+				container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data bursa dengan akselerasi paralel...</div>`;
 
 				const shuffled = [...uniqueRadarWatchlist];
 				for (let i = shuffled.length - 1; i > 0; i--) {
@@ -1528,29 +1491,27 @@
 				}
 				
 				const validData = [];
-				const startTime = Date.now();
-				const maxScanDuration = 200 * 1000;
+				const BATCH_SIZE = 10;
 
-				for (let i = 0; i < shuffled.length; i++) {
-					if (Date.now() - startTime >= maxScanDuration) {
-						break;
+				for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
+					const batch = shuffled.slice(i, i + BATCH_SIZE);
+					const results = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
+
+					for (const res of results) {
+						if (res && res.price > 0) {
+							validData.push(res);
+						}
 					}
 
-					const ticker = shuffled[i];
-					const res = await fetchRealtimeStockData(ticker);
-					if (res && res.price > 0) {
-						validData.push(res);
+					if (validData.length > 0) {
 						renderRadarItems(validData);
 					}
 
 					if (validData.length >= 10) {
 						break;
 					}
-
-					await sleep(150);
 				}
 
-				clearInterval(radarTimer);
 				isRadarScanning = false;
 				btn.disabled = false;
 				btn.className = "text-[10px] lg:text-xs text-slate-950 font-bold bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded border border-amber-500/50 flex items-center gap-1.5 transition shadow-md";
@@ -1558,7 +1519,7 @@
 				if (window.lucide) lucide.createIcons();
 
 				if (validData.length === 0) {
-					container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada data bursa yang berhasil ditangkap dalam 200 detik. Silakan coba kembali.</div>`;
+					container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada data bursa yang berhasil ditangkap. Silakan coba kembali.</div>`;
 				} else {
 					AudioFX.playSuccess();
 				}
@@ -1660,6 +1621,19 @@
 			}
 
 			async function fetchStockNewsForAI(ticker) {
+				const cacheKey = `news_cache_${ticker}`;
+				const cached = localStorage.getItem(cacheKey);
+
+				if (cached) {
+					try {
+						const parsed = JSON.parse(cached);
+						if (Date.now() - parsed.timestamp < 10 * 60 * 1000) {
+							document.getElementById('aiBeritaList').innerHTML = parsed.html;
+							return;
+						}
+					} catch(e){}
+				}
+
 				const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
 				const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 
@@ -1675,6 +1649,7 @@
 							beritaHTML += `<div class="bg-slate-900/50 p-2 rounded border border-slate-800/80">• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
 						});
 						document.getElementById('aiBeritaList').innerHTML = beritaHTML;
+						localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), html: beritaHTML }));
 					} else {
 						document.getElementById('aiBeritaList').innerHTML = `<div>Belum ada rilis berita khusus untuk emiten ${ticker} dalam 24 jam terakhir.</div>`;
 					}
@@ -1890,7 +1865,7 @@
 					fetchCorporateAction(currentTicker);
 
 					if (!bypassCooldown) {
-						startSearchCooldown(7);
+						startSearchCooldown(3);
 					}
 				}
 			}
