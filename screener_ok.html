@@ -205,7 +205,7 @@
 
 			document.addEventListener("DOMContentLoaded", function() {
 				const path = window.location.pathname;
-				const isExpPage = path.includes("screener.html") || path.endsWith("/screener");
+				const isExpPage = path.includes("screener_ok.html") || path.endsWith("/screener_ok");
 
 				if (isExpPage) {
 					const linkVIP = document.getElementById("navLinkVIP");
@@ -1314,7 +1314,7 @@
 				progressBar.style.width = '0%';
 				setTimeout(() => {
 					progressBar.style.width = `${calculatedProgress}%`;
-				}, 100);
+				}, 200);
 
 				document.getElementById('tpProgressPercent').innerText = `Posisi: ${calculatedProgress}% dari Rentang SL - TP1`;
 
@@ -1865,7 +1865,7 @@
 					fetchCorporateAction(currentTicker);
 
 					if (!bypassCooldown) {
-						startSearchCooldown(3);
+						startSearchCooldown(7);
 					}
 				}
 			}
@@ -1883,7 +1883,7 @@
 					for (const ticker of popularTickers) {
 						if (ticker !== currentTicker) {
 							await fetchRealtimeStockData(ticker, true);
-							await sleep(500); // Penjeda background aman
+							await sleep(180); // Penjeda background aman
 						}
 					}
 				};
