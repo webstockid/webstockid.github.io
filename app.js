@@ -219,6 +219,8 @@ const databaseVIP = {
 let globalStockData = null;
 let globalRadarDataList = [];
 let searchCooldownTimer = null;
+let exportCardCooldownTimer = null;
+let peerRefreshCooldownTimer = null;
 let isRadarScanning = false;
 
 function isMarketOpen() {
@@ -747,20 +749,53 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	AudioFX.playSuccess();
 }
 
-// FITUR: EXPORT TRADING PLAN CARD (TAMPILKAN RASIO VOL, MA5, MA10)
+// COOLDOWN LOGIC EXPORT CARD (10 DETIK)
+function startExportCardCooldown(seconds = 10) {
+	const btn = document.getElementById('btnExportCard');
+	if (!btn) return;
+
+	btn.disabled = true;
+	btn.classList.add('opacity-50', 'cursor-not-allowed');
+	let remaining = seconds;
+
+	if (exportCardCooldownTimer) clearInterval(exportCardCooldownTimer);
+
+	btn.innerHTML = `<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card (${remaining}s)`;
+	if (window.lucide) lucide.createIcons();
+
+	exportCardCooldownTimer = setInterval(() => {
+		remaining--;
+		if (remaining <= 0) {
+			clearInterval(exportCardCooldownTimer);
+			btn.disabled = false;
+			btn.classList.remove('opacity-50', 'cursor-not-allowed');
+			btn.innerHTML = `<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card`;
+			if (window.lucide) lucide.createIcons();
+		} else {
+			btn.innerHTML = `<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card (${remaining}s)`;
+			if (window.lucide) lucide.createIcons();
+		}
+	}, 1000);
+}
+
+// FITUR: EXPORT TRADING PLAN CARD
 function exportTradingCard() {
+	const btn = document.getElementById('btnExportCard');
+	if (btn && btn.disabled) return;
+
 	if (!globalStockData) {
 		AudioFX.playAlert();
 		alert("Memuat data saham... Mohon tunggu sejenak.");
 		return;
 	}
 
+	startExportCardCooldown(10);
+
 	const price = roundToBEITick(globalStockData.price);
 	const sl = roundToBEITick(price * 0.92, 'floor');
-	const tp2 = roundToBEITick(price * 1.14, 'ceil'); //tp1
+	const tp2 = roundToBEITick(price * 1.14, 'ceil');
 	const sup1 = roundToBEITick(price * 0.94, 'floor');
 	const res1 = roundToBEITick(price * 1.05, 'ceil');
-	//const rrrVal = ((tp1 - price) / Math.max(1, (price - sl))).toFixed(2);
 
 	const now = new Date();
 	const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -772,7 +807,6 @@ function exportTradingCard() {
 	document.getElementById('cardSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
 	document.getElementById('cardTP2').innerText = `Rp ${tp2.toLocaleString('id-ID')}`;
 	document.getElementById('cardRES1').innerText = `Rp ${res1.toLocaleString('id-ID')}`;
-	//document.getElementById('cardRRR').innerText = `1 : ${rrrVal}`;
 
 	// MENAMPILKAN RETAIL DATA REAL RASIO VOL, MA5, MA10
 	document.getElementById('cardVolRatio').innerText = `${globalStockData.volRatio || '1.0'}x`;
@@ -822,8 +856,43 @@ const radarWatchlist = [
 ];
 const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
 
-// REVISI FITUR NO. 2: PEER KOMPARASI HARGA SERUPA (HARGA SERUPA / PRICE RANGE LOGIC)
-async function loadPeerAnalysisByPrice(targetTicker) {
+// COOLDOWN LOGIC REFRESH PEER DATA (12 DETIK)
+function startPeerRefreshCooldown(seconds = 12) {
+	const btn = document.getElementById('btnRefreshPeer');
+	if (!btn) return;
+
+	btn.disabled = true;
+	btn.classList.add('opacity-50', 'cursor-not-allowed');
+	let remaining = seconds;
+
+	if (peerRefreshCooldownTimer) clearInterval(peerRefreshCooldownTimer);
+
+	btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data (${remaining}s)`;
+	if (window.lucide) lucide.createIcons();
+
+	peerRefreshCooldownTimer = setInterval(() => {
+		remaining--;
+		if (remaining <= 0) {
+			clearInterval(peerRefreshCooldownTimer);
+			btn.disabled = false;
+			btn.classList.remove('opacity-50', 'cursor-not-allowed');
+			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data`;
+			if (window.lucide) lucide.createIcons();
+		} else {
+			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data (${remaining}s)`;
+			if (window.lucide) lucide.createIcons();
+		}
+	}, 1000);
+}
+
+// FITUR NO. 2: PEER KOMPARASI HARGA SERUPA
+async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
+	if (isManualRefresh) {
+		const btn = document.getElementById('btnRefreshPeer');
+		if (btn && btn.disabled) return;
+		startPeerRefreshCooldown(12);
+	}
+
 	const body = document.getElementById('peerTableBody');
 	document.getElementById('peerTickerLabel').innerText = targetTicker;
 	const refLabel = document.getElementById('peerTickerRef');
@@ -879,7 +948,6 @@ async function loadPeerAnalysisByPrice(targetTicker) {
 		rowsHTML += `
 			<tr class="${rowClass}">
 				<td class="p-3.5 text-white font-sans flex items-center gap-2">
-					${isCurrent ? '<span class="text-[9px] bg-emerald-500 text-slate-950 font-black px-1.5 py-0.5 rounded">AKTIF</span>' : ''}
 					<strong class="text-amber-400 font-mono">&dollar;${data.ticker}</strong>
 				</td>
 				<td class="p-3.5 text-white">Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}</td>
@@ -904,7 +972,7 @@ async function loadPeerAnalysisByPrice(targetTicker) {
 	body.innerHTML = rowsHTML || `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-sans">Tidak ditemukan saham dengan range harga serupa.</td></tr>`;
 }
 
-// REVISI FITUR NO. 5: JOURNAL TRADING & WIN RATE TRACKER
+// FITUR JOURNAL TRADING & WIN RATE TRACKER
 function getJournalData() {
 	return JSON.parse(localStorage.getItem('stockid_trading_journal') || '[]');
 }
@@ -1135,7 +1203,7 @@ function selectSuggestion(ticker) {
 	searchStock(true);
 }
 
-// REVISI FITUR NO. 3: RADAR BANDAR AUTOMATIC FULL SCAN
+// FITUR NO. 3: RADAR BANDAR AUTOMATIC FULL SCAN
 async function startRadarProcess() {
 	if (isRadarScanning) return;
 	isRadarScanning = true;
@@ -1285,6 +1353,7 @@ function renderRadarItems(dataList) {
 function selectTickerFromRadar(ticker) {
 	document.getElementById('stockSearch').value = ticker;
 	searchStock(true);
+	loadPeerAnalysisByPrice(ticker);
 	switchTab('ai');
 }
 
@@ -1536,6 +1605,7 @@ function searchStock(bypassCooldown = false) {
 		generateAISignal(currentTicker, false);
 		fetchStockNews(currentTicker);
 		fetchCorporateAction(currentTicker);
+		loadPeerAnalysisByPrice(currentTicker);
 
 		if (!bypassCooldown) {
 			startSearchCooldown(7);
