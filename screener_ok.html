@@ -348,7 +348,7 @@
 						<i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i> Journal Trading
 					</button>
 					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="bell" class="w-4 h-4 text-rose-400"></i> Alert
+						<i data-lucide="bell" class="w-4 h-4 text-rose-400"></i> Alert System
 					</button>
 				</div>
 
@@ -501,7 +501,7 @@
 							</span>
 							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Membandingkan emiten pilihan kamu dengan saham-saham yang berada di range harga yang sama.</p>
 						</div>
-						<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker)" class="text-[10px] lg:text-xs bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto shadow-sm">
+						<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="text-[10px] lg:text-xs bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto shadow-sm">
 							<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data
 						</button>
 					</div>
@@ -554,7 +554,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 6: SMART KALKULATOR RRR (TOMBOL ATAS BAWAH DI POJOK KANAN) -->
+				<!-- TAB CONTENT 6: SMART KALKULATOR RRR -->
 				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
 					<div class="flex items-start justify-between border-b border-slate-800 pb-3">
 						<div>
@@ -698,26 +698,50 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 8: ALERT PRICE LEVEL -->
-				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-3.5 text-xs lg:text-sm">
-					<div class="flex items-center justify-between mb-2">
-						<span class="text-white">Pengingat Harga (<strong id="alertTickerLabel" class="text-white">MDIA</strong>)</span>
-						<span class="text-[10px] lg:text-xs bg-slate-800 text-cyan-400 px-2 py-0.5 rounded border border-slate-700">Browser Alert</span>
-					</div>
-
-					<div class="flex gap-2 max-w-lg">
-						<input type="number" id="alertPriceInput" placeholder="Set target harga (misal: 1050)..." class="flex-1 bg-slate-950 border border-slate-800 rounded p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
-						<button onclick="addPriceAlert()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-4 py-2.5 rounded font-bold transition">
-							+ Pasang
-						</button>
-					</div>
-
-					<div class="space-y-2 pt-2">
-						<span class="text-[11px] lg:text-xs text-white block">Daftar Alert Aktif:</span>
-						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 min-h-[100px]">
-							<div class="text-center text-white py-6 lg:col-span-3">Belum ada alert harga yang dipasang.</div>
+				<!-- TAB CONTENT 8: SMART ALERT SYSTEM & BROWSER PUSH NOTIFICATION -->
+				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
+						<div class="space-y-1">
+							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
+								<i data-lucide="bell-ring" class="w-4 h-4 text-rose-400"></i> Smart Alert & Push Notification System (<strong id="alertTickerLabel" class="text-amber-400">MDIA</strong>)
+							</span>
+							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh Stop Loss, Target Profit, atau custom alert yang kamu pasang.</p>
+						</div>
+						
+						<!-- Status & Tombol Izin Notifikasi Browser -->
+						<div class="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+							<button id="btnToggleNotification" onclick="requestNotificationPermission()" class="text-[10px] lg:text-xs bg-slate-800 hover:bg-slate-700 text-rose-400 border border-slate-700 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm">
+								<i data-lucide="bell-off" class="w-3.5 h-3.5"></i> Aktifkan Notifikasi Browser
+							</button>
 						</div>
 					</div>
+
+					<!-- Form Pasang Custom Target Price Alert -->
+					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+						<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
+							<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Pasang Pengingat Target Harga Baru
+						</span>
+						<div class="flex flex-col sm:flex-row gap-2.5 max-w-xl">
+							<input type="number" id="alertPriceInput" placeholder="Masukkan target harga (misal: 1050)..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
+							<button onclick="addPriceAlert()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-lg font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
+								<i data-lucide="bell" class="w-3.5 h-3.5"></i> + Pasang Alert
+							</button>
+						</div>
+					</div>
+
+					<!-- Daftar Alert Aktif -->
+					<div class="space-y-2.5 pt-1">
+						<span class="text-[11px] lg:text-xs text-slate-300 font-bold block flex items-center gap-1.5">
+							<i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i> Daftar Alert Aktif untuk $<span id="alertActiveTicker">MDIA</span>:
+						</span>
+						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 min-h-[100px]">
+							<div class="text-center text-slate-400 py-6 lg:col-span-3">Belum ada alert harga yang dipasang.</div>
+						</div>
+					</div>
+
+					<p class="text-[10px] lg:text-[11px] text-slate-400 italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
+						💡 <strong>Informasi Push Notification:</strong> Notifikasi browser akan dikirimkan secara otomatis bahkan saat kamu sedang membuka tab browser lain selama web Stock ID Screener tetap terbuka.
+					</p>
 				</div>
 
 				<!-- TAB CONTENT 9: AKSI KORPORASI LIVE RSS -->
