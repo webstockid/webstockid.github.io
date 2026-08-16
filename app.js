@@ -80,8 +80,8 @@ const AudioFX = {
 			if (!this.ctx) return;
 			const osc = this.ctx.createOscillator();
 			const gain = this.ctx.createGain();
-			osc.type = 'sine';
-			osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+			osc.type = 'sine'; //sine
+			osc.frequency.setValueAtTime(1200, this.ctx.currentTime); //800
 			osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.05);
 			gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
 			gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
@@ -100,7 +100,7 @@ const AudioFX = {
 			notes.forEach((freq, idx) => {
 				const osc = this.ctx.createOscillator();
 				const gain = this.ctx.createGain();
-				osc.type = 'triangle';
+				osc.type = 'square'; //triangle
 				osc.frequency.setValueAtTime(freq, now + idx * 0.06);
 				gain.gain.setValueAtTime(0, now + idx * 0.06);
 				gain.gain.linearRampToValueAtTime(0.12, now + idx * 0.06 + 0.02);
@@ -120,7 +120,7 @@ const AudioFX = {
 			const osc = this.ctx.createOscillator();
 			const gain = this.ctx.createGain();
 			osc.type = 'sawtooth';
-			osc.frequency.setValueAtTime(300, now);
+			osc.frequency.setValueAtTime(800, now); //300
 			osc.frequency.setValueAtTime(450, now + 0.08);
 			gain.gain.setValueAtTime(0.1, now);
 			gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
@@ -137,7 +137,7 @@ document.addEventListener('click', function(e) {
 	if (target) {
 		AudioFX.playClick();
 		if ('vibrate' in navigator) {
-			navigator.vibrate(50);
+			navigator.vibrate(80);
 		}
 	}
 });
