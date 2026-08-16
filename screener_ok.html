@@ -521,7 +521,7 @@
 							</thead>
 							<tbody id="peerTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60 font-mono">
 								<tr>
-									<td colspan="6" class="p-6 text-center text-slate-400 font-sans">Memuat data komparasi saham dengan range harga serupa...</td>
+									<td colspan="6" class="p-6 text-center text-slate-400 font-sans">Klik tombol "Refresh Data" di atas untuk memuat data komparasi saham.</td>
 								</tr>
 							</tbody>
 						</table>
@@ -556,7 +556,7 @@
 
 				<!-- TAB CONTENT 6: SMART KALKULATOR RRR -->
 				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
-					<div class="flex items-start justify-between border-b border-slate-800 pb-3">
+					<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-800 pb-3 gap-3">
 						<div>
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
 								<i data-lucide="calculator" class="w-4 h-4 lg:w-5 lg:h-5 text-fuchsia-400"></i> Smart RRR & Position Sizing (<strong id="rrrTickerLabel" class="text-white">MDIA</strong>)
@@ -564,12 +564,12 @@
 							<p class="text-[10px] text-slate-400 mt-0.5">Kalkulasi ukuran lot & rasio risiko sebelum mengeksekusi order.</p>
 						</div>
 						
-						<!-- Tombol Atas Bawah Pojok Kanan -->
-						<div class="flex flex-col gap-1.5 shrink-0">
-							<button onclick="saveTradingPlanToJournal()" class="text-[10px] lg:text-xs bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 font-bold px-3 py-1.5 rounded-lg border border-emerald-500/30 transition flex items-center justify-center gap-1.5 shadow-sm">
+						<!-- Tombol Inline Kiri & Kanan Rapih -->
+						<div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+							<button onclick="saveTradingPlanToJournal()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 font-bold px-3.5 py-2 rounded-lg border border-emerald-500/30 transition flex items-center justify-center gap-1.5 shadow-sm">
 								<i data-lucide="bookmark-plus" class="w-3.5 h-3.5"></i> Simpan ke Journal
 							</button>
-							<button onclick="autoFillRRRFromAI()" class="text-[10px] lg:text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center justify-center gap-1.5">
+							<button onclick="autoFillRRRFromAI()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3.5 py-2 rounded-lg border border-slate-700 transition flex items-center justify-center gap-1.5">
 								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Data AI
 							</button>
 						</div>
@@ -705,7 +705,7 @@
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
 								<i data-lucide="bell-ring" class="w-4 h-4 text-rose-400"></i> Smart Alert & Push Notification System (<strong id="alertTickerLabel" class="text-amber-400">MDIA</strong>)
 							</span>
-							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh Stop Loss, Target Profit, atau custom alert yang kamu pasang.</p>
+							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh Stop Loss, Entry, Resistance 2, atau Take Profit 2 yang disinkronisasi dari AI.</p>
 						</div>
 						
 						<!-- Status & Tombol Izin Notifikasi Browser -->
@@ -716,17 +716,17 @@
 						</div>
 					</div>
 
-					<!-- Form Pasang Custom Target Price Alert -->
-					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
-						<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
-							<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Pasang Pengingat Target Harga Baru
-						</span>
-						<div class="flex flex-col sm:flex-row gap-2.5 max-w-xl">
-							<input type="number" id="alertPriceInput" placeholder="Masukkan target harga (misal: 1050)..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
-							<button onclick="addPriceAlert()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-lg font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
-								<i data-lucide="bell" class="w-3.5 h-3.5"></i> + Pasang Alert
-							</button>
+					<!-- Tombol Sync Data AI Pengganti Input Manual -->
+					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+						<div>
+							<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
+								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sinkronisasi Notifikasi Otomatis
+							</span>
+							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Ambil data harga Stop Loss, Entry/Support2, Resistance 2, dan Take Profit 2 lalu aktifkan notifikasi browser.</p>
 						</div>
+						<button onclick="syncAlertsFromAI()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-lg font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
+							<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Sync Data AI
+						</button>
 					</div>
 
 					<!-- Daftar Alert Aktif -->
@@ -734,8 +734,8 @@
 						<span class="text-[11px] lg:text-xs text-slate-300 font-bold block flex items-center gap-1.5">
 							<i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i> Daftar Alert Aktif untuk $<span id="alertActiveTicker">MDIA</span>:
 						</span>
-						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 min-h-[100px]">
-							<div class="text-center text-slate-400 py-6 lg:col-span-3">Belum ada alert harga yang dipasang.</div>
+						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 min-h-[100px]">
+							<div class="text-center text-slate-400 py-6 lg:col-span-4 font-sans text-xs">Belum ada alert harga yang dipasang. Klik "Sync Data AI" di atas untuk memasang notifikasi otomatis.</div>
 						</div>
 					</div>
 

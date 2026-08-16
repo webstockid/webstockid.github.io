@@ -887,7 +887,7 @@ function startPeerRefreshCooldown(seconds = 12) {
 	}, 1000);
 }
 
-// FITUR NO. 2: PEER KOMPARASI HARGA SERUPA
+// FITUR NO. 2: PEER KOMPARASI HARGA SERUPA (HANYA MANUAL REFRESH VIA TOMBOL)
 async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	if (isManualRefresh) {
 		const btn = document.getElementById('btnRefreshPeer');
@@ -1095,6 +1095,7 @@ function autoFillRRRFromAI() {
 		document.getElementById('rrrSL').value = sl;
 		document.getElementById('rrrTP').value = tp;
 		calculateSmartRRR();
+		AudioFX.playSuccess();
 	}
 }
 
@@ -1355,7 +1356,6 @@ function renderRadarItems(dataList) {
 function selectTickerFromRadar(ticker) {
 	document.getElementById('stockSearch').value = ticker;
 	searchStock(true);
-	loadPeerAnalysisByPrice(ticker);
 	switchTab('ai');
 }
 
@@ -1443,11 +1443,27 @@ function requestNotificationPermission() {
 function sendBrowserPushNotification(title, message) {
 	if ("Notification" in window && Notification.permission === "granted") {
 		try {
-			new Notification(title, {
-				body: message,
-				icon: 'stockid_gambar/stockicon.jpg',
-				tag: 'stockid-alert'
-			});
+			if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+				navigator.serviceWorker.ready.then(registration => {
+					registration.showNotification(title, {
+						body: message,
+						icon: 'stockid_gambar/stockicon.jpg',
+						tag: 'stockid-alert'
+					});
+				}).catch(() => {
+					new Notification(title, {
+						body: message,
+						icon: 'stockid_gambar/stockicon.jpg',
+						tag: 'stockid-alert'
+					});
+				});
+			} else {
+				new Notification(title, {
+					body: message,
+					icon: 'stockid_gambar/stockicon.jpg',
+					tag: 'stockid-alert'
+				});
+			}
 		} catch(e){}
 	}
 }
@@ -1469,7 +1485,7 @@ function renderAlertList(ticker) {
 	const alerts = getAlerts(ticker);
 
 	if (alerts.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-3 font-sans text-xs">Belum ada alert harga yang dipasang untuk $${ticker}.</div>`;
+		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-4 font-sans text-xs">Belum ada alert harga yang dipasang untuk $${ticker}. Klik "Sync Data AI" di atas.</div>`;
 		return;
 	}
 
@@ -1478,12 +1494,18 @@ function renderAlertList(ticker) {
 		const isCustomObj = typeof alertObj === 'object';
 		const targetPrice = isCustomObj ? alertObj.price : alertObj;
 		const isActive = isCustomObj ? alertObj.active : true;
+		const labelText = isCustomObj && alertObj.label ? alertObj.label : 'Target Price';
+
+		let badgeColor = 'text-cyan-400';
+		if (labelText.includes('Stop Loss')) badgeColor = 'text-rose-400';
+		if (labelText.includes('Take Profit')) badgeColor = 'text-emerald-400';
+		if (labelText.includes('Entry')) badgeColor = 'text-amber-400';
 
 		container.innerHTML += `
 			<div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 ${isActive ? 'border-l-4 border-l-emerald-400' : 'opacity-60'}">
 				<div>
-					<span class="text-[10px] text-slate-400 block font-sans">Target Trigger:</span>
-					<strong class="text-emerald-400 font-mono text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</strong>
+					<span class="text-[9px] ${badgeColor} block font-bold font-sans uppercase tracking-wider">${labelText}</span>
+					<strong class="text-white font-mono text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</strong>
 				</div>
 				<div class="flex items-center gap-2 font-sans">
 					<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[10px] ${isActive ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'} px-2 py-1 rounded-md border font-bold transition">
@@ -1496,23 +1518,27 @@ function renderAlertList(ticker) {
 	});
 }
 
-function addPriceAlert() {
-	const priceInput = document.getElementById('alertPriceInput');
-	const rawPrice = parseFloat(priceInput.value);
-	const price = roundToBEITick(rawPrice);
-
-	if (!price || price <= 0) {
-		AudioFX.playAlert();
-		alert("Masukkan harga target yang valid!");
-		return;
+function syncAlertsFromAI() {
+	let price = 100;
+	if (globalStockData && globalStockData.price) {
+		price = roundToBEITick(globalStockData.price);
 	}
 
-	let alerts = getAlerts(currentTicker);
-	alerts.push({ price: price, active: true, triggered: false });
-	saveAlerts(currentTicker, alerts);
+	const sl = roundToBEITick(price * 0.92, 'floor'); 
+	const sup2 = roundToBEITick(price * 0.96, 'floor'); 
+	const res2 = roundToBEITick(price * 1.08, 'ceil'); 
+	const tp2 = roundToBEITick(price * 1.14, 'ceil'); 
 
-	priceInput.value = '';
+	const syncTargets = [
+		{ price: sl, label: 'Stop Loss', active: true, triggered: false },
+		{ price: sup2, label: 'Entry / Support 2', active: true, triggered: false },
+		{ price: res2, label: 'Resistance 2', active: true, triggered: false },
+		{ price: tp2, label: 'Take Profit 2', active: true, triggered: false }
+	];
+
+	saveAlerts(currentTicker, syncTargets);
 	AudioFX.playSuccess();
+	alert(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
 }
 
 function toggleAlertStatus(ticker, index) {
@@ -1542,9 +1568,10 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 	alerts.forEach((alertObj, idx) => {
 		const targetPrice = typeof alertObj === 'object' ? alertObj.price : alertObj;
 		const isActive = typeof alertObj === 'object' ? alertObj.active : true;
+		const labelText = typeof alertObj === 'object' && alertObj.label ? alertObj.label : 'Target';
 
 		if (isActive && currentPrice >= targetPrice) {
-			const alertMsg = `🎯 Sinyal Alert $${ticker}! Harga terkini telah menyentuh/menembus target Rp ${targetPrice.toLocaleString('id-ID')}`;
+			const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh ${labelText} Rp ${targetPrice.toLocaleString('id-ID')}`;
 			
 			AudioFX.playSuccess();
 			sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
@@ -1654,7 +1681,6 @@ function switchTab(tabName) {
 		}
 	});
 
-	if (tabName === 'peer') loadPeerAnalysisByPrice(currentTicker);
 	if (tabName === 'journal') renderJournalTable();
 	if (tabName === 'alert') renderAlertList(currentTicker);
 }
@@ -1725,7 +1751,6 @@ function searchStock(bypassCooldown = false) {
 		generateAISignal(currentTicker, false);
 		fetchStockNews(currentTicker);
 		fetchCorporateAction(currentTicker);
-		loadPeerAnalysisByPrice(currentTicker);
 
 		if (!bypassCooldown) {
 			startSearchCooldown(7);
