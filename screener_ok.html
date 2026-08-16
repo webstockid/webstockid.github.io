@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Stock's ID Screener - Premium Trading & Learning Community</title>
-		<meta name="keywords" content="stock id vip, stockid vip, stockidvip, stock id, stockid, stock id screener, stockid screener, saham indonesia, kelas saham">
+		<meta name="keywords" content="stock id vip, stockid vip, stockidvip, stock id, stockid, stock id screener, stockid screener, screener saham, saham indonesia, kelas saham">
 		<meta name="HandheldFriendly" content="True">
 		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no">
 		<meta name="author" content="Hardiansyah & Gemini & Tailwind">
@@ -521,7 +521,7 @@
 							</thead>
 							<tbody id="peerTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60 font-mono">
 								<tr>
-									<td colspan="6" class="p-6 text-center text-slate-400 font-sans">Tekan tombol "Refresh Data" di atas untuk memuat analisis komparasi saham.</td>
+									<td colspan="6" class="p-6 text-center text-slate-400 font-sans">Memuat data komparasi saham dengan range harga serupa...</td>
 								</tr>
 							</tbody>
 						</table>
@@ -703,42 +703,24 @@
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="bell-ring" class="w-4 h-4 text-rose-400"></i> Smart Alert & Push Notification System
+								<i data-lucide="bell-ring" class="w-4 h-4 text-rose-400"></i> Smart Alert & Push Notification System (<strong id="alertTickerLabel" class="text-amber-400">MDIA</strong>)
 							</span>
 							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh Stop Loss, Target Profit, atau custom alert yang kamu pasang.</p>
 						</div>
 						
 						<!-- Status & Tombol Izin Notifikasi Browser -->
-						<div class="flex flex-wrap items-center gap-2 shrink-0 self-start sm:self-auto">
+						<div class="flex items-center gap-2 shrink-0 self-start sm:self-auto">
 							<button id="btnToggleNotification" onclick="requestNotificationPermission()" class="text-[10px] lg:text-xs bg-slate-800 hover:bg-slate-700 text-rose-400 border border-slate-700 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm">
 								<i data-lucide="bell-off" class="w-3.5 h-3.5"></i> Aktifkan Notifikasi Browser
-							</button>
-							<button onclick="testPushNotification()" class="text-[10px] lg:text-xs bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 font-bold px-3 py-2 rounded-lg transition flex items-center justify-center gap-1">
-								<i data-lucide="send" class="w-3.5 h-3.5"></i> Uji Notifikasi
 							</button>
 						</div>
 					</div>
 
 					<!-- Form Pasang Custom Target Price Alert -->
 					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
-						<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-							<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
-								<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Pasang Pengingat Target Harga untuk $<strong id="alertFormTicker" class="text-amber-400">MDIA</strong>
-							</span>
-							<button onclick="syncAlertDataFromAI()" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 font-bold px-3 py-1 rounded-lg transition flex items-center gap-1 self-start sm:self-auto">
-								<i data-lucide="wand-2" class="w-3 h-3"></i> Sync Data AI
-							</button>
-						</div>
-
-						<!-- Preset Quick Buttons dari Data AI -->
-						<div id="alertPresetContainer" class="hidden flex flex-wrap gap-1.5 pt-1 border-t border-slate-800/60 text-[10px]">
-							<span class="text-slate-400 self-center font-bold mr-1">Rekomendasi AI:</span>
-							<button onclick="applyAlertPreset('SL')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2 py-0.5 rounded font-mono">SL: <span id="presetSLVal">-</span></button>
-							<button onclick="applyAlertPreset('SUP')" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded font-mono">Support: <span id="presetSUPVal">-</span></button>
-							<button onclick="applyAlertPreset('RES')" class="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded font-mono">Resist: <span id="presetRESVal">-</span></button>
-							<button onclick="applyAlertPreset('TP2')" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-mono">TP2: <span id="presetTP2Val">-</span></button>
-						</div>
-
+						<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
+							<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Pasang Pengingat Target Harga Baru
+						</span>
 						<div class="flex flex-col sm:flex-row gap-2.5 max-w-xl">
 							<input type="number" id="alertPriceInput" placeholder="Masukkan target harga (misal: 1050)..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
 							<button onclick="addPriceAlert()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-lg font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
@@ -747,16 +729,11 @@
 						</div>
 					</div>
 
-					<!-- Daftar Alert Aktif Global -->
+					<!-- Daftar Alert Aktif -->
 					<div class="space-y-2.5 pt-1">
-						<div class="flex justify-between items-center">
-							<span class="text-[11px] lg:text-xs text-slate-300 font-bold block flex items-center gap-1.5">
-								<i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i> Histori Seluruh Saham Yang Dipasang Alert:
-							</span>
-							<button onclick="clearAllGlobalAlerts()" class="text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-2.5 py-1 rounded-md transition font-bold">
-								Hapus Semua Alert
-							</button>
-						</div>
+						<span class="text-[11px] lg:text-xs text-slate-300 font-bold block flex items-center gap-1.5">
+							<i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i> Daftar Alert Aktif untuk $<span id="alertActiveTicker">MDIA</span>:
+						</span>
 						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 min-h-[100px]">
 							<div class="text-center text-slate-400 py-6 lg:col-span-3">Belum ada alert harga yang dipasang.</div>
 						</div>
