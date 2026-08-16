@@ -444,7 +444,6 @@ function renderFundamentalWidget(ticker) {
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// OPTIMASI REALTIME DATA FETCHING
 async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const cachedData = getCachedStockData(ticker);
 	if (cachedData && !forceFetch) return cachedData;
@@ -572,7 +571,6 @@ function showAISkeletonLoading() {
 	document.getElementById('tpProgressPercent').innerText = `Menghitung posisi teknikal...`;
 }
 
-// LOGIKA GENERATE AI SIGNAL & EKSKUSI SMART ALERT CHECK
 async function generateAISignal(ticker, isManualSearch = false) {
 	const now = new Date();
 	const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
@@ -611,7 +609,6 @@ async function generateAISignal(ticker, isManualSearch = false) {
 	renderAISignalUI(ticker, stockData, false);
 }
 
-// RENDER UI HASIL ANALISA
 function renderAISignalUI(ticker, stockData, isCached) {
 	const verdikEl = document.getElementById('aiVerdikText');
 	const scoreEl = document.getElementById('aiScoreBadge');
@@ -665,15 +662,14 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			: `volume transaksi cenderung moderat (${stockData.volRatio}x rerata volume harian)`;
 		
 		const maAlignText = (isAboveMA5 && isAboveMA10 && isAboveMA20)
-			? "Struktur tren berada dalam susunan <strong class='text-emerald-400'>Bullish Alignment</strong> (Harga > MA5 > MA10 > MA20). Ini menandakan partisipasi pembeli mendominasi penuh seluruh horizon waktu jangka pendek."
+			? "Struktur tren berada dalam susunan <strong class='text-emerald-400'>Bullish Alignment</strong> (Harga > MA5 > MA10 > MA20)."
 			: (!isAboveMA10 && !isAboveMA20)
-			? "Posisi harga berada <strong class='text-rose-400'>di bawah MA10 & MA20</strong>, mengindikasikan tekanan jual jangka pendek yang intensif dan kurva pergerakan dalam fase penurunan beruntun (*downtrend*)."
-			: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata, mengisyaratkan perebutan momentum antara kubu *bulls* dan *bears*.";
+			? "Posisi harga berada <strong class='text-rose-400'>di bawah MA10 & MA20</strong>."
+			: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata.";
 
 		descEl.innerHTML = `
 			<p class="leading-relaxed"><strong>Mengapa Verdik Ini Diberikan?</strong> Saham ${ticker} saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
-			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong>Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
-			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong>Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} (Support Kuat 20 Hari) hingga Rp ${stockData.high20.toLocaleString('id-ID')} (Resistance Tertinggi 20 Hari). Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksecusi *Trading Plan*.</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong>Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}.</p>
 		`;
 
 		buktiEl.innerHTML = `
@@ -685,20 +681,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 				<span>• Posisi Tren MA5 / MA10 / MA20:</span>
 				<span class="font-mono text-emerald-400">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 			</li>
-			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Rasio Volume vs Rerata Volume Harian:</span>
-				<span class="font-bold font-mono ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
-			</li>
-			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Terendah 20 Hari / Rentang Tertinggi:</span>
-				<span class="font-mono text-cyan-400">Rp ${stockData.low20.toLocaleString('id-ID')} - Rp ${stockData.high20.toLocaleString('id-ID')}</span>
-			</li>
 		`;
 
 	} else {
 		verdikEl.innerText = "NETRAL-SELEKTIF";
 		scoreEl.innerText = "3/5";
-		descEl.innerText = `Menganalisis pergerakan teknikal emiten ${ticker} berbasis indikator grafik TradingView. Silakan evaluasi struktur pola harga harian sebelum melakukan transaksi.`;
+		descEl.innerText = `Menganalisis pergerakan teknikal emiten ${ticker} berbasis indikator grafik TradingView.`;
 	}
 
 	const sl = roundToBEITick(price * 0.92, 'floor'); 
@@ -730,26 +718,38 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 	document.getElementById('tpProgressPercent').innerText = `Posisi: ${calculatedProgress}% dari Rentang SL - TP1`;
 
-	document.getElementById('aiSkenarioBox').innerHTML = `
-		<p><strong>(a) Konfirmasi Bullish:</strong> Jika harga bertahan di atas support Rp ${sup2.toLocaleString('id-ID')} dengan volume stabil, target uji resistance berada di Rp ${res1.toLocaleString('id-ID')}. Penembusan resistance dapat memicu akselerasi ke TP2 Rp ${tp2.toLocaleString('id-ID')}.</p>
-		<p><strong>(b) Consolidate / Retest:</strong> Apabila terjadi tekanan koreksi, perhatikan reaksi akumulasi pada rentang Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}.</p>
-		<p><strong>(c) Batas Invalidasi:</strong> Penembusan di bawah Stop Loss Rp ${sl.toLocaleString('id-ID')} membatalkan struktur bullish short-term dan berisiko melanjutkan penurunan.</p>
-	`;
-
-	const rrrRatioVal = ((tp1 - price) / Math.max(1, (price - sl))).toFixed(2);
-	kesimpulanEl.innerHTML = `
-		<p>• Area akumulasi optimal disarankan pada rentang support <strong>Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}</strong>.</p>
-		<p>• Proyeksi Rasio Risk/Reward (RRR) pada harga saat ini adalah <strong>1 : ${rrrRatioVal}</strong>.</p>
-		<p>• Selalu pasang pembatas risiko di bawah <strong>Rp ${sl.toLocaleString('id-ID')}</strong> untuk menjaga keterpaparan modal dari kecenderungan volatilitas pasar.</p>
-	`;
-
 	document.getElementById('rrrEntry').value = price;
 	document.getElementById('rrrSL').value = sl;
 	document.getElementById('rrrTP').value = tp1;
 	calculateSmartRRR();
 
+	// Sekaligus update visual preset alert 4 level jika sedang di tab alert
+	updateAlertPresetUI(sl, sup1, res2, tp2);
+
 	if (window.lucide) lucide.createIcons();
 	AudioFX.playSuccess();
+}
+
+function updateAlertPresetUI(sl, sup, res, tp2) {
+	const pSL = document.getElementById('presetSLVal');
+	const pSUP = document.getElementById('presetSUPVal');
+	const pRES = document.getElementById('presetRESVal');
+	const pTP2 = document.getElementById('presetTP2Val');
+
+	if (pSL) pSL.innerText = `Rp ${sl.toLocaleString('id-ID')}`;
+	if (pSUP) pSUP.innerText = `Rp ${sup.toLocaleString('id-ID')}`;
+	if (pRES) pRES.innerText = `Rp ${res.toLocaleString('id-ID')}`;
+	if (pTP2) pTP2.innerText = `Rp ${tp2.toLocaleString('id-ID')}`;
+
+	const inSL = document.getElementById('alertSLInput');
+	const inSUP = document.getElementById('alertSUPInput');
+	const inRES = document.getElementById('alertRESInput');
+	const inTP2 = document.getElementById('alertTP2Input');
+
+	if (inSL && !inSL.value) inSL.value = sl;
+	if (inSUP && !inSUP.value) inSUP.value = sup;
+	if (inRES && !inRES.value) inRES.value = res;
+	if (inTP2 && !inTP2.value) inTP2.value = tp2;
 }
 
 function startExportCardCooldown(seconds = 10) {
@@ -831,28 +831,7 @@ function exportTradingCard() {
 	});
 }
 
-const radarWatchlist = [
-	'MDIA', 'KOTA', 'BNBR', 'JGLE', 'ELTY', 'BBCA', 'BBRI', 'BMRI', 'BBNI', 'BBTN',
-	'BRIS', 'ARTO', 'BJTM', 'BJBR', 'BDMN', 'NISP', 'BNGA', 'BTPN', 'PNBN', 'PNLF',
-	'BBYB', 'BBHI', 'AGRO', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'BREN', 'TPIA', 'BYAN',
-	'BRPT', 'MDKA', 'UNVR', 'EMTK', 'SCMA', 'BUKA', 'BELI', 'WIFI', 'MTDL', 'PGAS',
-	'ANTM', 'INCO', 'MEDC', 'ADRO', 'PTBA', 'ITMG', 'HRUM', 'INDY', 'AKRA', 'CUAN',
-	'PTRO', 'MBMA', 'NCKL', 'TINS', 'BRMS', 'ENRG', 'DEWA', 'RAJA', 'SGER', 'DOID',
-	'BSSR', 'KKGI', 'HUMI', 'LEAD', 'PSSI', 'SMDR', 'TMAS', 'WINS', 'PANI', 'BSDE',
-	'CTRA', 'PWON', 'SMRA', 'KPIG', 'ASRI', 'SSIA', 'KIJA', 'JSMR', 'PTPP', 'ADHI',
-	'WEGE', 'WTON', 'TOWR', 'TBIG', 'EXCL', 'ISAT', 'CENT', 'META', 'DILD', 'JRPT',
-	'MKPI', 'BKSL', 'ICBP', 'INDF', 'CPIN', 'JPFA', 'AMRT', 'ACES', 'MAPI', 'ERAA',
-	'KLBF', 'MIKA', 'HEAL', 'SIDO', 'MYOR', 'CMRY', 'ROTI', 'MAPA', 'GGRM', 'HMSP',
-	'WIIM', 'SILO', 'SAME', 'KAEF', 'TSPC', 'IRRA', 'INKP', 'TKIM', 'INTP', 'SMGR',
-	'SMCB', 'SMBR', 'AUTO', 'DRMA', 'SMSM', 'GJTL', 'BIRD', 'ASSA', 'AVIA', 'ESSA',
-	'UNTR', 'SRTG', 'CASS', 'IMAS', 'MPMX', 'WOOD', 'SPTO', 'MLPL', 'RALS', 'MPPA',
-	'ULTJ', 'AALI', 'LSIP', 'SIMP', 'TAPG', 'DSNG', 'BWPT', 'SGRO', 'SSMS', 'NSSS',
-	'TBLA', 'MIDI', 'STAA', 'MAIN', 'FOOD', 'ALII', 'CITA', 'MDKI', 'VKTR', 'RATU',
-	'FORU', 'MNCN', 'FILM', 'KEEN', 'POWR', 'MCAS', 'DIVA', 'AXIO', 'MLPT', 'DNET',
-	'ISSP', 'KRAS', 'BAJA', 'LTLS', 'AGII', 'ALDO', 'BFIN', 'CFIN', 'HDFA', 'MFIN',
-	'APLN', 'LPKR', 'LPCK', 'DMAS', 'GPRA', 'AMAG', 'BBLD', 'BHAT', 'BINA', 'BIPI',
-	'BISR', 'BMAS', 'BMTR', 'BOLA', 'CSAP', 'CSRA', 'DLTA', 'DYAN', 'HERO', 'HEXA'
-];
+const radarWatchlist = ['MDIA', 'KOTA', 'BNBR', 'BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'CUAN', 'ANTM', 'RAJA', 'PANI'];
 const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
 
 function startPeerRefreshCooldown(seconds = 12) {
@@ -913,11 +892,6 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	const maxPrice = basePrice * 1.25;
 
 	const sampleCandidates = uniqueRadarWatchlist.filter(t => t !== targetTicker);
-	for (let i = sampleCandidates.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[sampleCandidates[i], sampleCandidates[j]] = [sampleCandidates[j], sampleCandidates[i]];
-	}
-
 	const peerResults = [baseData];
 	const BATCH_SIZE = 8;
 
@@ -1139,13 +1113,13 @@ function calculateSmartRRR() {
 
 	if (rrr >= 2.0) {
 		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
-		evalEl.innerHTML = `✓ <strong>Rencana Trading Sangat Layak Eksekusi (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Potensi profit jauh melebihi toleransi risiko batas modal Anda.</span>`;
+		evalEl.innerHTML = `✓ <strong>Rencana Trading Sangat Layak Eksekusi (RRR 1 : ${rrr})</strong>`;
 	} else if (rrr >= 1.5) {
 		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-amber-500/10 text-amber-400 border border-amber-500/30";
-		evalEl.innerHTML = `⚠ <strong>Rencana Trading Cukup Layak (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Memenuhi standar minimal, namun disarankan memperketat entry dekat support.</span>`;
+		evalEl.innerHTML = `⚠ <strong>Rencana Trading Cukup Layak (RRR 1 : ${rrr})</strong>`;
 	} else {
 		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-rose-500/10 text-rose-400 border border-rose-500/30";
-		evalEl.innerHTML = `✕ <strong>Risiko Terlalu Tinggi / Kurang Ideal (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Potensi keuntungan tidak sebanding dengan risiko penurunan modal.</span>`;
+		evalEl.innerHTML = `✕ <strong>Risiko Terlalu Tinggi / Kurang Ideal (RRR 1 : ${rrr})</strong>`;
 	}
 }
 
@@ -1198,197 +1172,7 @@ function selectSuggestion(ticker) {
 	searchStock(true);
 }
 
-async function startRadarProcess() {
-	if (isRadarScanning) return;
-	isRadarScanning = true;
-
-	const btn = document.getElementById('btnStartRadar');
-	const container = document.getElementById('bigMoneyList');
-
-	btn.disabled = true;
-	btn.className = "text-[10px] lg:text-xs text-white font-bold bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 cursor-not-allowed";
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-amber-400"></i> Memindai Instan...`;
-	if (window.lucide) lucide.createIcons();
-
-	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-12 lg:col-span-2"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data pasar secara otomatis berdasar seluruh indikator...</div>`;
-
-	const shuffled = [...uniqueRadarWatchlist];
-	for (let i = shuffled.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-	}
-	
-	const validData = [];
-	const BATCH_SIZE = 10;
-
-	for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
-		const batch = shuffled.slice(i, i + BATCH_SIZE);
-		const results = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
-
-		for (const res of results) {
-			if (res && res.price > 0) {
-				validData.push(res);
-			}
-		}
-
-		if (validData.length > 0) {
-			globalRadarDataList = validData;
-			renderRadarItems(validData);
-		}
-
-		if (validData.length >= 10) {
-			break;
-		}
-	}
-
-	isRadarScanning = false;
-	btn.disabled = false;
-	btn.className = "text-[10px] lg:text-xs text-slate-950 font-bold bg-amber-400 hover:bg-amber-300 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md";
-	btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Mulai Pindai Pasar`;
-	if (window.lucide) lucide.createIcons();
-
-	if (validData.length === 0) {
-		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada data bursa yang berhasil ditangkap. Silakan coba kembali.</div>`;
-	} else {
-		AudioFX.playSuccess();
-	}
-}
-
-function renderRadarItems(dataList) {
-	const container = document.getElementById('bigMoneyList');
-	const sorted = [...dataList].sort((a, b) => b.changePct - a.changePct);
-	let htmlContent = '';
-
-	if (sorted.length === 0) {
-		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada emiten potensial yang ditemukan saat ini.</div>`;
-		return;
-	}
-
-	sorted.forEach((item, index) => {
-		const ticker = item.ticker;
-		const price = roundToBEITick(item.price);
-		const changePct = item.changePct;
-
-		const entryLow = roundToBEITick(price * 0.94, 'floor');
-		const entryHigh = roundToBEITick(price * 0.96, 'floor');
-		const sl = roundToBEITick(price * 0.92, 'floor');
-		const tp1 = roundToBEITick(price * 1.06, 'ceil');
-		const tp2 = roundToBEITick(price * 1.14, 'ceil');
-
-		let statusSignal = "🔥 Momentum Breakout";
-		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
-		let alasanTeknikal = `Perubahan <strong>${changePct}%</strong> dan bertahan kokoh di atas garis Moving Average MA5 (Rp ${item.ma5.toLocaleString('id-ID')}), menandakan tekanan beli harian masih mendominasi pasar.`;
-
-		if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0.5 && changePct < 3) {
-			statusSignal = "🚀 Golden Cross Setup";
-			statusClass = "text-sky-400 border-sky-500/30 bg-sky-500/10";
-			alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah (*reversal*) awal berpotensi terbentuk.`;
-		} else if (item.volRatio >= 1.3) {
-			statusSignal = "⚡ Volume Accumulation";
-			statusClass = "text-cyan-400 border-cyan-500/30 bg-cyan-500/10";
-			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata 10 hari</strong>. Mengindikasikan partisipasi modal besar (*smart money*) di pasar.`;
-		} else if (changePct < 0 && item.price >= item.ma20) {
-			statusSignal = "🛡️ Support Retest";
-			statusClass = "text-purple-400 border-purple-500/30 bg-purple-500/10";
-			alasanTeknikal = `Harga sedang mengalami koreksi sehat (*pullback*) dan menguji area pertahanan MA20 (Rp ${item.ma20.toLocaleString('id-ID')}). Area ideal penampungan berisiko terukur.`;
-		}
-
-		htmlContent += `
-			<div class="bg-slate-950 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative">
-				<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
-					<div class="flex items-center gap-2">
-						<span class="bg-slate-800 text-amber-400 font-mono text-[10px] lg:text-xs px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
-						<div>
-							<div class="flex items-center gap-2">
-								<span class="font-black text-white text-sm lg:text-base">&dollar;${ticker}</span>
-								<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] lg:text-[10px] bg-blue-500/20 text-blue-400 hover:bg-emerald-500 hover:text-slate-950 border border-emerald-500/30 font-bold px-2 py-0.5 rounded transition">
-									Lihat Chart
-								</button>
-							</div>
-							<span class="text-[10px] lg:text-xs text-white block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
-						</div>
-					</div>
-					<span class="text-[9px] lg:text-[10px] font-bold px-2.5 py-1 rounded-full border ${statusClass}">
-						${statusSignal}
-					</span>
-				</div>
-
-				<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs">
-					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-white text-[9px] lg:text-[10px] block">Entry Ideal</span>
-						<span class="font-bold text-amber-400 font-mono">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
-					</div>
-					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-white text-[9px] lg:text-[10px] block">Support MA10</span>
-						<span class="font-bold text-cyan-400 font-mono">Rp ${item.ma10.toLocaleString('id-ID')}</span>
-					</div>
-					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-white text-[9px] lg:text-[10px] block">Target Profit (TP1/TP2)</span>
-						<span class="font-bold text-emerald-300 font-mono">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
-					</div>
-					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-white text-[9px] lg:text-[10px] block">Stop Loss (SL)</span>
-						<span class="font-bold text-rose-400 font-mono">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
-					</div>
-				</div>
-
-				<div class="bg-slate-900/50 p-2.5 lg:p-3 rounded border border-slate-800 text-[10px] lg:text-xs text-slate-300 leading-relaxed space-y-1">
-					<span class="text-amber-400 font-bold block text-[10px] lg:text-[11px]">ANALISIS TEKNIKAL OTOMATIS:</span>
-					<p>${alasanTeknikal}</p>
-				</div>
-			</div>
-		`;
-	});
-
-	container.innerHTML = htmlContent;
-	if (window.lucide) lucide.createIcons();
-}
-
-function selectTickerFromRadar(ticker) {
-	document.getElementById('stockSearch').value = ticker;
-	searchStock(true);
-	switchTab('ai');
-}
-
-async function fetchStockNewsForAI(ticker) {
-	const cacheKey = `news_cache_${ticker}`;
-	const cached = localStorage.getItem(cacheKey);
-
-	if (cached) {
-		try {
-			const parsed = JSON.parse(cached);
-			if (Date.now() - parsed.timestamp < 10 * 60 * 1000) {
-				document.getElementById('aiBeritaList').innerHTML = parsed.html;
-				return;
-			}
-		} catch(e){}
-	}
-
-	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
-	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
-
-	try {
-		const res = await fetch(apiUrl);
-		const data = await res.json();
-
-		if (data.status === 'ok' && data.items && data.items.length > 0) {
-			let beritaHTML = '';
-			data.items.slice(0, 4).forEach(item => {
-				const source = item.author || 'Media Nasional';
-				const pubDate = new Date(item.pubDate).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
-				beritaHTML += `<div class="bg-slate-900/50 p-2 rounded border border-slate-800/80">• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
-			});
-			document.getElementById('aiBeritaList').innerHTML = beritaHTML;
-			localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), html: beritaHTML }));
-		} else {
-			document.getElementById('aiBeritaList').innerHTML = `<div>Belum ada rilis berita khusus untuk emiten ${ticker} dalam 24 jam terakhir.</div>`;
-		}
-	} catch (e) {
-		document.getElementById('aiBeritaList').innerHTML = `<div>Gagal memuat berita terkini. Gunakan indikator teknikal pada chart.</div>`;
-	}
-}
-
-// ==================== REVISI: SMART ALERT & BROWSER PUSH NOTIFICATION SYSTEM ====================
+// ==================== REVISI BESAR LOGIKA SMART ALERT: IMPLEMEN 4 LEVEL LENGKAP ====================
 function checkNotificationStatus() {
 	const btn = document.getElementById('btnToggleNotification');
 	if (!btn) return;
@@ -1426,7 +1210,7 @@ function requestNotificationPermission() {
 			AudioFX.playSuccess();
 		} else if (permission === "denied") {
 			AudioFX.playAlert();
-			alert("Izin notifikasi telah ditolak. Silakan izinkan melalui pengaturan browser Anda.");
+			alert("Izin notifikasi telah ditolak.");
 		}
 	});
 }
@@ -1491,7 +1275,7 @@ function renderAlertList() {
 	const alerts = getGlobalAlerts();
 
 	if (alerts.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-3 font-sans text-xs">Belum ada alert harga tersimpan untuk saham manapun. Gunakan tombol "Sync Data AI" atau form di atas.</div>`;
+		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-3 font-sans text-xs">Belum ada alert harga tersimpan untuk saham manapun. Tekan tombol "Sync Data AI" atau " + Pasang Semua Alert".</div>`;
 		return;
 	}
 
@@ -1532,9 +1316,8 @@ function renderAlertList() {
 	});
 }
 
-// REVISI LOGIKA SYNC DATA AI: OTOMATIS MEMASUKKAN 4 LEVEL UTAMA (SL, SUP, RES, TP2) SEKALIGUS
+// FUNGSI SYNC UNTUK MENGISI 4 LEVEL (SL, SUPPORT, RESIST2, TP2) SECARA OTOMATIS KE DALAM FORM & ALERT
 function syncAlertDataFromAI() {
-	const presetBox = document.getElementById('alertPresetContainer');
 	if (!globalStockData) {
 		AudioFX.playAlert();
 		alert(`Memuat data teknikal $${currentTicker}... Mohon tunggu sejenak.`);
@@ -1544,92 +1327,68 @@ function syncAlertDataFromAI() {
 	const price = roundToBEITick(globalStockData.price);
 	const sl = roundToBEITick(price * 0.92, 'floor');
 	const sup1 = roundToBEITick(price * 0.94, 'floor');
-	const res1 = roundToBEITick(price * 1.05, 'ceil');
+	const res2 = roundToBEITick(price * 1.08, 'ceil');
 	const tp2 = roundToBEITick(price * 1.14, 'ceil');
 
-	document.getElementById('presetSLVal').innerText = sl.toLocaleString('id-ID');
-	document.getElementById('presetSUPVal').innerText = sup1.toLocaleString('id-ID');
-	document.getElementById('presetRESVal').innerText = res1.toLocaleString('id-ID');
-	document.getElementById('presetTP2Val').innerText = tp2.toLocaleString('id-ID');
+	document.getElementById('presetSLVal').innerText = `Rp ${sl.toLocaleString('id-ID')}`;
+	document.getElementById('presetSUPVal').innerText = `Rp ${sup1.toLocaleString('id-ID')}`;
+	document.getElementById('presetRESVal').innerText = `Rp ${res2.toLocaleString('id-ID')}`;
+	document.getElementById('presetTP2Val').innerText = `Rp ${tp2.toLocaleString('id-ID')}`;
 
-	presetBox.classList.remove('hidden');
+	document.getElementById('alertSLInput').value = sl;
+	document.getElementById('alertSUPInput').value = sup1;
+	document.getElementById('alertRESInput').value = res2;
+	document.getElementById('alertTP2Input').value = tp2;
+
+	addMultiLevelAlerts(true);
+}
+
+// MENAMBAHKAN 4 LEVEL HARGA KE DAFTAR ALERT GLOBAL
+function addMultiLevelAlerts(isFromSync = false) {
+	const slPrice = roundToBEITick(parseFloat(document.getElementById('alertSLInput').value));
+	const supPrice = roundToBEITick(parseFloat(document.getElementById('alertSUPInput').value));
+	const resPrice = roundToBEITick(parseFloat(document.getElementById('alertRESInput').value));
+	const tp2Price = roundToBEITick(parseFloat(document.getElementById('alertTP2Input').value));
 
 	let alerts = getGlobalAlerts();
 	const now = new Date();
 	const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
 
-	// Pasang 4 level sekaligus ke daftar alert
-	const itemsToAdd = [
-		{ type: 'SL', price: sl, notify: true },
-		{ type: 'SUP', price: sup1, notify: false },
-		{ type: 'RES', price: res1, notify: true },
-		{ type: 'TP2', price: tp2, notify: true }
+	const levels = [
+		{ type: 'SL', price: slPrice, notify: true },
+		{ type: 'SUP', price: supPrice, notify: false }, // Support sebagai acuan tanpa push notif
+		{ type: 'RES', price: resPrice, notify: true },
+		{ type: 'TP2', price: tp2Price, notify: true }
 	];
 
-	itemsToAdd.forEach(item => {
-		const exists = alerts.some(a => a.ticker === currentTicker && a.price === item.price);
-		if (!exists) {
-			alerts.unshift({
-				id: Date.now() + Math.random(),
-				ticker: currentTicker,
-				price: item.price,
-				type: item.type,
-				notify: item.notify,
-				active: true,
-				triggered: false,
-				createdDate: dateStr
-			});
+	let countAdded = 0;
+	levels.forEach(item => {
+		if (item.price && item.price > 0) {
+			const exists = alerts.some(a => a.ticker === currentTicker && a.price === item.price && a.type === item.type);
+			if (!exists) {
+				alerts.unshift({
+					id: Date.now() + Math.random(),
+					ticker: currentTicker,
+					price: item.price,
+					type: item.type,
+					notify: item.notify,
+					active: true,
+					triggered: false,
+					createdDate: dateStr
+				});
+				countAdded++;
+			}
 		}
 	});
 
 	saveGlobalAlerts(alerts);
 	AudioFX.playSuccess();
-	alert(`4 Level Alert (SL, Support, Resist, TP2) untuk $${currentTicker} berhasil di-sync ke daftar alert!`);
-}
 
-function applyAlertPreset(type) {
-	if (!globalStockData) return;
-	const price = roundToBEITick(globalStockData.price);
-	let target = price;
-
-	if (type === 'SL') target = roundToBEITick(price * 0.92, 'floor');
-	if (type === 'SUP') target = roundToBEITick(price * 0.94, 'floor');
-	if (type === 'RES') target = roundToBEITick(price * 1.05, 'ceil');
-	if (type === 'TP2') target = roundToBEITick(price * 1.14, 'ceil');
-
-	document.getElementById('alertPriceInput').value = target;
-	AudioFX.playClick();
-}
-
-function addPriceAlert() {
-	const priceInput = document.getElementById('alertPriceInput');
-	const rawPrice = parseFloat(priceInput.value);
-	const price = roundToBEITick(rawPrice);
-
-	if (!price || price <= 0) {
-		AudioFX.playAlert();
-		alert("Masukkan harga target yang valid!");
-		return;
+	if (countAdded > 0) {
+		alert(`Berhasil memasang ${countAdded} level alert untuk $${currentTicker}!`);
+	} else {
+		alert(`Alert level untuk $${currentTicker} sudah pernah dipasang sebelumnya.`);
 	}
-
-	let alerts = getGlobalAlerts();
-	const now = new Date();
-	const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
-
-	alerts.unshift({
-		id: Date.now(),
-		ticker: currentTicker,
-		price: price,
-		type: 'CUSTOM',
-		notify: true,
-		active: true,
-		triggered: false,
-		createdDate: dateStr
-	});
-
-	saveGlobalAlerts(alerts);
-	priceInput.value = '';
-	AudioFX.playSuccess();
 }
 
 function toggleAlertStatus(alertId) {
@@ -1656,7 +1415,7 @@ function clearAllGlobalAlerts() {
 	}
 }
 
-// REVISI: FILTER PUSH NOTIFIKASI HANYA PADA STOP LOSS, RESISTANCE2, DAN TAKE PROFIT 2
+// FILTRASI PUSH NOTIFIKASI HANYA UNTUK SL, RESISTANCE 2, DAN TAKE PROFIT 2
 function checkPriceAlertsRealtime(ticker, currentPrice) {
 	if (!currentPrice || currentPrice <= 0) return;
 
@@ -1669,7 +1428,7 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 			const isNotifyTriggered = alertObj.notify !== false && (alertType === 'SL' || alertType === 'RES' || alertType === 'TP2' || alertType === 'CUSTOM');
 
 			if (isNotifyTriggered) {
-				const alertMsg = `🎯 Sinyal Alert [${alertType}] $${ticker}! Harga terkini telah menyentuh/menembus target Rp ${alertObj.price.toLocaleString('id-ID')}`;
+				const alertMsg = `🎯 Sinyal Alert [${alertType}] $${ticker}! Harga terkini telah menyentuh target Rp ${alertObj.price.toLocaleString('id-ID')}`;
 				AudioFX.playSuccess();
 				sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
 			}
