@@ -673,7 +673,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		descEl.innerHTML = `
 			<p class="leading-relaxed"><strong>Mengapa Verdik Ini Diberikan?</strong> Saham ${ticker} saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong>Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
-			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong>Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} (Support Kuat 20 Hari) hingga Rp ${stockData.high20.toLocaleString('id-ID')} (Resistance Tertinggi 20 Hari). Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksekusi *Trading Plan*.</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong>Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} (Support Kuat 20 Hari) hingga Rp ${stockData.high20.toLocaleString('id-ID')} (Resistance Tertinggi 20 Hari). Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksecusi *Trading Plan*.</p>
 		`;
 
 		buktiEl.innerHTML = `
@@ -752,7 +752,6 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	AudioFX.playSuccess();
 }
 
-// COOLDOWN LOGIC EXPORT CARD (10 DETIK)
 function startExportCardCooldown(seconds = 10) {
 	const btn = document.getElementById('btnExportCard');
 	if (!btn) return;
@@ -781,7 +780,6 @@ function startExportCardCooldown(seconds = 10) {
 	}, 1000);
 }
 
-// FITUR: EXPORT TRADING PLAN CARD
 function exportTradingCard() {
 	const btn = document.getElementById('btnExportCard');
 	if (btn && btn.disabled) return;
@@ -833,7 +831,6 @@ function exportTradingCard() {
 	});
 }
 
-// DAFTAR RADAR & WATCHLIST LENGKAP UNTUK SERUAN KOMPARASI
 const radarWatchlist = [
 	'MDIA', 'KOTA', 'BNBR', 'JGLE', 'ELTY', 'BBCA', 'BBRI', 'BMRI', 'BBNI', 'BBTN',
 	'BRIS', 'ARTO', 'BJTM', 'BJBR', 'BDMN', 'NISP', 'BNGA', 'BTPN', 'PNBN', 'PNLF',
@@ -858,7 +855,6 @@ const radarWatchlist = [
 ];
 const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
 
-// COOLDOWN LOGIC REFRESH PEER DATA (12 DETIK)
 function startPeerRefreshCooldown(seconds = 12) {
 	const btn = document.getElementById('btnRefreshPeer');
 	if (!btn) return;
@@ -887,7 +883,6 @@ function startPeerRefreshCooldown(seconds = 12) {
 	}, 1000);
 }
 
-// FITUR NO. 2: PEER KOMPARASI HARGA SERUPA (DIREAKSIKAN HANYA VIA TOMBOL REFRESH)
 async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	if (isManualRefresh) {
 		const btn = document.getElementById('btnRefreshPeer');
@@ -974,7 +969,6 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	body.innerHTML = rowsHTML || `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-sans">Tidak ditemukan saham dengan range harga serupa.</td></tr>`;
 }
 
-// FITUR JOURNAL TRADING & WIN RATE TRACKER
 function getJournalData() {
 	return JSON.parse(localStorage.getItem('stockid_trading_journal') || '[]');
 }
@@ -1155,7 +1149,6 @@ function calculateSmartRRR() {
 	}
 }
 
-// LOGIKA DROPDOWN SUGGESTION PENCARIAN
 function initSearchSuggestions() {
 	const input = document.getElementById('stockSearch');
 	const box = document.getElementById('searchSuggestionsBox');
@@ -1205,7 +1198,6 @@ function selectSuggestion(ticker) {
 	searchStock(true);
 }
 
-// FITUR NO. 3: RADAR BANDAR AUTOMATIC FULL SCAN
 async function startRadarProcess() {
 	if (isRadarScanning) return;
 	isRadarScanning = true;
@@ -1396,7 +1388,7 @@ async function fetchStockNewsForAI(ticker) {
 	}
 }
 
-// ==================== FITUR 1: SMART ALERT & BROWSER PUSH NOTIFICATION SYSTEM (GLOBAL LIST & AI SYNC) ====================
+// ==================== REVISI: SMART ALERT & BROWSER PUSH NOTIFICATION SYSTEM ====================
 function checkNotificationStatus() {
 	const btn = document.getElementById('btnToggleNotification');
 	if (!btn) return;
@@ -1442,7 +1434,6 @@ function requestNotificationPermission() {
 function sendBrowserPushNotification(title, message) {
 	if ("Notification" in window && Notification.permission === "granted") {
 		try {
-			// Menggunakan Web Notification API dengan fallback ServiceWorker jika didukung
 			if (navigator.serviceWorker && navigator.serviceWorker.controller) {
 				navigator.serviceWorker.ready.then(registration => {
 					registration.showNotification(title, {
@@ -1479,39 +1470,10 @@ function testPushNotification() {
 	}
 }
 
-// LOGIKA PENYIMPANAN GLOBAL ALERT UNTUK SEMUA SAHAM
 function getGlobalAlerts() {
 	let raw = localStorage.getItem('stockid_global_alerts');
 	if (raw) {
 		try { return JSON.parse(raw); } catch(e){}
-	}
-	
-	// Migrasi data alert lama bertahap jika ada
-	let oldAlerts = [];
-	for (let i = 0; i < localStorage.length; i++) {
-		const key = localStorage.key(i);
-		if (key && key.startsWith('alerts_')) {
-			const t = key.replace('alerts_', '');
-			try {
-				const arr = JSON.parse(localStorage.getItem(key));
-				arr.forEach(item => {
-					const price = typeof item === 'object' ? item.price : item;
-					const active = typeof item === 'object' ? item.active : true;
-					oldAlerts.push({
-						id: Date.now() + Math.random(),
-						ticker: t,
-						price: price,
-						active: active,
-						createdDate: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' })
-					});
-				});
-			} catch(e){}
-		}
-	}
-	
-	if (oldAlerts.length > 0) {
-		localStorage.setItem('stockid_global_alerts', JSON.stringify(oldAlerts));
-		return oldAlerts;
 	}
 	return [];
 }
@@ -1529,7 +1491,7 @@ function renderAlertList() {
 	const alerts = getGlobalAlerts();
 
 	if (alerts.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-3 font-sans text-xs">Belum ada alert harga tersimpan untuk saham manapun. Gunakan form di atas untuk memasang alert baru.</div>`;
+		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-3 font-sans text-xs">Belum ada alert harga tersimpan untuk saham manapun. Gunakan tombol "Sync Data AI" atau form di atas.</div>`;
 		return;
 	}
 
@@ -1538,14 +1500,22 @@ function renderAlertList() {
 		const targetPrice = alertObj.price;
 		const isActive = alertObj.active;
 		const isCurrentTicker = alertObj.ticker === currentTicker;
+		const typeLabel = alertObj.type || 'TARGET';
+
+		let typeBadgeClass = 'bg-slate-800 text-slate-300 border-slate-700';
+		if (typeLabel === 'SL') typeBadgeClass = 'bg-rose-500/20 text-rose-400 border-rose-500/30';
+		if (typeLabel === 'SUP') typeBadgeClass = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+		if (typeLabel === 'RES') typeBadgeClass = 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30';
+		if (typeLabel === 'TP2') typeBadgeClass = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
 
 		container.innerHTML += `
 			<div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 ${isActive ? 'border-l-4 border-l-emerald-400' : 'opacity-60'}">
 				<div>
-					<div class="flex items-center gap-2 mb-0.5">
+					<div class="flex items-center gap-1.5 mb-0.5">
 						<button onclick="selectSuggestion('${alertObj.ticker}')" class="font-bold text-amber-400 font-mono text-xs hover:underline cursor-pointer">
 							&dollar;${alertObj.ticker}
 						</button>
+						<span class="text-[9px] font-bold px-1.5 py-0.2 rounded border font-sans ${typeBadgeClass}">${typeLabel}</span>
 						${isCurrentTicker ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded font-sans">Aktif</span>' : ''}
 					</div>
 					<span class="text-[10px] text-slate-400 block font-sans">Target Trigger:</span>
@@ -1562,6 +1532,7 @@ function renderAlertList() {
 	});
 }
 
+// REVISI LOGIKA SYNC DATA AI: OTOMATIS MEMASUKKAN 4 LEVEL UTAMA (SL, SUP, RES, TP2) SEKALIGUS
 function syncAlertDataFromAI() {
 	const presetBox = document.getElementById('alertPresetContainer');
 	if (!globalStockData) {
@@ -1582,8 +1553,38 @@ function syncAlertDataFromAI() {
 	document.getElementById('presetTP2Val').innerText = tp2.toLocaleString('id-ID');
 
 	presetBox.classList.remove('hidden');
-	document.getElementById('alertPriceInput').value = tp2;
+
+	let alerts = getGlobalAlerts();
+	const now = new Date();
+	const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
+
+	// Pasang 4 level sekaligus ke daftar alert
+	const itemsToAdd = [
+		{ type: 'SL', price: sl, notify: true },
+		{ type: 'SUP', price: sup1, notify: false },
+		{ type: 'RES', price: res1, notify: true },
+		{ type: 'TP2', price: tp2, notify: true }
+	];
+
+	itemsToAdd.forEach(item => {
+		const exists = alerts.some(a => a.ticker === currentTicker && a.price === item.price);
+		if (!exists) {
+			alerts.unshift({
+				id: Date.now() + Math.random(),
+				ticker: currentTicker,
+				price: item.price,
+				type: item.type,
+				notify: item.notify,
+				active: true,
+				triggered: false,
+				createdDate: dateStr
+			});
+		}
+	});
+
+	saveGlobalAlerts(alerts);
 	AudioFX.playSuccess();
+	alert(`4 Level Alert (SL, Support, Resist, TP2) untuk $${currentTicker} berhasil di-sync ke daftar alert!`);
 }
 
 function applyAlertPreset(type) {
@@ -1619,6 +1620,8 @@ function addPriceAlert() {
 		id: Date.now(),
 		ticker: currentTicker,
 		price: price,
+		type: 'CUSTOM',
+		notify: true,
 		active: true,
 		triggered: false,
 		createdDate: dateStr
@@ -1653,6 +1656,7 @@ function clearAllGlobalAlerts() {
 	}
 }
 
+// REVISI: FILTER PUSH NOTIFIKASI HANYA PADA STOP LOSS, RESISTANCE2, DAN TAKE PROFIT 2
 function checkPriceAlertsRealtime(ticker, currentPrice) {
 	if (!currentPrice || currentPrice <= 0) return;
 
@@ -1661,10 +1665,14 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 
 	alerts.forEach((alertObj) => {
 		if (alertObj.ticker === ticker && alertObj.active && currentPrice >= alertObj.price) {
-			const alertMsg = `🎯 Sinyal Alert $${ticker}! Harga terkini telah menyentuh/menembus target Rp ${alertObj.price.toLocaleString('id-ID')}`;
-			
-			AudioFX.playSuccess();
-			sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
+			const alertType = alertObj.type || 'TARGET';
+			const isNotifyTriggered = alertObj.notify !== false && (alertType === 'SL' || alertType === 'RES' || alertType === 'TP2' || alertType === 'CUSTOM');
+
+			if (isNotifyTriggered) {
+				const alertMsg = `🎯 Sinyal Alert [${alertType}] $${ticker}! Harga terkini telah menyentuh/menembus target Rp ${alertObj.price.toLocaleString('id-ID')}`;
+				AudioFX.playSuccess();
+				sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
+			}
 
 			alertObj.active = false;
 			alertObj.triggered = true;
@@ -1767,7 +1775,6 @@ function switchTab(tabName) {
 		}
 	});
 
-	// DIUBAH: Peer Komparasi TIDAK LAGI dimuat otomatis saat pindah tab (sesuai permintaan user)
 	if (tabName === 'journal') renderJournalTable();
 	if (tabName === 'alert') renderAlertList();
 }
@@ -1845,7 +1852,6 @@ function searchStock(bypassCooldown = false) {
 	}
 }
 
-// FITUR: SYSTEM BACKGROUND PRE-FETCHER & ALERT CHECKER
 function startBackgroundAutoCache() {
 	const FIVE_MINUTES = 5 * 60 * 1000;
 	
