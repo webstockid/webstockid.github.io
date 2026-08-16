@@ -444,6 +444,7 @@ function renderFundamentalWidget(ticker) {
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+// OPTIMASI REALTIME DATA FETCHING
 async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const cachedData = getCachedStockData(ticker);
 	if (cachedData && !forceFetch) return cachedData;
@@ -571,7 +572,7 @@ function showAISkeletonLoading() {
 	document.getElementById('tpProgressPercent').innerText = `Menghitung posisi teknikal...`;
 }
 
-// GENERATE AI SIGNAL & OTOMATIS AUTO-SYNC ALERT HARGA
+// LOGIKA GENERATE AI SIGNAL & EKSKUSI SMART ALERT CHECK
 async function generateAISignal(ticker, isManualSearch = false) {
 	const now = new Date();
 	const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
@@ -587,14 +588,12 @@ async function generateAISignal(ticker, isManualSearch = false) {
 	if (cachedData) {
 		globalStockData = cachedData;
 		renderAISignalUI(ticker, cachedData, true);
-		autoSyncStockAlertFromAI(ticker, cachedData.price);
 		checkPriceAlertsRealtime(ticker, cachedData.price);
 
 		fetchRealtimeStockData(ticker, true).then(freshData => {
 			if (freshData) {
 				globalStockData = freshData;
 				renderAISignalUI(ticker, freshData, false);
-				autoSyncStockAlertFromAI(ticker, freshData.price);
 				checkPriceAlertsRealtime(ticker, freshData.price);
 			}
 		});
@@ -606,13 +605,13 @@ async function generateAISignal(ticker, isManualSearch = false) {
 	const stockData = await fetchRealtimeStockData(ticker, false);
 	if (stockData && stockData.ticker === ticker) {
 		globalStockData = stockData;
-		autoSyncStockAlertFromAI(ticker, stockData.price);
 		checkPriceAlertsRealtime(ticker, stockData.price);
 	}
 
 	renderAISignalUI(ticker, stockData, false);
 }
 
+// RENDER UI HASIL ANALISA
 function renderAISignalUI(ticker, stockData, isCached) {
 	const verdikEl = document.getElementById('aiVerdikText');
 	const scoreEl = document.getElementById('aiScoreBadge');
@@ -753,6 +752,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	AudioFX.playSuccess();
 }
 
+// COOLDOWN LOGIC EXPORT CARD (10 DETIK)
 function startExportCardCooldown(seconds = 10) {
 	const btn = document.getElementById('btnExportCard');
 	if (!btn) return;
@@ -781,6 +781,7 @@ function startExportCardCooldown(seconds = 10) {
 	}, 1000);
 }
 
+// FITUR: EXPORT TRADING PLAN CARD
 function exportTradingCard() {
 	const btn = document.getElementById('btnExportCard');
 	if (btn && btn.disabled) return;
@@ -832,6 +833,7 @@ function exportTradingCard() {
 	});
 }
 
+// DAFTAR RADAR & WATCHLIST LENGKAP UNTUK SERUAN KOMPARASI
 const radarWatchlist = [
 	'MDIA', 'KOTA', 'BNBR', 'JGLE', 'ELTY', 'BBCA', 'BBRI', 'BMRI', 'BBNI', 'BBTN',
 	'BRIS', 'ARTO', 'BJTM', 'BJBR', 'BDMN', 'NISP', 'BNGA', 'BTPN', 'PNBN', 'PNLF',
@@ -856,6 +858,7 @@ const radarWatchlist = [
 ];
 const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
 
+// COOLDOWN LOGIC REFRESH PEER DATA (12 DETIK)
 function startPeerRefreshCooldown(seconds = 12) {
 	const btn = document.getElementById('btnRefreshPeer');
 	if (!btn) return;
@@ -884,6 +887,7 @@ function startPeerRefreshCooldown(seconds = 12) {
 	}, 1000);
 }
 
+// FITUR NO. 2: PEER KOMPARASI HARGA SERUPA (DIREAKSIKAN HANYA VIA TOMBOL REFRESH)
 async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	if (isManualRefresh) {
 		const btn = document.getElementById('btnRefreshPeer');
@@ -893,6 +897,8 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 
 	const body = document.getElementById('peerTableBody');
 	document.getElementById('peerTickerLabel').innerText = targetTicker;
+	const refLabel = document.getElementById('peerTickerRef');
+	if (refLabel) refLabel.innerText = targetTicker;
 
 	body.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 font-sans"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1 text-cyan-400"></i> Memuat saham-saham dengan harga serupa...</td></tr>`;
 	if (window.lucide) lucide.createIcons();
@@ -1082,8 +1088,8 @@ function renderJournalTable() {
 function autoFillRRRFromAI() {
 	if (globalStockData) {
 		const price = roundToBEITick(globalStockData.price);
-		const sl = roundToBEITick(price * 0.92, 'floor');
-		const tp = roundToBEITick(price * 1.06, 'ceil');
+		const sl = roundToBEITick(price * 0.95, 'floor');
+		const tp = roundToBEITick(price * 1.15, 'ceil');
 
 		document.getElementById('rrrEntry').value = price;
 		document.getElementById('rrrSL').value = sl;
@@ -1149,6 +1155,7 @@ function calculateSmartRRR() {
 	}
 }
 
+// LOGIKA DROPDOWN SUGGESTION PENCARIAN
 function initSearchSuggestions() {
 	const input = document.getElementById('stockSearch');
 	const box = document.getElementById('searchSuggestionsBox');
@@ -1198,6 +1205,7 @@ function selectSuggestion(ticker) {
 	searchStock(true);
 }
 
+// FITUR NO. 3: RADAR BANDAR AUTOMATIC FULL SCAN
 async function startRadarProcess() {
 	if (isRadarScanning) return;
 	isRadarScanning = true;
@@ -1236,7 +1244,9 @@ async function startRadarProcess() {
 			renderRadarItems(validData);
 		}
 
-		if (validData.length >= 10) break;
+		if (validData.length >= 10) {
+			break;
+		}
 	}
 
 	isRadarScanning = false;
@@ -1386,7 +1396,7 @@ async function fetchStockNewsForAI(ticker) {
 	}
 }
 
-// ==================== FITUR 1: REVISI ALERT SYSTEM & PUSH NOTIFICATION (SYNC AI & BLOCK DIV PER SAHAM) ====================
+// ==================== FITUR 1: SMART ALERT & BROWSER PUSH NOTIFICATION SYSTEM (GLOBAL LIST & AI SYNC) ====================
 function checkNotificationStatus() {
 	const btn = document.getElementById('btnToggleNotification');
 	if (!btn) return;
@@ -1432,6 +1442,7 @@ function requestNotificationPermission() {
 function sendBrowserPushNotification(title, message) {
 	if ("Notification" in window && Notification.permission === "granted") {
 		try {
+			// Menggunakan Web Notification API dengan fallback ServiceWorker jika didukung
 			if (navigator.serviceWorker && navigator.serviceWorker.controller) {
 				navigator.serviceWorker.ready.then(registration => {
 					registration.showNotification(title, {
@@ -1463,16 +1474,44 @@ function testPushNotification() {
 	if (Notification.permission !== "granted") {
 		requestNotificationPermission();
 	} else {
-		sendBrowserPushNotification("Stock ID Screener Test", `Notifikasi tes beres! Sistem siap menginfokan perubahan target harga saham $${currentTicker}.`);
+		sendBrowserPushNotification("Stock ID Screener Test", `Notifikasi tes beres! Sistem siap menginfokan perubahan harga saham $${currentTicker}.`);
 		AudioFX.playSuccess();
 	}
 }
 
-// MANAGEMENT DATA ALERT BERBASIS SYNC AI & STORE PER BLOCK SAHAM
+// LOGIKA PENYIMPANAN GLOBAL ALERT UNTUK SEMUA SAHAM
 function getGlobalAlerts() {
 	let raw = localStorage.getItem('stockid_global_alerts');
 	if (raw) {
 		try { return JSON.parse(raw); } catch(e){}
+	}
+	
+	// Migrasi data alert lama bertahap jika ada
+	let oldAlerts = [];
+	for (let i = 0; i < localStorage.length; i++) {
+		const key = localStorage.key(i);
+		if (key && key.startsWith('alerts_')) {
+			const t = key.replace('alerts_', '');
+			try {
+				const arr = JSON.parse(localStorage.getItem(key));
+				arr.forEach(item => {
+					const price = typeof item === 'object' ? item.price : item;
+					const active = typeof item === 'object' ? item.active : true;
+					oldAlerts.push({
+						id: Date.now() + Math.random(),
+						ticker: t,
+						price: price,
+						active: active,
+						createdDate: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' })
+					});
+				});
+			} catch(e){}
+		}
+	}
+	
+	if (oldAlerts.length > 0) {
+		localStorage.setItem('stockid_global_alerts', JSON.stringify(oldAlerts));
+		return oldAlerts;
 	}
 	return [];
 }
@@ -1482,95 +1521,112 @@ function saveGlobalAlerts(alerts) {
 	renderAlertList();
 }
 
-// PROSES AUTO SYNC 4 PRICE TARGETS DARI AI SIGNAL
-function autoSyncStockAlertFromAI(ticker, price) {
-	if (!price || price <= 0) return;
-
-	const sl = roundToBEITick(price * 0.92, 'floor');
-	const sup1 = roundToBEITick(price * 0.94, 'floor');
-	const res2 = roundToBEITick(price * 1.08, 'ceil');
-	const tp2 = roundToBEITick(price * 1.14, 'ceil');
-
-	let alerts = getGlobalAlerts();
-	let existingIndex = alerts.findIndex(item => item.ticker === ticker);
-
-	if (existingIndex >= 0) {
-		alerts[existingIndex].sl = sl;
-		alerts[existingIndex].sup = sup1;
-		alerts[existingIndex].res2 = res2;
-		alerts[existingIndex].tp2 = tp2;
-	} else {
-		alerts.unshift({
-			id: Date.now(),
-			ticker: ticker,
-			active: true,
-			sl: sl,
-			sup: sup1,
-			res2: res2,
-			tp2: tp2,
-			triggeredTarget: null
-		});
-	}
-
-	saveGlobalAlerts(alerts);
-}
-
-// RENDER BLOCK DIV UNTUK SETIAP SAHAM DALAM ALERT SYSTEM
 function renderAlertList() {
 	const container = document.getElementById('alertListContainer');
-	if (!container) return;
+	const formTickerLabel = document.getElementById('alertFormTicker');
+	if (formTickerLabel) formTickerLabel.innerText = currentTicker;
 
 	const alerts = getGlobalAlerts();
 
 	if (alerts.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 py-6 md:col-span-2 font-sans text-xs">Belum ada block alert saham tersimpan. Cari saham untuk otomatis menarik data Sync AI.</div>`;
+		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-3 font-sans text-xs">Belum ada alert harga tersimpan untuk saham manapun. Gunakan form di atas untuk memasang alert baru.</div>`;
 		return;
 	}
 
 	container.innerHTML = '';
 	alerts.forEach((alertObj) => {
+		const targetPrice = alertObj.price;
 		const isActive = alertObj.active;
 		const isCurrentTicker = alertObj.ticker === currentTicker;
 
 		container.innerHTML += `
-			<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3 relative ${isActive ? 'border-l-4 border-l-emerald-400' : 'opacity-60'}">
-				<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
-					<div class="flex items-center gap-2">
-						<button onclick="selectSuggestion('${alertObj.ticker}')" class="font-black text-amber-400 font-mono text-base hover:underline cursor-pointer">
+			<div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 ${isActive ? 'border-l-4 border-l-emerald-400' : 'opacity-60'}">
+				<div>
+					<div class="flex items-center gap-2 mb-0.5">
+						<button onclick="selectSuggestion('${alertObj.ticker}')" class="font-bold text-amber-400 font-mono text-xs hover:underline cursor-pointer">
 							&dollar;${alertObj.ticker}
 						</button>
-						${isCurrentTicker ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-sans font-bold">Aktif Dilihat</span>' : ''}
+						${isCurrentTicker ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded font-sans">Aktif</span>' : ''}
 					</div>
-					
-					<div class="flex items-center gap-2 font-sans">
-						<button onclick="toggleAlertStatus(${alertObj.id})" class="text-[10px] ${isActive ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'} px-2.5 py-1 rounded-md border font-bold transition">
-							${isActive ? 'PUSH NOTIF: ON' : 'PUSH NOTIF: OFF'}
-						</button>
-						<button onclick="removePriceAlert(${alertObj.id})" class="text-slate-400 hover:text-rose-400 font-bold px-2 py-1 transition">✕</button>
-					</div>
+					<span class="text-[10px] text-slate-400 block font-sans">Target Trigger:</span>
+					<strong class="text-emerald-400 font-mono text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</strong>
 				</div>
-
-				<div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
-					<div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800 flex justify-between items-center">
-						<span class="text-rose-400 font-sans text-[10px]">Stop Loss:</span>
-						<strong class="text-rose-400">Rp ${alertObj.sl.toLocaleString('id-ID')}</strong>
-					</div>
-					<div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800 flex justify-between items-center">
-						<span class="text-amber-400 font-sans text-[10px]">Support/Entry:</span>
-						<strong class="text-amber-400">Rp ${alertObj.sup.toLocaleString('id-ID')}</strong>
-					</div>
-					<div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800 flex justify-between items-center">
-						<span class="text-cyan-400 font-sans text-[10px]">Resistance 2:</span>
-						<strong class="text-cyan-400">Rp ${alertObj.res2.toLocaleString('id-ID')}</strong>
-					</div>
-					<div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800 flex justify-between items-center">
-						<span class="text-emerald-400 font-sans text-[10px]">Take Profit 2:</span>
-						<strong class="text-emerald-400">Rp ${alertObj.tp2.toLocaleString('id-ID')}</strong>
-					</div>
+				<div class="flex items-center gap-2 font-sans">
+					<button onclick="toggleAlertStatus(${alertObj.id})" class="text-[10px] ${isActive ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'} px-2 py-1 rounded-md border font-bold transition">
+						${isActive ? 'AKTIF' : 'OFF'}
+					</button>
+					<button onclick="removePriceAlert(${alertObj.id})" class="text-slate-400 hover:text-rose-400 font-bold px-2 py-1 transition">✕</button>
 				</div>
 			</div>
 		`;
 	});
+}
+
+function syncAlertDataFromAI() {
+	const presetBox = document.getElementById('alertPresetContainer');
+	if (!globalStockData) {
+		AudioFX.playAlert();
+		alert(`Memuat data teknikal $${currentTicker}... Mohon tunggu sejenak.`);
+		return;
+	}
+
+	const price = roundToBEITick(globalStockData.price);
+	const sl = roundToBEITick(price * 0.92, 'floor');
+	const sup1 = roundToBEITick(price * 0.94, 'floor');
+	const res1 = roundToBEITick(price * 1.05, 'ceil');
+	const tp2 = roundToBEITick(price * 1.14, 'ceil');
+
+	document.getElementById('presetSLVal').innerText = sl.toLocaleString('id-ID');
+	document.getElementById('presetSUPVal').innerText = sup1.toLocaleString('id-ID');
+	document.getElementById('presetRESVal').innerText = res1.toLocaleString('id-ID');
+	document.getElementById('presetTP2Val').innerText = tp2.toLocaleString('id-ID');
+
+	presetBox.classList.remove('hidden');
+	document.getElementById('alertPriceInput').value = tp2;
+	AudioFX.playSuccess();
+}
+
+function applyAlertPreset(type) {
+	if (!globalStockData) return;
+	const price = roundToBEITick(globalStockData.price);
+	let target = price;
+
+	if (type === 'SL') target = roundToBEITick(price * 0.92, 'floor');
+	if (type === 'SUP') target = roundToBEITick(price * 0.94, 'floor');
+	if (type === 'RES') target = roundToBEITick(price * 1.05, 'ceil');
+	if (type === 'TP2') target = roundToBEITick(price * 1.14, 'ceil');
+
+	document.getElementById('alertPriceInput').value = target;
+	AudioFX.playClick();
+}
+
+function addPriceAlert() {
+	const priceInput = document.getElementById('alertPriceInput');
+	const rawPrice = parseFloat(priceInput.value);
+	const price = roundToBEITick(rawPrice);
+
+	if (!price || price <= 0) {
+		AudioFX.playAlert();
+		alert("Masukkan harga target yang valid!");
+		return;
+	}
+
+	let alerts = getGlobalAlerts();
+	const now = new Date();
+	const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
+
+	alerts.unshift({
+		id: Date.now(),
+		ticker: currentTicker,
+		price: price,
+		active: true,
+		triggered: false,
+		createdDate: dateStr
+	});
+
+	saveGlobalAlerts(alerts);
+	priceInput.value = '';
+	AudioFX.playSuccess();
 }
 
 function toggleAlertStatus(alertId) {
@@ -1591,13 +1647,12 @@ function removePriceAlert(alertId) {
 }
 
 function clearAllGlobalAlerts() {
-	if (confirm("Apakah Anda yakin ingin menghapus SELURUH block alert saham?")) {
+	if (confirm("Apakah Anda yakin ingin menghapus SELURUH alert yang pernah dipasang?")) {
 		localStorage.removeItem('stockid_global_alerts');
 		renderAlertList();
 	}
 }
 
-// PROSES MEMERIKSA TARGET HARGA UNTUK PUSH NOTIFIKASI
 function checkPriceAlertsRealtime(ticker, currentPrice) {
 	if (!currentPrice || currentPrice <= 0) return;
 
@@ -1605,33 +1660,15 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 	let updated = false;
 
 	alerts.forEach((alertObj) => {
-		if (alertObj.ticker === ticker && alertObj.active) {
-			let matchedLabel = null;
-			let targetVal = 0;
+		if (alertObj.ticker === ticker && alertObj.active && currentPrice >= alertObj.price) {
+			const alertMsg = `🎯 Sinyal Alert $${ticker}! Harga terkini telah menyentuh/menembus target Rp ${alertObj.price.toLocaleString('id-ID')}`;
+			
+			AudioFX.playSuccess();
+			sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
 
-			if (currentPrice <= alertObj.sl) {
-				matchedLabel = "Stop Loss (SL)";
-				targetVal = alertObj.sl;
-			} else if (currentPrice >= alertObj.tp2) {
-				matchedLabel = "Take Profit 2 (TP2)";
-				targetVal = alertObj.tp2;
-			} else if (currentPrice >= alertObj.res2) {
-				matchedLabel = "Resistance 2";
-				targetVal = alertObj.res2;
-			} else if (Math.abs(currentPrice - alertObj.sup) <= (alertObj.sup * 0.005)) {
-				matchedLabel = "Support / Entry Zone";
-				targetVal = alertObj.sup;
-			}
-
-			if (matchedLabel) {
-				const alertMsg = `🎯 TRIGGER ALERT $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah mengenai target ${matchedLabel} (Rp ${targetVal.toLocaleString('id-ID')}).`;
-				
-				AudioFX.playSuccess();
-				sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
-
-				alertObj.triggeredTarget = matchedLabel;
-				updated = true;
-			}
+			alertObj.active = false;
+			alertObj.triggered = true;
+			updated = true;
 		}
 	});
 
@@ -1730,6 +1767,7 @@ function switchTab(tabName) {
 		}
 	});
 
+	// DIUBAH: Peer Komparasi TIDAK LAGI dimuat otomatis saat pindah tab (sesuai permintaan user)
 	if (tabName === 'journal') renderJournalTable();
 	if (tabName === 'alert') renderAlertList();
 }
@@ -1791,6 +1829,7 @@ function searchStock(bypassCooldown = false) {
 		document.getElementById('rrrTickerLabel').innerText = currentTicker;
 		document.getElementById('corpTickerLabel').innerText = currentTicker;
 		document.getElementById('peerTickerLabel').innerText = currentTicker;
+		document.getElementById('alertFormTicker').innerText = currentTicker;
 		
 		renderChart(currentTicker);
 		renderTechnicalGauge(currentTicker);
@@ -1806,6 +1845,7 @@ function searchStock(bypassCooldown = false) {
 	}
 }
 
+// FITUR: SYSTEM BACKGROUND PRE-FETCHER & ALERT CHECKER
 function startBackgroundAutoCache() {
 	const FIVE_MINUTES = 5 * 60 * 1000;
 	
@@ -1850,6 +1890,7 @@ document.getElementById('fundTickerLabel').innerText = currentTicker;
 document.getElementById('rrrTickerLabel').innerText = currentTicker;
 document.getElementById('corpTickerLabel').innerText = currentTicker;
 document.getElementById('peerTickerLabel').innerText = currentTicker;
+document.getElementById('alertFormTicker').innerText = currentTicker;
 
 renderChart(currentTicker);
 renderTechnicalGauge(currentTicker);
