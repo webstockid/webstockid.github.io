@@ -188,14 +188,13 @@
 			</div>
 		</div>
 
-		<!-- Fixed Search Bar Melayang dengan Dropdown Suggestion -->
+		<!-- Fixed Search Bar Melayang -->
 		<div class="sticky top-20 left-0 w-full z-20 glassmorphism border-b border-slate-800/80 py-3 px-4">
 			<div class="max-w-md lg:max-w-xl mx-auto relative" id="searchContainer">
 				<i data-lucide="search" class="absolute left-3.5 top-3 lg:top-3.5 w-4 h-4 lg:w-5 lg:h-5 text-white z-10"></i>
 				<input type="text" id="stockSearch" autocomplete="off" placeholder="Cari kode saham (MDIA, CUAN, RAJA, PANI, BBRI, ANTM...)" 
 					class="w-full bg-slate-800 text-sm lg:text-base border border-slate-700 rounded-lg pl-10 lg:pl-11 pr-24 py-2 lg:py-2.5 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
 				
-				<!-- Dropdown Menu Suggestions -->
 				<div id="searchSuggestionsBox" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl backdrop-blur-xl max-h-60 overflow-y-auto z-50 divide-y divide-slate-800/60 scrollbar-thin"></div>
 
 				<button onclick="searchStock()" class="absolute right-1.5 top-1.5 text-xs lg:text-sm bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold px-4 py-1.5 lg:py-2 rounded-md transition z-10">
@@ -225,36 +224,19 @@
 					</button>
 				</div>
 
-				<!-- RINGKASAN FITUR DALAM APLIKASI -->
 				<div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3.5 space-y-2.5 text-left">
 					<span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
 						<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Fitur Unggulan Yang Didapat:
 					</span>
 					<div class="grid grid-cols-2 gap-2 text-[10px] text-slate-300">
-						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> AI Signal Real-Time
-						</div>
-						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Berita Live & Aksi Korporasi
-						</div>
-						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Peer Komparasi Saham
-						</div>
-						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Trading Journal & Win Rate
-						</div>
-						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Radar Bandar Potensial
-						</div>
-						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Export Card & Indikator
-						</div>
-						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Smart RRR Calculator
-						</div>
-						<div class="flex items-center gap-1.5 col-span-2">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Fundamental & Alert
-						</div>
+						<div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> AI Signal Real-Time</div>
+						<div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Berita Live & Aksi Korporasi</div>
+						<div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Peer Komparasi Saham</div>
+						<div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Trading Journal & Win Rate</div>
+						<div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Radar Bandar Potensial</div>
+						<div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Export Card & Indikator</div>
+						<div class="flex items-center gap-1.5"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Smart RRR Calculator</div>
+						<div class="flex items-center gap-1.5 col-span-2"><i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Fundamental & Push Alert</div>
 					</div>
 				</div>
 
@@ -276,7 +258,7 @@
 		<!-- Main Content -->
 		<main class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 lg:px-8 pt-6 lg:pt-8 pb-12 space-y-6 lg:space-y-8">
 
-			<!-- BARIS ATAS: CHART & METERAN TEKNIKAL SEJAJAR -->
+			<!-- BARIS ATAS: CHART & METERAN TEKNIKAL -->
 			<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 				
 				<section class="lg:col-span-8 space-y-4">
@@ -319,7 +301,7 @@
 
 			</div>
 
-			<!-- BARIS BAWAH: TAB NAVIGASI & KONTEN MEMANJANG LENGKAP -->
+			<!-- BARIS BAWAH: TAB NAVIGASI & KONTEN -->
 			<section class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-6 shadow-xl">
 				
 				<div class="sticky top-[133px] lg:top-[140px] z-10 glassmorphism p-2 lg:p-2.5 rounded-xl mb-6 border border-slate-800 flex gap-1.5 lg:gap-3 overflow-x-auto shadow-xl scrollbar-thin">
@@ -465,7 +447,7 @@
 
 				</div>
 
-				<!-- TAB CONTENT 2: RADAR BANDAR (OTOMATIS TANPA OPTIONS) -->
+				<!-- TAB CONTENT 2: RADAR BANDAR -->
 				<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-amber-500/10 border border-amber-500/20 p-3 lg:p-4 rounded-xl gap-3">
 						<div class="flex items-center gap-2">
@@ -486,13 +468,9 @@
 							Klik tombol <strong class="text-amber-400">"Mulai Pindai Pasar"</strong> di atas untuk memindai pasar secara otomatis berdasar gabungan indikator teknikal.
 						</div>
 					</div>
-
-					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
-						💡 <strong>Pemindaian Otomatis:</strong> Menganalisis lonjakan volume harian vs rerata 10 hari, Golden Cross MA, dan pengujian Support dari bursa secara otomatis tanpa perlu memfilter manual.
-					</p>
 				</div>
 
-				<!-- TAB CONTENT 3: PEER KOMPARASI HARGA SERUPA (SCROLL HORIZONTAL) -->
+				<!-- TAB CONTENT 3: PEER KOMPARASI HARGA SERUPA -->
 				<div id="tabContent-peer" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
@@ -506,7 +484,6 @@
 						</button>
 					</div>
 
-					<!-- Scroll Memanjang Horizontal -->
 					<div class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
 						<table class="w-full text-left text-xs text-slate-300 whitespace-nowrap min-w-[700px]">
 							<thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
@@ -526,10 +503,6 @@
 							</tbody>
 						</table>
 					</div>
-
-					<p class="text-[10px] lg:text-[11px] text-slate-400 italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
-						ℹ️ <strong>Logika Range Harga:</strong> Sistem menyaring daftar saham yang memiliki nilai transaksi per lembar dalam rentang ±25% dari emiten $<span id="peerTickerRef">MDIA</span>.
-					</p>
 				</div>
 
 				<!-- TAB CONTENT 4: BERITA RSS -->
@@ -564,7 +537,6 @@
 							<p class="text-[10px] text-slate-400 mt-0.5">Kalkulasi ukuran lot & rasio risiko sebelum mengeksekusi order.</p>
 						</div>
 						
-						<!-- Tombol Atas Bawah Pojok Kanan -->
 						<div class="flex flex-col gap-1.5 shrink-0">
 							<button onclick="saveTradingPlanToJournal()" class="text-[10px] lg:text-xs bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 font-bold px-3 py-1.5 rounded-lg border border-emerald-500/30 transition flex items-center justify-center gap-1.5 shadow-sm">
 								<i data-lucide="bookmark-plus" class="w-3.5 h-3.5"></i> Simpan ke Journal
@@ -646,7 +618,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 7: JOURNAL TRADING (SCROLL HORIZONTAL) -->
+				<!-- TAB CONTENT 7: JOURNAL TRADING -->
 				<div id="tabContent-journal" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
 						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
@@ -674,7 +646,6 @@
 						</button>
 					</div>
 
-					<!-- Scroll Memanjang Horizontal -->
 					<div class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
 						<table class="w-full text-left text-xs text-slate-300 whitespace-nowrap min-w-[750px]">
 							<thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
@@ -698,14 +669,14 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 8: SMART ALERT SYSTEM & BROWSER PUSH NOTIFICATION -->
+				<!-- TAB CONTENT 8: SMART ALERT SYSTEM & BROWSER PUSH NOTIFICATION (REVISED BY AI SYNC & BLOCK DIV PER SAHAM) -->
 				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
 								<i data-lucide="bell-ring" class="w-4 h-4 text-rose-400"></i> Smart Alert & Push Notification System
 							</span>
-							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh Stop Loss, Target Profit, atau custom alert yang kamu pasang.</p>
+							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis dari hasil data AI saat harga pasar menyentuh Stop Loss, Support/Entry, Resistance 2, atau Take Profit 2.</p>
 						</div>
 						
 						<!-- Status & Tombol Izin Notifikasi Browser -->
@@ -719,51 +690,25 @@
 						</div>
 					</div>
 
-					<!-- Form Pasang Custom Target Price Alert -->
-					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
-						<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-							<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
-								<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Pasang Pengingat Target Harga untuk $<strong id="alertFormTicker" class="text-amber-400">MDIA</strong>
-							</span>
-							<button onclick="syncAlertDataFromAI()" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 font-bold px-3 py-1 rounded-lg transition flex items-center gap-1 self-start sm:self-auto">
-								<i data-lucide="wand-2" class="w-3 h-3"></i> Sync Data AI
-							</button>
-						</div>
-
-						<!-- Preset Quick Buttons dari Data AI -->
-						<div id="alertPresetContainer" class="hidden flex flex-wrap gap-1.5 pt-1 border-t border-slate-800/60 text-[10px]">
-							<span class="text-slate-400 self-center font-bold mr-1">Rekomendasi AI:</span>
-							<button onclick="applyAlertPreset('SL')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2 py-0.5 rounded font-mono">SL: <span id="presetSLVal">-</span></button>
-							<button onclick="applyAlertPreset('SUP')" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded font-mono">Support: <span id="presetSUPVal">-</span></button>
-							<button onclick="applyAlertPreset('RES')" class="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded font-mono">Resist: <span id="presetRESVal">-</span></button>
-							<button onclick="applyAlertPreset('TP2')" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-mono">TP2: <span id="presetTP2Val">-</span></button>
-						</div>
-
-						<div class="flex flex-col sm:flex-row gap-2.5 max-w-xl">
-							<input type="number" id="alertPriceInput" placeholder="Masukkan target harga (misal: 1050)..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
-							<button onclick="addPriceAlert()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-lg font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
-								<i data-lucide="bell" class="w-3.5 h-3.5"></i> + Pasang Alert
-							</button>
-						</div>
-					</div>
-
-					<!-- Daftar Alert Aktif Global -->
-					<div class="space-y-2.5 pt-1">
+					<!-- Block DIV Alert Aktif Per Saham (Sync Data AI) -->
+					<div class="space-y-3 pt-1">
 						<div class="flex justify-between items-center">
 							<span class="text-[11px] lg:text-xs text-slate-300 font-bold block flex items-center gap-1.5">
-								<i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i> Histori Seluruh Saham Yang Dipasang Alert:
+								<i data-lucide="shield-alert" class="w-3.5 h-3.5 text-amber-400"></i> Daftar Block Alert Saham (AI Target Trigger):
 							</span>
 							<button onclick="clearAllGlobalAlerts()" class="text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-2.5 py-1 rounded-md transition font-bold">
 								Hapus Semua Alert
 							</button>
 						</div>
-						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 min-h-[100px]">
-							<div class="text-center text-slate-400 py-6 lg:col-span-3">Belum ada alert harga yang dipasang.</div>
+						
+						<!-- Container Block Alert Saham (Di-render dari JS) -->
+						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 min-h-[100px]">
+							<div class="text-center text-slate-400 py-6 md:col-span-2">Belum ada data alert saham tersimpan.</div>
 						</div>
 					</div>
 
 					<p class="text-[10px] lg:text-[11px] text-slate-400 italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
-						💡 <strong>Informasi Push Notification:</strong> Notifikasi browser akan dikirimkan secara otomatis bahkan saat kamu sedang membuka tab browser lain selama web Stock ID Screener tetap terbuka.
+						💡 <strong>Sistem Notifikasi Push:</strong> Ke-4 harga acuan (Stop Loss, Support/Entry, Resistance 2, & Take Profit 2) ditarik otomatis dari Sync Data AI dan akan memicu push notifikasi aktif saat harga bursa menyentuh salah satu target.
 					</p>
 				</div>
 
@@ -785,7 +730,7 @@
 
 		</main>
 
-		<!-- CONTAINER EXPORT TRADING CARD (RAPIS DAN DETAIL INDIKATOR TEKNIKAL) -->
+		<!-- CONTAINER EXPORT TRADING CARD -->
 		<div id="exportCardContainer" class="fixed -left-[9999px] top-0 w-[620px] bg-slate-950 text-white p-7 rounded-3xl border-2 border-emerald-500/40 space-y-5 font-sans shadow-2xl">
 			<div class="flex justify-between items-center border-b border-slate-800/80 pb-4">
 				<div class="flex items-center gap-3">
@@ -814,7 +759,6 @@
 				</div>
 			</div>
 
-			<!-- MAP LEVEL BUNGKUS -->
 			<div class="grid grid-cols-2 gap-3 font-mono text-xs">
 				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
 					<span class="text-slate-400 text-[10px] block font-sans mb-1">AREA ENTRY / SUPPORT</span>
@@ -834,7 +778,6 @@
 				</div>
 			</div>
 
-			<!-- DITAMPILKAN RASIO VOLUME, MA 5, MA 10 -->
 			<div class="bg-slate-900/70 p-4 rounded-2xl border border-slate-800/80 space-y-2 font-mono">
 				<span class="text-[11px] font-bold text-emerald-400 font-sans uppercase tracking-wider block">INDIKATOR TEKNIKAL UTAMA:</span>
 				<div class="grid grid-cols-3 gap-2 text-xs pt-1 border-t border-slate-800/60">
