@@ -81,7 +81,7 @@ const AudioFX = {
 			const osc = this.ctx.createOscillator();
 			const gain = this.ctx.createGain();
 			osc.type = 'sine'; //sine
-			osc.frequency.setValueAtTime(1200, this.ctx.currentTime); //800
+			osc.frequency.setValueAtTime(1300, this.ctx.currentTime); //800
 			osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.05);
 			gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
 			gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
@@ -121,7 +121,7 @@ const AudioFX = {
 			const gain = this.ctx.createGain();
 			osc.type = 'sawtooth';
 			osc.frequency.setValueAtTime(800, now); //300
-			osc.frequency.setValueAtTime(450, now + 0.08);
+			osc.frequency.setValueAtTime(1000, now + 0.08); //450
 			gain.gain.setValueAtTime(0.1, now);
 			gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
 			osc.connect(gain);
