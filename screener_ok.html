@@ -348,7 +348,7 @@
 						<i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i> Journal Trading
 					</button>
 					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="bell" class="w-4 h-4 text-rose-400"></i> Alert System
+						<i data-lucide="bell" class="w-4 h-4 text-rose-400"></i> Smart Alert
 					</button>
 				</div>
 
@@ -586,7 +586,7 @@
 									</div>
 									<div>
 										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Max Risk per Trade (%)</label>
-										<input type="number" id="rrrRiskPercent" value="5" step="0.5" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-amber-500">
+										<input type="number" id="rrrRiskPercent" value="10" step="0.5" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-amber-500">
 									</div>
 								</div>
 							</div>
@@ -705,7 +705,7 @@
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
 								<i data-lucide="bell-ring" class="w-4 h-4 text-rose-400"></i> Smart Alert & Push Notification System (<strong id="alertTickerLabel" class="text-amber-400">MDIA</strong>)
 							</span>
-							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh Stop Loss, Entry, Resistance 2, atau Take Profit 2 yang disinkronisasi dari AI.</p>
+							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh Stop Loss, Entry, Resistance, atau Take Profit yang disinkronisasi dari AI Signal.</p>
 						</div>
 						
 						<!-- Status & Tombol Izin Notifikasi Browser -->
@@ -722,7 +722,7 @@
 							<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
 								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sinkronisasi Notifikasi Otomatis
 							</span>
-							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Ambil data harga Stop Loss, Entry/Support2, Resistance 2, dan Take Profit 2 lalu aktifkan notifikasi browser.</p>
+							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Ambil data harga Stop Loss, Entry, Resistance, dan Take Profit lalu aktifkan notifikasi browser.</p>
 						</div>
 						<button onclick="syncAlertsFromAI()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-lg font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
 							<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Sync Data AI
