@@ -142,7 +142,7 @@ document.addEventListener('click', function(e) {
 	}
 });
 
-// ==================== LOGIKA FRAKSI HARGA BEI ====================
+// ==================== LOGIKA FRAKSI HARGA BURSA EFEK INDONESIA (BEI) ====================
 function getBEITickSize(price) {
 	if (price < 200) return 1;
 	if (price < 500) return 2;
@@ -666,15 +666,15 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			: `volume transaksi cenderung moderat (${stockData.volRatio}x rerata volume harian)`;
 		
 		const maAlignText = (isAboveMA5 && isAboveMA10 && isAboveMA20)
-			? "Struktur tren berada dalam susunan <strong class='text-emerald-400'>Bullish Alignment</strong> (Harga > MA5 > MA10 > MA20)."
+			? "Struktur tren berada dalam susunan <strong class='text-emerald-400'>Bullish Alignment</strong> (Harga > MA5 > MA10 > MA20). Ini menandakan partisipasi pembeli mendominasi penuh seluruh horizon waktu jangka pendek."
 			: (!isAboveMA10 && !isAboveMA20)
-			? "Posisi harga berada <strong class='text-rose-400'>di bawah MA10 & MA20</strong>, mengindikasikan tekanan jual jangka pendek yang intensif."
-			: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata.";
+			? "Posisi harga berada <strong class='text-rose-400'>di bawah MA10 & MA20</strong>, mengindikasikan tekanan jual jangka pendek yang intensif dan kurva pergerakan dalam fase penurunan beruntun (*downtrend*)."
+			: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata, mengisyaratkan perebutan momentum antara kubu *bulls* dan *bears*.";
 
 		descEl.innerHTML = `
 			<p class="leading-relaxed"><strong>Mengapa Verdik Ini Diberikan?</strong> Saham ${ticker} saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
-			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong>Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}.</p>
-			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong>Rentang Volatilitas 20 Hari:</strong> Berada antara Rp ${stockData.low20.toLocaleString('id-ID')} hingga Rp ${stockData.high20.toLocaleString('id-ID')}.</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong>Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong>Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} (Support Kuat 20 Hari) hingga Rp ${stockData.high20.toLocaleString('id-ID')} (Resistance Tertinggi 20 Hari). Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksekusi *Trading Plan*.</p>
 		`;
 
 		buktiEl.innerHTML = `
@@ -699,7 +699,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	} else {
 		verdikEl.innerText = "NETRAL-SELEKTIF";
 		scoreEl.innerText = "3/5";
-		descEl.innerText = `Menganalisis pergerakan teknikal emiten ${ticker} berbasis indikator grafik TradingView.`;
+		descEl.innerText = `Menganalisis pergerakan teknikal emiten ${ticker} berbasis indikator grafik TradingView. Silakan evaluasi struktur pola harga harian sebelum melakukan transaksi.`;
 	}
 
 	const sl = roundToBEITick(price * 0.92, 'floor'); 
@@ -732,16 +732,16 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	document.getElementById('tpProgressPercent').innerText = `Posisi: ${calculatedProgress}% dari Rentang SL - TP1`;
 
 	document.getElementById('aiSkenarioBox').innerHTML = `
-		<p><strong>(a) Konfirmasi Bullish:</strong> Uji resistance di Rp ${res1.toLocaleString('id-ID')}. Penembusan dapat memicu akselerasi ke TP2 Rp ${tp2.toLocaleString('id-ID')}.</p>
-		<p><strong>(b) Consolidate / Retest:</strong> Area akumulasi pada rentang Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}.</p>
-		<p><strong>(c) Batas Invalidasi:</strong> Penembusan di bawah Stop Loss Rp ${sl.toLocaleString('id-ID')} membatalkan struktur bullish.</p>
+		<p><strong>(a) Konfirmasi Bullish:</strong> Jika harga bertahan di atas support Rp ${sup2.toLocaleString('id-ID')} dengan volume stabil, target uji resistance berada di Rp ${res1.toLocaleString('id-ID')}. Penembusan resistance dapat memicu akselerasi ke TP2 Rp ${tp2.toLocaleString('id-ID')}.</p>
+		<p><strong>(b) Consolidate / Retest:</strong> Apabila terjadi tekanan koreksi, perhatikan reaksi akumulasi pada rentang Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}.</p>
+		<p><strong>(c) Batas Invalidasi:</strong> Penembusan di bawah Stop Loss Rp ${sl.toLocaleString('id-ID')} membatalkan struktur bullish short-term dan berisiko melanjutkan penurunan.</p>
 	`;
 
 	const rrrRatioVal = ((tp1 - price) / Math.max(1, (price - sl))).toFixed(2);
 	kesimpulanEl.innerHTML = `
 		<p>• Area akumulasi optimal disarankan pada rentang support <strong>Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}</strong>.</p>
-		<p>• Proyeksi Rasio Risk/Reward (RRR): <strong>1 : ${rrrRatioVal}</strong>.</p>
-		<p>• Selalu pasang pembatas risiko di bawah <strong>Rp ${sl.toLocaleString('id-ID')}</strong>.</p>
+		<p>• Proyeksi Rasio Risk/Reward (RRR) pada harga saat ini adalah <strong>1 : ${rrrRatioVal}</strong>.</p>
+		<p>• Selalu pasang pembatas risiko di bawah <strong>Rp ${sl.toLocaleString('id-ID')}</strong> untuk menjaga keterpaparan modal dari kecenderungan volatilitas pasar.</p>
 	`;
 
 	document.getElementById('rrrEntry').value = price;
@@ -1139,13 +1139,13 @@ function calculateSmartRRR() {
 
 	if (rrr >= 2.0) {
 		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
-		evalEl.innerHTML = `✓ <strong>Rencana Trading Sangat Layak Eksekusi (RRR 1 : ${rrr})</strong>`;
+		evalEl.innerHTML = `✓ <strong>Rencana Trading Sangat Layak Eksekusi (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Potensi profit jauh melebihi toleransi risiko batas modal Anda.</span>`;
 	} else if (rrr >= 1.5) {
 		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-amber-500/10 text-amber-400 border border-amber-500/30";
-		evalEl.innerHTML = `⚠ <strong>Rencana Trading Cukup Layak (RRR 1 : ${rrr})</strong>`;
+		evalEl.innerHTML = `⚠ <strong>Rencana Trading Cukup Layak (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Memenuhi standar minimal, namun disarankan memperketat entry dekat support.</span>`;
 	} else {
 		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-rose-500/10 text-rose-400 border border-rose-500/30";
-		evalEl.innerHTML = `✕ <strong>Risiko Terlalu Tinggi / Kurang Ideal (RRR 1 : ${rrr})</strong>`;
+		evalEl.innerHTML = `✕ <strong>Risiko Terlalu Tinggi / Kurang Ideal (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Potensi keuntungan tidak sebanding dengan risiko penurunan modal.</span>`;
 	}
 }
 
@@ -1275,20 +1275,20 @@ function renderRadarItems(dataList) {
 
 		let statusSignal = "🔥 Momentum Breakout";
 		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
-		let alasanTeknikal = `Perubahan <strong>${changePct}%</strong> dan bertahan kokoh di atas garis Moving Average MA5 (Rp ${item.ma5.toLocaleString('id-ID')}).`;
+		let alasanTeknikal = `Perubahan <strong>${changePct}%</strong> dan bertahan kokoh di atas garis Moving Average MA5 (Rp ${item.ma5.toLocaleString('id-ID')}), menandakan tekanan beli harian masih mendominasi pasar.`;
 
 		if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0.5 && changePct < 3) {
 			statusSignal = "🚀 Golden Cross Setup";
 			statusClass = "text-sky-400 border-sky-500/30 bg-sky-500/10";
-			alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20.`;
+			alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah (*reversal*) awal berpotensi terbentuk.`;
 		} else if (item.volRatio >= 1.3) {
 			statusSignal = "⚡ Volume Accumulation";
 			statusClass = "text-cyan-400 border-cyan-500/30 bg-cyan-500/10";
-			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata 10 hari</strong>.`;
+			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata 10 hari</strong>. Mengindikasikan partisipasi modal besar (*smart money*) di pasar.`;
 		} else if (changePct < 0 && item.price >= item.ma20) {
 			statusSignal = "🛡️ Support Retest";
 			statusClass = "text-purple-400 border-purple-500/30 bg-purple-500/10";
-			alasanTeknikal = `Harga sedang mengalami koreksi sehat (*pullback*) dan menguji area pertahanan MA20.`;
+			alasanTeknikal = `Harga sedang mengalami koreksi sehat (*pullback*) dan menguji area pertahanan MA20 (Rp ${item.ma20.toLocaleString('id-ID')}). Area ideal penampungan berisiko terukur.`;
 		}
 
 		htmlContent += `
@@ -1495,13 +1495,11 @@ function autoSyncStockAlertFromAI(ticker, price) {
 	let existingIndex = alerts.findIndex(item => item.ticker === ticker);
 
 	if (existingIndex >= 0) {
-		// Update target harga terbaru dari AI
 		alerts[existingIndex].sl = sl;
 		alerts[existingIndex].sup = sup1;
 		alerts[existingIndex].res2 = res2;
 		alerts[existingIndex].tp2 = tp2;
 	} else {
-		// Buat block alert baru untuk saham ini
 		alerts.unshift({
 			id: Date.now(),
 			ticker: ticker,
@@ -1599,7 +1597,7 @@ function clearAllGlobalAlerts() {
 	}
 }
 
-// PROSES TESTING MEMERIKSA TARGET HARGA UNTUK PUSH NOTIFIKASI
+// PROSES MEMERIKSA TARGET HARGA UNTUK PUSH NOTIFIKASI
 function checkPriceAlertsRealtime(ticker, currentPrice) {
 	if (!currentPrice || currentPrice <= 0) return;
 

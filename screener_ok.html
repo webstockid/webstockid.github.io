@@ -258,7 +258,7 @@
 		<!-- Main Content -->
 		<main class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 lg:px-8 pt-6 lg:pt-8 pb-12 space-y-6 lg:space-y-8">
 
-			<!-- BARIS ATAS: CHART & METERAN TEKNIKAL -->
+			<!-- BARIS ATAS: CHART & METERAN TEKNIKAL SEJAJAR -->
 			<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 				
 				<section class="lg:col-span-8 space-y-4">
@@ -468,6 +468,10 @@
 							Klik tombol <strong class="text-amber-400">"Mulai Pindai Pasar"</strong> di atas untuk memindai pasar secara otomatis berdasar gabungan indikator teknikal.
 						</div>
 					</div>
+
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
+						💡 <strong>Pemindaian Otomatis:</strong> Menganalisis lonjakan volume harian vs rerata 10 hari, Golden Cross MA, dan pengujian Support dari bursa secara otomatis tanpa perlu memfilter manual.
+					</p>
 				</div>
 
 				<!-- TAB CONTENT 3: PEER KOMPARASI HARGA SERUPA -->
@@ -503,6 +507,10 @@
 							</tbody>
 						</table>
 					</div>
+
+					<p class="text-[10px] lg:text-[11px] text-slate-400 italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
+						ℹ️ <strong>Logika Range Harga:</strong> Sistem menyaring daftar saham yang memiliki nilai transaksi per lembar dalam rentang ±25% dari emiten $<span id="peerTickerRef">MDIA</span>.
+					</p>
 				</div>
 
 				<!-- TAB CONTENT 4: BERITA RSS -->
@@ -669,14 +677,14 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 8: SMART ALERT SYSTEM & BROWSER PUSH NOTIFICATION (REVISED BY AI SYNC & BLOCK DIV PER SAHAM) -->
+				<!-- TAB CONTENT 8: SMART ALERT SYSTEM & BROWSER PUSH NOTIFICATION -->
 				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
 								<i data-lucide="bell-ring" class="w-4 h-4 text-rose-400"></i> Smart Alert & Push Notification System
 							</span>
-							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis dari hasil data AI saat harga pasar menyentuh Stop Loss, Support/Entry, Resistance 2, atau Take Profit 2.</p>
+							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis dari hasil Sync AI saat harga pasar menyentuh Stop Loss, Support/Entry, Resistance 2, atau Take Profit 2.</p>
 						</div>
 						
 						<!-- Status & Tombol Izin Notifikasi Browser -->
@@ -701,9 +709,9 @@
 							</button>
 						</div>
 						
-						<!-- Container Block Alert Saham (Di-render dari JS) -->
+						<!-- Container Block Alert Saham (Di-render via JS) -->
 						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 min-h-[100px]">
-							<div class="text-center text-slate-400 py-6 md:col-span-2">Belum ada data alert saham tersimpan.</div>
+							<div class="text-center text-slate-400 py-6 md:col-span-2">Belum ada data alert saham tersimpan. Cari saham untuk otomatis menarik data Sync AI.</div>
 						</div>
 					</div>
 
