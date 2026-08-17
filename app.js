@@ -662,7 +662,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		const trendText = stockData.changePct >= 0 ? `menguat +${stockData.changePct}%` : `terkoreksi ${stockData.changePct}%`;
 		const volText = isVolSpike 
 			? `<strong class="text-emerald-400">terjadi lonjakan volume (${stockData.volRatio}x rerata volume harian)</strong>` 
-			: `volume transaksi cenderung moderat (${stockData.volRatio}x rerata volume harian)`;
+			: `volume transaksi cenderung moderat <strong class="text-rose-400">(${stockData.volRatio}x rerata volume harian)</strong>`;
 		
 		const maAlignText = (isAboveMA5 && isAboveMA10 && isAboveMA20)
 			? "Struktur tren berada dalam susunan <strong class='text-emerald-400'>Bullish Alignment</strong> (Harga > MA5 > MA10 > MA20). Ini menandakan partisipasi pembeli mendominasi penuh seluruh horizon waktu jangka pendek."
@@ -921,7 +921,7 @@ function startPeerRefreshCooldown(seconds = 12) {
 
 	if (peerRefreshCooldownTimer) clearInterval(peerRefreshCooldownTimer);
 
-	btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data (${remaining}s)`;
+	btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data (${remaining}d)`;
 	if (window.lucide) lucide.createIcons();
 
 	peerRefreshCooldownTimer = setInterval(() => {
@@ -933,7 +933,7 @@ function startPeerRefreshCooldown(seconds = 12) {
 			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data`;
 			if (window.lucide) lucide.createIcons();
 		} else {
-			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data (${remaining}s)`;
+			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data (${remaining}d)`;
 			if (window.lucide) lucide.createIcons();
 		}
 	}, 1000);
@@ -944,7 +944,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	if (isManualRefresh) {
 		const btn = document.getElementById('btnRefreshPeer');
 		if (btn && btn.disabled) return;
-		startPeerRefreshCooldown(12);
+		startPeerRefreshCooldown(16);
 	}
 
 	const body = document.getElementById('peerTableBody');
