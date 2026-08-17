@@ -1198,7 +1198,7 @@ function calculateSmartRRR() {
 
 	resEl.innerText = `1 : ${rrr}`;
 	maxRiskAmountEl.innerText = `Rp ${Math.round(maxRiskAmount).toLocaleString('id-ID')}`;
-	maxLotsEl.innerText = `${maxLots.toLocaleString('id-ID')} Lot (${(maxLots * 100).toLocaleString('id-ID')} lembar)`;
+	maxLotsEl.innerText = `${maxLots.toLocaleString('id-ID')} Lot`; //(${(maxLots * 100).toLocaleString('id-ID')} lembar)
 	capitalNeededEl.innerText = `Rp ${Math.round(totalCapitalRequired).toLocaleString('id-ID')}`;
 	rewardEl.innerText = `Rp ${Math.round(totalRewardAmount).toLocaleString('id-ID')}`;
 
