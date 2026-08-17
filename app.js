@@ -736,7 +736,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		<p><strong>(c) Batas Invalidasi:</strong> Penembusan di bawah Stop Loss Rp ${sl.toLocaleString('id-ID')} membatalkan struktur bullish short-term dan berisiko melanjutkan penurunan.</p>
 	`;
 
-	const rrrRatioVal = ((tp1 - price) / Math.max(1, (price - sl))).toFixed(2);
+	const rrrRatioVal = ((tp2 - price) / Math.max(1, (price - sl))).toFixed(2);
 	kesimpulanEl.innerHTML = `
 		<p>• Area akumulasi optimal disarankan pada rentang support <strong>Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}</strong>.</p>
 		<p>• Proyeksi Rasio Risk/Reward (RRR) pada harga saat ini adalah <strong>1 : ${rrrRatioVal}</strong>.</p>
@@ -1139,9 +1139,9 @@ function renderJournalTable() {
 
 function autoFillRRRFromAI() {
 	if (globalStockData) {
-		const price = roundToBEITick(globalStockData.price);
-		const sl = roundToBEITick(price * 0.95, 'floor');
-		const tp = roundToBEITick(price * 1.15, 'ceil');
+		const price = roundToBEITick(price * 0.96, 'floor'); //roundToBEITick(globalStockData.price);
+		const sl = roundToBEITick(price * 0.92, 'floor');
+		const tp = roundToBEITick(price * 1.08, 'ceil');
 
 		document.getElementById('rrrEntry').value = price;
 		document.getElementById('rrrSL').value = sl;
