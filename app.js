@@ -1138,14 +1138,20 @@ function renderJournalTable() {
 }
 
 function autoFillRRRFromAI() {
-	if (globalStockData) {
-		const price = roundToBEITick(globalStockData.price); //roundToBEITick(price * 0.96, 'floor');
-		const sl = roundToBEITick(price * 0.92, 'floor');
-		const tp = roundToBEITick(price * 1.08, 'ceil');
+	if (globalStockData && globalStockData.price) {
+		// 1. Ambil harga dasar dari data global
+		const basePrice = globalStockData.price;
 
-		document.getElementById('rrrEntry').value = price;
+		// 2. Hitung entry (96% dari harga dasar), SL (92%), dan TP (106%)
+		const entry = roundToBEITick(basePrice * 0.96, 'floor');
+		const sl = roundToBEITick(basePrice * 0.92, 'floor');
+		const tp = roundToBEITick(basePrice * 1.06, 'ceil');
+
+		// 3. Masukkan ke input form
+		document.getElementById('rrrEntry').value = entry;
 		document.getElementById('rrrSL').value = sl;
 		document.getElementById('rrrTP').value = tp;
+
 		calculateSmartRRR();
 		AudioFX.playSuccess();
 	}
