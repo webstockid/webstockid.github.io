@@ -1015,8 +1015,8 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 					${data.volRatio}x Vol
 				</td>
 				<td class="p-3.5 text-center">
-					<button onclick="selectSuggestion('${data.ticker}')" class="text-[10px] bg-cyan-600 hover:bg-emerald-500 hover:text-black text-white px-3 py-1 rounded-lg transition border border-slate-700 font-semibold">
-						Buka Chart
+					<button onclick="selectSuggestion('${data.ticker}')" class="text-[10px] bg-cyan-600 hover:bg-emerald-600 text-white hover:text-black px-3 py-1 rounded-lg transition border-cyan-700/30 font-bold">
+						Lihat Chart
 					</button>
 				</td>
 			</tr>
@@ -1181,7 +1181,7 @@ function calculateSmartRRR() {
 		maxLotsEl.innerText = "0 Lot";
 		capitalNeededEl.innerText = "Rp 0";
 		rewardEl.innerText = "Rp 0";
-		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-semibold text-center bg-slate-900 text-white";
+		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-slate-900 text-white";
 		evalEl.innerText = "Masukkan harga Entry, SL (>0 & < Entry), dan TP (> Entry) untuk evaluasi AI.";
 		return;
 	}
@@ -1368,7 +1368,7 @@ function renderRadarItems(dataList) {
 						<div>
 							<div class="flex items-center gap-2">
 								<span class="font-bold text-white text-sm lg:text-base">&dollar;${ticker}</span>
-								<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] lg:text-[10px] bg-amber-300 text-black hover:bg-emerald-600 hover:text-white border-amber-500/30 font-bold px-2 py-0.5 rounded transition">
+								<button onclick="selectTickerFromRadar('${ticker}')" class="text-[10px] lg:text-[10px] bg-amber-300 hover:bg-emerald-600 text-black hover:text-white border-amber-500/30 font-bold px-2 py-0.5 rounded transition">
 									Lihat Chart »
 								</button>
 							</div>
@@ -1669,7 +1669,7 @@ async function fetchStockNews(ticker) {
 
 				container.innerHTML += `
 					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
-						<h4 class="text-xs lg:text-sm font-semibold text-slate-200 line-clamp-2">${item.title}</h4>
+						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
 						<div class="flex justify-between items-center mt-2 text-[10px] lg:text-xs text-white">
 							<span>${item.author || 'Google News'}</span>
 							<span>${date}</span>
@@ -1708,10 +1708,10 @@ async function fetchCorporateAction(ticker) {
 				container.innerHTML += `
 					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 						<div class="flex items-center gap-1.5 mb-1">
-							<span class="text-[9px] lg:text-[10px] bg-emerald-500/20 text-emerald-400 font-semibold px-2 py-0.5 rounded border border-emerald-500/30">Aksi Korporasi</span>
+							<span class="text-[9px] lg:text-[10px] bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded border border-emerald-500/30">Aksi Korporasi</span>
 							<span class="text-[10px] lg:text-xs text-white">${date}</span>
 						</div>
-						<h4 class="text-xs lg:text-sm font-semibold text-slate-200 line-clamp-2">${item.title}</h4>
+						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
 					</a>
 				`;
 			});
@@ -1731,10 +1731,10 @@ function switchTab(tabName) {
 		const content = document.getElementById(`tabContent-${tab}`);
 		
 		if (tab === tabName) {
-			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition";
+			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition";
 			if (content) content.classList.remove('hidden');
 		} else {
-			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition";
+			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition";
 			if (content) content.classList.add('hidden');
 		}
 	});
