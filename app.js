@@ -1310,7 +1310,7 @@ function renderRadarItems(dataList) {
 						<div>
 							<div class="flex items-center gap-2">
 								<span class="font-bold text-white text-sm lg:text-base">&dollar;${ticker}</span>
-								<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] lg:text-[10px] bg-amber-400 text-black hover:bg-emerald-400 hover:text-black-600 border border-amber-500 font-bold px-2 py-0.5 rounded transition">
+								<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] lg:text-[10px] bg-amber-400 text-black hover:bg-emerald-400 hover:text-black-600 border font-bold px-2 py-0.5 rounded transition">
 									Lihat Chart
 								</button>
 							</div>
