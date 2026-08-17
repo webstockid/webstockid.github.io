@@ -963,7 +963,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 					${data.volRatio}x Vol
 				</td>
 				<td class="p-3.5 text-center">
-					<button onclick="selectSuggestion('${data.ticker}')" class="text-[10px] bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 text-slate-200 px-3 py-1 rounded-lg transition border border-slate-700 font-semibold">
+					<button onclick="selectSuggestion('${data.ticker}')" class="text-[10px] bg-cyan-600 hover:bg-emerald-500 hover:text-black text-white px-3 py-1 rounded-lg transition border border-slate-700 font-semibold">
 						Buka Chart
 					</button>
 				</td>
@@ -1310,7 +1310,7 @@ function renderRadarItems(dataList) {
 						<div>
 							<div class="flex items-center gap-2">
 								<span class="font-black text-white text-sm lg:text-base">&dollar;${ticker}</span>
-								<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] lg:text-[10px] bg-blue-800 text-white hover:bg-emerald-800 hover:text-blue-400 border border-blue-400 font-bold px-2 py-0.5 rounded transition">
+								<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] lg:text-[10px] bg-blue-800 text-white hover:bg-emerald-400 hover:text-black-600 border border-teal-800 font-bold px-2 py-0.5 rounded transition">
 									Lihat Chart
 								</button>
 							</div>
