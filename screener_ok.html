@@ -232,28 +232,28 @@
 					</span>
 					<div class="grid grid-cols-2 gap-2 text-[10px] text-slate-300">
 						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> AI Signal Real-Time
-						</div>
-						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Berita Live & Aksi Korporasi
-						</div>
-						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Peer Komparasi Saham
-						</div>
-						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Trading Journal & Win Rate
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> AI Signal & Trading Map
 						</div>
 						<div class="flex items-center gap-1.5">
 							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Radar Bandar Potensial
 						</div>
 						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Export Card & Indikator
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Peer Komparasi Saham
 						</div>
 						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Smart RRR Calculator
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Berita & Korporasi
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Fundamental Saham
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Smart RRR & Smart Alert
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Jurnal Trading & Win Rate
 						</div>
 						<div class="flex items-center gap-1.5 col-span-2">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Fundamental & Alert
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Export Card & Indikator
 						</div>
 					</div>
 				</div>
@@ -341,14 +341,14 @@
 					<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="pie-chart" class="w-4 h-4 text-orange-400"></i> Fundamental
 					</button>
+					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="bell" class="w-4 h-4 text-rose-400"></i> Smart Alert
+					</button>
 					<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="calculator" class="w-4 h-4 text-fuchsia-400"></i> Smart RRR
 					</button>
 					<button onclick="switchTab('journal')" id="tabBtn-journal" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i> Journal Trading
-					</button>
-					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="bell" class="w-4 h-4 text-rose-400"></i> Smart Alert
 					</button>
 				</div>
 
@@ -501,7 +501,7 @@
 							</span>
 							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Membandingkan emiten pilihan kamu dengan saham-saham yang berada di range harga yang sama.</p>
 						</div>
-						<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="text-[10px] lg:text-xs bg-cyan-950 hover:bg-cyan-500 text-white border border-cyan-600 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto shadow-sm">
+						<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="text-[10px] lg:text-xs bg-cyan-600 hover:bg-cyan-500 text-white border border-cyan-600 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto shadow-sm">
 							<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data
 						</button>
 					</div>
@@ -559,7 +559,7 @@
 					<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-800 pb-3 gap-3">
 						<div>
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="calculator" class="w-4 h-4 lg:w-5 lg:h-5 text-fuchsia-400"></i> Smart RRR & Position Sizing (<strong id="rrrTickerLabel" class="text-white">MDIA</strong>)
+								<i data-lucide="calculator" class="w-4 h-4 lg:w-5 lg:h-5 text-fuchsia-400"></i> Smart RRR & Position Sizing (<strong id="rrrTickerLabel" class="text-fuchsia">MDIA</strong>)
 							</span>
 							<p class="text-[10px] text-slate-400 mt-0.5">Kalkulasi ukuran lot & rasio risiko sebelum mengeksekusi order.</p>
 						</div>

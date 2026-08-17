@@ -900,7 +900,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	const refLabel = document.getElementById('peerTickerRef');
 	if (refLabel) refLabel.innerText = targetTicker;
 
-	body.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 font-sans"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1 text-cyan-400"></i> Memuat saham-saham dengan harga serupa...</td></tr>`;
+	body.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1 text-cyan-400"></i> Memuat saham-saham dengan harga serupa...</td></tr>`;
 	if (window.lucide) lucide.createIcons();
 
 	let baseData = globalStockData;
@@ -909,7 +909,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	}
 
 	if (!baseData || !baseData.price) {
-		body.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-sans">Gagal memuat harga acuan $${targetTicker}.</td></tr>`;
+		body.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Gagal memuat harga acuan $${targetTicker}.</td></tr>`;
 		return;
 	}
 
@@ -962,7 +962,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 				<td class="p-3.5 ${data.volRatio >= 1.2 ? 'text-cyan-400 font-bold' : 'text-slate-400'}">
 					${data.volRatio}x Vol
 				</td>
-				<td class="p-3.5 text-center font-sans">
+				<td class="p-3.5 text-center">
 					<button onclick="selectSuggestion('${data.ticker}')" class="text-[10px] bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 text-slate-200 px-3 py-1 rounded-lg transition border border-slate-700 font-semibold">
 						Buka Chart
 					</button>
@@ -971,7 +971,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 		`;
 	});
 
-	body.innerHTML = rowsHTML || `<tr><td colspan="6" class="p-4 text-center text-slate-400 font-sans">Tidak ditemukan saham dengan range harga serupa.</td></tr>`;
+	body.innerHTML = rowsHTML || `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tidak ditemukan saham dengan range harga serupa.</td></tr>`;
 }
 
 // FITUR JOURNAL TRADING & WIN RATE TRACKER
@@ -1054,15 +1054,15 @@ function renderJournalTable() {
 	document.getElementById('journalLossCount').innerText = lossCount;
 
 	if (journal.length === 0) {
-		body.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400 font-sans">Belum ada Trading Plan tersimpan. Gunakan tombol "Simpan ke Journal" di kalkulator Smart RRR.</td></tr>`;
+		body.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Belum ada Trading Plan tersimpan. Gunakan tombol "Simpan ke Journal" di kalkulator Smart RRR.</td></tr>`;
 		return;
 	}
 
 	let rows = '';
 	journal.forEach(item => {
-		let statusBadge = '<span class="text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-sans">OPEN</span>';
-		if (item.status === 'WIN') statusBadge = '<span class="text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-sans">WIN (TP)</span>';
-		if (item.status === 'LOSS') statusBadge = '<span class="text-rose-400 bg-rose-500/10 border border-rose-500/30 px-2 py-0.5 rounded text-[10px] font-sans">LOSS (SL)</span>';
+		let statusBadge = '<span class="text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded text-[10px]">OPEN</span>';
+		if (item.status === 'WIN') statusBadge = '<span class="text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px]">WIN (TP)</span>';
+		if (item.status === 'LOSS') statusBadge = '<span class="text-rose-400 bg-rose-500/10 border border-rose-500/30 px-2 py-0.5 rounded text-[10px]">LOSS (SL)</span>';
 
 		rows += `
 			<tr class="hover:bg-slate-800/40">
@@ -1180,7 +1180,7 @@ function initSearchSuggestions() {
 						<i class="fa-solid fa-circle-arrow-right text-[10px] text-emerald-400 opacity-60 group-hover:opacity-100"></i>
 						${ticker}
 					</span>
-					<span class="text-[9px] text-slate-500 group-hover:text-emerald-400 font-sans">IDX</span>
+					<span class="text-[9px] text-slate-500 group-hover:text-emerald-400">IDX</span>
 				</div>
 			`).join('');
 			box.classList.remove('hidden');
@@ -1507,7 +1507,7 @@ function renderAlertList(ticker) {
 					<span class="text-[9px] ${badgeColor} block font-bold font-sans uppercase tracking-wider">${labelText}</span>
 					<strong class="text-white font-mono text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</strong>
 				</div>
-				<div class="flex items-center gap-2 font-sans">
+				<div class="flex items-center gap-2">
 					<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[10px] ${isActive ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'} px-2 py-1 rounded-md border font-bold transition">
 						${isActive ? 'AKTIF' : 'OFF'}
 					</button>
