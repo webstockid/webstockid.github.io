@@ -411,7 +411,7 @@ function renderTechnicalGauge(ticker) {
 		"interval": "1D",
 		"width": "100%",
 		"isTransparent": true,
-		"height": "400",
+		"height": "380",
 		"symbol": `IDX:${ticker}`,
 		"showIntervalTabs": true,
 		"displayMode": "single",
@@ -435,7 +435,7 @@ function renderFundamentalWidget(ticker) {
 		"largeChartUrl": "",
 		"displayMode": "regular",
 		"width": "100%",
-		"height": "480",
+		"height": "540",
 		"symbol": `IDX:${ticker}`,
 		"locale": "id"
 	});
@@ -1139,7 +1139,7 @@ function renderJournalTable() {
 
 function autoFillRRRFromAI() {
 	if (globalStockData) {
-		const price = roundToBEITick(price * 0.96, 'floor'); //roundToBEITick(globalStockData.price);
+		const price = roundToBEITick(globalStockData.price); //roundToBEITick(price * 0.96, 'floor');
 		const sl = roundToBEITick(price * 0.92, 'floor');
 		const tp = roundToBEITick(price * 1.08, 'ceil');
 
