@@ -623,7 +623,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 	let score = 3;
 	let verdik = "NETRAL / KONSOLIDASI";
-	let verdikClass = "font-black text-amber-400 text-sm lg:text-base";
+	let verdikClass = "font-bold text-amber-400 text-sm lg:text-base";
 	let scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 
 	if (stockData) {
@@ -635,22 +635,22 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		if (isAboveMA5 && isAboveMA10 && isAboveMA20 && stockData.changePct > 1.5 && isVolSpike) {
 			score = 5;
 			verdik = "STRONG BULLISH BREAKOUT";
-			verdikClass = "font-black text-emerald-400 text-sm lg:text-base";
+			verdikClass = "font-bold text-emerald-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if ((isAboveMA5 || isAboveMA10) && stockData.changePct >= 0) {
 			score = 4;
 			verdik = "BULLISH ACCUMULATION";
-			verdikClass = "font-black text-emerald-300 text-sm lg:text-base";
+			verdikClass = "font-bold text-emerald-300 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if (stockData.changePct < -2.5 && !isAboveMA10) {
 			score = 1;
 			verdik = "STRONG BEARISH / SELLING PRESSURE";
-			verdikClass = "font-black text-rose-500 text-sm lg:text-base";
+			verdikClass = "font-bold text-rose-500 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-rose-500 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if (stockData.changePct < 0) {
 			score = 2;
 			verdik = "WEAK / BEARISH CORRECTION";
-			verdikClass = "font-black text-rose-400 text-sm lg:text-base";
+			verdikClass = "font-bold text-rose-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		}
 
@@ -1309,8 +1309,8 @@ function renderRadarItems(dataList) {
 						<span class="bg-slate-800 text-amber-400 font-mono text-[10px] lg:text-xs px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
 						<div>
 							<div class="flex items-center gap-2">
-								<span class="font-black text-white text-sm lg:text-base">&dollar;${ticker}</span>
-								<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] lg:text-[10px] bg-blue-800 text-white hover:bg-emerald-400 hover:text-black-600 border border-teal-800 font-bold px-2 py-0.5 rounded transition">
+								<span class="font-bold text-white text-sm lg:text-base">&dollar;${ticker}</span>
+								<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] lg:text-[10px] bg-amber-400 text-black hover:bg-emerald-400 hover:text-black-600 border border-amber-500 font-bold px-2 py-0.5 rounded transition">
 									Lihat Chart
 								</button>
 							</div>
