@@ -476,7 +476,7 @@
 							<span class="text-xs lg:text-sm font-bold text-amber-400">Pemindaian Saham Potensial Otomatis (All Technical Engine)</span>
 						</div>
 
-						<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-slate-950 font-bold bg-amber-400 hover:bg-amber-300 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md">
+						<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-white font-bold bg-amber-800 hover:bg-amber-600 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md">
 							<i data-lucide="search" class="w-3.5 h-3.5"></i> Mulai Pindai Pasar
 						</button>
 					</div>
@@ -566,10 +566,10 @@
 						
 						<!-- Tombol Inline Kiri & Kanan Rapih -->
 						<div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
-							<button onclick="saveTradingPlanToJournal()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-fuchsia-800 hover:bg-fuchsia-600 hover:text-fuchsia-800 text-black-600 font-bold px-3.5 py-2 rounded-lg border border-fuchsia-700 transition flex items-center justify-center gap-1.5 shadow-sm">
+							<button onclick="saveTradingPlanToJournal()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-fuchsia-800 hover:bg-fuchsia-600 hover:text-black text-white font-bold px-3.5 py-2 rounded-lg border border-fuchsia-700 transition flex items-center justify-center gap-1.5 shadow-sm">
 								<i data-lucide="bookmark-plus" class="w-3.5 h-3.5"></i> Simpan ke Journal
 							</button>
-							<button onclick="autoFillRRRFromAI()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-blue-800 hover:bg-blue-600 hover:text-blue-800 text-black-600 font-bold px-3.5 py-2 rounded-lg border border-blue-700 transition flex items-center justify-center gap-1.5">
+							<button onclick="autoFillRRRFromAI()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-blue-800 hover:bg-blue-600 hover:text-black text-white font-bold px-3.5 py-2 rounded-lg border border-blue-700 transition flex items-center justify-center gap-1.5">
 								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Data AI
 							</button>
 						</div>
@@ -735,7 +735,7 @@
 							<i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i> Daftar Alert Aktif untuk $<span id="alertActiveTicker">MDIA</span>:
 						</span>
 						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 min-h-[100px]">
-							<div class="text-center text-slate-400 py-6 lg:col-span-4 font-sans text-xs">Belum ada alert harga yang dipasang. Klik "Sync Data AI" di atas untuk memasang notifikasi otomatis.</div>
+							<div class="text-center text-slate-400 py-6 lg:col-span-4 text-xs">Belum ada alert harga yang dipasang. Klik "Sync Data AI" di atas untuk memasang notifikasi otomatis.</div>
 						</div>
 					</div>
 
@@ -763,7 +763,7 @@
 		</main>
 
 		<!-- CONTAINER EXPORT TRADING CARD (RAPIS DAN DETAIL INDIKATOR TEKNIKAL) -->
-		<div id="exportCardContainer" class="fixed -left-[9999px] top-0 w-[620px] bg-slate-950 text-white p-7 rounded-3xl border-2 border-emerald-500/40 space-y-5 font-sans shadow-2xl">
+		<div id="exportCardContainer" class="fixed -left-[9999px] top-0 w-[620px] bg-slate-950 text-white p-7 rounded-3xl border-2 border-emerald-500/40 space-y-5 shadow-2xl">
 			<div class="flex justify-between items-center border-b border-slate-800/80 pb-4">
 				<div class="flex items-center gap-3">
 					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2.5 rounded-2xl text-slate-950 shadow-lg shadow-emerald-500/20">
@@ -794,37 +794,37 @@
 			<!-- MAP LEVEL BUNGKUS -->
 			<div class="grid grid-cols-2 gap-3 font-mono text-xs">
 				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
-					<span class="text-slate-400 text-[10px] block font-sans mb-1">AREA ENTRY / SUPPORT</span>
+					<span class="text-slate-400 text-[10px] block mb-1">AREA ENTRY / SUPPORT</span>
 					<span class="text-amber-400 block font-bold text-sm" id="cardEntry">Rp -</span>
 				</div>
 				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
-					<span class="text-slate-400 text-[10px] block font-sans mb-1">RESISTANCE</span>
+					<span class="text-slate-400 text-[10px] block mb-1">RESISTANCE</span>
 					<span class="text-cyan-400 block font-bold text-sm" id="cardRES1">Rp -</span>
 				</div>
 				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
-					<span class="text-slate-400 text-[10px] block font-sans mb-1">STOP LOSS</span>
+					<span class="text-slate-400 text-[10px] block mb-1">STOP LOSS</span>
 					<span class="text-rose-400 block font-bold text-sm" id="cardSL">&lt; Rp -</span>
 				</div>
 				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
-					<span class="text-slate-400 text-[10px] block font-sans mb-1">TARGET PROFIT</span>
+					<span class="text-slate-400 text-[10px] block mb-1">TARGET PROFIT</span>
 					<span class="text-emerald-400 block font-bold text-sm" id="cardTP2">Rp -</span>
 				</div>
 			</div>
 
 			<!-- DITAMPILKAN RASIO VOLUME, MA 5, MA 10 -->
 			<div class="bg-slate-900/70 p-4 rounded-2xl border border-slate-800/80 space-y-2 font-mono">
-				<span class="text-[11px] font-bold text-emerald-400 font-sans uppercase tracking-wider block">INDIKATOR TEKNIKAL UTAMA:</span>
+				<span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block">INDIKATOR TEKNIKAL UTAMA:</span>
 				<div class="grid grid-cols-3 gap-2 text-xs pt-1 border-t border-slate-800/60">
 					<div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-center">
-						<span class="text-[9px] text-slate-400 font-sans block mb-1">VOL RATIO</span>
+						<span class="text-[9px] text-slate-400 block mb-1">VOL RATIO</span>
 						<span class="text-sm text-cyan-400 font-bold block" id="cardVolRatio">1.0x</span>
 					</div>
 					<div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-center">
-						<span class="text-[9px] text-slate-400 font-sans block mb-1">LEVEL MA 5</span>
+						<span class="text-[9px] text-slate-400 block mb-1">LEVEL MA 5</span>
 						<span class="text-sm text-amber-400 font-bold block" id="cardMA5">Rp 0</span>
 					</div>
 					<div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-center">
-						<span class="text-[9px] text-slate-400 font-sans block mb-1">LEVEL MA 10</span>
+						<span class="text-[9px] text-slate-400 block mb-1">LEVEL MA 10</span>
 						<span class="text-sm text-emerald-400 font-bold block" id="cardMA10">Rp 0</span>
 					</div>
 				</div>
