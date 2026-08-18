@@ -730,11 +730,11 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Volume Transaksi:</span>
-				<span class="font-mono text-green-300 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
+				<span class="font-mono text-green-600 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Total Valuasi:</span>
-				<span class="font-mono text-blue-300 font-bold">Rp ${(stockData.currentValuation || 0).toLocaleString('id-ID')}</span>
+				<span class="font-mono text-blue-600 font-bold">Rp ${(stockData.currentValuation || 0).toLocaleString('id-ID')}</span>
 			</li>
 		`;
 
