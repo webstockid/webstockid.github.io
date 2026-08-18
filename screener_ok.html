@@ -198,7 +198,7 @@
 				<!-- Dropdown Menu Suggestions -->
 				<div id="searchSuggestionsBox" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl backdrop-blur-xl max-h-60 overflow-y-auto z-50 divide-y divide-slate-800/60 scrollbar-thin"></div>
 
-				<button onclick="searchStock()" class="absolute right-1.5 top-1.5 text-xs lg:text-sm bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 py-1.5 lg:py-2 rounded-md transition z-10">
+				<button onclick="searchStock()" class="absolute right-1.5 top-1.5 text-xs lg:text-sm bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/40 font-bold px-4 py-1.5 lg:py-2 rounded-md transition z-10">
 					Cari
 				</button>
 			</div>
@@ -413,7 +413,7 @@
 							<div class="bg-slate-900/90 p-3 lg:p-3.5 rounded-lg border border-slate-800 space-y-2">
 								<div class="flex justify-between items-center text-[10px] lg:text-[11px]">
 									<span class="text-rose-400 font-bold" id="tpBarSL">SL: -</span>
-									<span class="text-white font-bold bg-emerald-500 px-2.5 py-0.5 rounded border border-slate-700" id="tpBarCurrent">Harga: -</span>
+									<span class="font-bold bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/40 px-2.5 py-0.5 rounded" id="tpBarCurrent">Harga: -</span>
 									<span class="text-emerald-400 font-bold" id="tpBarTP">TP1: -</span>
 								</div>
 								<div class="w-full bg-slate-950 rounded-full h-3 lg:h-3.5 overflow-hidden border border-slate-800 relative p-0.5">
@@ -566,10 +566,10 @@
 						
 						<!-- Tombol Inline Kiri & Kanan Rapih -->
 						<div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
-							<button onclick="saveTradingPlanToJournal()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-fuchsia-800 hover:bg-fuchsia-500 hover:text-slate-500 text-white font-bold px-3.5 py-2 rounded-lg border border-fuchsia-700 transition flex items-center justify-center gap-1.5 shadow-sm">
+							<button onclick="saveTradingPlanToJournal()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-fuchsia-800 hover:bg-fuchsia-500 hover:text-white text-white font-bold px-3.5 py-2 rounded-lg border border-fuchsia-700 transition flex items-center justify-center gap-1.5 shadow-sm">
 								<i data-lucide="bookmark-plus" class="w-3.5 h-3.5"></i> Simpan ke Journal
 							</button>
-							<button onclick="autoFillRRRFromAI()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-blue-800 hover:bg-blue-500 hover:text-slate-500 text-white font-bold px-3.5 py-2 rounded-lg border border-blue-700 transition flex items-center justify-center gap-1.5">
+							<button onclick="autoFillRRRFromAI()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-blue-800 hover:bg-blue-500 hover:text-white text-white font-bold px-3.5 py-2 rounded-lg border border-blue-700 transition flex items-center justify-center gap-1.5">
 								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Data AI
 							</button>
 						</div>
