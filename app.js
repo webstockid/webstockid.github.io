@@ -713,12 +713,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		// [REVISI NO 1]: Injeksi Data Volume (Lot) dan Valuasi (Val) ke Dalam List Bukti Utama 
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Harga: <strong class="text-sky-500">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
+				<span>• Harga: <strong class="text-sky-500 font-bold">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
 				<span class="text-[10px] lg:text-[11px] text-white">${isCached ? 'Cache Instant' : 'Live Data'}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Posisi Tren MA5 / MA10 / MA20:</span>
-				<span class="font-mono text-emerald-400">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
+				<span class="font-mono text-emerald-400 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Rasio Volume vs Rerata Harian:</span>
@@ -726,15 +726,15 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Terendah 20 Hari / Rentang Tertinggi:</span>
-				<span class="font-mono text-cyan-400">Rp ${stockData.low20.toLocaleString('id-ID')} - Rp ${stockData.high20.toLocaleString('id-ID')}</span>
+				<span class="font-mono text-cyan-400 font-bold">Rp ${stockData.low20.toLocaleString('id-ID')} - Rp ${stockData.high20.toLocaleString('id-ID')}</span>
 			</li>
-			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-emerald-500/30">
-				<span>• Volume Transaksi (Real-time):</span>
-				<span class="font-mono text-amber-400 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Volume Transaksi:</span>
+				<span class="font-mono text-teal-400 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 			</li>
-			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-emerald-500/30">
-				<span>• Total Valuasi (Real-time):</span>
-				<span class="font-mono text-amber-400 font-bold">Rp ${(stockData.currentValuation || 0).toLocaleString('id-ID')}</span>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Total Valuasi:</span>
+				<span class="font-mono text-blue-400 font-bold">Rp ${(stockData.currentValuation || 0).toLocaleString('id-ID')}</span>
 			</li>
 		`;
 
