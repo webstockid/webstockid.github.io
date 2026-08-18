@@ -162,16 +162,6 @@ function roundToBEITick(price, direction = 'round') {
 	return Math.round(price / tick) * tick;
 }
 
-// HELPER FORMAT ANGKA RINGKAS (K, M, B, T)
-function formatNumberAbbr(num) {
-	if (!num || isNaN(num)) return '0';
-	if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
-	if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
-	if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
-	if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
-	return num.toLocaleString('id-ID');
-}
-
 // ==================== POP-UP WELCOME CONTROL ====================
 function checkWelcomeModal() {
 	const hideModal = localStorage.getItem('hide_welcome_modal');
@@ -412,6 +402,7 @@ function renderChart(ticker) {
 function renderTechnicalGauge(ticker) {
 	const container = document.getElementById('tv_technical_container');
 	container.innerHTML = '';
+
 	const script = document.createElement('script');
 	script.type = 'text/javascript';
 	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
@@ -433,6 +424,7 @@ function renderTechnicalGauge(ticker) {
 function renderFundamentalWidget(ticker) {
 	const container = document.getElementById('tv_fundamental_container');
 	container.innerHTML = '';
+
 	const script = document.createElement('script');
 	script.type = 'text/javascript';
 	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js';
@@ -452,523 +444,1390 @@ function renderFundamentalWidget(ticker) {
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-async function fetchRealtimeStockData(ticker, isBackground = false) {
-	if (!isBackground) {
-		const cached = getCachedStockData(ticker);
-		if (cached) {
-			return cached;
-		}
-	}
+// OPTIMASI REALTIME DATA FETCHING
+async function fetchRealtimeStockData(ticker, forceFetch = false) {
+	const cachedData = getCachedStockData(ticker);
+	if (cachedData && !forceFetch) return cachedData;
 
+	const targetSymbol = `${ticker}.JK`;
+	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
+	
+	const fetchWithTimeout = (url, timeoutMs = 1800) => {
+		return new Promise((resolve, reject) => {
+			const timer = setTimeout(() => reject(new Error('Timeout')), timeoutMs);
+			fetch(url)
+				.then(res => {
+					clearTimeout(timer);
+					if (res.ok) resolve(res);
+					else reject(new Error('Response not OK'));
+				})
+				.catch(err => {
+					clearTimeout(timer);
+					reject(err);
+				});
+		});
+	};
+
+	const parseYahooJSON = (json) => {
+		const result = json?.chart?.result?.[0] || json?.results?.[0];
+		if (!result) return null;
+
+		const quote = result.indicators?.quote?.[0] || result.quote;
+		const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
+		const volumes = quote?.volume?.filter(v => v !== null && v !== undefined) || [];
+		const highs = quote?.high?.filter(h => h !== null && h !== undefined) || [];
+		const lows = quote?.low?.filter(l => l !== null && l !== undefined) || [];
+
+		if (prices.length < 5) return null;
+
+		const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
+		const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
+		const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
+
+		const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+		const ma5 = getMA(5);
+		const ma10 = getMA(10);
+		const ma20 = getMA(20);
+
+		const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
+		const volSlice10 = volumes.slice(-10);
+		const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
+		const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
+
+		const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
+		const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
+
+		return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
+	};
+
+	const workerPromise = fetchWithTimeout(`${WORKER_URL}?symbol=${targetSymbol}`, 1800)
+		.then(res => res.json())
+		.then(json => parseYahooJSON(json));
+
+	const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
+	const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
+	
+	const yahooPromise = fetchWithTimeout(allOriginsUrl, 2000)
+		.then(res => res.json())
+		.then(wrapper => JSON.parse(wrapper.contents))
+		.then(json => parseYahooJSON(json));
+
+	let freshData = null;
 	try {
-		const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}.JK?range=1mo&interval=1d`;
-		const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`);
-		const data = await res.json();
-		const parsed = JSON.parse(data.contents);
-		const result = parsed.chart.result[0];
+		freshData = await Promise.race([
+			workerPromise.catch(() => null),
+			yahooPromise.catch(() => null)
+		]);
 
-		const meta = result.meta;
-		const quote = result.indicators.quote[0];
-		const prices = quote.close.filter(p => p !== null);
-		const volumes = quote.volume.filter(v => v !== null);
-
-		const currentPrice = meta.regularMarketPrice || prices[prices.length - 1];
-		const prevClose = meta.chartPreviousClose || prices[prices.length - 2];
-		const change = currentPrice - prevClose;
-		const changePercent = (change / prevClose) * 100;
-
-		const currentVolShares = meta.regularMarketVolume || volumes[volumes.length - 1] || 0;
-		const currentVolLot = Math.round(currentVolShares / 100);
-		const currentValueIDR = Math.round(currentVolShares * currentPrice);
-
-		const ma5 = prices.slice(-5).reduce((a, b) => a + b, 0) / Math.min(prices.length, 5);
-		const ma10 = prices.slice(-10).reduce((a, b) => a + b, 0) / Math.min(prices.length, 10);
-		const ma20 = prices.slice(-20).reduce((a, b) => a + b, 0) / Math.min(prices.length, 20);
-
-		const recentVols = volumes.slice(-10);
-		const avgVol = recentVols.reduce((a, b) => a + b, 0) / recentVols.length;
-		const volRatio = (currentVolShares / (avgVol || 1)).toFixed(1);
-
-		const payload = {
-			ticker,
-			price: currentPrice,
-			change,
-			changePercent,
-			volumeLot: currentVolLot,
-			valueIDR: currentValueIDR,
-			ma5: roundToBEITick(ma5),
-			ma10: roundToBEITick(ma10),
-			ma20: roundToBEITick(ma20),
-			volRatio,
-			high: meta.regularMarketDayHigh || currentPrice,
-			low: meta.regularMarketDayLow || currentPrice
-		};
-
-		setCachedStockData(ticker, payload);
-		return payload;
-	} catch (err) {
-		console.warn(`Gagal fetch Yahoo Finance ${ticker}, memakai simulasi fallback.`, err);
-		const simPrice = roundToBEITick(Math.floor(Math.random() * 2000) + 100);
-		const simChange = Math.floor(Math.random() * 40) - 20;
-		const simVolShares = Math.floor(Math.random() * 5000000) + 10000;
-		const simVolLot = Math.round(simVolShares / 100);
-		const simValIDR = Math.round(simVolShares * simPrice);
-
-		const simPayload = {
-			ticker,
-			price: simPrice,
-			change: simChange,
-			changePercent: (simChange / simPrice) * 100,
-			volumeLot: simVolLot,
-			valueIDR: simValIDR,
-			ma5: roundToBEITick(simPrice * 0.98),
-			ma10: roundToBEITick(simPrice * 0.95),
-			ma20: roundToBEITick(simPrice * 0.92),
-			volRatio: (Math.random() * 2 + 0.5).toFixed(1),
-			high: simPrice + 10,
-			low: simPrice - 10
-		};
-		setCachedStockData(ticker, simPayload);
-		return simPayload;
-	}
-}
-
-async function generateAISignal(ticker) {
-	const aiText = document.getElementById('aiAnalysisText');
-	const aiBadge = document.getElementById('aiSignalBadge');
-	const aiTp = document.getElementById('aiTargetPrice');
-	const aiSl = document.getElementById('aiStopLoss');
-
-	aiText.innerHTML = `<div class="skeleton h-16 w-full rounded-lg"></div>`;
-
-	const data = await fetchRealtimeStockData(ticker);
-	globalStockData = data;
-
-	document.getElementById('stockPrice').innerText = `Rp ${data.price.toLocaleString('id-ID')}`;
-	const sign = data.change >= 0 ? '+' : '';
-	const badgeClass = data.change >= 0 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20';
-	
-	const changeBadge = document.getElementById('stockChangeBadge');
-	changeBadge.innerText = `${sign}${data.changePercent.toFixed(2)}%`;
-	changeBadge.className = `text-xs font-bold px-2.5 py-1 rounded-lg border ${badgeClass}`;
-	
-	document.getElementById('stockChangeRaw').innerText = `(${sign}${data.change})`;
-
-	// UPDATE UI VOLUME LOT & VALUE IDR
-	const volEl = document.getElementById('stockVolume');
-	const valEl = document.getElementById('stockValue');
-	if (volEl) volEl.innerText = `${formatNumberAbbr(data.volumeLot)} Lot`;
-	if (valEl) valEl.innerText = `Rp ${formatNumberAbbr(data.valueIDR)}`;
-
-	document.getElementById('rrrEntryPrice').value = data.price;
-	
-	let rawTp = data.price * 1.05;
-	let rawSl = data.price * 0.96;
-
-	if (data.price > data.ma5 && data.volRatio >= 1.2) {
-		rawTp = data.price * 1.08;
-		rawSl = data.price * 0.95;
-	} else if (data.price < data.ma10) {
-		rawTp = data.price * 1.03;
-		rawSl = data.price * 0.97;
+		if (!freshData) {
+			const results = await Promise.allSettled([workerPromise, yahooPromise]);
+			for (const res of results) {
+				if (res.status === 'fulfilled' && res.value) {
+					freshData = res.value;
+					break;
+				}
+			}
+		}
+	} catch (e) {
+		console.warn(`Fetch error for ${ticker}`);
 	}
 
-	const tp = roundToBEITick(rawTp, 'ceil');
-	const sl = roundToBEITick(rawSl, 'floor');
-
-	document.getElementById('rrrTargetPrice').value = tp;
-	document.getElementById('rrrStopLoss').value = sl;
-	calculateRRR();
-
-	let signal = "HOLD / NEUTRAL";
-	let signalStyle = "bg-amber-500/20 text-amber-400 border-amber-500/30";
-	let reason = "";
-
-	if (data.price > data.ma5 && data.volRatio >= 1.5) {
-		signal = "STRONG BUY";
-		signalStyle = "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
-		reason = `Saham ${ticker} menunjukkan dorongan beli kuat dengan rasio volume ${data.volRatio}x rerata 10 hari & bergerak kokoh di atas MA5 (Rp ${data.ma5}). Tren jangka pendek sangat bullish.`;
-	} else if (data.price > data.ma10) {
-		signal = "BUY ON BREAKOUT";
-		signalStyle = "bg-teal-500/20 text-teal-400 border-teal-500/30";
-		reason = `Saham ${ticker} bertahan di atas MA10 (Rp ${data.ma10}). Volume relatif konstan (${data.volRatio}x). Berpotensi menguji resisten terdekat.`;
-	} else {
-		signal = "AVOID / WAIT";
-		signalStyle = "bg-rose-500/20 text-rose-400 border-rose-500/30";
-		reason = `Saham ${ticker} saat ini berada di bawah MA10 (Rp ${data.ma10}) dengan tekanan jual. Disarankan wait & see hingga ada konfirmasi pembalikan arah di support terdekat.`;
+	if (freshData) {
+		setCachedStockData(ticker, freshData);
+	} else if (cachedData) {
+		return cachedData;
 	}
 
-	aiBadge.innerText = signal;
-	aiBadge.className = `text-xs font-bold px-3 py-1 rounded-xl border ${signalStyle}`;
-	aiTp.innerText = `Rp ${tp.toLocaleString('id-ID')}`;
-	aiSl.innerText = `Rp ${sl.toLocaleString('id-ID')}`;
-	aiText.innerText = reason;
-
-	checkPriceAlertsRealtime(ticker, data.price);
+	return freshData;
 }
 
-function calculateRRR() {
-	const entry = parseFloat(document.getElementById('rrrEntryPrice').value) || 0;
-	const tp = parseFloat(document.getElementById('rrrTargetPrice').value) || 0;
-	const sl = parseFloat(document.getElementById('rrrStopLoss').value) || 0;
-
-	if (entry <= 0 || tp <= 0 || sl <= 0) return;
-
-	const profit = ((tp - entry) / entry) * 100;
-	const loss = ((entry - sl) / entry) * 100;
-	const ratio = loss > 0 ? (profit / loss).toFixed(2) : '0.00';
-
-	document.getElementById('rrrProfitPercent').innerText = `+${profit.toFixed(2)}%`;
-	document.getElementById('rrrLossPercent').innerText = `-${loss.toFixed(2)}%`;
-	document.getElementById('rrrRatio').innerText = `1 : ${ratio}`;
-}
-
-async function fetchStockNews(ticker) {
-	const container = document.getElementById('stockNewsContainer');
-	container.innerHTML = `<div class="skeleton h-20 w-full rounded-xl"></div>`;
-
-	await sleep(400);
-
-	const dummyNews = [
-		{ title: `Performa Keuangan ${ticker} Catat Tren Positif di Kuartal Ini`, source: "MarketNews", time: "2 jam yang lalu" },
-		{ title: `Analisis Pergerakan Volume & Aliran Dana Asing pada Saham ${ticker}`, source: "SahamInfo", time: "5 jam yang lalu" },
-		{ title: `Rencana Ekspansi Bisnis Mendorong Prospek Cerah ${ticker}`, source: "FinanAsia", time: "1 hari yang lalu" }
-	];
-
-	container.innerHTML = dummyNews.map(n => `
-		<div class="p-3 bg-slate-950 rounded-xl border border-slate-800/80 space-y-1 hover:border-emerald-500/30 transition">
-			<a href="#" class="font-bold text-slate-200 hover:text-emerald-400 transition block leading-snug">${n.title}</a>
-			<div class="flex justify-between text-[10px] text-slate-400">
-				<span>${n.source}</span>
-				<span>${n.time}</span>
-			</div>
+function showAISkeletonLoading() {
+	document.getElementById('aiVerdikText').innerHTML = `<span class="inline-block w-32 h-5 skeleton rounded"></span>`;
+	document.getElementById('aiScoreBadge').innerHTML = `<span class="inline-block w-12 h-4 skeleton rounded"></span>`;
+	
+	document.getElementById('aiVerdikDesc').innerHTML = `
+		<div class="space-y-2 py-1">
+			<div class="w-full h-3 skeleton rounded"></div>
+			<div class="w-4/5 h-3 skeleton rounded"></div>
+			<div class="w-3/4 h-3 skeleton rounded"></div>
 		</div>
-	`).join('');
+	`;
+
+	document.getElementById('aiBuktiUtamaList').innerHTML = `
+		<li class="h-6 skeleton rounded w-full"></li>
+		<li class="h-6 skeleton rounded w-full"></li>
+		<li class="h-6 skeleton rounded w-full"></li>
+		<li class="h-6 skeleton rounded w-full"></li>
+	`;
+
+	document.getElementById('mapSupport1').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
+	document.getElementById('mapResist1').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
+	document.getElementById('mapTP').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
+	document.getElementById('mapSL').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
+
+	document.getElementById('tpBarSL').innerHTML = `<span class="inline-block w-12 h-3 skeleton rounded"></span>`;
+	document.getElementById('tpBarCurrent').innerHTML = `<span class="inline-block w-16 h-3 skeleton rounded"></span>`;
+	document.getElementById('tpBarTP').innerHTML = `<span class="inline-block w-12 h-3 skeleton rounded"></span>`;
+	document.getElementById('tpProgressBar').style.width = '0%';
+	document.getElementById('tpProgressPercent').innerText = `Menghitung posisi teknikal...`;
 }
 
-async function fetchCorporateActions(ticker) {
-	const container = document.getElementById('corporateActionWidget');
-	container.innerHTML = `<div class="skeleton h-16 w-full rounded-xl"></div>`;
+// LOGIKA GENERATE AI SIGNAL & EKSKUSI SMART ALERT CHECK
+async function generateAISignal(ticker, isManualSearch = false) {
+	const now = new Date();
+	const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+	const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-	await sleep(300);
+	document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
+	document.getElementById('aiDateStamp').innerText = `Update Live: ${dateStr} ${timeStr} WIB`;
 
-	const actions = [
-		{ type: "RUPS Tahunan", date: "15 Sep 2026", desc: "Persetujuan Laporan Keuangan" },
-		{ type: "Dividen Cash", date: "28 Okt 2026", desc: "Estimasi Cum-Date Dividen" }
-	];
+	setTimeout(() => fetchStockNewsForAI(ticker), 10);
 
-	container.innerHTML = actions.map(a => `
-		<div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800/80 flex items-center justify-between">
-			<div>
-				<span class="text-xs font-bold text-emerald-400 block">${a.type}</span>
-				<span class="text-[10px] text-slate-400">${a.desc}</span>
-			</div>
-			<span class="text-[10px] font-mono bg-slate-900 px-2 py-1 rounded border border-slate-800 text-slate-300">${a.date}</span>
-		</div>
-	`).join('');
+	const cachedData = getCachedStockData(ticker);
+	
+	if (cachedData) {
+		globalStockData = cachedData;
+		renderAISignalUI(ticker, cachedData, true);
+		checkPriceAlertsRealtime(ticker, cachedData.price);
+
+		fetchRealtimeStockData(ticker, true).then(freshData => {
+			if (freshData) {
+				globalStockData = freshData;
+				renderAISignalUI(ticker, freshData, false);
+				checkPriceAlertsRealtime(ticker, freshData.price);
+			}
+		});
+		return;
+	}
+
+	showAISkeletonLoading();
+
+	const stockData = await fetchRealtimeStockData(ticker, false);
+	if (stockData && stockData.ticker === ticker) {
+		globalStockData = stockData;
+		checkPriceAlertsRealtime(ticker, stockData.price);
+	}
+
+	renderAISignalUI(ticker, stockData, false);
 }
 
-async function renderPeerComparison(ticker) {
-	const container = document.getElementById('peerComparisonWidget');
-	container.innerHTML = `<div class="skeleton h-20 w-full rounded-xl"></div>`;
+// RENDER UI HASIL ANALISA
+function renderAISignalUI(ticker, stockData, isCached) {
+	const verdikEl = document.getElementById('aiVerdikText');
+	const scoreEl = document.getElementById('aiScoreBadge');
+	const descEl = document.getElementById('aiVerdikDesc');
+	const buktiEl = document.getElementById('aiBuktiUtamaList');
+	const kesimpulanEl = document.getElementById('aiKesimpulanText');
 
-	await sleep(400);
+	let price = stockData ? roundToBEITick(stockData.price) : 100;
 
-	const peers = [ticker, "TLKM", "ISAT", "EXCL"].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3);
-	let html = '';
+	let score = 3;
+	let verdik = "NETRAL / KONSOLIDASI";
+	let verdikClass = "font-bold text-amber-400 text-sm lg:text-base";
+	let scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 
-	for (let p of peers) {
-		const pData = await fetchRealtimeStockData(p, true);
-		const sign = pData.change >= 0 ? '+' : '';
-		const textColor = pData.change >= 0 ? 'text-emerald-400' : 'text-rose-400';
+	if (stockData) {
+		const isAboveMA5 = stockData.price >= stockData.ma5;
+		const isAboveMA10 = stockData.price >= stockData.ma10;
+		const isAboveMA20 = stockData.price >= stockData.ma20;
+		const isVolSpike = stockData.volRatio >= 1.00;
 
-		html += `
-			<div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800/80 flex items-center justify-between hover:border-slate-700 transition cursor-pointer" onclick="changeTickerFromPeer('${p}')">
-				<div>
-					<span class="font-bold text-white block">${p}</span>
-					<span class="text-[10px] text-slate-400 font-mono">Rp ${pData.price.toLocaleString('id-ID')}</span>
-				</div>
-				<span class="text-xs font-bold ${textColor} font-mono">${sign}${pData.changePercent.toFixed(2)}%</span>
-			</div>
+		if (isAboveMA5 && isAboveMA10 && isAboveMA20 && stockData.changePct > 1.5 && isVolSpike) {
+			score = 5;
+			verdik = "STRONG BULLISH BREAKOUT";
+			verdikClass = "font-bold text-emerald-400 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+		} else if ((isAboveMA5 || isAboveMA10) && stockData.changePct >= 0) {
+			score = 4;
+			verdik = "BULLISH ACCUMULATION";
+			verdikClass = "font-bold text-emerald-300 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+		} else if (stockData.changePct < -2.5 && !isAboveMA10) {
+			score = 1;
+			verdik = "STRONG BEARISH / SELLING PRESSURE";
+			verdikClass = "font-bold text-rose-500 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-rose-500 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+		} else if (stockData.changePct < 0) {
+			score = 2;
+			verdik = "WEAK / BEARISH CORRECTION";
+			verdikClass = "font-bold text-rose-400 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+		}
+
+		verdikEl.innerText = verdik;
+		verdikEl.className = verdikClass;
+		scoreEl.innerText = `${score}/5`;
+		scoreEl.className = scoreClass;
+
+		const trendText = stockData.changePct >= 0 ? `menguat +${stockData.changePct}%` : `terkoreksi ${stockData.changePct}%`;
+		const volText = isVolSpike 
+			? `<strong class="text-emerald-400">terjadi lonjakan volume (${stockData.volRatio}x rerata volume harian)</strong>` 
+			: `volume transaksi cenderung moderat <strong class="text-rose-400">(${stockData.volRatio}x rerata volume harian)</strong>`;
+		
+		const maAlignText = (isAboveMA5 && isAboveMA10 && isAboveMA20)
+			? "Struktur tren berada dalam susunan <strong class='text-emerald-400'>Bullish Alignment</strong> (Harga > MA5 > MA10 > MA20). Ini menandakan partisipasi pembeli mendominasi penuh seluruh horizon waktu jangka pendek."
+			: (!isAboveMA10 && !isAboveMA20)
+			? "Posisi harga berada <strong class='text-rose-400'>di bawah MA10 & MA20</strong>, mengindikasikan tekanan jual jangka pendek yang intensif dan kurva pergerakan dalam fase penurunan beruntun (*downtrend*)."
+			: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata, mengisyaratkan perebutan momentum antara kubu *bulls* dan *bears*.";
+
+		descEl.innerHTML = `
+			<p class="leading-relaxed"><strong class="text-sky-500">Mengapa?</strong> Saham ${ticker} saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-500">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-500">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-500">(Support Kuat 20 Hari)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-500">(Resistance Tertinggi 20 Hari)</strong>. Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksekusi *Trading Plan*.</p>
 		`;
+
+		buktiEl.innerHTML = `
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Harga: <strong class="text-sky-500">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
+				<span class="text-[10px] lg:text-[11px] text-white">${isCached ? 'Cache Instant' : 'Live Data'}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Posisi Tren MA5 / MA10 / MA20:</span>
+				<span class="font-mono text-emerald-400">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Rasio Volume vs Rerata Volume Harian:</span>
+				<span class="font-bold font-mono ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Terendah 20 Hari / Rentang Tertinggi:</span>
+				<span class="font-mono text-cyan-400">Rp ${stockData.low20.toLocaleString('id-ID')} - Rp ${stockData.high20.toLocaleString('id-ID')}</span>
+			</li>
+		`;
+
+	} else {
+		verdikEl.innerText = "NETRAL-SELEKTIF";
+		scoreEl.innerText = "3/5";
+		descEl.innerText = `Menganalisis pergerakan teknikal emiten ${ticker} berbasis indikator grafik TradingView. Silakan evaluasi struktur pola harga harian sebelum melakukan transaksi.`;
 	}
 
-	container.innerHTML = html;
+	const sl = roundToBEITick(price * 0.92, 'floor'); 
+	const sup1 = roundToBEITick(price * 0.94, 'floor'); 
+	const sup2 = roundToBEITick(price * 0.96, 'floor'); 
+	const res1 = roundToBEITick(price * 1.05, 'ceil'); 
+	const res2 = roundToBEITick(price * 1.08, 'ceil'); 
+	const tp1 = roundToBEITick(price * 1.06, 'ceil'); 
+	const tp2 = roundToBEITick(price * 1.14, 'ceil'); 
+
+	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
+	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
+	document.getElementById('mapTP').innerText = `Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}`;
+	document.getElementById('mapSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
+
+	document.getElementById('tpBarSL').innerText = `SL: Rp ${sl.toLocaleString('id-ID')}`;
+	document.getElementById('tpBarCurrent').innerText = `Harga: Rp ${price.toLocaleString('id-ID')}`;
+	document.getElementById('tpBarTP').innerText = `TP1: Rp ${tp1.toLocaleString('id-ID')}`;
+
+	const totalSpan = tp1 - sl;
+	let calculatedProgress = totalSpan > 0 ? Math.round(((price - sl) / totalSpan) * 100) : 50;
+	calculatedProgress = Math.max(0, Math.min(100, calculatedProgress));
+
+	const progressBar = document.getElementById('tpProgressBar');
+	progressBar.style.width = '0%';
+	setTimeout(() => {
+		progressBar.style.width = `${calculatedProgress}%`;
+	}, 200);
+
+	document.getElementById('tpProgressPercent').innerText = `Posisi: ${calculatedProgress}% dari Rentang SL - TP1`;
+
+	document.getElementById('aiSkenarioBox').innerHTML = `
+		<p><strong>(a) Konfirmasi Bullish:</strong> Jika harga bertahan di atas support Rp ${sup2.toLocaleString('id-ID')} dengan volume stabil, target uji resistance berada di Rp ${res1.toLocaleString('id-ID')}. Penembusan resistance dapat memicu akselerasi ke TP2 Rp ${tp2.toLocaleString('id-ID')}.</p>
+		<p><strong>(b) Consolidate / Retest:</strong> Apabila terjadi tekanan koreksi, perhatikan reaksi akumulasi pada rentang Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}.</p>
+		<p><strong>(c) Batas Invalidasi:</strong> Penembusan di bawah Stop Loss Rp ${sl.toLocaleString('id-ID')} membatalkan struktur bullish short-term dan berisiko melanjutkan penurunan.</p>
+	`;
+
+	const rrrRatioVal = ((tp2 - price) / Math.max(1, (price - sl))).toFixed(2);
+	kesimpulanEl.innerHTML = `
+		<p>• Area akumulasi optimal disarankan pada rentang support <strong>Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}</strong>.</p>
+		<p>• Proyeksi Rasio Risk/Reward (RRR) pada harga saat ini adalah <strong>1 : ${rrrRatioVal}</strong>.</p>
+		<p>• Selalu pasang pembatas risiko di bawah <strong>Rp ${sl.toLocaleString('id-ID')}</strong> untuk menjaga keterpaparan modal dari kecenderungan volatilitas pasar.</p>
+	`;
+
+	document.getElementById('rrrEntry').value = price;
+	document.getElementById('rrrSL').value = sl;
+	document.getElementById('rrrTP').value = tp1;
+	calculateSmartRRR();
+
+	if (window.lucide) lucide.createIcons();
+	AudioFX.playSuccess();
 }
 
-function changeTickerFromPeer(ticker) {
-	document.getElementById('stockSearch').value = ticker;
-	searchStock();
-}
+// COOLDOWN LOGIC EXPORT CARD (10 DETIK)
+function startExportCardCooldown(seconds = 10) {
+	const btn = document.getElementById('btnExportCard');
+	if (!btn) return;
 
-function refreshPeerComparison() {
-	if (peerRefreshCooldownTimer) return;
-	renderPeerComparison(currentTicker);
-	peerRefreshCooldownTimer = setTimeout(() => {
-		peerRefreshCooldownTimer = null;
-	}, 3000);
-}
+	btn.disabled = true;
+	btn.classList.add('opacity-50', 'cursor-not-allowed');
+	let remaining = seconds;
 
-function searchStock() {
-	if (searchCooldownTimer) return;
-	const input = document.getElementById('stockSearch').value.trim().toUpperCase();
-	if (!input) return;
+	if (exportCardCooldownTimer) clearInterval(exportCardCooldownTimer);
 
-	currentTicker = input;
-	document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
-	document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
-	document.getElementById('newsTickerLabel').innerText = currentTicker;
-	document.getElementById('fundTickerLabel').innerText = currentTicker;
-	document.getElementById('rrrTickerLabel').innerText = currentTicker;
-	document.getElementById('alertTickerLabel').innerText = currentTicker;
-	document.getElementById('corpTickerLabel').innerText = currentTicker;
-	document.getElementById('peerTickerLabel').innerText = currentTicker;
+	btn.innerHTML = `<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card (${remaining}s)`;
+	if (window.lucide) lucide.createIcons();
 
-	renderChart(currentTicker);
-	renderTechnicalGauge(currentTicker);
-	renderFundamentalWidget(currentTicker);
-	renderAlertList(currentTicker);
-	generateAISignal(currentTicker);
-	fetchStockNews(currentTicker);
-	fetchCorporateActions(currentTicker);
-	renderPeerComparison(currentTicker);
-
-	document.getElementById('searchSuggestions').classList.add('hidden');
-
-	searchCooldownTimer = setTimeout(() => {
-		searchCooldownTimer = null;
+	exportCardCooldownTimer = setInterval(() => {
+		remaining--;
+		if (remaining <= 0) {
+			clearInterval(exportCardCooldownTimer);
+			btn.disabled = false;
+			btn.classList.remove('opacity-50', 'cursor-not-allowed');
+			btn.innerHTML = `<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card`;
+			if (window.lucide) lucide.createIcons();
+		} else {
+			btn.innerHTML = `<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card (${remaining}s)`;
+			if (window.lucide) lucide.createIcons();
+		}
 	}, 1000);
 }
 
-function changeInterval(intv) {
-	currentInterval = intv;
-	renderChart(currentTicker);
+// FITUR: EXPORT TRADING PLAN CARD
+function exportTradingCard() {
+	const btn = document.getElementById('btnExportCard');
+	if (btn && btn.disabled) return;
+
+	if (!globalStockData) {
+		AudioFX.playAlert();
+		alert("Memuat data saham... Mohon tunggu sejenak.");
+		return;
+	}
+
+	startExportCardCooldown(10);
+
+	const price = roundToBEITick(globalStockData.price);
+	const sl = roundToBEITick(price * 0.92, 'floor');
+	const tp2 = roundToBEITick(price * 1.14, 'ceil');
+	const sup1 = roundToBEITick(price * 0.94, 'floor');
+	const res1 = roundToBEITick(price * 1.05, 'ceil');
+
+	const now = new Date();
+	const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+	document.getElementById('cardDateStr').innerText = dateStr;
+	document.getElementById('cardTicker').innerText = `$${currentTicker}`;
+	document.getElementById('cardPrice').innerText = `Rp ${price.toLocaleString('id-ID')}`;
+	document.getElementById('cardEntry').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${price.toLocaleString('id-ID')}`;
+	document.getElementById('cardSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
+	document.getElementById('cardTP2').innerText = `Rp ${tp2.toLocaleString('id-ID')}`;
+	document.getElementById('cardRES1').innerText = `Rp ${res1.toLocaleString('id-ID')}`;
+
+	document.getElementById('cardVolRatio').innerText = `${globalStockData.volRatio || '1.0'}x`;
+	document.getElementById('cardMA5').innerText = `Rp ${(globalStockData.ma5 || price).toLocaleString('id-ID')}`;
+	document.getElementById('cardMA10').innerText = `Rp ${(globalStockData.ma10 || price).toLocaleString('id-ID')}`;
+
+	const cardContainer = document.getElementById('exportCardContainer');
+
+	html2canvas(cardContainer, {
+		scale: 2,
+		backgroundColor: "#020617",
+		useCORS: true
+	}).then(canvas => {
+		const link = document.createElement('a');
+		link.download = `StockID_TradingCard_${currentTicker}_${now.getTime()}.png`;
+		link.href = canvas.toDataURL('image/png');
+		link.click();
+		AudioFX.playSuccess();
+	}).catch(err => {
+		console.error("Gagal mendownload card:", err);
+		AudioFX.playAlert();
+	});
 }
 
-// SEARCH AUTOCOMPLETE SUGGESTIONS
+// DAFTAR RADAR & WATCHLIST LENGKAP UNTUK SERUAN KOMPARASI
+const radarWatchlist = [
+	'MDIA', 'KOTA', 'BNBR', 'JGLE', 'ELTY', 'BBCA', 'BBRI', 'BMRI', 'BBNI', 'BBTN',
+	'BRIS', 'ARTO', 'BJTM', 'BJBR', 'BDMN', 'NISP', 'BNGA', 'BTPN', 'PNBN', 'PNLF',
+	'BBYB', 'BBHI', 'AGRO', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'BREN', 'TPIA', 'BYAN',
+	'BRPT', 'MDKA', 'UNVR', 'EMTK', 'SCMA', 'BUKA', 'BELI', 'WIFI', 'MTDL', 'PGAS',
+	'ANTM', 'INCO', 'MEDC', 'ADRO', 'PTBA', 'ITMG', 'HRUM', 'INDY', 'AKRA', 'CUAN',
+	'PTRO', 'MBMA', 'NCKL', 'TINS', 'BRMS', 'ENRG', 'DEWA', 'RAJA', 'SGER', 'DOID',
+	'BSSR', 'KKGI', 'HUMI', 'LEAD', 'PSSI', 'SMDR', 'TMAS', 'WINS', 'PANI', 'BSDE',
+	'CTRA', 'PWON', 'SMRA', 'KPIG', 'ASRI', 'SSIA', 'KIJA', 'JSMR', 'PTPP', 'ADHI',
+	'WEGE', 'WTON', 'TOWR', 'TBIG', 'EXCL', 'ISAT', 'CENT', 'META', 'DILD', 'JRPT',
+	'MKPI', 'BKSL', 'ICBP', 'INDF', 'CPIN', 'JPFA', 'AMRT', 'ACES', 'MAPI', 'ERAA',
+	'KLBF', 'MIKA', 'HEAL', 'SIDO', 'MYOR', 'CMRY', 'ROTI', 'MAPA', 'GGRM', 'HMSP',
+	'WIIM', 'SILO', 'SAME', 'KAEF', 'TSPC', 'IRRA', 'INKP', 'TKIM', 'INTP', 'SMGR',
+	'SMCB', 'SMBR', 'AUTO', 'DRMA', 'SMSM', 'GJTL', 'BIRD', 'ASSA', 'AVIA', 'ESSA',
+	'UNTR', 'SRTG', 'CASS', 'IMAS', 'MPMX', 'WOOD', 'SPTO', 'MLPL', 'RALS', 'MPPA',
+	'ULTJ', 'AALI', 'LSIP', 'SIMP', 'TAPG', 'DSNG', 'BWPT', 'SGRO', 'SSMS', 'NSSS',
+	'TBLA', 'MIDI', 'STAA', 'MAIN', 'FOOD', 'ALII', 'CITA', 'MDKI', 'VKTR', 'RATU',
+	'FORU', 'MNCN', 'FILM', 'KEEN', 'POWR', 'MCAS', 'DIVA', 'AXIO', 'MLPT', 'DNET',
+	'ISSP', 'KRAS', 'BAJA', 'LTLS', 'AGII', 'ALDO', 'BFIN', 'CFIN', 'HDFA', 'MFIN',
+	'APLN', 'LPKR', 'LPCK', 'DMAS', 'GPRA', 'AMAG', 'BBLD', 'BHAT', 'BINA', 'BIPI',
+	'BISR', 'BMAS', 'BMTR', 'BOLA', 'CSAP', 'CSRA', 'DLTA', 'DYAN', 'HERO', 'HEXA',
+	'AAVP', 'ABDA', 'ABMM', 'ACTD', 'ADCP', 'ADHI', 'ADMF', 'ADMR', 'ADMG', 'AEGS',
+	'AIMS', 'AISA', 'AKKU', 'AKPI', 'ALKA', 'ALMI', 'AMAR', 'AMIN', 'AMMS', 'AMOR',
+	'ANJT', 'AOTD', 'APEX', 'APIC', 'APLI', 'ARCI', 'ARFA', 'ARIA', 'ARII', 'ARKA',
+	'ARNA', 'ARTA', 'ASBI', 'ASDM', 'ASGR', 'ASJT', 'ASLC', 'ASMI', 'ASRM', 'ASSA',
+	'ATIC', 'ATPK', 'AUTO', 'BABP', 'BACA', 'BAJA', 'BALI', 'BANK', 'BAPA', 'BATA',
+	'BAYU', 'BBCA', 'BBDM', 'BBKP', 'BBLD', 'BBMD', 'BBRM', 'BBSI', 'BTEK', 'BTOCO',
+	'BTPN', 'BUKK', 'BULL', 'BVIC', 'BWPT', 'BYAN', 'CAKK', 'CAMP', 'CANI', 'CARE',
+	'CARS', 'CASA', 'CASS', 'CATO', 'CEKA', 'CENT', 'CFIN', 'CHIP', 'CINT', 'CISS',
+	'CLPI', 'CMNP', 'COCO', 'COWL', 'CPIN', 'CPRI', 'CPRO', 'CSAP', 'CSIS', 'CTBN',
+	'CTTH', 'DADA', 'DART', 'DEFI', 'DEPO', 'DFAM', 'DGIK', 'DGNS', 'DIGI', 'DIMA',
+	'DMND', 'DNAR', 'DNET', 'DOOH', 'DPNS', 'DPUM', 'DRMA', 'DSFI', 'DUTI', 'DVLA',
+	'DWGL', 'EAST', 'ECII', 'EDII', 'ELSA', 'ELTY', 'EMDE', 'ENRG', 'EPMT', 'ERAK',
+	'ERTX', 'ESIP', 'ESTA', 'ETWA', 'EURO', 'FAPA', 'FAST', 'FASW', 'FIRT', 'FISH',
+	'FITT', 'FLMC', 'FMII', 'FORU', 'FPNI', 'FPRN', 'GDST', 'GDYR', 'GEMA', 'GEMS',
+	'GREN', 'GSPT', 'GTBO', 'GWSA', 'GZCO', 'HADE', 'HAIS', 'HDFA', 'HDTX', 'HERO',
+	'HEXA', 'HITS', 'HKMU', 'HMSP', 'HOKI', 'HOME', 'HOTL', 'HRTA', 'IATA', 'IBFN',
+	'IBOS', 'IBST', 'ICBP', 'ICON', 'IDPR', 'IFII', 'IFSH', 'IGAR', 'IIKP', 'IKAI',
+	'IKBI', 'IMAS', 'IMJS', 'IMPC', 'INAF', 'INAI', 'INCF', 'INCI', 'INDO', 'INDR',
+	'INDS', 'INDY', 'INKP', 'INPP', 'INPC', 'INOV', 'INRU', 'IPCC', 'IPCM', 'IPOL',
+	'IPPE', 'IPTV', 'IRRA', 'ISSP', 'ITMA', 'ITMG', 'JARR', 'JAST', 'JASU', 'JECC',
+	'JGPA', 'JKON', 'JKSW', 'JMAS', 'JPFA', 'JSPT', 'JTPE', 'KAEF', 'KARW', 'KBAG',
+	'KBLI', 'KBLM', 'KBLV', 'KBRI', 'KDSI', 'KIAS', 'KICI', 'KIJA', 'KINR', 'KKGI',
+	'KLBF', 'KMDS', 'KMTR', 'KOIN', 'KOCI', 'KONI', 'KOPI', 'KREN', 'KROX', 'LPCK',
+	'LPGI', 'LPIN', 'LPKR', 'LPLI', 'LPOP', 'LSPT', 'LTLS', 'LUCK', 'MASA', 'MASB',
+	'MAYA', 'MBAP', 'MBSS', 'MBTO', 'MCOR', 'MDFC', 'MDIA', 'MDKA', 'MDRN', 'MEDC',
+	'MEGA', 'MERK', 'META', 'MFIN', 'MFMI', 'MGLV', 'MGNA', 'MICE', 'MIDI', 'MIKA',
+	'MINA', 'MIRE', 'MITS', 'MKNT', 'MKPI', 'MLBI', 'MLIA', 'MLND', 'MLPT', 'MMIX',
+	'MNAK', 'MNDO', 'MNCN', 'MPMX', 'MPPA', 'MRAT', 'MREI', 'MSIN', 'MSKY', 'MTDL',
+	'MTFN', 'MTLA', 'MTPS', 'MTRA', 'MTSM', 'MYOH', 'MYOR', 'MYTX', 'NANO', 'NASA',
+	'NASI', 'NCKL', 'NDKO', 'NELI', 'NELY', 'NETV', 'NFCX', 'NICE', 'NICK', 'NICL',
+	'NIKL', 'NINE', 'NISP', 'NOBU', 'NRCA', 'NTRD', 'OASA', 'OBMD', 'OCAP', 'OCMD',
+	'OILS', 'OKAS', 'OMRE', 'OPMS', 'PALM', 'PAMA', 'PAMG', 'PANI', 'PANR', 'PANS',
+	'PBID', 'PBRX', 'PBSA', 'PCAR', 'PDES', 'PEGE', 'PEHA', 'PGAS', 'PGJO', 'PGLI',
+	'PJAA', 'PKPK', 'PLIN', 'PLAS', 'PLND', 'PMMP', 'PNBN', 'PNBS', 'PNIN', 'PNLF',
+	'PNSE', 'POLY', 'POOL', 'PORT', 'POWR', 'PPGL', 'PPRE', 'PRDA', 'PRIM', 'PSAB',
+	'PSDN', 'PSGO', 'PSSI', 'PTBA', 'PTDU', 'PTIS', 'PTPP', 'PTRO', 'PTSN', 'PTPW',
+	'PWON', 'PYFA', 'PZZA', 'RBMS', 'RCCC', 'RDTX', 'RELI', 'RICY', 'RIGS', 'RISE',
+	'RMKE', 'ROCK', 'RODA', 'RONY', 'ROTI', 'SAFE', 'SAME', 'SAMF', 'SAPX', 'SBAT',
+	'SBMA', 'SCCO', 'SCMA', 'SCNP', 'SDRA', 'SDPC', 'SEMA', 'SFAN', 'SFXI', 'SGAR',
+	'SGLP', 'SHID', 'SIAP', 'SILO', 'SIMP', 'SINK', 'SIPD', 'SKBM', 'SKLT', 'SKRN',
+	'SLIS', 'SMAR', 'SMBR', 'SMCB', 'SMDM', 'SMDR', 'SMGR', 'SMKL', 'SMMA', 'SMRA',
+	'SMRU', 'SMSM', 'SNLK', 'SOFA', 'SONA', 'SOSI', 'SOTN', 'SPMA', 'SPTO', 'SQMI',
+	'SREI', 'SRIL', 'SRSN', 'SRTG', 'SSIA', 'SSMS', 'SSSI', 'SSTM', 'STAA', 'STAR',
+	'STTP', 'SUGI', 'SULI', 'SUPR', 'SURE', 'SWAT', 'TALF', 'TARA', 'TAXI', 'TBIG',
+	'TBLA', 'TCID', 'TCPI', 'TDPM', 'TEBE', 'TECH', 'TEBE', 'TELE', 'TFCO', 'TGRA',
+	'TIFA', 'TINC', 'TINS', 'TIPR', 'TIRA', 'TISC', 'TKIM', 'TLKM', 'TLDN', 'TMAN',
+	'TMAS', 'TMPO', 'TNCA', 'TOPS', 'TOTE', 'TOWR', 'TPIA', 'TPMA', 'TRAM', 'TRFA',
+	'TRIL', 'TRIM', 'TRIN', 'TRIO', 'TRIS', 'TRST', 'TRUE', 'TRUK', 'TSPC', 'TULT',
+	'TYRE', 'UANG', 'UCID', 'UECU', 'UIDA', 'ULTJ', 'UNIC', 'UNIT', 'UNTR', 'UNVR',
+	'URBN', 'USBP', 'VRNA', 'VTNY', 'WAIT', 'WALD', 'WEGE', 'WEHA', 'WICO', 'WIDI',
+	'WIFI', 'WIIM', 'WIMP', 'WINS', 'WITC', 'WMUU', 'WOOD', 'WOWS', 'WSBP', 'WSKT',
+	'WTON', 'YPAS', 'YULE', 'ZBRA', 'ZINC', 'ZONE', 'ZYRX'
+];
+const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
+
+// COOLDOWN LOGIC REFRESH PEER DATA (12 DETIK)
+function startPeerRefreshCooldown(seconds = 12) {
+	const btn = document.getElementById('btnRefreshPeer');
+	if (!btn) return;
+
+	btn.disabled = true;
+	btn.classList.add('opacity-50', 'cursor-not-allowed');
+	let remaining = seconds;
+
+	if (peerRefreshCooldownTimer) clearInterval(peerRefreshCooldownTimer);
+
+	btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data (${remaining}d)`;
+	if (window.lucide) lucide.createIcons();
+
+	peerRefreshCooldownTimer = setInterval(() => {
+		remaining--;
+		if (remaining <= 0) {
+			clearInterval(peerRefreshCooldownTimer);
+			btn.disabled = false;
+			btn.classList.remove('opacity-50', 'cursor-not-allowed');
+			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data`;
+			if (window.lucide) lucide.createIcons();
+		} else {
+			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data (${remaining}d)`;
+			if (window.lucide) lucide.createIcons();
+		}
+	}, 1000);
+}
+
+// FITUR NO. 2: PEER KOMPARASI HARGA SERUPA (HANYA MANUAL REFRESH VIA TOMBOL)
+async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
+	if (isManualRefresh) {
+		const btn = document.getElementById('btnRefreshPeer');
+		if (btn && btn.disabled) return;
+		startPeerRefreshCooldown(16);
+	}
+
+	const body = document.getElementById('peerTableBody');
+	document.getElementById('peerTickerLabel').innerText = targetTicker;
+	const refLabel = document.getElementById('peerTickerRef');
+	if (refLabel) refLabel.innerText = targetTicker;
+
+	body.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1 text-cyan-400"></i> Memuat saham-saham dengan harga serupa...</td></tr>`;
+	if (window.lucide) lucide.createIcons();
+
+	let baseData = globalStockData;
+	if (!baseData || baseData.ticker !== targetTicker) {
+		baseData = await fetchRealtimeStockData(targetTicker);
+	}
+
+	if (!baseData || !baseData.price) {
+		body.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Gagal memuat harga acuan $${targetTicker}.</td></tr>`;
+		return;
+	}
+
+	const basePrice = baseData.price;
+	const minPrice = basePrice * 0.75;
+	const maxPrice = basePrice * 1.25;
+
+	const sampleCandidates = uniqueRadarWatchlist.filter(t => t !== targetTicker);
+	for (let i = sampleCandidates.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[sampleCandidates[i], sampleCandidates[j]] = [sampleCandidates[j], sampleCandidates[i]];
+	}
+
+	const peerResults = [baseData];
+	const BATCH_SIZE = 8;
+
+	for (let i = 0; i < sampleCandidates.length; i += BATCH_SIZE) {
+		const batch = sampleCandidates.slice(i, i + BATCH_SIZE);
+		const fetchedBatch = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
+		
+		for (const item of fetchedBatch) {
+			if (item && item.price >= minPrice && item.price <= maxPrice) {
+				peerResults.push(item);
+			}
+			if (peerResults.length >= 6) break;
+		}
+
+		if (peerResults.length >= 6) break;
+	}
+
+	let rowsHTML = '';
+	peerResults.forEach(data => {
+		if (!data) return;
+		const isCurrent = data.ticker === targetTicker;
+		const isPlus = data.changePct >= 0;
+		const rowClass = isCurrent ? "bg-emerald-500/10 font-bold border-l-4 border-emerald-400" : "hover:bg-slate-800/50";
+
+		rowsHTML += `
+			<tr class="${rowClass}">
+				<td class="p-3.5 text-white font-sans flex items-center gap-2">
+					<strong class="text-amber-400 font-mono">&dollar;${data.ticker}</strong>
+				</td>
+				<td class="p-3.5 text-white">Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}</td>
+				<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
+					${isPlus ? '+' : ''}${data.changePct}%
+				</td>
+				<td class="p-3.5 ${data.price >= data.ma5 ? 'text-emerald-400' : 'text-rose-400'}">
+					${data.price >= data.ma5 ? 'Bullish (Above MA5)' : 'Bearish (Below MA5)'}
+				</td>
+				<td class="p-3.5 ${data.volRatio >= 1.2 ? 'text-cyan-400 font-bold' : 'text-slate-400'}">
+					${data.volRatio}x Vol
+				</td>
+				<td class="p-3.5 text-center">
+					<button onclick="selectSuggestion('${data.ticker}')" class="text-[10px] bg-cyan-600 hover:bg-emerald-600 text-white hover:text-black px-3 py-1 rounded-lg transition border-cyan-700/30 font-bold">
+						Lihat Chart
+					</button>
+				</td>
+			</tr>
+		`;
+	});
+
+	body.innerHTML = rowsHTML || `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tidak ditemukan saham dengan range harga serupa.</td></tr>`;
+}
+
+// FITUR JOURNAL TRADING & WIN RATE TRACKER
+function getJournalData() {
+	return JSON.parse(localStorage.getItem('stockid_trading_journal') || '[]');
+}
+
+function saveJournalData(data) {
+	localStorage.setItem('stockid_trading_journal', JSON.stringify(data));
+	renderJournalTable();
+}
+
+function saveTradingPlanToJournal() {
+	const entry = parseFloat(document.getElementById('rrrEntry').value) || 0;
+	const sl = parseFloat(document.getElementById('rrrSL').value) || 0;
+	const tp = parseFloat(document.getElementById('rrrTP').value) || 0;
+	const rrrText = document.getElementById('rrrResult').innerText;
+
+	if (!entry || !sl || !tp || sl >= entry || tp <= entry) {
+		AudioFX.playAlert();
+		alert("Silakan lengkapi Entry, SL, dan TP yang valid terlebih dahulu!");
+		return;
+	}
+
+	const journal = getJournalData();
+	const now = new Date();
+	const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
+
+	journal.unshift({
+		id: Date.now(),
+		date: dateStr,
+		ticker: currentTicker,
+		entry: entry,
+		sl: sl,
+		tp: tp,
+		rrr: rrrText,
+		status: 'OPEN'
+	});
+
+	saveJournalData(journal);
+	AudioFX.playSuccess();
+	alert(`Trading Plan untuk $${currentTicker} berhasil disimpan ke Journal Trading!`);
+}
+
+function updateJournalStatus(id, newStatus) {
+	let journal = getJournalData();
+	journal = journal.map(item => {
+		if (item.id === id) item.status = newStatus;
+		return item;
+	});
+	saveJournalData(journal);
+}
+
+function deleteJournalItem(id) {
+	let journal = getJournalData();
+	journal = journal.filter(item => item.id !== id);
+	saveJournalData(journal);
+}
+
+function clearJournalHistory() {
+	if (confirm("Apakah Anda yakin ingin menghapus seluruh riwayat Journal Trading?")) {
+		localStorage.removeItem('stockid_trading_journal');
+		renderJournalTable();
+	}
+}
+
+function renderJournalTable() {
+	const body = document.getElementById('journalTableBody');
+	const journal = getJournalData();
+
+	const totalCount = journal.length;
+	const winCount = journal.filter(j => j.status === 'WIN').length;
+	const lossCount = journal.filter(j => j.status === 'LOSS').length;
+	const closedCount = winCount + lossCount;
+	const winRate = closedCount > 0 ? Math.round((winCount / closedCount) * 100) : 0;
+
+	document.getElementById('journalTotalCount').innerText = totalCount;
+	document.getElementById('journalWinRate').innerText = `${winRate}%`;
+	document.getElementById('journalWinCount').innerText = winCount;
+	document.getElementById('journalLossCount').innerText = lossCount;
+
+	if (journal.length === 0) {
+		body.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Belum ada Trading Plan tersimpan. Gunakan tombol "Simpan ke Journal" di kalkulator Smart RRR.</td></tr>`;
+		return;
+	}
+
+	let rows = '';
+	journal.forEach(item => {
+		let statusBadge = '<span class="text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded text-[10px]">OPEN</span>';
+		if (item.status === 'WIN') statusBadge = '<span class="text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px]">WIN (TP)</span>';
+		if (item.status === 'LOSS') statusBadge = '<span class="text-rose-400 bg-rose-500/10 border border-rose-500/30 px-2 py-0.5 rounded text-[10px]">LOSS (SL)</span>';
+
+		rows += `
+			<tr class="hover:bg-slate-800/40">
+				<td class="p-3.5 text-slate-400">${item.date}</td>
+				<td class="p-3.5 font-bold text-amber-400">&dollar;${item.ticker}</td>
+				<td class="p-3.5 text-white">Rp ${item.entry.toLocaleString('id-ID')}</td>
+				<td class="p-3.5 text-rose-400">Rp ${item.sl.toLocaleString('id-ID')}</td>
+				<td class="p-3.5 text-emerald-400">Rp ${item.tp.toLocaleString('id-ID')}</td>
+				<td class="p-3.5 text-cyan-400">${item.rrr}</td>
+				<td class="p-3.5">${statusBadge}</td>
+				<td class="p-3.5 text-center font-sans space-x-1">
+					<button onclick="updateJournalStatus(${item.id}, 'WIN')" class="text-[9px] bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 font-bold px-2 py-1 rounded-md border border-emerald-500/30 transition">WIN</button>
+					<button onclick="updateJournalStatus(${item.id}, 'LOSS')" class="text-[9px] bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white font-bold px-2 py-1 rounded-md border border-rose-500/30 transition">LOSS</button>
+					<button onclick="deleteJournalItem(${item.id})" class="text-[9px] bg-slate-800 text-slate-400 hover:text-rose-400 px-2 py-1 rounded-md transition">✕</button>
+				</td>
+			</tr>
+		`;
+	});
+
+	body.innerHTML = rows;
+}
+
+function autoFillRRRFromAI() {
+	if (globalStockData && globalStockData.price) {
+		// 1. Ambil harga dasar dari data global
+		const basePrice = globalStockData.price;
+
+		// 2. Hitung entry (96% dari harga dasar), SL (92%), dan TP (106%)
+		const entry = roundToBEITick(basePrice * 0.96, 'floor');
+		const sl = roundToBEITick(basePrice * 0.92, 'floor');
+		const tp = roundToBEITick(basePrice * 1.06, 'ceil');
+
+		// 3. Masukkan ke input form
+		document.getElementById('rrrEntry').value = entry;
+		document.getElementById('rrrSL').value = sl;
+		document.getElementById('rrrTP').value = tp;
+
+		calculateSmartRRR();
+		AudioFX.playSuccess();
+	}
+}
+
+function calculateSmartRRR() {
+	const capital = parseFloat(document.getElementById('rrrTotalCapital').value) || 0;
+	const maxRiskPct = parseFloat(document.getElementById('rrrRiskPercent').value) || 0;
+	const rawEntry = parseFloat(document.getElementById('rrrEntry').value) || 0;
+	const rawSL = parseFloat(document.getElementById('rrrSL').value) || 0;
+	const rawTP = parseFloat(document.getElementById('rrrTP').value) || 0;
+
+	const entry = roundToBEITick(rawEntry);
+	const sl = roundToBEITick(rawSL, 'floor');
+	const tp = roundToBEITick(rawTP, 'ceil');
+
+	const resEl = document.getElementById('rrrResult');
+	const maxRiskAmountEl = document.getElementById('rrrMaxRiskAmount');
+	const maxLotsEl = document.getElementById('rrrMaxLots');
+	const capitalNeededEl = document.getElementById('rrrCapitalNeeded');
+	const rewardEl = document.getElementById('rrrPotentialReward');
+	const evalEl = document.getElementById('rrrEvaluationBadge');
+
+	if (!entry || !sl || !tp || entry <= 0 || sl >= entry || tp <= entry) {
+		resEl.innerText = "1 : -";
+		maxRiskAmountEl.innerText = "Rp 0";
+		maxLotsEl.innerText = "0 Lot";
+		capitalNeededEl.innerText = "Rp 0";
+		rewardEl.innerText = "Rp 0";
+		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-slate-900 text-white";
+		evalEl.innerText = "Masukkan harga Entry, SL (>0 & < Entry), dan TP (> Entry) untuk evaluasi AI.";
+		return;
+	}
+
+	const riskPerShare = entry - sl;
+	const rewardPerShare = tp - entry;
+	const rrr = (rewardPerShare / riskPerShare).toFixed(2);
+
+	const maxRiskAmount = capital * (maxRiskPct / 100);
+	const maxShares = Math.floor(maxRiskAmount / riskPerShare);
+	const maxLots = Math.floor(maxShares / 100);
+	const totalCapitalRequired = maxLots * 100 * entry;
+	const totalRewardAmount = maxLots * 100 * rewardPerShare;
+
+	resEl.innerText = `1 : ${rrr}`;
+	maxRiskAmountEl.innerText = `Rp ${Math.round(maxRiskAmount).toLocaleString('id-ID')}`;
+	maxLotsEl.innerText = `${maxLots.toLocaleString('id-ID')} Lot`; //(${(maxLots * 100).toLocaleString('id-ID')} lembar)
+	capitalNeededEl.innerText = `Rp ${Math.round(totalCapitalRequired).toLocaleString('id-ID')}`;
+	rewardEl.innerText = `Rp ${Math.round(totalRewardAmount).toLocaleString('id-ID')}`;
+
+	if (rrr >= 2.0) {
+		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+		evalEl.innerHTML = `✓ <strong>Rencana Trading Sangat Layak Eksekusi (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Potensi profit jauh melebihi toleransi risiko batas modal Anda.</span>`;
+	} else if (rrr >= 1.5) {
+		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-amber-500/10 text-amber-400 border border-amber-500/30";
+		evalEl.innerHTML = `⚠ <strong>Rencana Trading Cukup Layak (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Memenuhi standar minimal, namun disarankan memperketat entry dekat support.</span>`;
+	} else {
+		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-rose-500/10 text-rose-400 border border-rose-500/30";
+		evalEl.innerHTML = `✕ <strong>Risiko Terlalu Tinggi / Kurang Ideal (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Potensi keuntungan tidak sebanding dengan risiko penurunan modal.</span>`;
+	}
+}
+
+// LOGIKA DROPDOWN SUGGESTION PENCARIAN
 function initSearchSuggestions() {
 	const input = document.getElementById('stockSearch');
-	const container = document.getElementById('searchSuggestions');
+	const box = document.getElementById('searchSuggestionsBox');
+
+	if (!input || !box) return;
 
 	input.addEventListener('input', function() {
 		const val = this.value.trim().toUpperCase();
 		if (!val) {
-			container.classList.add('hidden');
+			box.classList.add('hidden');
+			box.innerHTML = '';
 			return;
 		}
 
-		const matches = radarWatchlist.filter(s => s.startsWith(val)).slice(0, 5);
-		if (matches.length === 0) {
-			container.classList.add('hidden');
-			return;
-		}
+		const matches = uniqueRadarWatchlist.filter(item => item.includes(val)).slice(0, 10);
 
-		container.innerHTML = matches.map(m => `
-			<div onclick="selectSuggestion('${m}')" class="px-4 py-2.5 hover:bg-slate-800 text-xs font-bold text-slate-200 hover:text-emerald-400 cursor-pointer transition border-b border-slate-800/60 last:border-none flex justify-between">
-				<span>IDX:${m}</span>
-				<span class="text-[10px] text-slate-400 font-normal">Saham BEI</span>
-			</div>
-		`).join('');
-		container.classList.remove('hidden');
+		if (matches.length > 0) {
+			box.innerHTML = matches.map(ticker => `
+				<div onclick="selectSuggestion('${ticker}')" class="px-4 py-2.5 hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-200 text-xs font-mono font-bold cursor-pointer transition flex items-center justify-between group">
+					<span class="flex items-center gap-2">
+						<i class="fa-solid fa-circle-arrow-right text-[10px] text-emerald-400 opacity-60 group-hover:opacity-100"></i>
+						${ticker}
+					</span>
+					<span class="text-[9px] text-slate-500 group-hover:text-emerald-400">IDX</span>
+				</div>
+			`).join('');
+			box.classList.remove('hidden');
+		} else {
+			box.classList.add('hidden');
+			box.innerHTML = '';
+		}
+	});
+
+	document.addEventListener('click', function(e) {
+		const searchContainer = document.getElementById('searchContainer');
+		if (searchContainer && !searchContainer.contains(e.target)) {
+			box.classList.add('hidden');
+		}
 	});
 }
 
 function selectSuggestion(ticker) {
-	document.getElementById('stockSearch').value = ticker;
-	searchStock();
+	const input = document.getElementById('stockSearch');
+	const box = document.getElementById('searchSuggestionsBox');
+	if (input) input.value = ticker;
+	if (box) box.classList.add('hidden');
+	searchStock(true);
 }
 
-// PRICE ALERT ENGINE
-function getAlertsKey() {
-	return `price_alerts_${currentTicker}`;
-}
-
-function renderAlertList(ticker) {
-	const listEl = document.getElementById('activeAlertList');
-	const alerts = JSON.parse(localStorage.getItem(getAlertsKey()) || '[]');
-
-	if (alerts.length === 0) {
-		listEl.innerHTML = `<div class="text-slate-400 text-center py-2">Belum ada pengingat aktif</div>`;
-		return;
-	}
-
-	listEl.innerHTML = alerts.map((targetPrice, idx) => `
-		<div class="flex items-center justify-between p-2.5 bg-slate-950 rounded-xl border border-slate-800">
-			<span class="font-mono text-emerald-400 font-bold">Target: Rp ${targetPrice.toLocaleString('id-ID')}</span>
-			<button onclick="removePriceAlert(${idx})" class="text-rose-400 hover:text-rose-300 text-xs">
-				<i class="fa-solid fa-trash"></i>
-			</button>
-		</div>
-	`).join('');
-}
-
-function addPriceAlert() {
-	const input = document.getElementById('alertPriceInput');
-	const val = parseInt(input.value);
-	if (!val || val <= 0) return;
-
-	const alerts = JSON.parse(localStorage.getItem(getAlertsKey()) || '[]');
-	if (!alerts.includes(val)) {
-		alerts.push(val);
-		localStorage.setItem(getAlertsKey(), JSON.stringify(alerts));
-		renderAlertList(currentTicker);
-		AudioFX.playSuccess();
-	}
-	input.value = '';
-}
-
-function removePriceAlert(index) {
-	const alerts = JSON.parse(localStorage.getItem(getAlertsKey()) || '[]');
-	alerts.splice(index, 1);
-	localStorage.setItem(getAlertsKey(), JSON.stringify(alerts));
-	renderAlertList(currentTicker);
-}
-
-function checkPriceAlertsRealtime(ticker, price) {
-	const key = `price_alerts_${ticker}`;
-	const alerts = JSON.parse(localStorage.getItem(key) || '[]');
-	const triggered = [];
-
-	alerts.forEach(target => {
-		if (Math.abs(price - target) / target <= 0.01) {
-			triggered.push(target);
-			AudioFX.playAlert();
-			if (Notification.permission === 'granted') {
-				new Notification(`Stock ID Alert: ${ticker}`, {
-					body: `Harga ${ticker} menyentuh target Rp ${target.toLocaleString('id-ID')}!`,
-					icon: 'stockid_gambar/stockicon.jpg'
-				});
-			} else {
-				alert(`[ALERT HARGA] Saham ${ticker} telah mencapai/mendekati target Rp ${target.toLocaleString('id-ID')}!`);
-			}
-		}
-	});
-
-	if (triggered.length > 0) {
-		const remaining = alerts.filter(a => !triggered.includes(a));
-		localStorage.setItem(key, JSON.stringify(remaining));
-		if (ticker === currentTicker) renderAlertList(ticker);
-	}
-}
-
-function checkNotificationStatus() {
-	if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
-		Notification.requestPermission();
-	}
-}
-
-// RADAR SCANNER ENGINE
-async function scanRadarWatchlist() {
+// FITUR NO. 3: RADAR BANDAR AUTOMATIC FULL SCAN
+async function startRadarProcess() {
 	if (isRadarScanning) return;
 	isRadarScanning = true;
 
-	const container = document.getElementById('radarWatchlistContainer');
-	container.innerHTML = `
-		<div class="p-4 bg-slate-950 rounded-xl border border-slate-800 text-center space-y-2">
-			<i class="fa-solid fa-spinner animate-spin text-emerald-400 text-xl"></i>
-			<p class="text-xs text-slate-400">Memindai watchlist saham BEI...</p>
-		</div>
-	`;
+	const btn = document.getElementById('btnStartRadar');
+	const container = document.getElementById('bigMoneyList');
 
-	const sampleTickers = radarWatchlist.slice(0, 15);
-	globalRadarDataList = [];
+	btn.disabled = true;
+	btn.className = "text-[10px] lg:text-xs text-white font-bold bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 cursor-not-allowed";
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-amber-400"></i> Memindai Instan...`;
+	if (window.lucide) lucide.createIcons();
 
-	for (let t of sampleTickers) {
-		const res = await fetchRealtimeStockData(t, true);
-		if (res.volRatio >= 1.2 && res.price > res.ma5) {
-			globalRadarDataList.push(res);
-		}
-		await sleep(150);
+	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-12 lg:col-span-2"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data pasar secara otomatis berdasar seluruh indikator...</div>`;
+
+	const shuffled = [...uniqueRadarWatchlist];
+	for (let i = shuffled.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
 	}
+	
+	const validData = [];
+	const BATCH_SIZE = 10;
 
-	if (globalRadarDataList.length === 0) {
-		container.innerHTML = `
-			<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-400 text-center">
-				Tidak ditemukan saham dengan indikator breakout ber-volume saat ini.
-			</div>
-		`;
-	} else {
-		container.innerHTML = globalRadarDataList.map(r => `
-			<div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between hover:border-emerald-500/40 transition cursor-pointer" onclick="selectSuggestion('${r.ticker}')">
-				<div>
-					<div class="flex items-center gap-2">
-						<span class="font-bold text-white">${r.ticker}</span>
-						<span class="text-[9px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">Vol ${r.volRatio}x</span>
-					</div>
-					<span class="text-[10px] text-slate-400 font-mono">Rp ${r.price.toLocaleString('id-ID')}</span>
-				</div>
-				<span class="text-xs font-bold text-emerald-400 font-mono">+${r.changePercent.toFixed(2)}%</span>
-			</div>
-		`).join('');
+	for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
+		const batch = shuffled.slice(i, i + BATCH_SIZE);
+		const results = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
+
+		for (const res of results) {
+			if (res && res.price > 0) {
+				validData.push(res);
+			}
+		}
+
+		if (validData.length > 0) {
+			globalRadarDataList = validData;
+			renderRadarItems(validData);
+		}
+
+		if (validData.length >= 10) {
+			break;
+		}
 	}
 
 	isRadarScanning = false;
-}
+	btn.disabled = false;
+	btn.className = "text-[10px] lg:text-xs text-slate-950 font-bold bg-amber-400 hover:bg-amber-300 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md";
+	btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Mulai Pindai Pasar`;
+	if (window.lucide) lucide.createIcons();
 
-// EXPORT KARTU ANALISA KE GAMBAR (PNG)
-function openExportModal() {
-	if (!globalStockData) return;
-	const modal = document.getElementById('exportModal');
-
-	document.getElementById('cardStockTitle').innerText = `IDX:${globalStockData.ticker}`;
-	document.getElementById('cardStockPrice').innerText = `Rp ${globalStockData.price.toLocaleString('id-ID')}`;
-	const sign = globalStockData.change >= 0 ? '+' : '';
-	document.getElementById('cardStockChange').innerText = `${sign}${globalStockData.changePercent.toFixed(2)}%`;
-
-	document.getElementById('cardSignal').innerText = document.getElementById('aiSignalBadge').innerText;
-	document.getElementById('cardTargetPrice').innerText = document.getElementById('aiTargetPrice').innerText;
-	document.getElementById('cardStopLoss').innerText = document.getElementById('aiStopLoss').innerText;
-
-	document.getElementById('cardVolRatio').innerText = `${globalStockData.volRatio}x`;
-	document.getElementById('cardMA5').innerText = `Rp ${globalStockData.ma5.toLocaleString('id-ID')}`;
-	document.getElementById('cardMA10').innerText = `Rp ${globalStockData.ma10.toLocaleString('id-ID')}`;
-
-	document.getElementById('cardAnalysisSummary').innerText = document.getElementById('aiAnalysisText').innerText;
-	document.getElementById('cardTimestamp').innerText = `Dibuat: ${new Date().toLocaleString('id-ID')}`;
-
-	modal.classList.remove('hidden');
-}
-
-function closeExportModal() {
-	document.getElementById('exportModal').classList.add('hidden');
-}
-
-function downloadAnalysisCard() {
-	if (exportCardCooldownTimer) return;
-	const cardContainer = document.getElementById('exportCardPreview');
-
-	html2canvas(cardContainer, {
-		backgroundColor: '#020617',
-		scale: 2
-	}).then(canvas => {
-		const link = document.createElement('a');
-		link.download = `StockID_Analisa_${currentTicker}.png`;
-		link.href = canvas.toDataURL('image/png');
-		link.click();
+	if (validData.length === 0) {
+		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada data bursa yang berhasil ditangkap. Silakan coba kembali.</div>`;
+	} else {
 		AudioFX.playSuccess();
+	}
+}
+
+function renderRadarItems(dataList) {
+	const container = document.getElementById('bigMoneyList');
+	const sorted = [...dataList].sort((a, b) => b.changePct - a.changePct);
+	let htmlContent = '';
+
+	if (sorted.length === 0) {
+		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada emiten potensial yang ditemukan saat ini.</div>`;
+		return;
+	}
+
+	sorted.forEach((item, index) => {
+		const ticker = item.ticker;
+		const price = roundToBEITick(item.price);
+		const changePct = item.changePct;
+
+		const entryLow = roundToBEITick(price * 0.94, 'floor');
+		const entryHigh = roundToBEITick(price * 0.96, 'floor');
+		const sl = roundToBEITick(price * 0.92, 'floor');
+		const tp1 = roundToBEITick(price * 1.06, 'ceil');
+		const tp2 = roundToBEITick(price * 1.14, 'ceil');
+
+		let statusSignal = "🔥 Momentum Breakout";
+		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
+		let alasanTeknikal = `Perubahan <strong>${changePct}%</strong> dan bertahan kokoh di atas garis Moving Average MA5 (Rp ${item.ma5.toLocaleString('id-ID')}), menandakan tekanan beli harian masih mendominasi pasar.`;
+
+		if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0.5 && changePct < 3) {
+			statusSignal = "🚀 Golden Cross Setup";
+			statusClass = "text-sky-400 border-sky-500/30 bg-sky-500/10";
+			alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah (*reversal*) awal berpotensi terbentuk.`;
+		} else if (item.volRatio >= 1.3) {
+			statusSignal = "⚡ Volume Accumulation";
+			statusClass = "text-cyan-400 border-cyan-500/30 bg-cyan-500/10";
+			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata 10 hari</strong>. Mengindikasikan partisipasi modal besar (*smart money*) di pasar.`;
+		} else if (changePct < 0 && item.price >= item.ma20) {
+			statusSignal = "🛡️ Support Retest";
+			statusClass = "text-purple-400 border-purple-500/30 bg-purple-500/10";
+			alasanTeknikal = `Harga sedang mengalami koreksi sehat (*pullback*) dan menguji area pertahanan MA20 (Rp ${item.ma20.toLocaleString('id-ID')}). Area ideal penampungan berisiko terukur.`;
+		}
+
+		htmlContent += `
+			<div class="bg-slate-950 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative">
+				<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+					<div class="flex items-center gap-2">
+						<span class="bg-slate-800 text-amber-400 font-mono text-[10px] lg:text-xs px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
+						<div>
+							<div class="flex items-center gap-2">
+								<span class="font-bold text-white text-sm lg:text-base">&dollar;${ticker}</span>
+								<button onclick="selectTickerFromRadar('${ticker}')" class="text-[10px] lg:text-[10px] bg-amber-300 hover:bg-emerald-600 text-black hover:text-white border-amber-500/30 font-bold px-2 py-0.5 rounded transition">
+									Lihat Chart »
+								</button>
+							</div>
+							<span class="text-[10px] lg:text-xs text-white block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
+						</div>
+					</div>
+					<span class="text-[9px] lg:text-[10px] font-bold px-2.5 py-1 rounded-full border ${statusClass}">
+						${statusSignal}
+					</span>
+				</div>
+
+				<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs">
+					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+						<span class="text-white text-[9px] lg:text-[10px] block">Entry Ideal</span>
+						<span class="font-bold text-amber-400 font-mono">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
+					</div>
+					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+						<span class="text-white text-[9px] lg:text-[10px] block">Support MA10</span>
+						<span class="font-bold text-cyan-400 font-mono">Rp ${item.ma10.toLocaleString('id-ID')}</span>
+					</div>
+					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+						<span class="text-white text-[9px] lg:text-[10px] block">Target Profit (TP1/TP2)</span>
+						<span class="font-bold text-emerald-300 font-mono">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
+					</div>
+					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+						<span class="text-white text-[9px] lg:text-[10px] block">Stop Loss (SL)</span>
+						<span class="font-bold text-rose-400 font-mono">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
+					</div>
+				</div>
+
+				<div class="bg-slate-900/50 p-2.5 lg:p-3 rounded border border-slate-800 text-[10px] lg:text-xs text-slate-300 leading-relaxed space-y-1">
+					<span class="text-amber-400 font-bold block text-[10px] lg:text-[11px]">ANALISIS TEKNIKAL OTOMATIS:</span>
+					<p>${alasanTeknikal}</p>
+				</div>
+			</div>
+		`;
 	});
 
-	exportCardCooldownTimer = setTimeout(() => {
-		exportCardCooldownTimer = null;
-	}, 2000);
+	container.innerHTML = htmlContent;
+	if (window.lucide) lucide.createIcons();
+}
+
+function selectTickerFromRadar(ticker) {
+	document.getElementById('stockSearch').value = ticker;
+	searchStock(true);
+	switchTab('ai');
+}
+
+async function fetchStockNewsForAI(ticker) {
+	const cacheKey = `news_cache_${ticker}`;
+	const cached = localStorage.getItem(cacheKey);
+
+	if (cached) {
+		try {
+			const parsed = JSON.parse(cached);
+			if (Date.now() - parsed.timestamp < 10 * 60 * 1000) {
+				document.getElementById('aiBeritaList').innerHTML = parsed.html;
+				return;
+			}
+		} catch(e){}
+	}
+
+	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
+	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+	try {
+		const res = await fetch(apiUrl);
+		const data = await res.json();
+
+		if (data.status === 'ok' && data.items && data.items.length > 0) {
+			let beritaHTML = '';
+			data.items.slice(0, 4).forEach(item => {
+				const source = item.author || 'Media Nasional';
+				const pubDate = new Date(item.pubDate).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
+				beritaHTML += `<div class="bg-slate-900/50 p-2 rounded border border-slate-800/80">• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
+			});
+			document.getElementById('aiBeritaList').innerHTML = beritaHTML;
+			localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), html: beritaHTML }));
+		} else {
+			document.getElementById('aiBeritaList').innerHTML = `<div>Belum ada rilis berita khusus untuk emiten ${ticker} dalam 24 jam terakhir.</div>`;
+		}
+	} catch (e) {
+		document.getElementById('aiBeritaList').innerHTML = `<div>Gagal memuat berita terkini. Gunakan indikator teknikal pada chart.</div>`;
+	}
+}
+
+// ==================== FITUR 1: SMART ALERT & BROWSER PUSH NOTIFICATION SYSTEM ====================
+function checkNotificationStatus() {
+	const btn = document.getElementById('btnToggleNotification');
+	if (!btn) return;
+
+	if (!("Notification" in window)) {
+		btn.innerHTML = `<i data-lucide="bell-off" class="w-3.5 h-3.5"></i> Browser Tidak Mendukung Push`;
+		btn.disabled = true;
+		btn.className = "text-[10px] lg:text-xs bg-slate-900 text-slate-500 border border-slate-800 font-bold px-3.5 py-2 rounded-lg cursor-not-allowed";
+		return;
+	}
+
+	if (Notification.permission === "granted") {
+		btn.innerHTML = `<i data-lucide="bell-ring" class="w-3.5 h-3.5 text-emerald-400"></i> Notifikasi Push Aktif`;
+		btn.className = "text-[10px] lg:text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm cursor-default";
+	} else if (Notification.permission === "denied") {
+		btn.innerHTML = `<i data-lucide="bell-off" class="w-3.5 h-3.5 text-rose-400"></i> Izin Notifikasi Ditolak`;
+		btn.className = "text-[10px] lg:text-xs bg-rose-500/10 text-rose-400 border border-rose-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer";
+	} else {
+		btn.innerHTML = `<i data-lucide="bell" class="w-3.5 h-3.5 text-amber-400"></i> Aktifkan Notifikasi Push`;
+		btn.className = "text-[10px] lg:text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer";
+	}
+	if (window.lucide) lucide.createIcons();
+}
+
+function requestNotificationPermission() {
+	if (!("Notification" in window)) {
+		alert("Browser Anda tidak mendukung Web Push Notification.");
+		return;
+	}
+
+	Notification.requestPermission().then(permission => {
+		checkNotificationStatus();
+		if (permission === "granted") {
+			sendBrowserPushNotification("Stock ID Screener Alert", `System push notification berhasil diaktifkan!`);
+			AudioFX.playSuccess();
+		} else if (permission === "denied") {
+			AudioFX.playAlert();
+			alert("Izin notifikasi telah ditolak. Silakan izinkan melalui pengaturan browser Anda.");
+		}
+	});
+}
+
+function sendBrowserPushNotification(title, message) {
+	if ("Notification" in window && Notification.permission === "granted") {
+		try {
+			if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+				navigator.serviceWorker.ready.then(registration => {
+					registration.showNotification(title, {
+						body: message,
+						icon: 'stockid_gambar/stockicon.jpg',
+						tag: 'stockid-alert'
+					});
+				}).catch(() => {
+					new Notification(title, {
+						body: message,
+						icon: 'stockid_gambar/stockicon.jpg',
+						tag: 'stockid-alert'
+					});
+				});
+			} else {
+				new Notification(title, {
+					body: message,
+					icon: 'stockid_gambar/stockicon.jpg',
+					tag: 'stockid-alert'
+				});
+			}
+		} catch(e){}
+	}
+}
+
+function getAlerts(ticker) {
+	return JSON.parse(localStorage.getItem(`alerts_${ticker}`) || '[]');
+}
+
+function saveAlerts(ticker, alerts) {
+	localStorage.setItem(`alerts_${ticker}`, JSON.stringify(alerts));
+	renderAlertList(ticker);
+}
+
+function renderAlertList(ticker) {
+	const container = document.getElementById('alertListContainer');
+	const labelTicker = document.getElementById('alertActiveTicker');
+	if (labelTicker) labelTicker.innerText = ticker;
+
+	const alerts = getAlerts(ticker);
+
+	if (alerts.length === 0) {
+		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-4 font-sans text-xs">Belum ada alert harga yang dipasang untuk $${ticker}. Klik "Sync Data AI" di atas.</div>`;
+		return;
+	}
+
+	container.innerHTML = '';
+	alerts.forEach((alertObj, index) => {
+		const isCustomObj = typeof alertObj === 'object';
+		const targetPrice = isCustomObj ? alertObj.price : alertObj;
+		const isActive = isCustomObj ? alertObj.active : true;
+		const labelText = isCustomObj && alertObj.label ? alertObj.label : 'Target Price';
+
+		let badgeColor = 'text-cyan-400';
+		if (labelText.includes('Stop Loss')) badgeColor = 'text-rose-400';
+		if (labelText.includes('Take Profit')) badgeColor = 'text-emerald-400';
+		if (labelText.includes('Entry')) badgeColor = 'text-amber-400';
+
+		container.innerHTML += `
+			<div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 ${isActive ? 'border-l-4 border-l-emerald-400' : 'opacity-60'}">
+				<div>
+					<span class="text-[9px] ${badgeColor} block font-bold font-sans uppercase tracking-wider">${labelText}</span>
+					<strong class="text-white font-mono text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</strong>
+				</div>
+				<div class="flex items-center gap-2">
+					<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[10px] ${isActive ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'} px-2 py-1 rounded-md border font-bold transition">
+						${isActive ? 'AKTIF' : 'OFF'}
+					</button>
+					<button onclick="removePriceAlert('${ticker}', ${index})" class="text-slate-400 hover:text-rose-400 font-bold px-2 py-1 transition">✕</button>
+				</div>
+			</div>
+		`;
+	});
+}
+
+function syncAlertsFromAI() {
+	let price = 100;
+	if (globalStockData && globalStockData.price) {
+		price = roundToBEITick(globalStockData.price);
+	}
+
+	const sl = roundToBEITick(price * 0.92, 'floor'); 
+	const sup2 = roundToBEITick(price * 0.96, 'floor'); 
+	const res2 = roundToBEITick(price * 1.08, 'ceil'); 
+	const tp2 = roundToBEITick(price * 1.14, 'ceil'); 
+
+	const syncTargets = [
+		{ price: sl, label: 'Stop Loss', active: true, triggered: false },
+		{ price: sup2, label: 'Entry / Support 2', active: true, triggered: false },
+		{ price: res2, label: 'Resistance 2', active: true, triggered: false },
+		{ price: tp2, label: 'Take Profit 2', active: true, triggered: false }
+	];
+
+	saveAlerts(currentTicker, syncTargets);
+	AudioFX.playSuccess();
+	alert(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
+}
+
+function toggleAlertStatus(ticker, index) {
+	let alerts = getAlerts(ticker);
+	if (alerts[index]) {
+		if (typeof alerts[index] === 'object') {
+			alerts[index].active = !alerts[index].active;
+		} else {
+			alerts[index] = { price: alerts[index], active: false, triggered: false };
+		}
+		saveAlerts(ticker, alerts);
+	}
+}
+
+function removePriceAlert(ticker, index) {
+	let alerts = getAlerts(ticker);
+	alerts.splice(index, 1);
+	saveAlerts(ticker, alerts);
+}
+
+function checkPriceAlertsRealtime(ticker, currentPrice) {
+	if (!currentPrice || currentPrice <= 0) return;
+
+	let alerts = getAlerts(ticker);
+	let updated = false;
+
+	alerts.forEach((alertObj, idx) => {
+		const targetPrice = typeof alertObj === 'object' ? alertObj.price : alertObj;
+		const isActive = typeof alertObj === 'object' ? alertObj.active : true;
+		const labelText = typeof alertObj === 'object' && alertObj.label ? alertObj.label : 'Target';
+
+		if (isActive && currentPrice >= targetPrice) {
+			const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh ${labelText} Rp ${targetPrice.toLocaleString('id-ID')}`;
+			
+			AudioFX.playSuccess();
+			sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
+
+			if (typeof alertObj === 'object') {
+				alertObj.active = false;
+				alertObj.triggered = true;
+			} else {
+				alerts[idx] = { price: targetPrice, active: false, triggered: true };
+			}
+			updated = true;
+		}
+	});
+
+	if (updated) {
+		saveAlerts(ticker, alerts);
+	}
+}
+
+async function fetchStockNews(ticker) {
+	const container = document.getElementById('newsContainer');
+	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3">Memuat berita terkini ${ticker}...</div>`;
+	
+	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
+	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+	try {
+		const response = await fetch(apiUrl);
+		const data = await response.json();
+
+		if (data.status === 'ok' && data.items && data.items.length > 0) {
+			container.innerHTML = '';
+			data.items.slice(0, 9).forEach(item => {
+				const date = new Date(item.pubDate).toLocaleDateString('id-ID', {
+					day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+				});
+
+				container.innerHTML += `
+					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
+						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
+						<div class="flex justify-between items-center mt-2 text-[10px] lg:text-xs text-white">
+							<span>${item.author || 'Google News'}</span>
+							<span>${date}</span>
+						</div>
+					</a>
+				`;
+			});
+			AudioFX.playSuccess();
+		} else {
+			container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-3">Tidak ada berita khusus ditemukan untuk ${ticker}.</div>`;
+		}
+	} catch (e) {
+		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-3">Berita tidak dapat dijangkau sementara.</div>`;
+	}
+}
+
+async function fetchCorporateAction(ticker) {
+	const container = document.getElementById('corporateContainer');
+	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3">Memuat aksi korporasi ${ticker}...</div>`;
+	
+	const query = encodeURIComponent(`${ticker} (dividen OR RUPS OR "right issue" OR "stock split" OR buyback)`);
+	const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=id&gl=ID&ceid=ID:id`;
+	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+	try {
+		const response = await fetch(apiUrl);
+		const data = await response.json();
+
+		if (data.status === 'ok' && data.items && data.items.length > 0) {
+			container.innerHTML = '';
+			data.items.slice(0, 9).forEach(item => {
+				const date = new Date(item.pubDate).toLocaleDateString('id-ID', {
+					day: 'numeric', month: 'short', year: 'numeric'
+				});
+
+				container.innerHTML += `
+					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
+						<div class="flex items-center gap-1.5 mb-1">
+							<span class="text-[9px] lg:text-[10px] bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded border border-emerald-500/30">Aksi Korporasi</span>
+							<span class="text-[10px] lg:text-xs text-white">${date}</span>
+						</div>
+						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
+					</a>
+				`;
+			});
+			AudioFX.playSuccess();
+		} else {
+			container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-3">Belum ada kabar aksi korporasi terbaru untuk ${ticker}.</div>`;
+		}
+	} catch (e) {
+		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-3">Gagal memuat data aksi korporasi.</div>`;
+	}
+}
+
+function switchTab(tabName) {
+	const tabs = ['ai','bigmoney','peer','news','fundamental','rrr','journal','alert','corporate'];
+	tabs.forEach(tab => {
+		const btn = document.getElementById(`tabBtn-${tab}`);
+		const content = document.getElementById(`tabContent-${tab}`);
+		
+		if (tab === tabName) {
+			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition";
+			if (content) content.classList.remove('hidden');
+		} else {
+			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition";
+			if (content) content.classList.add('hidden');
+		}
+	});
+
+	if (tabName === 'journal') renderJournalTable();
+	if (tabName === 'alert') renderAlertList(currentTicker);
+}
+
+function shareStockUrl() {
+	const shareUrl = `${window.location.origin}${window.location.pathname}?ticker=${currentTicker}`;
+	navigator.clipboard.writeText(shareUrl).then(() => {
+		AudioFX.playSuccess();
+	}).catch(() => {});
 }
 
 function checkUrlParamTicker() {
-	const params = new URLSearchParams(window.location.search);
-	const tickerParam = params.get('ticker');
+	const urlParams = new URLSearchParams(window.location.search);
+	const tickerParam = urlParams.get('ticker');
 	if (tickerParam) {
 		currentTicker = tickerParam.toUpperCase();
 	}
 }
 
-// BACKGROUND FETCH ENGINE (SETIAP 5 MENIT)
-function startBackgroundSync() {
-	const FIVE_MINUTES = 5 * 60 * 1000;
+function startSearchCooldown(seconds) {
+	const btn = document.querySelector("button[onclick='searchStock()']");
+	if (!btn) return;
 
+	btn.disabled = true;
+	btn.classList.add('opacity-50', 'cursor-not-allowed');
+	let remaining = seconds;
+
+	if (searchCooldownTimer) clearInterval(searchCooldownTimer);
+
+	btn.innerText = `Cari (${remaining}s)`;
+
+	searchCooldownTimer = setInterval(() => {
+		remaining--;
+		if (remaining <= 0) {
+			clearInterval(searchCooldownTimer);
+			btn.disabled = false;
+			btn.classList.remove('opacity-50', 'cursor-not-allowed');
+			btn.innerText = "Cari";
+		} else {
+			btn.innerText = `Cari (${remaining}s)`;
+		}
+	}, 1000);
+}
+
+function searchStock(bypassCooldown = false) {
+	const btn = document.querySelector("button[onclick='searchStock()']");
+	if (!bypassCooldown && btn && btn.disabled) return;
+
+	const input = document.getElementById('stockSearch').value.trim().toUpperCase();
+	const box = document.getElementById('searchSuggestionsBox');
+	if (box) box.classList.add('hidden');
+
+	if (input) {
+		currentTicker = input;
+		document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
+		document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
+		document.getElementById('newsTickerLabel').innerText = currentTicker;
+		document.getElementById('fundTickerLabel').innerText = currentTicker;
+		document.getElementById('rrrTickerLabel').innerText = currentTicker;
+		document.getElementById('alertTickerLabel').innerText = currentTicker;
+		document.getElementById('corpTickerLabel').innerText = currentTicker;
+		document.getElementById('peerTickerLabel').innerText = currentTicker;
+		
+		renderChart(currentTicker);
+		renderTechnicalGauge(currentTicker);
+		renderFundamentalWidget(currentTicker);
+		renderAlertList(currentTicker);
+		generateAISignal(currentTicker, false);
+		fetchStockNews(currentTicker);
+		fetchCorporateAction(currentTicker);
+
+		if (!bypassCooldown) {
+			startSearchCooldown(7);
+		}
+	}
+}
+
+// FITUR: SYSTEM BACKGROUND PRE-FETCHER & ALERT CHECKER
+function startBackgroundAutoCache() {
+	const FIVE_MINUTES = 5 * 60 * 1000;
+	
 	const runBackgroundFetch = async () => {
-		if (!isMarketOpen()) return;
-		const sampleList = radarWatchlist.slice(0, 10);
-		for (let ticker of sampleList) {
+		const currentData = await fetchRealtimeStockData(currentTicker, true);
+		if (currentData) {
+			checkPriceAlertsRealtime(currentTicker, currentData.price);
+		}
+
+		const popularTickers = ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'CUAN', 'ANTM', 'PANI'];
+		for (const ticker of popularTickers) {
 			if (ticker !== currentTicker) {
 				const bgData = await fetchRealtimeStockData(ticker, true);
 				if (bgData) {
@@ -1010,7 +1869,7 @@ renderFundamentalWidget(currentTicker);
 renderAlertList(currentTicker);
 generateAISignal(currentTicker);
 fetchStockNews(currentTicker);
-fetchCorporateActions(currentTicker);
-renderPeerComparison(currentTicker);
+fetchCorporateAction(currentTicker);
+renderJournalTable();
 checkWelcomeModal();
-startBackgroundSync();
+startBackgroundAutoCache();
