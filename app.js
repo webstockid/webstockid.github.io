@@ -645,6 +645,39 @@ async function generateAISignal(ticker, isManualSearch = false) {
 }
 
 // RENDER UI HASIL ANALISA (DITAMBAHKAN REVISI REALTIME VOLUME LOT & VALUASI)
+// UPDATE FUNGSI SKELETON LOADING AGAR TDK MENGHAPUS ELEMEN ID
+function showAISkeletonLoading() {
+	document.getElementById('aiVerdikText').innerHTML = `<span class="inline-block w-32 h-5 skeleton rounded"></span>`;
+	document.getElementById('aiScoreBadge').innerHTML = `<span class="inline-block w-12 h-4 skeleton rounded"></span>`;
+	
+	document.getElementById('aiVerdikDesc').innerHTML = `
+		<div class="space-y-2 py-1">
+			<div class="w-full h-3 skeleton rounded"></div>
+			<div class="w-4/5 h-3 skeleton rounded"></div>
+			<div class="w-3/4 h-3 skeleton rounded"></div>
+		</div>
+	`;
+
+	// Tampilkan status skeleton pada elemen ID masing-masing
+	if (document.getElementById('aiPriceText')) document.getElementById('aiPriceText').innerHTML = `<span class="inline-block w-20 h-3 skeleton rounded"></span>`;
+	if (document.getElementById('aiVolLotText')) document.getElementById('aiVolLotText').innerHTML = `<span class="inline-block w-24 h-3 skeleton rounded"></span>`;
+	if (document.getElementById('aiValuationText')) document.getElementById('aiValuationText').innerHTML = `<span class="inline-block w-24 h-3 skeleton rounded"></span>`;
+	if (document.getElementById('aiMATrendText')) document.getElementById('aiMATrendText').innerHTML = `<span class="inline-block w-28 h-3 skeleton rounded"></span>`;
+	if (document.getElementById('aiVolRatioText')) document.getElementById('aiVolRatioText').innerHTML = `<span class="inline-block w-20 h-3 skeleton rounded"></span>`;
+	if (document.getElementById('aiRange20Text')) document.getElementById('aiRange20Text').innerHTML = `<span class="inline-block w-28 h-3 skeleton rounded"></span>`;
+
+	document.getElementById('mapSupport1').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
+	document.getElementById('mapResist1').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
+	document.getElementById('mapTP').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
+	document.getElementById('mapSL').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
+
+	document.getElementById('tpBarSL').innerHTML = `<span class="inline-block w-12 h-3 skeleton rounded"></span>`;
+	document.getElementById('tpBarCurrent').innerHTML = `<span class="inline-block w-16 h-3 skeleton rounded"></span>`;
+	document.getElementById('tpBarTP').innerHTML = `<span class="inline-block w-12 h-3 skeleton rounded"></span>`;
+	document.getElementById('tpProgressBar').style.width = '0%';
+	document.getElementById('tpProgressPercent').innerText = `Menghitung posisi teknikal...`;
+}
+
 // RENDER UI HASIL ANALISA
 function renderAISignalUI(ticker, stockData, isCached) {
 	const verdikEl = document.getElementById('aiVerdikText');
@@ -709,7 +742,6 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-500">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-500">(Support Kuat 20 Hari)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-500">(Resistance Tertinggi 20 Hari)</strong>. Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksekusi *Trading Plan*.</p>
 		`;
 
-		// UPDATE VALUE VOLUME LOT & VALUASI
 		const formattedLots = stockData.currentVolumeLots ? stockData.currentVolumeLots.toLocaleString('id-ID') : '0';
 		const formattedValuation = formatValuationIDR(stockData.currentValuation || 0);
 
