@@ -645,44 +645,11 @@ async function generateAISignal(ticker, isManualSearch = false) {
 }
 
 // RENDER UI HASIL ANALISA (DITAMBAHKAN REVISI REALTIME VOLUME LOT & VALUASI)
-// UPDATE FUNGSI SKELETON LOADING AGAR TDK MENGHAPUS ELEMEN ID
-function showAISkeletonLoading() {
-	document.getElementById('aiVerdikText').innerHTML = `<span class="inline-block w-32 h-5 skeleton rounded"></span>`;
-	document.getElementById('aiScoreBadge').innerHTML = `<span class="inline-block w-12 h-4 skeleton rounded"></span>`;
-	
-	document.getElementById('aiVerdikDesc').innerHTML = `
-		<div class="space-y-2 py-1">
-			<div class="w-full h-3 skeleton rounded"></div>
-			<div class="w-4/5 h-3 skeleton rounded"></div>
-			<div class="w-3/4 h-3 skeleton rounded"></div>
-		</div>
-	`;
-
-	// Tampilkan status skeleton pada elemen ID masing-masing
-	if (document.getElementById('aiPriceText')) document.getElementById('aiPriceText').innerHTML = `<span class="inline-block w-20 h-3 skeleton rounded"></span>`;
-	if (document.getElementById('aiVolLotText')) document.getElementById('aiVolLotText').innerHTML = `<span class="inline-block w-24 h-3 skeleton rounded"></span>`;
-	if (document.getElementById('aiValuationText')) document.getElementById('aiValuationText').innerHTML = `<span class="inline-block w-24 h-3 skeleton rounded"></span>`;
-	if (document.getElementById('aiMATrendText')) document.getElementById('aiMATrendText').innerHTML = `<span class="inline-block w-28 h-3 skeleton rounded"></span>`;
-	if (document.getElementById('aiVolRatioText')) document.getElementById('aiVolRatioText').innerHTML = `<span class="inline-block w-20 h-3 skeleton rounded"></span>`;
-	if (document.getElementById('aiRange20Text')) document.getElementById('aiRange20Text').innerHTML = `<span class="inline-block w-28 h-3 skeleton rounded"></span>`;
-
-	document.getElementById('mapSupport1').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
-	document.getElementById('mapResist1').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
-	document.getElementById('mapTP').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
-	document.getElementById('mapSL').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
-
-	document.getElementById('tpBarSL').innerHTML = `<span class="inline-block w-12 h-3 skeleton rounded"></span>`;
-	document.getElementById('tpBarCurrent').innerHTML = `<span class="inline-block w-16 h-3 skeleton rounded"></span>`;
-	document.getElementById('tpBarTP').innerHTML = `<span class="inline-block w-12 h-3 skeleton rounded"></span>`;
-	document.getElementById('tpProgressBar').style.width = '0%';
-	document.getElementById('tpProgressPercent').innerText = `Menghitung posisi teknikal...`;
-}
-
-// RENDER UI HASIL ANALISA
 function renderAISignalUI(ticker, stockData, isCached) {
 	const verdikEl = document.getElementById('aiVerdikText');
 	const scoreEl = document.getElementById('aiScoreBadge');
 	const descEl = document.getElementById('aiVerdikDesc');
+	const buktiEl = document.getElementById('aiBuktiUtamaList');
 	const kesimpulanEl = document.getElementById('aiKesimpulanText');
 
 	let price = stockData ? roundToBEITick(stockData.price) : 100;
@@ -745,24 +712,32 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		const formattedLots = stockData.currentVolumeLots ? stockData.currentVolumeLots.toLocaleString('id-ID') : '0';
 		const formattedValuation = formatValuationIDR(stockData.currentValuation || 0);
 
-		if (document.getElementById('aiPriceText')) {
-			document.getElementById('aiPriceText').innerText = `Rp ${price.toLocaleString('id-ID')} (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)`;
-		}
-		if (document.getElementById('aiVolLotText')) {
-			document.getElementById('aiVolLotText').innerText = `${formattedLots} Lot`;
-		}
-		if (document.getElementById('aiValuationText')) {
-			document.getElementById('aiValuationText').innerText = formattedValuation;
-		}
-		if (document.getElementById('aiMATrendText')) {
-			document.getElementById('aiMATrendText').innerText = `Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}`;
-		}
-		if (document.getElementById('aiVolRatioText')) {
-			document.getElementById('aiVolRatioText').innerText = `${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}`;
-		}
-		if (document.getElementById('aiRange20Text')) {
-			document.getElementById('aiRange20Text').innerText = `Rp ${stockData.low20.toLocaleString('id-ID')} - Rp ${stockData.high20.toLocaleString('id-ID')}`;
-		}
+		buktiEl.innerHTML = `
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Harga Terkini: <strong class="text-sky-500">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
+				<span class="text-[10px] lg:text-[11px] text-white">${isCached ? 'Cache Instant' : 'Live Data'}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Jumlah Volume Transaksi:</span>
+				<span class="font-bold font-mono text-emerald-400">${formattedLots} Lot</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Jumlah Valuasi Transaksi:</span>
+				<span class="font-bold font-mono text-amber-400">${formattedValuation}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Posisi Tren MA5 / MA10 / MA20:</span>
+				<span class="font-mono text-emerald-400">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Rasio Volume vs Rerata Volume Harian:</span>
+				<span class="font-bold font-mono ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Terendah 20 Hari / Rentang Tertinggi:</span>
+				<span class="font-mono text-cyan-400">Rp ${stockData.low20.toLocaleString('id-ID')} - Rp ${stockData.high20.toLocaleString('id-ID')}</span>
+			</li>
+		`;
 
 	} else {
 		verdikEl.innerText = "NETRAL-SELEKTIF";

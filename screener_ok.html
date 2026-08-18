@@ -356,37 +356,34 @@
 				<div id="tabContent-ai" class="space-y-4 min-h-[300px] text-xs lg:text-sm">
 					
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3">
+							<div class="flex items-center justify-between">
+								<span class="font-bold text-slate-200 uppercase tracking-wider text-[11px] lg:text-xs" id="aiHeaderTicker">[MDIA] — KONDISI TEKNIKAL</span>
+								<span class="text-[10px] lg:text-[11px] text-white" id="aiDateStamp">Memuat data real-time...</span>
+							</div>
+							<div class="flex items-center justify-between border-t border-slate-800/80 pt-2.5">
+								<div>
+									<span class="text-[10px] lg:text-xs text-white block">VERDIK AI</span>
+									<span id="aiVerdikText" class="font-bold text-amber-400 text-sm lg:text-base">MEMUAT...</span>
+								</div>
+								<div class="text-right">
+									<span class="text-[10px] lg:text-xs text-white block">SKOR AI</span>
+									<span id="aiScoreBadge" class="font-bold bg-slate-800 text-white px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700">- / 5</span>
+								</div>
+							</div>
+							<div id="aiVerdikDesc" class="text-slate-300 leading-relaxed text-[11px] lg:text-xs pt-1 border-t border-slate-900 space-y-1.5">
+								Menghubungkan ke server bursa untuk mengambil data real-time...
+							</div>
+						</div>
+
 						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
-	<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
-		<i data-lucide="check-circle-2" class="w-4 h-4"></i> BUKTI UTAMA & KATALIS TEKNIKAL
-	</span>
-	<ul id="aiBuktiUtamaList" class="space-y-2 text-slate-300 text-[11px] lg:text-xs list-none">
-		<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-			<span>• Harga Terkini:</span>
-			<span id="aiPriceText" class="font-bold text-sky-500">Memuat...</span>
-		</li>
-		<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-			<span>• Jumlah Volume Transaksi:</span>
-			<span id="aiVolLotText" class="font-bold font-mono text-emerald-400">Memuat...</span>
-		</li>
-		<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-			<span>• Jumlah Valuasi Transaksi:</span>
-			<span id="aiValuationText" class="font-bold font-mono text-amber-400">Memuat...</span>
-		</li>
-		<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-			<span>• Posisi Tren MA5 / MA10 / MA20:</span>
-			<span id="aiMATrendText" class="font-mono text-emerald-400">Memuat...</span>
-		</li>
-		<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-			<span>• Rasio Volume vs Rerata Volume Harian:</span>
-			<span id="aiVolRatioText" class="font-bold font-mono text-amber-400">Memuat...</span>
-		</li>
-		<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-			<span>• Terendah 20 Hari / Rentang Tertinggi:</span>
-			<span id="aiRange20Text" class="font-mono text-cyan-400">Memuat...</span>
-		</li>
-	</ul>
-</div>
+							<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
+								<i data-lucide="check-circle-2" class="w-4 h-4"></i> BUKTI UTAMA & KATALIS TEKNIKAL
+							</span>
+							<ul id="aiBuktiUtamaList" class="space-y-2 text-slate-300 text-[11px] lg:text-xs list-none">
+								<li class="text-white">Memuat indikator teknikal riil (MA, Volume, Range)...</li>
+							</ul>
+						</div>
 					</div>
 
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
