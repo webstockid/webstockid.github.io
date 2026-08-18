@@ -444,20 +444,7 @@ function renderFundamentalWidget(ticker) {
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// HELPER FORMAT UNTUK VALUASI (MILIAR / TRILIUN)
-function formatValuationIDR(val) {
-	if (!val || val <= 0) return "Rp 0";
-	if (val >= 1e12) {
-		return `Rp ${(val / 1e12).toFixed(2)} T`;
-	} else if (val >= 1e9) {
-		return `Rp ${(val / 1e9).toFixed(2)} M`;
-	} else if (val >= 1e6) {
-		return `Rp ${(val / 1e6).toFixed(2)} Jt`;
-	}
-	return `Rp ${Math.round(val).toLocaleString('id-ID')}`;
-}
-
-// OPTIMASI REALTIME DATA FETCHING (DENGAN DATA VOLUME LOT & VALUASI)
+// OPTIMASI REALTIME DATA FETCHING
 async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const cachedData = getCachedStockData(ticker);
 	if (cachedData && !forceFetch) return cachedData;
@@ -502,33 +489,15 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 		const ma10 = getMA(10);
 		const ma20 = getMA(20);
 
-		const currentVolumeShares = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
-		const currentVolumeLots = Math.round(currentVolumeShares / 100);
-		const currentValuation = currentVolumeShares * currentPrice;
-
+		const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
 		const volSlice10 = volumes.slice(-10);
 		const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
-		const volRatio = volMA10 > 0 ? parseFloat((currentVolumeShares / volMA10).toFixed(2)) : 1.0;
+		const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
 
 		const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
 		const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
 
-		return { 
-			ticker, 
-			price: roundToBEITick(currentPrice), 
-			prevClose: roundToBEITick(previousClose), 
-			changePct, 
-			ma5, 
-			ma10, 
-			ma20, 
-			currentVolume: currentVolumeShares, 
-			currentVolumeLots, 
-			currentValuation, 
-			volMA10, 
-			volRatio, 
-			high20, 
-			low20 
-		};
+		return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
 	};
 
 	const workerPromise = fetchWithTimeout(`${WORKER_URL}?symbol=${targetSymbol}`, 1800)
@@ -589,8 +558,6 @@ function showAISkeletonLoading() {
 		<li class="h-6 skeleton rounded w-full"></li>
 		<li class="h-6 skeleton rounded w-full"></li>
 		<li class="h-6 skeleton rounded w-full"></li>
-		<li class="h-6 skeleton rounded w-full"></li>
-		<li class="h-6 skeleton rounded w-full"></li>
 	`;
 
 	document.getElementById('mapSupport1').innerHTML = `<span class="inline-block w-20 h-4 skeleton rounded"></span>`;
@@ -644,7 +611,7 @@ async function generateAISignal(ticker, isManualSearch = false) {
 	renderAISignalUI(ticker, stockData, false);
 }
 
-// RENDER UI HASIL ANALISA (DITAMBAHKAN REVISI REALTIME VOLUME LOT & VALUASI)
+// RENDER UI HASIL ANALISA
 function renderAISignalUI(ticker, stockData, isCached) {
 	const verdikEl = document.getElementById('aiVerdikText');
 	const scoreEl = document.getElementById('aiScoreBadge');
@@ -709,21 +676,10 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-500">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-500">(Support Kuat 20 Hari)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-500">(Resistance Tertinggi 20 Hari)</strong>. Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksekusi *Trading Plan*.</p>
 		`;
 
-		const formattedLots = stockData.currentVolumeLots ? stockData.currentVolumeLots.toLocaleString('id-ID') : '0';
-		const formattedValuation = formatValuationIDR(stockData.currentValuation || 0);
-
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Harga Terkini: <strong class="text-sky-500">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
+				<span>• Harga: <strong class="text-sky-500">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
 				<span class="text-[10px] lg:text-[11px] text-white">${isCached ? 'Cache Instant' : 'Live Data'}</span>
-			</li>
-			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Jumlah Volume Transaksi:</span>
-				<span class="font-bold font-mono text-emerald-400">${formattedLots} Lot</span>
-			</li>
-			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Jumlah Valuasi Transaksi:</span>
-				<span class="font-bold font-mono text-amber-400">${formattedValuation}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Posisi Tren MA5 / MA10 / MA20:</span>
@@ -877,8 +833,82 @@ function exportTradingCard() {
 	});
 }
 
-// AMBIL DAFTAR UNIK WATCHLIST DARI FILE WATCHLIST.JS
-const uniqueRadarWatchlist = (typeof radarWatchlist !== 'undefined') ? [...new Set(radarWatchlist)] : ['MDIA', 'BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO'];
+// DAFTAR RADAR & WATCHLIST LENGKAP UNTUK SERUAN KOMPARASI
+const radarWatchlist = [
+	'MDIA', 'KOTA', 'BNBR', 'JGLE', 'ELTY', 'BBCA', 'BBRI', 'BMRI', 'BBNI', 'BBTN',
+	'BRIS', 'ARTO', 'BJTM', 'BJBR', 'BDMN', 'NISP', 'BNGA', 'BTPN', 'PNBN', 'PNLF',
+	'BBYB', 'BBHI', 'AGRO', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'BREN', 'TPIA', 'BYAN',
+	'BRPT', 'MDKA', 'UNVR', 'EMTK', 'SCMA', 'BUKA', 'BELI', 'WIFI', 'MTDL', 'PGAS',
+	'ANTM', 'INCO', 'MEDC', 'ADRO', 'PTBA', 'ITMG', 'HRUM', 'INDY', 'AKRA', 'CUAN',
+	'PTRO', 'MBMA', 'NCKL', 'TINS', 'BRMS', 'ENRG', 'DEWA', 'RAJA', 'SGER', 'DOID',
+	'BSSR', 'KKGI', 'HUMI', 'LEAD', 'PSSI', 'SMDR', 'TMAS', 'WINS', 'PANI', 'BSDE',
+	'CTRA', 'PWON', 'SMRA', 'KPIG', 'ASRI', 'SSIA', 'KIJA', 'JSMR', 'PTPP', 'ADHI',
+	'WEGE', 'WTON', 'TOWR', 'TBIG', 'EXCL', 'ISAT', 'CENT', 'META', 'DILD', 'JRPT',
+	'MKPI', 'BKSL', 'ICBP', 'INDF', 'CPIN', 'JPFA', 'AMRT', 'ACES', 'MAPI', 'ERAA',
+	'KLBF', 'MIKA', 'HEAL', 'SIDO', 'MYOR', 'CMRY', 'ROTI', 'MAPA', 'GGRM', 'HMSP',
+	'WIIM', 'SILO', 'SAME', 'KAEF', 'TSPC', 'IRRA', 'INKP', 'TKIM', 'INTP', 'SMGR',
+	'SMCB', 'SMBR', 'AUTO', 'DRMA', 'SMSM', 'GJTL', 'BIRD', 'ASSA', 'AVIA', 'ESSA',
+	'UNTR', 'SRTG', 'CASS', 'IMAS', 'MPMX', 'WOOD', 'SPTO', 'MLPL', 'RALS', 'MPPA',
+	'ULTJ', 'AALI', 'LSIP', 'SIMP', 'TAPG', 'DSNG', 'BWPT', 'SGRO', 'SSMS', 'NSSS',
+	'TBLA', 'MIDI', 'STAA', 'MAIN', 'FOOD', 'ALII', 'CITA', 'MDKI', 'VKTR', 'RATU',
+	'FORU', 'MNCN', 'FILM', 'KEEN', 'POWR', 'MCAS', 'DIVA', 'AXIO', 'MLPT', 'DNET',
+	'ISSP', 'KRAS', 'BAJA', 'LTLS', 'AGII', 'ALDO', 'BFIN', 'CFIN', 'HDFA', 'MFIN',
+	'APLN', 'LPKR', 'LPCK', 'DMAS', 'GPRA', 'AMAG', 'BBLD', 'BHAT', 'BINA', 'BIPI',
+	'BISR', 'BMAS', 'BMTR', 'BOLA', 'CSAP', 'CSRA', 'DLTA', 'DYAN', 'HERO', 'HEXA',
+	'AAVP', 'ABDA', 'ABMM', 'ACTD', 'ADCP', 'ADHI', 'ADMF', 'ADMR', 'ADMG', 'AEGS',
+	'AIMS', 'AISA', 'AKKU', 'AKPI', 'ALKA', 'ALMI', 'AMAR', 'AMIN', 'AMMS', 'AMOR',
+	'ANJT', 'AOTD', 'APEX', 'APIC', 'APLI', 'ARCI', 'ARFA', 'ARIA', 'ARII', 'ARKA',
+	'ARNA', 'ARTA', 'ASBI', 'ASDM', 'ASGR', 'ASJT', 'ASLC', 'ASMI', 'ASRM', 'ASSA',
+	'ATIC', 'ATPK', 'AUTO', 'BABP', 'BACA', 'BAJA', 'BALI', 'BANK', 'BAPA', 'BATA',
+	'BAYU', 'BBCA', 'BBDM', 'BBKP', 'BBLD', 'BBMD', 'BBRM', 'BBSI', 'BTEK', 'BTOCO',
+	'BTPN', 'BUKK', 'BULL', 'BVIC', 'BWPT', 'BYAN', 'CAKK', 'CAMP', 'CANI', 'CARE',
+	'CARS', 'CASA', 'CASS', 'CATO', 'CEKA', 'CENT', 'CFIN', 'CHIP', 'CINT', 'CISS',
+	'CLPI', 'CMNP', 'COCO', 'COWL', 'CPIN', 'CPRI', 'CPRO', 'CSAP', 'CSIS', 'CTBN',
+	'CTTH', 'DADA', 'DART', 'DEFI', 'DEPO', 'DFAM', 'DGIK', 'DGNS', 'DIGI', 'DIMA',
+	'DMND', 'DNAR', 'DNET', 'DOOH', 'DPNS', 'DPUM', 'DRMA', 'DSFI', 'DUTI', 'DVLA',
+	'DWGL', 'EAST', 'ECII', 'EDII', 'ELSA', 'ELTY', 'EMDE', 'ENRG', 'EPMT', 'ERAK',
+	'ERTX', 'ESIP', 'ESTA', 'ETWA', 'EURO', 'FAPA', 'FAST', 'FASW', 'FIRT', 'FISH',
+	'FITT', 'FLMC', 'FMII', 'FORU', 'FPNI', 'FPRN', 'GDST', 'GDYR', 'GEMA', 'GEMS',
+	'GREN', 'GSPT', 'GTBO', 'GWSA', 'GZCO', 'HADE', 'HAIS', 'HDFA', 'HDTX', 'HERO',
+	'HEXA', 'HITS', 'HKMU', 'HMSP', 'HOKI', 'HOME', 'HOTL', 'HRTA', 'IATA', 'IBFN',
+	'IBOS', 'IBST', 'ICBP', 'ICON', 'IDPR', 'IFII', 'IFSH', 'IGAR', 'IIKP', 'IKAI',
+	'IKBI', 'IMAS', 'IMJS', 'IMPC', 'INAF', 'INAI', 'INCF', 'INCI', 'INDO', 'INDR',
+	'INDS', 'INDY', 'INKP', 'INPP', 'INPC', 'INOV', 'INRU', 'IPCC', 'IPCM', 'IPOL',
+	'IPPE', 'IPTV', 'IRRA', 'ISSP', 'ITMA', 'ITMG', 'JARR', 'JAST', 'JASU', 'JECC',
+	'JGPA', 'JKON', 'JKSW', 'JMAS', 'JPFA', 'JSPT', 'JTPE', 'KAEF', 'KARW', 'KBAG',
+	'KBLI', 'KBLM', 'KBLV', 'KBRI', 'KDSI', 'KIAS', 'KICI', 'KIJA', 'KINR', 'KKGI',
+	'KLBF', 'KMDS', 'KMTR', 'KOIN', 'KOCI', 'KONI', 'KOPI', 'KREN', 'KROX', 'LPCK',
+	'LPGI', 'LPIN', 'LPKR', 'LPLI', 'LPOP', 'LSPT', 'LTLS', 'LUCK', 'MASA', 'MASB',
+	'MAYA', 'MBAP', 'MBSS', 'MBTO', 'MCOR', 'MDFC', 'MDIA', 'MDKA', 'MDRN', 'MEDC',
+	'MEGA', 'MERK', 'META', 'MFIN', 'MFMI', 'MGLV', 'MGNA', 'MICE', 'MIDI', 'MIKA',
+	'MINA', 'MIRE', 'MITS', 'MKNT', 'MKPI', 'MLBI', 'MLIA', 'MLND', 'MLPT', 'MMIX',
+	'MNAK', 'MNDO', 'MNCN', 'MPMX', 'MPPA', 'MRAT', 'MREI', 'MSIN', 'MSKY', 'MTDL',
+	'MTFN', 'MTLA', 'MTPS', 'MTRA', 'MTSM', 'MYOH', 'MYOR', 'MYTX', 'NANO', 'NASA',
+	'NASI', 'NCKL', 'NDKO', 'NELI', 'NELY', 'NETV', 'NFCX', 'NICE', 'NICK', 'NICL',
+	'NIKL', 'NINE', 'NISP', 'NOBU', 'NRCA', 'NTRD', 'OASA', 'OBMD', 'OCAP', 'OCMD',
+	'OILS', 'OKAS', 'OMRE', 'OPMS', 'PALM', 'PAMA', 'PAMG', 'PANI', 'PANR', 'PANS',
+	'PBID', 'PBRX', 'PBSA', 'PCAR', 'PDES', 'PEGE', 'PEHA', 'PGAS', 'PGJO', 'PGLI',
+	'PJAA', 'PKPK', 'PLIN', 'PLAS', 'PLND', 'PMMP', 'PNBN', 'PNBS', 'PNIN', 'PNLF',
+	'PNSE', 'POLY', 'POOL', 'PORT', 'POWR', 'PPGL', 'PPRE', 'PRDA', 'PRIM', 'PSAB',
+	'PSDN', 'PSGO', 'PSSI', 'PTBA', 'PTDU', 'PTIS', 'PTPP', 'PTRO', 'PTSN', 'PTPW',
+	'PWON', 'PYFA', 'PZZA', 'RBMS', 'RCCC', 'RDTX', 'RELI', 'RICY', 'RIGS', 'RISE',
+	'RMKE', 'ROCK', 'RODA', 'RONY', 'ROTI', 'SAFE', 'SAME', 'SAMF', 'SAPX', 'SBAT',
+	'SBMA', 'SCCO', 'SCMA', 'SCNP', 'SDRA', 'SDPC', 'SEMA', 'SFAN', 'SFXI', 'SGAR',
+	'SGLP', 'SHID', 'SIAP', 'SILO', 'SIMP', 'SINK', 'SIPD', 'SKBM', 'SKLT', 'SKRN',
+	'SLIS', 'SMAR', 'SMBR', 'SMCB', 'SMDM', 'SMDR', 'SMGR', 'SMKL', 'SMMA', 'SMRA',
+	'SMRU', 'SMSM', 'SNLK', 'SOFA', 'SONA', 'SOSI', 'SOTN', 'SPMA', 'SPTO', 'SQMI',
+	'SREI', 'SRIL', 'SRSN', 'SRTG', 'SSIA', 'SSMS', 'SSSI', 'SSTM', 'STAA', 'STAR',
+	'STTP', 'SUGI', 'SULI', 'SUPR', 'SURE', 'SWAT', 'TALF', 'TARA', 'TAXI', 'TBIG',
+	'TBLA', 'TCID', 'TCPI', 'TDPM', 'TEBE', 'TECH', 'TEBE', 'TELE', 'TFCO', 'TGRA',
+	'TIFA', 'TINC', 'TINS', 'TIPR', 'TIRA', 'TISC', 'TKIM', 'TLKM', 'TLDN', 'TMAN',
+	'TMAS', 'TMPO', 'TNCA', 'TOPS', 'TOTE', 'TOWR', 'TPIA', 'TPMA', 'TRAM', 'TRFA',
+	'TRIL', 'TRIM', 'TRIN', 'TRIO', 'TRIS', 'TRST', 'TRUE', 'TRUK', 'TSPC', 'TULT',
+	'TYRE', 'UANG', 'UCID', 'UECU', 'UIDA', 'ULTJ', 'UNIC', 'UNIT', 'UNTR', 'UNVR',
+	'URBN', 'USBP', 'VRNA', 'VTNY', 'WAIT', 'WALD', 'WEGE', 'WEHA', 'WICO', 'WIDI',
+	'WIFI', 'WIIM', 'WIMP', 'WINS', 'WITC', 'WMUU', 'WOOD', 'WOWS', 'WSBP', 'WSKT',
+	'WTON', 'YPAS', 'YULE', 'ZBRA', 'ZINC', 'ZONE', 'ZYRX'
+];
+const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
 
 // COOLDOWN LOGIC REFRESH PEER DATA (12 DETIK)
 function startPeerRefreshCooldown(seconds = 12) {
@@ -909,7 +939,7 @@ function startPeerRefreshCooldown(seconds = 12) {
 	}, 1000);
 }
 
-// FITUR PEER KOMPARASI HARGA SERUPA
+// FITUR NO. 2: PEER KOMPARASI HARGA SERUPA (HANYA MANUAL REFRESH VIA TOMBOL)
 async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	if (isManualRefresh) {
 		const btn = document.getElementById('btnRefreshPeer');
@@ -1109,12 +1139,15 @@ function renderJournalTable() {
 
 function autoFillRRRFromAI() {
 	if (globalStockData && globalStockData.price) {
+		// 1. Ambil harga dasar dari data global
 		const basePrice = globalStockData.price;
 
+		// 2. Hitung entry (96% dari harga dasar), SL (92%), dan TP (106%)
 		const entry = roundToBEITick(basePrice * 0.96, 'floor');
 		const sl = roundToBEITick(basePrice * 0.92, 'floor');
 		const tp = roundToBEITick(basePrice * 1.06, 'ceil');
 
+		// 3. Masukkan ke input form
 		document.getElementById('rrrEntry').value = entry;
 		document.getElementById('rrrSL').value = sl;
 		document.getElementById('rrrTP').value = tp;
@@ -1165,7 +1198,7 @@ function calculateSmartRRR() {
 
 	resEl.innerText = `1 : ${rrr}`;
 	maxRiskAmountEl.innerText = `Rp ${Math.round(maxRiskAmount).toLocaleString('id-ID')}`;
-	maxLotsEl.innerText = `${maxLots.toLocaleString('id-ID')} Lot`;
+	maxLotsEl.innerText = `${maxLots.toLocaleString('id-ID')} Lot`; //(${(maxLots * 100).toLocaleString('id-ID')} lembar)
 	capitalNeededEl.innerText = `Rp ${Math.round(totalCapitalRequired).toLocaleString('id-ID')}`;
 	rewardEl.innerText = `Rp ${Math.round(totalRewardAmount).toLocaleString('id-ID')}`;
 
@@ -1231,7 +1264,7 @@ function selectSuggestion(ticker) {
 	searchStock(true);
 }
 
-// RADAR BANDAR AUTOMATIC FULL SCAN
+// FITUR NO. 3: RADAR BANDAR AUTOMATIC FULL SCAN
 async function startRadarProcess() {
 	if (isRadarScanning) return;
 	isRadarScanning = true;
@@ -1422,7 +1455,7 @@ async function fetchStockNewsForAI(ticker) {
 	}
 }
 
-// ==================== REVISI FITUR SMART ALERT & PUSH NOTIFICATION SYSTEM ====================
+// ==================== FITUR 1: SMART ALERT & BROWSER PUSH NOTIFICATION SYSTEM ====================
 function checkNotificationStatus() {
 	const btn = document.getElementById('btnToggleNotification');
 	if (!btn) return;
@@ -1584,7 +1617,6 @@ function removePriceAlert(ticker, index) {
 	saveAlerts(ticker, alerts);
 }
 
-// LOGIKA PEMANTAUAN ALERT HARGA DENGAN DUA ARAH (MENUSUK DARI BAWAH / ATAS)
 function checkPriceAlertsRealtime(ticker, currentPrice) {
 	if (!currentPrice || currentPrice <= 0) return;
 
@@ -1596,24 +1628,19 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 		const isActive = typeof alertObj === 'object' ? alertObj.active : true;
 		const labelText = typeof alertObj === 'object' && alertObj.label ? alertObj.label : 'Target';
 
-		if (isActive) {
-			const isStopLoss = labelText.includes('Stop Loss');
-			const isCrossed = isStopLoss ? (currentPrice <= targetPrice) : (currentPrice >= targetPrice);
+		if (isActive && currentPrice >= targetPrice) {
+			const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh ${labelText} Rp ${targetPrice.toLocaleString('id-ID')}`;
+			
+			AudioFX.playSuccess();
+			sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
 
-			if (isCrossed) {
-				const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh ${labelText} Rp ${targetPrice.toLocaleString('id-ID')}`;
-				
-				AudioFX.playAlert();
-				sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
-
-				if (typeof alertObj === 'object') {
-					alertObj.active = false;
-					alertObj.triggered = true;
-				} else {
-					alerts[idx] = { price: targetPrice, active: false, triggered: true };
-				}
-				updated = true;
+			if (typeof alertObj === 'object') {
+				alertObj.active = false;
+				alertObj.triggered = true;
+			} else {
+				alerts[idx] = { price: targetPrice, active: false, triggered: true };
 			}
+			updated = true;
 		}
 	});
 
