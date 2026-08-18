@@ -421,25 +421,54 @@ function renderTechnicalGauge(ticker) {
 	container.appendChild(script);
 }
 
+// -------------------------------------------------------------
+// [REVISI NO 3]: Menggabungkan Profile (Market Cap, PER, PBV) 
+// dan Widget Financials (Laporan Keuangan) agar super informatif
+// -------------------------------------------------------------
 function renderFundamentalWidget(ticker) {
 	const container = document.getElementById('tv_fundamental_container');
-	container.innerHTML = '';
+	container.innerHTML = `
+		<div class="space-y-4">
+			<!-- Profil Perusahaan & Metrik Fundamental (Market Cap, dll) -->
+			<div id="tv_profile_widget" class="w-full h-[380px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
+			<!-- Laporan Keuangan Detail -->
+			<div id="tv_financials_widget" class="w-full h-[540px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
+		</div>
+	`;
 
-	const script = document.createElement('script');
-	script.type = 'text/javascript';
-	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js';
-	script.async = true;
-	script.text = JSON.stringify({
+	// Widget 1: Symbol Profile TradingView
+	const profileContainer = document.getElementById('tv_profile_widget');
+	const scriptProfile = document.createElement('script');
+	scriptProfile.type = 'text/javascript';
+	scriptProfile.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js';
+	scriptProfile.async = true;
+	scriptProfile.text = JSON.stringify({
+		"width": "100%",
+		"height": "100%",
+		"colorTheme": "dark",
+		"isTransparent": true,
+		"symbol": `IDX:${ticker}`,
+		"locale": "id"
+	});
+	profileContainer.appendChild(scriptProfile);
+
+	// Widget 2: Financials TradingView
+	const finContainer = document.getElementById('tv_financials_widget');
+	const scriptFin = document.createElement('script');
+	scriptFin.type = 'text/javascript';
+	scriptFin.src = 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js';
+	scriptFin.async = true;
+	scriptFin.text = JSON.stringify({
 		"colorTheme": "dark",
 		"isTransparent": true,
 		"largeChartUrl": "",
 		"displayMode": "regular",
 		"width": "100%",
-		"height": "540",
+		"height": "100%",
 		"symbol": `IDX:${ticker}`,
 		"locale": "id"
 	});
-	container.appendChild(script);
+	finContainer.appendChild(scriptFin);
 }
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -489,7 +518,12 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 		const ma10 = getMA(10);
 		const ma20 = getMA(20);
 
+		// [REVISI NO 1]: Ekstraksi data Volume aktual (meta) untuk menghitung Lot dan Total Valuasi (Val)
 		const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
+		const realVolume = result.meta?.regularMarketVolume || currentVolume;
+		const currentLot = Math.floor(realVolume / 100);
+		const currentValuation = realVolume * currentPrice;
+
 		const volSlice10 = volumes.slice(-10);
 		const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
 		const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
@@ -497,7 +531,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 		const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
 		const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
 
-		return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20 };
+		return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, currentLot, currentValuation };
 	};
 
 	const workerPromise = fetchWithTimeout(`${WORKER_URL}?symbol=${targetSymbol}`, 1800)
@@ -676,6 +710,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-500">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-500">(Support Kuat 20 Hari)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-500">(Resistance Tertinggi 20 Hari)</strong>. Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksekusi *Trading Plan*.</p>
 		`;
 
+		// [REVISI NO 1]: Injeksi Data Volume (Lot) dan Valuasi (Val) ke Dalam List Bukti Utama 
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Harga: <strong class="text-sky-500">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
@@ -686,12 +721,20 @@ function renderAISignalUI(ticker, stockData, isCached) {
 				<span class="font-mono text-emerald-400">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Rasio Volume vs Rerata Volume Harian:</span>
+				<span>• Rasio Volume vs Rerata Harian:</span>
 				<span class="font-bold font-mono ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Terendah 20 Hari / Rentang Tertinggi:</span>
 				<span class="font-mono text-cyan-400">Rp ${stockData.low20.toLocaleString('id-ID')} - Rp ${stockData.high20.toLocaleString('id-ID')}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-emerald-500/30">
+				<span>• Volume Transaksi (Real-time):</span>
+				<span class="font-mono text-amber-400 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-emerald-500/30">
+				<span>• Total Valuasi (Real-time):</span>
+				<span class="font-mono text-amber-400 font-bold">Rp ${(stockData.currentValuation || 0).toLocaleString('id-ID')}</span>
 			</li>
 		`;
 
@@ -1498,31 +1541,28 @@ function requestNotificationPermission() {
 	});
 }
 
+// [REVISI NO 2]: Menyempurnakan fallback ServiceWorker untuk Notifikasi HP/Android 
 function sendBrowserPushNotification(title, message) {
 	if ("Notification" in window && Notification.permission === "granted") {
 		try {
-			if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+			// Mencoba Notification API standar (Berfungsi sempurna untuk Desktop/Laptop)
+			const notif = new Notification(title, {
+				body: message,
+				icon: 'stockid_gambar/stockicon.jpg',
+				tag: 'stockid-alert-' + Date.now()
+			});
+		} catch (e) {
+			// Menangkap error 'Illegal constructor' dari HP/Mobile Chrome yang mewajibkan Service Worker
+			if (navigator.serviceWorker) {
 				navigator.serviceWorker.ready.then(registration => {
 					registration.showNotification(title, {
 						body: message,
 						icon: 'stockid_gambar/stockicon.jpg',
-						tag: 'stockid-alert'
+						tag: 'stockid-alert-' + Date.now()
 					});
-				}).catch(() => {
-					new Notification(title, {
-						body: message,
-						icon: 'stockid_gambar/stockicon.jpg',
-						tag: 'stockid-alert'
-					});
-				});
-			} else {
-				new Notification(title, {
-					body: message,
-					icon: 'stockid_gambar/stockicon.jpg',
-					tag: 'stockid-alert'
-				});
+				}).catch(() => {});
 			}
-		} catch(e){}
+		}
 	}
 }
 
@@ -1617,6 +1657,7 @@ function removePriceAlert(ticker, index) {
 	saveAlerts(ticker, alerts);
 }
 
+// [REVISI NO 2]: Memperbaiki Logika Threshold / Trigger Harga untuk SL & Entry
 function checkPriceAlertsRealtime(ticker, currentPrice) {
 	if (!currentPrice || currentPrice <= 0) return;
 
@@ -1628,24 +1669,32 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 		const isActive = typeof alertObj === 'object' ? alertObj.active : true;
 		const labelText = typeof alertObj === 'object' && alertObj.label ? alertObj.label : 'Target';
 
-		if (isActive && currentPrice >= targetPrice) {
-			const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh ${labelText} Rp ${targetPrice.toLocaleString('id-ID')}`;
-			
-			AudioFX.playSuccess();
-			sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
+		if (isActive) {
+			// Logika pembeda: Jika target berupa SL/Support maka trigger aktif apabila harga <= target.
+			// Apabila TP/Resistance, trigger aktif apabila harga >= target.
+			const isSupportOrSL = labelText.toLowerCase().includes('stop loss') || labelText.toLowerCase().includes('support') || labelText.toLowerCase().includes('entry');
+			const conditionMet = isSupportOrSL ? (currentPrice <= targetPrice) : (currentPrice >= targetPrice);
 
-			if (typeof alertObj === 'object') {
-				alertObj.active = false;
-				alertObj.triggered = true;
-			} else {
-				alerts[idx] = { price: targetPrice, active: false, triggered: true };
+			if (conditionMet) {
+				const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh ${labelText} Rp ${targetPrice.toLocaleString('id-ID')}`;
+				
+				AudioFX.playSuccess();
+				sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
+
+				if (typeof alertObj === 'object') {
+					alertObj.active = false;
+					alertObj.triggered = true;
+				} else {
+					alerts[idx] = { price: targetPrice, active: false, triggered: true };
+				}
+				updated = true;
 			}
-			updated = true;
 		}
 	});
 
 	if (updated) {
 		saveAlerts(ticker, alerts);
+		renderAlertList(ticker); // update UI panel agar label "AKTIF" menjadi "OFF"
 	}
 }
 
