@@ -536,17 +536,17 @@
 				<div id="tabContent-news" class="hidden space-y-3 min-h-[250px]">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs lg:text-sm text-white">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
-						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-slate-300">Google News RSS</span>
+						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-slate-300">Live News Aggregator</span>
 					</div>
-					<div id="newsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-						<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3">Memuat berita terkini...</div>
+					<div id="newsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+						<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-4">Memuat berita terkini...</div>
 					</div>
 				</div>
 
 				<!-- TAB CONTENT 5: FUNDAMENTAL WIDGET -->
 				<div id="tabContent-fundamental" class="hidden min-h-[300px]">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs lg:text-sm text-white">Profil Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-xs lg:text-sm text-white">Profil & Fundamental Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
 						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-purple-400 font-bold">TradingView Data</span>
 					</div>
 					<div class="tradingview-widget-container">
@@ -762,7 +762,7 @@
 
 		</main>
 
-		<!-- CONTAINER EXPORT TRADING CARD (RAPIS DAN DETAIL INDIKATOR TEKNIKAL) -->
+		<!-- CONTAINER EXPORT TRADING CARD -->
 		<div id="exportCardContainer" class="fixed -left-[9999px] top-0 w-[620px] bg-slate-950 text-white p-7 rounded-3xl border-2 border-emerald-500/40 space-y-5 shadow-2xl">
 			<div class="flex justify-between items-center border-b border-slate-800/80 pb-4">
 				<div class="flex items-center gap-3">
@@ -839,7 +839,23 @@
 		<!-- Script CDN TradingView -->
 		<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
+		<!-- Data Watchlist yang Dipisah (Harus dipanggil sebelum app.js) -->
+		<script src="watchlist.js"></script>
+
 		<!-- Script Logika Aplikasi Utama -->
 		<script src="app.js"></script>
+
+		<!-- Pendaftaran Service Worker untuk Push Notification -->
+		<script>
+			if ('serviceWorker' in navigator) {
+				window.addEventListener('load', function() {
+					navigator.serviceWorker.register('sw.js').then(function(registration) {
+						console.log('SW Notification registered successfully');
+					}).catch(function(error) {
+						console.log('SW registration failed:', error);
+					});
+				});
+			}
+		</script>
 	</body>
 </html>

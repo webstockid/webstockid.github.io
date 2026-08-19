@@ -25,7 +25,7 @@ const radarWatchlist = [
 	'ANJT', 'AOTD', 'APEX', 'APIC', 'APLI', 'ARCI', 'ARFA', 'ARIA', 'ARII', 'ARKA',
 	'ARNA', 'ARTA', 'ASBI', 'ASDM', 'ASGR', 'ASJT', 'ASLC', 'ASMI', 'ASRM', 'ASSA',
 	'ATIC', 'ATPK', 'AUTO', 'BABP', 'BACA', 'BAJA', 'BALI', 'BANK', 'BAPA', 'BATA',
-	'BAYU', 'BBCA', 'BBDM', 'BBKP', 'BBLD', 'BBMD', 'BBRM', 'BBSI', 'BTEK',
+	'BAYU', 'BBCA', 'BBDM', 'BBKP', 'BBLD', 'BBMD', 'BBRM', 'BBSI', 'BTEK', 'BTOCO',
 	'BTPN', 'BUKK', 'BULL', 'BVIC', 'BWPT', 'BYAN', 'CAKK', 'CAMP', 'CANI', 'CARE',
 	'CARS', 'CASA', 'CASS', 'CATO', 'CEKA', 'CENT', 'CFIN', 'CHIP', 'CINT', 'CISS',
 	'CLPI', 'CMNP', 'COCO', 'COWL', 'CPIN', 'CPRI', 'CPRO', 'CSAP', 'CSIS', 'CTBN',
@@ -73,3 +73,4 @@ const radarWatchlist = [
 	'WIFI', 'WIIM', 'WIMP', 'WINS', 'WITC', 'WMUU', 'WOOD', 'WOWS', 'WSBP', 'WSKT',
 	'WTON', 'YPAS', 'YULE', 'ZBRA', 'ZINC', 'ZONE', 'ZYRX'
 ];
+const uniqueRadarWatchlist = [...new Set(radarWatchlist)];

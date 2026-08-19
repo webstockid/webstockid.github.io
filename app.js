@@ -422,15 +422,17 @@ function renderTechnicalGauge(ticker) {
 }
 
 // -------------------------------------------------------------
-// [REVISI NO 3]: Menggabungkan Profile (Market Cap, PER, PBV) 
-// dan Widget Financials (Laporan Keuangan) agar super informatif
+// [REVISI NO 3]: Menggabungkan Profile, Fundamental Data (Market Cap/Valuation)
+// dan Financials agar sangat informatif
 // -------------------------------------------------------------
 function renderFundamentalWidget(ticker) {
 	const container = document.getElementById('tv_fundamental_container');
 	container.innerHTML = `
 		<div class="space-y-4">
-			<!-- Profil Perusahaan & Metrik Fundamental (Market Cap, dll) -->
-			<div id="tv_profile_widget" class="w-full h-[380px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
+			<!-- Profil Perusahaan -->
+			<div id="tv_profile_widget" class="w-full h-[400px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
+			<!-- Fundamental Data (Key Stats & Valuasi Lengkap) -->
+			<div id="tv_fundamental_data_widget" class="w-full h-[500px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
 			<!-- Laporan Keuangan Detail -->
 			<div id="tv_financials_widget" class="w-full h-[540px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
 		</div>
@@ -452,7 +454,25 @@ function renderFundamentalWidget(ticker) {
 	});
 	profileContainer.appendChild(scriptProfile);
 
-	// Widget 2: Financials TradingView
+	// Widget 2: Fundamental Data TradingView
+	const fundDataContainer = document.getElementById('tv_fundamental_data_widget');
+	const scriptFundData = document.createElement('script');
+	scriptFundData.type = 'text/javascript';
+	scriptFundData.src = 'https://s3.tradingview.com/external-embedding/embed-widget-fundamental-data.js';
+	scriptFundData.async = true;
+	scriptFundData.text = JSON.stringify({
+		"isTransparent": true,
+		"largeChartUrl": "",
+		"displayMode": "regular",
+		"width": "100%",
+		"height": "100%",
+		"symbol": `IDX:${ticker}`,
+		"colorTheme": "dark",
+		"locale": "id"
+	});
+	fundDataContainer.appendChild(scriptFundData);
+
+	// Widget 3: Financials TradingView
 	const finContainer = document.getElementById('tv_financials_widget');
 	const scriptFin = document.createElement('script');
 	scriptFin.type = 'text/javascript';
@@ -518,7 +538,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 		const ma10 = getMA(10);
 		const ma20 = getMA(20);
 
-		// [REVISI NO 1]: Ekstraksi data Volume aktual (meta) untuk menghitung Lot dan Total Valuasi (Val)
+		// Ekstraksi data Volume aktual (meta) untuk menghitung Lot dan Total Valuasi (Val)
 		const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
 		const realVolume = result.meta?.regularMarketVolume || currentVolume;
 		const currentLot = Math.floor(realVolume / 100);
@@ -573,6 +593,29 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	}
 
 	return freshData;
+}
+
+// -------------------------------------------------------------
+// [REVISI NO 1]: Async Fetcher untuk Data Bursa Khusus 
+// Mengambil data real-time Frekuensi dan Foreign Net via Proxy
+// -------------------------------------------------------------
+async function fetchIDXExtraData(ticker) {
+	try {
+		const url = `https://api.allorigins.win/get?url=${encodeURIComponent('https://www.idx.co.id/primary/TradingSummary/GetStockSummary?length=1&start=0&code=' + ticker)}`;
+		const res = await fetch(url);
+		const wrap = await res.json();
+		const json = JSON.parse(wrap.contents);
+
+		if (json && json.data && json.data.length > 0) {
+			return {
+				freq: json.data[0].Frequency,
+				foreignNet: json.data[0].ForeignNet
+			};
+		}
+	} catch(e) {
+		console.warn("Gagal mengekstraksi data proxy IDX:", e);
+	}
+	return { freq: null, foreignNet: null };
 }
 
 function showAISkeletonLoading() {
@@ -710,7 +753,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-500">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-500">(Support Kuat 20 Hari)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-500">(Resistance Tertinggi 20 Hari)</strong>. Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksekusi *Trading Plan*.</p>
 		`;
 
-		// [REVISI NO 1]: Injeksi Data Volume (Lot) dan Valuasi (Val) ke Dalam List Bukti Utama 
+		const idSuffix = Date.now();
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Harga: <strong class="text-sky-500 font-mono font-bold">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
@@ -725,18 +768,41 @@ function renderAISignalUI(ticker, stockData, isCached) {
 				<span class="font-bold font-mono ${isVolSpike ? 'text-emerald-500' : 'text-amber-500'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Terendah 20 Hari / Rentang Tertinggi:</span>
-				<span class="font-mono text-sky-500 font-bold">Rp ${stockData.low20.toLocaleString('id-ID')} - Rp ${stockData.high20.toLocaleString('id-ID')}</span>
-			</li>
-			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Volume Transaksi:</span>
-				<span class="font-mono text-purple-500 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
+				<span class="font-mono text-emerald-500 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Total Valuasi:</span>
-				<span class="font-mono text-orange-500 font-bold">Rp ${(stockData.currentValuation || 0).toLocaleString('id-ID')}</span>
+				<span class="font-mono text-emerald-500 font-bold">Rp ${(stockData.currentValuation || 0).toLocaleString('id-ID')}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Total Frekuensi (1D):</span>
+				<span class="font-mono text-cyan-400 font-bold" id="aiFreq_${idSuffix}"><i class="fa-solid fa-circle-notch fa-spin"></i> Menunggu bursa...</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Foreign Net Buy/Sell (1D):</span>
+				<span class="font-mono font-bold" id="aiForeignNet_${idSuffix}"><i class="fa-solid fa-circle-notch fa-spin"></i> Menunggu bursa...</span>
 			</li>
 		`;
+
+		// Memicu pencarian Real Time Proxy untuk Frekuensi & Foreign Net
+		fetchIDXExtraData(ticker).then(extra => {
+			const freqEl = document.getElementById(`aiFreq_${idSuffix}`);
+			const foreignEl = document.getElementById(`aiForeignNet_${idSuffix}`);
+
+			if (freqEl) {
+				freqEl.innerHTML = extra.freq ? `${extra.freq.toLocaleString('id-ID')} Kali` : '<span class="text-slate-400">Tertunda</span>';
+			}
+			if (foreignEl) {
+				if (extra.foreignNet !== null && extra.foreignNet !== undefined) {
+					const isNetBuy = extra.foreignNet > 0;
+					foreignEl.className = `font-mono font-bold ${isNetBuy ? 'text-emerald-400' : 'text-rose-400'}`;
+					foreignEl.innerHTML = `Rp ${extra.foreignNet.toLocaleString('id-ID')}`;
+				} else {
+					foreignEl.innerHTML = '<span class="text-slate-400">Tertunda</span>';
+				}
+			}
+		});
 
 	} else {
 		verdikEl.innerText = "NETRAL-SELEKTIF";
@@ -876,83 +942,6 @@ function exportTradingCard() {
 	});
 }
 
-// DAFTAR RADAR & WATCHLIST LENGKAP UNTUK SERUAN KOMPARASI
-const radarWatchlist = [
-	'MDIA', 'KOTA', 'BNBR', 'JGLE', 'ELTY', 'BBCA', 'BBRI', 'BMRI', 'BBNI', 'BBTN',
-	'BRIS', 'ARTO', 'BJTM', 'BJBR', 'BDMN', 'NISP', 'BNGA', 'BTPN', 'PNBN', 'PNLF',
-	'BBYB', 'BBHI', 'AGRO', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'BREN', 'TPIA', 'BYAN',
-	'BRPT', 'MDKA', 'UNVR', 'EMTK', 'SCMA', 'BUKA', 'BELI', 'WIFI', 'MTDL', 'PGAS',
-	'ANTM', 'INCO', 'MEDC', 'ADRO', 'PTBA', 'ITMG', 'HRUM', 'INDY', 'AKRA', 'CUAN',
-	'PTRO', 'MBMA', 'NCKL', 'TINS', 'BRMS', 'ENRG', 'DEWA', 'RAJA', 'SGER', 'DOID',
-	'BSSR', 'KKGI', 'HUMI', 'LEAD', 'PSSI', 'SMDR', 'TMAS', 'WINS', 'PANI', 'BSDE',
-	'CTRA', 'PWON', 'SMRA', 'KPIG', 'ASRI', 'SSIA', 'KIJA', 'JSMR', 'PTPP', 'ADHI',
-	'WEGE', 'WTON', 'TOWR', 'TBIG', 'EXCL', 'ISAT', 'CENT', 'META', 'DILD', 'JRPT',
-	'MKPI', 'BKSL', 'ICBP', 'INDF', 'CPIN', 'JPFA', 'AMRT', 'ACES', 'MAPI', 'ERAA',
-	'KLBF', 'MIKA', 'HEAL', 'SIDO', 'MYOR', 'CMRY', 'ROTI', 'MAPA', 'GGRM', 'HMSP',
-	'WIIM', 'SILO', 'SAME', 'KAEF', 'TSPC', 'IRRA', 'INKP', 'TKIM', 'INTP', 'SMGR',
-	'SMCB', 'SMBR', 'AUTO', 'DRMA', 'SMSM', 'GJTL', 'BIRD', 'ASSA', 'AVIA', 'ESSA',
-	'UNTR', 'SRTG', 'CASS', 'IMAS', 'MPMX', 'WOOD', 'SPTO', 'MLPL', 'RALS', 'MPPA',
-	'ULTJ', 'AALI', 'LSIP', 'SIMP', 'TAPG', 'DSNG', 'BWPT', 'SGRO', 'SSMS', 'NSSS',
-	'TBLA', 'MIDI', 'STAA', 'MAIN', 'FOOD', 'ALII', 'CITA', 'MDKI', 'VKTR', 'RATU',
-	'FORU', 'MNCN', 'FILM', 'KEEN', 'POWR', 'MCAS', 'DIVA', 'AXIO', 'MLPT', 'DNET',
-	'ISSP', 'KRAS', 'BAJA', 'LTLS', 'AGII', 'ALDO', 'BFIN', 'CFIN', 'HDFA', 'MFIN',
-	'APLN', 'LPKR', 'LPCK', 'DMAS', 'GPRA', 'AMAG', 'BBLD', 'BHAT', 'BINA', 'BIPI',
-	'BISR', 'BMAS', 'BMTR', 'BOLA', 'CSAP', 'CSRA', 'DLTA', 'DYAN', 'HERO', 'HEXA',
-	'AAVP', 'ABDA', 'ABMM', 'ACTD', 'ADCP', 'ADHI', 'ADMF', 'ADMR', 'ADMG', 'AEGS',
-	'AIMS', 'AISA', 'AKKU', 'AKPI', 'ALKA', 'ALMI', 'AMAR', 'AMIN', 'AMMS', 'AMOR',
-	'ANJT', 'AOTD', 'APEX', 'APIC', 'APLI', 'ARCI', 'ARFA', 'ARIA', 'ARII', 'ARKA',
-	'ARNA', 'ARTA', 'ASBI', 'ASDM', 'ASGR', 'ASJT', 'ASLC', 'ASMI', 'ASRM', 'ASSA',
-	'ATIC', 'ATPK', 'AUTO', 'BABP', 'BACA', 'BAJA', 'BALI', 'BANK', 'BAPA', 'BATA',
-	'BAYU', 'BBCA', 'BBDM', 'BBKP', 'BBLD', 'BBMD', 'BBRM', 'BBSI', 'BTEK', 'BTOCO',
-	'BTPN', 'BUKK', 'BULL', 'BVIC', 'BWPT', 'BYAN', 'CAKK', 'CAMP', 'CANI', 'CARE',
-	'CARS', 'CASA', 'CASS', 'CATO', 'CEKA', 'CENT', 'CFIN', 'CHIP', 'CINT', 'CISS',
-	'CLPI', 'CMNP', 'COCO', 'COWL', 'CPIN', 'CPRI', 'CPRO', 'CSAP', 'CSIS', 'CTBN',
-	'CTTH', 'DADA', 'DART', 'DEFI', 'DEPO', 'DFAM', 'DGIK', 'DGNS', 'DIGI', 'DIMA',
-	'DMND', 'DNAR', 'DNET', 'DOOH', 'DPNS', 'DPUM', 'DRMA', 'DSFI', 'DUTI', 'DVLA',
-	'DWGL', 'EAST', 'ECII', 'EDII', 'ELSA', 'ELTY', 'EMDE', 'ENRG', 'EPMT', 'ERAK',
-	'ERTX', 'ESIP', 'ESTA', 'ETWA', 'EURO', 'FAPA', 'FAST', 'FASW', 'FIRT', 'FISH',
-	'FITT', 'FLMC', 'FMII', 'FORU', 'FPNI', 'FPRN', 'GDST', 'GDYR', 'GEMA', 'GEMS',
-	'GREN', 'GSPT', 'GTBO', 'GWSA', 'GZCO', 'HADE', 'HAIS', 'HDFA', 'HDTX', 'HERO',
-	'HEXA', 'HITS', 'HKMU', 'HMSP', 'HOKI', 'HOME', 'HOTL', 'HRTA', 'IATA', 'IBFN',
-	'IBOS', 'IBST', 'ICBP', 'ICON', 'IDPR', 'IFII', 'IFSH', 'IGAR', 'IIKP', 'IKAI',
-	'IKBI', 'IMAS', 'IMJS', 'IMPC', 'INAF', 'INAI', 'INCF', 'INCI', 'INDO', 'INDR',
-	'INDS', 'INDY', 'INKP', 'INPP', 'INPC', 'INOV', 'INRU', 'IPCC', 'IPCM', 'IPOL',
-	'IPPE', 'IPTV', 'IRRA', 'ISSP', 'ITMA', 'ITMG', 'JARR', 'JAST', 'JASU', 'JECC',
-	'JGPA', 'JKON', 'JKSW', 'JMAS', 'JPFA', 'JSPT', 'JTPE', 'KAEF', 'KARW', 'KBAG',
-	'KBLI', 'KBLM', 'KBLV', 'KBRI', 'KDSI', 'KIAS', 'KICI', 'KIJA', 'KINR', 'KKGI',
-	'KLBF', 'KMDS', 'KMTR', 'KOIN', 'KOCI', 'KONI', 'KOPI', 'KREN', 'KROX', 'LPCK',
-	'LPGI', 'LPIN', 'LPKR', 'LPLI', 'LPOP', 'LSPT', 'LTLS', 'LUCK', 'MASA', 'MASB',
-	'MAYA', 'MBAP', 'MBSS', 'MBTO', 'MCOR', 'MDFC', 'MDIA', 'MDKA', 'MDRN', 'MEDC',
-	'MEGA', 'MERK', 'META', 'MFIN', 'MFMI', 'MGLV', 'MGNA', 'MICE', 'MIDI', 'MIKA',
-	'MINA', 'MIRE', 'MITS', 'MKNT', 'MKPI', 'MLBI', 'MLIA', 'MLND', 'MLPT', 'MMIX',
-	'MNAK', 'MNDO', 'MNCN', 'MPMX', 'MPPA', 'MRAT', 'MREI', 'MSIN', 'MSKY', 'MTDL',
-	'MTFN', 'MTLA', 'MTPS', 'MTRA', 'MTSM', 'MYOH', 'MYOR', 'MYTX', 'NANO', 'NASA',
-	'NASI', 'NCKL', 'NDKO', 'NELI', 'NELY', 'NETV', 'NFCX', 'NICE', 'NICK', 'NICL',
-	'NIKL', 'NINE', 'NISP', 'NOBU', 'NRCA', 'NTRD', 'OASA', 'OBMD', 'OCAP', 'OCMD',
-	'OILS', 'OKAS', 'OMRE', 'OPMS', 'PALM', 'PAMA', 'PAMG', 'PANI', 'PANR', 'PANS',
-	'PBID', 'PBRX', 'PBSA', 'PCAR', 'PDES', 'PEGE', 'PEHA', 'PGAS', 'PGJO', 'PGLI',
-	'PJAA', 'PKPK', 'PLIN', 'PLAS', 'PLND', 'PMMP', 'PNBN', 'PNBS', 'PNIN', 'PNLF',
-	'PNSE', 'POLY', 'POOL', 'PORT', 'POWR', 'PPGL', 'PPRE', 'PRDA', 'PRIM', 'PSAB',
-	'PSDN', 'PSGO', 'PSSI', 'PTBA', 'PTDU', 'PTIS', 'PTPP', 'PTRO', 'PTSN', 'PTPW',
-	'PWON', 'PYFA', 'PZZA', 'RBMS', 'RCCC', 'RDTX', 'RELI', 'RICY', 'RIGS', 'RISE',
-	'RMKE', 'ROCK', 'RODA', 'RONY', 'ROTI', 'SAFE', 'SAME', 'SAMF', 'SAPX', 'SBAT',
-	'SBMA', 'SCCO', 'SCMA', 'SCNP', 'SDRA', 'SDPC', 'SEMA', 'SFAN', 'SFXI', 'SGAR',
-	'SGLP', 'SHID', 'SIAP', 'SILO', 'SIMP', 'SINK', 'SIPD', 'SKBM', 'SKLT', 'SKRN',
-	'SLIS', 'SMAR', 'SMBR', 'SMCB', 'SMDM', 'SMDR', 'SMGR', 'SMKL', 'SMMA', 'SMRA',
-	'SMRU', 'SMSM', 'SNLK', 'SOFA', 'SONA', 'SOSI', 'SOTN', 'SPMA', 'SPTO', 'SQMI',
-	'SREI', 'SRIL', 'SRSN', 'SRTG', 'SSIA', 'SSMS', 'SSSI', 'SSTM', 'STAA', 'STAR',
-	'STTP', 'SUGI', 'SULI', 'SUPR', 'SURE', 'SWAT', 'TALF', 'TARA', 'TAXI', 'TBIG',
-	'TBLA', 'TCID', 'TCPI', 'TDPM', 'TEBE', 'TECH', 'TEBE', 'TELE', 'TFCO', 'TGRA',
-	'TIFA', 'TINC', 'TINS', 'TIPR', 'TIRA', 'TISC', 'TKIM', 'TLKM', 'TLDN', 'TMAN',
-	'TMAS', 'TMPO', 'TNCA', 'TOPS', 'TOTE', 'TOWR', 'TPIA', 'TPMA', 'TRAM', 'TRFA',
-	'TRIL', 'TRIM', 'TRIN', 'TRIO', 'TRIS', 'TRST', 'TRUE', 'TRUK', 'TSPC', 'TULT',
-	'TYRE', 'UANG', 'UCID', 'UECU', 'UIDA', 'ULTJ', 'UNIC', 'UNIT', 'UNTR', 'UNVR',
-	'URBN', 'USBP', 'VRNA', 'VTNY', 'WAIT', 'WALD', 'WEGE', 'WEHA', 'WICO', 'WIDI',
-	'WIFI', 'WIIM', 'WIMP', 'WINS', 'WITC', 'WMUU', 'WOOD', 'WOWS', 'WSBP', 'WSKT',
-	'WTON', 'YPAS', 'YULE', 'ZBRA', 'ZINC', 'ZONE', 'ZYRX'
-];
-const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
-
 // COOLDOWN LOGIC REFRESH PEER DATA (12 DETIK)
 function startPeerRefreshCooldown(seconds = 12) {
 	const btn = document.getElementById('btnRefreshPeer');
@@ -1058,8 +1047,8 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 					${data.volRatio}x Vol
 				</td>
 				<td class="p-3.5 text-center">
-					<button onclick="selectSuggestion('${data.ticker}')" class="text-[10px] bg-cyan-600 hover:bg-emerald-600 text-white hover:text-black px-3 py-1 rounded-lg transition border-cyan-700/30 font-bold">
-						Lihat Chart
+					<button onclick="selectSuggestion('${data.ticker}')" class="text-[10px] bg-cyan-600 hover:bg-emerald-600 text-white hover:text-white px-3 py-1 rounded-lg transition border-cyan-700/30 font-bold">
+						Lihat Chart »
 					</button>
 				</td>
 			</tr>
@@ -1182,15 +1171,11 @@ function renderJournalTable() {
 
 function autoFillRRRFromAI() {
 	if (globalStockData && globalStockData.price) {
-		// 1. Ambil harga dasar dari data global
 		const basePrice = globalStockData.price;
-
-		// 2. Hitung entry (96% dari harga dasar), SL (92%), dan TP (106%)
 		const entry = roundToBEITick(basePrice * 0.96, 'floor');
 		const sl = roundToBEITick(basePrice * 0.92, 'floor');
 		const tp = roundToBEITick(basePrice * 1.06, 'ceil');
 
-		// 3. Masukkan ke input form
 		document.getElementById('rrrEntry').value = entry;
 		document.getElementById('rrrSL').value = sl;
 		document.getElementById('rrrTP').value = tp;
@@ -1241,7 +1226,7 @@ function calculateSmartRRR() {
 
 	resEl.innerText = `1 : ${rrr}`;
 	maxRiskAmountEl.innerText = `Rp ${Math.round(maxRiskAmount).toLocaleString('id-ID')}`;
-	maxLotsEl.innerText = `${maxLots.toLocaleString('id-ID')} Lot`; //(${(maxLots * 100).toLocaleString('id-ID')} lembar)
+	maxLotsEl.innerText = `${maxLots.toLocaleString('id-ID')} Lot`; 
 	capitalNeededEl.innerText = `Rp ${Math.round(totalCapitalRequired).toLocaleString('id-ID')}`;
 	rewardEl.innerText = `Rp ${Math.round(totalRewardAmount).toLocaleString('id-ID')}`;
 
@@ -1541,27 +1526,29 @@ function requestNotificationPermission() {
 	});
 }
 
-// [REVISI NO 2]: Menyempurnakan fallback ServiceWorker untuk Notifikasi HP/Android 
+// -------------------------------------------------------------
+// [REVISI NO 2]: Menyempurnakan fallback ServiceWorker (Notifikasi Android/Mobile)
+// Memaksa pengiriman ke HP dengan ServiceWorker Registration yg valid
+// -------------------------------------------------------------
 function sendBrowserPushNotification(title, message) {
 	if ("Notification" in window && Notification.permission === "granted") {
-		try {
-			// Mencoba Notification API standar (Berfungsi sempurna untuk Desktop/Laptop)
-			const notif = new Notification(title, {
-				body: message,
-				icon: 'stockid_gambar/stockicon.jpg',
-				tag: 'stockid-alert-' + Date.now()
+		// Logika Utama: Pengguna Android mewajibkan eksistensi Service Worker untuk tampilkan Notif Push
+		if (navigator.serviceWorker) {
+			navigator.serviceWorker.ready.then(registration => {
+				registration.showNotification(title, {
+					body: message,
+					icon: 'stockid_gambar/stockicon.jpg',
+					vibrate: [200, 100, 200, 100, 200, 100, 200],
+					tag: 'stockid-alert-' + Date.now(),
+					requireInteraction: true
+				});
+			}).catch(() => {
+				// Fallback jika reg gagal tapi Notification API jalan (Cth: Desktop/Laptop)
+				new Notification(title, { body: message, icon: 'stockid_gambar/stockicon.jpg' });
 			});
-		} catch (e) {
-			// Menangkap error 'Illegal constructor' dari HP/Mobile Chrome yang mewajibkan Service Worker
-			if (navigator.serviceWorker) {
-				navigator.serviceWorker.ready.then(registration => {
-					registration.showNotification(title, {
-						body: message,
-						icon: 'stockid_gambar/stockicon.jpg',
-						tag: 'stockid-alert-' + Date.now()
-					});
-				}).catch(() => {});
-			}
+		} else {
+			// Fallback absolut
+			new Notification(title, { body: message, icon: 'stockid_gambar/stockicon.jpg' });
 		}
 	}
 }
@@ -1657,7 +1644,7 @@ function removePriceAlert(ticker, index) {
 	saveAlerts(ticker, alerts);
 }
 
-// [REVISI NO 2]: Memperbaiki Logika Threshold / Trigger Harga untuk SL & Entry
+// TRIGGER LOGIC REALTIME UNTUK SMART ALERT (Mempertimbangkan Arah Harga)
 function checkPriceAlertsRealtime(ticker, currentPrice) {
 	if (!currentPrice || currentPrice <= 0) return;
 
@@ -1670,13 +1657,13 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 		const labelText = typeof alertObj === 'object' && alertObj.label ? alertObj.label : 'Target';
 
 		if (isActive) {
-			// Logika pembeda: Jika target berupa SL/Support maka trigger aktif apabila harga <= target.
-			// Apabila TP/Resistance, trigger aktif apabila harga >= target.
+			// Jika target SL/Support (Batas bawah): trigger apabila harga LEBIH KECIL / SAMA DENGAN target
+			// Jika target TP/Resistance (Batas atas): trigger apabila harga LEBIH BESAR / SAMA DENGAN target
 			const isSupportOrSL = labelText.toLowerCase().includes('stop loss') || labelText.toLowerCase().includes('support') || labelText.toLowerCase().includes('entry');
 			const conditionMet = isSupportOrSL ? (currentPrice <= targetPrice) : (currentPrice >= targetPrice);
 
 			if (conditionMet) {
-				const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh ${labelText} Rp ${targetPrice.toLocaleString('id-ID')}`;
+				const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh area ${labelText} di Rp ${targetPrice.toLocaleString('id-ID')}`;
 				
 				AudioFX.playSuccess();
 				sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
@@ -1694,15 +1681,52 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 
 	if (updated) {
 		saveAlerts(ticker, alerts);
-		renderAlertList(ticker); // update UI panel agar label "AKTIF" menjadi "OFF"
+		renderAlertList(ticker);
 	}
 }
 
+// -------------------------------------------------------------
+// [REVISI NO 4]: Meragamkan Berita dan Korporasi Realtime (No Mock)
+// Menggunakan kombinasi API Yahoo Finance Search & Google News RSS
+// -------------------------------------------------------------
 async function fetchStockNews(ticker) {
 	const container = document.getElementById('newsContainer');
-	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3">Memuat berita terkini ${ticker}...</div>`;
-	
-	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
+	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-4"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i> Memuat variasi berita terkini (Yahoo & Google)...</div>`;
+	if (window.lucide) lucide.createIcons();
+
+	let hasNews = false;
+	container.innerHTML = '';
+
+	// 1. Coba Menggunakan API Pencarian Yahoo Finance Realtime terlebih dahulu
+	try {
+		const yahooUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${ticker}.JK&newsCount=6`;
+		const response = await fetch(yahooUrl);
+		const data = await response.json();
+
+		if (data.news && data.news.length > 0) {
+			data.news.forEach(item => {
+				const date = item.providerPublishTime 
+					? new Date(item.providerPublishTime * 1000).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) 
+					: 'Berita Realtime';
+
+				container.innerHTML += `
+					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
+						<div class="flex items-center gap-1.5 mb-2">
+							<span class="text-[9px] lg:text-[10px] bg-blue-500/20 text-blue-400 font-bold px-2 py-0.5 rounded border border-blue-500/30">${item.publisher}</span>
+							<span class="text-[10px] lg:text-xs text-white">${date}</span>
+						</div>
+						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
+					</a>
+				`;
+			});
+			hasNews = true;
+		}
+	} catch (e) {
+		console.warn("Yahoo News fetch failed:", e);
+	}
+
+	// 2. Fallback / Tambahan menggunakan Google RSS
+	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+OR+bursa+indonesia+OR+ekonomi&hl=id&gl=ID&ceid=ID:id`;
 	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 
 	try {
@@ -1710,28 +1734,31 @@ async function fetchStockNews(ticker) {
 		const data = await response.json();
 
 		if (data.status === 'ok' && data.items && data.items.length > 0) {
-			container.innerHTML = '';
-			data.items.slice(0, 9).forEach(item => {
+			data.items.slice(0, 4).forEach(item => {
 				const date = new Date(item.pubDate).toLocaleDateString('id-ID', {
 					day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
 				});
 
 				container.innerHTML += `
 					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
-						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
-						<div class="flex justify-between items-center mt-2 text-[10px] lg:text-xs text-white">
-							<span>${item.author || 'Google News'}</span>
-							<span>${date}</span>
+						<div class="flex items-center gap-1.5 mb-2">
+							<span class="text-[9px] lg:text-[10px] bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded border border-emerald-500/30">${item.source?.title || 'Google News'}</span>
+							<span class="text-[10px] lg:text-xs text-white">${date}</span>
 						</div>
+						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
 					</a>
 				`;
 			});
-			AudioFX.playSuccess();
-		} else {
-			container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-3">Tidak ada berita khusus ditemukan untuk ${ticker}.</div>`;
+			hasNews = true;
 		}
 	} catch (e) {
-		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-3">Berita tidak dapat dijangkau sementara.</div>`;
+		console.warn("Google News fetch failed:", e);
+	}
+
+	if (hasNews) {
+		AudioFX.playSuccess();
+	} else {
+		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-4">Tidak ada berita khusus ditemukan untuk ${ticker} hari ini.</div>`;
 	}
 }
 
@@ -1739,7 +1766,8 @@ async function fetchCorporateAction(ticker) {
 	const container = document.getElementById('corporateContainer');
 	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3">Memuat aksi korporasi ${ticker}...</div>`;
 	
-	const query = encodeURIComponent(`${ticker} (dividen OR RUPS OR "right issue" OR "stock split" OR buyback)`);
+	// Query RSS diperluas jangkauan dan variasinya
+	const query = encodeURIComponent(`${ticker} AND (dividen OR RUPS OR "right issue" OR "stock split" OR buyback OR tender OR IPO)`);
 	const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=id&gl=ID&ceid=ID:id`;
 	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 
