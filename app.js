@@ -595,29 +595,6 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	return freshData;
 }
 
-// -------------------------------------------------------------
-// [REVISI NO 1]: Async Fetcher untuk Data Bursa Khusus 
-// Mengambil data real-time Frekuensi dan Foreign Net via Proxy
-// -------------------------------------------------------------
-async function fetchIDXExtraData(ticker) {
-	try {
-		const url = `https://api.allorigins.win/get?url=${encodeURIComponent('https://www.idx.co.id/primary/TradingSummary/GetStockSummary?length=1&start=0&code=' + ticker)}`;
-		const res = await fetch(url);
-		const wrap = await res.json();
-		const json = JSON.parse(wrap.contents);
-
-		if (json && json.data && json.data.length > 0) {
-			return {
-				freq: json.data[0].Frequency,
-				foreignNet: json.data[0].ForeignNet
-			};
-		}
-	} catch(e) {
-		console.warn("Gagal mengekstraksi data proxy IDX:", e);
-	}
-	return { freq: null, foreignNet: null };
-}
-
 function showAISkeletonLoading() {
 	document.getElementById('aiVerdikText').innerHTML = `<span class="inline-block w-32 h-5 skeleton rounded"></span>`;
 	document.getElementById('aiScoreBadge').innerHTML = `<span class="inline-block w-12 h-4 skeleton rounded"></span>`;
@@ -753,7 +730,6 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-500">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-500">(Support Kuat 20 Hari)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-500">(Resistance Tertinggi 20 Hari)</strong>. Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksekusi *Trading Plan*.</p>
 		`;
 
-		const idSuffix = Date.now();
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Harga: <strong class="text-sky-500 font-mono font-bold">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
@@ -776,33 +752,10 @@ function renderAISignalUI(ticker, stockData, isCached) {
 				<span class="font-mono text-emerald-500 font-bold">Rp ${(stockData.currentValuation || 0).toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Total Frekuensi (1D):</span>
-				<span class="font-mono text-cyan-400 font-bold" id="aiFreq_${idSuffix}"><i class="fa-solid fa-circle-notch fa-spin"></i> Menunggu bursa...</span>
-			</li>
-			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Foreign Net Buy/Sell (1D):</span>
-				<span class="font-mono font-bold" id="aiForeignNet_${idSuffix}"><i class="fa-solid fa-circle-notch fa-spin"></i> Menunggu bursa...</span>
+				<span>• Terendah 20 Hari / Rentang Tertinggi:</span>
+				<span class="font-mono text-amber-400 font-bold">Rp ${stockData.low20.toLocaleString('id-ID')} / Rp ${stockData.high20.toLocaleString('id-ID')}</span>
 			</li>
 		`;
-
-		// Memicu pencarian Real Time Proxy untuk Frekuensi & Foreign Net
-		fetchIDXExtraData(ticker).then(extra => {
-			const freqEl = document.getElementById(`aiFreq_${idSuffix}`);
-			const foreignEl = document.getElementById(`aiForeignNet_${idSuffix}`);
-
-			if (freqEl) {
-				freqEl.innerHTML = extra.freq ? `${extra.freq.toLocaleString('id-ID')} Kali` : '<span class="text-slate-400">Tertunda</span>';
-			}
-			if (foreignEl) {
-				if (extra.foreignNet !== null && extra.foreignNet !== undefined) {
-					const isNetBuy = extra.foreignNet > 0;
-					foreignEl.className = `font-mono font-bold ${isNetBuy ? 'text-emerald-400' : 'text-rose-400'}`;
-					foreignEl.innerHTML = `Rp ${extra.foreignNet.toLocaleString('id-ID')}`;
-				} else {
-					foreignEl.innerHTML = '<span class="text-slate-400">Tertunda</span>';
-				}
-			}
-		});
 
 	} else {
 		verdikEl.innerText = "NETRAL-SELEKTIF";
@@ -1687,7 +1640,7 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 
 // -------------------------------------------------------------
 // [REVISI NO 4]: Meragamkan Berita dan Korporasi Realtime (No Mock)
-// Menggunakan kombinasi API Yahoo Finance Search & Google News RSS
+// Menggunakan kombinasi API Yahoo Finance Search & Google News RSS (Hingga 9 Item)
 // -------------------------------------------------------------
 async function fetchStockNews(ticker) {
 	const container = document.getElementById('newsContainer');
@@ -1697,14 +1650,14 @@ async function fetchStockNews(ticker) {
 	let hasNews = false;
 	container.innerHTML = '';
 
-	// 1. Coba Menggunakan API Pencarian Yahoo Finance Realtime terlebih dahulu
+	// 1. Coba Menggunakan API Pencarian Yahoo Finance Realtime terlebih dahulu (Hingga 9 Item)
 	try {
-		const yahooUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${ticker}.JK&newsCount=6`;
+		const yahooUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${ticker}.JK&newsCount=9`;
 		const response = await fetch(yahooUrl);
 		const data = await response.json();
 
 		if (data.news && data.news.length > 0) {
-			data.news.forEach(item => {
+			data.news.slice(0, 9).forEach(item => {
 				const date = item.providerPublishTime 
 					? new Date(item.providerPublishTime * 1000).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) 
 					: 'Berita Realtime';
@@ -1725,7 +1678,7 @@ async function fetchStockNews(ticker) {
 		console.warn("Yahoo News fetch failed:", e);
 	}
 
-	// 2. Fallback / Tambahan menggunakan Google RSS
+	// 2. Fallback / Tambahan menggunakan Google RSS (Hingga 9 Item)
 	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+OR+bursa+indonesia+OR+ekonomi&hl=id&gl=ID&ceid=ID:id`;
 	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 
@@ -1734,7 +1687,7 @@ async function fetchStockNews(ticker) {
 		const data = await response.json();
 
 		if (data.status === 'ok' && data.items && data.items.length > 0) {
-			data.items.slice(0, 4).forEach(item => {
+			data.items.slice(0, 9).forEach(item => {
 				const date = new Date(item.pubDate).toLocaleDateString('id-ID', {
 					day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
 				});
