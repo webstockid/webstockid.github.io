@@ -732,28 +732,28 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Harga: <strong class="text-sky-500 font-mono font-bold">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
+				<span>• Harga: <strong class="text-sky-500 font-mono font-bold">Rp${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
 				<span class="text-[10px] lg:text-[11px] text-white">${isCached ? 'Cache Instant' : 'Live Data'}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Total Valuasi:</span>
+				<span class="font-mono text-sky-500 font-bold">Rp ${(stockData.currentValuation || 0).toLocaleString('id-ID')}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Volume Transaksi:</span>
+				<span class="font-mono text-sky-500 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Posisi Tren MA5 / MA10 / MA20:</span>
 				<span class="font-mono text-sky-500 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Terendah 20 Hari / Rentang Tertinggi:</span>
+				<span class="font-mono text-sky-400 font-bold">Rp ${stockData.low20.toLocaleString('id-ID')} / Rp ${stockData.high20.toLocaleString('id-ID')}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Rasio Volume vs Rerata Harian:</span>
 				<span class="font-bold font-mono ${isVolSpike ? 'text-emerald-500' : 'text-amber-500'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
-			</li>
-			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Volume Transaksi:</span>
-				<span class="font-mono text-emerald-500 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
-			</li>
-			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Total Valuasi:</span>
-				<span class="font-mono text-emerald-500 font-bold">Rp ${(stockData.currentValuation || 0).toLocaleString('id-ID')}</span>
-			</li>
-			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Terendah 20 Hari / Rentang Tertinggi:</span>
-				<span class="font-mono text-amber-400 font-bold">Rp ${stockData.low20.toLocaleString('id-ID')} / Rp ${stockData.high20.toLocaleString('id-ID')}</span>
 			</li>
 		`;
 
@@ -1331,7 +1331,7 @@ function renderRadarItems(dataList) {
 			statusSignal = "🚀 Golden Cross Setup";
 			statusClass = "text-sky-400 border-sky-500/30 bg-sky-500/10";
 			alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah (*reversal*) awal berpotensi terbentuk.`;
-		} else if (item.volRatio >= 1.3) {
+		} else if (item.volRatio >= 1.5) {
 			statusSignal = "⚡ Volume Accumulation";
 			statusClass = "text-cyan-400 border-cyan-500/30 bg-cyan-500/10";
 			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata 10 hari</strong>. Mengindikasikan partisipasi modal besar (*smart money*) di pasar.`;
