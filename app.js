@@ -596,13 +596,20 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 }
 
 // -------------------------------------------------------------
-// [REVISI NO 1]: Async Fetcher untuk Data Bursa Khusus 
-// Mengambil data real-time Frekuensi dan Foreign Net via Proxy
+// [REVISI NO 1]: Async Fetcher dengan sistem Timeout Anti-Hanging
 // -------------------------------------------------------------
 async function fetchIDXExtraData(ticker) {
+	// Pasang batas waktu 5 detik. Jika IDX tidak merespons, batalkan request.
+	const controller = new AbortController();
+	const timeoutId = setTimeout(() => controller.abort(), 5000);
+
 	try {
-		const url = `https://api.allorigins.win/get?url=${encodeURIComponent('https://www.idx.co.id/primary/TradingSummary/GetStockSummary?length=1&start=0&code=' + ticker)}`;
-		const res = await fetch(url);
+		const targetUrl = encodeURIComponent('https://www.idx.co.id/primary/TradingSummary/GetStockSummary?length=1&start=0&code=' + ticker);
+		const proxyUrl = `https://api.allorigins.win/get?url=${targetUrl}`;
+
+		const res = await fetch(proxyUrl, { signal: controller.signal });
+		clearTimeout(timeoutId);
+
 		const wrap = await res.json();
 		const json = JSON.parse(wrap.contents);
 
@@ -613,7 +620,7 @@ async function fetchIDXExtraData(ticker) {
 			};
 		}
 	} catch(e) {
-		console.warn("Gagal mengekstraksi data proxy IDX:", e);
+		console.warn("Data IDX tertunda (Terblokir Cloudflare / Timeout):", e.message);
 	}
 	return { freq: null, foreignNet: null };
 }
@@ -753,7 +760,6 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-500">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-500">(Support Kuat 20 Hari)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-500">(Resistance Tertinggi 20 Hari)</strong>. Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksekusi *Trading Plan*.</p>
 		`;
 
-		const idSuffix = Date.now();
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Harga: <strong class="text-sky-500 font-mono font-bold">Rp ${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
@@ -777,29 +783,29 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Total Frekuensi (1D):</span>
-				<span class="font-mono text-cyan-400 font-bold" id="aiFreq_${idSuffix}"><i class="fa-solid fa-circle-notch fa-spin"></i> Menunggu bursa...</span>
+				<span class="font-mono text-cyan-400 font-bold" id="aiFreq"><i class="fa-solid fa-circle-notch fa-spin"></i> Menunggu bursa...</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Foreign Net Buy/Sell (1D):</span>
-				<span class="font-mono font-bold" id="aiForeignNet_${idSuffix}"><i class="fa-solid fa-circle-notch fa-spin"></i> Menunggu bursa...</span>
+				<span class="font-mono font-bold" id="aiForeignNet"><i class="fa-solid fa-circle-notch fa-spin"></i> Menunggu bursa...</span>
 			</li>
 		`;
 
-		// Memicu pencarian Real Time Proxy untuk Frekuensi & Foreign Net
+		// Memicu pencarian Real Time Proxy untuk Frekuensi & Foreign Net (ID Statis)
 		fetchIDXExtraData(ticker).then(extra => {
-			const freqEl = document.getElementById(`aiFreq_${idSuffix}`);
-			const foreignEl = document.getElementById(`aiForeignNet_${idSuffix}`);
+			const freqEl = document.getElementById('aiFreq');
+			const foreignEl = document.getElementById('aiForeignNet');
 
 			if (freqEl) {
-				freqEl.innerHTML = extra.freq ? `${extra.freq.toLocaleString('id-ID')} Kali` : '<span class="text-slate-400">Tertunda</span>';
+				freqEl.innerHTML = extra.freq !== null ? `${extra.freq.toLocaleString('id-ID')} Kali` : '<span class="text-slate-400">Tertunda (Proteksi IDX)</span>';
 			}
 			if (foreignEl) {
-				if (extra.foreignNet !== null && extra.foreignNet !== undefined) {
+				if (extra.foreignNet !== null) {
 					const isNetBuy = extra.foreignNet > 0;
 					foreignEl.className = `font-mono font-bold ${isNetBuy ? 'text-emerald-400' : 'text-rose-400'}`;
 					foreignEl.innerHTML = `Rp ${extra.foreignNet.toLocaleString('id-ID')}`;
 				} else {
-					foreignEl.innerHTML = '<span class="text-slate-400">Tertunda</span>';
+					foreignEl.innerHTML = '<span class="text-slate-400">Tertunda (Proteksi IDX)</span>';
 				}
 			}
 		});
