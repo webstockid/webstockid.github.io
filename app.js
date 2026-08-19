@@ -182,7 +182,7 @@ function closeWelcomeModal(dontShowAgain) {
 // ==================== DATABASE TOKEN VIP ====================
 const databaseVIP = {
 	"1": { "tanggalExpired": "2040-07-25" },
-	"000": { "tanggalExpired": "2026-08-15" },
+	"000": { "tanggalExpired": "2026-08-24" },
 	"IRAM7363": { "tanggalExpired": "2026-10-24" },
 	"ANDI2636": { "tanggalExpired": "2026-09-18" },
 	"DHIO2838": { "tanggalExpired": "2026-08-25" },
@@ -429,12 +429,12 @@ function renderFundamentalWidget(ticker) {
 	const container = document.getElementById('tv_fundamental_container');
 	container.innerHTML = `
 		<div class="space-y-4">
+			<!-- Laporan Keuangan Detail -->
+			<div id="tv_financials_widget" class="w-full h-[540px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
 			<!-- Profil Perusahaan -->
 			<div id="tv_profile_widget" class="w-full h-[400px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
 			<!-- Fundamental Data (Key Stats & Valuasi Lengkap) -->
 			<div id="tv_fundamental_data_widget" class="w-full h-[500px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
-			<!-- Laporan Keuangan Detail -->
-			<div id="tv_financials_widget" class="w-full h-[540px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
 		</div>
 	`;
 
@@ -860,6 +860,7 @@ function exportTradingCard() {
 	const sl = roundToBEITick(price * 0.92, 'floor');
 	const tp2 = roundToBEITick(price * 1.14, 'ceil');
 	const sup1 = roundToBEITick(price * 0.94, 'floor');
+	const sup2 = roundToBEITick(price * 0.96, 'floor');
 	const res1 = roundToBEITick(price * 1.05, 'ceil');
 
 	const now = new Date();
@@ -868,7 +869,7 @@ function exportTradingCard() {
 	document.getElementById('cardDateStr').innerText = dateStr;
 	document.getElementById('cardTicker').innerText = `$${currentTicker}`;
 	document.getElementById('cardPrice').innerText = `Rp ${price.toLocaleString('id-ID')}`;
-	document.getElementById('cardEntry').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${price.toLocaleString('id-ID')}`;
+	document.getElementById('cardEntry').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('cardSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
 	document.getElementById('cardTP2').innerText = `Rp ${tp2.toLocaleString('id-ID')}`;
 	document.getElementById('cardRES1').innerText = `Rp ${res1.toLocaleString('id-ID')}`;
