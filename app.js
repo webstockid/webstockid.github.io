@@ -876,6 +876,7 @@ function exportTradingCard() {
 	document.getElementById('cardVolRatio').innerText = `${globalStockData.volRatio || '1.0'}x`;
 	document.getElementById('cardMA5').innerText = `Rp ${(globalStockData.ma5 || price).toLocaleString('id-ID')}`;
 	document.getElementById('cardMA10').innerText = `Rp ${(globalStockData.ma10 || price).toLocaleString('id-ID')}`;
+	// document.getElementById('cardTeknikal').innerText = `Rp ${(globalStockData.ma10 || price).toLocaleString('id-ID')}`;
 
 	const cardContainer = document.getElementById('exportCardContainer');
 
@@ -1841,7 +1842,7 @@ function searchStock(bypassCooldown = false) {
 		fetchCorporateAction(currentTicker);
 
 		if (!bypassCooldown) {
-			startSearchCooldown(7);
+			startSearchCooldown(5);
 		}
 	}
 }
