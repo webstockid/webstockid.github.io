@@ -396,6 +396,12 @@
 					<button onclick="switchTab('journal')" id="tabBtn-journal" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i> Journal Trading
 					</button>
+					<button onclick="switchTab('matrix')" id="tabBtn-matrix" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="layout-grid" class="w-4 h-4 text-amber-400"></i> Multi-TF Matrix
+					</button>
+					<button onclick="switchTab('heatmap')" id="tabBtn-heatmap" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="globe-2" class="w-4 h-4 text-emerald-400"></i> Sektor Heatmap
+					</button>
 				</div>
 
 				<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME -->
@@ -853,6 +859,38 @@
 					</div>
 					<div class="border-t border-slate-800 pt-2.5 text-right">
 						<a href="https://www.idx.co.id/id/perusahaan-tercatat/aksi-korporasi" target="_blank" class="text-[11px] lg:text-xs text-cyan-400 hover:underline">Lihat Pengumuman Resmi BEI &rarr;</a>
+					</div>
+				</div>
+				
+				<!-- TAB CONTENT 10: MULTI-TIMEFRAME TECHNICAL MATRIX -->
+				<div id="tabContent-matrix" class="hidden min-h-[400px] space-y-4 text-xs lg:text-sm">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
+						<div>
+							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
+								<i data-lucide="layout-grid" class="w-4 h-4 text-amber-400"></i> Matriks Teknikal Multi-Timeframe (<strong id="matrixTickerLabel" class="text-amber-400">MDIA</strong>)
+							</span>
+							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Analisis ringkas tren emiten lintas berbagai kerangka waktu (15 Menit hingga 1 Hari) secara real-time.</p>
+						</div>
+					</div>
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="matrixWidgetsGrid">
+						<!-- Diisi otomatis via JavaScript -->
+					</div>
+				</div>
+
+				<!-- TAB CONTENT 11: IDX SECTOR HEATMAP -->
+				<div id="tabContent-heatmap" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
+						<div>
+							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
+								<i data-lucide="globe-2" class="w-4 h-4 text-emerald-400"></i> Peta Panas Sektor & Saham BEI (IDX Heatmap)
+							</span>
+							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Memantau aliran kapital dan performa sektoral Bursa Efek Indonesia secara visual interaktif.</p>
+						</div>
+					</div>
+					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 h-[600px] overflow-hidden">
+						<div class="tradingview-widget-container h-full w-full" id="tv_heatmap_container">
+							<!-- Widget Heatmap TradingView di-load via JS -->
+						</div>
 					</div>
 				</div>
 

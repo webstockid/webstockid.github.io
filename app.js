@@ -1918,7 +1918,7 @@ async function fetchCorporateAction(ticker) {
 }
 
 function switchTab(tabName) {
-	const tabs = ['ai','bigmoney','peer','news','fundamental','rrr','journal','alert','corporate'];
+	const tabs = ['ai','bigmoney','peer','news','fundamental','rrr','journal','alert','corporate','matrix','heatmap'];
 	tabs.forEach(tab => {
 		const btn = document.getElementById(`tabBtn-${tab}`);
 		const content = document.getElementById(`tabContent-${tab}`);
@@ -1934,6 +1934,8 @@ function switchTab(tabName) {
 
 	if (tabName === 'journal') renderJournalTable();
 	if (tabName === 'alert') renderAllAlerts();
+	if (tabName === 'matrix') renderMultiTimeframeMatrix(currentTicker);
+	if (tabName === 'heatmap') renderSectorHeatmap();
 }
 
 function shareStockUrl() {
@@ -1994,6 +1996,7 @@ function searchStock(bypassCooldown = false) {
 		document.getElementById('alertTickerLabel').innerText = currentTicker;
 		document.getElementById('corpTickerLabel').innerText = currentTicker;
 		document.getElementById('peerTickerLabel').innerText = currentTicker;
+		document.getElementById('matrixTickerLabel').innerText = currentTicker;
 		
 		renderChart(currentTicker);
 		renderTechnicalGauge(currentTicker);
@@ -2245,40 +2248,6 @@ function closeLossCelebration() {
 	}
 }
 
-// ==================== RUNNING TAPE REAL-TIME DENGAN LIVE FETCH & KLIK ====================
-async function initRunningTape() {
-	const tapeContainer = document.getElementById('runningTapeContainer');
-	if (!tapeContainer) return;
-
-	const popularTickers = ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'BRPT', 'TPIA', 'PGUN', 'JARR', 'ANTM', 'PANI', 'MDIA'];
-	
-	// Tampilkan teks loading sebentar saat mengambil data live bursa
-	tapeContainer.innerHTML = `<span class="text-emerald-400 px-3">⚡ Menarik data real-time bursa untuk Running Tape...</span>`;
-
-	// Ambil data seluruh emiten secara paralel agar prosesnya sangat cepat
-	const results = await Promise.all(popularTickers.map(ticker => fetchRealtimeStockData(ticker)));
-	
-	let tapeHTML = '';
-	results.forEach((data, index) => {
-		const ticker = popularTickers[index];
-		// Menggunakan data real-time jika berhasil ditarik, fallback ke cache/default jika gagal
-		const price = data && data.price ? roundToBEITick(data.price) : 1000;
-		const changePct = data && data.changePct !== undefined ? data.changePct : 0.0;
-		const isPlus = changePct >= 0;
-
-		tapeHTML += `
-			<div onclick="selectSuggestion('${ticker}')" class="flex items-center gap-2 bg-slate-900/90 px-3.5 py-1 rounded-md border border-slate-800 shrink-0 cursor-pointer hover:border-emerald-500/50 hover:bg-slate-800 transition" title="Klik untuk lihat analisa $${ticker}">
-				<span class="font-bold text-amber-400">&dollar;${ticker}</span>
-				<span class="text-white font-mono">Rp ${price.toLocaleString('id-ID')}</span>
-				<span class="${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">${isPlus ? '+' : ''}${changePct}%</span>
-			</div>
-		`;
-	});
-
-	// Duplikasi HTML untuk menghasilkan efek pergerakan infinite loop yang mulus tanpa jeda
-	tapeContainer.innerHTML = tapeHTML + tapeHTML;
-}
-
 // ==================== FITUR BARU: EXPORT JOURNAL TO CSV ====================
 function exportJournalToCSV() {
 	const journal = getJournalData();
@@ -2399,6 +2368,78 @@ function renderKanbanBoard() {
 	document.getElementById('kanbanCountLoss').innerText = countLoss;
 }
 
+// ==================== FITUR 1: MULTI-TIMEFRAME TECHNICAL MATRIX ====================
+function renderMultiTimeframeMatrix(ticker) {
+	const grid = document.getElementById('matrixWidgetsGrid');
+	const label = document.getElementById('matrixTickerLabel');
+	if (label) label.innerText = ticker;
+	if (!grid) return;
+
+	grid.innerHTML = '';
+	const timeframes = [
+		{ title: '15 Menit (Short Scalping)', interval: '15m' },
+		{ title: '1 Jam (Intraday Trend)', interval: '1h' },
+		{ title: '4 Jam (Swing Momentum)', interval: '240' },
+		{ title: '1 Hari (Daily Position)', interval: '1D' }
+	];
+
+	timeframes.forEach((tf, index) => {
+		const wrapper = document.createElement('div');
+		wrapper.className = "bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2";
+		wrapper.innerHTML = `
+			<div class="flex items-center justify-between pb-2 border-b border-slate-900">
+				<span class="text-xs font-bold text-slate-200">${tf.title}</span>
+				<span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-cyan-400 font-mono">${tf.interval}</span>
+			</div>
+			<div class="tradingview-widget-container" id="matrix_widget_${index}"></div>
+		`;
+		grid.appendChild(wrapper);
+
+		const container = document.getElementById(`matrix_widget_${index}`);
+		const script = document.createElement('script');
+		script.type = 'text/javascript';
+		script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
+		script.async = true;
+		script.text = JSON.stringify({
+			"interval": tf.interval,
+			"width": "100%",
+			"isTransparent": true,
+			"height": "280",
+			"symbol": `IDX:${ticker}`,
+			"showIntervalTabs": false,
+			"displayMode": "single",
+			"locale": "id",
+			"colorTheme": "dark"
+		});
+		container.appendChild(script);
+	});
+}
+
+// ==================== FITUR 2: IDX SECTOR HEATMAP ====================
+let isHeatmapLoaded = false;
+function renderSectorHeatmap() {
+	const container = document.getElementById('tv_heatmap_container');
+	if (!container || isHeatmapLoaded) return;
+
+	container.innerHTML = '';
+	const script = document.createElement('script');
+	script.type = 'text/javascript';
+	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js';
+	script.async = true;
+	script.text = JSON.stringify({
+		"exchanges": ["IDX"],
+		"dataSource": "IDX",
+		"grouping": "sector",
+		"width": "100%",
+		"height": "100%",
+		"colorTheme": "dark",
+		"locale": "id",
+		"showSymbolLogo": true
+	});
+	container.appendChild(script);
+	isHeatmapLoaded = true;
+}
+
 // INITIALIZATION ON LOAD
 initSearchSuggestions();
 checkVIPAuth();
@@ -2406,7 +2447,6 @@ cleanExpiredCache();
 updateMarketBadge();
 checkUrlParamTicker();
 checkNotificationStatus();
-initRunningTape();
 
 document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
