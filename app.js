@@ -877,7 +877,6 @@ function exportTradingCard() {
 	document.getElementById('cardVolRatio').innerText = `${globalStockData.volRatio || '1.0'}x`;
 	document.getElementById('cardMA5').innerText = `Rp ${(globalStockData.ma5 || price).toLocaleString('id-ID')}`;
 	document.getElementById('cardMA10').innerText = `Rp ${(globalStockData.ma10 || price).toLocaleString('id-ID')}`;
-	// document.getElementById('cardTeknikal').innerText = `Rp ${(globalStockData.ma10 || price).toLocaleString('id-ID')}`;
 
 	const cardContainer = document.getElementById('exportCardContainer');
 
@@ -1515,6 +1514,7 @@ function getAlerts(ticker) {
 function saveAlerts(ticker, alerts) {
 	localStorage.setItem(`alerts_${ticker}`, JSON.stringify(alerts));
 	renderAlertList(ticker);
+	renderGlobalAlertHistory(); // Tambahan pembaruan ke fitur riwayat global
 }
 
 function renderAlertList(ticker) {
@@ -1597,6 +1597,89 @@ function removePriceAlert(ticker, index) {
 	let alerts = getAlerts(ticker);
 	alerts.splice(index, 1);
 	saveAlerts(ticker, alerts);
+}
+
+// -------------------------------------------------------------
+// FITUR BARU: GLOBAL ALERT HISTORY MANAGER
+// -------------------------------------------------------------
+function renderGlobalAlertHistory() {
+	const container = document.getElementById('globalAlertHistoryContainer');
+	if (!container) return;
+
+	let allAlerts = [];
+	for (let i = 0; i < localStorage.length; i++) {
+		const key = localStorage.key(i);
+		if (key && key.startsWith('alerts_')) {
+			const ticker = key.replace('alerts_', '');
+			try {
+				const alerts = JSON.parse(localStorage.getItem(key));
+				alerts.forEach((alertObj, index) => {
+					allAlerts.push({ ticker, index, data: alertObj });
+				});
+			} catch(e) {}
+		}
+	}
+
+	if (allAlerts.length === 0) {
+		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs font-sans">Tidak ada riwayat alert pada saham manapun.</div>`;
+		return;
+	}
+
+	allAlerts.sort((a, b) => {
+		const aActive = typeof a.data === 'object' ? a.data.active && !a.data.triggered : true;
+		const bActive = typeof b.data === 'object' ? b.data.active && !b.data.triggered : true;
+		return (aActive === bActive) ? 0 : aActive ? -1 : 1;
+	});
+
+	let htmlContent = '';
+	allAlerts.forEach(item => {
+		const isCustomObj = typeof item.data === 'object';
+		const targetPrice = isCustomObj ? item.data.price : item.data;
+		const isActive = isCustomObj ? item.data.active : true;
+		const isTriggered = isCustomObj ? item.data.triggered : false;
+		const labelText = isCustomObj && item.data.label ? item.data.label : 'Target Price';
+
+		let statusBadge = '';
+		let borderClass = 'border-slate-800';
+		
+		if (isTriggered) {
+			statusBadge = '<span class="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-2 py-0.5 rounded text-[9px] font-bold border">TERCAPAI</span>';
+			borderClass = 'border-l-4 border-l-emerald-500';
+		} else if (isActive) {
+			statusBadge = '<span class="bg-amber-500/20 text-amber-400 border-amber-500/30 px-2 py-0.5 rounded text-[9px] font-bold border animate-pulse">MENUNGGU</span>';
+			borderClass = 'border-l-4 border-l-amber-500';
+		} else {
+			statusBadge = '<span class="bg-slate-800 text-slate-400 border-slate-700 px-2 py-0.5 rounded text-[9px] font-bold border">NONAKTIF</span>';
+			borderClass = 'opacity-60 border-l-4 border-l-slate-700';
+		}
+
+		htmlContent += `
+			<div class="bg-slate-950 p-3 rounded-xl border ${borderClass} flex flex-col gap-2">
+				<div class="flex justify-between items-start">
+					<div>
+						<span class="font-bold text-white text-sm block tracking-wide">\$${item.ticker}</span>
+						<span class="text-[9px] text-slate-400 uppercase">${labelText}</span>
+					</div>
+					${statusBadge}
+				</div>
+				<div class="flex justify-between items-center mt-1 pt-2 border-t border-slate-800/80">
+					<span class="font-mono text-cyan-400 font-bold text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</span>
+					<button onclick="removeGlobalAlert('${item.ticker}', ${item.index})" class="text-[10px] text-slate-400 hover:text-rose-400 transition font-bold bg-rose-500/10 hover:bg-rose-500/20 px-2 py-1 rounded" title="Hapus">Hapus</button>
+				</div>
+			</div>
+		`;
+	});
+
+	container.innerHTML = htmlContent;
+	if (window.lucide) lucide.createIcons();
+}
+
+function removeGlobalAlert(ticker, index) {
+	let alerts = getAlerts(ticker);
+	alerts.splice(index, 1);
+	saveAlerts(ticker, alerts);
+	if (ticker === currentTicker) renderAlertList(ticker);
+	renderGlobalAlertHistory();
 }
 
 // TRIGGER LOGIC REALTIME UNTUK SMART ALERT (Mempertimbangkan Arah Harga)
@@ -1772,7 +1855,10 @@ function switchTab(tabName) {
 	});
 
 	if (tabName === 'journal') renderJournalTable();
-	if (tabName === 'alert') renderAlertList(currentTicker);
+	if (tabName === 'alert') {
+		renderAlertList(currentTicker);
+		renderGlobalAlertHistory();
+	}
 }
 
 function shareStockUrl() {
@@ -1858,15 +1944,37 @@ function startBackgroundAutoCache() {
 			checkPriceAlertsRealtime(currentTicker, currentData.price);
 		}
 
+		// REVISI FITUR: Kumpulkan semua emiten yang memiliki alert aktif dari localStorage untuk selalu diperiksa
+		let activeAlertTickers = new Set();
+		for (let i = 0; i < localStorage.length; i++) {
+			const key = localStorage.key(i);
+			if (key && key.startsWith('alerts_')) {
+				const ticker = key.replace('alerts_', '');
+				try {
+					const alerts = JSON.parse(localStorage.getItem(key));
+					const hasActive = alerts.some(a => typeof a === 'object' ? a.active && !a.triggered : true);
+					if (hasActive && ticker !== currentTicker) {
+						activeAlertTickers.add(ticker);
+					}
+				} catch(e) {}
+			}
+		}
+
+		// Tambahkan juga saham populer ke dalam antrean (Opsional tetapi disarankan untuk cache)
 		const popularTickers = ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'CUAN', 'ANTM', 'PANI'];
 		for (const ticker of popularTickers) {
 			if (ticker !== currentTicker) {
-				const bgData = await fetchRealtimeStockData(ticker, true);
-				if (bgData) {
-					checkPriceAlertsRealtime(ticker, bgData.price);
-				}
-				await sleep(200);
+				activeAlertTickers.add(ticker);
 			}
+		}
+
+		// Eksekusi penarikan data secara beruntun agar API tidak terbebani, lalu cek status alert
+		for (const ticker of activeAlertTickers) {
+			const bgData = await fetchRealtimeStockData(ticker, true);
+			if (bgData) {
+				checkPriceAlertsRealtime(ticker, bgData.price);
+			}
+			await sleep(200);
 		}
 	};
 
@@ -1905,3 +2013,4 @@ fetchCorporateAction(currentTicker);
 renderJournalTable();
 checkWelcomeModal();
 startBackgroundAutoCache();
+renderGlobalAlertHistory();
