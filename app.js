@@ -421,10 +421,6 @@ function renderTechnicalGauge(ticker) {
 	container.appendChild(script);
 }
 
-// -------------------------------------------------------------
-// [REVISI NO 3]: Menggabungkan Profile, Fundamental Data (Market Cap/Valuation)
-// dan Financials agar sangat informatif
-// -------------------------------------------------------------
 function renderFundamentalWidget(ticker) {
 	const container = document.getElementById('tv_fundamental_container');
 	container.innerHTML = `
@@ -1480,13 +1476,8 @@ function requestNotificationPermission() {
 	});
 }
 
-// -------------------------------------------------------------
-// [REVISI NO 2]: Menyempurnakan fallback ServiceWorker (Notifikasi Android/Mobile)
-// Memaksa pengiriman ke HP dengan ServiceWorker Registration yg valid
-// -------------------------------------------------------------
 function sendBrowserPushNotification(title, message) {
 	if ("Notification" in window && Notification.permission === "granted") {
-		// Logika Utama: Pengguna Android mewajibkan eksistensi Service Worker untuk tampilkan Notif Push
 		if (navigator.serviceWorker) {
 			navigator.serviceWorker.ready.then(registration => {
 				registration.showNotification(title, {
@@ -1497,11 +1488,9 @@ function sendBrowserPushNotification(title, message) {
 					requireInteraction: true
 				});
 			}).catch(() => {
-				// Fallback jika reg gagal tapi Notification API jalan (Cth: Desktop/Laptop)
 				new Notification(title, { body: message, icon: 'stockid_gambar/stockicon.jpg' });
 			});
 		} else {
-			// Fallback absolut
 			new Notification(title, { body: message, icon: 'stockid_gambar/stockicon.jpg' });
 		}
 	}
@@ -1513,49 +1502,103 @@ function getAlerts(ticker) {
 
 function saveAlerts(ticker, alerts) {
 	localStorage.setItem(`alerts_${ticker}`, JSON.stringify(alerts));
-	renderAlertList(ticker);
-	renderGlobalAlertHistory(); // Tambahan pembaruan ke fitur riwayat global
+	renderAllAlerts();
 }
 
-function renderAlertList(ticker) {
+// FUNGSI BARU: Merender semua alert (Global List)
+function renderAllAlerts() {
 	const container = document.getElementById('alertListContainer');
-	const labelTicker = document.getElementById('alertActiveTicker');
-	if (labelTicker) labelTicker.innerText = ticker;
+	if (!container) return;
 
-	const alerts = getAlerts(ticker);
+	let allAlerts = [];
+	for (let i = 0; i < localStorage.length; i++) {
+		const key = localStorage.key(i);
+		if (key && key.startsWith('alerts_')) {
+			const ticker = key.replace('alerts_', '');
+			try {
+				const alerts = JSON.parse(localStorage.getItem(key));
+				alerts.forEach((alertObj, index) => {
+					allAlerts.push({ ticker, index, data: alertObj });
+				});
+			} catch(e) {}
+		}
+	}
 
-	if (alerts.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-4 font-sans text-xs">Belum ada alert harga yang dipasang untuk $${ticker}. Klik "Sync Data AI" di atas.</div>`;
+	if (allAlerts.length === 0) {
+		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs font-sans">Belum ada alert harga yang dipasang pada saham manapun. Klik "Tambahkan ke Alert" di atas untuk memasang notifikasi.</div>`;
 		return;
 	}
 
-	container.innerHTML = '';
-	alerts.forEach((alertObj, index) => {
-		const isCustomObj = typeof alertObj === 'object';
-		const targetPrice = isCustomObj ? alertObj.price : alertObj;
-		const isActive = isCustomObj ? alertObj.active : true;
-		const labelText = isCustomObj && alertObj.label ? alertObj.label : 'Target Price';
+	allAlerts.sort((a, b) => {
+		const aActive = a.data.active && !a.data.triggered;
+		const bActive = b.data.active && !b.data.triggered;
+		return (aActive === bActive) ? 0 : aActive ? -1 : 1; 
+	});
+
+	let htmlContent = '';
+	allAlerts.forEach(item => {
+		const targetPrice = item.data.price || item.data; 
+		const isActive = item.data.active !== undefined ? item.data.active : true;
+		const isTriggered = item.data.triggered || false;
+		const labelText = item.data.label || 'Target Price';
 
 		let badgeColor = 'text-cyan-400';
-		if (labelText.includes('Stop Loss')) badgeColor = 'text-rose-400';
-		if (labelText.includes('Take Profit')) badgeColor = 'text-emerald-400';
-		if (labelText.includes('Entry')) badgeColor = 'text-amber-400';
+		if (labelText.toLowerCase().includes('stop loss')) badgeColor = 'text-rose-400';
+		if (labelText.toLowerCase().includes('take profit')) badgeColor = 'text-emerald-400';
+		if (labelText.toLowerCase().includes('entry') || labelText.toLowerCase().includes('support')) badgeColor = 'text-amber-400';
 
-		container.innerHTML += `
-			<div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 ${isActive ? 'border-l-4 border-l-emerald-400' : 'opacity-60'}">
+		let statusBadge = '';
+		let borderClass = 'border-slate-800';
+		let toggleBtn = '';
+
+		if (isTriggered) {
+			statusBadge = '<span class="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold border">TERCAPAI</span>';
+			borderClass = 'border-l-4 border-l-emerald-500';
+			toggleBtn = `<button onclick="toggleAlertStatus('${item.ticker}', ${item.index})" class="text-[10px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-1 rounded-md font-bold transition hover:text-white">RESET</button>`;
+		} else if (isActive) {
+			statusBadge = '<span class="bg-amber-500/20 text-amber-400 border-amber-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold border animate-pulse">MENUNGGU</span>';
+			borderClass = 'border-l-4 border-l-amber-500';
+			toggleBtn = `<button onclick="toggleAlertStatus('${item.ticker}', ${item.index})" class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-1 rounded-md font-bold transition hover:bg-amber-500 hover:text-slate-950">ON</button>`;
+		} else {
+			statusBadge = '<span class="bg-slate-800 text-slate-400 border-slate-700 px-1.5 py-0.5 rounded text-[8px] font-bold border">OFF</span>';
+			borderClass = 'opacity-60 border-l-4 border-l-slate-700';
+			toggleBtn = `<button onclick="toggleAlertStatus('${item.ticker}', ${item.index})" class="text-[10px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-1 rounded-md font-bold transition hover:text-white">OFF</button>`;
+		}
+
+		htmlContent += `
+			<div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border ${borderClass}">
 				<div>
+					<div class="flex items-center gap-1.5 mb-1">
+						<span class="font-bold text-white text-xs lg:text-sm">\$${item.ticker}</span>
+						${statusBadge}
+					</div>
 					<span class="text-[9px] ${badgeColor} block font-bold font-sans uppercase tracking-wider">${labelText}</span>
 					<strong class="text-white font-mono text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</strong>
 				</div>
 				<div class="flex items-center gap-2">
-					<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[10px] ${isActive ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'} px-2 py-1 rounded-md border font-bold transition">
-						${isActive ? 'AKTIF' : 'OFF'}
-					</button>
-					<button onclick="removePriceAlert('${ticker}', ${index})" class="text-slate-400 hover:text-rose-400 font-bold px-2 py-1 transition">✕</button>
+					${toggleBtn}
+					<button onclick="removePriceAlert('${item.ticker}', ${item.index})" class="text-slate-400 hover:text-rose-400 font-bold px-2 py-1 transition">✕</button>
 				</div>
 			</div>
 		`;
 	});
+
+	container.innerHTML = htmlContent;
+}
+
+function clearAllAlerts() {
+	if (confirm("Yakin ingin menghapus SEMUA riwayat alert pada seluruh saham?")) {
+		let keysToRemove = [];
+		for (let i = 0; i < localStorage.length; i++) {
+			const key = localStorage.key(i);
+			if (key && key.startsWith('alerts_')) {
+				keysToRemove.push(key);
+			}
+		}
+		keysToRemove.forEach(k => localStorage.removeItem(k));
+		renderAllAlerts();
+		AudioFX.playSuccess();
+	}
 }
 
 function syncAlertsFromAI() {
@@ -1585,7 +1628,12 @@ function toggleAlertStatus(ticker, index) {
 	let alerts = getAlerts(ticker);
 	if (alerts[index]) {
 		if (typeof alerts[index] === 'object') {
-			alerts[index].active = !alerts[index].active;
+			if (alerts[index].triggered) {
+				alerts[index].triggered = false;
+				alerts[index].active = true;
+			} else {
+				alerts[index].active = !alerts[index].active;
+			}
 		} else {
 			alerts[index] = { price: alerts[index], active: false, triggered: false };
 		}
@@ -1597,89 +1645,6 @@ function removePriceAlert(ticker, index) {
 	let alerts = getAlerts(ticker);
 	alerts.splice(index, 1);
 	saveAlerts(ticker, alerts);
-}
-
-// -------------------------------------------------------------
-// FITUR BARU: GLOBAL ALERT HISTORY MANAGER
-// -------------------------------------------------------------
-function renderGlobalAlertHistory() {
-	const container = document.getElementById('globalAlertHistoryContainer');
-	if (!container) return;
-
-	let allAlerts = [];
-	for (let i = 0; i < localStorage.length; i++) {
-		const key = localStorage.key(i);
-		if (key && key.startsWith('alerts_')) {
-			const ticker = key.replace('alerts_', '');
-			try {
-				const alerts = JSON.parse(localStorage.getItem(key));
-				alerts.forEach((alertObj, index) => {
-					allAlerts.push({ ticker, index, data: alertObj });
-				});
-			} catch(e) {}
-		}
-	}
-
-	if (allAlerts.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs font-sans">Tidak ada riwayat alert pada saham manapun.</div>`;
-		return;
-	}
-
-	allAlerts.sort((a, b) => {
-		const aActive = typeof a.data === 'object' ? a.data.active && !a.data.triggered : true;
-		const bActive = typeof b.data === 'object' ? b.data.active && !b.data.triggered : true;
-		return (aActive === bActive) ? 0 : aActive ? -1 : 1;
-	});
-
-	let htmlContent = '';
-	allAlerts.forEach(item => {
-		const isCustomObj = typeof item.data === 'object';
-		const targetPrice = isCustomObj ? item.data.price : item.data;
-		const isActive = isCustomObj ? item.data.active : true;
-		const isTriggered = isCustomObj ? item.data.triggered : false;
-		const labelText = isCustomObj && item.data.label ? item.data.label : 'Target Price';
-
-		let statusBadge = '';
-		let borderClass = 'border-slate-800';
-		
-		if (isTriggered) {
-			statusBadge = '<span class="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-2 py-0.5 rounded text-[9px] font-bold border">TERCAPAI</span>';
-			borderClass = 'border-l-4 border-l-emerald-500';
-		} else if (isActive) {
-			statusBadge = '<span class="bg-amber-500/20 text-amber-400 border-amber-500/30 px-2 py-0.5 rounded text-[9px] font-bold border animate-pulse">MENUNGGU</span>';
-			borderClass = 'border-l-4 border-l-amber-500';
-		} else {
-			statusBadge = '<span class="bg-slate-800 text-slate-400 border-slate-700 px-2 py-0.5 rounded text-[9px] font-bold border">NONAKTIF</span>';
-			borderClass = 'opacity-60 border-l-4 border-l-slate-700';
-		}
-
-		htmlContent += `
-			<div class="bg-slate-950 p-3 rounded-xl border ${borderClass} flex flex-col gap-2">
-				<div class="flex justify-between items-start">
-					<div>
-						<span class="font-bold text-white text-sm block tracking-wide">\$${item.ticker}</span>
-						<span class="text-[9px] text-slate-400 uppercase">${labelText}</span>
-					</div>
-					${statusBadge}
-				</div>
-				<div class="flex justify-between items-center mt-1 pt-2 border-t border-slate-800/80">
-					<span class="font-mono text-cyan-400 font-bold text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</span>
-					<button onclick="removeGlobalAlert('${item.ticker}', ${item.index})" class="text-[10px] text-slate-400 hover:text-rose-400 transition font-bold bg-rose-500/10 hover:bg-rose-500/20 px-2 py-1 rounded" title="Hapus">Hapus</button>
-				</div>
-			</div>
-		`;
-	});
-
-	container.innerHTML = htmlContent;
-	if (window.lucide) lucide.createIcons();
-}
-
-function removeGlobalAlert(ticker, index) {
-	let alerts = getAlerts(ticker);
-	alerts.splice(index, 1);
-	saveAlerts(ticker, alerts);
-	if (ticker === currentTicker) renderAlertList(ticker);
-	renderGlobalAlertHistory();
 }
 
 // TRIGGER LOGIC REALTIME UNTUK SMART ALERT (Mempertimbangkan Arah Harga)
@@ -1695,8 +1660,6 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 		const labelText = typeof alertObj === 'object' && alertObj.label ? alertObj.label : 'Target';
 
 		if (isActive) {
-			// Jika target SL/Support (Batas bawah): trigger apabila harga LEBIH KECIL / SAMA DENGAN target
-			// Jika target TP/Resistance (Batas atas): trigger apabila harga LEBIH BESAR / SAMA DENGAN target
 			const isSupportOrSL = labelText.toLowerCase().includes('stop loss') || labelText.toLowerCase().includes('support') || labelText.toLowerCase().includes('entry');
 			const conditionMet = isSupportOrSL ? (currentPrice <= targetPrice) : (currentPrice >= targetPrice);
 
@@ -1719,7 +1682,6 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 
 	if (updated) {
 		saveAlerts(ticker, alerts);
-		renderAlertList(ticker);
 	}
 }
 
@@ -1802,7 +1764,7 @@ async function fetchStockNews(ticker) {
 
 async function fetchCorporateAction(ticker) {
 	const container = document.getElementById('corporateContainer');
-	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3">Memuat aksi korporasi ${ticker}...</div>`;
+	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3">Memuat data aksi korporasi...</div>`;
 	
 	// Query RSS diperluas jangkauan dan variasinya
 	const query = encodeURIComponent(`${ticker} AND (dividen OR RUPS OR "right issue" OR "stock split" OR buyback OR tender OR IPO)`);
@@ -1855,10 +1817,7 @@ function switchTab(tabName) {
 	});
 
 	if (tabName === 'journal') renderJournalTable();
-	if (tabName === 'alert') {
-		renderAlertList(currentTicker);
-		renderGlobalAlertHistory();
-	}
+	if (tabName === 'alert') renderAllAlerts();
 }
 
 function shareStockUrl() {
@@ -1923,7 +1882,7 @@ function searchStock(bypassCooldown = false) {
 		renderChart(currentTicker);
 		renderTechnicalGauge(currentTicker);
 		renderFundamentalWidget(currentTicker);
-		renderAlertList(currentTicker);
+		renderAllAlerts();
 		generateAISignal(currentTicker, false);
 		fetchStockNews(currentTicker);
 		fetchCorporateAction(currentTicker);
@@ -1944,7 +1903,7 @@ function startBackgroundAutoCache() {
 			checkPriceAlertsRealtime(currentTicker, currentData.price);
 		}
 
-		// REVISI FITUR: Kumpulkan semua emiten yang memiliki alert aktif dari localStorage untuk selalu diperiksa
+		// Kumpulkan semua emiten yang memiliki alert aktif dari localStorage untuk selalu diperiksa
 		let activeAlertTickers = new Set();
 		for (let i = 0; i < localStorage.length; i++) {
 			const key = localStorage.key(i);
@@ -1960,7 +1919,7 @@ function startBackgroundAutoCache() {
 			}
 		}
 
-		// Tambahkan juga saham populer ke dalam antrean (Opsional tetapi disarankan untuk cache)
+		// Tambahkan juga saham populer ke dalam antrean
 		const popularTickers = ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'CUAN', 'ANTM', 'PANI'];
 		for (const ticker of popularTickers) {
 			if (ticker !== currentTicker) {
@@ -1968,7 +1927,7 @@ function startBackgroundAutoCache() {
 			}
 		}
 
-		// Eksekusi penarikan data secara beruntun agar API tidak terbebani, lalu cek status alert
+		// Eksekusi penarikan data secara beruntun agar API tidak terbebani
 		for (const ticker of activeAlertTickers) {
 			const bgData = await fetchRealtimeStockData(ticker, true);
 			if (bgData) {
@@ -2006,11 +1965,10 @@ document.getElementById('peerTickerLabel').innerText = currentTicker;
 renderChart(currentTicker);
 renderTechnicalGauge(currentTicker);
 renderFundamentalWidget(currentTicker);
-renderAlertList(currentTicker);
+renderAllAlerts();
 generateAISignal(currentTicker);
 fetchStockNews(currentTicker);
 fetchCorporateAction(currentTicker);
 renderJournalTable();
 checkWelcomeModal();
 startBackgroundAutoCache();
-renderGlobalAlertHistory();
