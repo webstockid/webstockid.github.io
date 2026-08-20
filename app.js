@@ -1505,79 +1505,163 @@ function saveAlerts(ticker, alerts) {
 	renderAllAlerts();
 }
 
-// FUNGSI BARU: Merender semua alert (Global List)
+// Global Set untuk melacak status buka/tutup accordion
+let openAlertDropdowns = new Set();
+
+function toggleAlertAccordion(ticker) {
+	const body = document.getElementById(`alert-body-${ticker}`);
+	const icon = document.getElementById(`alert-icon-${ticker}`);
+	if (body) {
+		if (body.classList.contains('hidden')) {
+			body.classList.remove('hidden');
+			openAlertDropdowns.add(ticker);
+			if (icon) icon.style.transform = "rotate(180deg)";
+		} else {
+			body.classList.add('hidden');
+			openAlertDropdowns.delete(ticker);
+			if (icon) icon.style.transform = "rotate(0deg)";
+		}
+	}
+}
+
+// FUNGSI BARU: Merender semua alert dengan gaya UI Accordion Minimalis
 function renderAllAlerts() {
 	const container = document.getElementById('alertListContainer');
 	if (!container) return;
 
-	let allAlerts = [];
+	let groupedAlerts = [];
 	for (let i = 0; i < localStorage.length; i++) {
 		const key = localStorage.key(i);
 		if (key && key.startsWith('alerts_')) {
 			const ticker = key.replace('alerts_', '');
 			try {
 				const alerts = JSON.parse(localStorage.getItem(key));
-				alerts.forEach((alertObj, index) => {
-					allAlerts.push({ ticker, index, data: alertObj });
-				});
+				if (alerts && alerts.length > 0) {
+					groupedAlerts.push({ ticker, alerts });
+				}
 			} catch(e) {}
 		}
 	}
 
-	if (allAlerts.length === 0) {
+	if (groupedAlerts.length === 0) {
 		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs font-sans">Belum ada alert harga yang dipasang pada saham manapun. Klik "Tambahkan ke Alert" di atas untuk memasang notifikasi.</div>`;
 		return;
 	}
 
-	allAlerts.sort((a, b) => {
-		const aActive = a.data.active && !a.data.triggered;
-		const bActive = b.data.active && !b.data.triggered;
-		return (aActive === bActive) ? 0 : aActive ? -1 : 1; 
+	// SORTING: Saham yang sedang dicari (currentTicker) selalu di atas, sisanya diurutkan berdasar jumlah alert aktif
+	groupedAlerts.sort((a, b) => {
+		if (a.ticker === currentTicker) return -1;
+		if (b.ticker === currentTicker) return 1;
+
+		const aActive = a.alerts.filter(x => x.active && !x.triggered).length;
+		const bActive = b.alerts.filter(x => x.active && !x.triggered).length;
+		if (bActive !== aActive) return bActive - aActive;
+
+		return a.ticker.localeCompare(b.ticker);
 	});
 
 	let htmlContent = '';
-	allAlerts.forEach(item => {
-		const targetPrice = item.data.price || item.data; 
-		const isActive = item.data.active !== undefined ? item.data.active : true;
-		const isTriggered = item.data.triggered || false;
-		const labelText = item.data.label || 'Target Price';
-
-		let badgeColor = 'text-cyan-400';
-		if (labelText.toLowerCase().includes('stop loss')) badgeColor = 'text-rose-400';
-		if (labelText.toLowerCase().includes('take profit')) badgeColor = 'text-emerald-400';
-		if (labelText.toLowerCase().includes('entry') || labelText.toLowerCase().includes('support')) badgeColor = 'text-amber-400';
-
-		let statusBadge = '';
-		let borderClass = 'border-slate-800';
-		let toggleBtn = '';
-
-		if (isTriggered) {
-			statusBadge = '<span class="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold border">TERCAPAI</span>';
-			borderClass = 'border-l-4 border-l-emerald-500';
-			toggleBtn = `<button onclick="toggleAlertStatus('${item.ticker}', ${item.index})" class="text-[10px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-1 rounded-md font-bold transition hover:text-white">RESET</button>`;
-		} else if (isActive) {
-			statusBadge = '<span class="bg-amber-500/20 text-amber-400 border-amber-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold border animate-pulse">MENUNGGU</span>';
-			borderClass = 'border-l-4 border-l-amber-500';
-			toggleBtn = `<button onclick="toggleAlertStatus('${item.ticker}', ${item.index})" class="text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-1 rounded-md font-bold transition hover:bg-amber-500 hover:text-slate-950">ON</button>`;
-		} else {
-			statusBadge = '<span class="bg-slate-800 text-slate-400 border-slate-700 px-1.5 py-0.5 rounded text-[8px] font-bold border">OFF</span>';
-			borderClass = 'opacity-60 border-l-4 border-l-slate-700';
-			toggleBtn = `<button onclick="toggleAlertStatus('${item.ticker}', ${item.index})" class="text-[10px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-1 rounded-md font-bold transition hover:text-white">OFF</button>`;
+	groupedAlerts.forEach(group => {
+		const ticker = group.ticker;
+		const activeCount = group.alerts.filter(a => a.active && !a.triggered).length;
+		
+		// Deteksi tanggal (Fallback ke hari ini jika data lama tidak punya properti date)
+		let alertDate = group.alerts[0].date;
+		if (!alertDate) {
+			const now = new Date();
+			const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+			alertDate = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear().toString().slice(-2)}`;
 		}
 
+		const isOpen = openAlertDropdowns.has(ticker);
+		const hiddenClass = isOpen ? '' : 'hidden';
+		const rotateStyle = isOpen ? 'transform: rotate(180deg);' : 'transform: rotate(0deg);';
+		
+		const isCurrent = ticker === currentTicker;
+		const borderHighlight = isCurrent ? 'border-emerald-500/50 shadow-sm shadow-emerald-500/10' : 'border-slate-800';
+
 		htmlContent += `
-			<div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border ${borderClass}">
-				<div>
-					<div class="flex items-center gap-1.5 mb-1">
-						<span class="font-bold text-white text-xs lg:text-sm">\$${item.ticker}</span>
+			<div class="bg-slate-950 rounded-xl border ${borderHighlight} overflow-hidden transition-all duration-200 col-span-1 md:col-span-2 lg:col-span-3">
+				
+				<!-- Header Accordion -->
+				<div onclick="toggleAlertAccordion('${ticker}')" class="p-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-900/80 transition select-none group">
+					<div class="flex items-center gap-3 md:gap-4">
+						<div class="flex items-center gap-2">
+							<div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-slate-900 flex items-center justify-center border border-slate-700/60 font-bold text-white group-hover:border-emerald-500/40 transition text-xs md:text-sm">
+								$
+							</div>
+							<span class="font-bold text-white text-sm md:text-base tracking-wide">${ticker}</span>
+							${isCurrent ? '<span class="bg-emerald-500/20 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
+						</div>
+						<div class="flex flex-col">
+							<span class="text-[9px] md:text-[10px] text-slate-400">Status Target</span>
+							<span class="font-bold ${activeCount > 0 ? 'text-amber-400' : 'text-slate-500'} text-[10px] md:text-xs">${activeCount} Alert Aktif</span>
+						</div>
+					</div>
+					
+					<div class="flex items-center gap-3 md:gap-4 text-right">
+						<div class="flex flex-col items-end">
+							<span class="text-[9px] md:text-[10px] text-slate-400">Tgl Dibuat</span>
+							<span class="font-mono text-cyan-400 text-[10px] md:text-xs font-bold">${alertDate}</span>
+						</div>
+						<div class="bg-slate-900 p-1.5 rounded-md border border-slate-800 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/30 transition">
+							<i id="alert-icon-${ticker}" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300" style="${rotateStyle}"></i>
+						</div>
+					</div>
+				</div>
+
+				<!-- Body Accordion (Daftar Harga Target) -->
+				<div id="alert-body-${ticker}" class="${hiddenClass} border-t border-slate-800/80 bg-slate-900/30 p-2 space-y-1.5">
+		`;
+
+		// Looping individual list
+		group.alerts.forEach((alertObj, index) => {
+			const targetPrice = alertObj.price || alertObj; 
+			const isActive = alertObj.active !== undefined ? alertObj.active : true;
+			const isTriggered = alertObj.triggered || false;
+			const labelText = alertObj.label || 'Target Price';
+
+			let badgeColor = 'text-cyan-400';
+			if (labelText.toLowerCase().includes('stop loss')) badgeColor = 'text-rose-400';
+			if (labelText.toLowerCase().includes('take profit')) badgeColor = 'text-emerald-400';
+			if (labelText.toLowerCase().includes('entry') || labelText.toLowerCase().includes('support')) badgeColor = 'text-amber-400';
+
+			let statusBadge = '';
+			let toggleBtn = '';
+			let rowBorder = 'border-slate-800/60';
+
+			if (isTriggered) {
+				statusBadge = '<span class="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold border">TERCAPAI</span>';
+				rowBorder = 'border-l-2 border-l-emerald-500/50';
+				toggleBtn = `<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[9px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-1 rounded font-bold transition hover:text-white">RESET</button>`;
+			} else if (isActive) {
+				statusBadge = '<span class="bg-amber-500/20 text-amber-400 border-amber-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold border animate-pulse">MENUNGGU</span>';
+				rowBorder = 'border-l-2 border-l-amber-500/50';
+				toggleBtn = `<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-1 rounded font-bold transition hover:bg-amber-500 hover:text-slate-950">ON</button>`;
+			} else {
+				statusBadge = '<span class="bg-slate-800 text-slate-400 border-slate-700 px-1.5 py-0.5 rounded text-[8px] font-bold border">OFF</span>';
+				rowBorder = 'opacity-60 border-l-2 border-l-slate-700';
+				toggleBtn = `<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[9px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-1 rounded font-bold transition hover:text-white">OFF</button>`;
+			}
+
+			htmlContent += `
+				<div class="flex items-center justify-between bg-slate-900/60 p-2.5 rounded-lg border ${rowBorder} hover:bg-slate-800 transition">
+					<div class="flex items-center gap-3">
+						<div>
+							<span class="text-[9px] ${badgeColor} block font-bold font-sans uppercase tracking-wider mb-0.5">${labelText}</span>
+							<strong class="text-slate-200 font-mono text-xs md:text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</strong>
+						</div>
 						${statusBadge}
 					</div>
-					<span class="text-[9px] ${badgeColor} block font-bold font-sans uppercase tracking-wider">${labelText}</span>
-					<strong class="text-white font-mono text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</strong>
+					<div class="flex items-center gap-2">
+						${toggleBtn}
+						<button onclick="removePriceAlert('${ticker}', ${index})" class="text-slate-500 hover:text-rose-400 font-bold px-1.5 py-0.5 transition rounded hover:bg-rose-500/10" title="Hapus Alert"><i class="fa-solid fa-trash text-[10px]"></i></button>
+					</div>
 				</div>
-				<div class="flex items-center gap-2">
-					${toggleBtn}
-					<button onclick="removePriceAlert('${item.ticker}', ${item.index})" class="text-slate-400 hover:text-rose-400 font-bold px-2 py-1 transition">✕</button>
+			`;
+		});
+
+		htmlContent += `
 				</div>
 			</div>
 		`;
@@ -1601,6 +1685,7 @@ function clearAllAlerts() {
 	}
 }
 
+// LOGIKA SYNC DENGAN AI (Ditambahkan format Tanggal / Date)
 function syncAlertsFromAI() {
 	let price = 100;
 	if (globalStockData && globalStockData.price) {
@@ -1612,14 +1697,23 @@ function syncAlertsFromAI() {
 	const res2 = roundToBEITick(price * 1.08, 'ceil'); 
 	const tp2 = roundToBEITick(price * 1.14, 'ceil'); 
 
+	// Generate format "20 Agu 26"
+	const now = new Date();
+	const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+	const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear().toString().slice(-2)}`;
+
 	const syncTargets = [
-		{ price: sl, label: 'Stop Loss', active: true, triggered: false },
-		{ price: sup2, label: 'Entry / Support 2', active: true, triggered: false },
-		{ price: res2, label: 'Resistance 2', active: true, triggered: false },
-		{ price: tp2, label: 'Take Profit 2', active: true, triggered: false }
+		{ price: sl, label: 'Stop Loss', active: true, triggered: false, date: dateStr },
+		{ price: sup2, label: 'Entry / Support', active: true, triggered: false, date: dateStr },
+		{ price: res2, label: 'Resistance Target', active: true, triggered: false, date: dateStr },
+		{ price: tp2, label: 'Take Profit Max', active: true, triggered: false, date: dateStr }
 	];
 
 	saveAlerts(currentTicker, syncTargets);
+	// Auto buka dropdown untuk saham yang baru disync
+	openAlertDropdowns.add(currentTicker); 
+	renderAllAlerts();
+
 	AudioFX.playSuccess();
 	alert(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
 }
@@ -1647,7 +1741,7 @@ function removePriceAlert(ticker, index) {
 	saveAlerts(ticker, alerts);
 }
 
-// TRIGGER LOGIC REALTIME UNTUK SMART ALERT (Mempertimbangkan Arah Harga)
+// TRIGGER LOGIC REALTIME UNTUK SMART ALERT
 function checkPriceAlertsRealtime(ticker, currentPrice) {
 	if (!currentPrice || currentPrice <= 0) return;
 
