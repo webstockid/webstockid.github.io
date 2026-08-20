@@ -765,7 +765,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	const res1 = roundToBEITick(price * 1.05, 'ceil'); 
 	const res2 = roundToBEITick(price * 1.08, 'ceil'); 
 	const tp1 = roundToBEITick(price * 1.06, 'ceil'); 
-	const tp2 = roundToBEITick(price * 1.14, 'ceil'); 
+	const tp2 = roundToBEITick(price * 1.12, 'ceil'); 
 
 	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
@@ -854,10 +854,12 @@ function exportTradingCard() {
 
 	const price = roundToBEITick(globalStockData.price);
 	const sl = roundToBEITick(price * 0.92, 'floor');
-	const tp2 = roundToBEITick(price * 1.14, 'ceil');
+	const tp1 = roundToBEITick(price * 1.06, 'ceil');
+	const tp2 = roundToBEITick(price * 1.12, 'ceil');
 	const sup1 = roundToBEITick(price * 0.94, 'floor');
 	const sup2 = roundToBEITick(price * 0.96, 'floor');
 	const res1 = roundToBEITick(price * 1.05, 'ceil');
+	const res2 = roundToBEITick(price * 1.08, 'ceil');
 
 	const now = new Date();
 	const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -867,8 +869,8 @@ function exportTradingCard() {
 	document.getElementById('cardPrice').innerText = `Rp ${price.toLocaleString('id-ID')}`;
 	document.getElementById('cardEntry').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('cardSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
-	document.getElementById('cardTP2').innerText = `Rp ${tp2.toLocaleString('id-ID')}`;
-	document.getElementById('cardRES1').innerText = `Rp ${res1.toLocaleString('id-ID')}`;
+	document.getElementById('cardTP2').innerText = `Rp ${tp1.toLocaleString('id-ID')} - ${tp2.toLocaleString('id-ID')}`;
+	document.getElementById('cardRES1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
 
 	document.getElementById('cardVolRatio').innerText = `${globalStockData.volRatio || '1.0'}x`;
 	document.getElementById('cardMA5').innerText = `Rp ${(globalStockData.ma5 || price).toLocaleString('id-ID')}`;
@@ -1318,7 +1320,7 @@ function renderRadarItems(dataList) {
 		const entryHigh = roundToBEITick(price * 0.96, 'floor');
 		const sl = roundToBEITick(price * 0.92, 'floor');
 		const tp1 = roundToBEITick(price * 1.06, 'ceil');
-		const tp2 = roundToBEITick(price * 1.14, 'ceil');
+		const tp2 = roundToBEITick(price * 1.12, 'ceil');
 
 		let statusSignal = "🔥 Momentum Breakout";
 		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
@@ -1696,7 +1698,7 @@ function syncAlertsFromAI() {
 	const sl = roundToBEITick(price * 0.92, 'floor'); 
 	const sup2 = roundToBEITick(price * 0.96, 'floor'); 
 	const res2 = roundToBEITick(price * 1.08, 'ceil'); 
-	const tp2 = roundToBEITick(price * 1.14, 'ceil'); 
+	const tp2 = roundToBEITick(price * 1.12, 'ceil'); 
 
 	// Generate format "20 Agu 26"
 	const now = new Date();
@@ -1706,8 +1708,8 @@ function syncAlertsFromAI() {
 	const syncTargets = [
 		{ price: sl, label: 'Stop Loss', active: true, triggered: false, date: dateStr },
 		{ price: sup2, label: 'Entry / Support', active: true, triggered: false, date: dateStr },
-		{ price: res2, label: 'Resistance Target', active: true, triggered: false, date: dateStr },
-		{ price: tp2, label: 'Take Profit Max', active: true, triggered: false, date: dateStr }
+		{ price: res2, label: 'Resistance', active: true, triggered: false, date: dateStr },
+		{ price: tp2, label: 'Take Profit', active: true, triggered: false, date: dateStr }
 	];
 
 	saveAlerts(currentTicker, syncTargets);
