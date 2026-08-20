@@ -1108,6 +1108,10 @@ function renderJournalTable() {
 		body.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Belum ada Trading Plan tersimpan. Gunakan tombol "Simpan ke Journal" di kalkulator Smart RRR.</td></tr>`;
 		return;
 	}
+	
+	if (currentJournalView === 'kanban') {
+    renderKanbanBoard();
+}
 
 	let rows = '';
 	journal.forEach(item => {
@@ -2241,6 +2245,153 @@ function closeLossCelebration() {
 	}
 }
 
+// ==================== FITUR BARU: RUNNING TAPE (PITA SAHAM BERJALAN) ====================
+async function initRunningTape() {
+	const tapeContainer = document.getElementById('runningTapeContainer');
+	if (!tapeContainer) return;
+
+	const popularTickers = ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'CUAN', 'ANTM', 'PANI', 'MDIA'];
+	let tapeHTML = '';
+
+	for (const ticker of popularTickers) {
+		let data = getCachedStockData(ticker);
+		if (!data) {
+			data = { ticker, price: 1000, changePct: 0.0 };
+		}
+		const isPlus = data.changePct >= 0;
+		tapeHTML += `
+			<div class="flex items-center gap-2 bg-slate-900/90 px-3.5 py-1 rounded-md border border-slate-800 shrink-0">
+				<span class="font-bold text-amber-400">&dollar;${ticker}</span>
+				<span class="text-white font-mono">Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}</span>
+				<span class="${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">${isPlus ? '+' : ''}${data.changePct}%</span>
+			</div>
+		`;
+	}
+
+	// Duplikasi HTML untuk menghasilkan efek pergerakan infinite loop yang mulus tanpa jeda
+	tapeContainer.innerHTML = tapeHTML + tapeHTML;
+}
+
+// ==================== FITUR BARU: EXPORT JOURNAL TO CSV ====================
+function exportJournalToCSV() {
+	const journal = getJournalData();
+	if (journal.length === 0) {
+		AudioFX.playAlert();
+		alert("Belum ada riwayat Trading Plan yang tersimpan untuk diexport!");
+		return;
+	}
+
+	let csvContent = "data:text/csv;charset=utf-8,ID,Tanggal,Ticker,Harga Entry,Stop Loss,Target Profit,Rasio RRR,Status\r\n";
+	journal.forEach(item => {
+		csvContent += `"${item.id}","${item.date}","${item.ticker}","${item.entry}","${item.sl}","${item.tp}","${item.rrr}","${item.status}"\r\n`;
+	});
+
+	const encodedUri = encodeURI(csvContent);
+	const link = document.createElement("a");
+	link.setAttribute("href", encodedUri);
+	link.setAttribute("download", `StockID_Trading_Journal_${Date.now()}.csv`);
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+
+	AudioFX.playSuccess();
+}
+
+// ==================== FITUR BARU: KANBAN BOARD (DRAG & DROP) ====================
+let currentJournalView = 'table';
+
+function switchJournalView(view) {
+	currentJournalView = view;
+	const tv = document.getElementById('journalTableView');
+	const kv = document.getElementById('journalKanbanView');
+	const btnT = document.getElementById('journalBtnTable');
+	const btnK = document.getElementById('journalBtnKanban');
+
+	if (view === 'table') {
+		tv.classList.remove('hidden');
+		kv.classList.add('hidden');
+		btnT.className = "px-3 py-1 text-[10px] font-bold rounded bg-emerald-500 text-slate-950 transition";
+		btnK.className = "px-3 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition";
+	} else {
+		tv.classList.add('hidden');
+		kv.classList.remove('hidden');
+		btnK.className = "px-3 py-1 text-[10px] font-bold rounded bg-emerald-500 text-slate-950 transition";
+		btnT.className = "px-3 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition";
+		renderKanbanBoard();
+	}
+	AudioFX.playClick();
+}
+
+function allowDrop(ev) {
+	ev.preventDefault();
+}
+
+function dragJournalCard(ev, id) {
+	ev.dataTransfer.setData("text/plain", id);
+}
+
+function dropJournalCard(ev, newStatus) {
+	ev.preventDefault();
+	const id = parseInt(ev.dataTransfer.getData("text/plain"));
+	if (id) {
+		updateJournalStatus(id, newStatus);
+	}
+}
+
+function renderKanbanBoard() {
+	const journal = getJournalData();
+	const colOpen = document.getElementById('kanbanColOpen');
+	const colWin = document.getElementById('kanbanColWin');
+	const colLoss = document.getElementById('kanbanColLoss');
+
+	let htmlOpen = '', htmlWin = '', htmlLoss = '';
+	let countOpen = 0, countWin = 0, countLoss = 0;
+
+	journal.forEach(item => {
+		const cardHTML = `
+			<div draggable="true" ondragstart="dragJournalCard(event, ${item.id})" class="bg-slate-900 border border-slate-800 p-3 rounded-xl cursor-grab active:cursor-grabbing hover:border-slate-700 transition space-y-2 shadow-sm">
+				<div class="flex items-center justify-between">
+					<span class="font-bold text-amber-400 font-mono text-xs">&dollar;${item.ticker}</span>
+					<span class="text-[9px] text-slate-400 font-mono">${item.date}</span>
+				</div>
+				<div class="grid grid-cols-3 gap-1 text-[10px] font-mono text-slate-300 bg-slate-950 p-2 rounded border border-slate-900 text-center">
+					<div><span class="text-[7px] text-slate-500 block">ENTRY</span>Rp ${item.entry.toLocaleString('id-ID')}</div>
+					<div><span class="text-[7px] text-rose-400 block">SL</span>Rp ${item.sl.toLocaleString('id-ID')}</div>
+					<div><span class="text-[7px] text-emerald-400 block">TP</span>Rp ${item.tp.toLocaleString('id-ID')}</div>
+				</div>
+				<div class="flex items-center justify-between pt-1">
+					<span class="text-[9px] text-cyan-400 font-mono font-bold">RRR: ${item.rrr}</span>
+					<div class="flex items-center gap-1 font-sans">
+						${item.status !== 'OPEN' ? `<button onclick="updateJournalStatus(${item.id}, 'OPEN')" class="text-[8px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded font-bold transition">Open</button>` : ''}
+						${item.status !== 'WIN' ? `<button onclick="updateJournalStatus(${item.id}, 'WIN')" class="text-[8px] bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 px-1.5 py-0.5 rounded font-bold transition">WIN</button>` : ''}
+						${item.status !== 'LOSS' ? `<button onclick="updateJournalStatus(${item.id}, 'LOSS')" class="text-[8px] bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-400 px-1.5 py-0.5 rounded font-bold transition">LOSS</button>` : ''}
+						<button onclick="deleteJournalItem(${item.id})" class="text-[8px] text-slate-500 hover:text-rose-400 px-1 py-0.5 transition" title="Hapus">✕</button>
+					</div>
+				</div>
+			</div>
+		`;
+
+		if (item.status === 'WIN') {
+			htmlWin += cardHTML;
+			countWin++;
+		} else if (item.status === 'LOSS') {
+			htmlLoss += cardHTML;
+			countLoss++;
+		} else {
+			htmlOpen += cardHTML;
+			countOpen++;
+		}
+	});
+
+	colOpen.innerHTML = htmlOpen || `<div class="text-center text-slate-500 text-[10px] py-16 italic">Tidak ada plan open.</div>`;
+	colWin.innerHTML = htmlWin || `<div class="text-center text-slate-500 text-[10px] py-16 italic">Belum ada take profit.</div>`;
+	colLoss.innerHTML = htmlLoss || `<div class="text-center text-slate-500 text-[10px] py-16 italic">Belum ada stop loss.</div>`;
+
+	document.getElementById('kanbanCountOpen').innerText = countOpen;
+	document.getElementById('kanbanCountWin').innerText = countWin;
+	document.getElementById('kanbanCountLoss').innerText = countLoss;
+}
+
 // INITIALIZATION ON LOAD
 initSearchSuggestions();
 checkVIPAuth();
@@ -2248,6 +2399,7 @@ cleanExpiredCache();
 updateMarketBadge();
 checkUrlParamTicker();
 checkNotificationStatus();
+initRunningTape();
 
 document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;

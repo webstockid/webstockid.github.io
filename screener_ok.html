@@ -52,6 +52,18 @@
 				background-size: 200% 100%;
 				animation: shimmer 1.5s infinite;
 			}
+			@keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+    display: inline-flex;
+    width: max-content;
+    animation: marquee 35s linear infinite;
+}
+.animate-marquee:hover {
+    animation-play-state: paused;
+}
 		</style>
 	</head>
 
@@ -187,6 +199,13 @@
 				</div>
 			</div>
 		</div>
+		
+		<!-- RUNNING TAPE (PITA SAHAM BERJALAN) -->
+<div class="bg-slate-950 border-b border-slate-800/80 py-1.5 overflow-hidden whitespace-nowrap relative z-30 select-none">
+	<div class="animate-marquee gap-3 text-[11px] font-mono text-slate-300" id="runningTapeContainer">
+		<span class="text-emerald-400 px-3">⚡ Menghubungkan ke Real-Time Market Bursa Efek Indonesia...</span>
+	</div>
+</div>
 
 		<!-- Fixed Search Bar Melayang dengan Dropdown Suggestion -->
 <div class="sticky top-20 left-0 w-full z-20 glassmorphism border-b border-slate-800/80 py-3 px-4">
@@ -196,14 +215,14 @@
 			class="w-full bg-slate-800 text-sm lg:text-base border border-slate-700 rounded-lg pl-10 lg:pl-11 pr-[110px] py-2 lg:py-2.5 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
 		
 		<!-- Tombol Pencarian Suara (Voice Command) -->
-		<button onclick="startVoiceSearch()" id="btnVoiceSearch" title="Pencarian Suara" class="absolute right-[65px] top-[10px] lg:top-[9px] text-slate-400 hover:text-emerald-400 transition z-10 p-1">
+		<button onclick="startVoiceSearch()" id="btnVoiceSearch" title="Pencarian Suara" class="absolute right-[65px] top-[5px] lg:top-[8px] text-slate-400 hover:text-emerald-400 transition z-10 p-1">
 			<i id="voiceIcon" class="fa-solid fa-microphone text-sm lg:text-base"></i>
 		</button>
 
 		<!-- Dropdown Menu Suggestions -->
 		<div id="searchSuggestionsBox" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl backdrop-blur-xl max-h-60 overflow-y-auto z-50 divide-y divide-slate-800/60 scrollbar-thin"></div>
 
-		<button onclick="searchStock()" class="absolute right-1.5 top-1.5 text-xs lg:text-sm bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/40 font-bold px-3 py-1.5 lg:py-0.7 rounded-md transition z-10">
+		<button onclick="searchStock()" class="absolute right-1.5 top-1.5 text-xs lg:text-sm bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/40 font-bold px-3 py-1.5 lg:py-2 rounded-md transition z-10">
 			Cari
 		</button>
 	</div>
@@ -651,57 +670,106 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 7: JOURNAL TRADING (SCROLL HORIZONTAL) -->
-				<div id="tabContent-journal" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
-					<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
-						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-							<span class="text-slate-400 text-[10px] uppercase block font-bold">Total Planned Trade</span>
-							<span class="text-lg font-bold text-white font-mono" id="journalTotalCount">0</span>
-						</div>
-						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-							<span class="text-slate-400 text-[10px] uppercase block font-bold">Win Rate</span>
-							<span class="text-lg font-bold text-emerald-400 font-mono" id="journalWinRate">0%</span>
-						</div>
-						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-							<span class="text-slate-400 text-[10px] uppercase block font-bold">Successful TP</span>
-							<span class="text-lg font-bold text-emerald-300 font-mono" id="journalWinCount">0</span>
-						</div>
-						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-							<span class="text-slate-400 text-[10px] uppercase block font-bold">Hit Stop Loss</span>
-							<span class="text-lg font-bold text-rose-400 font-mono" id="journalLossCount">0</span>
-						</div>
-					</div>
+				<!-- TAB CONTENT 7: JOURNAL TRADING (TABLE & KANBAN BOARD) -->
+<div id="tabContent-journal" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
+	<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+			<span class="text-slate-400 text-[10px] uppercase block font-bold">Total Planned Trade</span>
+			<span class="text-lg font-bold text-white font-mono" id="journalTotalCount">0</span>
+		</div>
+		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+			<span class="text-slate-400 text-[10px] uppercase block font-bold">Win Rate</span>
+			<span class="text-lg font-bold text-emerald-400 font-mono" id="journalWinRate">0%</span>
+		</div>
+		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+			<span class="text-slate-400 text-[10px] uppercase block font-bold">Successful TP</span>
+			<span class="text-lg font-bold text-emerald-300 font-mono" id="journalWinCount">0</span>
+		</div>
+		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+			<span class="text-slate-400 text-[10px] uppercase block font-bold">Hit Stop Loss</span>
+			<span class="text-lg font-bold text-rose-400 font-mono" id="journalLossCount">0</span>
+		</div>
+	</div>
 
-					<div class="flex justify-between items-center bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-						<span class="font-bold text-slate-200 text-xs">Daftar Trading Plan Tersimpan:</span>
-						<button onclick="clearJournalHistory()" class="text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 font-bold px-3 py-1.5 rounded-lg transition">
-							Hapus Semua History
-						</button>
-					</div>
+	<!-- Kontrol View Switcher & Aksi -->
+	<div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center bg-slate-950 p-3.5 rounded-xl border border-slate-800 gap-3">
+		<div class="flex items-center gap-3">
+			<span class="font-bold text-slate-200 text-xs">Mode Tampilan:</span>
+			<div class="flex bg-slate-900 p-1 rounded-lg border border-slate-800">
+				<button onclick="switchJournalView('table')" id="journalBtnTable" class="px-3 py-1 text-[10px] font-bold rounded bg-emerald-500 text-slate-950 transition">Tabel</button>
+				<button onclick="switchJournalView('kanban')" id="journalBtnKanban" class="px-3 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition">Kanban Board</button>
+			</div>
+		</div>
 
-					<!-- Scroll Memanjang Horizontal -->
-					<div class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
-						<table class="w-full text-left text-xs text-slate-300 whitespace-nowrap min-w-[750px]">
-							<thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
-								<tr>
-									<th class="p-3.5">Tanggal</th>
-									<th class="p-3.5">Ticker</th>
-									<th class="p-3.5">Harga Entry</th>
-									<th class="p-3.5">Stop Loss (SL)</th>
-									<th class="p-3.5">Target Profit (TP)</th>
-									<th class="p-3.5">Rasio RRR</th>
-									<th class="p-3.5">Status Plan</th>
-									<th class="p-3.5 text-center">Tindakan</th>
-								</tr>
-							</thead>
-							<tbody id="journalTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60 font-mono">
-								<tr>
-									<td colspan="8" class="p-6 text-center text-slate-400 font-sans">Belum ada Trading Plan tersimpan. Gunakan tombol "Simpan ke Journal" di kalkulator Smart RRR.</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
+		<div class="flex items-center gap-2">
+			<button onclick="exportJournalToCSV()" class="flex-1 sm:flex-initial text-[10px] bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 font-bold px-3 py-1.5 rounded-lg transition flex items-center justify-center gap-1.5">
+				<i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export CSV (.csv)
+			</button>
+			<button onclick="clearJournalHistory()" class="flex-1 sm:flex-initial text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 font-bold px-3 py-1.5 rounded-lg transition">
+				Hapus Semua
+			</button>
+		</div>
+	</div>
+
+	<!-- 1. TAMPILAN TABEL -->
+	<div id="journalTableView" class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
+		<table class="w-full text-left text-xs text-slate-300 whitespace-nowrap min-w-[750px]">
+			<thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
+				<tr>
+					<th class="p-3.5">Tanggal</th>
+					<th class="p-3.5">Ticker</th>
+					<th class="p-3.5">Harga Entry</th>
+					<th class="p-3.5">Stop Loss (SL)</th>
+					<th class="p-3.5">Target Profit (TP)</th>
+					<th class="p-3.5">Rasio RRR</th>
+					<th class="p-3.5">Status Plan</th>
+					<th class="p-3.5 text-center">Tindakan</th>
+				</tr>
+			</thead>
+			<tbody id="journalTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60 font-mono">
+				<tr>
+					<td colspan="8" class="p-6 text-center text-slate-400 font-sans">Belum ada Trading Plan tersimpan. Gunakan tombol "Simpan ke Journal" di kalkulator Smart RRR.</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- 2. TAMPILAN KANBAN BOARD (DRAG & DROP) -->
+	<div id="journalKanbanView" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+		<!-- Kolom OPEN -->
+		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'OPEN')">
+			<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+				<span class="text-amber-400 font-bold text-xs uppercase flex items-center gap-1.5">
+					<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> OPEN PLAN
+				</span>
+				<span id="kanbanCountOpen" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono font-bold">0</span>
+			</div>
+			<div id="kanbanColOpen" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
+		</div>
+
+		<!-- Kolom WIN -->
+		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'WIN')">
+			<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+				<span class="text-emerald-400 font-bold text-xs uppercase flex items-center gap-1.5">
+					<span class="w-2 h-2 rounded-full bg-emerald-400"></span> WIN / TAKE PROFIT
+				</span>
+				<span id="kanbanCountWin" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono font-bold">0</span>
+			</div>
+			<div id="kanbanColWin" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
+		</div>
+
+		<!-- Kolom LOSS -->
+		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'LOSS')">
+			<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+				<span class="text-rose-400 font-bold text-xs uppercase flex items-center gap-1.5">
+					<span class="w-2 h-2 rounded-full bg-rose-400"></span> LOSS / STOP LOSS
+				</span>
+				<span id="kanbanCountLoss" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono font-bold">0</span>
+			</div>
+			<div id="kanbanColLoss" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
+		</div>
+	</div>
+</div>
 
 				<!-- TAB CONTENT 8: SMART ALERT SYSTEM & BROWSER PUSH NOTIFICATION -->
 				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
