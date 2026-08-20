@@ -80,8 +80,8 @@ const AudioFX = {
 			if (!this.ctx) return;
 			const osc = this.ctx.createOscillator();
 			const gain = this.ctx.createGain();
-			osc.type = 'sine'; //sine
-			osc.frequency.setValueAtTime(1300, this.ctx.currentTime); //800
+			osc.type = 'sine';
+			osc.frequency.setValueAtTime(1300, this.ctx.currentTime);
 			osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.05);
 			gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
 			gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
@@ -100,7 +100,7 @@ const AudioFX = {
 			notes.forEach((freq, idx) => {
 				const osc = this.ctx.createOscillator();
 				const gain = this.ctx.createGain();
-				osc.type = 'square'; //triangle
+				osc.type = 'square';
 				osc.frequency.setValueAtTime(freq, now + idx * 0.06);
 				gain.gain.setValueAtTime(0, now + idx * 0.06);
 				gain.gain.linearRampToValueAtTime(0.12, now + idx * 0.06 + 0.02);
@@ -120,8 +120,8 @@ const AudioFX = {
 			const osc = this.ctx.createOscillator();
 			const gain = this.ctx.createGain();
 			osc.type = 'sawtooth';
-			osc.frequency.setValueAtTime(800, now); //300
-			osc.frequency.setValueAtTime(1000, now + 0.08); //450
+			osc.frequency.setValueAtTime(800, now);
+			osc.frequency.setValueAtTime(1000, now + 0.08);
 			gain.gain.setValueAtTime(0.1, now);
 			gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
 			osc.connect(gain);
@@ -217,7 +217,6 @@ const databaseVIP = {
 };
 
 let globalStockData = null;
-let globalRadarDataList = [];
 let searchCooldownTimer = null;
 let exportCardCooldownTimer = null;
 let peerRefreshCooldownTimer = null;
@@ -425,16 +424,12 @@ function renderFundamentalWidget(ticker) {
 	const container = document.getElementById('tv_fundamental_container');
 	container.innerHTML = `
 		<div class="space-y-4">
-			<!-- Laporan Keuangan Detail -->
 			<div id="tv_financials_widget" class="w-full h-[540px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
-			<!-- Profil Perusahaan -->
 			<div id="tv_profile_widget" class="w-full h-[400px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
-			<!-- Fundamental Data (Key Stats & Valuasi Lengkap) -->
 			<div id="tv_fundamental_data_widget" class="w-full h-[500px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
 		</div>
 	`;
 
-	// Widget 1: Symbol Profile TradingView
 	const profileContainer = document.getElementById('tv_profile_widget');
 	const scriptProfile = document.createElement('script');
 	scriptProfile.type = 'text/javascript';
@@ -450,7 +445,6 @@ function renderFundamentalWidget(ticker) {
 	});
 	profileContainer.appendChild(scriptProfile);
 
-	// Widget 2: Fundamental Data TradingView
 	const fundDataContainer = document.getElementById('tv_fundamental_data_widget');
 	const scriptFundData = document.createElement('script');
 	scriptFundData.type = 'text/javascript';
@@ -468,7 +462,6 @@ function renderFundamentalWidget(ticker) {
 	});
 	fundDataContainer.appendChild(scriptFundData);
 
-	// Widget 3: Financials TradingView
 	const finContainer = document.getElementById('tv_financials_widget');
 	const scriptFin = document.createElement('script');
 	scriptFin.type = 'text/javascript';
@@ -489,7 +482,6 @@ function renderFundamentalWidget(ticker) {
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// OPTIMASI REALTIME DATA FETCHING
 async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const cachedData = getCachedStockData(ticker);
 	if (cachedData && !forceFetch) return cachedData;
@@ -534,7 +526,6 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 		const ma10 = getMA(10);
 		const ma20 = getMA(20);
 
-		// Ekstraksi data Volume aktual (meta) untuk menghitung Lot dan Total Valuasi (Val)
 		const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
 		const realVolume = result.meta?.regularMarketVolume || currentVolume;
 		const currentLot = Math.floor(realVolume / 100);
@@ -622,7 +613,6 @@ function showAISkeletonLoading() {
 	document.getElementById('tpProgressPercent').innerText = `Menghitung posisi teknikal...`;
 }
 
-// LOGIKA GENERATE AI SIGNAL & EKSKUSI SMART ALERT CHECK
 async function generateAISignal(ticker, isManualSearch = false) {
 	const now = new Date();
 	const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
@@ -661,7 +651,6 @@ async function generateAISignal(ticker, isManualSearch = false) {
 	renderAISignalUI(ticker, stockData, false);
 }
 
-// RENDER UI HASIL ANALISA
 function renderAISignalUI(ticker, stockData, isCached) {
 	const verdikEl = document.getElementById('aiVerdikText');
 	const scoreEl = document.getElementById('aiScoreBadge');
@@ -810,7 +799,6 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	AudioFX.playSuccess();
 }
 
-// COOLDOWN LOGIC EXPORT CARD (10 DETIK)
 function startExportCardCooldown(seconds = 10) {
 	const btn = document.getElementById('btnExportCard');
 	if (!btn) return;
@@ -839,7 +827,6 @@ function startExportCardCooldown(seconds = 10) {
 	}, 1000);
 }
 
-// FITUR: EXPORT TRADING PLAN CARD
 function exportTradingCard() {
 	const btn = document.getElementById('btnExportCard');
 	if (btn && btn.disabled) return;
@@ -894,7 +881,6 @@ function exportTradingCard() {
 	});
 }
 
-// COOLDOWN LOGIC REFRESH PEER DATA (12 DETIK)
 function startPeerRefreshCooldown(seconds = 12) {
 	const btn = document.getElementById('btnRefreshPeer');
 	if (!btn) return;
@@ -923,7 +909,6 @@ function startPeerRefreshCooldown(seconds = 12) {
 	}, 1000);
 }
 
-// FITUR NO. 2: PEER KOMPARASI HARGA SERUPA (HANYA MANUAL REFRESH VIA TOMBOL)
 async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	if (isManualRefresh) {
 		const btn = document.getElementById('btnRefreshPeer');
@@ -1010,7 +995,6 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	body.innerHTML = rowsHTML || `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tidak ditemukan saham dengan range harga serupa.</td></tr>`;
 }
 
-// FITUR JOURNAL TRADING & WIN RATE TRACKER
 function getJournalData() {
 	return JSON.parse(localStorage.getItem('stockid_trading_journal') || '[]');
 }
@@ -1068,7 +1052,6 @@ function updateJournalStatus(id, newStatus) {
 
 	saveJournalData(journal);
 
-	// Trigger pop-up sesuai kondisi
 	if (isWinning) {
 		triggerCuanCelebration();
 	} else if (isLosing) {
@@ -1110,8 +1093,8 @@ function renderJournalTable() {
 	}
 	
 	if (currentJournalView === 'kanban') {
-    renderKanbanBoard();
-}
+		renderKanbanBoard();
+	}
 
 	let rows = '';
 	journal.forEach(item => {
@@ -1213,7 +1196,6 @@ function calculateSmartRRR() {
 	}
 }
 
-// LOGIKA DROPDOWN SUGGESTION PENCARIAN
 function initSearchSuggestions() {
 	const input = document.getElementById('stockSearch');
 	const box = document.getElementById('searchSuggestionsBox');
@@ -1263,7 +1245,6 @@ function selectSuggestion(ticker) {
 	searchStock(true);
 }
 
-// FITUR NO. 3: RADAR BANDAR AUTOMATIC FULL SCAN
 async function startRadarProcess() {
 	if (isRadarScanning) return;
 	isRadarScanning = true;
@@ -1298,7 +1279,6 @@ async function startRadarProcess() {
 		}
 
 		if (validData.length > 0) {
-			globalRadarDataList = validData;
 			renderRadarItems(validData);
 		}
 
@@ -1454,7 +1434,6 @@ async function fetchStockNewsForAI(ticker) {
 	}
 }
 
-// ==================== FITUR 1: SMART ALERT & BROWSER PUSH NOTIFICATION SYSTEM ====================
 function checkNotificationStatus() {
 	const btn = document.getElementById('btnToggleNotification');
 	if (!btn) return;
@@ -1526,7 +1505,6 @@ function saveAlerts(ticker, alerts) {
 	renderAllAlerts();
 }
 
-// Global Set untuk melacak status buka/tutup accordion
 let openAlertDropdowns = new Set();
 
 function toggleAlertAccordion(ticker) {
@@ -1545,7 +1523,6 @@ function toggleAlertAccordion(ticker) {
 	}
 }
 
-// FUNGSI BARU: Merender semua alert dengan gaya UI Accordion Minimalis (Revisi Layout)
 function renderAllAlerts() {
 	const container = document.getElementById('alertListContainer');
 	if (!container) return;
@@ -1569,7 +1546,6 @@ function renderAllAlerts() {
 		return;
 	}
 
-	// SORTING: Saham yang sedang dicari (currentTicker) selalu di atas, sisanya diurutkan berdasar jumlah alert aktif
 	groupedAlerts.sort((a, b) => {
 		if (a.ticker === currentTicker) return -1;
 		if (b.ticker === currentTicker) return 1;
@@ -1586,7 +1562,6 @@ function renderAllAlerts() {
 		const ticker = group.ticker;
 		const activeCount = group.alerts.filter(a => a.active && !a.triggered).length;
 		
-		// Deteksi tanggal (Fallback ke hari ini jika data lama tidak punya properti date)
 		let alertDate = group.alerts[0].date;
 		if (!alertDate) {
 			const now = new Date();
@@ -1603,8 +1578,6 @@ function renderAllAlerts() {
 
 		htmlContent += `
 			<div class="bg-slate-950 rounded-xl border ${borderHighlight} overflow-hidden transition-all duration-200 col-span-1 md:col-span-2 lg:col-span-3">
-				
-				<!-- Header Accordion -->
 				<div onclick="toggleAlertAccordion('${ticker}')" class="p-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-900/80 transition select-none group">
 					<div class="flex items-center gap-3 md:gap-4">
 						<div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-slate-900 flex items-center justify-center border border-slate-700/60 font-bold text-white group-hover:border-emerald-500/40 transition text-xs md:text-sm shrink-0">
@@ -1630,11 +1603,9 @@ function renderAllAlerts() {
 					</div>
 				</div>
 
-				<!-- Body Accordion (Daftar Harga Target) -->
 				<div id="alert-body-${ticker}" class="${hiddenClass} border-t border-slate-800/80 bg-slate-900/30 p-2 space-y-1.5">
 		`;
 
-		// Looping individual list
 		group.alerts.forEach((alertObj, index) => {
 			const targetPrice = alertObj.price || alertObj; 
 			const isActive = alertObj.active !== undefined ? alertObj.active : true;
@@ -1650,7 +1621,6 @@ function renderAllAlerts() {
 			let toggleBtn = '';
 			let rowBorder = 'border-slate-800/60';
 
-			// Hanya menggunakan border-l (garis kiri) untuk indikator warna
 			if (isTriggered) {
 				statusBadge = '<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold">TERCAPAI</span>';
 				rowBorder = 'border-l-[3px] border-emerald-500/60';
@@ -1665,7 +1635,6 @@ function renderAllAlerts() {
 				toggleBtn = `<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[9px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-1 rounded font-bold transition hover:text-white">OFF</button>`;
 			}
 
-			// Menghapus kelas 'border' dan 'rounded-lg', mengganti dengan 'rounded-r-lg' agar lebih sleek
 			htmlContent += `
 				<div class="flex items-center justify-between bg-slate-900/60 p-2.5 rounded-r-lg ${rowBorder} hover:bg-slate-800 transition">
 					<div class="flex items-center gap-3">
@@ -1707,7 +1676,6 @@ function clearAllAlerts() {
 	}
 }
 
-// LOGIKA SYNC DENGAN AI (Ditambahkan format Tanggal / Date)
 function syncAlertsFromAI() {
 	let price = 100;
 	if (globalStockData && globalStockData.price) {
@@ -1719,7 +1687,6 @@ function syncAlertsFromAI() {
 	const res2 = roundToBEITick(price * 1.08, 'ceil'); 
 	const tp2 = roundToBEITick(price * 1.12, 'ceil'); 
 
-	// Generate format "20 Agu 26"
 	const now = new Date();
 	const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 	const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear().toString().slice(-2)}`;
@@ -1732,7 +1699,6 @@ function syncAlertsFromAI() {
 	];
 
 	saveAlerts(currentTicker, syncTargets);
-	// Auto buka dropdown untuk saham yang baru disync
 	openAlertDropdowns.add(currentTicker); 
 	renderAllAlerts();
 
@@ -1763,7 +1729,6 @@ function removePriceAlert(ticker, index) {
 	saveAlerts(ticker, alerts);
 }
 
-// TRIGGER LOGIC REALTIME UNTUK SMART ALERT
 function checkPriceAlertsRealtime(ticker, currentPrice) {
 	if (!currentPrice || currentPrice <= 0) return;
 
@@ -1801,10 +1766,6 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 	}
 }
 
-// -------------------------------------------------------------
-// [REVISI NO 4]: Meragamkan Berita dan Korporasi Realtime (No Mock)
-// Menggunakan kombinasi API Yahoo Finance Search & Google News RSS (Hingga 9 Item)
-// -------------------------------------------------------------
 async function fetchStockNews(ticker) {
 	const container = document.getElementById('newsContainer');
 	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-4"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i> Memuat variasi berita terkini (Yahoo & Google)...</div>`;
@@ -1813,7 +1774,6 @@ async function fetchStockNews(ticker) {
 	let hasNews = false;
 	container.innerHTML = '';
 
-	// 1. Coba Menggunakan API Pencarian Yahoo Finance Realtime terlebih dahulu (Hingga 9 Item)
 	try {
 		const yahooUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${ticker}.JK&newsCount=9`;
 		const response = await fetch(yahooUrl);
@@ -1841,7 +1801,6 @@ async function fetchStockNews(ticker) {
 		console.warn("Yahoo News fetch failed:", e);
 	}
 
-	// 2. Fallback / Tambahan menggunakan Google RSS (Hingga 9 Item)
 	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+OR+bursa+indonesia+OR+ekonomi&hl=id&gl=ID&ceid=ID:id`;
 	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 
@@ -1882,7 +1841,6 @@ async function fetchCorporateAction(ticker) {
 	const container = document.getElementById('corporateContainer');
 	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3">Memuat data aksi korporasi...</div>`;
 	
-	// Query RSS diperluas jangkauan dan variasinya
 	const query = encodeURIComponent(`${ticker} AND (dividen OR RUPS OR "right issue" OR "stock split" OR buyback OR tender OR IPO)`);
 	const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=id&gl=ID&ceid=ID:id`;
 	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
@@ -2010,7 +1968,6 @@ function searchStock(bypassCooldown = false) {
 	}
 }
 
-// FITUR: SYSTEM BACKGROUND PRE-FETCHER & ALERT CHECKER
 function startBackgroundAutoCache() {
 	const FIVE_MINUTES = 5 * 60 * 1000;
 	
@@ -2020,7 +1977,6 @@ function startBackgroundAutoCache() {
 			checkPriceAlertsRealtime(currentTicker, currentData.price);
 		}
 
-		// Kumpulkan semua emiten yang memiliki alert aktif dari localStorage untuk selalu diperiksa
 		let activeAlertTickers = new Set();
 		for (let i = 0; i < localStorage.length; i++) {
 			const key = localStorage.key(i);
@@ -2036,7 +1992,6 @@ function startBackgroundAutoCache() {
 			}
 		}
 
-		// Tambahkan juga saham populer ke dalam antrean
 		const popularTickers = ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'CUAN', 'ANTM', 'PANI'];
 		for (const ticker of popularTickers) {
 			if (ticker !== currentTicker) {
@@ -2044,7 +1999,6 @@ function startBackgroundAutoCache() {
 			}
 		}
 
-		// Eksekusi penarikan data secara beruntun agar API tidak terbebani
 		for (const ticker of activeAlertTickers) {
 			const bgData = await fetchRealtimeStockData(ticker, true);
 			if (bgData) {
@@ -2062,13 +2016,10 @@ document.getElementById('stockSearch').addEventListener('keypress', function(e) 
 	if (e.key === 'Enter') searchStock();
 });
 
-// ==================== FITUR CANGGIH 1: PENCARIAN SUARA (VOICE COMMAND) ====================
-// ==================== FITUR CANGGIH 1: PENCARIAN SUARA (VOICE COMMAND) ====================
 function startVoiceSearch() {
 	const voiceIcon = document.getElementById('voiceIcon');
 	const input = document.getElementById('stockSearch');
 
-	// Mengecek apakah browser mendukung Web Speech API
 	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 	if (!SpeechRecognition) {
 		alert("Browser kamu belum mendukung fitur pencarian suara. Coba gunakan Chrome.");
@@ -2076,7 +2027,7 @@ function startVoiceSearch() {
 	}
 
 	const recognition = new SpeechRecognition();
-	recognition.lang = 'id-ID'; // Menggunakan bahasa Indonesia
+	recognition.lang = 'id-ID';
 	recognition.interimResults = false;
 	recognition.maxAlternatives = 1;
 
@@ -2089,30 +2040,25 @@ function startVoiceSearch() {
 
 	recognition.onresult = function(event) {
 		const transcript = event.results[0][0].transcript.trim().toUpperCase();
-		const spacelessTranscript = transcript.replace(/\s+/g, ''); // Versi teks tanpa spasi sama sekali
+		const spacelessTranscript = transcript.replace(/\s+/g, '');
 		let foundTicker = null;
 
-		// 1. CARA PINTAR: Cek apakah ada Ticker di dalam uniqueRadarWatchlist yang terucap
 		if (typeof uniqueRadarWatchlist !== 'undefined') {
-			// Cek per kata (Contoh: "Coba dong analisa saham BBCA")
 			const words = transcript.split(' ');
 			foundTicker = uniqueRadarWatchlist.find(ticker => words.includes(ticker));
 
-			// Cek tanpa spasi jika belum ketemu (Contoh sistem mendengar: "Coba analisa saham B B C A")
 			if (!foundTicker) {
 				foundTicker = uniqueRadarWatchlist.find(ticker => spacelessTranscript.includes(ticker));
 			}
 		}
 
-		// 2. FALLBACK: Jika tidak ada di watchlist (atau watchlist gagal dimuat), pakai sistem pembersih kata standar
 		if (!foundTicker) {
 			foundTicker = transcript.replace(/COBA|DONG|ANALISA|CARI|SAHAM|BUKA|TOLONG/g, '').replace(/\s+/g, '').trim();
 		}
 
-		// 3. EKSEKUSI PENCARIAN
 		if (foundTicker) {
 			input.value = foundTicker;
-			searchStock(true); // Otomatis trigger pencarian
+			searchStock(true);
 		} else {
 			input.placeholder = "Gagal menangkap kode saham...";
 		}
@@ -2134,13 +2080,11 @@ function startVoiceSearch() {
 	recognition.start();
 }
 
-// ==================== FITUR CANGGIH 2: SELEBRASI CUAN INTERAKTIF ====================
-// Menggunakan URL GIF animasi kartun online berkualitas (Gratis via Giphy)
 const internetGainImages = [
-	'https://media.giphy.com/media/LdOyjZ7io5Msw/giphy.gif', // Hujan uang 1
-	'https://media.giphy.com/media/3o6gDWzmAzrpi5DQU8/giphy.gif', // Senyum ceria
-	'https://media.giphy.com/media/xTiTnqUxyWbsAXq7Ju/giphy.gif', // Ambil uangku
-	'https://media.giphy.com/media/VTxmwaCEwSlZm/giphy.gif', // Hujan uang 2
+	'https://media.giphy.com/media/LdOyjZ7io5Msw/giphy.gif',
+	'https://media.giphy.com/media/3o6gDWzmAzrpi5DQU8/giphy.gif',
+	'https://media.giphy.com/media/xTiTnqUxyWbsAXq7Ju/giphy.gif',
+	'https://media.giphy.com/media/VTxmwaCEwSlZm/giphy.gif',
 ];
 
 function triggerCuanCelebration() {
@@ -2148,11 +2092,9 @@ function triggerCuanCelebration() {
 	const content = document.getElementById('cuanModalContent');
 	const grid = document.getElementById('cuanGrid');
 
-	// Mengacak daftar gambar dan mengambil 4 gambar teratas untuk grid 2x2
 	const shuffled = [...internetGainImages].sort(() => 0.5 - Math.random());
 	const selectedImages = shuffled.slice(0, 4);
 
-	// Memasukkan 4 gambar ke dalam grid dengan format object-contain (tidak terpotong)
 	grid.innerHTML = selectedImages.map(url => `
 		<div class="bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center p-1">
 			<img src="${url}" alt="Profit Cuan" class="w-full h-28 md:h-36 object-contain rounded">
@@ -2161,7 +2103,6 @@ function triggerCuanCelebration() {
 
 	AudioFX.playSuccess();
 
-	// Animasi Pop-up Muncul
 	modal.classList.remove('hidden');
 	setTimeout(() => {
 		modal.classList.remove('opacity-0');
@@ -2170,7 +2111,6 @@ function triggerCuanCelebration() {
 		content.classList.add('scale-100');
 	}, 10);
 
-	// Otomatis tertutup setelah 6 detik agar user punya waktu menikmati animasinya
 	setTimeout(() => {
 		closeCuanCelebration();
 	}, 6000);
@@ -2186,17 +2126,16 @@ function closeCuanCelebration() {
 		content.classList.add('scale-50');
 		setTimeout(() => {
 			modal.classList.add('hidden');
-			document.getElementById('cuanGrid').innerHTML = ''; // Bersihkan gambar setelah ditutup
+			document.getElementById('cuanGrid').innerHTML = '';
 		}, 300);
 	}
 }
 
-// ==================== FITUR EVALUASI LOSS / RISK MANAGEMENT ====================
 const internetLossImages = [
-	'https://media.giphy.com/media/BEob5qwFkSJ7G/giphy.gif', // Bear market / refleksi
-	'https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif', // Santai / evaluasi
-	'https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif', // Keep calm
-	'https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif'  // Bangkit kembali
+	'https://media.giphy.com/media/BEob5qwFkSJ7G/giphy.gif',
+	'https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif',
+	'https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif',
+	'https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif'
 ];
 
 function triggerLossCelebration() {
@@ -2204,7 +2143,6 @@ function triggerLossCelebration() {
 	const content = document.getElementById('lossModalContent');
 	const grid = document.getElementById('lossGrid');
 
-	// Mengacak daftar gambar dan mengambil 4 gambar untuk grid 2x2
 	const shuffled = [...internetLossImages].sort(() => 0.5 - Math.random());
 	const selectedImages = shuffled.slice(0, 4);
 
@@ -2214,7 +2152,6 @@ function triggerLossCelebration() {
 		</div>
 	`).join('');
 
-	// Menggunakan efek suara alert untuk loss (lebih tegas namun tenang)
 	AudioFX.playAlert();
 
 	modal.classList.remove('hidden');
@@ -2225,7 +2162,6 @@ function triggerLossCelebration() {
 		content.classList.add('scale-100');
 	}, 10);
 
-	// Otomatis tertutup setelah 6 detik
 	setTimeout(() => {
 		closeLossCelebration();
 	}, 6000);
@@ -2246,7 +2182,6 @@ function closeLossCelebration() {
 	}
 }
 
-// ==================== FITUR BARU: EXPORT JOURNAL TO CSV ====================
 function exportJournalToCSV() {
 	const journal = getJournalData();
 	if (journal.length === 0) {
@@ -2271,7 +2206,6 @@ function exportJournalToCSV() {
 	AudioFX.playSuccess();
 }
 
-// ==================== FITUR BARU: KANBAN BOARD (DRAG & DROP) ====================
 let currentJournalView = 'table';
 
 function switchJournalView(view) {
@@ -2366,7 +2300,6 @@ function renderKanbanBoard() {
 	document.getElementById('kanbanCountLoss').innerText = countLoss;
 }
 
-// ==================== IDX SECTOR HEATMAP (FIXED) ====================
 let isHeatmapLoaded = false;
 function renderSectorHeatmap() {
 	const container = document.getElementById('tv_heatmap_container');
@@ -2390,7 +2323,6 @@ function renderSectorHeatmap() {
 	isHeatmapLoaded = true;
 }
 
-// INITIALIZATION ON LOAD
 initSearchSuggestions();
 checkVIPAuth();
 cleanExpiredCache();
