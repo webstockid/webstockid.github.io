@@ -394,7 +394,7 @@
 						<i data-lucide="calculator" class="w-4 h-4 text-cyan-400"></i> Smart RRR
 					</button>
 					<button onclick="switchTab('journal')" id="tabBtn-journal" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="book-open" class="w-4 h-4 text-yellow-400"></i> Journal Trading
+						<i data-lucide="book-open" class="w-4 h-4 text-mist-400"></i> Journal Trading
 					</button>
 					<button onclick="switchTab('heatmap')" id="tabBtn-heatmap" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Sektor Heatmap
@@ -544,11 +544,11 @@
 					<div class="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="git-compare" class="w-4 h-4 text-cyan-400"></i> Komparasi Saham Harga Serupa (<strong id="peerTickerLabel" class="text-cyan-400">MDIA</strong>)
+								<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Komparasi Saham Harga Serupa (<strong id="peerTickerLabel" class="text-emerald-400">MDIA</strong>)
 							</span>
 							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Membandingkan emiten pilihan kamu dengan saham-saham yang berada di range harga yang sama.</p>
 						</div>
-						<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="text-[10px] lg:text-xs bg-cyan-600 hover:bg-cyan-500 text-white border border-cyan-600 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto shadow-sm">
+						<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="text-[10px] lg:text-xs bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-600 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto shadow-sm">
 							<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data
 						</button>
 					</div>
@@ -567,7 +567,7 @@
 							</thead>
 							<tbody id="peerTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60 font-mono">
 								<tr>
-									<td colspan="6" class="p-6 text-center text-slate-400 font-sans">Klik tombol "Refresh Data" di atas untuk memuat data komparasi saham.</td>
+									<td colspan="6" class="p-6 text-center text-slate-400">Klik tombol "Refresh Data" di atas untuk memuat data komparasi saham.</td>
 								</tr>
 							</tbody>
 						</table>
@@ -605,13 +605,13 @@
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="calculator" class="w-4 h-4 lg:w-5 lg:h-5 text-fuchsia-400"></i> Smart RRR & Position Sizing (<strong id="rrrTickerLabel" class="text-fuchsia-400">MDIA</strong>)
+								<i data-lucide="calculator" class="w-4 h-4 lg:w-5 lg:h-5 text-cyan-400"></i> Smart RRR & Position Sizing (<strong id="rrrTickerLabel" class="text-cyan-400">MDIA</strong>)
 							</span>
 							<p class="text-[10px] text-slate-400 mt-0.5">Kalkulasi ukuran lot & rasio risiko sebelum mengeksekusi order.</p>
 						</div>
 						
 						<div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
-							<button onclick="saveTradingPlanToJournal()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-fuchsia-800 hover:bg-fuchsia-500 hover:text-white text-white font-bold px-3.5 py-2 rounded-lg border border-fuchsia-700 transition flex items-center justify-center gap-1.5 shadow-sm">
+							<button onclick="saveTradingPlanToJournal()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-cyan-800 hover:bg-cyan-500 hover:text-white text-white font-bold px-3.5 py-2 rounded-lg border border-cyan-700 transition flex items-center justify-center gap-1.5 shadow-sm">
 								<i data-lucide="bookmark-plus" class="w-3.5 h-3.5"></i> Simpan ke Journal
 							</button>
 							<button onclick="autoFillRRRFromAI()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-blue-800 hover:bg-blue-500 hover:text-white text-white font-bold px-3.5 py-2 rounded-lg border border-blue-700 transition flex items-center justify-center gap-1.5">
@@ -748,7 +748,7 @@
 							</thead>
 							<tbody id="journalTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60 font-mono">
 								<tr>
-									<td colspan="8" class="p-6 text-center text-slate-400 font-sans">Belum ada Trading Plan tersimpan. Gunakan tombol "Simpan ke Journal" di kalkulator Smart RRR.</td>
+									<td colspan="8" class="p-6 text-center text-slate-400">Belum ada Trading Plan tersimpan. Gunakan tombol "Simpan ke Journal" di kalkulator Smart RRR.</td>
 								</tr>
 							</tbody>
 						</table>
@@ -793,7 +793,7 @@
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="bell-ring" class="w-4 h-4 text-rose-400"></i> Smart Alert & Push Notification System
+								<i data-lucide="bell-ring" class="w-4 h-4 text-teal-400"></i> Smart Alert & Push Notification System
 							</span>
 							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh target pada seluruh saham yang kamu pantau.</p>
 						</div>
@@ -808,11 +808,11 @@
 					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
 						<div>
 							<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
-								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Alert Untuk: $<span id="alertTickerLabel" class="text-white">MDIA</span>
+								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Alert Untuk: $<span id="alertTickerLabel" class="text-teal">MDIA</span>
 							</span>
 							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Ambil data Entry, Resistance, Take Profit, dan Stop Loss dari AI lalu tambahkan ke riwayat pantauan.</p>
 						</div>
-						<button onclick="syncAlertsFromAI()" class="bg-blue-800 hover:bg-blue-500 hover:text-black text-white px-5 py-2.5 rounded-lg border border-blue-700 font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
+						<button onclick="syncAlertsFromAI()" class="bg-teal-800 hover:bg-teal-500 hover:text-black text-white px-5 py-2.5 rounded-lg border border-teal-700 font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
 							<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Tambahkan ke Alert
 						</button>
 					</div>
@@ -825,7 +825,7 @@
 							<button onclick="clearAllAlerts()" class="text-[9px] lg:text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-2 py-1 rounded transition font-bold">Bersihkan Semua</button>
 						</div>
 						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 min-h-[100px] max-h-[400px] overflow-y-auto scrollbar-thin pr-1">
-							<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs font-sans">Belum ada alert harga yang dipasang pada saham manapun. Klik "Tambahkan ke Alert" di atas.</div>
+							<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs">Belum ada alert harga yang dipasang pada saham manapun. Klik "Tambahkan ke Alert" di atas.</div>
 						</div>
 					</div>
 
@@ -853,7 +853,7 @@
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div>
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="globe-2" class="w-4 h-4 text-emerald-400"></i> Peta Panas Sektor & Saham BEI (IDX Heatmap)
+								<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Peta Panas Sektor & Saham BEI (IDX Heatmap)
 							</span>
 							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Memantau aliran kapital dan performa sektoral Bursa Efek Indonesia secara visual interaktif.</p>
 						</div>
@@ -978,7 +978,7 @@
 			if ('serviceWorker' in navigator) {
 				window.addEventListener('load', function() {
 					navigator.serviceWorker.register('sw.js').then(function(registration) {
-						alert('SW Notification registered successfully');
+						console.log('SW Notification registered successfully');
 					}).catch(function(error) {
 						console.log('SW registration failed:', error);
 					});

@@ -972,7 +972,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 		rowsHTML += `
 			<tr class="${rowClass}">
 				<td class="p-3.5 text-white font-sans flex items-center gap-2">
-					<strong class="text-amber-400 font-mono">&dollar;${data.ticker}</strong>
+					<strong class="text-emerald-400 font-mono">&dollar;${data.ticker}</strong>
 				</td>
 				<td class="p-3.5 text-white">Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}</td>
 				<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
@@ -981,11 +981,11 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 				<td class="p-3.5 ${data.price >= data.ma5 ? 'text-emerald-400' : 'text-rose-400'}">
 					${data.price >= data.ma5 ? 'Bullish (Above MA5)' : 'Bearish (Below MA5)'}
 				</td>
-				<td class="p-3.5 ${data.volRatio >= 1.2 ? 'text-cyan-400 font-bold' : 'text-slate-400'}">
+				<td class="p-3.5 ${data.volRatio >= 1.2 ? 'text-emerald-400 font-bold' : 'text-slate-400'}">
 					${data.volRatio}x Vol
 				</td>
 				<td class="p-3.5 text-center">
-					<button onclick="selectSuggestion('${data.ticker}')" class="text-[10px] bg-cyan-600 hover:bg-emerald-600 text-white hover:text-white px-3 py-1 rounded-lg transition border-cyan-700/30 font-bold">
+					<button onclick="selectSuggestion('${data.ticker}')" class="text-[10px] bg-emerald-600 hover:bg-cyan-600 text-white hover:text-white px-3 py-1 rounded-lg transition border-emerald-700/30 font-bold">
 						Lihat Chart »
 					</button>
 				</td>
