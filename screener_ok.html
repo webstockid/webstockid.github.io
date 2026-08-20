@@ -200,10 +200,32 @@
 			</div>
 		</div>
 		
-		<!-- RUNNING TAPE (PITA SAHAM BERJALAN) -->
-<div class="bg-slate-950 border-b border-slate-800/80 py-1.5 overflow-hidden whitespace-nowrap relative z-30 select-none">
-	<div class="animate-marquee gap-3 text-[11px] font-mono text-slate-300" id="runningTapeContainer">
-		<span class="text-emerald-400 px-3">⚡ Menghubungkan ke Real-Time Market Bursa Efek Indonesia...</span>
+		<!-- RUNNING TAPE TRADINGVIEW (SUPER CEPAT & REAL-TIME) -->
+<div class="bg-slate-950 border-b border-slate-800/80 overflow-hidden relative z-30 select-none">
+	<div class="tradingview-widget-container">
+		<div class="tradingview-widget-container__widget"></div>
+		<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+		{
+			"symbols": [
+				{ "description": "BBCA", "proName": "IDX:BBCA" },
+				{ "description": "BBRI", "proName": "IDX:BBRI" },
+				{ "description": "BMRI", "proName": "IDX:BMRI" },
+				{ "description": "TLKM", "proName": "IDX:TLKM" },
+				{ "description": "ASII", "proName": "IDX:ASII" },
+				{ "description": "CUAN", "proName": "IDX:CUAN" },
+				{ "description": "BRPT", "proName": "IDX:BRPT" },
+				{ "description": "ANTM", "proName": "IDX:ANTM" },
+				{ "description": "EMAS", "proName": "IDX:EMAS" },
+				{ "description": "MDIA", "proName": "IDX:MDIA" },
+				{ "description": "PANI", "proName": "IDX:PANI" }
+			],
+			"showSymbolLogo": false,
+			"isTransparent": true,
+			"displayMode": "adaptive",
+			"colorTheme": "dark",
+			"locale": "id"
+		}
+		</script>
 	</div>
 </div>
 
@@ -215,7 +237,7 @@
 			class="w-full bg-slate-800 text-sm lg:text-base border border-slate-700 rounded-lg pl-10 lg:pl-11 pr-[110px] py-2 lg:py-2.5 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
 		
 		<!-- Tombol Pencarian Suara (Voice Command) -->
-		<button onclick="startVoiceSearch()" id="btnVoiceSearch" title="Pencarian Suara" class="absolute right-[66px] top-[3.5px] lg:top-[6px] text-slate-400 hover:text-emerald-400 transition z-10 p-1">
+		<button onclick="startVoiceSearch()" id="btnVoiceSearch" title="Pencarian Suara" class="absolute right-[66px] top-[3px] lg:top-[6px] text-slate-400 hover:text-emerald-400 transition z-10 p-1">
 			<i id="voiceIcon" class="fa-solid fa-microphone text-sm lg:text-base"></i>
 		</button>
 
