@@ -475,7 +475,8 @@ function renderFundamentalWidget(ticker) {
 		"width": "100%",
 		"height": "100%",
 		"symbol": `IDX:${ticker}`,
-		"locale": "id"
+		"locale": "id",
+		"showSymbolLogo": true
 	});
 	finContainer.appendChild(scriptFin);
 }
@@ -1930,7 +1931,7 @@ function startSearchCooldown(seconds) {
 			btn.classList.remove('opacity-50', 'cursor-not-allowed');
 			btn.innerText = "Cari";
 		} else {
-			btn.innerText = `Cari (${remaining}s)`;
+			btn.innerText = `Cari(${remaining}s)`;
 		}
 	}, 1000);
 }

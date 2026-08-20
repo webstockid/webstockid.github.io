@@ -12,9 +12,11 @@
 		<meta property="og:title" content="Stock ID Screener #Andaimology">
 		<meta property="og:description" content="Alat Screening Saham yang dilengkapi AI dan Analisa Teknikal">
 		<meta property="og:type" content="website">
+		
 		<script src="https://cdn.tailwindcss.com"></script>
 		<script src="https://unpkg.com/lucide@latest"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+		
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gantari&display=swap">
@@ -22,6 +24,7 @@
 		<link rel="icon" type="image/x-icon" href="stockid_gambar/stockicon.jpg">
 		<link rel="icon" type="image/png" sizes="60x60" href="stockid_gambar/stockicon.jpg">
 		<link rel="apple-touch-icon" sizes="180x180" href="stockid_gambar/stockicon.jpg">
+		
 		<style>
 			body {
 				font-family: "Gantari";
@@ -53,23 +56,23 @@
 				animation: shimmer 1.5s infinite;
 			}
 			@keyframes marquee {
-    0% { transform: translateX(0%); }
-    100% { transform: translateX(-50%); }
-}
-.animate-marquee {
-    display: inline-flex;
-    width: max-content;
-    animation: marquee 35s linear infinite;
-}
-.animate-marquee:hover {
-    animation-play-state: paused;
-}
+				0% { transform: translateX(0%); }
+				100% { transform: translateX(-50%); }
+			}
+			.animate-marquee {
+				display: inline-flex;
+				width: max-content;
+				animation: marquee 35s linear infinite;
+			}
+			.animate-marquee:hover {
+				animation-play-state: paused;
+			}
 		</style>
 	</head>
 
 	<body class="text-slate-200 antialiased overflow-x-hidden">
 
-		<!-- Modal Pop-up Awal -->
+		<!-- Modal Pop-up Welcome -->
 		<div id="welcomeModal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
 			<div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 text-center">
 				<div class="inline-flex p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20 mb-1">
@@ -177,7 +180,7 @@
 			</div>
 		</nav>
 
-		<!-- DASHBOARD INFORMASI AKSES AKUN PREMIUM -->
+		<!-- Dashboard Informasi Akun Premium -->
 		<div id="vipDashboard" class="hidden w-full bg-slate-900 border-b border-emerald-500/20 py-3 px-4 shadow-lg transition-all">
 			<div class="max-w-7xl 2xl:max-w-[1600px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 text-xs sm:text-sm lg:text-base">
 				<div class="flex flex-wrap items-center gap-3">
@@ -200,57 +203,57 @@
 			</div>
 		</div>
 		
-		<!-- RUNNING TAPE TRADINGVIEW (SUPER CEPAT & REAL-TIME) -->
-<div class="bg-slate-950 border-b border-slate-800/80 overflow-hidden relative z-30 select-none">
-	<div class="tradingview-widget-container">
-		<div class="tradingview-widget-container__widget"></div>
-		<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-		{
-			"symbols": [
-				{ "description": "BBCA", "proName": "IDX:BBCA" },
-				{ "description": "BBRI", "proName": "IDX:BBRI" },
-				{ "description": "BMRI", "proName": "IDX:BMRI" },
-				{ "description": "TLKM", "proName": "IDX:TLKM" },
-				{ "description": "ASII", "proName": "IDX:ASII" },
-				{ "description": "CUAN", "proName": "IDX:CUAN" },
-				{ "description": "BRPT", "proName": "IDX:BRPT" },
-				{ "description": "ANTM", "proName": "IDX:ANTM" },
-				{ "description": "EMAS", "proName": "IDX:EMAS" },
-				{ "description": "MDIA", "proName": "IDX:MDIA" },
-				{ "description": "PANI", "proName": "IDX:PANI" }
-			],
-			"showSymbolLogo": false,
-			"isTransparent": true,
-			"displayMode": "adaptive",
-			"colorTheme": "dark",
-			"locale": "id"
-		}
-		</script>
-	</div>
-</div>
+		<!-- Running Tape TradingView -->
+		<div class="bg-slate-950 border-b border-slate-800/80 overflow-hidden relative z-30 select-none">
+			<div class="tradingview-widget-container">
+				<div class="tradingview-widget-container__widget"></div>
+				<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+				{
+					"symbols": [
+						{ "description": "BBCA", "proName": "IDX:BBCA" },
+						{ "description": "BBRI", "proName": "IDX:BBRI" },
+						{ "description": "BMRI", "proName": "IDX:BMRI" },
+						{ "description": "TLKM", "proName": "IDX:TLKM" },
+						{ "description": "ASII", "proName": "IDX:ASII" },
+						{ "description": "CUAN", "proName": "IDX:CUAN" },
+						{ "description": "BRPT", "proName": "IDX:BRPT" },
+						{ "description": "ANTM", "proName": "IDX:ANTM" },
+						{ "description": "EMAS", "proName": "IDX:EMAS" },
+						{ "description": "MDIA", "proName": "IDX:MDIA" },
+						{ "description": "PANI", "proName": "IDX:PANI" }
+					],
+					"showSymbolLogo": false,
+					"isTransparent": true,
+					"displayMode": "adaptive",
+					"colorTheme": "dark",
+					"locale": "id"
+				}
+				</script>
+			</div>
+		</div>
 
-		<!-- Fixed Search Bar Melayang dengan Dropdown Suggestion -->
-<div class="sticky top-20 left-0 w-full z-20 glassmorphism border-b border-slate-800/80 py-3 px-4">
-	<div class="max-w-md lg:max-w-xl mx-auto relative" id="searchContainer">
-		<i data-lucide="search" class="absolute left-3.5 top-3 lg:top-3.5 w-4 h-4 lg:w-5 lg:h-5 text-white z-10"></i>
-		<input type="text" id="stockSearch" autocomplete="off" placeholder="Cari emiten (BBCA...) atau klik Mic" 
-			class="w-full bg-slate-800 text-sm lg:text-base border border-slate-700 rounded-lg pl-10 lg:pl-11 pr-[110px] py-2 lg:py-2.5 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
-		
-		<!-- Tombol Pencarian Suara (Voice Command) -->
-		<button onclick="startVoiceSearch()" id="btnVoiceSearch" title="Pencarian Suara" class="absolute right-[66px] top-[3px] lg:top-[6px] text-slate-400 hover:text-emerald-400 transition z-10 p-1">
-			<i id="voiceIcon" class="fa-solid fa-microphone text-sm lg:text-base"></i>
-		</button>
+		<!-- Fixed Search Bar Melayang -->
+		<div class="sticky top-20 left-0 w-full z-20 glassmorphism border-b border-slate-800/80 py-3 px-4">
+			<div class="max-w-md lg:max-w-xl mx-auto relative" id="searchContainer">
+				<i data-lucide="search" class="absolute left-3.5 top-3 lg:top-3.5 w-4 h-4 lg:w-5 lg:h-5 text-white z-10"></i>
+				<input type="text" id="stockSearch" autocomplete="off" placeholder="Cari emiten (BBCA...) atau klik Mic" 
+					class="w-full bg-slate-800 text-sm lg:text-base border border-slate-700 rounded-lg pl-10 lg:pl-11 pr-[110px] py-2 lg:py-2.5 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
+				
+				<!-- Tombol Pencarian Suara -->
+				<button onclick="startVoiceSearch()" id="btnVoiceSearch" title="Pencarian Suara" class="absolute right-[66px] top-[3px] lg:top-[6px] text-slate-400 hover:text-emerald-400 transition z-10 p-1">
+					<i id="voiceIcon" class="fa-solid fa-microphone text-sm lg:text-base"></i>
+				</button>
 
-		<!-- Dropdown Menu Suggestions -->
-		<div id="searchSuggestionsBox" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl backdrop-blur-xl max-h-60 overflow-y-auto z-50 divide-y divide-slate-800/60 scrollbar-thin"></div>
+				<!-- Dropdown Menu Suggestions -->
+				<div id="searchSuggestionsBox" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl backdrop-blur-xl max-h-60 overflow-y-auto z-50 divide-y divide-slate-800/60 scrollbar-thin"></div>
 
-		<button onclick="searchStock()" class="absolute right-1 top-1 text-xs lg:text-sm bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/40 font-bold px-2 py-1.5 lg:py-2 rounded-md transition z-10">
-			Cari
-		</button>
-	</div>
-</div>
+				<button onclick="searchStock()" class="absolute right-1 top-1 text-xs lg:text-sm bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/40 font-bold px-2 py-1.5 lg:py-2 rounded-md transition z-10">
+					Cari
+				</button>
+			</div>
+		</div>
 
-		<!-- MODAL GATEWAY LOGIN TOKEN VIP -->
+		<!-- Modal Gateway Token VIP -->
 		<div id="vipGatewayModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
 			<div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 relative my-8">
 				<div class="text-center space-y-1.5">
@@ -271,7 +274,6 @@
 					</button>
 				</div>
 
-				<!-- RINGKASAN FITUR DALAM APLIKASI -->
 				<div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3.5 space-y-2.5 text-left">
 					<span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
 						<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Fitur Unggulan Yang Didapat:
@@ -322,9 +324,8 @@
 		<!-- Main Content -->
 		<main class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 lg:px-8 pt-6 lg:pt-8 pb-12 space-y-6 lg:space-y-8">
 
-			<!-- BARIS ATAS: CHART & METERAN TEKNIKAL SEJAJAR -->
+			<!-- Baris Atas: Chart & Meteran Teknikal -->
 			<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-				
 				<section class="lg:col-span-8 space-y-4">
 					<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5 flex flex-wrap justify-between items-center gap-3">
 						<div>
@@ -362,12 +363,10 @@
 						</div>
 					</div>
 				</section>
-
 			</div>
 
-			<!-- BARIS BAWAH: TAB NAVIGASI & KONTEN MEMANJANG LENGKAP -->
+			<!-- Baris Bawah: Tab Navigasi & Konten -->
 			<section class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-6 shadow-xl">
-				
 				<div class="sticky top-[133px] lg:top-[140px] z-10 glassmorphism p-2 lg:p-2.5 rounded-xl mb-6 border border-slate-800 flex gap-1.5 lg:gap-3 overflow-x-auto shadow-xl scrollbar-thin">
 					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="sparkles" class="w-4 h-4 text-sky-400"></i> AI Signal
@@ -401,9 +400,8 @@
 					</button>
 				</div>
 
-				<!-- TAB CONTENT 1: AI SIGNAL REAL-TIME -->
+				<!-- Tab 1: AI Signal -->
 				<div id="tabContent-ai" class="space-y-4 min-h-[300px] text-xs lg:text-sm">
-					
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3">
 							<div class="flex items-center justify-between">
@@ -511,10 +509,9 @@
 					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/50 p-3 rounded-lg border border-slate-900 leading-normal">
 						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa harian. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
 					</p>
-
 				</div>
 
-				<!-- TAB CONTENT 2: RADAR BANDAR (OTOMATIS TANPA OPTIONS) -->
+				<!-- Tab 2: Radar Bandar -->
 				<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-amber-500/10 border border-amber-500/20 p-3 lg:p-4 rounded-xl gap-3">
 						<div class="flex items-center gap-2">
@@ -541,7 +538,7 @@
 					</p>
 				</div>
 
-				<!-- TAB CONTENT 3: PEER KOMPARASI HARGA SERUPA (SCROLL HORIZONTAL) -->
+				<!-- Tab 3: Peer Komparasi -->
 				<div id="tabContent-peer" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
@@ -555,7 +552,6 @@
 						</button>
 					</div>
 
-					<!-- Scroll Memanjang Horizontal -->
 					<div class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
 						<table class="w-full text-left text-xs text-slate-300 whitespace-nowrap min-w-[700px]">
 							<thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
@@ -581,7 +577,7 @@
 					</p>
 				</div>
 
-				<!-- TAB CONTENT 4: BERITA RSS -->
+				<!-- Tab 4: Berita -->
 				<div id="tabContent-news" class="hidden space-y-3 min-h-[250px]">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs lg:text-sm text-white">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
@@ -592,7 +588,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 5: FUNDAMENTAL WIDGET -->
+				<!-- Tab 5: Fundamental -->
 				<div id="tabContent-fundamental" class="hidden min-h-[300px]">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs lg:text-sm text-white">Profil & Fundamental Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
@@ -603,7 +599,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 6: SMART KALKULATOR RRR -->
+				<!-- Tab 6: Smart RRR -->
 				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
@@ -613,7 +609,6 @@
 							<p class="text-[10px] text-slate-400 mt-0.5">Kalkulasi ukuran lot & rasio risiko sebelum mengeksekusi order.</p>
 						</div>
 						
-						<!-- Tombol Inline Kiri & Kanan Rapih -->
 						<div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
 							<button onclick="saveTradingPlanToJournal()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-fuchsia-800 hover:bg-fuchsia-500 hover:text-white text-white font-bold px-3.5 py-2 rounded-lg border border-fuchsia-700 transition flex items-center justify-center gap-1.5 shadow-sm">
 								<i data-lucide="bookmark-plus" class="w-3.5 h-3.5"></i> Simpan ke Journal
@@ -695,108 +690,104 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 7: JOURNAL TRADING (TABLE & KANBAN BOARD) -->
-<div id="tabContent-journal" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
-	<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
-		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-			<span class="text-slate-400 text-[10px] uppercase block font-bold">Total Planned Trade</span>
-			<span class="text-lg font-bold text-white font-mono" id="journalTotalCount">0</span>
-		</div>
-		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-			<span class="text-slate-400 text-[10px] uppercase block font-bold">Win Rate</span>
-			<span class="text-lg font-bold text-emerald-400 font-mono" id="journalWinRate">0%</span>
-		</div>
-		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-			<span class="text-slate-400 text-[10px] uppercase block font-bold">Successful TP</span>
-			<span class="text-lg font-bold text-emerald-300 font-mono" id="journalWinCount">0</span>
-		</div>
-		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-			<span class="text-slate-400 text-[10px] uppercase block font-bold">Hit Stop Loss</span>
-			<span class="text-lg font-bold text-rose-400 font-mono" id="journalLossCount">0</span>
-		</div>
-	</div>
+				<!-- Tab 7: Journal Trading -->
+				<div id="tabContent-journal" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
+					<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+							<span class="text-slate-400 text-[10px] uppercase block font-bold">Total Planned Trade</span>
+							<span class="text-lg font-bold text-white font-mono" id="journalTotalCount">0</span>
+						</div>
+						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+							<span class="text-slate-400 text-[10px] uppercase block font-bold">Win Rate</span>
+							<span class="text-lg font-bold text-emerald-400 font-mono" id="journalWinRate">0%</span>
+						</div>
+						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+							<span class="text-slate-400 text-[10px] uppercase block font-bold">Successful TP</span>
+							<span class="text-lg font-bold text-emerald-300 font-mono" id="journalWinCount">0</span>
+						</div>
+						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+							<span class="text-slate-400 text-[10px] uppercase block font-bold">Hit Stop Loss</span>
+							<span class="text-lg font-bold text-rose-400 font-mono" id="journalLossCount">0</span>
+						</div>
+					</div>
 
-	<!-- Kontrol View Switcher & Aksi -->
-	<div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center bg-slate-950 p-3.5 rounded-xl border border-slate-800 gap-3">
-		<div class="flex items-center gap-3">
-			<span class="font-bold text-slate-200 text-xs">Mode Tampilan:</span>
-			<div class="flex bg-slate-900 p-1 rounded-lg border border-slate-800">
-				<button onclick="switchJournalView('table')" id="journalBtnTable" class="px-3 py-1 text-[10px] font-bold rounded bg-emerald-500 text-slate-950 transition">Tabel</button>
-				<button onclick="switchJournalView('kanban')" id="journalBtnKanban" class="px-3 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition">Kanban Board</button>
-			</div>
-		</div>
+					<div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center bg-slate-950 p-3.5 rounded-xl border border-slate-800 gap-3">
+						<div class="flex items-center gap-3">
+							<span class="font-bold text-slate-200 text-xs">Mode Tampilan:</span>
+							<div class="flex bg-slate-900 p-1 rounded-lg border border-slate-800">
+								<button onclick="switchJournalView('table')" id="journalBtnTable" class="px-3 py-1 text-[10px] font-bold rounded bg-emerald-500 text-slate-950 transition">Tabel</button>
+								<button onclick="switchJournalView('kanban')" id="journalBtnKanban" class="px-3 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition">Kanban Board</button>
+							</div>
+						</div>
 
-		<div class="flex items-center gap-2">
-			<button onclick="exportJournalToCSV()" class="flex-1 sm:flex-initial text-[10px] bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 font-bold px-3 py-1.5 rounded-lg transition flex items-center justify-center gap-1.5">
-				<i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export CSV (.csv)
-			</button>
-			<button onclick="clearJournalHistory()" class="flex-1 sm:flex-initial text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 font-bold px-3 py-1.5 rounded-lg transition">
-				Hapus Semua
-			</button>
-		</div>
-	</div>
+						<div class="flex items-center gap-2">
+							<button onclick="exportJournalToCSV()" class="flex-1 sm:flex-initial text-[10px] bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 font-bold px-3 py-1.5 rounded-lg transition flex items-center justify-center gap-1.5">
+								<i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export CSV (.csv)
+							</button>
+							<button onclick="clearJournalHistory()" class="flex-1 sm:flex-initial text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 font-bold px-3 py-1.5 rounded-lg transition">
+								Hapus Semua
+							</button>
+						</div>
+					</div>
 
-	<!-- 1. TAMPILAN TABEL -->
-	<div id="journalTableView" class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
-		<table class="w-full text-left text-xs text-slate-300 whitespace-nowrap min-w-[750px]">
-			<thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
-				<tr>
-					<th class="p-3.5">Tanggal</th>
-					<th class="p-3.5">Ticker</th>
-					<th class="p-3.5">Harga Entry</th>
-					<th class="p-3.5">Stop Loss (SL)</th>
-					<th class="p-3.5">Target Profit (TP)</th>
-					<th class="p-3.5">Rasio RRR</th>
-					<th class="p-3.5">Status Plan</th>
-					<th class="p-3.5 text-center">Tindakan</th>
-				</tr>
-			</thead>
-			<tbody id="journalTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60 font-mono">
-				<tr>
-					<td colspan="8" class="p-6 text-center text-slate-400 font-sans">Belum ada Trading Plan tersimpan. Gunakan tombol "Simpan ke Journal" di kalkulator Smart RRR.</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+					<!-- Tampilan Tabel Journal -->
+					<div id="journalTableView" class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
+						<table class="w-full text-left text-xs text-slate-300 whitespace-nowrap min-w-[750px]">
+							<thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
+								<tr>
+									<th class="p-3.5">Tanggal</th>
+									<th class="p-3.5">Ticker</th>
+									<th class="p-3.5">Harga Entry</th>
+									<th class="p-3.5">Stop Loss (SL)</th>
+									<th class="p-3.5">Target Profit (TP)</th>
+									<th class="p-3.5">Rasio RRR</th>
+									<th class="p-3.5">Status Plan</th>
+									<th class="p-3.5 text-center">Tindakan</th>
+								</tr>
+							</thead>
+							<tbody id="journalTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60 font-mono">
+								<tr>
+									<td colspan="8" class="p-6 text-center text-slate-400 font-sans">Belum ada Trading Plan tersimpan. Gunakan tombol "Simpan ke Journal" di kalkulator Smart RRR.</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 
-	<!-- 2. TAMPILAN KANBAN BOARD (DRAG & DROP) -->
-	<div id="journalKanbanView" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
-		<!-- Kolom OPEN -->
-		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'OPEN')">
-			<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
-				<span class="text-amber-400 font-bold text-xs uppercase flex items-center gap-1.5">
-					<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> OPEN PLAN
-				</span>
-				<span id="kanbanCountOpen" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono font-bold">0</span>
-			</div>
-			<div id="kanbanColOpen" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
-		</div>
+					<!-- Tampilan Kanban Board -->
+					<div id="journalKanbanView" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'OPEN')">
+							<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+								<span class="text-amber-400 font-bold text-xs uppercase flex items-center gap-1.5">
+									<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> OPEN PLAN
+								</span>
+								<span id="kanbanCountOpen" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono font-bold">0</span>
+							</div>
+							<div id="kanbanColOpen" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
+						</div>
 
-		<!-- Kolom WIN -->
-		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'WIN')">
-			<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
-				<span class="text-emerald-400 font-bold text-xs uppercase flex items-center gap-1.5">
-					<span class="w-2 h-2 rounded-full bg-emerald-400"></span> WIN / TAKE PROFIT
-				</span>
-				<span id="kanbanCountWin" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono font-bold">0</span>
-			</div>
-			<div id="kanbanColWin" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
-		</div>
+						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'WIN')">
+							<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+								<span class="text-emerald-400 font-bold text-xs uppercase flex items-center gap-1.5">
+									<span class="w-2 h-2 rounded-full bg-emerald-400"></span> WIN / TAKE PROFIT
+								</span>
+								<span id="kanbanCountWin" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono font-bold">0</span>
+							</div>
+							<div id="kanbanColWin" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
+						</div>
 
-		<!-- Kolom LOSS -->
-		<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'LOSS')">
-			<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
-				<span class="text-rose-400 font-bold text-xs uppercase flex items-center gap-1.5">
-					<span class="w-2 h-2 rounded-full bg-rose-400"></span> LOSS / STOP LOSS
-				</span>
-				<span id="kanbanCountLoss" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono font-bold">0</span>
-			</div>
-			<div id="kanbanColLoss" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
-		</div>
-	</div>
-</div>
+						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'LOSS')">
+							<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+								<span class="text-rose-400 font-bold text-xs uppercase flex items-center gap-1.5">
+									<span class="w-2 h-2 rounded-full bg-rose-400"></span> LOSS / STOP LOSS
+								</span>
+								<span id="kanbanCountLoss" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono font-bold">0</span>
+							</div>
+							<div id="kanbanColLoss" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
+						</div>
+					</div>
+				</div>
 
-				<!-- TAB CONTENT 8: SMART ALERT SYSTEM & BROWSER PUSH NOTIFICATION -->
+				<!-- Tab 8: Smart Alert -->
 				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
@@ -806,7 +797,6 @@
 							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh target pada seluruh saham yang kamu pantau.</p>
 						</div>
 						
-						<!-- Status & Tombol Izin Notifikasi Browser -->
 						<div class="flex items-center gap-2 shrink-0 self-start sm:self-auto">
 							<button id="btnToggleNotification" onclick="requestNotificationPermission()" class="text-[10px] lg:text-xs bg-slate-800 hover:bg-slate-700 text-rose-400 border border-slate-700 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm">
 								<i data-lucide="bell-off" class="w-3.5 h-3.5"></i> Aktifkan Notifikasi Browser
@@ -814,7 +804,6 @@
 						</div>
 					</div>
 
-					<!-- Tombol Sync Data AI Pengganti Input Manual -->
 					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
 						<div>
 							<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
@@ -827,7 +816,6 @@
 						</button>
 					</div>
 
-					<!-- Daftar Gabungan Semua Alert (Global List) -->
 					<div class="space-y-2.5 pt-1">
 						<div class="flex items-center justify-between">
 							<span class="text-[11px] lg:text-xs text-slate-300 font-bold block flex items-center gap-1.5">
@@ -845,7 +833,7 @@
 					</p>
 				</div>
 
-				<!-- TAB CONTENT 9: AKSI KORPORASI LIVE RSS -->
+				<!-- Tab 9: Aksi Korporasi -->
 				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3.5 text-xs lg:text-sm">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs lg:text-sm text-white">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
@@ -859,7 +847,7 @@
 					</div>
 				</div>
 
-				<!-- TAB CONTENT 10: IDX SECTOR HEATMAP -->
+				<!-- Tab 10: Sector Heatmap -->
 				<div id="tabContent-heatmap" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div>
@@ -870,79 +858,73 @@
 						</div>
 					</div>
 					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 h-[600px] overflow-hidden">
-						<div class="tradingview-widget-container h-full w-full" id="tv_heatmap_container">
-							<!-- Widget Heatmap TradingView di-load via JS -->
-						</div>
+						<div class="tradingview-widget-container h-full w-full" id="tv_heatmap_container"></div>
 					</div>
 				</div>
-
 			</section>
-
 		</main>
 
-		<!-- CONTAINER EXPORT TRADING CARD -->
+		<!-- Container Export Trading Card (HTML2Canvas Target) -->
 		<div id="exportCardContainer" class="fixed -left-[9999px] top-0 w-[620px] bg-slate-950 text-white p-7 rounded-3xl border-2 border-emerald-500/40 space-y-5 shadow-2xl">
 			<div class="flex justify-between items-center border-b border-slate-800/80 pb-4">
 				<div class="flex items-center gap-3">
 					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2.5 rounded-2xl text-slate-950 shadow-lg shadow-emerald-500/20">
-						<i style="margin-top: -17px" class="fa-solid fa-biohazard text-xl block font-bold"></i>
+						<i class="fa-solid fa-biohazard text-xl block font-bold"></i>
 					</div>
 					<div>
-						<h3 style="margin-top: -14px" class="text-lg font-bold text-emerald-400 tracking-tight leading-none">STOCK ID SCREENER</h3>
-						<p style="margin-bottom: -2px" class="text-[10px] font-mono font-bold text-emerald-400 tracking-wider mt-1">AI TRADING PLAN CARD</p>
+						<h3 class="text-lg font-bold text-emerald-400 tracking-tight leading-none">STOCK ID SCREENER</h3>
+						<p class="text-[10px] font-mono font-bold text-emerald-400 tracking-wider mt-1">AI TRADING PLAN CARD</p>
 					</div>
 				</div>
 				<div class="text-right">
-					<span style="margin-top: -20px" class="text-xs text-slate-400 font-mono block" id="cardDateStr">14 Ags 2026</span>
+					<span class="text-xs text-slate-400 font-mono block" id="cardDateStr">14 Ags 2026</span>
 				</div>
 			</div>
 
 			<div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-inner">
 				<div>
-					<span style="margin-top: -16px" class="text-xs text-slate-400 uppercase tracking-widest block font-bold mb-1">EMITEN</span>
-					<h2 style="margin-top: -0px" class="text-2xl font-bold text-cyan-400 tracking-tight leading-none" id="cardTicker">$MDIA</h2>
+					<span class="text-xs text-slate-400 uppercase tracking-widest block font-bold mb-1">EMITEN</span>
+					<h2 class="text-2xl font-bold text-cyan-400 tracking-tight leading-none" id="cardTicker">$MDIA</h2>
 				</div>
 				<div class="text-right">
-					<span style="margin-top: -10px" class="text-xs text-slate-400 uppercase block font-bold mb-1">HARGA PASAR</span>
-					<span style="margin-top: -26px" class="text-2xl font-bold text-emerald-400 leading-none" id="cardPrice">Rp 0</span>
+					<span class="text-xs text-slate-400 uppercase block font-bold mb-1">HARGA PASAR</span>
+					<span class="text-2xl font-bold text-emerald-400 leading-none" id="cardPrice">Rp 0</span>
 				</div>
 			</div>
 
-			<!-- MAP LEVEL BUNGKUS -->
 			<div class="grid grid-cols-2 gap-3 font-mono text-xs">
 				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
-					<span style="margin-top: -12px" class="text-slate-400 text-[10px] block mb-1">AREA ENTRY / SUPPORT</span>
-					<span style="margin-top: -10px" class="text-amber-400 block font-bold text-sm" id="cardEntry">Rp -</span>
+					<span class="text-slate-400 text-[10px] block mb-1">AREA ENTRY / SUPPORT</span>
+					<span class="text-amber-400 block font-bold text-sm" id="cardEntry">Rp -</span>
 				</div>
 				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
-					<span style="margin-top: -12px" class="text-slate-400 text-[10px] block mb-1">RESISTANCE</span>
-					<span style="margin-top: -10px" class="text-cyan-400 block font-bold text-sm" id="cardRES1">Rp -</span>
+					<span class="text-slate-400 text-[10px] block mb-1">RESISTANCE</span>
+					<span class="text-cyan-400 block font-bold text-sm" id="cardRES1">Rp -</span>
 				</div>
 				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
-					<span style="margin-top: -12px" class="text-slate-400 text-[10px] block mb-1">STOP LOSS</span>
-					<span style="margin-top: -10px" class="text-rose-400 block font-bold text-sm" id="cardSL">&lt; Rp -</span>
+					<span class="text-slate-400 text-[10px] block mb-1">STOP LOSS</span>
+					<span class="text-rose-400 block font-bold text-sm" id="cardSL">&lt; Rp -</span>
 				</div>
 				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
-					<span style="margin-top: -12px" class="text-slate-400 text-[10px] block mb-1">TARGET PROFIT</span>
-					<span style="margin-top: -10px" class="text-emerald-400 block font-bold text-sm" id="cardTP2">Rp -</span>
+					<span class="text-slate-400 text-[10px] block mb-1">TARGET PROFIT</span>
+					<span class="text-emerald-400 block font-bold text-sm" id="cardTP2">Rp -</span>
 				</div>
 			</div>
 
-			<!-- DITAMPILKAN RASIO VOLUME, MA 5, MA 10 -->
 			<div class="bg-slate-900/70 p-4 rounded-2xl border border-slate-800/80 space-y-2 font-mono">
 				<span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block">INDIKATOR TEKNIKAL UTAMA:</span>
 				<div class="grid grid-cols-3 gap-2 text-xs pt-1 border-t border-slate-800/60">
 					<div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-center">
-						<span style="margin-top: -10px" class="text-[7px] text-white block mb-1">VOL RATIO</span>
-						<span style="margin-top: -10px" class="text-sm text-emerald-400 font-bold block" id="cardVolRatio">1.0x</span>
+						<span class="text-[7px] text-white block mb-1">VOL RATIO</span>
+						<span class="text-sm text-emerald-400 font-bold block" id="cardVolRatio">1.0x</span>
 					</div>
 					<div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-center">
-						<span style="margin-top: -10px" class="text-[7px] text-white block mb-1">LEVEL MA 5</span>
-						<span style="margin-top: -10px" class="text-sm text-amber-400 font-bold block" id="cardMA5">Rp 0</span>
+						<span class="text-[7px] text-white block mb-1">LEVEL MA 5</span>
+						<span class="text-sm text-amber-400 font-bold block" id="cardMA5">Rp 0</span>
 					</div>
 					<div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-center">
-						<span style="margin-top: -10px" class="text-[7px] text-white block mb-1">LEVEL MA 10</span>
-						<span style="margin-top: -10px" class="text-sm text-cyan-400 font-bold block" id="cardMA10">Rp 0</span>
+						<span class="text-[7px] text-white block mb-1">LEVEL MA 10</span>
+						<span class="text-sm text-cyan-400 font-bold block" id="cardMA10">Rp 0</span>
 					</div>
 				</div>
 			</div>
@@ -953,15 +935,11 @@
 			</div>
 		</div>
 		
-		<!-- MODAL SELEBRASI CUAN (POP-UP INTERAKTIF 2x2) -->
+		<!-- Modal Selebrasi Cuan -->
 		<div id="cuanModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 opacity-0">
 			<div id="cuanModalContent" class="transform scale-50 transition-transform duration-500 ease-out flex flex-col items-center max-w-md w-full">
 				<div class="relative bg-slate-900 p-3 rounded-2xl border-4 border-emerald-400 shadow-[0_0_40px_rgba(16,185,129,0.5)] w-full">
-					<!-- Layout 2x2 Grid (Uncropped / Sesuai Ukuran Asli) -->
-					<div class="grid grid-cols-2 gap-2" id="cuanGrid">
-						<!-- Gambar akan di-inject secara acak via JS -->
-					</div>
-			
+					<div class="grid grid-cols-2 gap-2" id="cuanGrid"></div>
 					<button onclick="closeCuanCelebration()" class="absolute -top-4 -right-4 bg-rose-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg hover:scale-110 transition z-10">✕</button>
 				</div>
 				<h2 class="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mt-5 drop-shadow-lg animate-bounce text-center">
@@ -971,13 +949,11 @@
 			</div>
 		</div>
 
-		<!-- MODAL SELEBRASI / EVALUASI LOSS (POP-UP INTERAKTIF 2x2) -->
+		<!-- Modal Evaluasi Loss -->
 		<div id="lossModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 opacity-0">
 			<div id="lossModalContent" class="transform scale-50 transition-transform duration-500 ease-out flex flex-col items-center max-w-md w-full">
 				<div class="relative bg-slate-900 p-3 rounded-2xl border-4 border-rose-500 shadow-[0_0_40px_rgba(244,63,94,0.5)] w-full">
-					<!-- Layout 2x2 Grid untuk Loss / Evaluasi -->
 					<div class="grid grid-cols-2 gap-2" id="lossGrid"></div>
-			
 					<button onclick="closeLossCelebration()" class="absolute -top-4 -right-4 bg-rose-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg hover:scale-110 transition z-10">✕</button>
 				</div>
 				<h2 class="text-xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-amber-400 mt-5 drop-shadow-lg animate-pulse text-center">
@@ -990,13 +966,13 @@
 		<!-- Script CDN TradingView -->
 		<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
-		<!-- Data Watchlist yang Dipisah (Harus dipanggil sebelum app.js) -->
+		<!-- Data Watchlist yang Dipisah -->
 		<script src="watchlist.js"></script>
 
 		<!-- Script Logika Aplikasi Utama -->
 		<script src="app.js"></script>
 
-		<!-- Pendaftaran Service Worker untuk Push Notification -->
+		<!-- Service Worker untuk Push Notification -->
 		<script>
 			if ('serviceWorker' in navigator) {
 				window.addEventListener('load', function() {
