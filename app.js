@@ -1055,20 +1055,24 @@ function saveTradingPlanToJournal() {
 function updateJournalStatus(id, newStatus) {
 	let journal = getJournalData();
 	let isWinning = false;
+	let isLosing = false;
 
 	journal = journal.map(item => {
 		if (item.id === id) {
 			item.status = newStatus;
-			if (newStatus === 'WIN') isWinning = true; // Deteksi apakah status diubah ke WIN
+			if (newStatus === 'WIN') isWinning = true;
+			if (newStatus === 'LOSS') isLosing = true;
 		}
 		return item;
 	});
 
 	saveJournalData(journal);
 
-	// Trigger animasi pop-up jika berhasil Take Profit
+	// Trigger pop-up sesuai kondisi
 	if (isWinning) {
 		triggerCuanCelebration();
+	} else if (isLosing) {
+		triggerLossCelebration();
 	}
 }
 
@@ -2054,6 +2058,7 @@ document.getElementById('stockSearch').addEventListener('keypress', function(e) 
 });
 
 // ==================== FITUR CANGGIH 1: PENCARIAN SUARA (VOICE COMMAND) ====================
+// ==================== FITUR CANGGIH 1: PENCARIAN SUARA (VOICE COMMAND) ====================
 function startVoiceSearch() {
 	const voiceIcon = document.getElementById('voiceIcon');
 	const input = document.getElementById('stockSearch');
@@ -2078,15 +2083,34 @@ function startVoiceSearch() {
 	};
 
 	recognition.onresult = function(event) {
-		let transcript = event.results[0][0].transcript.trim().toUpperCase();
-		
-		// Membersihkan kata-kata pengantar agar hanya menyisakan kode emiten (Misal: "Cari saham BBCA" -> "BBCA")
-		transcript = transcript.replace(/CARI|SAHAM|BUKA|TOLONG/g, '').trim();
-		// Menghapus spasi jika sistem menangkap ejaan per huruf (Misal "B B C A" -> "BBCA")
-		transcript = transcript.replace(/\s+/g, '');
+		const transcript = event.results[0][0].transcript.trim().toUpperCase();
+		const spacelessTranscript = transcript.replace(/\s+/g, ''); // Versi teks tanpa spasi sama sekali
+		let foundTicker = null;
 
-		input.value = transcript;
-		searchStock(true); // Otomatis trigger pencarian
+		// 1. CARA PINTAR: Cek apakah ada Ticker di dalam uniqueRadarWatchlist yang terucap
+		if (typeof uniqueRadarWatchlist !== 'undefined') {
+			// Cek per kata (Contoh: "Coba dong analisa saham BBCA")
+			const words = transcript.split(' ');
+			foundTicker = uniqueRadarWatchlist.find(ticker => words.includes(ticker));
+
+			// Cek tanpa spasi jika belum ketemu (Contoh sistem mendengar: "Coba analisa saham B B C A")
+			if (!foundTicker) {
+				foundTicker = uniqueRadarWatchlist.find(ticker => spacelessTranscript.includes(ticker));
+			}
+		}
+
+		// 2. FALLBACK: Jika tidak ada di watchlist (atau watchlist gagal dimuat), pakai sistem pembersih kata standar
+		if (!foundTicker) {
+			foundTicker = transcript.replace(/COBA|DONG|ANALISA|CARI|SAHAM|BUKA|TOLONG/g, '').replace(/\s+/g, '').trim();
+		}
+
+		// 3. EKSEKUSI PENCARIAN
+		if (foundTicker) {
+			input.value = foundTicker;
+			searchStock(true); // Otomatis trigger pencarian
+		} else {
+			input.placeholder = "Gagal menangkap kode saham...";
+		}
 	};
 
 	recognition.onerror = function(event) {
@@ -2106,23 +2130,35 @@ function startVoiceSearch() {
 }
 
 // ==================== FITUR CANGGIH 2: SELEBRASI CUAN INTERAKTIF ====================
-// Pastikan nama file gambar di bawah ini ada di dalam folder 'stockid_gambar/gain/' milikmu
-const gainImagesList = [
-	'1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg' // Tambahkan sesuai jumlah gambar yang ada di folder
+// Menggunakan URL GIF animasi kartun online berkualitas (Gratis via Giphy)
+const internetGainImages = [
+	'https://media.giphy.com/media/67ThRZlYBZYCG/giphy.gif', // Berenang di uang
+	'https://media.giphy.com/media/LdOyjZ7io5Msw/giphy.gif', // Hujan uang 1
+	'https://media.giphy.com/media/3o6gDWzmAzrpi5DQU8/giphy.gif', // Senyum ceria
+	'https://media.giphy.com/media/xTiTnqUxyWbsAXq7Ju/giphy.gif', // Ambil uangku
+	'https://media.giphy.com/media/VTxmwaCEwSlZm/giphy.gif', // Hujan uang 2
+	'https://media.giphy.com/media/y31rRE5h3wyY0/giphy.gif'  // Tumpukan koin emas
 ];
 
 function triggerCuanCelebration() {
 	const modal = document.getElementById('cuanModal');
 	const content = document.getElementById('cuanModalContent');
-	const img = document.getElementById('cuanImage');
+	const grid = document.getElementById('cuanGrid');
 
-	// Memilih gambar secara acak dari folder stockid_gambar/gain/
-	const randomImg = gainImagesList[Math.floor(Math.random() * gainImagesList.length)];
-	img.src = `stockid_gambar/gain/${randomImg}`;
+	// Mengacak daftar gambar dan mengambil 4 gambar teratas untuk grid 2x2
+	const shuffled = [...internetGainImages].sort(() => 0.5 - Math.random());
+	const selectedImages = shuffled.slice(0, 4);
+
+	// Memasukkan 4 gambar ke dalam grid dengan format object-contain (tidak terpotong)
+	grid.innerHTML = selectedImages.map(url => `
+		<div class="bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center p-1">
+			<img src="${url}" alt="Profit Cuan" class="w-full h-28 md:h-36 object-contain rounded">
+		</div>
+	`).join('');
 
 	AudioFX.playSuccess();
 
-	// Animasi Pop-up
+	// Animasi Pop-up Muncul
 	modal.classList.remove('hidden');
 	setTimeout(() => {
 		modal.classList.remove('opacity-0');
@@ -2131,10 +2167,10 @@ function triggerCuanCelebration() {
 		content.classList.add('scale-100');
 	}, 10);
 
-	// Otomatis tertutup setelah 5 detik
+	// Otomatis tertutup setelah 6 detik agar user punya waktu menikmati animasinya
 	setTimeout(() => {
 		closeCuanCelebration();
-	}, 5000);
+	}, 6000);
 }
 
 function closeCuanCelebration() {
@@ -2147,6 +2183,62 @@ function closeCuanCelebration() {
 		content.classList.add('scale-50');
 		setTimeout(() => {
 			modal.classList.add('hidden');
+			document.getElementById('cuanGrid').innerHTML = ''; // Bersihkan gambar setelah ditutup
+		}, 300);
+	}
+}
+
+// ==================== FITUR EVALUASI LOSS / RISK MANAGEMENT ====================
+const internetLossImages = [
+	'https://media.giphy.com/media/BEob5qwFkSJ7G/giphy.gif', // Bear market / refleksi
+	'https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif', // Santai / evaluasi
+	'https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif', // Keep calm
+	'https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif'  // Bangkit kembali
+];
+
+function triggerLossCelebration() {
+	const modal = document.getElementById('lossModal');
+	const content = document.getElementById('lossModalContent');
+	const grid = document.getElementById('lossGrid');
+
+	// Mengacak daftar gambar dan mengambil 4 gambar untuk grid 2x2
+	const shuffled = [...internetLossImages].sort(() => 0.5 - Math.random());
+	const selectedImages = shuffled.slice(0, 4);
+
+	grid.innerHTML = selectedImages.map(url => `
+		<div class="bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center p-1">
+			<img src="${url}" alt="Risk Management" class="w-full h-28 md:h-36 object-contain rounded">
+		</div>
+	`).join('');
+
+	// Menggunakan efek suara alert untuk loss (lebih tegas namun tenang)
+	AudioFX.playAlert();
+
+	modal.classList.remove('hidden');
+	setTimeout(() => {
+		modal.classList.remove('opacity-0');
+		modal.classList.add('opacity-100');
+		content.classList.remove('scale-50');
+		content.classList.add('scale-100');
+	}, 10);
+
+	// Otomatis tertutup setelah 6 detik
+	setTimeout(() => {
+		closeLossCelebration();
+	}, 6000);
+}
+
+function closeLossCelebration() {
+	const modal = document.getElementById('lossModal');
+	const content = document.getElementById('lossModalContent');
+	if (!modal.classList.contains('hidden')) {
+		modal.classList.remove('opacity-100');
+		modal.classList.add('opacity-0');
+		content.classList.remove('scale-100');
+		content.classList.add('scale-50');
+		setTimeout(() => {
+			modal.classList.add('hidden');
+			document.getElementById('lossGrid').innerHTML = '';
 		}, 300);
 	}
 }
