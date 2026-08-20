@@ -32,6 +32,7 @@
 			}
 			.heading-font, a, p, b, button, nav, ul, li, strong, option, div, span, label {
 				font-family: "Gantari";
+				font-weight: bold !important;
 			}
 			.glassmorphism {
 				background: rgba(17, 24, 39, 0.75);
@@ -369,34 +370,34 @@
 			<section class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-6 shadow-xl">
 				<div class="sticky top-[133px] lg:top-[140px] z-10 glassmorphism p-2 lg:p-2.5 rounded-xl mb-6 border border-slate-800 flex gap-1.5 lg:gap-3 overflow-x-auto shadow-xl scrollbar-thin">
 					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="sparkles" class="w-4 h-4 text-sky-400"></i> AI Signal
+						<i data-lucide="sparkles" class="w-4 h-4 text-rose-400"></i> AI Signal
 					</button>
 					<button onclick="switchTab('bigmoney')" id="tabBtn-bigmoney" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="zap" class="w-4 h-4 text-amber-400"></i> Radar Bandar
 					</button>
 					<button onclick="switchTab('peer')" id="tabBtn-peer" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="git-compare" class="w-4 h-4 text-cyan-400"></i> Peer Komparasi
+						<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Peer Komparasi
 					</button>
 					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="newspaper" class="w-4 h-4 text-green-400"></i> Berita
+						<i data-lucide="newspaper" class="w-4 h-4 text-sky-400"></i> Berita
 					</button>
 					<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="calendar" class="w-4 h-4 text-indigo-400"></i> Korporasi
+						<i data-lucide="calendar" class="w-4 h-4 text-fuchsia-400"></i> Korporasi
 					</button>
 					<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="pie-chart" class="w-4 h-4 text-orange-400"></i> Fundamental
 					</button>
 					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="bell" class="w-4 h-4 text-rose-400"></i> Smart Alert
+						<i data-lucide="bell" class="w-4 h-4 text-teal-400"></i> Smart Alert
 					</button>
 					<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="calculator" class="w-4 h-4 text-fuchsia-400"></i> Smart RRR
+						<i data-lucide="calculator" class="w-4 h-4 text-cyan-400"></i> Smart RRR
 					</button>
 					<button onclick="switchTab('journal')" id="tabBtn-journal" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i> Journal Trading
+						<i data-lucide="book-open" class="w-4 h-4 text-yellow-400"></i> Journal Trading
 					</button>
 					<button onclick="switchTab('heatmap')" id="tabBtn-heatmap" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="globe-2" class="w-4 h-4 text-emerald-400"></i> Sektor Heatmap
+						<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Sektor Heatmap
 					</button>
 				</div>
 
@@ -977,7 +978,7 @@
 			if ('serviceWorker' in navigator) {
 				window.addEventListener('load', function() {
 					navigator.serviceWorker.register('sw.js').then(function(registration) {
-						console.log('SW Notification registered successfully');
+						alert('SW Notification registered successfully');
 					}).catch(function(error) {
 						console.log('SW registration failed:', error);
 					});
