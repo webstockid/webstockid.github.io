@@ -2245,28 +2245,35 @@ function closeLossCelebration() {
 	}
 }
 
-// ==================== FITUR BARU: RUNNING TAPE (PITA SAHAM BERJALAN) ====================
+// ==================== RUNNING TAPE REAL-TIME DENGAN LIVE FETCH & KLIK ====================
 async function initRunningTape() {
 	const tapeContainer = document.getElementById('runningTapeContainer');
 	if (!tapeContainer) return;
 
-	const popularTickers = ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'CUAN', 'ANTM', 'PANI', 'MDIA'];
-	let tapeHTML = '';
+	const popularTickers = ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'BRPT', 'TPIA', 'PGUN', 'JARR', 'ANTM', 'PANI', 'MDIA'];
+	
+	// Tampilkan teks loading sebentar saat mengambil data live bursa
+	tapeContainer.innerHTML = `<span class="text-emerald-400 px-3">⚡ Menarik data real-time bursa untuk Running Tape...</span>`;
 
-	for (const ticker of popularTickers) {
-		let data = getCachedStockData(ticker);
-		if (!data) {
-			data = { ticker, price: 1000, changePct: 0.0 };
-		}
-		const isPlus = data.changePct >= 0;
+	// Ambil data seluruh emiten secara paralel agar prosesnya sangat cepat
+	const results = await Promise.all(popularTickers.map(ticker => fetchRealtimeStockData(ticker)));
+	
+	let tapeHTML = '';
+	results.forEach((data, index) => {
+		const ticker = popularTickers[index];
+		// Menggunakan data real-time jika berhasil ditarik, fallback ke cache/default jika gagal
+		const price = data && data.price ? roundToBEITick(data.price) : 1000;
+		const changePct = data && data.changePct !== undefined ? data.changePct : 0.0;
+		const isPlus = changePct >= 0;
+
 		tapeHTML += `
-			<div class="flex items-center gap-2 bg-slate-900/90 px-3.5 py-1 rounded-md border border-slate-800 shrink-0">
+			<div onclick="selectSuggestion('${ticker}')" class="flex items-center gap-2 bg-slate-900/90 px-3.5 py-1 rounded-md border border-slate-800 shrink-0 cursor-pointer hover:border-emerald-500/50 hover:bg-slate-800 transition" title="Klik untuk lihat analisa $${ticker}">
 				<span class="font-bold text-amber-400">&dollar;${ticker}</span>
-				<span class="text-white font-mono">Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}</span>
-				<span class="${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">${isPlus ? '+' : ''}${data.changePct}%</span>
+				<span class="text-white font-mono">Rp ${price.toLocaleString('id-ID')}</span>
+				<span class="${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">${isPlus ? '+' : ''}${changePct}%</span>
 			</div>
 		`;
-	}
+	});
 
 	// Duplikasi HTML untuk menghasilkan efek pergerakan infinite loop yang mulus tanpa jeda
 	tapeContainer.innerHTML = tapeHTML + tapeHTML;
