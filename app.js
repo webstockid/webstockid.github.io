@@ -1524,7 +1524,7 @@ function toggleAlertAccordion(ticker) {
 	}
 }
 
-// FUNGSI BARU: Merender semua alert dengan gaya UI Accordion Minimalis
+// FUNGSI BARU: Merender semua alert dengan gaya UI Accordion Minimalis (Revisi Layout)
 function renderAllAlerts() {
 	const container = document.getElementById('alertListContainer');
 	if (!container) return;
@@ -1586,16 +1586,15 @@ function renderAllAlerts() {
 				<!-- Header Accordion -->
 				<div onclick="toggleAlertAccordion('${ticker}')" class="p-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-900/80 transition select-none group">
 					<div class="flex items-center gap-3 md:gap-4">
-						<div class="flex items-center gap-2">
-							<div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-slate-900 flex items-center justify-center border border-slate-700/60 font-bold text-white group-hover:border-emerald-500/40 transition text-xs md:text-sm">
-								$
-							</div>
-							<span class="font-bold text-white text-sm md:text-base tracking-wide">${ticker}</span>
-							${isCurrent ? '<span class="bg-emerald-500/20 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
+						<div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-slate-900 flex items-center justify-center border border-slate-700/60 font-bold text-white group-hover:border-emerald-500/40 transition text-xs md:text-sm shrink-0">
+							$
 						</div>
 						<div class="flex flex-col">
-							<span class="text-[9px] md:text-[10px] text-slate-400">Status Target</span>
-							<span class="font-bold ${activeCount > 0 ? 'text-amber-400' : 'text-slate-500'} text-[10px] md:text-xs">${activeCount} Alert Aktif</span>
+							<div class="flex items-center gap-2">
+								<span class="font-bold text-white text-sm md:text-base tracking-wide">${ticker}</span>
+								${isCurrent ? '<span class="bg-emerald-500/20 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
+							</div>
+							<span class="font-bold ${activeCount > 0 ? 'text-amber-400' : 'text-slate-500'} text-[10px] md:text-xs mt-0.5">${activeCount} Alert Aktif</span>
 						</div>
 					</div>
 					
@@ -1630,22 +1629,24 @@ function renderAllAlerts() {
 			let toggleBtn = '';
 			let rowBorder = 'border-slate-800/60';
 
+			// Hanya menggunakan border-l (garis kiri) untuk indikator warna
 			if (isTriggered) {
-				statusBadge = '<span class="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold border">TERCAPAI</span>';
-				rowBorder = 'border-l-2 border-l-emerald-500/50';
+				statusBadge = '<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold">TERCAPAI</span>';
+				rowBorder = 'border-l-[3px] border-emerald-500/60';
 				toggleBtn = `<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[9px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-1 rounded font-bold transition hover:text-white">RESET</button>`;
 			} else if (isActive) {
-				statusBadge = '<span class="bg-amber-500/20 text-amber-400 border-amber-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold border animate-pulse">MENUNGGU</span>';
-				rowBorder = 'border-l-2 border-l-amber-500/50';
+				statusBadge = '<span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold animate-pulse">MENUNGGU</span>';
+				rowBorder = 'border-l-[3px] border-amber-500/60';
 				toggleBtn = `<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-1 rounded font-bold transition hover:bg-amber-500 hover:text-slate-950">ON</button>`;
 			} else {
-				statusBadge = '<span class="bg-slate-800 text-slate-400 border-slate-700 px-1.5 py-0.5 rounded text-[8px] font-bold border">OFF</span>';
-				rowBorder = 'opacity-60 border-l-2 border-l-slate-700';
+				statusBadge = '<span class="bg-slate-800 text-slate-400 border border-slate-700 px-1.5 py-0.5 rounded text-[8px] font-bold">OFF</span>';
+				rowBorder = 'opacity-60 border-l-[3px] border-slate-700';
 				toggleBtn = `<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[9px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-1 rounded font-bold transition hover:text-white">OFF</button>`;
 			}
 
+			// Menghapus kelas 'border' dan 'rounded-lg', mengganti dengan 'rounded-r-lg' agar lebih sleek
 			htmlContent += `
-				<div class="flex items-center justify-between bg-slate-900/60 p-2.5 rounded-lg border ${rowBorder} hover:bg-slate-800 transition">
+				<div class="flex items-center justify-between bg-slate-900/60 p-2.5 rounded-r-lg ${rowBorder} hover:bg-slate-800 transition">
 					<div class="flex items-center gap-3">
 						<div>
 							<span class="text-[9px] ${badgeColor} block font-bold font-sans uppercase tracking-wider mb-0.5">${labelText}</span>
