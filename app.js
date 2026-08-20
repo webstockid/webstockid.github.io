@@ -2132,12 +2132,10 @@ function startVoiceSearch() {
 // ==================== FITUR CANGGIH 2: SELEBRASI CUAN INTERAKTIF ====================
 // Menggunakan URL GIF animasi kartun online berkualitas (Gratis via Giphy)
 const internetGainImages = [
-	'https://media.giphy.com/media/67ThRZlYBZYCG/giphy.gif', // Berenang di uang
 	'https://media.giphy.com/media/LdOyjZ7io5Msw/giphy.gif', // Hujan uang 1
 	'https://media.giphy.com/media/3o6gDWzmAzrpi5DQU8/giphy.gif', // Senyum ceria
 	'https://media.giphy.com/media/xTiTnqUxyWbsAXq7Ju/giphy.gif', // Ambil uangku
 	'https://media.giphy.com/media/VTxmwaCEwSlZm/giphy.gif', // Hujan uang 2
-	'https://media.giphy.com/media/y31rRE5h3wyY0/giphy.gif'  // Tumpukan koin emas
 ];
 
 function triggerCuanCelebration() {
