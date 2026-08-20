@@ -1054,11 +1054,22 @@ function saveTradingPlanToJournal() {
 
 function updateJournalStatus(id, newStatus) {
 	let journal = getJournalData();
+	let isWinning = false;
+
 	journal = journal.map(item => {
-		if (item.id === id) item.status = newStatus;
+		if (item.id === id) {
+			item.status = newStatus;
+			if (newStatus === 'WIN') isWinning = true; // Deteksi apakah status diubah ke WIN
+		}
 		return item;
 	});
+
 	saveJournalData(journal);
+
+	// Trigger animasi pop-up jika berhasil Take Profit
+	if (isWinning) {
+		triggerCuanCelebration();
+	}
 }
 
 function deleteJournalItem(id) {
@@ -2041,6 +2052,104 @@ function startBackgroundAutoCache() {
 document.getElementById('stockSearch').addEventListener('keypress', function(e) {
 	if (e.key === 'Enter') searchStock();
 });
+
+// ==================== FITUR CANGGIH 1: PENCARIAN SUARA (VOICE COMMAND) ====================
+function startVoiceSearch() {
+	const voiceIcon = document.getElementById('voiceIcon');
+	const input = document.getElementById('stockSearch');
+
+	// Mengecek apakah browser mendukung Web Speech API
+	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+	if (!SpeechRecognition) {
+		alert("Browser kamu belum mendukung fitur pencarian suara. Coba gunakan Chrome.");
+		return;
+	}
+
+	const recognition = new SpeechRecognition();
+	recognition.lang = 'id-ID'; // Menggunakan bahasa Indonesia
+	recognition.interimResults = false;
+	recognition.maxAlternatives = 1;
+
+	recognition.onstart = function() {
+		voiceIcon.classList.remove('fa-microphone', 'text-slate-400');
+		voiceIcon.classList.add('fa-microphone-lines', 'text-rose-500', 'animate-pulse');
+		input.placeholder = "Mendengarkan suara kamu...";
+		AudioFX.playClick();
+	};
+
+	recognition.onresult = function(event) {
+		let transcript = event.results[0][0].transcript.trim().toUpperCase();
+		
+		// Membersihkan kata-kata pengantar agar hanya menyisakan kode emiten (Misal: "Cari saham BBCA" -> "BBCA")
+		transcript = transcript.replace(/CARI|SAHAM|BUKA|TOLONG/g, '').trim();
+		// Menghapus spasi jika sistem menangkap ejaan per huruf (Misal "B B C A" -> "BBCA")
+		transcript = transcript.replace(/\s+/g, '');
+
+		input.value = transcript;
+		searchStock(true); // Otomatis trigger pencarian
+	};
+
+	recognition.onerror = function(event) {
+		console.error("Voice search error: " + event.error);
+		input.placeholder = "Gagal mendengar, coba lagi...";
+	};
+
+	recognition.onend = function() {
+		voiceIcon.classList.remove('fa-microphone-lines', 'text-rose-500', 'animate-pulse');
+		voiceIcon.classList.add('fa-microphone', 'text-slate-400');
+		setTimeout(() => {
+			input.placeholder = "Cari emiten (BBCA...) atau klik Mic";
+		}, 2000);
+	};
+
+	recognition.start();
+}
+
+// ==================== FITUR CANGGIH 2: SELEBRASI CUAN INTERAKTIF ====================
+// Pastikan nama file gambar di bawah ini ada di dalam folder 'stockid_gambar/gain/' milikmu
+const gainImagesList = [
+	'1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg' // Tambahkan sesuai jumlah gambar yang ada di folder
+];
+
+function triggerCuanCelebration() {
+	const modal = document.getElementById('cuanModal');
+	const content = document.getElementById('cuanModalContent');
+	const img = document.getElementById('cuanImage');
+
+	// Memilih gambar secara acak dari folder stockid_gambar/gain/
+	const randomImg = gainImagesList[Math.floor(Math.random() * gainImagesList.length)];
+	img.src = `stockid_gambar/gain/${randomImg}`;
+
+	AudioFX.playSuccess();
+
+	// Animasi Pop-up
+	modal.classList.remove('hidden');
+	setTimeout(() => {
+		modal.classList.remove('opacity-0');
+		modal.classList.add('opacity-100');
+		content.classList.remove('scale-50');
+		content.classList.add('scale-100');
+	}, 10);
+
+	// Otomatis tertutup setelah 5 detik
+	setTimeout(() => {
+		closeCuanCelebration();
+	}, 5000);
+}
+
+function closeCuanCelebration() {
+	const modal = document.getElementById('cuanModal');
+	const content = document.getElementById('cuanModalContent');
+	if (!modal.classList.contains('hidden')) {
+		modal.classList.remove('opacity-100');
+		modal.classList.add('opacity-0');
+		content.classList.remove('scale-100');
+		content.classList.add('scale-50');
+		setTimeout(() => {
+			modal.classList.add('hidden');
+		}, 300);
+	}
+}
 
 // INITIALIZATION ON LOAD
 initSearchSuggestions();
