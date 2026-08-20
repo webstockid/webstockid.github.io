@@ -1918,7 +1918,7 @@ async function fetchCorporateAction(ticker) {
 }
 
 function switchTab(tabName) {
-	const tabs = ['ai','bigmoney','peer','news','fundamental','rrr','journal','alert','corporate','matrix','heatmap'];
+	const tabs = ['ai','bigmoney','peer','news','fundamental','rrr','journal','alert','corporate','heatmap'];
 	tabs.forEach(tab => {
 		const btn = document.getElementById(`tabBtn-${tab}`);
 		const content = document.getElementById(`tabContent-${tab}`);
@@ -1934,7 +1934,6 @@ function switchTab(tabName) {
 
 	if (tabName === 'journal') renderJournalTable();
 	if (tabName === 'alert') renderAllAlerts();
-	if (tabName === 'matrix') renderMultiTimeframeMatrix(currentTicker);
 	if (tabName === 'heatmap') renderSectorHeatmap();
 }
 
@@ -1996,7 +1995,6 @@ function searchStock(bypassCooldown = false) {
 		document.getElementById('alertTickerLabel').innerText = currentTicker;
 		document.getElementById('corpTickerLabel').innerText = currentTicker;
 		document.getElementById('peerTickerLabel').innerText = currentTicker;
-		document.getElementById('matrixTickerLabel').innerText = currentTicker;
 		
 		renderChart(currentTicker);
 		renderTechnicalGauge(currentTicker);
@@ -2368,54 +2366,7 @@ function renderKanbanBoard() {
 	document.getElementById('kanbanCountLoss').innerText = countLoss;
 }
 
-// ==================== FITUR 1: MULTI-TIMEFRAME TECHNICAL MATRIX ====================
-function renderMultiTimeframeMatrix(ticker) {
-	const grid = document.getElementById('matrixWidgetsGrid');
-	const label = document.getElementById('matrixTickerLabel');
-	if (label) label.innerText = ticker;
-	if (!grid) return;
-
-	grid.innerHTML = '';
-	const timeframes = [
-		{ title: '15 Menit (Short Scalping)', interval: '15m' },
-		{ title: '1 Jam (Intraday Trend)', interval: '1h' },
-		{ title: '4 Jam (Swing Momentum)', interval: '240' },
-		{ title: '1 Hari (Daily Position)', interval: '1D' }
-	];
-
-	timeframes.forEach((tf, index) => {
-		const wrapper = document.createElement('div');
-		wrapper.className = "bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2";
-		wrapper.innerHTML = `
-			<div class="flex items-center justify-between pb-2 border-b border-slate-900">
-				<span class="text-xs font-bold text-slate-200">${tf.title}</span>
-				<span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-cyan-400 font-mono">${tf.interval}</span>
-			</div>
-			<div class="tradingview-widget-container" id="matrix_widget_${index}"></div>
-		`;
-		grid.appendChild(wrapper);
-
-		const container = document.getElementById(`matrix_widget_${index}`);
-		const script = document.createElement('script');
-		script.type = 'text/javascript';
-		script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
-		script.async = true;
-		script.text = JSON.stringify({
-			"interval": tf.interval,
-			"width": "100%",
-			"isTransparent": true,
-			"height": "280",
-			"symbol": `IDX:${ticker}`,
-			"showIntervalTabs": false,
-			"displayMode": "single",
-			"locale": "id",
-			"colorTheme": "dark"
-		});
-		container.appendChild(script);
-	});
-}
-
-// ==================== FITUR 2: IDX SECTOR HEATMAP ====================
+// ==================== IDX SECTOR HEATMAP (FIXED) ====================
 let isHeatmapLoaded = false;
 function renderSectorHeatmap() {
 	const container = document.getElementById('tv_heatmap_container');
@@ -2427,8 +2378,7 @@ function renderSectorHeatmap() {
 	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js';
 	script.async = true;
 	script.text = JSON.stringify({
-		"exchanges": ["IDX"],
-		"dataSource": "IDX",
+		"exchange": "IDX",
 		"grouping": "sector",
 		"width": "100%",
 		"height": "100%",
