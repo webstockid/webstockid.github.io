@@ -971,7 +971,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 
 		rowsHTML += `
 			<tr class="${rowClass}">
-				<td class="p-3.5 text-white font-sans flex items-center gap-2">
+				<td class="p-3.5 text-white flex items-center gap-2">
 					<strong class="text-emerald-400 font-mono">&dollar;${data.ticker}</strong>
 				</td>
 				<td class="p-3.5 text-white">Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}</td>
@@ -1106,13 +1106,13 @@ function renderJournalTable() {
 		rows += `
 			<tr class="hover:bg-slate-800/40">
 				<td class="p-3.5 text-slate-400">${item.date}</td>
-				<td class="p-3.5 font-bold text-amber-400">&dollar;${item.ticker}</td>
-				<td class="p-3.5 text-white">Rp ${item.entry.toLocaleString('id-ID')}</td>
+				<td class="p-3.5 font-bold text-pink-400">&dollar;${item.ticker}</td>
+				<td class="p-3.5 text-sky-400">Rp ${item.entry.toLocaleString('id-ID')}</td>
 				<td class="p-3.5 text-rose-400">Rp ${item.sl.toLocaleString('id-ID')}</td>
 				<td class="p-3.5 text-emerald-400">Rp ${item.tp.toLocaleString('id-ID')}</td>
 				<td class="p-3.5 text-cyan-400">${item.rrr}</td>
 				<td class="p-3.5">${statusBadge}</td>
-				<td class="p-3.5 text-center font-sans space-x-1">
+				<td class="p-3.5 text-center space-x-1">
 					<button onclick="updateJournalStatus(${item.id}, 'WIN')" class="text-[9px] bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 font-bold px-2 py-1 rounded-md border border-emerald-500/30 transition">WIN</button>
 					<button onclick="updateJournalStatus(${item.id}, 'LOSS')" class="text-[9px] bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white font-bold px-2 py-1 rounded-md border border-rose-500/30 transition">LOSS</button>
 					<button onclick="deleteJournalItem(${item.id})" class="text-[9px] bg-slate-800 text-slate-400 hover:text-rose-400 px-2 py-1 rounded-md transition">✕</button>
@@ -1543,7 +1543,7 @@ function renderAllAlerts() {
 	}
 
 	if (groupedAlerts.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs font-sans">Belum ada alert harga yang dipasang pada saham manapun. Klik "Tambahkan ke Alert" di atas untuk memasang notifikasi.</div>`;
+		container.innerHTML = `<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs">Belum ada alert harga yang dipasang pada saham manapun. Klik "Tambahkan ke Alert" di atas untuk memasang notifikasi.</div>`;
 		return;
 	}
 
@@ -1640,7 +1640,7 @@ function renderAllAlerts() {
 				<div class="flex items-center justify-between bg-slate-900/60 p-2.5 rounded-r-lg ${rowBorder} hover:bg-slate-800 transition">
 					<div class="flex items-center gap-3">
 						<div>
-							<span class="text-[9px] ${badgeColor} block font-bold font-sans uppercase tracking-wider mb-0.5">${labelText}</span>
+							<span class="text-[9px] ${badgeColor} block font-bold uppercase tracking-wider mb-0.5">${labelText}</span>
 							<strong class="text-slate-200 font-mono text-xs md:text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</strong>
 						</div>
 						${statusBadge}
@@ -2270,7 +2270,7 @@ function renderKanbanBoard() {
 				</div>
 				<div class="flex items-center justify-between pt-1">
 					<span class="text-[9px] text-cyan-400 font-mono font-bold">RRR: ${item.rrr}</span>
-					<div class="flex items-center gap-1 font-sans">
+					<div class="flex items-center gap-1">
 						${item.status !== 'OPEN' ? `<button onclick="updateJournalStatus(${item.id}, 'OPEN')" class="text-[8px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded font-bold transition">Open</button>` : ''}
 						${item.status !== 'WIN' ? `<button onclick="updateJournalStatus(${item.id}, 'WIN')" class="text-[8px] bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 px-1.5 py-0.5 rounded font-bold transition">WIN</button>` : ''}
 						${item.status !== 'LOSS' ? `<button onclick="updateJournalStatus(${item.id}, 'LOSS')" class="text-[8px] bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-400 px-1.5 py-0.5 rounded font-bold transition">LOSS</button>` : ''}
