@@ -2081,26 +2081,57 @@ function startVoiceSearch() {
 	recognition.start();
 }
 
-const internetGainImages = [
+// ==================== DATA SELEBRASI (GAMBAR & TEKS RANDOM) ====================
+const cuanImages = [
+	'stockid_gambar/gain/1.jpg',
+	'stockid_gambar/gain/2.jpg',
 	'https://media.giphy.com/media/LdOyjZ7io5Msw/giphy.gif',
-	'https://media.giphy.com/media/3o6gDWzmAzrpi5DQU8/giphy.gif',
-	'https://media.giphy.com/media/xTiTnqUxyWbsAXq7Ju/giphy.gif',
-	'https://media.giphy.com/media/VTxmwaCEwSlZm/giphy.gif',
+	'https://media.giphy.com/media/3o6gDWzmAzrpi5DQU8/giphy.gif'
 ];
 
+const cuanTexts = [
+	{ title: "TAKE PROFIT TERCAPAI! 🚀", desc: "Gua bilang juga apa, cuan luber kan lo!" },
+	{ title: "CUAN MAKSIMAL! 🤑", desc: "Analisa tajam, eksekusi brilian. Nikmati profitmu!" },
+	{ title: "BULLSEYE! 🎯", desc: "Target harga tersentuh dengan sempurna. Mantap!" },
+	{ title: "PROFIT SECURED! 💰", desc: "Satu lagi trading plan sukses. Teruskan konsistensinya!" }
+];
+
+const lossImages = [
+	'stockid_gambar/loss/1.jpg',
+	'stockid_gambar/loss/2.jpg',
+	'https://media.giphy.com/media/BEob5qwFkSJ7G/giphy.gif',
+	'https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif'
+];
+
+const lossTexts = [
+	{ title: "STOP LOSS TERCAPAI 🛡️", desc: "Gapapa ya, masih ada rezeki di saham lain!" },
+	{ title: "RISIKO DIBATASI! 🛑", desc: "Disiplin cut loss adalah kunci bertahan di market." },
+	{ title: "PLAN GAGAL, EVALUASI! 📉", desc: "Market tidak selalu searah. Yuk susun plan baru!" },
+	{ title: "TERKENA STOP LOSS ⚔️", desc: "Modal aman terkendali. Siap untuk setup berikutnya!" }
+];
+
+// ==================== FUNGSI TRIGGER SELEBRASI ====================
 function triggerCuanCelebration() {
 	const modal = document.getElementById('cuanModal');
 	const content = document.getElementById('cuanModalContent');
-	const grid = document.getElementById('cuanGrid');
+	const imgContainer = document.getElementById('cuanImageContainer');
+	const titleEl = document.getElementById('cuanTitle');
+	const descEl = document.getElementById('cuanDesc');
 
-	const shuffled = [...internetGainImages].sort(() => 0.5 - Math.random());
-	const selectedImages = shuffled.slice(0, 4);
+	// Pilih 1 gambar dan 1 paket teks secara acak
+	const randomImg = cuanImages[Math.floor(Math.random() * cuanImages.length)];
+	const randomText = cuanTexts[Math.floor(Math.random() * cuanTexts.length)];
 
-	grid.innerHTML = selectedImages.map(url => `
-		<div class="bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center p-1">
-			<img src="${url}" alt="Profit Cuan" class="w-full h-28 md:h-36 object-contain rounded">
+	// Render gambar tunggal (sesuai proporsi ukuran asli menggunakan object-contain)
+	imgContainer.innerHTML = `
+		<div class="bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center p-1 w-full">
+			<img src="${randomImg}" alt="Profit Cuan" class="w-full h-48 md:h-64 object-contain rounded">
 		</div>
-	`).join('');
+	`;
+	
+	// Inject teks random
+	titleEl.innerText = randomText.title;
+	descEl.innerText = randomText.desc;
 
 	AudioFX.playSuccess();
 
@@ -2127,31 +2158,32 @@ function closeCuanCelebration() {
 		content.classList.add('scale-50');
 		setTimeout(() => {
 			modal.classList.add('hidden');
-			document.getElementById('cuanGrid').innerHTML = '';
+			document.getElementById('cuanImageContainer').innerHTML = ''; // Bersihkan container gambar
 		}, 300);
 	}
 }
 
-const internetLossImages = [
-	'https://media.giphy.com/media/BEob5qwFkSJ7G/giphy.gif',
-	'https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif',
-	'https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif',
-	'https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif'
-];
-
 function triggerLossCelebration() {
 	const modal = document.getElementById('lossModal');
 	const content = document.getElementById('lossModalContent');
-	const grid = document.getElementById('lossGrid');
+	const imgContainer = document.getElementById('lossImageContainer');
+	const titleEl = document.getElementById('lossTitle');
+	const descEl = document.getElementById('lossDesc');
 
-	const shuffled = [...internetLossImages].sort(() => 0.5 - Math.random());
-	const selectedImages = shuffled.slice(0, 4);
+	// Pilih 1 gambar dan 1 paket teks secara acak
+	const randomImg = lossImages[Math.floor(Math.random() * lossImages.length)];
+	const randomText = lossTexts[Math.floor(Math.random() * lossTexts.length)];
 
-	grid.innerHTML = selectedImages.map(url => `
-		<div class="bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center p-1">
-			<img src="${url}" alt="Risk Management" class="w-full h-28 md:h-36 object-contain rounded">
+	// Render gambar tunggal (sesuai proporsi ukuran asli menggunakan object-contain)
+	imgContainer.innerHTML = `
+		<div class="bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center p-1 w-full">
+			<img src="${randomImg}" alt="Risk Management" class="w-full h-48 md:h-64 object-contain rounded">
 		</div>
-	`).join('');
+	`;
+	
+	// Inject teks random
+	titleEl.innerText = randomText.title;
+	descEl.innerText = randomText.desc;
 
 	AudioFX.playAlert();
 
@@ -2178,7 +2210,7 @@ function closeLossCelebration() {
 		content.classList.add('scale-50');
 		setTimeout(() => {
 			modal.classList.add('hidden');
-			document.getElementById('lossGrid').innerHTML = '';
+			document.getElementById('lossImageContainer').innerHTML = ''; // Bersihkan container gambar
 		}, 300);
 	}
 }
