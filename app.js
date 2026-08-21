@@ -2260,7 +2260,7 @@ function renderKanbanBoard() {
 		const cardHTML = `
 			<div draggable="true" ondragstart="dragJournalCard(event, ${item.id})" class="bg-slate-900 border border-slate-800 p-3 rounded-xl cursor-grab active:cursor-grabbing hover:border-slate-700 transition space-y-2 shadow-sm">
 				<div class="flex items-center justify-between">
-					<span class="font-bold text-amber-400 font-mono text-xs">&dollar;${item.ticker}</span>
+					<span class="font-bold text-pink-400 font-mono text-xs">&dollar;${item.ticker}</span>
 					<span class="text-[9px] text-slate-400 font-mono">${item.date}</span>
 				</div>
 				<div class="grid grid-cols-3 gap-1 text-[10px] font-mono text-slate-300 bg-slate-950 p-2 rounded border border-slate-900 text-center">
