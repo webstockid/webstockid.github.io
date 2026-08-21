@@ -2083,31 +2083,31 @@ function startVoiceSearch() {
 
 // ==================== DATA SELEBRASI (GAMBAR & TEKS RANDOM) ====================
 const cuanImages = [
-	'stockid_gambar/gain/1.jpg',
-	'stockid_gambar/gain/2.jpg',
+	'https://media.giphy.com/media/LdOyjZ7io5Msw/giphy.gif',
+	'https://media.giphy.com/media/3o6gDWzmAzrpi5DQU8/giphy.gif',
 	'https://media.giphy.com/media/LdOyjZ7io5Msw/giphy.gif',
 	'https://media.giphy.com/media/3o6gDWzmAzrpi5DQU8/giphy.gif'
 ];
 
 const cuanTexts = [
 	{ title: "TAKE PROFIT TERCAPAI! 🚀", desc: "Gua bilang juga apa, cuan luber kan lo!" },
-	{ title: "CUAN MAKSIMAL! 🤑", desc: "Analisa tajam, eksekusi brilian. Nikmati profitmu!" },
-	{ title: "BULLSEYE! 🎯", desc: "Target harga tersentuh dengan sempurna. Mantap!" },
-	{ title: "PROFIT SECURED! 💰", desc: "Satu lagi trading plan sukses. Teruskan konsistensinya!" }
+	{ title: "CUAN MAKSIMAL! 🤑", desc: "Asik! Bisa beli cilok seember nih." },
+	{ title: "BULLSEYE! 🎯", desc: "Nyeblak dulu gak sih?!" },
+	{ title: "PROFIT SECURED! 💰", desc: "Info Dealer Pajero Boss!" }
 ];
 
 const lossImages = [
-	'stockid_gambar/loss/1.jpg',
-	'stockid_gambar/loss/2.jpg',
+	'https://media.giphy.com/media/BEob5qwFkSJ7G/giphy.gif',
+	'https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif',
 	'https://media.giphy.com/media/BEob5qwFkSJ7G/giphy.gif',
 	'https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif'
 ];
 
 const lossTexts = [
-	{ title: "STOP LOSS TERCAPAI 🛡️", desc: "Gapapa ya, masih ada rezeki di saham lain!" },
-	{ title: "RISIKO DIBATASI! 🛑", desc: "Disiplin cut loss adalah kunci bertahan di market." },
-	{ title: "PLAN GAGAL, EVALUASI! 📉", desc: "Market tidak selalu searah. Yuk susun plan baru!" },
-	{ title: "TERKENA STOP LOSS ⚔️", desc: "Modal aman terkendali. Siap untuk setup berikutnya!" }
+	{ title: "STOP LOSS TERCAPAI 🛡️", desc: "Kalem Bro! Masih ada cuan disaham lain." },
+	{ title: "RISIKO DIBATASI! 🛑", desc: "Cutloss mulu dah wkwkwk." },
+	{ title: "PLAN GAGAL, EVALUASI! 📉", desc: "Jangan CL mulu bro, habis tuh duit!" },
+	{ title: "TERKENA STOP LOSS ⚔️", desc: "Mending turun ajasih kata gua mah." }
 ];
 
 // ==================== FUNGSI TRIGGER SELEBRASI ====================
@@ -2145,7 +2145,7 @@ function triggerCuanCelebration() {
 
 	setTimeout(() => {
 		closeCuanCelebration();
-	}, 6000);
+	}, 3000);
 }
 
 function closeCuanCelebration() {
@@ -2197,7 +2197,7 @@ function triggerLossCelebration() {
 
 	setTimeout(() => {
 		closeLossCelebration();
-	}, 6000);
+	}, 3000);
 }
 
 function closeLossCelebration() {
