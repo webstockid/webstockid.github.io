@@ -22,6 +22,9 @@
 			}
 		}
 	</script>
+
+	<!-- Memuat Google Maps API (Ganti kodenya di bawah ini) -->
+	<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8Kf8G-Q6B7TjylwGuWhToBBQ-ww7kbAI&libraries=places&callback=initAutocomplete"></script>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center p-4 antialiased transition-colors duration-500 relative">
 	
@@ -61,8 +64,24 @@
 				<input type="text" id="idKartu" placeholder="Contoh: 001" 
 					class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all">
 			</div>
+
+			<!-- Input Pencarian Tempat Google (Baru) -->
+			<div class="relative">
+				<label for="cariTempat" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+					Cari Nama Usaha Klien (Otomatis)
+				</label>
+				<div class="relative">
+					<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+						<svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+						</svg>
+					</div>
+					<input type="text" id="cariTempat" placeholder="Ketik nama tempat/usaha..." 
+						class="w-full pl-11 pr-4 py-3 rounded-xl border border-emerald-200 dark:border-emerald-700/50 bg-emerald-50/50 dark:bg-emerald-900/10 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+				</div>
+			</div>
 			
-			<!-- Input URL -->
+			<!-- Input URL (Otomatis Terisi & Bisa Diedit Manual) -->
 			<div>
 				<label for="linkGoogle" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
 					Tautan Google Review
@@ -73,15 +92,43 @@
 			
 			<!-- Tombol Eksekusi -->
 			<button onclick="aktifkanKartu()" id="btnSubmit"
-				class="w-full mt-4 bg-emerald-500 dark:bg-blue-500 hover:bg-gray-800 dark:hover:bg-blue-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-md transition-all active:scale-[0.98] flex justify-center items-center gap-2">
+				class="w-full mt-4 bg-emerald-500 dark:bg-blue-600 hover:bg-emerald-600 dark:hover:bg-blue-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-md transition-all active:scale-[0.98] flex justify-center items-center gap-2">
 				Proses Aktivasi
 			</button>
 		</div>
 	</div>
 
-	<!-- Skrip UI -->
+	<!-- Skrip UI & Google Autocomplete -->
 	<script>
 		function toggleTheme() { document.documentElement.classList.toggle('dark'); }
+
+		// Inisialisasi Google Places Autocomplete
+		window.initAutocomplete = function() {
+			const input = document.getElementById('cariTempat');
+			const autocomplete = new google.maps.places.Autocomplete(input);
+
+			// Membatasi pencarian hanya di Indonesia (opsional, biar lebih akurat)
+			autocomplete.setComponentRestrictions({ country: ["id"] });
+
+			autocomplete.addListener('place_changed', function() {
+				const place = autocomplete.getPlace();
+				if (!place.place_id) {
+					alert("Pilih tempat dari daftar yang muncul (jangan diketik manual saja).");
+					return;
+				}
+				
+				// Membuat link langsung menuju halaman review berdasarkan ID Tempat
+				const reviewUrl = 'https://search.google.com/local/writereview?placeid=' + place.place_id;
+				
+				// Mengisi kolom Tautan secara otomatis
+				document.getElementById('linkGoogle').value = reviewUrl;
+				
+				// Memberikan efek highlight sebentar untuk menandakan sukses terisi
+				const linkInput = document.getElementById('linkGoogle');
+				linkInput.classList.add('ring-2', 'ring-emerald-500', 'border-emerald-500');
+				setTimeout(() => linkInput.classList.remove('ring-2', 'ring-emerald-500', 'border-emerald-500'), 1500);
+			});
+		};
 	</script>
 
 	<!-- Skrip Logika Firebase & NFC -->
@@ -125,6 +172,7 @@
 				
 				// Reset form
 				document.getElementById("idKartu").value = '';
+				document.getElementById("cariTempat").value = '';
 				document.getElementById("linkGoogle").value = '';
 			} catch (error) {
 				alert("Gagal memproses: " + error.message);
