@@ -45,47 +45,121 @@
 				Domain utama: <code class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-blue-600 dark:text-blue-400">https://webstockid.github.io/qr.html?id=</code>
 			</p>
 			
-			<div class="flex flex-col sm:flex-row gap-4 items-center">
-				<div class="w-full sm:w-auto flex-1">
+			<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
+				<!-- Input Angka Awal -->
+				<div>
+					<label for="startId" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+						Mulai dari ID
+					</label>
+					<input type="number" id="startId" value="1" min="1" 
+						class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all">
+					<p id="infoStatus" class="text-xs mt-2 font-medium text-gray-500 dark:text-gray-400">
+						Menghubungkan ke database...
+					</p>
+				</div>
+
+				<!-- Input Jumlah -->
+				<div>
 					<label for="jumlah" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-						Jumlah QR Code yang mau dicetak
+						Jumlah Cetak
 					</label>
 					<input type="number" id="jumlah" value="10" min="1" max="100" 
 						class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all">
 				</div>
-				<button onclick="generateBulkQR()" 
-					class="w-full sm:w-auto mt-auto bg-gray-900 dark:bg-blue-600 hover:bg-gray-800 dark:hover:bg-blue-700 text-white font-semibold py-3.5 px-6 rounded-xl shadow-md transition-all active:scale-[0.98]">
-					Buat QR Code
-				</button>
+
+				<!-- Tombol Eksekusi -->
+				<div class="pt-6">
+					<button onclick="generateBulkQR()" 
+						class="w-full bg-gray-900 dark:bg-blue-600 hover:bg-gray-800 dark:hover:bg-blue-700 text-white font-semibold py-3.5 px-6 rounded-xl shadow-md transition-all active:scale-[0.98]">
+						Buat QR Code
+					</button>
+				</div>
 			</div>
 		</div>
 
-		<!-- Container Hasil Grid QR (Format 2x2) -->
+		<!-- Container Hasil Grid QR (Format 2x2 dst) -->
 		<div id="qrContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 justify-center"></div>
 	</div>
 
-	<!-- Skrip UI -->
-	<script>
-		function toggleTheme() { 
+	<!-- Skrip UI & Logika Firebase -->
+	<script type="module">
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+		import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+		const firebaseConfig = {
+			apiKey: "AIzaSyBZJQWPSzG_oskY2wXDm1bV_WUQ4v2TDBQ",
+			authDomain: "test-795cb.firebaseapp.com",
+			projectId: "test-795cb",
+			storageBucket: "test-795cb.firebasestorage.app",
+			messagingSenderId: "385044700612",
+			appId: "1:385044700612:web:f4da4cb9ae626c72f69891",
+			measurementId: "G-17RG3Z3DSX"
+		};
+		
+		const app = initializeApp(firebaseConfig);
+		const db = getFirestore(app);
+
+		// Menjadikan fungsi bisa dipanggil oleh onclick HTML
+		window.toggleTheme = () => { 
 			document.documentElement.classList.toggle('dark'); 
+		};
+
+		// Fungsi otomatis mencari ID tertinggi di Database
+		async function cekDatabase() {
+			const infoStatus = document.getElementById('infoStatus');
+			
+			try {
+				infoStatus.innerHTML = "Memeriksa ID terakhir...";
+				infoStatus.classList.add("text-blue-500", "animate-pulse");
+
+				const querySnapshot = await getDocs(collection(db, "kartu_review"));
+				let maxId = 0;
+
+				// Looping semua dokumen untuk mencari angka terbesar
+				querySnapshot.forEach((doc) => {
+					const num = parseInt(doc.id, 10);
+					if (!isNaN(num) && num > maxId) {
+						maxId = num;
+					}
+				});
+
+				const nextId = maxId + 1;
+				document.getElementById('startId').value = nextId;
+				
+				infoStatus.innerHTML = `Terpakai: ${maxId > 0 ? String(maxId).padStart(3, '0') : 'Belum ada'}. Aman mulai dari ${String(nextId).padStart(3, '0')}`;
+				infoStatus.classList.remove("text-blue-500", "animate-pulse");
+				infoStatus.classList.add("text-emerald-600", "dark:text-emerald-400");
+				
+				// Langsung generate preview pertama kali
+				window.generateBulkQR();
+
+			} catch (error) {
+				infoStatus.innerHTML = "Gagal memuat dari database.";
+				infoStatus.classList.remove("text-blue-500", "animate-pulse");
+				infoStatus.classList.add("text-red-500");
+				console.error("Error mengambil data:", error);
+			}
 		}
 
-		function generateBulkQR() {
+		window.generateBulkQR = () => {
 			const container = document.getElementById('qrContainer');
-			const jumlah = document.getElementById('jumlah').value;
+			const startId = parseInt(document.getElementById('startId').value);
+			const jumlah = parseInt(document.getElementById('jumlah').value);
 			const domain = "https://webstockid.github.io/qr.html?id=";
 			
-			container.innerHTML = ""; // Bersihkan kontainer sebelum membuat baru
+			if (isNaN(startId) || isNaN(jumlah) || startId < 1 || jumlah < 1) {
+				alert("Mohon masukkan angka yang valid!");
+				return;
+			}
+			
+			container.innerHTML = ""; 
 
-			for (let i = 1; i <= jumlah; i++) {
-				// Membuat format ID 3 digit (001, 002, dst)
+			const endId = startId + jumlah - 1;
+			for (let i = startId; i <= endId; i++) {
 				const idFormat = String(i).padStart(3, '0');
 				const fullUrl = encodeURIComponent(domain + idFormat);
-				
-				// Menggunakan API pihak ketiga untuk render gambar QR
 				const qrImageSrc = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${fullUrl}`;
 				
-				// Menyusun elemen kartu QR ke dalam grid modern
 				const item = document.createElement('div');
 				item.className = 'bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-center flex flex-col items-center transition-colors duration-500';
 				item.innerHTML = `
@@ -97,10 +171,10 @@
 				`;
 				container.appendChild(item);
 			}
-		}
+		};
 
-		// Jalankan otomatis saat halaman pertama kali dibuka
-		window.onload = generateBulkQR;
+		// Jalankan pengecekan database saat halaman dimuat
+		cekDatabase();
 	</script>
 </body>
 </html>
