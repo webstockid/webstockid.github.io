@@ -1,16 +1,95 @@
 <!DOCTYPE html>
-<html>
-<body>
-    <h3>Aktivasi Kartu</h3>
-    <input type="text" id="idKartu" placeholder="ID Kartu (misal: 001)">
-    <input type="text" id="linkGoogle" placeholder="Link Google Review">
-    <button onclick="aktifkanKartu()">Aktifkan NFC & QR</button>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Aktivasi Kartu NFC</title>
+	
+	<!-- Memuat Font & Tailwind CSS -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<script src="https://cdn.tailwindcss.com"></script>
+	
+	<!-- Konfigurasi Tailwind -->
+	<script>
+		tailwind.config = {
+			darkMode: 'class',
+			theme: {
+				extend: {
+					fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }
+				}
+			}
+		}
+	</script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center p-4 antialiased transition-colors duration-500 relative">
+	
+	<!-- Tombol Tema (Light/Dark) -->
+	<button onclick="toggleTheme()" class="absolute top-6 right-6 p-3 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-yellow-400 shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 transition-all duration-300 focus:outline-none">
+		<svg id="moon-akt" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+			<path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+		</svg>
+		<svg id="sun-akt" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+			<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+		</svg>
+	</button>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+	<!-- Kartu Utama -->
+	<div class="bg-white dark:bg-gray-800 w-full max-w-md rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] p-8 border border-gray-100 dark:border-gray-700 transition-colors duration-500">
+		
+		<div class="text-center mb-8">
+			<div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 dark:bg-gray-700 mb-4">
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+				</svg>
+			</div>
+			<h3 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+				Aktivasi Kartu
+			</h3>
+			<p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+				Tulis data ke database & chip NFC
+			</p>
+		</div>
+		
+		<div class="space-y-5">
+			<!-- Input ID -->
+			<div>
+				<label for="idKartu" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+					ID Kartu
+				</label>
+				<input type="text" id="idKartu" placeholder="Contoh: 001" 
+					class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all">
+			</div>
+			
+			<!-- Input URL -->
+			<div>
+				<label for="linkGoogle" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+					Tautan Google Review
+				</label>
+				<input type="url" id="linkGoogle" placeholder="https://..." 
+					class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all">
+			</div>
+			
+			<!-- Tombol Eksekusi -->
+			<button onclick="aktifkanKartu()" id="btnSubmit"
+				class="w-full mt-4 bg-emerald-500 dark:bg-blue-500 hover:bg-gray-800 dark:hover:bg-blue-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-md transition-all active:scale-[0.98] flex justify-center items-center gap-2">
+				Proses Aktivasi
+			</button>
+		</div>
+	</div>
 
-        const app = initializeApp({
+	<!-- Skrip UI -->
+	<script>
+		function toggleTheme() { document.documentElement.classList.toggle('dark'); }
+	</script>
+
+	<!-- Skrip Logika Firebase & NFC -->
+	<script type="module">
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+		import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+		const app = initializeApp({
 			apiKey: "AIzaSyBZJQWPSzG_oskY2wXDm1bV_WUQ4v2TDBQ",
 			authDomain: "test-795cb.firebaseapp.com",
 			projectId: "test-795cb",
@@ -19,24 +98,41 @@
 			appId: "1:385044700612:web:f4da4cb9ae626c72f69891",
 			measurementId: "G-17RG3Z3DSX"
 		});
-        const db = getFirestore(app);
+		
+		const db = getFirestore(app);
 
-        window.aktifkanKartu = async () => {
-            const id = document.getElementById("idKartu").value;
-            const url = document.getElementById("linkGoogle").value;
+		window.aktifkanKartu = async () => {
+			const id = document.getElementById("idKartu").value.trim();
+			const url = document.getElementById("linkGoogle").value.trim();
+			const btn = document.getElementById("btnSubmit");
 
-            try {
-                // 1. Simpan ke Database untuk fungsi QR
-                await setDoc(doc(db, "kartu_review", id), { url: url });
-                
-                // 2. Tulis ke chip NFC
-                const ndef = new NDEFReader();
-                await ndef.write(url);
-                alert("Aktivasi Sukses! Silakan lepas kartu.");
-            } catch (error) {
-                alert("Error: " + error);
-            }
-        };
-    </script>
+			if(!id || !url) {
+				alert("Mohon lengkapi ID Kartu dan Tautan.");
+				return;
+			}
+
+			const originalText = btn.innerHTML;
+			btn.innerHTML = "Memproses...";
+			btn.disabled = true;
+
+			try {
+				await setDoc(doc(db, "kartu_review", id), { url: url });
+				
+				const ndef = new NDEFReader();
+				await ndef.write(url);
+				
+				alert("Aktivasi Sukses! Silakan lepas kartu dari HP.");
+				
+				// Reset form
+				document.getElementById("idKartu").value = '';
+				document.getElementById("linkGoogle").value = '';
+			} catch (error) {
+				alert("Gagal memproses: " + error.message);
+			} finally {
+				btn.innerHTML = originalText;
+				btn.disabled = false;
+			}
+		};
+	</script>
 </body>
 </html>
