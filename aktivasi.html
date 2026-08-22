@@ -23,13 +23,13 @@
 		}
 	</script>
 
-	<!-- Memuat Google Maps API (Ganti kodenya di bawah ini) -->
+	<!-- Memuat Google Maps API -->
 	<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8Kf8G-Q6B7TjylwGuWhToBBQ-ww7kbAI&libraries=places&callback=initAutocomplete"></script>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center p-4 antialiased transition-colors duration-500 relative">
 	
 	<!-- Tombol Tema (Light/Dark) -->
-	<button onclick="toggleTheme()" class="absolute top-6 right-6 p-3 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-yellow-400 shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 transition-all duration-300 focus:outline-none">
+	<button onclick="toggleTheme()" class="absolute top-6 right-6 p-3 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-yellow-400 shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 transition-all duration-300 focus:outline-none z-50">
 		<svg id="moon-akt" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 			<path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
 		</svg>
@@ -39,7 +39,7 @@
 	</button>
 
 	<!-- Kartu Utama -->
-	<div class="bg-white dark:bg-gray-800 w-full max-w-md rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] p-8 border border-gray-100 dark:border-gray-700 transition-colors duration-500">
+	<div class="bg-white dark:bg-gray-800 w-full max-w-md rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] p-8 border border-gray-100 dark:border-gray-700 transition-colors duration-500 my-8">
 		
 		<div class="text-center mb-8">
 			<div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 dark:bg-gray-700 mb-4">
@@ -55,45 +55,55 @@
 			</p>
 		</div>
 		
-		<div class="space-y-5">
-			<!-- Input ID -->
+		<div class="space-y-6">
+			<!-- 1. Input ID Kartu (Wajib) -->
 			<div>
-				<label for="idKartu" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-					ID Kartu
+				<label for="idKartu" class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-2">
+					1. ID Kartu <span class="text-red-500">*</span>
 				</label>
 				<input type="text" id="idKartu" placeholder="Contoh: 001" 
-					class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all">
+					class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all font-semibold">
 			</div>
 
-			<!-- Input Pencarian Tempat Google (Baru) -->
-			<div class="relative">
-				<label for="cariTempat" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-					Cari Nama Usaha Klien (Otomatis)
-				</label>
-				<div class="relative">
+			<div class="pt-2 pb-2">
+				<p class="text-sm font-bold text-gray-800 dark:text-gray-200 mb-3">
+					2. Target Ulasan (Pilih & Isi Salah Satu Saja) <span class="text-red-500">*</span>
+				</p>
+				
+				<!-- Opsi A: Cari Otomatis -->
+				<div class="relative mb-4">
 					<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-						<svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<svg class="h-5 w-5 text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
 						</svg>
 					</div>
-					<input type="text" id="cariTempat" placeholder="Ketik nama tempat/usaha..." 
-						class="w-full pl-11 pr-4 py-3 rounded-xl border border-emerald-200 dark:border-emerald-700/50 bg-emerald-50/50 dark:bg-emerald-900/10 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+					<input type="text" id="cariTempat" placeholder="Ketik nama usaha/klien (Otomatis)..." 
+						class="w-full pl-11 pr-4 py-3 rounded-xl border border-emerald-200 dark:border-emerald-700/50 bg-emerald-50/30 dark:bg-emerald-900/10 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all text-sm">
 				</div>
-			</div>
-			
-			<!-- Input URL (Otomatis Terisi & Bisa Diedit Manual) -->
-			<div>
-				<label for="linkGoogle" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-					Tautan Google Review
-				</label>
-				<input type="url" id="linkGoogle" placeholder="https://..." 
-					class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all">
+
+				<!-- Pembatas ATAU -->
+				<div class="flex items-center justify-center my-3">
+					<div class="h-px bg-gray-200 dark:bg-gray-700 flex-1"></div>
+					<span class="px-3 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Atau</span>
+					<div class="h-px bg-gray-200 dark:bg-gray-700 flex-1"></div>
+				</div>
+
+				<!-- Opsi B: Link Manual -->
+				<div class="relative mt-4">
+					<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+						<svg class="h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+						</svg>
+					</div>
+					<input type="url" id="linkManual" placeholder="Tempel URL tautan secara manual..." 
+						class="w-full pl-11 pr-4 py-3 rounded-xl border border-blue-200 dark:border-blue-700/50 bg-blue-50/30 dark:bg-blue-900/10 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all text-sm">
+				</div>
 			</div>
 			
 			<!-- Tombol Eksekusi -->
 			<button onclick="aktifkanKartu()" id="btnSubmit"
-				class="w-full mt-4 bg-emerald-500 dark:bg-blue-600 hover:bg-emerald-600 dark:hover:bg-blue-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-md transition-all active:scale-[0.98] flex justify-center items-center gap-2">
-				Proses Aktivasi
+				class="w-full mt-6 bg-emerald-500 dark:bg-blue-500 hover:bg-cyan-500 dark:hover:bg-teal-500 text-white font-semibold py-4 px-4 rounded-xl shadow-lg transition-all active:scale-[0.98] flex justify-center items-center gap-2">
+				Proses Aktivasi Kartu
 			</button>
 		</div>
 	</div>
@@ -102,31 +112,39 @@
 	<script>
 		function toggleTheme() { document.documentElement.classList.toggle('dark'); }
 
+		// Variabel global untuk menyimpan ID tempat dari Google Maps
+		window.selectedPlaceId = null;
+
+		// Menghandle form supaya hanya satu opsi yang terisi
+		const inputAuto = document.getElementById('cariTempat');
+		const inputManual = document.getElementById('linkManual');
+
+		// Jika pengguna mengetik manual, hapus data pencarian otomatis
+		inputManual.addEventListener('input', function() {
+			inputAuto.value = '';
+			window.selectedPlaceId = null;
+		});
+
+		// Jika pengguna mengetik di pencarian otomatis, kosongkan link manual
+		inputAuto.addEventListener('input', function() {
+			inputManual.value = '';
+		});
+
 		// Inisialisasi Google Places Autocomplete
 		window.initAutocomplete = function() {
-			const input = document.getElementById('cariTempat');
-			const autocomplete = new google.maps.places.Autocomplete(input);
-
-			// Membatasi pencarian hanya di Indonesia (opsional, biar lebih akurat)
+			const autocomplete = new google.maps.places.Autocomplete(inputAuto);
 			autocomplete.setComponentRestrictions({ country: ["id"] });
 
 			autocomplete.addListener('place_changed', function() {
 				const place = autocomplete.getPlace();
-				if (!place.place_id) {
-					alert("Pilih tempat dari daftar yang muncul (jangan diketik manual saja).");
-					return;
+				if (place.place_id) {
+					window.selectedPlaceId = place.place_id;
+					inputManual.value = ''; // Memastikan input manual kosong
+					
+					// Efek visual sukses
+					inputAuto.classList.add('ring-2', 'ring-emerald-500', 'border-emerald-500');
+					setTimeout(() => inputAuto.classList.remove('ring-2', 'ring-emerald-500', 'border-emerald-500'), 1500);
 				}
-				
-				// Membuat link langsung menuju halaman review berdasarkan ID Tempat
-				const reviewUrl = 'https://search.google.com/local/writereview?placeid=' + place.place_id;
-				
-				// Mengisi kolom Tautan secara otomatis
-				document.getElementById('linkGoogle').value = reviewUrl;
-				
-				// Memberikan efek highlight sebentar untuk menandakan sukses terisi
-				const linkInput = document.getElementById('linkGoogle');
-				linkInput.classList.add('ring-2', 'ring-emerald-500', 'border-emerald-500');
-				setTimeout(() => linkInput.classList.remove('ring-2', 'ring-emerald-500', 'border-emerald-500'), 1500);
 			});
 		};
 	</script>
@@ -150,11 +168,24 @@
 
 		window.aktifkanKartu = async () => {
 			const id = document.getElementById("idKartu").value.trim();
-			const url = document.getElementById("linkGoogle").value.trim();
+			const manualUrl = document.getElementById("linkManual").value.trim();
 			const btn = document.getElementById("btnSubmit");
 
-			if(!id || !url) {
-				alert("Mohon lengkapi ID Kartu dan Tautan.");
+			// Menentukan Tautan Final berdasarkan opsi mana yang diisi
+			let finalUrl = "";
+			if (manualUrl) {
+				finalUrl = manualUrl;
+			} else if (window.selectedPlaceId) {
+				finalUrl = 'https://search.google.com/local/writereview?placeid=' + window.selectedPlaceId;
+			}
+
+			// Validasi Data
+			if(!id) {
+				alert("Mohon isi ID Kartu terlebih dahulu.");
+				return;
+			}
+			if(!finalUrl) {
+				alert("Mohon lengkapi Target Ulasan (Gunakan pencarian otomatis ATAU tempel link secara manual).");
 				return;
 			}
 
@@ -163,17 +194,21 @@
 			btn.disabled = true;
 
 			try {
-				await setDoc(doc(db, "kartu_review", id), { url: url });
+				// Simpan ke Firebase
+				await setDoc(doc(db, "kartu_review", id), { url: finalUrl });
 				
+				// Tulis ke NFC
 				const ndef = new NDEFReader();
-				await ndef.write(url);
+				await ndef.write(finalUrl);
 				
 				alert("Aktivasi Sukses! Silakan lepas kartu dari HP.");
 				
-				// Reset form
+				// Reset form setelah berhasil
 				document.getElementById("idKartu").value = '';
 				document.getElementById("cariTempat").value = '';
-				document.getElementById("linkGoogle").value = '';
+				document.getElementById("linkManual").value = '';
+				window.selectedPlaceId = null;
+				
 			} catch (error) {
 				alert("Gagal memproses: " + error.message);
 			} finally {
