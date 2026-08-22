@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mengarahkan...</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+			apiKey: "AIzaSyBZJQWPSzG_oskY2wXDm1bV_WUQ4v2TDBQ",
+			authDomain: "test-795cb.firebaseapp.com",
+			projectId: "test-795cb",
+			storageBucket: "test-795cb.firebasestorage.app",
+			messagingSenderId: "385044700612",
+			appId: "1:385044700612:web:f4da4cb9ae626c72f69891",
+			measurementId: "G-17RG3Z3DSX"
+		};
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Mengambil ID dari URL (misal: qr.html?id=001)
+        const params = new URLSearchParams(window.location.search);
+        const cardId = params.get('id');
+
+        if (cardId) {
+            const docRef = doc(db, "kartu_review", cardId);
+            getDoc(docRef).then((docSnap) => {
+                if (docSnap.exists()) {
+                    window.location.replace(docSnap.data().url);
+                } else {
+                    document.body.innerHTML = "Kartu belum diaktivasi.";
+                }
+            });
+        }
+    </script>
+</head>
+<body><h2>Memuat ulasan...</h2></body>
+</html>

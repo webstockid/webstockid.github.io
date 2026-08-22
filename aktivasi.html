@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h3>Aktivasi Kartu</h3>
+    <input type="text" id="idKartu" placeholder="ID Kartu (misal: 001)">
+    <input type="text" id="linkGoogle" placeholder="Link Google Review">
+    <button onclick="aktifkanKartu()">Aktifkan NFC & QR</button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const app = initializeApp({
+			apiKey: "AIzaSyBZJQWPSzG_oskY2wXDm1bV_WUQ4v2TDBQ",
+			authDomain: "test-795cb.firebaseapp.com",
+			projectId: "test-795cb",
+			storageBucket: "test-795cb.firebasestorage.app",
+			messagingSenderId: "385044700612",
+			appId: "1:385044700612:web:f4da4cb9ae626c72f69891",
+			measurementId: "G-17RG3Z3DSX"
+		});
+        const db = getFirestore(app);
+
+        window.aktifkanKartu = async () => {
+            const id = document.getElementById("idKartu").value;
+            const url = document.getElementById("linkGoogle").value;
+
+            try {
+                // 1. Simpan ke Database untuk fungsi QR
+                await setDoc(doc(db, "kartu_review", id), { url: url });
+                
+                // 2. Tulis ke chip NFC
+                const ndef = new NDEFReader();
+                await ndef.write(url);
+                alert("Aktivasi Sukses! Silakan lepas kartu.");
+            } catch (error) {
+                alert("Error: " + error);
+            }
+        };
+    </script>
+</body>
+</html>
