@@ -1447,8 +1447,8 @@ function checkNotificationStatus() {
 	}
 
 	if (Notification.permission === "granted") {
-		btn.innerHTML = `<i data-lucide="bell-ring" class="w-3.5 h-3.5 text-emerald-400"></i> Notifikasi Push Aktif`;
-		btn.className = "text-[10px] lg:text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm cursor-default";
+		btn.innerHTML = `<i data-lucide="bell-ring" class="w-3.5 h-3.5 text-teal-400"></i> Notifikasi Push Aktif`;
+		btn.className = "text-[10px] lg:text-xs bg-emerald-500/10 text-teal-400 border border-teal-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm cursor-default";
 	} else if (Notification.permission === "denied") {
 		btn.innerHTML = `<i data-lucide="bell-off" class="w-3.5 h-3.5 text-rose-400"></i> Izin Notifikasi Ditolak`;
 		btn.className = "text-[10px] lg:text-xs bg-rose-500/10 text-rose-400 border border-rose-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer";
@@ -1586,17 +1586,17 @@ function renderAllAlerts() {
 						</div>
 						<div class="flex flex-col">
 							<div class="flex items-center gap-2">
-								<span class="font-bold text-white text-sm md:text-base tracking-wide">${ticker}</span>
-								${isCurrent ? '<span class="bg-emerald-500/20 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
+								<span class="font-bold text-teal text-sm md:text-base tracking-wide">${ticker}</span>
+								${isCurrent ? '<span class="bg-emerald-500/20 text-teal-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
 							</div>
-							<span class="font-bold ${activeCount > 0 ? 'text-amber-400' : 'text-slate-500'} text-[10px] md:text-xs mt-0.5">${activeCount} Alert Aktif</span>
+							<span class="font-bold ${activeCount > 0 ? 'text-teal-400' : 'text-slate-500'} text-[10px] md:text-xs mt-0.5">${activeCount} Alert Aktif</span>
 						</div>
 					</div>
 					
 					<div class="flex items-center gap-3 md:gap-4 text-right">
 						<div class="flex flex-col items-end">
 							<span class="text-[9px] md:text-[10px] text-slate-400">Tgl Dibuat</span>
-							<span class="font-mono text-cyan-400 text-[10px] md:text-xs font-bold">${alertDate}</span>
+							<span class="font-mono text-teal-400 text-[10px] md:text-xs font-bold">${alertDate}</span>
 						</div>
 						<div class="bg-slate-900 p-1.5 rounded-md border border-slate-800 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/30 transition">
 							<i id="alert-icon-${ticker}" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300" style="${rotateStyle}"></i>

@@ -641,7 +641,7 @@
 								<div class="grid grid-cols-3 gap-2.5">
 									<div>
 										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Harga Entry (Rp)</label>
-										<input type="number" id="rrrEntry" placeholder="misal: 1000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
+										<input type="number" id="rrrEntry" placeholder="misal: 1000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-amber-500">
 									</div>
 									<div>
 										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Stop Loss (SL)</label>
@@ -669,7 +669,7 @@
 									</div>
 									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
 										<span class="text-white text-[9px] lg:text-[10px] block">Maksimal Alokasi Lot</span>
-										<span id="rrrMaxLots" class="font-bold text-emerald-400 font-mono">0 Lot</span>
+										<span id="rrrMaxLots" class="font-bold text-cyan-400 font-mono">0 Lot</span>
 									</div>
 									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
 										<span class="text-white text-[9px] lg:text-[10px] block">Total Modal Terpakai</span>
@@ -799,7 +799,7 @@
 						</div>
 						
 						<div class="flex items-center gap-2 shrink-0 self-start sm:self-auto">
-							<button id="btnToggleNotification" onclick="requestNotificationPermission()" class="text-[10px] lg:text-xs bg-slate-800 hover:bg-slate-700 text-rose-400 border border-slate-700 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm">
+							<button id="btnToggleNotification" onclick="requestNotificationPermission()" class="text-[10px] lg:text-xs bg-teal-800 hover:bg-teal-700 text-teal-400 border border-teal-700 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm">
 								<i data-lucide="bell-off" class="w-3.5 h-3.5"></i> Aktifkan Notifikasi Browser
 							</button>
 						</div>
@@ -808,7 +808,7 @@
 					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
 						<div>
 							<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
-								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Alert Untuk: $<span id="alertTickerLabel" class="text-teal">MDIA</span>
+								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Alert Untuk:<span id="alertTickerLabel" class="text-teal">MDIA</span>
 							</span>
 							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Ambil data Entry, Resistance, Take Profit, dan Stop Loss dari AI lalu tambahkan ke riwayat pantauan.</p>
 						</div>
