@@ -105,7 +105,7 @@
 			
 			// Ukuran kanvas final (Gambar QR 300x300 + Ruang teks 50px di bawahnya)
 			const imgSize = 300;
-			const textSpace = 50;
+			const textSpace = 35;
 			
 			canvas.width = imgSize;
 			canvas.height = imgSize + textSpace;
@@ -126,7 +126,7 @@
 				ctx.fillStyle = "#000000";
 				ctx.font = "bold 24px sans-serif";
 				ctx.textAlign = "center";
-				ctx.fillText("ID Kartu " + idFormat, canvas.width / 2, imgSize + 30);
+				ctx.fillText("ID " + idFormat, canvas.width / 2, imgSize + 30);
 				
 				// 3. Proses Pengunduhan
 				const link = document.createElement('a');
