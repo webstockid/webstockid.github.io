@@ -2339,6 +2339,203 @@ function renderSectorHeatmap() {
 	isHeatmapLoaded = true;
 }
 
+// ==================== FLOATING AI CHAT ASSISTANT ====================
+function toggleAIChat() {
+	const chatWindow = document.getElementById('aiChatWindow');
+	const isHidden = chatWindow.classList.contains('hidden');
+
+	if (isHidden) {
+		chatWindow.classList.remove('hidden');
+		setTimeout(() => {
+			chatWindow.classList.remove('opacity-0', 'scale-95');
+			chatWindow.classList.add('opacity-100', 'scale-100');
+		}, 10);
+		document.getElementById('aiChatInput').focus();
+		AudioFX.playClick();
+	} else {
+		chatWindow.classList.remove('opacity-100', 'scale-100');
+		chatWindow.classList.add('opacity-0', 'scale-95');
+		setTimeout(() => {
+			chatWindow.classList.add('hidden');
+		}, 300);
+	}
+	if (window.lucide) lucide.createIcons();
+}
+
+document.addEventListener('keypress', function(e) {
+	if (e.key === 'Enter') {
+		const inputEl = document.getElementById('aiChatInput');
+		if (document.activeElement === inputEl) {
+			sendAIChatMessage();
+		}
+	}
+});
+
+function sendAIChatMessage() {
+	const inputEl = document.getElementById('aiChatInput');
+	const msgContainer = document.getElementById('aiChatMessages');
+	const query = inputEl.value.trim();
+
+	if (!query) return;
+
+	// Render pesan User
+	msgContainer.innerHTML += `
+		<div class="flex items-start justify-end gap-2">
+			<div class="bg-emerald-500/20 text-emerald-300 p-2.5 rounded-xl rounded-tr-none border border-emerald-500/30 leading-relaxed max-w-[85%]">
+				${escapeHtml(query)}
+			</div>
+		</div>
+	`;
+	inputEl.value = '';
+	msgContainer.scrollTop = msgContainer.scrollHeight;
+	AudioFX.playClick();
+
+	// Simulasi respons AI cerdas secara responsif
+	setTimeout(() => {
+		const aiReply = generateAIResponse(query);
+		msgContainer.innerHTML += `
+			<div class="flex items-start gap-2">
+				<div class="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+					<i data-lucide="bot" class="w-3 h-3"></i>
+				</div>
+				<div class="bg-slate-800/80 text-slate-200 p-2.5 rounded-xl rounded-tl-none border border-slate-700/60 leading-relaxed max-w-[85%] space-y-1.5">
+					${aiReply}
+				</div>
+			</div>
+		`;
+		msgContainer.scrollTop = msgContainer.scrollHeight;
+		if (window.lucide) lucide.createIcons();
+		AudioFX.playSuccess();
+	}, 600);
+}
+
+function escapeHtml(text) {
+	const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+	return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function generateAIResponse(prompt) {
+	const lower = prompt.toLowerCase();
+	let targetTicker = currentTicker;
+
+	// Deteksi apakah user menyebut emiten tertentu (misal: "bca", "bbri")
+	if (typeof uniqueRadarWatchlist !== 'undefined') {
+		const foundMatch = uniqueRadarWatchlist.find(t => lower.includes(t.toLowerCase()));
+		if (foundMatch) {
+			targetTicker = foundMatch;
+		}
+	}
+
+	const isCurrent = targetTicker === currentTicker;
+	const data = isCurrent ? globalStockData : getCachedStockData(targetTicker);
+
+	// Helper format Rupiah
+	const formatRp = (num) => num ? `Rp ${num.toLocaleString('id-ID')}` : 'N/A';
+
+	// 1. Kategori: Greeting
+	if (lower.includes('halo') || lower.includes('hai') || lower.includes('pagi') || lower.includes('siang') || lower.includes('malam')) {
+		return `Halo! Saya AI Assistant Stock ID. Mau bahas teknikal <strong class="text-emerald-400">$${targetTicker}</strong> atau ada emiten lain yang mau di-screening hari ini?`;
+	}
+
+	// 2. Kategori: Ucapan Terima Kasih
+	if (lower.includes('terimakasih') || lower.includes('makasih') || lower.includes('thanks') || lower.includes('oke')) {
+		return `Sama-sama! Selalu terapkan disiplin <i>money management</i> ya. Cuan meluber untuk kita semua! 🚀`;
+	}
+
+	// Jika data saham belum ada di cache atau belum diload
+	if (!data) {
+		return `Untuk menganalisa <strong class="text-cyan-400">$${targetTicker}</strong> lebih presisi, silakan cari emiten tersebut di kolom pencarian atas terlebih dahulu agar saya bisa menarik data bursa terbarunya.`;
+	}
+
+	// Kalkulasi Level Pivot Cerdas
+	const price = data.price;
+	const sup1 = roundToBEITick(price * 0.94, 'floor');
+	const sup2 = roundToBEITick(price * 0.96, 'floor');
+	const res1 = roundToBEITick(price * 1.05, 'ceil');
+	const res2 = roundToBEITick(price * 1.08, 'ceil');
+	const sl = roundToBEITick(price * 0.92, 'floor');
+	const tp1 = roundToBEITick(price * 1.06, 'ceil');
+	const tp2 = roundToBEITick(price * 1.12, 'ceil');
+
+	// 3. Kategori: Entry / Support / Area Beli
+	if (lower.includes('entry') || lower.includes('support') || lower.includes('beli') || lower.includes('masuk') || lower.includes('serok') || lower.includes('buy')) {
+		return `
+			<strong class="text-amber-400 flex items-center gap-1.5"><i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Area Entry & Support $${targetTicker}:</strong>
+			Harga saat ini berada di <span class="font-mono text-white">${formatRp(price)}</span>.<br>
+			Area akumulasi (entry ideal) yang disarankan berada di rentang support kuat <strong class="font-mono text-amber-400">${formatRp(sup1)} - ${formatRp(sup2)}</strong>.<br>
+			<span class="text-[10px] text-slate-400 mt-1 block"><i>Tips: Cicil beli jika harga mantul (rebound) dari area ini.</i></span>
+		`;
+	}
+
+	// 4. Kategori: Resistance / Target Profit / Jual
+	if (lower.includes('resist') || lower.includes('target') || lower.includes('tp') || lower.includes('jual') || lower.includes('profit') || lower.includes('cuan')) {
+		return `
+			<strong class="text-cyan-400 flex items-center gap-1.5"><i data-lucide="target" class="w-3.5 h-3.5"></i> Target Profit & Resistance $${targetTicker}:</strong>
+			Resistance terdekat untuk <i>take profit</i> ada di kisaran <strong class="font-mono text-cyan-400">${formatRp(res1)} - ${formatRp(res2)}</strong>.<br>
+			Jika berhasil <i>breakout</i> dengan volume tinggi, kamu bisa set TP1 di <strong class="text-white">${formatRp(tp1)}</strong> dan TP2 di <strong class="text-white">${formatRp(tp2)}</strong>. Jangan lupa gunakan <i>trailing stop</i>!
+		`;
+	}
+
+	// 5. Kategori: Stop Loss / Cut Loss / Batas Risiko
+	if (lower.includes('stop loss') || lower.includes('sl ') || lower.includes('cut loss') || lower.includes('cl') || lower.includes('risiko') || lower.includes('rugi')) {
+		return `
+			<strong class="text-rose-400 flex items-center gap-1.5"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Batas Risiko (Stop Loss) $${targetTicker}:</strong>
+			Untuk membatasi kerugian, pasang Stop Loss ketat jika harga ditutup di bawah <strong class="font-mono text-rose-400">${formatRp(sl)}</strong>.<br>
+			<span class="text-[10px] text-slate-400 mt-1 block"><i>Note: Disiplin SL sangat penting jika tren berbalik arah dan menjebol support!</i></span>
+		`;
+	}
+
+	// 6. Kategori: Moving Average (MA) / Tren
+	if (lower.includes('ma5') || lower.includes('ma10') || lower.includes('ma20') || lower.includes('moving average') || lower.includes(' ma ') || lower.includes('tren')) {
+		const trendText = price >= data.ma5 ? '<span class="text-emerald-400 font-bold">di atas MA5 (Fase Bullish / Menguat)</span>' : '<span class="text-rose-400 font-bold">di bawah MA5 (Fase Koreksi / Lemah)</span>';
+		return `
+			<strong class="text-fuchsia-400 flex items-center gap-1.5"><i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Posisi Moving Average $${targetTicker}:</strong>
+			<ul class="space-y-0.5 mt-1 list-inside font-mono">
+				<li>• MA5 : <span class="text-white">${formatRp(data.ma5)}</span></li>
+				<li>• MA10: <span class="text-white">${formatRp(data.ma10)}</span></li>
+				<li>• MA20: <span class="text-white">${formatRp(data.ma20)}</span></li>
+			</ul>
+			<div class="mt-1.5 border-t border-slate-700/50 pt-1.5">
+				Struktur saat ini: Harga (${formatRp(price)}) berada ${trendText}.
+			</div>
+		`;
+	}
+
+	// 7. Kategori: Volume & Valuasi Transaksi
+	if (lower.includes('volume') || lower.includes('valuasi') || lower.includes('likuiditas') || lower.includes('transaksi') || lower.includes('ramai') || lower.includes('sepi')) {
+		const volStatus = data.volRatio >= 1.5 ? '<span class="text-emerald-400 font-bold">Spike (Sangat Ramai) ⚡</span>' : (data.volRatio >= 1.0 ? '<span class="text-amber-400 font-bold">Normal</span>' : '<span class="text-slate-400">Sepi</span>');
+		return `
+			<strong class="text-emerald-400 flex items-center gap-1.5"><i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> Analisis Volume $${targetTicker}:</strong>
+			<ul class="space-y-0.5 mt-1 font-mono">
+				<li>• Total Lot: <span class="text-white">${(data.currentLot || 0).toLocaleString('id-ID')} Lot</span></li>
+				<li>• Valuasi: <span class="text-white">${formatRp(data.currentValuation)}</span></li>
+				<li>• Rasio Rerata: <span class="text-white">${data.volRatio}x</span> (${volStatus})</li>
+			</ul>
+			<div class="text-[10px] text-slate-400 mt-1.5 leading-relaxed">Lonjakan volume (Spike) adalah konfirmasi mutlak yang menguatkan validasi <i>breakout</i>.</div>
+		`;
+	}
+
+	// 8. Kategori: General Prospek / Pandangan Utama
+	if (lower.includes('prospek') || lower.includes('analisa') || lower.includes('bagaimana') || lower.includes('review') || lower.includes('teknikal')) {
+		const saran = (price >= data.ma5 && data.volRatio >= 1) 
+			? 'Tren cukup solid, pertimbangkan <strong class="text-emerald-400">Buy on Breakout</strong> atau *Pullback*.' 
+			: 'Tren cenderung tertekan, sebaiknya <strong class="text-amber-400">Wait & See</strong> atau *Buy on Support* dengan SL ketat.';
+			
+		return `
+			<strong class="text-emerald-400 flex items-center gap-1.5"><i data-lucide="cpu" class="w-3.5 h-3.5"></i> Ringkasan Teknis AI untuk $${targetTicker}:</strong>
+			Harga terkini <strong class="text-white">${formatRp(price)}</strong> (<span class="${data.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${data.changePct >= 0 ? '+' : ''}${data.changePct}%</span>).<br>
+			Secara umum, ruang pergerakan terdekat berada di antara support <strong class="font-mono text-amber-400">${formatRp(sup2)}</strong> dan resistance <strong class="font-mono text-cyan-400">${formatRp(res1)}</strong>.<br><br>
+			<span class="text-slate-300">💡 <b>Saran:</b> ${saran}</span>
+		`;
+	}
+
+	// 9. Kategori: Fallback (Pertanyaan Kompleks yang tidak terdefinisi secara spesifik)
+	return `
+		Poin yang sangat detail! Untuk <strong class="text-emerald-400">$${targetTicker}</strong> (Posisi: ${formatRp(price)}), fokus utamanya ada di ketahanan <b>Support ${formatRp(sup2)}</b> dan uji <b>Resist ${formatRp(res1)}</b>.<br><br>
+		Adakah metrik khusus yang ingin kamu gali seperti kalkulasi <i>Moving Average (MA)</i>, status <i>Volume</i> harian, atau butuh titik <i>Stop Loss</i>?
+	`;
+}
+
 initSearchSuggestions();
 checkVIPAuth();
 cleanExpiredCache();
