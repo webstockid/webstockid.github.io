@@ -74,68 +74,55 @@ const AudioFX = {
 			this.ctx.resume();
 		}
 	},
-	playClick() {
+	playAudioFile(filename) {
 		try {
-			this.init();
-			if (!this.ctx) return;
-			const osc = this.ctx.createOscillator();
-			const gain = this.ctx.createGain();
-			osc.type = 'sine';
-			osc.frequency.setValueAtTime(1300, this.ctx.currentTime);
-			osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.05);
-			gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-			gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
-			osc.connect(gain);
-			gain.connect(this.ctx.destination);
-			osc.start();
-			osc.stop(this.ctx.currentTime + 0.05);
-		} catch(e){}
+			const audio = new Audio(`stockid_suara/MC/${filename}`);
+			audio.play().catch(e => {});
+		} catch(e) {}
+	},
+	playClick() {
+		const clicks = ['klik1.mp3', 'klik2.mp3', 'klik3.mp3', 'klik4.mp3'];
+		const randomClick = clicks[Math.floor(Math.random() * clicks.length)];
+		this.playAudioFile(randomClick);
 	},
 	playSuccess() {
-		try {
-			this.init();
-			if (!this.ctx) return;
-			const now = this.ctx.currentTime;
-			const notes = [523.25, 659.25, 783.99, 1046.50];
-			notes.forEach((freq, idx) => {
-				const osc = this.ctx.createOscillator();
-				const gain = this.ctx.createGain();
-				osc.type = 'square';
-				osc.frequency.setValueAtTime(freq, now + idx * 0.06);
-				gain.gain.setValueAtTime(0, now + idx * 0.06);
-				gain.gain.linearRampToValueAtTime(0.12, now + idx * 0.06 + 0.02);
-				gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.25);
-				osc.connect(gain);
-				gain.connect(this.ctx.destination);
-				osc.start(now + idx * 0.06);
-				osc.stop(now + idx * 0.06 + 0.25);
-			});
-		} catch(e){}
+		this.playAudioFile('sukses.mp3');
 	},
 	playAlert() {
-		try {
-			this.init();
-			if (!this.ctx) return;
-			const now = this.ctx.currentTime;
-			const osc = this.ctx.createOscillator();
-			const gain = this.ctx.createGain();
-			osc.type = 'sawtooth';
-			osc.frequency.setValueAtTime(800, now);
-			osc.frequency.setValueAtTime(1000, now + 0.08);
-			gain.gain.setValueAtTime(0.1, now);
-			gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-			osc.connect(gain);
-			gain.connect(this.ctx.destination);
-			osc.start(now);
-			osc.stop(now + 0.2);
-		} catch(e){}
+		this.playAudioFile('loss.mp3');
+	},
+	playTokenExpired() {
+		this.playAudioFile('hilang.mp3');
+	},
+	playSearch() {
+		this.playAudioFile('cari.mp3');
+	},
+	playDelete() {
+		this.playAudioFile('hapus.mp3');
+		setTimeout(() => {
+			this.playAudioFile('hilang.mp3');
+		}, 300);
+	},
+	playWinJournal() {
+		this.playAudioFile('win.mp3');
+	},
+	playLossJournal() {
+		this.playAudioFile('loss.mp3');
 	}
 };
 
 document.addEventListener('click', function(e) {
 	const target = e.target.closest('button, a, [onclick]');
 	if (target) {
-		AudioFX.playClick();
+		const onclickAttr = target.getAttribute('onclick') || '';
+		const textContent = target.innerText || '';
+		
+		if (onclickAttr.includes('Reset') || onclickAttr.includes('hapus') || onclickAttr.includes('Clear') || textContent.includes('Hapus')) {
+			AudioFX.playDelete();
+		} else {
+			AudioFX.playClick();
+		}
+
 		if ('vibrate' in navigator) {
 			navigator.vibrate(80);
 		}
@@ -350,7 +337,7 @@ function logoutVIP() {
 }
 
 function showError(msg) {
-	AudioFX.playAlert();
+	AudioFX.playTokenExpired();
 	const errEl = document.getElementById('loginErrorMsg');
 	if(errEl) {
 		errEl.innerText = msg;
@@ -1054,8 +1041,10 @@ function updateJournalStatus(id, newStatus) {
 	saveJournalData(journal);
 
 	if (isWinning) {
+		AudioFX.playWinJournal();
 		triggerCuanCelebration();
 	} else if (isLosing) {
+		AudioFX.playLossJournal();
 		triggerLossCelebration();
 	}
 }
@@ -1202,6 +1191,10 @@ function initSearchSuggestions() {
 	const box = document.getElementById('searchSuggestionsBox');
 
 	if (!input || !box) return;
+
+	input.addEventListener('focus', function() {
+		AudioFX.playSearch();
+	});
 
 	input.addEventListener('input', function() {
 		const val = this.value.trim().toUpperCase();
@@ -1448,7 +1441,7 @@ function checkNotificationStatus() {
 
 	if (Notification.permission === "granted") {
 		btn.innerHTML = `<i data-lucide="bell-ring" class="w-3.5 h-3.5 text-teal-400"></i> Notifikasi Push Aktif`;
-		btn.className = "text-[10px] lg:text-xs bg-emerald-500/10 text-teal-400 border border-teal-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm cursor-default";
+		btn.className = "text-[10px] lg:text-xs bg-emerald-500/10 text-teal-400 border border-emerald-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm cursor-default";
 	} else if (Notification.permission === "denied") {
 		btn.innerHTML = `<i data-lucide="bell-off" class="w-3.5 h-3.5 text-rose-400"></i> Izin Notifikasi Ditolak`;
 		btn.className = "text-[10px] lg:text-xs bg-rose-500/10 text-rose-400 border border-rose-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer";
@@ -2118,22 +2111,17 @@ function triggerCuanCelebration() {
 	const titleEl = document.getElementById('cuanTitle');
 	const descEl = document.getElementById('cuanDesc');
 
-	// Pilih 1 gambar dan 1 paket teks secara acak
 	const randomImg = cuanImages[Math.floor(Math.random() * cuanImages.length)];
 	const randomText = cuanTexts[Math.floor(Math.random() * cuanTexts.length)];
 
-	// Render gambar tunggal (sesuai proporsi ukuran asli menggunakan object-contain)
 	imgContainer.innerHTML = `
 		<div class="bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center p-1 w-full">
 			<img src="${randomImg}" alt="Profit Cuan" class="w-full h-48 md:h-64 object-contain rounded">
 		</div>
 	`;
 	
-	// Inject teks random
 	titleEl.innerText = randomText.title;
 	descEl.innerText = randomText.desc;
-
-	AudioFX.playSuccess();
 
 	modal.classList.remove('hidden');
 	setTimeout(() => {
@@ -2158,7 +2146,7 @@ function closeCuanCelebration() {
 		content.classList.add('scale-50');
 		setTimeout(() => {
 			modal.classList.add('hidden');
-			document.getElementById('cuanImageContainer').innerHTML = ''; // Bersihkan container gambar
+			document.getElementById('cuanImageContainer').innerHTML = '';
 		}, 300);
 	}
 }
@@ -2170,22 +2158,17 @@ function triggerLossCelebration() {
 	const titleEl = document.getElementById('lossTitle');
 	const descEl = document.getElementById('lossDesc');
 
-	// Pilih 1 gambar dan 1 paket teks secara acak
 	const randomImg = lossImages[Math.floor(Math.random() * lossImages.length)];
 	const randomText = lossTexts[Math.floor(Math.random() * lossTexts.length)];
 
-	// Render gambar tunggal (sesuai proporsi ukuran asli menggunakan object-contain)
 	imgContainer.innerHTML = `
 		<div class="bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center p-1 w-full">
 			<img src="${randomImg}" alt="Risk Management" class="w-full h-48 md:h-64 object-contain rounded">
 		</div>
 	`;
 	
-	// Inject teks random
 	titleEl.innerText = randomText.title;
 	descEl.innerText = randomText.desc;
-
-	AudioFX.playAlert();
 
 	modal.classList.remove('hidden');
 	setTimeout(() => {
@@ -2210,7 +2193,7 @@ function closeLossCelebration() {
 		content.classList.add('scale-50');
 		setTimeout(() => {
 			modal.classList.add('hidden');
-			document.getElementById('lossImageContainer').innerHTML = ''; // Bersihkan container gambar
+			document.getElementById('lossImageContainer').innerHTML = '';
 		}, 300);
 	}
 }
