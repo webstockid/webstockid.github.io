@@ -97,11 +97,14 @@ const AudioFX = {
 	playSearch() {
 		this.playAudioFile('cari.mp3');
 	},
-	playDelete() {
+	playDelete(withPopup = false) {
 		this.playAudioFile('hapus.mp3');
-		setTimeout(() => {
-			this.playAudioFile('hilang.mp3');
-		}, 300);
+		if (withPopup) {
+			// Memberikan interval 500ms agar suara tidak bertabrakan
+			setTimeout(() => {
+				this.playAudioFile('hilang.mp3');
+			}, 500); 
+		}
 	},
 	playWinJournal() {
 		this.playAudioFile('win.mp3');
@@ -111,14 +114,38 @@ const AudioFX = {
 	}
 };
 
+// ==================== GLOBAL CLICK LISTENER ====================
 document.addEventListener('click', function(e) {
 	const target = e.target.closest('button, a, [onclick]');
 	if (target) {
 		const onclickAttr = target.getAttribute('onclick') || '';
-		const textContent = target.innerText || '';
+		const textContent = target.innerText ? target.innerText.trim() : '';
 		
-		if (onclickAttr.includes('Reset') || onclickAttr.includes('hapus') || onclickAttr.includes('Clear') || textContent.includes('Hapus')) {
-			AudioFX.playDelete();
+		const hasTrashIcon = target.querySelector('.fa-trash') !== null || e.target.classList.contains('fa-trash');
+
+		// 1. Kategori Hapus Satuan (Hanya mainkan hapus.mp3)
+		const isNormalDelete = 
+			hasTrashIcon || 
+			onclickAttr.includes('deleteJournalItem') || 
+			onclickAttr.includes('removePriceAlert');
+
+		// 2. Kategori Hapus/Close dengan Alert/Popup (Mainkan hapus.mp3 + jeda hilang.mp3)
+		const isPopupAction = 
+			!isNormalDelete && (
+				textContent.includes('Hapus Semua') || 
+				textContent.includes('Bersihkan Semua') || 
+				onclickAttr.includes('clearJournalHistory') || 
+				onclickAttr.includes('clearAllAlerts') ||
+				onclickAttr.includes('closeCuanCelebration') ||
+				onclickAttr.includes('closeLossCelebration') ||
+				textContent === '✕' || 
+				textContent === 'X'
+			);
+
+		if (isPopupAction) {
+			AudioFX.playDelete(true); 
+		} else if (isNormalDelete) {
+			AudioFX.playDelete(false);
 		} else {
 			AudioFX.playClick();
 		}
