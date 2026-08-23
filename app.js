@@ -2483,9 +2483,9 @@ function generateAIResponse(prompt) {
 	const sl = roundToBEITick(price * 0.92, 'floor');
 	const tp1 = roundToBEITick(price * 1.06, 'ceil');
 	const tp2 = roundToBEITick(price * 1.12, 'ceil');
-
+	
 	// 3. Kategori: Entry / Support / Area Beli
-	if (lower.includes('entry') || lower.includes('area entry') || lower.includes('support') || lower.includes('area support') || lower.includes('beli') || lower.includes('area beli') || lower.includes('masuk') || lower.includes('serok') || lower.includes('buy')) {
+	if (lower.includes('entry') || lower.includes('area entry') || lower.includes('support') || lower.includes('area support') || lower.includes('area') || lower.includes('area masuk') || lower.includes('masuk') || lower.includes('serok') || lower.includes('buy')) {
 		return `
 			<strong class="text-amber-400 flex items-center gap-1.5"><i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Area Entry & Support $${targetTicker}:</strong>
 			Harga saat ini berada di <span class="font-mono text-white">${formatRp(price)}</span>.<br>
