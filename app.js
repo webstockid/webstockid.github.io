@@ -2485,7 +2485,7 @@ function generateAIResponse(prompt) {
 	const tp2 = roundToBEITick(price * 1.12, 'ceil');
 
 	// 3. Kategori: Entry / Support / Area Beli
-	if (lower.includes('entry') || lower.includes('support') || lower.includes('beli') || lower.includes('masuk') || lower.includes('serok') || lower.includes('buy')) {
+	if (lower.includes('entry') || lower.includes('area entry') || lower.includes('support') || lower.includes('area support') || lower.includes('beli') || lower.includes('area beli') || lower.includes('masuk') || lower.includes('serok') || lower.includes('buy')) {
 		return `
 			<strong class="text-amber-400 flex items-center gap-1.5"><i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Area Entry & Support $${targetTicker}:</strong>
 			Harga saat ini berada di <span class="font-mono text-white">${formatRp(price)}</span>.<br>
@@ -2495,7 +2495,7 @@ function generateAIResponse(prompt) {
 	}
 
 	// 4. Kategori: Resistance / Target Profit / Jual
-	if (lower.includes('resist') || lower.includes('target') || lower.includes('tp') || lower.includes('jual') || lower.includes('profit') || lower.includes('cuan')) {
+	if (lower.includes('resistance') || lower.includes('resist') || lower.includes('resis') || lower.includes('target') || lower.includes('target profit') || lower.includes('profit') || lower.includes('take profit')) || lower.includes('jual') || lower.includes('area jual') {
 		return `
 			<strong class="text-cyan-400 flex items-center gap-1.5"><i data-lucide="target" class="w-3.5 h-3.5"></i> Target Profit & Resistance $${targetTicker}:</strong>
 			Resistance terdekat untuk <i>take profit</i> ada di kisaran <strong class="font-mono text-cyan-400">${formatRp(res1)} - ${formatRp(res2)}</strong>.<br>
@@ -2504,7 +2504,7 @@ function generateAIResponse(prompt) {
 	}
 
 	// 5. Kategori: Stop Loss / Cut Loss / Batas Risiko
-	if (lower.includes('stop loss') || lower.includes('sl ') || lower.includes('cut loss') || lower.includes('cl') || lower.includes('risiko') || lower.includes('rugi')) {
+	if (lower.includes('stoploss') || lower.includes('stop loss') || lower.includes('area stop loss') || lower.includes('cutloss') || lower.includes('cut loss') || lower.includes('area cut loss') || lower.includes('cl') || lower.includes('risiko') || lower.includes('rugi')) {
 		return `
 			<strong class="text-rose-400 flex items-center gap-1.5"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Batas Risiko (Stop Loss) $${targetTicker}:</strong>
 			Untuk membatasi kerugian, pasang Stop Loss ketat jika harga ditutup di bawah <strong class="font-mono text-rose-400">${formatRp(sl)}</strong>.<br>
@@ -2513,7 +2513,7 @@ function generateAIResponse(prompt) {
 	}
 
 	// 6. Kategori: Moving Average (MA) / Tren
-	if (lower.includes('ma5') || lower.includes('ma10') || lower.includes('ma20') || lower.includes('moving average') || lower.includes(' ma ') || lower.includes('tren')) {
+	if (lower.includes('ma5') || lower.includes('ma10') || lower.includes('ma20') || lower.includes('moving average') || lower.includes('ma') || lower.includes('tren')) || lower.includes('skor') {
 		const trendText = price >= data.ma5 ? '<span class="text-emerald-400 font-bold">di atas MA5 (Fase Bullish / Menguat)</span>' : '<span class="text-rose-400 font-bold">di bawah MA5 (Fase Koreksi / Lemah)</span>';
 		return `
 			<strong class="text-fuchsia-400 flex items-center gap-1.5"><i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Posisi Moving Average $${targetTicker}:</strong>
@@ -2529,7 +2529,7 @@ function generateAIResponse(prompt) {
 	}
 
 	// 7. Kategori: Volume & Valuasi Transaksi
-	if (lower.includes('volume') || lower.includes('valuasi') || lower.includes('likuiditas') || lower.includes('transaksi') || lower.includes('ramai') || lower.includes('sepi')) {
+	if (lower.includes('lot') || lower.includes('volume') || lower.includes('valuasi') || lower.includes('rasio') || lower.includes('likuiditas') || lower.includes('transaksi') || lower.includes('ramai') || lower.includes('sepi')) {
 		const volStatus = data.volRatio >= 1.5 ? '<span class="text-emerald-400 font-bold">Spike (Sangat Ramai) ⚡</span>' : (data.volRatio >= 1.0 ? '<span class="text-amber-400 font-bold">Normal</span>' : '<span class="text-slate-400">Sepi</span>');
 		return `
 			<strong class="text-emerald-400 flex items-center gap-1.5"><i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> Analisis Volume $${targetTicker}:</strong>
@@ -2543,7 +2543,7 @@ function generateAIResponse(prompt) {
 	}
 
 	// 8. Kategori: General Prospek / Pandangan Utama
-	if (lower.includes('prospek') || lower.includes('analisa') || lower.includes('bagaimana') || lower.includes('review') || lower.includes('teknikal')) {
+	if (lower.includes('coba') || lower.includes('coba lihat') || lower.includes('prospek') || lower.includes('analisa') || lower.includes('coba analisa') || lower.includes('bagaimana') || lower.includes('review') || lower.includes('teknikal')) {
 		const saran = (price >= data.ma5 && data.volRatio >= 1) 
 			? 'Tren cukup solid, pertimbangkan <strong class="text-emerald-400">Buy on Breakout</strong> atau *Pullback*.' 
 			: 'Tren cenderung tertekan, sebaiknya <strong class="text-amber-400">Wait & See</strong> atau *Buy on Support* dengan SL ketat.';
