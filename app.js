@@ -151,7 +151,7 @@ document.addEventListener('click', function(e) {
 		}
 
 		if ('vibrate' in navigator) {
-			navigator.vibrate(80);
+			navigator.vibrate(100);
 		}
 	}
 });
@@ -2461,17 +2461,17 @@ function generateAIResponse(prompt) {
 
 	// 1. Kategori: Greeting
 	if (lower.includes('halo') || lower.includes('hai') || lower.includes('pagi') || lower.includes('siang') || lower.includes('malam')) {
-		return `Halo! Saya AI Assistant Stock ID. Mau bahas teknikal <strong class="text-emerald-400">$${targetTicker}</strong> atau ada emiten lain yang mau di-screening hari ini?`;
+		return `Halo! Gue AI Assistant Stock ID. Mau bahas teknikal <strong class="text-emerald-400">$${targetTicker}</strong> atau ada emiten lain yang mau di-screening hari ini?`;
 	}
 
 	// 2. Kategori: Ucapan Terima Kasih
 	if (lower.includes('terimakasih') || lower.includes('makasih') || lower.includes('thanks') || lower.includes('oke')) {
-		return `Sama-sama! Selalu terapkan disiplin <i>money management</i> ya. Cuan meluber untuk kita semua! 🚀`;
+		return `Sama-sama cuy! Selalu terapin disiplin <i>money management</i> ya. Cuan meluber untuk member Stock ID VIP! 🚀`;
 	}
 
 	// Jika data saham belum ada di cache atau belum diload
 	if (!data) {
-		return `Untuk menganalisa <strong class="text-cyan-400">$${targetTicker}</strong> lebih presisi, silakan cari emiten tersebut di kolom pencarian atas terlebih dahulu agar saya bisa menarik data bursa terbarunya.`;
+		return `Untuk menganalisa <strong class="text-cyan-400">$${targetTicker}</strong> lebih presisi, silakan cari emiten tersebut di kolom pencarian atas terlebih dahulu agar gue bisa menarik data bursa terbarunya.`;
 	}
 
 	// Kalkulasi Level Pivot Cerdas
