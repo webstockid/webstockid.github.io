@@ -2495,7 +2495,7 @@ function generateAIResponse(prompt) {
 	}
 
 	// 4. Kategori: Resistance / Target Profit / Jual
-	if (lower.includes('resistance') || lower.includes('resist') || lower.includes('resis') || lower.includes('target') || lower.includes('target profit') || lower.includes('profit') || lower.includes('take profit')) || lower.includes('jual') || lower.includes('area jual') {
+	if (lower.includes('resistance') || lower.includes('resist') || lower.includes('resis') || lower.includes('target') || lower.includes('target profit') || lower.includes('profit') || lower.includes('take profit') || lower.includes('jual') || lower.includes('area jual')) {
 		return `
 			<strong class="text-cyan-400 flex items-center gap-1.5"><i data-lucide="target" class="w-3.5 h-3.5"></i> Target Profit & Resistance $${targetTicker}:</strong>
 			Resistance terdekat untuk <i>take profit</i> ada di kisaran <strong class="font-mono text-cyan-400">${formatRp(res1)} - ${formatRp(res2)}</strong>.<br>
@@ -2513,7 +2513,7 @@ function generateAIResponse(prompt) {
 	}
 
 	// 6. Kategori: Moving Average (MA) / Tren
-	if (lower.includes('ma5') || lower.includes('ma10') || lower.includes('ma20') || lower.includes('moving average') || lower.includes('ma') || lower.includes('tren')) || lower.includes('skor') {
+	if (lower.includes('ma5') || lower.includes('ma10') || lower.includes('ma20') || lower.includes('moving average') || lower.includes('ma') || lower.includes('tren') || lower.includes('skor')) {
 		const trendText = price >= data.ma5 ? '<span class="text-emerald-400 font-bold">di atas MA5 (Fase Bullish / Menguat)</span>' : '<span class="text-rose-400 font-bold">di bawah MA5 (Fase Koreksi / Lemah)</span>';
 		return `
 			<strong class="text-fuchsia-400 flex items-center gap-1.5"><i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Posisi Moving Average $${targetTicker}:</strong>
