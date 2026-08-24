@@ -597,6 +597,44 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	return freshData;
 }
 
+// Fungsi Global: Mengolah raw JSON dari Yahoo menjadi data matang
+function parseYahooDataGlobal(json, ticker) {
+	const result = json?.chart?.result?.[0] || json?.results?.[0];
+	if (!result) return null;
+
+	const quote = result.indicators?.quote?.[0] || result.quote;
+	const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
+	const volumes = quote?.volume?.filter(v => v !== null && v !== undefined) || [];
+	const highs = quote?.high?.filter(h => h !== null && h !== undefined) || [];
+	const lows = quote?.low?.filter(l => l !== null && l !== undefined) || [];
+
+	if (prices.length < 5) return null;
+
+	const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
+	const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
+	const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
+
+	// roundToBEITick sudah ada di app.js kamu, jadi ini aman dipakai
+	const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+	const ma5 = getMA(5);
+	const ma10 = getMA(10);
+	const ma20 = getMA(20);
+
+	const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
+	const realVolume = result.meta?.regularMarketVolume || currentVolume;
+	const currentLot = Math.floor(realVolume / 100);
+	const currentValuation = realVolume * currentPrice;
+
+	const volSlice10 = volumes.slice(-10);
+	const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
+	const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
+
+	const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
+	const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
+
+	return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, currentLot, currentValuation };
+}
+
 function showAISkeletonLoading() {
 	document.getElementById('aiVerdikText').innerHTML = `<span class="inline-block w-32 h-5 skeleton rounded"></span>`;
 	document.getElementById('aiScoreBadge').innerHTML = `<span class="inline-block w-12 h-4 skeleton rounded"></span>`;
@@ -1992,44 +2030,69 @@ function searchStock(bypassCooldown = false) {
 function startBackgroundAutoCache() {
 	const FIVE_MINUTES = 5 * 60 * 1000;
 	
-	const runBackgroundFetch = async () => {
-		const currentData = await fetchRealtimeStockData(currentTicker, true);
-		if (currentData) {
-			checkPriceAlertsRealtime(currentTicker, currentData.price);
-		}
-
-		let activeAlertTickers = new Set();
-		for (let i = 0; i < localStorage.length; i++) {
-			const key = localStorage.key(i);
-			if (key && key.startsWith('alerts_')) {
-				const ticker = key.replace('alerts_', '');
-				try {
-					const alerts = JSON.parse(localStorage.getItem(key));
-					const hasActive = alerts.some(a => typeof a === 'object' ? a.active && !a.triggered : true);
-					if (hasActive && ticker !== currentTicker) {
-						activeAlertTickers.add(ticker);
+	const runBackgroundFetch = () => {
+		// Pastikan browser user mendukung Web Worker
+		if (window.Worker) {
+			const bgWorker = new Worker('data-worker.js');
+			
+			// Dengarkan balasan dari robot data-worker
+			bgWorker.onmessage = function(e) {
+				const { status, ticker, rawData } = e.data;
+				
+				if (status === 'success' && rawData) {
+					// 1. Olah datanya
+					const parsedData = parseYahooDataGlobal(rawData, ticker);
+					
+					if (parsedData) {
+						// 2. Simpan diam-diam ke LocalStorage
+						setCachedStockData(ticker, parsedData);
+						
+						// 3. Cek otomatis apakah harga kena Target / Stop Loss untuk Push Notification!
+						checkPriceAlertsRealtime(ticker, parsedData.price); 
 					}
-				} catch(e) {}
-			}
-		}
+				} else if (status === 'done') {
+					// Matikan robot kalau tugas beres agar RAM HP/Laptop user tidak bocor
+					bgWorker.terminate(); 
+				}
+			};
 
-		const popularTickers = ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'CUAN', 'ANTM', 'PANI'];
-		for (const ticker of popularTickers) {
-			if (ticker !== currentTicker) {
-				activeAlertTickers.add(ticker);
+			// Kumpulkan saham apa saja yang mau dicari di latar belakang
+			let activeTickers = new Set();
+			
+			// a. Saham yang sedang dibuka
+			if (typeof currentTicker !== 'undefined') activeTickers.add(currentTicker);
+			
+			// b. Saham yang dipasang Alert oleh user
+			for (let i = 0; i < localStorage.length; i++) {
+				const key = localStorage.key(i);
+				if (key && key.startsWith('alerts_')) {
+					const t = key.replace('alerts_', '');
+					try {
+						const alerts = JSON.parse(localStorage.getItem(key));
+						const hasActive = alerts.some(a => typeof a === 'object' ? a.active && !a.triggered : true);
+						if (hasActive) activeTickers.add(t);
+					} catch(err) {}
+				}
 			}
-		}
 
-		for (const ticker of activeAlertTickers) {
-			const bgData = await fetchRealtimeStockData(ticker, true);
-			if (bgData) {
-				checkPriceAlertsRealtime(ticker, bgData.price);
+			// c. Saham populer di bursa
+			const popularTickers = ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'CUAN', 'ANTM', 'PANI'];
+			popularTickers.forEach(t => activeTickers.add(t));
+			
+			// d. Ambil sampel dari Radar Watchlist
+			if (typeof uniqueRadarWatchlist !== 'undefined') {
+				uniqueRadarWatchlist.slice(0, 10).forEach(t => activeTickers.add(t));
 			}
-			await sleep(200);
+
+			// Suruh robot mulai bekerja dengan membawa daftar saham
+			bgWorker.postMessage({ tickers: Array.from(activeTickers) });
 		}
 	};
 
+	// Jalankan ronde pertama saat web baru di-load
 	runBackgroundFetch();
+	
+	// Ulangi prosesnya setiap 5 menit
 	setInterval(runBackgroundFetch, FIVE_MINUTES);
 }
 
