@@ -2031,7 +2031,6 @@ function startBackgroundAutoCache() {
 	const FIVE_MINUTES = 5 * 60 * 1000;
 	
 	const runBackgroundFetch = () => {
-		// Pastikan browser user mendukung Web Worker
 		if (window.Worker) {
 			const bgWorker = new Worker('data-worker.js');
 			
@@ -2040,29 +2039,26 @@ function startBackgroundAutoCache() {
 				const { status, ticker, rawData } = e.data;
 				
 				if (status === 'success' && rawData) {
-					// 1. Olah datanya
 					const parsedData = parseYahooDataGlobal(rawData, ticker);
 					
 					if (parsedData) {
-						// 2. Simpan diam-diam ke LocalStorage
+						// Simpan ke LocalStorage secara instan
 						setCachedStockData(ticker, parsedData);
 						
-						// 3. Cek otomatis apakah harga kena Target / Stop Loss untuk Push Notification!
+						// Cek target alert secara 
 						checkPriceAlertsRealtime(ticker, parsedData.price); 
 					}
 				} else if (status === 'done') {
-					// Matikan robot kalau tugas beres agar RAM HP/Laptop user tidak bocor
-					bgWorker.terminate(); 
+					bgWorker.terminate(); // Hentikan robot jika semua antrean selesai
 				}
 			};
 
-			// Kumpulkan saham apa saja yang mau dicari di latar belakang
 			let activeTickers = new Set();
 			
-			// a. Saham yang sedang dibuka
+			// 1. Masukkan saham yang sedang aktif dilihat user
 			if (typeof currentTicker !== 'undefined') activeTickers.add(currentTicker);
 			
-			// b. Saham yang dipasang Alert oleh user
+			// 2. Masukkan saham yang dipasang Smart Alert oleh user
 			for (let i = 0; i < localStorage.length; i++) {
 				const key = localStorage.key(i);
 				if (key && key.startsWith('alerts_')) {
@@ -2075,24 +2071,20 @@ function startBackgroundAutoCache() {
 				}
 			}
 
-			// c. Saham populer di bursa
-			const popularTickers = ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO', 'AMMN', 'CUAN', 'ANTM', 'PANI'];
-			popularTickers.forEach(t => activeTickers.add(t));
-			
-			// d. Ambil sampel dari Radar Watchlist
-			if (typeof uniqueRadarWatchlist !== 'undefined') {
-				uniqueRadarWatchlist.slice(0, 10).forEach(t => activeTickers.add(t));
+			// 3. AMBIL SELURUH EMITEN DARI WATCHLIST.JS TANPA BATASAN (.slice)
+			if (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist)) {
+				uniqueRadarWatchlist.forEach(t => activeTickers.add(t));
 			}
 
-			// Suruh robot mulai bekerja dengan membawa daftar saham
+			// Kirim seluruh daftar emiten ke latar belakang
 			bgWorker.postMessage({ tickers: Array.from(activeTickers) });
 		}
 	};
 
-	// Jalankan ronde pertama saat web baru di-load
+	// Jalankan saat pertama kali web dibuka
 	runBackgroundFetch();
 	
-	// Ulangi prosesnya setiap 5 menit
+	// Ulangi proses di latar belakang setiap 5 menit sekali
 	setInterval(runBackgroundFetch, FIVE_MINUTES);
 }
 
