@@ -108,29 +108,49 @@
 		</div>
 	</div>
 
-	<!-- Skrip UI & Google Autocomplete -->
+	<!-- Skrip UI, Suara & Google Autocomplete -->
 	<script>
 		function toggleTheme() { document.documentElement.classList.toggle('dark'); }
 
-		// Variabel global untuk menyimpan ID tempat dari Google Maps
-		window.selectedPlaceId = null;
+		// Generator Suara Sukses (Nada Ting-Ting-Ting Ceria)
+		window.playSuccessSound = () => {
+			try {
+				const ctx = new (window.AudioContext || window.webkitAudioContext)();
+				const playNote = (freq, startTime, duration) => {
+					const osc = ctx.createOscillator();
+					const gain = ctx.createGain();
+					osc.type = 'sine';
+					osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime);
+					
+					gain.gain.setValueAtTime(0, ctx.currentTime + startTime);
+					gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + startTime + 0.05);
+					gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + startTime + duration);
+					
+					osc.connect(gain);
+					gain.connect(ctx.destination);
+					osc.start(ctx.currentTime + startTime);
+					osc.stop(ctx.currentTime + startTime + duration);
+				};
+				// Memainkan 3 nada berurutan
+				playNote(523.25, 0, 0.3);   // Nada C
+				playNote(659.25, 0.1, 0.3); // Nada E
+				playNote(783.99, 0.2, 0.4); // Nada G
+			} catch(e) { console.log("Audio not supported"); }
+		};
 
-		// Menghandle form supaya hanya satu opsi yang terisi
+		window.selectedPlaceId = null;
 		const inputAuto = document.getElementById('cariTempat');
 		const inputManual = document.getElementById('linkManual');
 
-		// Jika pengguna mengetik manual, hapus data pencarian otomatis
 		inputManual.addEventListener('input', function() {
 			inputAuto.value = '';
 			window.selectedPlaceId = null;
 		});
 
-		// Jika pengguna mengetik di pencarian otomatis, kosongkan link manual
 		inputAuto.addEventListener('input', function() {
 			inputManual.value = '';
 		});
 
-		// Inisialisasi Google Places Autocomplete
 		window.initAutocomplete = function() {
 			const autocomplete = new google.maps.places.Autocomplete(inputAuto);
 			autocomplete.setComponentRestrictions({ country: ["id"] });
@@ -139,9 +159,7 @@
 				const place = autocomplete.getPlace();
 				if (place.place_id) {
 					window.selectedPlaceId = place.place_id;
-					inputManual.value = ''; // Memastikan input manual kosong
-					
-					// Efek visual sukses
+					inputManual.value = ''; 
 					inputAuto.classList.add('ring-2', 'ring-emerald-500', 'border-emerald-500');
 					setTimeout(() => inputAuto.classList.remove('ring-2', 'ring-emerald-500', 'border-emerald-500'), 1500);
 				}
@@ -171,7 +189,6 @@
 			const manualUrl = document.getElementById("linkManual").value.trim();
 			const btn = document.getElementById("btnSubmit");
 
-			// Menentukan Tautan Final berdasarkan opsi mana yang diisi
 			let finalUrl = "";
 			if (manualUrl) {
 				finalUrl = manualUrl;
@@ -179,7 +196,6 @@
 				finalUrl = 'https://search.google.com/local/writereview?placeid=' + window.selectedPlaceId;
 			}
 
-			// Validasi Data
 			if(!id) {
 				alert("Mohon isi ID Kartu terlebih dahulu.");
 				return;
@@ -194,20 +210,23 @@
 			btn.disabled = true;
 
 			try {
-				// Simpan ke Firebase
 				await setDoc(doc(db, "kartu_review", id), { url: finalUrl });
 				
-				// Tulis ke NFC
 				const ndef = new NDEFReader();
 				await ndef.write(finalUrl);
 				
-				alert("Aktivasi Sukses! Silakan lepas kartu dari HP.");
+				// Memanggil efek suara sukses!
+				window.playSuccessSound();
 				
-				// Reset form setelah berhasil
-				document.getElementById("idKartu").value = '';
-				document.getElementById("cariTempat").value = '';
-				document.getElementById("linkManual").value = '';
-				window.selectedPlaceId = null;
+				// Memberi sedikit jeda (100ms) agar suara sempat berbunyi sebelum alert menghentikan layar
+				setTimeout(() => {
+					alert("Aktivasi Sukses! Silakan lepas kartu dari HP.");
+					
+					document.getElementById("idKartu").value = '';
+					document.getElementById("cariTempat").value = '';
+					document.getElementById("linkManual").value = '';
+					window.selectedPlaceId = null;
+				}, 100);
 				
 			} catch (error) {
 				alert("Gagal memproses: " + error.message);

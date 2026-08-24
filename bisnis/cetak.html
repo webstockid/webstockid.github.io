@@ -76,7 +76,7 @@
 		<div id="qrContainer" class="grid grid-cols-2 gap-6 justify-center"></div>
 	</div>
 
-	<!-- Skrip UI & Logika Generator -->
+	<!-- Skrip Suara, UI & Logika Generator -->
 	<script type="module">
 		import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 		import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -98,44 +98,61 @@
 			document.documentElement.classList.toggle('dark'); 
 		};
 
-		// Fungsi untuk menggabungkan QR dan Teks lalu mengunduhnya
+		// Generator Suara Sukses
+		window.playSuccessSound = () => {
+			try {
+				const ctx = new (window.AudioContext || window.webkitAudioContext)();
+				const playNote = (freq, startTime, duration) => {
+					const osc = ctx.createOscillator();
+					const gain = ctx.createGain();
+					osc.type = 'sine';
+					osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime);
+					
+					gain.gain.setValueAtTime(0, ctx.currentTime + startTime);
+					gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + startTime + 0.05);
+					gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + startTime + duration);
+					
+					osc.connect(gain);
+					gain.connect(ctx.destination);
+					osc.start(ctx.currentTime + startTime);
+					osc.stop(ctx.currentTime + startTime + duration);
+				};
+				playNote(523.25, 0, 0.3);
+				playNote(659.25, 0.1, 0.3);
+				playNote(783.99, 0.2, 0.4);
+			} catch(e) { console.log("Audio not supported"); }
+		};
+
 		window.downloadQR = (idFormat, qrUrl) => {
 			const canvas = document.createElement('canvas');
 			const ctx = canvas.getContext('2d');
 			
-			// Ukuran kanvas final (Gambar QR 300x300 + Ruang teks 50px di bawahnya)
 			const imgSize = 300;
 			const textSpace = 35;
 			
 			canvas.width = imgSize;
 			canvas.height = imgSize + textSpace;
 
-			// Isi latar belakang dengan warna putih penuh
 			ctx.fillStyle = "#ffffff";
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-			// Memuat gambar dari server
 			const img = new Image();
-			img.crossOrigin = "Anonymous"; // Mencegah error keamanan saat mengunduh dari API pihak ketiga
+			img.crossOrigin = "Anonymous";
 			
 			img.onload = () => {
-				// 1. Gambar QR Code
 				ctx.drawImage(img, 0, 0, imgSize, imgSize);
 				
-				// 2. Gambar Teks ID Kartu
 				ctx.fillStyle = "#000000";
 				ctx.font = "bold 24px sans-serif";
 				ctx.textAlign = "center";
 				ctx.fillText("ID " + idFormat, canvas.width / 2, imgSize + 30);
 				
-				// 3. Proses Pengunduhan
 				const link = document.createElement('a');
 				link.download = `QR_Kartu_${idFormat}.png`;
 				link.href = canvas.toDataURL("image/png");
 				link.click();
 			};
 			
-			// Ubah resolusi gambar API menjadi 300x300 agar tajam saat dicetak
 			img.src = qrUrl.replace("150x150", "300x300");
 		};
 
@@ -179,14 +196,12 @@
 					const item = document.createElement('div');
 					item.className = 'bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 text-center flex flex-col items-center transition-colors duration-500';
 					
-					// Struktur elemen dibuat interaktif (Klik & Hover Download)
 					item.innerHTML = `
 						<div onclick="downloadQR('${idFormat}', '${qrImageSrc}')" title="Unduh QR Code" 
 							class="bg-gray-50 dark:bg-gray-900 p-3 rounded-xl mb-3 border border-gray-100 dark:border-gray-800 w-full flex justify-center relative group cursor-pointer overflow-hidden">
 							
 							<img src="${qrImageSrc}" alt="QR ${idFormat}" class="w-32 h-32 object-contain block transition-transform duration-300 group-hover:scale-110">
 							
-							<!-- Overlay Icon Download -->
 							<div class="absolute inset-0 bg-blue-600/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl">
 								<svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -198,6 +213,9 @@
 					`;
 					container.appendChild(item);
 				}
+				
+				// Memanggil efek suara saat semua QR berhasil dirender!
+				window.playSuccessSound();
 
 			} catch (error) {
 				alert("Gagal terhubung ke database. Pastikan koneksi internet stabil.");
