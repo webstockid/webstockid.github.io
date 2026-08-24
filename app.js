@@ -502,7 +502,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	if (cachedData && !forceFetch) return cachedData;
 
 	const targetSymbol = `${ticker}.JK`;
-	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
+	const WORKER_URL = 'https://stockid-api-proxy.accespy-mail.workers.dev';
 	
 	const fetchWithTimeout = (url, timeoutMs = 1800) => {
 		return new Promise((resolve, reject) => {
