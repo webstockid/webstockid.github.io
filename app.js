@@ -103,7 +103,7 @@ const AudioFX = {
 			// Memberikan interval 500ms agar suara tidak bertabrakan
 			setTimeout(() => {
 				this.playAudioFile('hilang.mp3');
-			}, 500); 
+			}, 900);
 		}
 	},
 	playWinJournal() {
@@ -373,7 +373,7 @@ function showError(msg) {
 }
 
 // ==================== UTAMA & FITUR FITUR APP ====================
-let currentTicker = 'MDIA';
+let currentTicker = 'INET';
 let currentInterval = 'D';
 
 if (window.lucide) lucide.createIcons();
@@ -502,9 +502,9 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	if (cachedData && !forceFetch) return cachedData;
 
 	const targetSymbol = `${ticker}.JK`;
-	const WORKER_URL = 'https://stockid-api-proxy.accespy-mail.workers.dev';
+	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 	
-	const fetchWithTimeout = (url, timeoutMs = 1800) => {
+	const fetchWithTimeout = (url, timeoutMs = 2200) => {
 		return new Promise((resolve, reject) => {
 			const timer = setTimeout(() => reject(new Error('Timeout')), timeoutMs);
 			fetch(url)
@@ -796,9 +796,9 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		`;
 
 	} else {
-		verdikEl.innerText = "NETRAL-SELEKTIF";
-		scoreEl.innerText = "3/5";
-		descEl.innerText = `Menganalisis pergerakan teknikal emiten ${ticker} berbasis indikator grafik TradingView. Silakan evaluasi struktur pola harga harian sebelum melakukan transaksi.`;
+		verdikEl.innerText = "NETRAL-SELEKTIF?";
+		scoreEl.innerText = "-/-";
+		descEl.innerText = `Menganalisis pergerakan teknikal emiten ${ticker} berbasis indikator grafik TradingView. Silakan evaluasi struktur pola harga harian sebelum melakukan transaksi....`;
 	}
 
 	const sl = roundToBEITick(price * 0.92, 'floor'); 
@@ -966,7 +966,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	if (isManualRefresh) {
 		const btn = document.getElementById('btnRefreshPeer');
 		if (btn && btn.disabled) return;
-		startPeerRefreshCooldown(16);
+		startPeerRefreshCooldown(20);
 	}
 
 	const body = document.getElementById('peerTableBody');
@@ -2159,8 +2159,8 @@ function startVoiceSearch() {
 // ==================== DATA SELEBRASI (GAMBAR & TEKS RANDOM) ====================
 const cuanImages = [
 	'https://media.giphy.com/media/LdOyjZ7io5Msw/giphy.gif',
-	'https://media.giphy.com/media/3o6gDWzmAzrpi5DQU8/giphy.gif',
-	'https://media.giphy.com/media/LdOyjZ7io5Msw/giphy.gif',
+	'https://media4.giphy.com/media/H3QHCSPLCKb4Ukf2yy/giphy.gif',
+	'https://media0.giphy.com/media/ZIz7wYItfiYpCHA60F/giphy.gif',
 	'https://media.giphy.com/media/3o6gDWzmAzrpi5DQU8/giphy.gif'
 ];
 
@@ -2172,17 +2172,17 @@ const cuanTexts = [
 ];
 
 const lossImages = [
-	'https://media.giphy.com/media/BEob5qwFkSJ7G/giphy.gif',
+	'https://media0.giphy.com/media/qKwHRZg3T8mx74psnt/giphy.gif',
 	'https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif',
-	'https://media.giphy.com/media/BEob5qwFkSJ7G/giphy.gif',
-	'https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif'
+	'https://media3.giphy.com/media/XHeLeuirRbwptHhSWd/giphy.gif',
+	'https://media2.giphy.com/media/bTnjjJn4pJLFUa0CLP/giphy.gif'
 ];
 
 const lossTexts = [
 	{ title: "STOP LOSS TERCAPAI 🛡️", desc: "Kalem Bro! Masih ada cuan disaham lain." },
 	{ title: "RISIKO DIBATASI! 🛑", desc: "Cutloss mulu dah wkwkwk." },
 	{ title: "PLAN GAGAL, EVALUASI! 📉", desc: "Jangan CL mulu bro, habis tuh duit!" },
-	{ title: "TERKENA STOP LOSS ⚔️", desc: "Mending turun ajasih kata gua mah." }
+	{ title: "TERKENA STOP LOSS ⚔️", desc: "Turu dek! Wkwkwk." }
 ];
 
 // ==================== FUNGSI TRIGGER SELEBRASI ====================
@@ -2215,7 +2215,7 @@ function triggerCuanCelebration() {
 
 	setTimeout(() => {
 		closeCuanCelebration();
-	}, 3000);
+	}, 2000);
 }
 
 function closeCuanCelebration() {
@@ -2262,7 +2262,7 @@ function triggerLossCelebration() {
 
 	setTimeout(() => {
 		closeLossCelebration();
-	}, 3000);
+	}, 2000);
 }
 
 function closeLossCelebration() {
