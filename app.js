@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 });
 
-// ==================== WEB AUDIO ENGINE ====================
+// WEB AUDIO ENGINE
 const AudioFX = {
 	ctx: null,
 	init() {
@@ -114,7 +114,7 @@ const AudioFX = {
 	}
 };
 
-// ==================== GLOBAL CLICK LISTENER ====================
+// GLOBAL CLICK LISTENER
 document.addEventListener('click', function(e) {
 	const target = e.target.closest('button, a, [onclick]');
 	if (target) {
@@ -123,13 +123,13 @@ document.addEventListener('click', function(e) {
 		
 		const hasTrashIcon = target.querySelector('.fa-trash') !== null || e.target.classList.contains('fa-trash');
 
-		// 1. Kategori Hapus Satuan (Hanya mainkan hapus.mp3)
+		// 1. Kategori Hapus Satuan
 		const isNormalDelete = 
 			hasTrashIcon || 
 			onclickAttr.includes('deleteJournalItem') || 
 			onclickAttr.includes('removePriceAlert');
 
-		// 2. Kategori Hapus/Close dengan Alert/Popup (Mainkan hapus.mp3 + jeda hilang.mp3)
+		// 2. Kategori Hapus/Close dengan Alert/Popup
 		const isPopupAction = 
 			!isNormalDelete && (
 				textContent.includes('Hapus Semua') || 
@@ -156,7 +156,7 @@ document.addEventListener('click', function(e) {
 	}
 });
 
-// ==================== LOGIKA FRAKSI HARGA BURSA EFEK INDONESIA (BEI) ====================
+// LOGIKA FRAKSI HARGA BURSA EFEK INDONESIA (BEI)
 function getBEITickSize(price) {
 	if (price < 200) return 1;
 	if (price < 500) return 2;
@@ -176,7 +176,7 @@ function roundToBEITick(price, direction = 'round') {
 	return Math.round(price / tick) * tick;
 }
 
-// ==================== POP-UP WELCOME CONTROL ====================
+// POP-UP WELCOME CONTROL
 function checkWelcomeModal() {
 	const hideModal = localStorage.getItem('hide_welcome_modal');
 	if (!hideModal) {
@@ -193,7 +193,7 @@ function closeWelcomeModal(dontShowAgain) {
 	}
 }
 
-// ==================== DATABASE TOKEN VIP ====================
+// DATABASE TOKEN VIP
 const databaseVIP = {
 	"1": { "tanggalExpired": "2040-07-25" },
 	"000": { "tanggalExpired": "2026-08-24" },
@@ -372,7 +372,7 @@ function showError(msg) {
 	}
 }
 
-// ==================== UTAMA & FITUR FITUR APP ====================
+// UTAMA & FITUR FITUR APP
 let currentTicker = 'INET';
 let currentInterval = 'D';
 
@@ -614,7 +614,7 @@ function parseYahooDataGlobal(json, ticker) {
 	const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
 	const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
 
-	// roundToBEITick sudah ada di app.js kamu, jadi ini aman dipakai
+	// roundToBEITick
 	const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
 	const ma5 = getMA(5);
 	const ma10 = getMA(10);
@@ -2071,7 +2071,7 @@ function startBackgroundAutoCache() {
 				}
 			}
 
-			// 3. AMBIL SELURUH EMITEN DARI WATCHLIST.JS TANPA BATASAN (.slice)
+			// 3. AMBIL SELURUH EMITEN DARI WATCHLIST.JS
 			if (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist)) {
 				uniqueRadarWatchlist.forEach(t => activeTickers.add(t));
 			}
@@ -2080,11 +2080,9 @@ function startBackgroundAutoCache() {
 			bgWorker.postMessage({ tickers: Array.from(activeTickers) });
 		}
 	};
-
-	// Jalankan saat pertama kali web dibuka
+	
 	runBackgroundFetch();
 	
-	// Ulangi proses di latar belakang setiap 5 menit sekali
 	setInterval(runBackgroundFetch, FIVE_MINUTES);
 }
 
@@ -2156,7 +2154,7 @@ function startVoiceSearch() {
 	recognition.start();
 }
 
-// ==================== DATA SELEBRASI (GAMBAR & TEKS RANDOM) ====================
+// DATA SELEBRASI (GAMBAR & TEKS RANDOM)
 const cuanImages = [
 	'https://media.giphy.com/media/LdOyjZ7io5Msw/giphy.gif',
 	'https://media4.giphy.com/media/H3QHCSPLCKb4Ukf2yy/giphy.gif',
@@ -2180,12 +2178,12 @@ const lossImages = [
 
 const lossTexts = [
 	{ title: "STOP LOSS TERCAPAI 🛡️", desc: "Kalem Bro! Masih ada cuan disaham lain." },
-	{ title: "RISIKO DIBATASI! 🛑", desc: "Cutloss mulu dah wkwkwk." },
-	{ title: "PLAN GAGAL, EVALUASI! 📉", desc: "Jangan CL mulu bro, habis tuh duit!" },
+	{ title: "RISIKO DIBATASI! ❌", desc: "Cutloss mulu dah wkwkwk." },
+	{ title: "PLAN GAGAL, EVALUASI! 💪🏼", desc: "Jangan CL mulu bro, habis tuh duit!" },
 	{ title: "TERKENA STOP LOSS ⚔️", desc: "Turu dek! Wkwkwk." }
 ];
 
-// ==================== FUNGSI TRIGGER SELEBRASI ====================
+// FUNGSI TRIGGER SELEBRASI
 function triggerCuanCelebration() {
 	const modal = document.getElementById('cuanModal');
 	const content = document.getElementById('cuanModalContent');
@@ -2215,7 +2213,7 @@ function triggerCuanCelebration() {
 
 	setTimeout(() => {
 		closeCuanCelebration();
-	}, 2000);
+	}, 2700);
 }
 
 function closeCuanCelebration() {
@@ -2262,7 +2260,7 @@ function triggerLossCelebration() {
 
 	setTimeout(() => {
 		closeLossCelebration();
-	}, 2000);
+	}, 2700);
 }
 
 function closeLossCelebration() {
@@ -2421,7 +2419,7 @@ function renderSectorHeatmap() {
 	isHeatmapLoaded = true;
 }
 
-// ==================== FLOATING AI CHAT ASSISTANT ====================
+// FLOATING AI CHAT ASSISTANT
 function toggleAIChat() {
 	const chatWindow = document.getElementById('aiChatWindow');
 	const isHidden = chatWindow.classList.contains('hidden');
