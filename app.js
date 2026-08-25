@@ -2513,7 +2513,7 @@ function generateAIResponse(prompt) {
 	const formatRp = (num) => num ? `Rp ${num.toLocaleString('id-ID')}` : 'N/A';
 
 	// 1. Kategori: Greeting
-	if (lower.includes('halo') || lower.includes('hai') || lower.includes('pagi') || lower.includes('siang') || lower.includes('malam')) {
+	if (lower.includes('halo') || lower.includes('hai') || lower.includes('pagi') || lower.includes('siang') || lower.includes('sore') || lower.includes('malam')) {
 		return `Halo! Gue AI Assistant Stock ID. Mau bahas teknikal <strong class="text-emerald-400">$${targetTicker}</strong> atau ada emiten lain yang mau di-screening hari ini?`;
 	}
 
@@ -2538,7 +2538,7 @@ function generateAIResponse(prompt) {
 	const tp2 = roundToBEITick(price * 1.12, 'ceil');
 	
 	// 3. Kategori: Entry / Support / Area Beli
-	if (lower.includes('entry') || lower.includes('area entry') || lower.includes('support') || lower.includes('area support') || lower.includes('area') || lower.includes('area masuk') || lower.includes('masuk') || lower.includes('serok') || lower.includes('buy')) {
+	if (lower.includes('entry') || lower.includes('area entry') || lower.includes('support') || lower.includes('area support') || lower.includes('area') || lower.includes('area masuk') || lower.includes('masuk') || lower.includes('serok') || lower.includes('beli')) {
 		return `
 			<strong class="text-amber-400 flex items-center gap-1.5"><i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Area Entry & Support $${targetTicker}:</strong>
 			Harga saat ini berada di <span class="font-mono text-white">${formatRp(price)}</span>.<br>
@@ -2548,7 +2548,7 @@ function generateAIResponse(prompt) {
 	}
 
 	// 4. Kategori: Resistance / Target Profit / Jual
-	if (lower.includes('resistance') || lower.includes('resist') || lower.includes('resis') || lower.includes('target') || lower.includes('target profit') || lower.includes('profit') || lower.includes('take profit') || lower.includes('jual') || lower.includes('area jual')) {
+	if (lower.includes('resistance') || lower.includes('resist') || lower.includes('resis') || lower.includes('target') || lower.includes('target profit') || lower.includes('profit') || lower.includes('take profit') || lower.includes('tp') || lower.includes('keluar') || lower.includes('jual') || lower.includes('area jual')) {
 		return `
 			<strong class="text-cyan-400 flex items-center gap-1.5"><i data-lucide="target" class="w-3.5 h-3.5"></i> Target Profit & Resistance $${targetTicker}:</strong>
 			Resistance terdekat untuk <i>take profit</i> ada di kisaran <strong class="font-mono text-cyan-400">${formatRp(res1)} - ${formatRp(res2)}</strong>.<br>
@@ -2557,7 +2557,7 @@ function generateAIResponse(prompt) {
 	}
 
 	// 5. Kategori: Stop Loss / Cut Loss / Batas Risiko
-	if (lower.includes('stoploss') || lower.includes('stop loss') || lower.includes('area stop loss') || lower.includes('cutloss') || lower.includes('cut loss') || lower.includes('area cut loss') || lower.includes('cl') || lower.includes('risiko') || lower.includes('rugi')) {
+	if (lower.includes('stoploss') || lower.includes('stop loss') || lower.includes('area stop loss') || lower.includes('cutloss') || lower.includes('cut loss') || lower.includes('area cut loss') || lower.includes('cl') || lower.includes('risiko') || lower.includes('buang') || lower.includes('rugi')) {
 		return `
 			<strong class="text-rose-400 flex items-center gap-1.5"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Batas Risiko (Stop Loss) $${targetTicker}:</strong>
 			Untuk membatasi kerugian, pasang Stop Loss ketat jika harga ditutup di bawah <strong class="font-mono text-rose-400">${formatRp(sl)}</strong>.<br>
@@ -2596,7 +2596,7 @@ function generateAIResponse(prompt) {
 	}
 
 	// 8. Kategori: General Prospek / Pandangan Utama
-	if (lower.includes('coba') || lower.includes('coba lihat') || lower.includes('prospek') || lower.includes('analisa') || lower.includes('coba analisa') || lower.includes('bagaimana') || lower.includes('review') || lower.includes('teknikal')) {
+	if (lower.includes('coba') || lower.includes('coba lihat') || lower.includes('prospek') || lower.includes('analisa') || lower.includes('coba analisa') || lower.includes('bagaimana') || lower.includes('gimana') || lower.includes('review') || lower.includes('teknikal')) {
 		const saran = (price >= data.ma5 && data.volRatio >= 1) 
 			? 'Tren cukup solid, pertimbangkan <strong class="text-emerald-400">Buy on Breakout</strong> atau *Pullback*.' 
 			: 'Tren cenderung tertekan, sebaiknya <strong class="text-amber-400">Wait & See</strong> atau *Buy on Support* dengan SL ketat.';
