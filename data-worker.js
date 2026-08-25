@@ -2,7 +2,7 @@
 
 self.addEventListener('message', async function(e) {
 	const { tickers } = e.data;
-	const WORKER_URL = 'https://stockid-api-proxy.accespy-mail.workers.dev';
+	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 
 	for (const ticker of tickers) {
 		try {
