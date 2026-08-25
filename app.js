@@ -88,7 +88,7 @@ const AudioFX = {
 	playSuccess() {
 		this.playAudioFile('sukses.mp3');
 	},
-	playAlert() {
+	playshowToast() {
 		this.playAudioFile('loss.mp3');
 	},
 	playTokenExpired() {
@@ -885,8 +885,8 @@ function exportTradingCard() {
 	if (btn && btn.disabled) return;
 
 	if (!globalStockData) {
-		AudioFX.playAlert();
-		alert("Memuat data saham... Mohon tunggu sejenak.");
+		AudioFX.playshowToast();
+		showToast("Memuat data saham... Mohon tunggu sejenak.");
 		return;
 	}
 
@@ -930,7 +930,7 @@ function exportTradingCard() {
 		AudioFX.playSuccess();
 	}).catch(err => {
 		console.error("Gagal mendownload card:", err);
-		AudioFX.playAlert();
+		AudioFX.playshowToast();
 	});
 }
 
@@ -1064,8 +1064,8 @@ function saveTradingPlanToJournal() {
 	const rrrText = document.getElementById('rrrResult').innerText;
 
 	if (!entry || !sl || !tp || sl >= entry || tp <= entry) {
-		AudioFX.playAlert();
-		alert("Silakan lengkapi Entry, SL, dan TP yang valid terlebih dahulu!");
+		AudioFX.playshowToast();
+		showToast("Silakan lengkapi Entry, SL, dan TP yang valid terlebih dahulu!");
 		return;
 	}
 
@@ -1086,7 +1086,7 @@ function saveTradingPlanToJournal() {
 
 	saveJournalData(journal);
 	AudioFX.playSuccess();
-	alert(`Trading Plan untuk $${currentTicker} berhasil disimpan ke Journal Trading!`);
+	showToast(`Trading Plan untuk $${currentTicker} berhasil disimpan ke Journal Trading!`);
 }
 
 function updateJournalStatus(id, newStatus) {
@@ -1519,7 +1519,7 @@ function checkNotificationStatus() {
 
 function requestNotificationPermission() {
 	if (!("Notification" in window)) {
-		alert("Browser Anda tidak mendukung Web Push Notification.");
+		showToast("Browser Anda tidak mendukung Web Push Notification.");
 		return;
 	}
 
@@ -1529,8 +1529,8 @@ function requestNotificationPermission() {
 			sendBrowserPushNotification("Stock ID Screener Alert", `System push notification berhasil diaktifkan!`);
 			AudioFX.playSuccess();
 		} else if (permission === "denied") {
-			AudioFX.playAlert();
-			alert("Izin notifikasi telah ditolak. Silakan izinkan melalui pengaturan browser Anda.");
+			AudioFX.playshowToast();
+			showToast("Izin notifikasi telah ditolak. Silakan izinkan melalui pengaturan browser Anda.");
 		}
 	});
 }
@@ -1705,7 +1705,7 @@ function renderAllAlerts() {
 					</div>
 					<div class="flex items-center gap-2">
 						${toggleBtn}
-						<button onclick="removePriceAlert('${ticker}', ${index})" class="text-slate-500 hover:text-rose-400 font-bold px-1.5 py-0.5 transition rounded hover:bg-rose-500/10" title="Hapus Alert"><i class="fa-solid fa-trash text-[10px]"></i></button>
+						<button onclick="removePriceshowToast('${ticker}', ${index})" class="text-slate-500 hover:text-rose-400 font-bold px-1.5 py-0.5 transition rounded hover:bg-rose-500/10" title="Hapus Alert"><i class="fa-solid fa-trash text-[10px]"></i></button>
 					</div>
 				</div>
 			`;
@@ -1762,7 +1762,7 @@ function syncAlertsFromAI() {
 	renderAllAlerts();
 
 	AudioFX.playSuccess();
-	alert(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
+	showToast(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
 }
 
 function toggleAlertStatus(ticker, index) {
@@ -1782,7 +1782,7 @@ function toggleAlertStatus(ticker, index) {
 	}
 }
 
-function removePriceAlert(ticker, index) {
+function removePriceshowToast(ticker, index) {
 	let alerts = getAlerts(ticker);
 	alerts.splice(index, 1);
 	saveAlerts(ticker, alerts);
@@ -2096,7 +2096,7 @@ function startVoiceSearch() {
 
 	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 	if (!SpeechRecognition) {
-		alert("Browser kamu belum mendukung fitur pencarian suara. Coba gunakan Chrome.");
+		showToast("Browser kamu belum mendukung fitur pencarian suara. Coba gunakan Chrome.");
 		return;
 	}
 
@@ -2281,8 +2281,8 @@ function closeLossCelebration() {
 function exportJournalToCSV() {
 	const journal = getJournalData();
 	if (journal.length === 0) {
-		AudioFX.playAlert();
-		alert("Belum ada riwayat Trading Plan yang tersimpan untuk diexport!");
+		AudioFX.playshowToast();
+		showToast("Belum ada riwayat Trading Plan yang tersimpan untuk diexport!");
 		return;
 	}
 
@@ -2614,6 +2614,61 @@ function generateAIResponse(prompt) {
 		Poin yang sangat detail! Untuk <strong class="text-emerald-400">$${targetTicker}</strong> (Posisi: ${formatRp(price)}), fokus utamanya ada di ketahanan <b>Support ${formatRp(sup2)}</b> dan uji <b>Resist ${formatRp(res1)}</b>.<br><br>
 		Adakah metrik khusus yang ingin kamu gali seperti kalkulasi <i>Moving Average (MA)</i>, status <i>Volume</i> harian, atau butuh titik <i>Stop Loss</i>?
 	`;
+}
+
+// MODIFIED MODERN ALERT (TOAST NOTIFICATION)
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const toastId = 'toast-' + Date.now();
+    
+    // Konfigurasi warna & ikon berdasarkan tipe
+    let borderColor = 'border-emerald-500/40';
+    let bgColor = 'bg-slate-900/95';
+    let iconColor = 'text-emerald-400';
+    let iconClass = 'fa-circle-check';
+    
+    if (type === 'error' || type === 'loss') {
+        borderColor = 'border-rose-500/40';
+        iconColor = 'text-rose-400';
+        iconClass = 'fa-circle-exclamation';
+    } else if (type === 'warning') {
+        borderColor = 'border-amber-500/40';
+        iconColor = 'text-amber-400';
+        iconClass = 'fa-triangle-exclamation';
+    } else if (type === 'info') {
+        borderColor = 'border-cyan-500/40';
+        iconColor = 'text-cyan-400';
+        iconClass = 'fa-circle-info';
+    }
+
+    const toast = document.createElement('div');
+    toast.id = toastId;
+    toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3.5 rounded-xl ${bgColor} border ${borderColor} shadow-2xl backdrop-blur-xl text-slate-200 text-xs sm:text-sm font-bold transform translate-y-4 opacity-0 transition-all duration-300 max-w-sm`;
+    
+    toast.innerHTML = `
+        <i class="fa-solid ${iconClass} ${iconColor} text-base shrink-0"></i>
+        <div class="flex-1 leading-relaxed">${message}</div>
+        <button onclick="document.getElementById('${toastId}').remove()" class="text-slate-400 hover:text-white transition p-1 shrink-0">
+            <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+    `;
+
+    container.appendChild(toast);
+
+    // Animasi Muncul
+    setTimeout(() => {
+        toast.classList.remove('translate-y-4', 'opacity-0');
+    }, 10);
+
+    // Otomatis Hilang Setelah 3.5 Detik
+    setTimeout(() => {
+        if (document.getElementById(toastId)) {
+            toast.classList.add('translate-y-4', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+        }
+    }, 3500);
 }
 
 initSearchSuggestions();
