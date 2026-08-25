@@ -40,6 +40,14 @@
 			.glow-premium {
 				box-shadow: 0 0 30px rgba(245, 158, 11, .25)
 			}
+			/* Sembunyikan scrollbar untuk kontainer ulasan */
+			.no-scrollbar::-webkit-scrollbar {
+				display: none;
+			}
+			.no-scrollbar {
+				-ms-overflow-style: none;
+				scrollbar-width: none;
+			}
 		</style>
 	</head>
 	
@@ -356,21 +364,21 @@
 							<div class="bg-slate-950/50 border border-slate-800/60 p-4 rounded-xl flex justify-between items-center">
 								<div>
 									<span class="text-xs text-slate-500 block uppercase">Pernah Bergabung</span>
-									<span class="text-xl font-black text-white heading-font mt-0.5">200 Orang</span>
+									<span id="totalMembers" class="text-xl font-black text-white heading-font mt-0.5">Menghitung...</span>
 								</div>
 								<i class="fa-solid fa-heart-pulse animate-pulse text-emerald-500 text-lg"></i>
 							</div>
 							<div class="bg-slate-950/50 border border-slate-800/60 p-4 rounded-xl flex justify-between items-center">
 								<div>
 									<span class="text-xs text-slate-500 block uppercase">Anggota Aktif Saat Ini</span>
-									<span class="text-xl font-black text-emerald-400 heading-font mt-0.5">76 Orang</span>
+									<span id="activeMembers" class="text-xl font-black text-emerald-400 heading-font mt-0.5">Menghitung...</span>
 								</div>
 								<span class="flex h-3 w-3 bg-emerald-400 rounded-full animate-pulse"></span>
 							</div>
 							<div class="bg-slate-950/50 border border-slate-800/60 p-4 rounded-xl flex justify-between items-center">
 								<div>
 									<span class="text-xs text-slate-500 block uppercase">Lama Grup Berjalan</span>
-									<span id="liveClock" class="text-sm font-mono text-slate-200 block mt-0.5 font-bold">999 Bulan (999 hari)</span>
+									<span id="liveClock" class="text-sm font-mono text-slate-200 block mt-0.5 font-bold">Menghitung...</span>
 								</div>
 							</div>
 						</div>
@@ -981,6 +989,22 @@
 				</div>
 			</div>
 		</section>
+
+		<!-- SEKSI TESTIMONI BARU -->
+		<section id="testimoni" class="py-16 bg-slate-950/40 border-t border-slate-900 overflow-hidden">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="text-center mb-10">
+					<span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">Ulasan Nyata</span>
+					<h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Apa Kata Member Stock ID?</h2>
+					<p class="mt-2 text-sm text-slate-400">Testimoni, kritik, dan saran langsung dari member aktif komunitas kami.</p>
+				</div>
+				<!-- Container Horizontal (Swipe) -->
+				<div id="ratingContainer" class="flex gap-4 overflow-x-auto pb-6 pt-2 scroll-smooth no-scrollbar snap-x snap-mandatory">
+					<!-- JavaScript akan merender kartu testimoni di sini -->
+				</div>
+			</div>
+		</section>
+
 		<div id="checkoutModal" style="display:none" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-1000">
 			<div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 relative shadow-2xl transform scale-95 transition-transform duration-300" id="modalCard">
 				<button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
@@ -1028,17 +1052,61 @@
 		<br>
 		<br>
 		<br>
+		
+		<!-- Panggil sumber data member dari file terpisah -->
+		<script src="data-member.js"></script>
+
 		<script>
-			function updateLiveClock() {
-				const baseDays = 370;
-				const now = new Date();
-				const hours = String(now.getHours()).padStart(2, '0');
-				const minutes = String(now.getMinutes()).padStart(2, '0');
-				const seconds = String(now.getSeconds()).padStart(2, '0');
-				document.getElementById('liveClock').innerText = `11 Bulan (${baseDays} Hari, ${hours} jam, ${minutes} mnt, ${seconds} dtk)`;
+			// 1. Fungsi Hitung Jumlah Member
+			function updateMemberStats() {
+				const now = Date.now();
+				const total = members.length;
+				let activeCount = 0;
+				
+				members.forEach(m => {
+					// Konversi tanggal string ke Timestamp
+					const expTime = new Date(m.expired + "T00:00:00").getTime();
+					if (expTime > now) {
+						activeCount++;
+					}
+				});
+				
+				const totalEl = document.getElementById('totalMembers');
+				const activeEl = document.getElementById('activeMembers');
+				
+				if(totalEl) totalEl.innerText = `${total} Orang`;
+				if(activeEl) activeEl.innerText = `${activeCount} Orang`;
 			}
+
+			// 2. Fungsi Hitung Waktu Grup Berjalan (Mulai 16 Sept 2025)
+			function updateLiveClock() {
+				const startDate = new Date("2025-09-16T00:00:00").getTime();
+				const now = new Date();
+				const diff = now.getTime() - startDate;
+
+				const clockEl = document.getElementById('liveClock');
+				if (!clockEl) return;
+
+				if (diff > 0) {
+					const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+					const months = Math.floor(totalDays / 30); 
+					
+					const hours = String(now.getHours()).padStart(2, '0');
+					const minutes = String(now.getMinutes()).padStart(2, '0');
+					const seconds = String(now.getSeconds()).padStart(2, '0');
+
+					clockEl.innerText = `${months} Bulan (${totalDays} hari, ${hours} jam, ${minutes} mnt, ${seconds} dtk)`;
+				} else {
+					clockEl.innerText = "Belum dimulai";
+				}
+			}
+
+			// 3. Inisialisasi Fungsi
+			updateMemberStats();
 			setInterval(updateLiveClock, 1000);
 			updateLiveClock();
+
+			// Skrip bawaan untuk animasi FAQ & Kalkulator
 			function toggleFaq(element) {
 				const icon = element.querySelector('i');
 				const answer = element.querySelector('p');
@@ -1053,13 +1121,222 @@
 				}
 			}
 			function liveCalc() {
-				const modal = parseFloat(document.getElementById('calcModal').value) || 0;
-				const wr = parseFloat(document.getElementById('calcWinRate').value) || 0;
-				const result = modal * (wr / 100) * 0.35;
-				document.getElementById('calcResult').innerText = "Rp " + Math.round(result).toLocaleString('id-ID');
+				const modalInput = document.getElementById('calcModal');
+				const wrInput = document.getElementById('calcWinRate');
+				const resultEl = document.getElementById('calcResult');
+				
+				if(modalInput && wrInput && resultEl) {
+					const modal = parseFloat(modalInput.value) || 0;
+					const wr = parseFloat(wrInput.value) || 0;
+					const result = modal * (wr / 100) * 0.35;
+					resultEl.innerText = "Rp " + Math.round(result).toLocaleString('id-ID');
+				}
 			}
 			liveCalc();
 		</script>
+		
+		<!-- SCRIPT TESTIMONI/RATING -->
+		<script>
+			const ratingData = [
+				{
+					nama: "Mas. Purna",
+					positif: "Watchlist swing banyak, bisa bagger jika sabar. <br>Aku sangat makasih sama Mas Har ajarin Aku dari 0 sampai bisa saat ini kenal Saham, Teknikal Support & Entry Safe.",
+					negatif: "Menurut Aku sendiri kebanyakan Watchlist, mungkin nextnya dikurangin biar Member bisa pokus dengan 1 Emiten, biar ga pusing.<br>Kadang suruh cicil atau UW atau apalah itu, bagi yang belum terlalu paham mungkin bingung, mungkin bisa di sederhanakan (Bandar/Smartmoney).",
+				},
+				{
+					nama: "Mas. Dika",
+					positif: "Banyak ilmu yg di dapet kaya ciri saham lagi di akum, bisa ikut masuk, kalau udah terbang udah di dalem.<br>Mmentor responsif & bertanggungjawab kalo Market Crash di tambah hari kelasnya. 😂",
+					negatif: "Kalo yang sibuk kerja ngga bisa ikut nimbrung pasti ketinggalan topik.",
+					netral: "Mungkin bisa di pisahin antara Full Day Trader & Pekerja, kaya yg pekerja sibuk ngga bisa liat Market di kasihnya Saham Fundamental terus yg Trader kasih Gorengan kan juga gapapa masih bisa pantau.<br>Itu aja sih sarannya buat Bang Har & Bang Irfan",
+				},
+				{
+					nama: "Mas. Jefri",
+					positif: "Watchlist nya lumayan lah udah ga ngawur, dermawan sama Member apalagi kemarin pas crash.",
+					negatif: "Buat Mas Har sih kurang²in Tlp Grup sambil berak.<br>Kalo buat Mas Irfan harus lebih sering ngoceh ke Member yg baru nyebur ke Saham tAkutnya mentalnya down krn ikut Watchlist tp ga untung malah buntung.",
+				},
+				{
+					nama: "Mas. Tama",
+					positif: "Dari kesan positif jujur waktu awal kali sampai terakhir kemarin itu sangat berkesan sih kebaikannya, terus juga secara waktu masih mau terlibat dalam kesusahan Membernya, sama² merasakan Trading Halt. 🗿<br>Sehingga yaa oke aja, terus juga baiklah, dalam artian di tempat lain kalau ada kejadian Trading Halt kemarin itu, pasti ya ga nambah secara gratis kelasnya, tapi ttp harus bayar.",
+					negatif: "Kadang Telp Grup ga jelas ngawani boker. 🗿<br>Tapi Aku lebih ke Bang Irfan sih yg jarang nimbrung kaya menurut Aku jadi ada jarak antara Member dan Mentornya, kalau di perusahaan itu kurang sehat biasanya kalau ada yg kaya gitu pimpinannya.",
+				},
+				{
+					nama: "Mas. Pramudya",
+					positif: "Banyak Materi yang diajarkan dan menggunakan kata² yang mudah dipahami.",
+					negatif: "Negatif nya jujur yaaaa kata² Bang Har kalo di chat beda banget sama di telp (kalo gw lebih suka di telp sih).<br>Kalo di telp tuh kaya langsung masuk ke otak, kalo di chat itu ½ masuk otak ½ keluar telinga kanan hehehehehe.<br>Karna gw main Saham ini baru² aja, gw tuh kadang bingung mau belajar apa dan kalo denger istilah baru di Saham mesti langsung tanya/telp Bang Har.",
+					netral: "Mungkin saran gw pas ada waktu lumayan luang, lebih banyak sharing² di grup/di WL juga gapapaaaaa biar anggota baru juga bisa belajar dari awal."
+				},
+				{
+					nama: "Mba. Zulia",
+					positif: "Untuk pembelajannya sudah bagus, Admin bener² maintenence Member dengan Memberi ilmu yang mudah dimengerti, WL yang diberi juga bagus.",
+					negatif: "Tidak ada modul (pembelajaran yang pasti) sehingga untuk Member yang baru terjun ke dunia Saham akan sangat kebingungan untuk bertanya karna tidak ada Materi.",
+					netral: "Dibuatkan modul untuk Member baru sehingga saat diskusi bisa tau arah pembicaraannya atau agar punya bahan untuk bertanya dan bisa ditambah link untuk Materi."
+				},
+				{
+					nama: "Mba. Febrina",
+					positif: "1. Penjelasan to the point dan mudah di pahami.<br>2. Materi banyak, terkadang memang bingung apa yg mau ditanyain tapi Admin tetep kasih Materi tanpa harus tanya dulu.<br>3. Bersedia ngasih kelas tambahan saat IHSG Crash (meski bkn tanggung jawab Admin, dan ini udah baik banget).<br>4. Admin sabar, ramah dan termasuk fast respon kalau kita lg butuh.",
+					negatif: "Blm kepikiran, Saya selalu Khusnudzon. 🤣",
+				},
+				{
+					nama: "Mas. Ilham",
+					netral: "Kalau untuk kesan positip negatip si gaada si, malah menurut Aku grub enak pembelajaran tuh kek gini, kadang nyantai, kadang marah, kadang lucu, campur campur, jadi enak.<br>Kesannya di Member itu nyaman gitu, buat tempat cerita juga, cuma pandangan Aku pas awal masuk grub VIP, jujur pas awal awal join VIP Aku bingung, mau mulai dari mana, soalnya kan Aku basic investasi juga belum ada.<br>Dulu mikirnya ikut kelas gini tuh nggak belajar, kita tuh tinggal entry doang, udah beres.<br>Ehh ternyata nggaa, terus Aku radak bingung lah, nyari² basic investasi lah, basic trading lah, semua ku liat di Youtube.<br>Nahhh, saranku aja bang, buatin vidio basic basic aja bang untuk anak VIP yang baru baru besok biar kalo ada yang nanya mulu tinggal kasih video nya langsung liat basicnya biar ga bingung. 😭😭"
+				},
+				{
+					nama: "Mas. Rafli",
+					positif: "Watchlist sama pembelajaran bener² bermanfaat, semenjak gabung disni portofolioku bertambah dan cara memandang suatu Emiten jadi berubah.",
+				},
+				{
+					nama: "Mas. Ardika",
+					positif: "Saya bergabung di Stockbit masih terbilang baru, September tahun lalu, terus sebulan ga gabung kelas, Aku belajar otodidak, agak pusing sih.<br>Terus Aku kenal Stock ID VIP ini dari Bang Hardi lewat Tiktok, terus Aku masuk group biasa aja ga berbayar, terus belajar banyak disana, dan Aku ga lama habistu gabung lah di VIP nya, dan Alhamdulillah disana Aku belajar banyak, mulai dari Bang Hardi yg banyak bantu Aku, yg nyediakan waktu buat nelpon belajar Saham, ngasih Watchlist yg bagus.<br>Kemudian untuk Bang Irfan, dia ini ngasih Watchlist juga, dan dia yg ngajarin Saham terutama yg untuk Trading.",
+					netral: "Untuk Bang Hardi mungkin agak lebih sabar lagi menghadapi ritel yg agak keras kepala ini, dan sering nyangkut ini. 🗿<br>Perbanyak sabar ye Bang. 🗿🤩<br>Untuk Bang Irfan kek nya ga ada, dia udah sabar wkwk."
+				},
+				{
+					nama: "Mas. Hendra Simanjuntak",
+					positif: "Memiliki dua Mentor yg positif mendukung Member adalah suatu hal yg baik untuk Saya yg baru gabung pasar Saham.<br>Dengan 4 bulan Saya diajari diberi waktu diskusi, mungkin kalo waktu itu ga lihat Tiktok Bang Irfan gabakal ketemu Bang Har, berkomunikasi dua arah dengan Mentor sangat Memberikan kesan positif dimana masih bisa Memberikan penjelasan, sehat-sehat Mentor.",
+					negatif: "Membernya kek Dajjal dan suka di Prank Berak, itu aja bang. 🤟🏻",
+				},
+				{
+					nama: "Mas. Samuel",
+					positif: "Bisa belajar dan pembahasannya menarik untuk belajar dan diskusi bareng ntah di group maupun japri.",
+					negatif: "Belum ada file/pembahasan secara menyeluruh yang disatukan di discord/zoom.",
+					netral: "Nanti banyak banyakin diskon kelasnya, siapa tau gw live sambil Promosiin Group. 🤣",
+				},
+				{
+					nama: "Mas. Zidan",
+					positif: "Memberikan Insight yang bagus dan bermanfaat, apabila terjadi Crash tidak meninggalkan malah Memberikan kelas tambahan gratis.",
+				},
+				{
+					nama: "Mas. Ulil",
+					positif: "Bisa diajak diskusi lewat Telepon, bisa minta dijelaskan secara langsung, Watchlist enak buat analisa ulang.",
+					negatif: "Gapernah mabar ML sama Saya. 🗿",
+				},
+				{
+					nama: "Mas. Nofal",
+					positif: "Penyampaian gampang dicerna dan kedua Mentor sangat baik dan sopan santun, sama sangat softpoken.",
+					negatif: "Digoblok goblokin. 🗿🙏🏻",
+				},
+				{
+					nama: "Mas. Agung",
+					positif: "Pokoknya pertama masuk Stock ID VIP belum tau apa apa, sekarang sering dikasih tips dan masukan sama Mas Irfan dan Ko Hardi sudah mulai berisi. 🙏🏻🔥",
+					netral: "Ga ada kritik Stock ID VIP soalnya Mentornya bisa diajak mabar. 🤣🔥",
+				},
+				{
+					nama: "Mba. Putri Sharatu",
+					positif: "Jam belajar Fleksibel, selagi Mentor free jam berapapun gas.<br>Menu gacor semua kalo Kak Hardi Swing/Long Term “sabar bisa bagger”.<br>Kalo Kak Irfan “sat set bisa cuan” Day Trade/Tek Tok.<br>Penjelasan dari Kak Hardi sangat detail dan sabar, buat pemula yang kosong emang rekomended banget Join Kelas disini.<br>Kak Irfan adalah Founder FCA yang keren.",
+					negatif: "Kalo orang baperan pasti sedih denger kritikannya.",
+				},
+				{
+					nama: "Mas. Fawas",
+					positif: "Penyampaian Materi sudah baik dan jelas, Mentor sudah mampu menjelaskan dan mengajarkan Saya tentang Saham dengan cara yang mudah dipahami, terutama bagi pemula untuk Saya.",
+					negatif: "Gak ada si untuk sekarang, ya masukan aja jangan bosan dan jangan jengkel ngelajarin murid kek Saya ini. 😁🙏🏻",
+				},
+				{
+					nama: "Mas. Muazin",
+					netral: "Saran nya WL dikasih keterangan buat Swing atau Scalping.<br>-Ingatkan jika WL sudah tidak bagus.<br>-Infokan jika waktunya TP biar saat Saham naik terus turun agar Member tidak panik.<br>-Kalau ada info Saham bagus dikasih keterangan nya kok bisa bagus karena apa, biar Member baru cepat pinter hehehe.",
+				},
+				{
+					nama: "Mba. Puspita",
+					negatif: "No Hards Feeling, tapi suka mental breakdance kalo dibilang Member goblok padahhal udh ikut lama hahahhaha.",
+					netral: "Please, infokan WL mu yg guacor itu jangan banyak-banyak agar Saya tidak split ke banyak Emiten.",
+				},
+				{
+					nama: "Mas. Roid",
+					positif: "Kesan Positif yang mungkin bisa jadi tak dimiliki oleh Admin diluar adalah terjalinnya komunikasi yang baik dari Admin dan Member sehingga Member yang tak memiliki pemahaman bisa diberi pemahaman dengan penjelasan yang mudah.",
+					negatif: "Gada, sejauh ini Adminnya baik semua.",
+				},
+			];
+
+			const ratingContainer = document.getElementById("ratingContainer");
+
+			function shuffleArray(array) {
+				for (let i = array.length - 1; i > 0; i--) {
+					const j = Math.floor(Math.random() * (i + 1));
+					[array[i], array[j]] = [array[j], array[i]];
+				}
+			}
+
+			shuffleArray(ratingData);
+
+			/* Render card dengan kelas Tailwind */
+			ratingData.forEach(item => {
+				const card = document.createElement("div");
+				// Kelas untuk kontainer Card
+				card.className = "min-w-[320px] max-w-[320px] bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 flex-shrink-0 snap-center select-none cursor-grab active:cursor-grabbing hover:border-emerald-500/30 transition-colors duration-300 shadow-xl flex flex-col";
+				
+				// Template nama
+				let html = `
+					<div class="font-bold text-emerald-400 text-sm border-b border-slate-800/80 pb-3 mb-4 flex items-center gap-2">
+						<div class="w-7 h-7 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/30">
+							<i class="fa-solid fa-user-check text-[10px]"></i>
+						</div>
+						${item.nama}
+					</div>
+				`;
+				// Template Positif, Negatif, Netral (Saran)
+				if (item.positif) html += `<div class="text-[11px] text-slate-300 bg-emerald-500/5 border border-emerald-500/10 p-3.5 rounded-xl mb-2.5 leading-relaxed"><span class="block mb-1 font-bold text-emerald-400">👍 Kesan Positif:</span> ${item.positif}</div>`;
+				if (item.negatif) html += `<div class="text-[11px] text-slate-300 bg-rose-500/5 border border-rose-500/10 p-3.5 rounded-xl mb-2.5 leading-relaxed"><span class="block mb-1 font-bold text-rose-400">👎 Kesan Negatif:</span> ${item.negatif}</div>`;
+				if (item.netral) html += `<div class="text-[11px] text-slate-300 bg-blue-500/5 border border-blue-500/10 p-3.5 rounded-xl mb-2.5 leading-relaxed"><span class="block mb-1 font-bold text-blue-400">💬 Saran & Masukan:</span> ${item.netral}</div>`;
+				
+				card.innerHTML = html;
+				ratingContainer.appendChild(card);
+			});
+
+			/* Fitur geser/swipe (mouse) */
+			let isDown = false;
+			let startX;
+			let scrollLeft;
+
+			ratingContainer.addEventListener("mousedown", (e) => {
+				isDown = true;
+				startX = e.pageX - ratingContainer.offsetLeft;
+				scrollLeft = ratingContainer.scrollLeft;
+			});
+
+			ratingContainer.addEventListener("mouseleave", () => isDown = false);
+			ratingContainer.addEventListener("mouseup", () => isDown = false);
+
+			/* Auto slide per 10 detik */
+			let autoSlide = setInterval(() => {
+				ratingContainer.scrollBy({ left: 336, behavior: "smooth" }); // 320px width + 16px gap
+			}, 10000);
+
+			/* Pause auto-slide saat ada interaksi cursor/mouse */
+			ratingContainer.addEventListener("mouseenter", () => clearInterval(autoSlide));
+			ratingContainer.addEventListener("mouseleave", () => {
+				autoSlide = setInterval(() => {
+					ratingContainer.scrollBy({ left: 336, behavior: "smooth" });
+				}, 10000);
+			});
+
+			/* Geser mengikuti kursor */
+			ratingContainer.addEventListener("mousemove", (e) => {
+				if (!isDown) return;
+				e.preventDefault();
+				const x = e.pageX - ratingContainer.offsetLeft;
+				const walk = (x - startX) * 1.5; // Kecepatan geser
+				ratingContainer.scrollLeft = scrollLeft - walk;
+			});
+
+			/* Fitur geser/swipe (Sentuhan layar/HP) */
+			ratingContainer.addEventListener("touchstart", (e) => {
+				startX = e.touches[0].pageX;
+				scrollLeft = ratingContainer.scrollLeft;
+				clearInterval(autoSlide); // Pause pas disentuh
+			});
+
+			ratingContainer.addEventListener("touchmove", (e) => {
+				const x = e.touches[0].pageX;
+				const walk = (x - startX) * 1.5;
+				ratingContainer.scrollLeft = scrollLeft - walk;
+			});
+
+			ratingContainer.addEventListener("touchend", () => {
+				// Lanjut auto-slide setelah selesai disentuh
+				autoSlide = setInterval(() => {
+					ratingContainer.scrollBy({ left: 336, behavior: "smooth" });
+				}, 10000);
+			});
+		</script>
+		
 		<script>
 			let currentPackage = "";
 			let currentPrice = "";
