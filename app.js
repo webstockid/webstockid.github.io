@@ -88,7 +88,7 @@ const AudioFX = {
 	playSuccess() {
 		this.playAudioFile('sukses.mp3');
 	},
-	playshowToast() {
+	playAlert() {
 		this.playAudioFile('loss.mp3');
 	},
 	playTokenExpired() {
@@ -885,7 +885,7 @@ function exportTradingCard() {
 	if (btn && btn.disabled) return;
 
 	if (!globalStockData) {
-		AudioFX.playshowToast();
+		AudioFX.playAlert();
 		showToast("Memuat data saham... Mohon tunggu sejenak.");
 		return;
 	}
@@ -930,7 +930,7 @@ function exportTradingCard() {
 		AudioFX.playSuccess();
 	}).catch(err => {
 		console.error("Gagal mendownload card:", err);
-		AudioFX.playshowToast();
+		AudioFX.playAlert();
 	});
 }
 
@@ -1064,7 +1064,7 @@ function saveTradingPlanToJournal() {
 	const rrrText = document.getElementById('rrrResult').innerText;
 
 	if (!entry || !sl || !tp || sl >= entry || tp <= entry) {
-		AudioFX.playshowToast();
+		AudioFX.playAlert();
 		showToast("Silakan lengkapi Entry, SL, dan TP yang valid terlebih dahulu!");
 		return;
 	}
@@ -1086,7 +1086,7 @@ function saveTradingPlanToJournal() {
 
 	saveJournalData(journal);
 	AudioFX.playSuccess();
-	showToast(`Trading Plan untuk $${currentTicker} berhasil disimpan ke Journal Trading!`);
+	alert(`Trading Plan untuk $${currentTicker} berhasil disimpan ke Journal Trading!`);
 }
 
 function updateJournalStatus(id, newStatus) {
@@ -1120,11 +1120,20 @@ function deleteJournalItem(id) {
 	saveJournalData(journal);
 }
 
-function clearJournalHistory() {
+/*function clearJournalHistory() {
 	if (confirm("Apakah Anda yakin ingin menghapus seluruh riwayat Journal Trading?")) {
 		localStorage.removeItem('stockid_trading_journal');
 		renderJournalTable();
 	}
+}*/
+
+async function clearJournalHistory() {
+    const isConfirmed = await showConfirm("Apakah Anda yakin ingin menghapus seluruh riwayat Journal Trading?");
+    if (isConfirmed) {
+        localStorage.removeItem('stockid_trading_journal');
+        renderJournalTable();
+        showToast("Riwayat Journal Trading berhasil dibersihkan.");
+    }
 }
 
 function renderJournalTable() {
@@ -1529,7 +1538,7 @@ function requestNotificationPermission() {
 			sendBrowserPushNotification("Stock ID Screener Alert", `System push notification berhasil diaktifkan!`);
 			AudioFX.playSuccess();
 		} else if (permission === "denied") {
-			AudioFX.playshowToast();
+			AudioFX.playAlert();
 			showToast("Izin notifikasi telah ditolak. Silakan izinkan melalui pengaturan browser Anda.");
 		}
 	});
@@ -1705,7 +1714,7 @@ function renderAllAlerts() {
 					</div>
 					<div class="flex items-center gap-2">
 						${toggleBtn}
-						<button onclick="removePriceshowToast('${ticker}', ${index})" class="text-slate-500 hover:text-rose-400 font-bold px-1.5 py-0.5 transition rounded hover:bg-rose-500/10" title="Hapus Alert"><i class="fa-solid fa-trash text-[10px]"></i></button>
+						<button onclick="removePriceAlert('${ticker}', ${index})" class="text-slate-500 hover:text-rose-400 font-bold px-1.5 py-0.5 transition rounded hover:bg-rose-500/10" title="Hapus Alert"><i class="fa-solid fa-trash text-[10px]"></i></button>
 					</div>
 				</div>
 			`;
@@ -1720,6 +1729,7 @@ function renderAllAlerts() {
 	container.innerHTML = htmlContent;
 }
 
+/*
 function clearAllAlerts() {
 	if (confirm("Yakin ingin menghapus SEMUA riwayat alert pada seluruh saham?")) {
 		let keysToRemove = [];
@@ -1733,6 +1743,24 @@ function clearAllAlerts() {
 		renderAllAlerts();
 		AudioFX.playSuccess();
 	}
+}
+*/
+
+async function clearAllAlerts() {
+    const isConfirmed = await showConfirm("Yakin ingin menghapus SEMUA riwayat alert pada seluruh saham?");
+    if (isConfirmed) {
+        let keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('alerts_')) {
+                keysToRemove.push(key);
+            }
+        }
+        keysToRemove.forEach(k => localStorage.removeItem(k));
+        renderAllAlerts();
+        showToast("Semua alert berhasil dihapus.");
+        AudioFX.playSuccess();
+    }
 }
 
 function syncAlertsFromAI() {
@@ -1762,7 +1790,7 @@ function syncAlertsFromAI() {
 	renderAllAlerts();
 
 	AudioFX.playSuccess();
-	showToast(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
+	alert(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
 }
 
 function toggleAlertStatus(ticker, index) {
@@ -1782,7 +1810,7 @@ function toggleAlertStatus(ticker, index) {
 	}
 }
 
-function removePriceshowToast(ticker, index) {
+function removePriceAlert(ticker, index) {
 	let alerts = getAlerts(ticker);
 	alerts.splice(index, 1);
 	saveAlerts(ticker, alerts);
@@ -2281,7 +2309,7 @@ function closeLossCelebration() {
 function exportJournalToCSV() {
 	const journal = getJournalData();
 	if (journal.length === 0) {
-		AudioFX.playshowToast();
+		AudioFX.playAlert();
 		showToast("Belum ada riwayat Trading Plan yang tersimpan untuk diexport!");
 		return;
 	}
@@ -2669,6 +2697,60 @@ function showToast(message, type = 'success') {
             setTimeout(() => toast.remove(), 300);
         }
     }, 3500);
+}
+
+// CUSTOM CONFIRM MODAL (MENGGANTIKAN NATIVE confirm())
+function showConfirm(message) {
+    return new Promise((resolve) => {
+        let modal = document.getElementById('customConfirmModal');
+        
+        // Buat elemen modal secara otomatis jika belum ada di HTML
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'customConfirmModal';
+            modal.className = 'fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 opacity-0 hidden';
+            modal.innerHTML = `
+                <div id="customConfirmContent" class="transform scale-90 transition-all duration-300 bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4 text-center">
+                    <div class="inline-flex p-3 bg-amber-500/10 rounded-xl border border-amber-500/20 text-amber-400 mb-1">
+                        <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white">Konfirmasi Tindakan</h3>
+                    <p id="customConfirmMsg" class="text-xs text-slate-300 leading-relaxed"></p>
+                    <div class="flex gap-3 pt-2">
+                        <button id="customConfirmBtnCancel" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">Batal</button>
+                        <button id="customConfirmBtnOk" class="flex-1 bg-rose-500 hover:bg-rose-400 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-rose-500/20">Ya, Lanjutkan</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        document.getElementById('customConfirmMsg').innerText = message;
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            document.getElementById('customConfirmContent').classList.remove('scale-90');
+            document.getElementById('customConfirmContent').classList.add('scale-100');
+        }, 10);
+
+        const btnOk = document.getElementById('customConfirmBtnOk');
+        const btnCancel = document.getElementById('customConfirmBtnCancel');
+
+        const closeModel = (result) => {
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            document.getElementById('customConfirmContent').classList.remove('scale-100');
+            document.getElementById('customConfirmContent').classList.add('scale-90');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                resolve(result);
+            }, 300);
+        };
+
+        // Hapus event listener lama agar tidak menumpuk
+        btnOk.onclick = () => closeModel(true);
+        btnCancel.onclick = () => closeModel(false);
+    });
 }
 
 initSearchSuggestions();
