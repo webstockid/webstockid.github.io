@@ -1086,7 +1086,9 @@ function saveTradingPlanToJournal() {
 
 	saveJournalData(journal);
 	AudioFX.playSuccess();
-	alert(`Trading Plan untuk $${currentTicker} berhasil disimpan ke Journal Trading!`);
+	
+	// Menggunakan custom showToast alih-alih alert bawaan browser
+	showToast(`Trading Plan untuk $${currentTicker} berhasil disimpan ke Journal Trading!`);
 }
 
 function updateJournalStatus(id, newStatus) {
@@ -1790,7 +1792,9 @@ function syncAlertsFromAI() {
 	renderAllAlerts();
 
 	AudioFX.playSuccess();
-	alert(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
+	
+	// Menggunakan custom showToast alih-alih alert bawaan browser
+	showToast(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
 }
 
 function toggleAlertStatus(ticker, index) {
