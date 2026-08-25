@@ -196,7 +196,7 @@ function closeWelcomeModal(dontShowAgain) {
 // DATABASE TOKEN VIP
 const databaseVIP = {
 	"1": { "tanggalExpired": "2040-07-25" },
-	"000": { "tanggalExpired": "2026-08-24" },
+	"FREE123": { "tanggalExpired": "2026-08-26" },
 	"IRAM7363": { "tanggalExpired": "2026-10-24" },
 	"ANDI2636": { "tanggalExpired": "2026-09-18" },
 	"DHIO2838": { "tanggalExpired": "2026-08-25" },
