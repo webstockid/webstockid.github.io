@@ -1128,12 +1128,12 @@ function deleteJournalItem(id) {
 }*/
 
 async function clearJournalHistory() {
-    const isConfirmed = await showConfirm("Apakah Anda yakin ingin menghapus seluruh riwayat Journal Trading?");
-    if (isConfirmed) {
-        localStorage.removeItem('stockid_trading_journal');
-        renderJournalTable();
-        showToast("Riwayat Journal Trading berhasil dibersihkan.");
-    }
+	const isConfirmed = await showConfirm("Apakah Anda yakin ingin menghapus seluruh riwayat Journal Trading?");
+	if (isConfirmed) {
+		localStorage.removeItem('stockid_trading_journal');
+		renderJournalTable();
+		showToast("Riwayat Journal Trading berhasil dibersihkan.");
+	}
 }
 
 function renderJournalTable() {
@@ -2644,6 +2644,60 @@ function generateAIResponse(prompt) {
 	`;
 }
 
+// CUSTOM CONFIRM MODAL (MENGGANTIKAN NATIVE confirm())
+function showConfirm(message) {
+    return new Promise((resolve) => {
+        let modal = document.getElementById('customConfirmModal');
+        
+        // Buat elemen modal secara otomatis jika belum ada di HTML
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'customConfirmModal';
+            modal.className = 'fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 opacity-0 hidden';
+            modal.innerHTML = `
+                <div id="customConfirmContent" class="transform scale-90 transition-all duration-300 bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4 text-center">
+                    <div class="inline-flex p-3 bg-amber-500/10 rounded-xl border border-amber-500/20 text-amber-400 mb-1">
+                        <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white">Konfirmasi Tindakan</h3>
+                    <p id="customConfirmMsg" class="text-xs text-slate-300 leading-relaxed"></p>
+                    <div class="flex gap-3 pt-2">
+                        <button id="customConfirmBtnCancel" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">Batal</button>
+                        <button id="customConfirmBtnOk" class="flex-1 bg-rose-500 hover:bg-rose-400 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-rose-500/20">Ya, Lanjutkan</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        document.getElementById('customConfirmMsg').innerText = message;
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            document.getElementById('customConfirmContent').classList.remove('scale-90');
+            document.getElementById('customConfirmContent').classList.add('scale-100');
+        }, 10);
+
+        const btnOk = document.getElementById('customConfirmBtnOk');
+        const btnCancel = document.getElementById('customConfirmBtnCancel');
+
+        const closeModel = (result) => {
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            document.getElementById('customConfirmContent').classList.remove('scale-100');
+            document.getElementById('customConfirmContent').classList.add('scale-90');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                resolve(result);
+            }, 300);
+        };
+
+        // Hapus event listener lama agar tidak menumpuk
+        btnOk.onclick = () => closeModel(true);
+        btnCancel.onclick = () => closeModel(false);
+    });
+}
+
 // MODIFIED MODERN ALERT (TOAST NOTIFICATION)
 function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
@@ -2697,60 +2751,6 @@ function showToast(message, type = 'success') {
             setTimeout(() => toast.remove(), 300);
         }
     }, 3500);
-}
-
-// CUSTOM CONFIRM MODAL (MENGGANTIKAN NATIVE confirm())
-function showConfirm(message) {
-    return new Promise((resolve) => {
-        let modal = document.getElementById('customConfirmModal');
-        
-        // Buat elemen modal secara otomatis jika belum ada di HTML
-        if (!modal) {
-            modal = document.createElement('div');
-            modal.id = 'customConfirmModal';
-            modal.className = 'fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 opacity-0 hidden';
-            modal.innerHTML = `
-                <div id="customConfirmContent" class="transform scale-90 transition-all duration-300 bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4 text-center">
-                    <div class="inline-flex p-3 bg-amber-500/10 rounded-xl border border-amber-500/20 text-amber-400 mb-1">
-                        <i class="fa-solid fa-triangle-exclamation text-xl"></i>
-                    </div>
-                    <h3 class="text-base font-bold text-white">Konfirmasi Tindakan</h3>
-                    <p id="customConfirmMsg" class="text-xs text-slate-300 leading-relaxed"></p>
-                    <div class="flex gap-3 pt-2">
-                        <button id="customConfirmBtnCancel" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">Batal</button>
-                        <button id="customConfirmBtnOk" class="flex-1 bg-rose-500 hover:bg-rose-400 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-rose-500/20">Ya, Lanjutkan</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
-
-        document.getElementById('customConfirmMsg').innerText = message;
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-            document.getElementById('customConfirmContent').classList.remove('scale-90');
-            document.getElementById('customConfirmContent').classList.add('scale-100');
-        }, 10);
-
-        const btnOk = document.getElementById('customConfirmBtnOk');
-        const btnCancel = document.getElementById('customConfirmBtnCancel');
-
-        const closeModel = (result) => {
-            modal.classList.remove('opacity-100');
-            modal.classList.add('opacity-0');
-            document.getElementById('customConfirmContent').classList.remove('scale-100');
-            document.getElementById('customConfirmContent').classList.add('scale-90');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                resolve(result);
-            }, 300);
-        };
-
-        // Hapus event listener lama agar tidak menumpuk
-        btnOk.onclick = () => closeModel(true);
-        btnCancel.onclick = () => closeModel(false);
-    });
 }
 
 initSearchSuggestions();
