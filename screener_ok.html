@@ -118,7 +118,7 @@
 					</div>
 					<div>
 						<span class="heading-font text-xl lg:text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">SCREENER</span></span>
-						<p class="text-[9px] lg:text-[10px] font-mono tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
+						<p class="text-[9px] lg:text-[10px] tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
 					</div>
 				</div>
 
@@ -276,7 +276,7 @@
 
 				<div class="space-y-3">
 					<div>
-						<input type="text" id="tokenInput" placeholder="Ketik token di sini..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-center text-sm font-mono tracking-widest text-emerald-400 uppercase focus:outline-none focus:border-emerald-500 transition">
+						<input type="text" id="tokenInput" placeholder="Ketik token di sini..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-center text-sm tracking-widest text-emerald-400 uppercase focus:outline-none focus:border-emerald-500 transition">
 						<p id="loginErrorMsg" class="text-rose-400 text-xs text-center mt-2 hidden"></p>
 					</div>
 					<button onclick="loginVIP()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-sm">
@@ -583,7 +583,7 @@
 									<th class="p-3.5 text-center">Navigasi</th>
 								</tr>
 							</thead>
-							<tbody id="peerTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60 font-mono">
+							<tbody id="peerTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60">
 								<tr>
 									<td colspan="6" class="p-6 text-center text-slate-400">Klik tombol "Refresh Data" di atas untuk memuat data komparasi saham.</td>
 								</tr>
@@ -645,11 +645,11 @@
 								<div class="grid grid-cols-2 gap-2.5">
 									<div>
 										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Total Modal Trading (Rp)</label>
-										<input type="number" id="rrrTotalCapital" value="25000000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
+										<input type="number" id="rrrTotalCapital" value="25000000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
 									</div>
 									<div>
 										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Max Risk per Trade (%)</label>
-										<input type="number" id="rrrRiskPercent" value="10" step="0.5" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-amber-500">
+										<input type="number" id="rrrRiskPercent" value="10" step="0.5" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-amber-500">
 									</div>
 								</div>
 							</div>
@@ -659,15 +659,15 @@
 								<div class="grid grid-cols-3 gap-2.5">
 									<div>
 										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Harga Entry (Rp)</label>
-										<input type="number" id="rrrEntry" placeholder="misal: 1000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-amber-500">
+										<input type="number" id="rrrEntry" placeholder="misal: 1000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-amber-500">
 									</div>
 									<div>
 										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Stop Loss (SL)</label>
-										<input type="number" id="rrrSL" placeholder="misal: 950" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-rose-500">
+										<input type="number" id="rrrSL" placeholder="misal: 950" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-rose-500">
 									</div>
 									<div>
 										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Target (TP1)</label>
-										<input type="number" id="rrrTP" placeholder="misal: 1150" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
+										<input type="number" id="rrrTP" placeholder="misal: 1150" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
 									</div>
 								</div>
 							</div>
@@ -677,25 +677,25 @@
 							<div>
 								<div class="flex justify-between items-center border-b border-slate-800 pb-2.5 mb-3">
 									<span class="text-slate-300 text-xs lg:text-sm">Rasio Risk / Reward:</span>
-									<span id="rrrResult" class="font-bold text-base lg:text-lg text-cyan-400 font-mono">1 : -</span>
+									<span id="rrrResult" class="font-bold text-base lg:text-lg text-cyan-400">1 : -</span>
 								</div>
 
 								<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs">
 									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
 										<span class="text-white text-[9px] lg:text-[10px] block">Maksimal Risiko Uang (Rp)</span>
-										<span id="rrrMaxRiskAmount" class="font-bold text-rose-400 font-mono">Rp 0</span>
+										<span id="rrrMaxRiskAmount" class="font-bold text-rose-400">Rp 0</span>
 									</div>
 									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
 										<span class="text-white text-[9px] lg:text-[10px] block">Maksimal Alokasi Lot</span>
-										<span id="rrrMaxLots" class="font-bold text-cyan-400 font-mono">0 Lot</span>
+										<span id="rrrMaxLots" class="font-bold text-cyan-400">0 Lot</span>
 									</div>
 									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
 										<span class="text-white text-[9px] lg:text-[10px] block">Total Modal Terpakai</span>
-										<span id="rrrCapitalNeeded" class="font-bold text-amber-400 font-mono">Rp 0</span>
+										<span id="rrrCapitalNeeded" class="font-bold text-amber-400">Rp 0</span>
 									</div>
 									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
 										<span class="text-white text-[9px] lg:text-[10px] block">Potensi Profit Bersih (Rp)</span>
-										<span id="rrrPotentialReward" class="font-bold text-emerald-300 font-mono">Rp 0</span>
+										<span id="rrrPotentialReward" class="font-bold text-emerald-300">Rp 0</span>
 									</div>
 								</div>
 							</div>
@@ -714,19 +714,19 @@
 					<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
 						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
 							<span class="text-slate-400 text-[10px] uppercase block font-bold">Total Planned Trade</span>
-							<span class="text-lg font-bold text-white font-mono" id="journalTotalCount">0</span>
+							<span class="text-lg font-bold text-white" id="journalTotalCount">0</span>
 						</div>
 						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
 							<span class="text-slate-400 text-[10px] uppercase block font-bold">Win Rate</span>
-							<span class="text-lg font-bold text-emerald-400 font-mono" id="journalWinRate">0%</span>
+							<span class="text-lg font-bold text-emerald-400" id="journalWinRate">0%</span>
 						</div>
 						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
 							<span class="text-slate-400 text-[10px] uppercase block font-bold">Successful TP</span>
-							<span class="text-lg font-bold text-emerald-300 font-mono" id="journalWinCount">0</span>
+							<span class="text-lg font-bold text-emerald-300" id="journalWinCount">0</span>
 						</div>
 						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
 							<span class="text-slate-400 text-[10px] uppercase block font-bold">Hit Stop Loss</span>
-							<span class="text-lg font-bold text-rose-400 font-mono" id="journalLossCount">0</span>
+							<span class="text-lg font-bold text-rose-400" id="journalLossCount">0</span>
 						</div>
 					</div>
 
@@ -764,7 +764,7 @@
 									<th class="p-3.5 text-center">Tindakan</th>
 								</tr>
 							</thead>
-							<tbody id="journalTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60 font-mono">
+							<tbody id="journalTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60">
 								<tr>
 									<td colspan="8" class="p-6 text-center text-slate-400">Belum ada Trading Plan tersimpan. Gunakan tombol "Simpan ke Journal" di kalkulator Smart RRR.</td>
 								</tr>
@@ -779,7 +779,7 @@
 								<span class="text-amber-400 font-bold text-xs uppercase flex items-center gap-1.5">
 									<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> OPEN PLAN
 								</span>
-								<span id="kanbanCountOpen" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono font-bold">0</span>
+								<span id="kanbanCountOpen" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-bold">0</span>
 							</div>
 							<div id="kanbanColOpen" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
 						</div>
@@ -789,7 +789,7 @@
 								<span class="text-emerald-400 font-bold text-xs uppercase flex items-center gap-1.5">
 									<span class="w-2 h-2 rounded-full bg-emerald-400"></span> WIN / TAKE PROFIT
 								</span>
-								<span id="kanbanCountWin" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono font-bold">0</span>
+								<span id="kanbanCountWin" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-bold">0</span>
 							</div>
 							<div id="kanbanColWin" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
 						</div>
@@ -799,7 +799,7 @@
 								<span class="text-rose-400 font-bold text-xs uppercase flex items-center gap-1.5">
 									<span class="w-2 h-2 rounded-full bg-rose-400"></span> LOSS / STOP LOSS
 								</span>
-								<span id="kanbanCountLoss" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-mono font-bold">0</span>
+								<span id="kanbanCountLoss" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-bold">0</span>
 							</div>
 							<div id="kanbanColLoss" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
 						</div>
@@ -892,11 +892,11 @@
 					</div>
 					<div>
 						<h3 class="text-lg font-bold text-emerald-400 tracking-tight leading-none">STOCK ID SCREENER</h3>
-						<p class="text-[10px] font-mono font-bold text-emerald-400 tracking-wider mt-1">AI TRADING PLAN CARD</p>
+						<p class="text-[10px] font-bold text-emerald-400 tracking-wider mt-1">AI TRADING PLAN CARD</p>
 					</div>
 				</div>
 				<div class="text-right">
-					<span class="text-xs text-slate-400 font-mono block" id="cardDateStr">14 Ags 2026</span>
+					<span class="text-xs text-slate-400 block" id="cardDateStr">14 Ags 2026</span>
 				</div>
 			</div>
 
@@ -911,7 +911,7 @@
 				</div>
 			</div>
 
-			<div class="grid grid-cols-2 gap-3 font-mono text-xs">
+			<div class="grid grid-cols-2 gap-3 text-xs">
 				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
 					<span class="text-slate-400 text-[10px] block mb-1">AREA ENTRY / SUPPORT</span>
 					<span class="text-amber-400 block font-bold text-sm" id="cardEntry">Rp -</span>
@@ -930,7 +930,7 @@
 				</div>
 			</div>
 
-			<div class="bg-slate-900/70 p-4 rounded-2xl border border-slate-800/80 space-y-2 font-mono">
+			<div class="bg-slate-900/70 p-4 rounded-2xl border border-slate-800/80 space-y-2">
 				<span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block">INDIKATOR TEKNIKAL UTAMA:</span>
 				<div class="grid grid-cols-3 gap-2 text-xs pt-1 border-t border-slate-800/60">
 					<div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-center">
@@ -950,7 +950,7 @@
 
 			<div class="flex justify-between items-center text-[11px] text-slate-400 border-t border-slate-800/80 pt-3.5">
 				<span>Official Technical Card • webstockid.github.io</span>
-				<span class="text-emerald-400 font-bold font-mono">#Andaimology Edition</span>
+				<span class="text-emerald-400 font-bold">#Andaimology Edition</span>
 			</div>
 		</div>
 		
@@ -965,7 +965,7 @@
 				<h2 id="cuanTitle" class="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mt-5 drop-shadow-lg animate-bounce text-center">
 					TAKE PROFIT TERCAPAI! 🚀
 				</h2>
-				<p id="cuanDesc" class="text-white text-xs md:text-sm font-mono bg-emerald-500/20 px-4 py-1.5 rounded-full mt-2 border border-emerald-500/30 text-center">
+				<p id="cuanDesc" class="text-white text-xs md:text-sm bg-emerald-500/20 px-4 py-1.5 rounded-full mt-2 border border-emerald-500/30 text-center">
 					Gua bilang juga apa, cuan luber kan lo!
 				</p>
 			</div>
@@ -982,7 +982,7 @@
 				<h2 id="lossTitle" class="text-xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-amber-400 mt-5 drop-shadow-lg animate-pulse text-center">
 					STOP LOSS TERCAPAI 🛡️
 				</h2>
-				<p id="lossDesc" class="text-white text-xs md:text-sm font-mono bg-rose-500/20 px-4 py-1.5 rounded-full mt-2 border border-rose-500/30 text-center">
+				<p id="lossDesc" class="text-white text-xs md:text-sm bg-rose-500/20 px-4 py-1.5 rounded-full mt-2 border border-rose-500/30 text-center">
 					Gapapa ya, masih ada rezeki di saham lain!
 				</p>
 			</div>
@@ -1000,7 +1000,7 @@
 						</div>
 						<div>
 							<h4 class="text-xs font-bold text-white">Stock ID AI Assistant</h4>
-							<span class="text-[9px] text-emerald-400 font-mono">Online • Analis Pasar Aktif</span>
+							<span class="text-[9px] text-emerald-400">Online • Analis Pasar Aktif</span>
 						</div>
 					</div>
 					<button onclick="toggleAIChat()" class="text-slate-400 hover:text-white transition p-1">

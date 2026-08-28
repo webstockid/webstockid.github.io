@@ -111,8 +111,8 @@ const members = [{
 			}, {
 				nama: "Mas. Dhio",
 				whatsapp: "082349033673",
-				expired: "2026-08-25",
-				history: [1, 1, 1]
+				expired: "2026-12-23",
+				history: [1, 1, 1, 3]
 			}, {
 				nama: "Mas. Dika",
 				whatsapp: "08131093311",
@@ -201,7 +201,7 @@ const members = [{
 			}, {
 				nama: "Mba. Fauziah",
 				whatsapp: "085753648079",
-				expired: "2026-09-20",
+				expired: "2026-09-26",
 				history: [1, 2, 1]
 			}, {
 				nama: "Mba. Ike",
@@ -336,13 +336,13 @@ const members = [{
 			}, {
 				nama: "Mas. Resky",
 				whatsapp: "082125867841",
-				expired: "2026-08-16",
-				history: [1, 3]
+				expired: "2026-12-04",
+				history: [1, 3, 3]
 			}, {
 				nama: "Mba. Zulia",
 				whatsapp: "082245155065",
-				expired: "2026-08-22",
-				history: [1, 3]
+				expired: "2027-09-17",
+				history: [1, 3, 12]
 			}, {
 				nama: "Mas. Gias",
 				whatsapp: "085974635148",
@@ -506,8 +506,8 @@ const members = [{
 			}, {
 				nama: "Mas. Rafli",
 				whatsapp: "818094352275",
-				expired: "2026-04-29",
-				history: [1]
+				expired: "2026-12-05",
+				history: [1, 3]
 			}, {
 				nama: "Mas. Simanjuntak",
 				whatsapp: "085121000159",
@@ -556,7 +556,7 @@ const members = [{
 			}, {
 				nama: "Mas. Tama",
 				whatsapp: "083823750527",
-				expired: "2026-10-01",
+				expired: "2026-11-05",
 				history: [1, 1, 3]
 			}, {
 				nama: "Mas. Seii",
@@ -591,8 +591,8 @@ const members = [{
 			}, {
 				nama: "Mas. Ulil",
 				whatsapp: "085624417898",
-				expired: "2026-08-23",
-				history: [1, 1]
+				expired: "2026-09-23",
+				history: [1, 1, 1]
 			}, {
 				nama: "Mba. Febrina",
 				whatsapp: "082257554848",

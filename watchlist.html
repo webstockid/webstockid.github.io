@@ -47,7 +47,7 @@
 				<h3 class="text-sm font-black tracking-wider uppercase text-gray-100">Stock ID Watchlist</h3>
 				<p class="text-[10px] text-gray-400 mt-0.5 mb-4">Masukan Akses Token Kamu</p>
 				<div class="space-y-2.5 max-w-sm mx-auto">
-					<input type="password" id="isiTokenUser" placeholder="Ketik token di sini..." class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-center font-mono focus:outline-none focus:border-emerald-500 uppercase transition-all text-emerald-400">
+					<input type="password" id="isiTokenUser" placeholder="Ketik token di sini..." class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-center focus:outline-none focus:border-emerald-500 uppercase transition-all text-emerald-400">
 					<button onclick="periksaTokenAksesVip()" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md cursor-pointer">
 					Buka Dashboard
 					</button>
@@ -77,7 +77,7 @@
 					<p class="text-gray-400 text-center">
 						Silahkan bayar via Dana atau Gopay ke nomor berikut, lalu kirim bukti Transfer ke Tombol dibawah ini dan Admin akan memberikan Tokennya:
 					</p>
-					<div class="flex items-center justify-between bg-slate-950/60 border border-white/5 px-3 py-2 rounded-xl mt-2 font-mono font-bold">
+					<div class="flex items-center justify-between bg-slate-950/60 border border-white/5 px-3 py-2 rounded-xl mt-2 font-bold">
 						<span class="text-amber-400" id="numRekeningStockId">089529305947</span>
 						<button onclick="salinNomorRekening()" class="text-emerald-400 hover:text-emerald-300 text-[9px] uppercase tracking-wider flex items-center gap-1 active:scale-90 transition-all cursor-pointer">
 						<i class="fa-solid fa-copy"></i> <span id="btnCopyText">Salin</span>
@@ -106,7 +106,7 @@
 						<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
 							STOCK ID <span class="text-emerald-400 font-bold">WATCHLIST</span>
 						</span>
-						<p class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
+						<p class="text-[9px] tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
 					</div>
 				</div>
 
@@ -271,7 +271,7 @@
 				<!-- ELEMEN GIMMICK LIVE USER ONLINE -->
 				<div id="fiturGimmickOnline" class="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/5 border border-emerald-500/10 rounded-xl text-emerald-400 font-medium sm:ml-auto">
 					<i class="fa-solid fa-users text-[11px] animate-pulse"></i>
-					<span class="text-[10px] tracking-wide"><span id="angkaUserOnline" class="font-mono font-black text-white">--</span> orang sedang memantau</span>
+					<span class="text-[10px] tracking-wide"><span id="angkaUserOnline" class="font-black text-white">--</span> orang sedang memantau</span>
 				</div>
 				
 				<button onclick="keluarAksesVip()" class="px-3 py-1.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl font-bold text-[10px] uppercase hover:bg-rose-500/20 transition-all cursor-pointer">
@@ -481,7 +481,7 @@
 				if (sisaHariBersih === 0) {
 					teksInfo.innerHTML = "Sisa Masa Aktif: <span class='text-orange-400 font-black'>HARI INI HARI TERAKHIR</span> Akses VIP Anda";
 				} else {
-					teksInfo.innerHTML = `Sisa Masa Aktif: <span class='text-emerald-400 font-mono font-black'>${sisaHariBersih}Hari</span> Lagi`;
+					teksInfo.innerHTML = `Sisa Masa Aktif: <span class='text-emerald-400 font-black'>${sisaHariBersih}Hari</span> Lagi`;
 				}
 			}
 			

@@ -15,19 +15,19 @@
 		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito&display=swap">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa&display=swap">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 		<link rel="icon" type="image/x-icon" href="stockid_gambar/stockicon.jpg">
 		<link rel="icon" type="image/png" sizes="60x60" href="stockid_gambar/stockicon.jpg">
 		<link rel="apple-touch-icon" sizes="180x180" href="stockid_gambar/stockicon.jpg">
 		<style>
 			body {
-				font-family: "Nunito", sans-serif;
+				font-family: "Comfortaa", sans-serif;
 				background-color: #0b0f19;
 				transition: background-color .3s, color .3s;
 			}
 			.heading-font {
-				font-family: "Nunito", sans-serif;
+				font-family: "Comfortaa", sans-serif;
 			}
 			.theme-switching {
 				transition: background-color .4s ease, color .4s ease !important;
@@ -94,7 +94,7 @@
 						<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
 							STOCK ID <span class="text-emerald-400 font-bold">MEMBER</span>
 						</span>
-						<p class="text-[9px] font-mono tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
+						<p class="text-[9px] tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
 					</div>
 				</div>
 
@@ -257,7 +257,7 @@
 							<i class="fa-solid fa-calendar-days text-orange-400 text-[11px]"></i>
 							<div>
 								<span class="text-[8px] uppercase font-bold text-slate-500 block leading-none">Expired</span>
-								<span id="dashExpired" class="text-[11px] font-bold text-orange-400 font-mono leading-tight">-</span>
+								<span id="dashExpired" class="text-[11px] font-bold text-orange-400 leading-tight">-</span>
 							</div>
 						</div>
 
@@ -266,7 +266,7 @@
 							<i class="fa-solid fa-hourglass-half text-yellow-400 text-[11px]"></i>
 							<div>
 								<span class="text-[8px] uppercase font-bold text-slate-500 block leading-none">Sisa Waktu</span>
-								<span id="dashCountdown" class="text-[11px] font-bold text-yellow-400 font-mono leading-tight">-</span>
+								<span id="dashCountdown" class="text-[11px] font-bold text-yellow-400 leading-tight">-</span>
 							</div>
 						</div>
 
@@ -525,7 +525,7 @@
 					el.innerHTML = `
 					<div class="flex justify-between text-xs font-semibold">
 						<span class="text-slate-400">${r[1]}</span>
-						<span class="text-white font-mono">${val} Member</span>
+						<span class="text-white">${val} Member</span>
 					</div>
 					<div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-900">
 						<div class="${r[2]} h-full rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(255,255,255,0.05)]" style="width: ${percent}%"></div>
@@ -543,7 +543,7 @@
 					rekapBody.innerHTML += `
 					<tr class="hover:bg-slate-900/40 transition-colors">
 						<td class="p-3 font-semibold text-slate-300">Kelas VIP ${kelas} Bulan</td>
-						<td class="p-3 text-center font-mono font-bold text-emerald-400 bg-emerald-500/5">${rekapData[kelas]}x Pembelian</td>
+						<td class="p-3 text-center font-bold text-emerald-400 bg-emerald-500/5">${rekapData[kelas]}x Pembelian</td>
 					</tr>
 					`;
 				});
@@ -615,7 +615,7 @@
 											<span class="text-[10px] text-slate-500 font-medium">VIP Member</span>
 										</div>
 									</div>
-									<span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${daysBadgeColor}">
+									<span class="text-[9px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${daysBadgeColor}">
 										${sisaTeks}
 									</span>
 								</div>
