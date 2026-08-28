@@ -15,18 +15,18 @@
 		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit&display=swap">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend&display=swap">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 		<link rel="icon" type="image/x-icon" href="stockid_gambar/stockicon.jpg">
 		<link rel="icon" type="image/png" sizes="60x60" href="stockid_gambar/stockicon.jpg">
 		<link rel="apple-touch-icon" sizes="180x180" href="stockid_gambar/stockicon.jpg">
 		<style>
 			body {
-				font-family: "Outfit", sans-serif;
+				font-family: "Lexend", sans-serif;
 				background-color: #0b0f19
 			}
 			.heading-font {
-				font-family: "Outfit", sans-serif
+				font-family: "Lexend", sans-serif
 			}
 			.glassmorphism {
 				background: rgba(17, 24, 39, .7);
@@ -44,12 +44,12 @@
 				<div class="w-12 h-12 mx-auto bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/20 flex items-center justify-center mb-3">
 					<i class="fa-solid fa-lock text-base animate-pulse"></i>
 				</div>
-				<h3 class="text-sm font-black tracking-wider uppercase text-gray-100">Stock ID VIP Gateway</h3>
-				<p class="text-[10px] text-gray-400 mt-0.5 mb-4">Silakan masukkan token akses VIP aktif Anda.</p>
+				<h3 class="text-sm font-black tracking-wider uppercase text-gray-100">Stock ID Watchlist</h3>
+				<p class="text-[10px] text-gray-400 mt-0.5 mb-4">Masukan Akses Token Kamu</p>
 				<div class="space-y-2.5 max-w-sm mx-auto">
-					<input type="password" id="isiTokenUser" placeholder="Ketik token di sini..." class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-center font-mono focus:outline-none focus:border-emerald-500 transition-all text-emerald-400">
-					<button onclick="periksaTokenAksesVip()" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md cursor-pointer">
-					Buka Dashboard VIP
+					<input type="password" id="isiTokenUser" placeholder="Ketik token di sini..." class="w-full bg-slate-950/80 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-center font-mono focus:outline-none focus:border-emerald-500 uppercase transition-all text-emerald-400">
+					<button onclick="periksaTokenAksesVip()" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md cursor-pointer">
+					Buka Dashboard
 					</button>
 				</div>
 				<div id="notifTokenEror" class="hidden mt-2.5 text-[9px] font-bold text-rose-400 uppercase tracking-wider">⚠️ Token Salah atau Kedaluwarsa!</div>
