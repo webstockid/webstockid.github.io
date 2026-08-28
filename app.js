@@ -100,6 +100,7 @@ const AudioFX = {
 	playDelete(withPopup = false) {
 		this.playAudioFile('hapus.mp3');
 		if (withPopup) {
+			// Memberikan interval 500ms agar suara tidak bertabrakan
 			setTimeout(() => {
 				this.playAudioFile('hilang.mp3');
 			}, 900);
@@ -122,11 +123,13 @@ document.addEventListener('click', function(e) {
 		
 		const hasTrashIcon = target.querySelector('.fa-trash') !== null || e.target.classList.contains('fa-trash');
 
+		// 1. Kategori Hapus Satuan
 		const isNormalDelete = 
 			hasTrashIcon || 
 			onclickAttr.includes('deleteJournalItem') || 
 			onclickAttr.includes('removePriceAlert');
 
+		// 2. Kategori Hapus/Close dengan Alert/Popup
 		const isPopupAction = 
 			!isNormalDelete && (
 				textContent.includes('Hapus Semua') || 
@@ -494,81 +497,142 @@ function renderFundamentalWidget(ticker) {
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// FUNGSI PARSER DATA EODHD
-function parseEODHDDataGlobal(json, ticker) {
-	if (!json || !Array.isArray(json) || json.length < 20) return null;
-
-	const currentData = json[0];
-	const prevData = json[1];
-
-	const currentPrice = currentData.close;
-	const previousClose = prevData.close;
-	const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
-
-	const currentVolume = currentData.volume;
-	const currentLot = Math.floor(currentVolume / 100);
-	const currentValuation = currentVolume * currentPrice;
-
-	const getMA = (days) => {
-		const slice = json.slice(0, days);
-		const sum = slice.reduce((acc, val) => acc + val.close, 0);
-		return roundToBEITick(sum / slice.length);
-	};
-
-	const ma5 = getMA(5);
-	const ma10 = getMA(10);
-	const ma20 = getMA(20);
-
-	const slice20 = json.slice(0, 20);
-	const high20 = roundToBEITick(Math.max(...slice20.map(d => d.high)));
-	const low20 = roundToBEITick(Math.min(...slice20.map(d => d.low)));
-
-	const volSlice10 = json.slice(0, 10);
-	const volMA10 = Math.round(volSlice10.reduce((acc, val) => acc + val.volume, 0) / volSlice10.length) || 1;
-	const volRatio = parseFloat((currentVolume / volMA10).toFixed(2));
-
-	return {
-		ticker,
-		price: roundToBEITick(currentPrice),
-		prevClose: roundToBEITick(previousClose),
-		changePct,
-		ma5,
-		ma10,
-		ma20,
-		currentVolume,
-		volMA10,
-		volRatio,
-		high20,
-		low20,
-		currentLot,
-		currentValuation
-	};
-}
-
-// FUNGSI FETCH DATA MENGGUNAKAN EODHD API
 async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const cachedData = getCachedStockData(ticker);
 	if (cachedData && !forceFetch) return cachedData;
 
 	const targetSymbol = `${ticker}.JK`;
-	const API_KEY = '6a91a3cf320808.54624172';
-	const eodhdUrl = `https://eodhd.com/api/eod/${targetSymbol}?api_token=${API_KEY}&fmt=json&period=d&order=d&limit=30`;
+	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
+	
+	const fetchWithTimeout = (url, timeoutMs = 2200) => {
+		return new Promise((resolve, reject) => {
+			const timer = setTimeout(() => reject(new Error('Timeout')), timeoutMs);
+			fetch(url)
+				.then(res => {
+					clearTimeout(timer);
+					if (res.ok) resolve(res);
+					else reject(new Error('Response not OK'));
+				})
+				.catch(err => {
+					clearTimeout(timer);
+					reject(err);
+				});
+		});
+	};
 
+	const parseYahooJSON = (json) => {
+		const result = json?.chart?.result?.[0] || json?.results?.[0];
+		if (!result) return null;
+
+		const quote = result.indicators?.quote?.[0] || result.quote;
+		const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
+		const volumes = quote?.volume?.filter(v => v !== null && v !== undefined) || [];
+		const highs = quote?.high?.filter(h => h !== null && h !== undefined) || [];
+		const lows = quote?.low?.filter(l => l !== null && l !== undefined) || [];
+
+		if (prices.length < 5) return null;
+
+		const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
+		const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
+		const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
+
+		const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+		const ma5 = getMA(5);
+		const ma10 = getMA(10);
+		const ma20 = getMA(20);
+
+		const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
+		const realVolume = result.meta?.regularMarketVolume || currentVolume;
+		const currentLot = Math.floor(realVolume / 100);
+		const currentValuation = realVolume * currentPrice;
+
+		const volSlice10 = volumes.slice(-10);
+		const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
+		const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
+
+		const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
+		const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
+
+		return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, currentLot, currentValuation };
+	};
+
+	const workerPromise = fetchWithTimeout(`${WORKER_URL}?symbol=${targetSymbol}`, 1800)
+		.then(res => res.json())
+		.then(json => parseYahooJSON(json));
+
+	const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
+	const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
+	
+	const yahooPromise = fetchWithTimeout(allOriginsUrl, 2000)
+		.then(res => res.json())
+		.then(wrapper => JSON.parse(wrapper.contents))
+		.then(json => parseYahooJSON(json));
+
+	let freshData = null;
 	try {
-		const response = await fetch(eodhdUrl);
-		if (!response.ok) throw new Error('Gagal akses server EODHD');
-		const json = await response.json();
+		freshData = await Promise.race([
+			workerPromise.catch(() => null),
+			yahooPromise.catch(() => null)
+		]);
 
-		const parsedData = parseEODHDDataGlobal(json, ticker);
-		if (parsedData) {
-			setCachedStockData(ticker, parsedData);
-			return parsedData;
+		if (!freshData) {
+			const results = await Promise.allSettled([workerPromise, yahooPromise]);
+			for (const res of results) {
+				if (res.status === 'fulfilled' && res.value) {
+					freshData = res.value;
+					break;
+				}
+			}
 		}
 	} catch (e) {
-		console.warn(`Error fetch EODHD untuk ${ticker}:`, e);
+		console.warn(`Fetch error for ${ticker}`);
 	}
 
-	return cachedData || null;
+	if (freshData) {
+		setCachedStockData(ticker, freshData);
+	} else if (cachedData) {
+		return cachedData;
+	}
+
+	return freshData;
+}
+
+// Fungsi Global: Mengolah raw JSON dari Yahoo menjadi data matang
+function parseYahooDataGlobal(json, ticker) {
+	const result = json?.chart?.result?.[0] || json?.results?.[0];
+	if (!result) return null;
+
+	const quote = result.indicators?.quote?.[0] || result.quote;
+	const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
+	const volumes = quote?.volume?.filter(v => v !== null && v !== undefined) || [];
+	const highs = quote?.high?.filter(h => h !== null && h !== undefined) || [];
+	const lows = quote?.low?.filter(l => l !== null && l !== undefined) || [];
+
+	if (prices.length < 5) return null;
+
+	const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
+	const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
+	const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
+
+	// roundToBEITick
+	const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+	const ma5 = getMA(5);
+	const ma10 = getMA(10);
+	const ma20 = getMA(20);
+
+	const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
+	const realVolume = result.meta?.regularMarketVolume || currentVolume;
+	const currentLot = Math.floor(realVolume / 100);
+	const currentValuation = realVolume * currentPrice;
+
+	const volSlice10 = volumes.slice(-10);
+	const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
+	const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
+
+	const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
+	const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
+
+	return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, currentLot, currentValuation };
 }
 
 function showAISkeletonLoading() {
@@ -1023,6 +1087,7 @@ function saveTradingPlanToJournal() {
 	saveJournalData(journal);
 	AudioFX.playSuccess();
 	
+	// Menggunakan custom showToast alih-alih alert bawaan browser
 	showToast(`Trading Plan untuk $${currentTicker} berhasil disimpan ke Journal Trading!`);
 }
 
@@ -1056,6 +1121,13 @@ function deleteJournalItem(id) {
 	journal = journal.filter(item => item.id !== id);
 	saveJournalData(journal);
 }
+
+/*function clearJournalHistory() {
+	if (confirm("Apakah Anda yakin ingin menghapus seluruh riwayat Journal Trading?")) {
+		localStorage.removeItem('stockid_trading_journal');
+		renderJournalTable();
+	}
+}*/
 
 async function clearJournalHistory() {
 	const isConfirmed = await showConfirm("Apakah Anda yakin ingin menghapus seluruh riwayat Journal Trading?");
@@ -1659,6 +1731,23 @@ function renderAllAlerts() {
 	container.innerHTML = htmlContent;
 }
 
+/*
+function clearAllAlerts() {
+	if (confirm("Yakin ingin menghapus SEMUA riwayat alert pada seluruh saham?")) {
+		let keysToRemove = [];
+		for (let i = 0; i < localStorage.length; i++) {
+			const key = localStorage.key(i);
+			if (key && key.startsWith('alerts_')) {
+				keysToRemove.push(key);
+			}
+		}
+		keysToRemove.forEach(k => localStorage.removeItem(k));
+		renderAllAlerts();
+		AudioFX.playSuccess();
+	}
+}
+*/
+
 async function clearAllAlerts() {
     const isConfirmed = await showConfirm("Yakin ingin menghapus SEMUA riwayat alert pada seluruh saham?");
     if (isConfirmed) {
@@ -1704,6 +1793,7 @@ function syncAlertsFromAI() {
 
 	AudioFX.playSuccess();
 	
+	// Menggunakan custom showToast alih-alih alert bawaan browser
 	showToast(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
 }
 
@@ -1969,7 +2059,6 @@ function searchStock(bypassCooldown = false) {
 	}
 }
 
-// INTEGRASI DATA WORKER DENGAN EODHD PARSER
 function startBackgroundAutoCache() {
 	const FIVE_MINUTES = 5 * 60 * 1000;
 	
@@ -1977,26 +2066,31 @@ function startBackgroundAutoCache() {
 		if (window.Worker) {
 			const bgWorker = new Worker('data-worker.js');
 			
+			// Dengarkan balasan dari robot data-worker
 			bgWorker.onmessage = function(e) {
 				const { status, ticker, rawData } = e.data;
 				
 				if (status === 'success' && rawData) {
-					// Panggil parser EODHD yang baru kita buat
-					const parsedData = parseEODHDDataGlobal(rawData, ticker);
+					const parsedData = parseYahooDataGlobal(rawData, ticker);
 					
 					if (parsedData) {
+						// Simpan ke LocalStorage secara instan
 						setCachedStockData(ticker, parsedData);
+						
+						// Cek target alert secara 
 						checkPriceAlertsRealtime(ticker, parsedData.price); 
 					}
 				} else if (status === 'done') {
-					bgWorker.terminate();
+					bgWorker.terminate(); // Hentikan robot jika semua antrean selesai
 				}
 			};
 
 			let activeTickers = new Set();
 			
+			// 1. Masukkan saham yang sedang aktif dilihat user
 			if (typeof currentTicker !== 'undefined') activeTickers.add(currentTicker);
 			
+			// 2. Masukkan saham yang dipasang Smart Alert oleh user
 			for (let i = 0; i < localStorage.length; i++) {
 				const key = localStorage.key(i);
 				if (key && key.startsWith('alerts_')) {
@@ -2009,15 +2103,18 @@ function startBackgroundAutoCache() {
 				}
 			}
 
+			// 3. AMBIL SELURUH EMITEN DARI WATCHLIST.JS
 			if (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist)) {
 				uniqueRadarWatchlist.forEach(t => activeTickers.add(t));
 			}
 
+			// Kirim seluruh daftar emiten ke latar belakang
 			bgWorker.postMessage({ tickers: Array.from(activeTickers) });
 		}
 	};
 	
 	runBackgroundFetch();
+	
 	setInterval(runBackgroundFetch, FIVE_MINUTES);
 }
 
@@ -2393,6 +2490,7 @@ function sendAIChatMessage() {
 
 	if (!query) return;
 
+	// Render pesan User
 	msgContainer.innerHTML += `
 		<div class="flex items-start justify-end gap-2">
 			<div class="bg-emerald-500/20 text-emerald-300 p-2.5 rounded-xl rounded-tr-none border border-emerald-500/30 leading-relaxed max-w-[85%]">
@@ -2404,6 +2502,7 @@ function sendAIChatMessage() {
 	msgContainer.scrollTop = msgContainer.scrollHeight;
 	AudioFX.playClick();
 
+	// Simulasi respons AI cerdas secara responsif
 	setTimeout(() => {
 		const aiReply = generateAIResponse(query);
 		msgContainer.innerHTML += `
@@ -2431,6 +2530,7 @@ function generateAIResponse(prompt) {
 	const lower = prompt.toLowerCase();
 	let targetTicker = currentTicker;
 
+	// Deteksi apakah user menyebut emiten tertentu (misal: "bca", "bbri")
 	if (typeof uniqueRadarWatchlist !== 'undefined') {
 		const foundMatch = uniqueRadarWatchlist.find(t => lower.includes(t.toLowerCase()));
 		if (foundMatch) {
@@ -2441,20 +2541,25 @@ function generateAIResponse(prompt) {
 	const isCurrent = targetTicker === currentTicker;
 	const data = isCurrent ? globalStockData : getCachedStockData(targetTicker);
 
+	// Helper format Rupiah
 	const formatRp = (num) => num ? `Rp ${num.toLocaleString('id-ID')}` : 'N/A';
 
+	// 1. Kategori: Greeting
 	if (lower.includes('halo') || lower.includes('hai') || lower.includes('pagi') || lower.includes('siang') || lower.includes('sore') || lower.includes('malam')) {
 		return `Halo! Gue AI Assistant Stock ID. Mau bahas teknikal <strong class="text-emerald-400">$${targetTicker}</strong> atau ada emiten lain yang mau di-screening hari ini?`;
 	}
 
+	// 2. Kategori: Ucapan Terima Kasih
 	if (lower.includes('terimakasih') || lower.includes('makasih') || lower.includes('thanks') || lower.includes('oke')) {
 		return `Sama-sama cuy! Selalu terapin disiplin <i>money management</i> ya. Cuan meluber untuk member Stock ID VIP! 🚀`;
 	}
 
+	// Jika data saham belum ada di cache atau belum diload
 	if (!data) {
 		return `Untuk menganalisa <strong class="text-cyan-400">$${targetTicker}</strong> lebih presisi, silakan cari emiten tersebut di kolom pencarian atas terlebih dahulu agar gue bisa menarik data bursa terbarunya.`;
 	}
 
+	// Kalkulasi Level Pivot Cerdas
 	const price = data.price;
 	const sup1 = roundToBEITick(price * 0.94, 'floor');
 	const sup2 = roundToBEITick(price * 0.96, 'floor');
@@ -2464,6 +2569,7 @@ function generateAIResponse(prompt) {
 	const tp1 = roundToBEITick(price * 1.06, 'ceil');
 	const tp2 = roundToBEITick(price * 1.12, 'ceil');
 	
+	// 3. Kategori: Entry / Support / Area Beli
 	if (lower.includes('entry') || lower.includes('area entry') || lower.includes('support') || lower.includes('area support') || lower.includes('area') || lower.includes('area masuk') || lower.includes('masuk') || lower.includes('serok') || lower.includes('beli')) {
 		return `
 			<strong class="text-amber-400 flex items-center gap-1.5"><i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Area Entry & Support $${targetTicker}:</strong>
@@ -2473,6 +2579,7 @@ function generateAIResponse(prompt) {
 		`;
 	}
 
+	// 4. Kategori: Resistance / Target Profit / Jual
 	if (lower.includes('resistance') || lower.includes('resist') || lower.includes('resis') || lower.includes('target') || lower.includes('target profit') || lower.includes('profit') || lower.includes('take profit') || lower.includes('tp') || lower.includes('keluar') || lower.includes('jual') || lower.includes('area jual')) {
 		return `
 			<strong class="text-cyan-400 flex items-center gap-1.5"><i data-lucide="target" class="w-3.5 h-3.5"></i> Target Profit & Resistance $${targetTicker}:</strong>
@@ -2481,6 +2588,7 @@ function generateAIResponse(prompt) {
 		`;
 	}
 
+	// 5. Kategori: Stop Loss / Cut Loss / Batas Risiko
 	if (lower.includes('stoploss') || lower.includes('stop loss') || lower.includes('area stop loss') || lower.includes('cutloss') || lower.includes('cut loss') || lower.includes('area cut loss') || lower.includes('cl') || lower.includes('risiko') || lower.includes('buang') || lower.includes('rugi')) {
 		return `
 			<strong class="text-rose-400 flex items-center gap-1.5"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Batas Risiko (Stop Loss) $${targetTicker}:</strong>
@@ -2489,6 +2597,7 @@ function generateAIResponse(prompt) {
 		`;
 	}
 
+	// 6. Kategori: Moving Average (MA) / Tren
 	if (lower.includes('ma5') || lower.includes('ma10') || lower.includes('ma20') || lower.includes('moving average') || lower.includes('ma') || lower.includes('tren') || lower.includes('skor')) {
 		const trendText = price >= data.ma5 ? '<span class="text-emerald-400 font-bold">di atas MA5 (Fase Bullish / Menguat)</span>' : '<span class="text-rose-400 font-bold">di bawah MA5 (Fase Koreksi / Lemah)</span>';
 		return `
@@ -2504,6 +2613,7 @@ function generateAIResponse(prompt) {
 		`;
 	}
 
+	// 7. Kategori: Volume & Valuasi Transaksi
 	if (lower.includes('lot') || lower.includes('volume') || lower.includes('valuasi') || lower.includes('rasio') || lower.includes('likuiditas') || lower.includes('transaksi') || lower.includes('ramai') || lower.includes('sepi')) {
 		const volStatus = data.volRatio >= 1.5 ? '<span class="text-emerald-400 font-bold">Spike (Sangat Ramai) ⚡</span>' : (data.volRatio >= 1.0 ? '<span class="text-amber-400 font-bold">Normal</span>' : '<span class="text-slate-400">Sepi</span>');
 		return `
@@ -2517,6 +2627,7 @@ function generateAIResponse(prompt) {
 		`;
 	}
 
+	// 8. Kategori: General Prospek / Pandangan Utama
 	if (lower.includes('coba') || lower.includes('coba lihat') || lower.includes('prospek') || lower.includes('analisa') || lower.includes('coba analisa') || lower.includes('bagaimana') || lower.includes('gimana') || lower.includes('review') || lower.includes('teknikal')) {
 		const saran = (price >= data.ma5 && data.volRatio >= 1) 
 			? 'Tren cukup solid, pertimbangkan <strong class="text-emerald-400">Buy on Breakout</strong> atau *Pullback*.' 
@@ -2530,6 +2641,7 @@ function generateAIResponse(prompt) {
 		`;
 	}
 
+	// 9. Kategori: Fallback (Pertanyaan Kompleks yang tidak terdefinisi secara spesifik)
 	return `
 		Poin yang sangat detail! Untuk <strong class="text-emerald-400">$${targetTicker}</strong> (Posisi: ${formatRp(price)}), fokus utamanya ada di ketahanan <b>Support ${formatRp(sup2)}</b> dan uji <b>Resist ${formatRp(res1)}</b>.<br><br>
 		Adakah metrik khusus yang ingin kamu gali seperti kalkulasi <i>Moving Average (MA)</i>, status <i>Volume</i> harian, atau butuh titik <i>Stop Loss</i>?
@@ -2541,9 +2653,11 @@ function showConfirm(message) {
 	return new Promise((resolve) => {
 		let modal = document.getElementById('customConfirmModal');
 		
+		// Buat elemen modal secara otomatis jika belum ada di HTML
 		if (!modal) {
 			modal = document.createElement('div');
 			modal.id = 'customConfirmModal';
+			// Perbaikan: Ubah z-[110] menjadi z-[90] agar tidak menimpa toast alert (z-[100])
 			modal.className = 'fixed inset-0 z-[90] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 opacity-0 hidden';
 			modal.innerHTML = `
 				<div id="customConfirmContent" class="transform scale-90 transition-all duration-300 bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4 text-center">
@@ -2583,6 +2697,7 @@ function showConfirm(message) {
 			}, 300);
 		};
 
+		// Hapus event listener lama agar tidak menumpuk
 		btnOk.onclick = () => closeModel(true);
 		btnCancel.onclick = () => closeModel(false);
 	});
@@ -2595,6 +2710,7 @@ function showToast(message, type = 'success') {
 
     const toastId = 'toast-' + Date.now();
     
+    // Konfigurasi warna & ikon berdasarkan tipe
     let borderColor = 'border-emerald-500/40';
     let bgColor = 'bg-slate-900/95';
     let iconColor = 'text-emerald-400';
@@ -2628,10 +2744,12 @@ function showToast(message, type = 'success') {
 
     container.appendChild(toast);
 
+    // Animasi Muncul
     setTimeout(() => {
         toast.classList.remove('translate-y-4', 'opacity-0');
     }, 10);
 
+    // Otomatis Hilang Setelah 3.5 Detik
     setTimeout(() => {
         if (document.getElementById(toastId)) {
             toast.classList.add('translate-y-4', 'opacity-0');

@@ -1,35 +1,38 @@
-self.onmessage = async function(e) {
-    const { tickers } = e.data;
-    if (!tickers || !Array.isArray(tickers)) return;
+self.addEventListener('message', async function(e) {
+	const { tickers } = e.data;
+	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 
-    // API KEY EODHD
-    const API_KEY = '6a91a3cf320808.54624172';
-    
-    for (const ticker of tickers) {
-        try {
-            const targetSymbol = `${ticker}.JK`;
-            const eodhdUrl = `https://eodhd.com/api/eod/${targetSymbol}?api_token=${API_KEY}&fmt=json&period=d&order=d&limit=30`;
-            
-            const response = await fetch(eodhdUrl);
-            
-            if (response.ok) {
-                const rawData = await response.json();
-                // Mengirimkan kembali ke app.js
-                self.postMessage({ 
-                    status: 'success', 
-                    ticker: ticker, 
-                    rawData: rawData 
-                });
-            }
-        } catch (error) {
-            console.warn(`Worker EODHD error saat menarik data untuk ${ticker}:`, error);
-        }
-        
-        // Jeda waktu (delay) 300 ms antar request.
-        // Sangat penting untuk menjaga agar request tidak dicurigai sebagai spam/DDoS oleh API EODHD
-        await new Promise(resolve => setTimeout(resolve, 300));
-    }
-    
-    // Semua antrean emiten selesai dicek
-    self.postMessage({ status: 'done' });
-};
+	for (const ticker of tickers) {
+		try {
+			const targetSymbol = `${ticker}.JK`;
+			
+			// 1. API Cloudflare
+			const res = await fetch(`${WORKER_URL}?symbol=${targetSymbol}`);
+			
+			if (res.ok) {
+				const json = await res.json();
+				// Kirim raw data JSON kembali ke Main Thread (app.js)
+				self.postMessage({ status: 'success', ticker: ticker, rawData: json });
+			} else {
+				// 2. AllOrigins Fallback
+				const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
+				const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
+				
+				const resFallback = await fetch(allOriginsUrl);
+				if (resFallback.ok) {
+					const wrapper = await resFallback.json();
+					const json = JSON.parse(wrapper.contents);
+					self.postMessage({ status: 'success', ticker: ticker, rawData: json });
+				}
+			}
+		} catch (err) {
+			self.postMessage({ status: 'error', ticker: ticker, error: err.message });
+		}
+		
+		// Jeda 800ms antar saham agar tidak diblokir sistem Yahoo Finance
+		await new Promise(resolve => setTimeout(resolve, 1200));
+	}
+	
+	// Lapor kalau semua tugas sudah selesai
+	self.postMessage({ status: 'done' });
+});
