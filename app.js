@@ -209,7 +209,7 @@ const databaseVIP = {
 	"ZULIA2937": { "tanggalExpired": "2026-08-22" },
 	"YAYAT1635": { "tanggalExpired": "2027-03-08" },
 	"PUTRI2738": { "tanggalExpired": "2026-11-09" },
-	"TAMA2838": { "tanggalExpired": "2026-10-01" },
+	"TAMA2838": { "tanggalExpired": "2026-12-05" },
 	"AHMAD1927": { "tanggalExpired": "2026-11-09" },
 	"VANI5058": { "tanggalExpired": "2026-08-24" },
 	"ULIL3759": { "tanggalExpired": "2026-08-23" },

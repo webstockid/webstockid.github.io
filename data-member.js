@@ -556,7 +556,7 @@ const members = [{
 			}, {
 				nama: "Mas. Tama",
 				whatsapp: "083823750527",
-				expired: "2026-11-05",
+				expired: "2026-12-05",
 				history: [1, 1, 3]
 			}, {
 				nama: "Mas. Seii",
