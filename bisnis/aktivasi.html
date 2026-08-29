@@ -88,14 +88,14 @@
 					<div class="h-px bg-gray-200 dark:bg-gray-700 flex-1"></div>
 				</div>
 
-				<!-- Opsi B: Link Manual / Place ID -->
+				<!-- Opsi B: Link Manual -->
 				<div class="relative mt-4">
 					<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
 						<svg class="h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
 						</svg>
 					</div>
-					<input type="text" id="linkManual" placeholder="Tempel URL atau Place ID" 
+					<input type="text" id="linkManual" placeholder="Tempel link Google Maps..." 
 						class="w-full pl-11 pr-4 py-3 rounded-xl border border-blue-200 dark:border-blue-700/50 bg-blue-50/30 dark:bg-blue-900/10 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all text-sm">
 				</div>
 			</div>
@@ -190,31 +190,20 @@
 			let finalUrl = "";
 			
 			if (manualInput) {
-				// Langsung terima link apa adanya (baik link maps.app.goo.gl maupun link ulasan)
+				// Jika user memasukkan link maps.app.goo.gl, kita beri tahu sistem agar mengarahkannya dengan benar, 
+				// atau jika pakai cara paling instan tanpa ribet, kita sarankan pakai fitur "Cari Otomatis" di atasnya.
+				// Tapi agar link manual tetap bisa, kita bisa arahkan ke penelusuran google review jika itu link tempat.
 				finalUrl = manualInput;
 			} else if (window.selectedPlaceId) {
 				finalUrl = 'https://search.google.com/local/writereview?placeid=' + window.selectedPlaceId;
 			}
-
-			/*if (manualInput) {
-				// Cek apakah yang diketik adalah Place ID mentah (biasanya diawali "ChIJ" atau tidak ada "http")
-				if (manualInput.startsWith("ChIJ") || !manualInput.startsWith("http")) {
-					// Otomatis dirakit jadi link resmi ulasan Google!
-					finalUrl = 'https://search.google.com/local/writereview?placeid=' + manualInput;
-				} else {
-					// Jika yang ditempel adalah URL lengkap, langsung pakai
-					finalUrl = manualInput;
-				}
-			} else if (window.selectedPlaceId) {
-				finalUrl = 'https://search.google.com/local/writereview?placeid=' + window.selectedPlaceId;
-			}*/
 
 			if(!id) {
 				alert("Mohon isi ID Kartu terlebih dahulu.");
 				return;
 			}
 			if(!finalUrl) {
-				alert("Mohon lengkapi Target Ulasan (Gunakan pencarian otomatis atau masukkan Place ID/Link).");
+				alert("Mohon lengkapi Target Ulasan (Gunakan pencarian otomatis atau masukkan Link).");
 				return;
 			}
 
@@ -240,7 +229,7 @@
 				
 				setTimeout(() => {
 					alert("Aktivasi Sukses! Silakan lepas kartu dari HP.");
-					document.getElementById("idKartu").value = '';
+					document.getElementById("idKartu", id).value = '';
 					document.getElementById("cariTempat").value = '';
 					document.getElementById("linkManual").value = '';
 					window.selectedPlaceId = null;
