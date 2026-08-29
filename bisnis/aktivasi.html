@@ -131,10 +131,9 @@
 					osc.start(ctx.currentTime + startTime);
 					osc.stop(ctx.currentTime + startTime + duration);
 				};
-				// Memainkan 3 nada berurutan
-				playNote(523.25, 0, 0.3);   // Nada C
-				playNote(659.25, 0.1, 0.3); // Nada E
-				playNote(783.99, 0.2, 0.4); // Nada G
+				playNote(523.25, 0, 0.3);
+				playNote(659.25, 0.1, 0.3);
+				playNote(783.99, 0.2, 0.4);
 			} catch(e) { console.log("Audio not supported"); }
 		};
 
@@ -212,24 +211,21 @@
 			try {
 				await setDoc(doc(db, "kartu_review", id), { url: finalUrl });
 				
-				// Tulis ke NFC dengan pelindung AAR (Memaksa buka di Chrome)
-const encoder = new TextEncoder();
-const ndef = new NDEFReader();
-
-await ndef.write({
-	records: [
-		{ recordType: "url", data: finalUrl },
-		{ recordType: "android.com:pkg", data: encoder.encode("com.google.android.apps.maps") }
-	]
-});
+				// Tulis ke NFC dengan pelindung AAR (Chrome + TextEncoder)
+				const encoder = new TextEncoder();
+				const ndef = new NDEFReader();
 				
-				// Memanggil efek suara sukses!
+				await ndef.write({
+					records: [
+						{ recordType: "url", data: finalUrl },
+						{ recordType: "android.com:pkg", data: encoder.encode("com.android.chrome") }
+					]
+				});
+				
 				window.playSuccessSound();
 				
-				// Memberi sedikit jeda (100ms) agar suara sempat berbunyi sebelum alert menghentikan layar
 				setTimeout(() => {
 					alert("Aktivasi Sukses! Silakan lepas kartu dari HP.");
-					
 					document.getElementById("idKartu").value = '';
 					document.getElementById("cariTempat").value = '';
 					document.getElementById("linkManual").value = '';
