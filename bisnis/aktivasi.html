@@ -213,13 +213,15 @@
 				await setDoc(doc(db, "kartu_review", id), { url: finalUrl });
 				
 				// Tulis ke NFC dengan pelindung AAR (Memaksa buka di Chrome)
-				const ndef = new NDEFReader();
-				await ndef.write({
-					records: [
-						{ recordType: "url", data: finalUrl },
-						{ recordType: "android.com:pkg", data: "com.android.chrome" }
-					]
-				});
+const encoder = new TextEncoder();
+const ndef = new NDEFReader();
+
+await ndef.write({
+	records: [
+		{ recordType: "url", data: finalUrl },
+		{ recordType: "android.com:pkg", data: encoder.encode("com.android.chrome") }
+	]
+});
 				
 				// Memanggil efek suara sukses!
 				window.playSuccessSound();
