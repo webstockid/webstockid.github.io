@@ -219,16 +219,14 @@
 					}, 200);
 				}
 			}
-
-			// Tutup dropdown jika mengklik di luar area menu
+			
 			document.addEventListener("click", function(event) {
 				const container = document.getElementById("navDropdownContainer");
 				if (container && !container.contains(event.target)) {
 					closeNavDropdown();
 				}
 			});
-
-			// Deteksi Otomatis Halaman Aktif (exp.html)
+			
 			document.addEventListener("DOMContentLoaded", function() {
 				const path = window.location.pathname;
 				const isExpPage = path.includes("watchlist.html") || path.endsWith("/watchlist");
@@ -321,7 +319,7 @@
 		</div>
 		<!-- END: REAL-TIME STOCK SCREENER VIP COMPONENT -->
 		<script>
-			/* DATABASE EXPIRATION TOKEN VIP MENGGUNAKAN FORMAT KALENDER HARI BERSIH (YYYY-MM-DD) */
+			/* DATABASE EXPIRATION TOKEN VIP */
 			const DATABASE_TOKEN_VIP = {
 				"FREE9283": { tanggalExpired: "2026-09-13" },
 				"TOKEN5": { tanggalExpired: "2026-09-01" },
@@ -330,6 +328,39 @@
 				"TOKEN30": { tanggalExpired: "2026-09-09" },
 				"TOKEN50": { tanggalExpired: "2026-09-12" },
 				"STOCKIDVIP": { tanggalExpired: "LIFETIME" }
+				"1": { tanggalExpired: "2040-07-25" },
+				"FREE123": { tanggalExpired: "2026-08-26" },
+				"IRAM7363": { tanggalExpired: "2026-10-24" },
+				"ANDI2636": { tanggalExpired: "2026-09-18" },
+				"DHIO2838": { tanggalExpired: "2026-08-25" },
+				"ROID9283": { tanggalExpired: "2026-08-29" },
+				"RESKY9102": { tanggalExpired: "2026-08-16" },
+				"LUKITA1038": { tanggalExpired: "2026-11-27" },
+				"YOGA2636": { tanggalExpired: "2027-02-28" },
+				"ANNUR3747": { tanggalExpired: "2027-06-20" },
+				"KAYLA5272": { tanggalExpired: "2027-06-10" },
+				"ZULIA2937": { tanggalExpired: "2026-08-22" },
+				"YAYAT1635": { tanggalExpired: "2027-03-08" },
+				"PUTRI2738": { tanggalExpired: "2026-11-09" },
+				"TAMA2838": { tanggalExpired: "2026-12-05" },
+				"AHMAD1927": { tanggalExpired: "2026-11-09" },
+				"VANI5058": { tanggalExpired: "2026-08-24" },
+				"ULIL3759": { tanggalExpired: "2026-08-23" },
+				"DIMAS7363": { tanggalExpired: "2027-03-23" },
+				"NANDA9201": { tanggalExpired: "2026-11-05" },
+				"LIVIA6474": { tanggalExpired: "2026-08-31" },
+				"YOGA8374": { tanggalExpired: "2027-02-28" },
+				"ALDO7293": { tanggalExpired: "2026-08-15" },
+				"PUSPITA3102": { tanggalExpired: "2026-12-31" },
+				"TITO5920": { tanggalExpired: "2026-11-15" },
+				"ARA6192": { tanggalExpired: "2026-09-05" },
+				"IRHAM9137": { tanggalExpired: "2026-10-24" },
+				"FAUZIAH4940": { tanggalExpired: "2026-09-09" },
+				"OFENG1930": { tanggalExpired: "2027-01-19" },
+				"DWIKY5628": { tanggalExpired: "2026-10-23" },
+				"IKE1268": { tanggalExpired: "2026-09-10" },
+				"WIDI6474": { tanggalExpired: "2026-08-31" },
+				"PRAMUDYA7383": { tanggalExpired: "2026-08-11" },
 			};
 			
 			const KAMUS_BULAN = {
@@ -337,12 +368,12 @@
 				"07": "Juli", "08": "Agustus", "09": "September", "10": "Oktober", "11": "November", "12": "Desember"
 			};
 			
-			/* GIMMICK ENGINE: SIMULASI PENGGUNA ONLINE DINAMIS PER 10 DETIK */
+			/* SIMULASI PENGGUNA ONLINE DINAMIS PER 10 DETIK */
 			function perbaruiAngkaUserOnline() {
 				const elemenAngka = document.getElementById('angkaUserOnline');
 				if (!elemenAngka) return;
 				
-				// Menentukan range angka acak (misalnya antara 8 sampai 25 orang)
+				// Menentukan range angka acak
 				const batasMinimal = 8;
 				const batasMaksimal = 80;
 				
@@ -355,22 +386,16 @@
 				setInterval(perbaruiAngkaUserOnline, 10000);
 			}
 			
-			/*
-			 * Merender ulang constructor widget screener dengan filter teknikal dan rasio BEI
-			 */
 			function jalankanUlangScreener() {
 				const targetScreener = document.getElementById('kontainerScannerDinamis');
 				const ikonTombol = document.getElementById('iconPutarScreener');
 				
 				if (!targetScreener) return;
 				
-				// Jalankan efek rotasi animasi loading pada tombol
 				if (ikonTombol) ikonTombol.classList.add('animate-spin');
 				
-				// Bersihkan sisa render widget lama secara total
 				targetScreener.innerHTML = "";
 				
-				// Membuat elemen penampung skrip embedding TradingView resmi
 				const skripScreener = document.createElement('script');
 				skripScreener.type = 'text/javascript';
 				skripScreener.src = 'https://s3.tradingview.com/external-embedding/embed-widget-screener.js';
@@ -389,16 +414,13 @@
 					"isTransparent": true
 				});
 				
-				// Tempel elemen skrip ke dalam DOM untuk memicu visualisasi scanner data
 				targetScreener.appendChild(skripScreener);
 				
-				// Hentikan putaran animasi setelah 1 detik proses injeksi skrip
 				setTimeout(() => {
 					if (ikonTombol) ikonTombol.classList.remove('animate-spin');
 				}, 1000);
 			}
 			
-			// Daftarkan ke dalam trigger pemuatan antarmuka saat sistem browser siap
 			if (document.readyState === "loading") {
 				document.addEventListener("DOMContentLoaded", jalankanUlangScreener);
 			} else {
@@ -522,27 +544,6 @@
 				const p = document.getElementById(id);
 				if (p) p.classList.toggle('hidden');
 			}
-			
-			/* LIGHTWEIGHT AUDIO PLAYER DUMMY STUB */
-			const DAFTAR_PLAYLIST_RELAX = [{ judul: "Utopia", src: "stockid_suara/Utopia - Mencintaimu Sampai Mati.mp3" }];
-			function inisialisasiPlayerRelax() {
-				const audio = document.getElementById("audioRelaxEngine");
-				if (!audio) return;
-				audio.src = DAFTAR_PLAYLIST_RELAX[0].src;
-				audio.load();
-				document.getElementById("marqueeJudulLagu").innerText = "READY TO PLAY TRACKS";
-			}
-			
-			function togglePlayPause() {
-				const audio = document.getElementById("audioRelaxEngine");
-				const ikon = document.getElementById("ikonPlayPause");
-				if (!audio || !ikon) return;
-				if (audio.paused) { audio.play().then(() => { ikon.className = "fa-solid fa-pause text-xs"; }).catch(()=>{}); }
-				else { audio.pause(); ikon.className = "fa-solid fa-play text-xs ml-0.5"; }
-			}
-			
-			function putarLaguBerikutnya() {} function putarLaguSebelumnya() {}
-			function getar(pola) { if (window.navigator.vibrate) window.navigator.vibrate(pola); }
 			
 			/* DOM INITIALIZATION RUNNER */
 			document.addEventListener("DOMContentLoaded", () => {

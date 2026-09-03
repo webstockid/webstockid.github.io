@@ -504,7 +504,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const targetSymbol = `${ticker}.JK`;
 	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 	
-	const fetchWithTimeout = (url, timeoutMs = 2200) => {
+	const fetchWithTimeout = (url, timeoutMs = 4000) => {
 		return new Promise((resolve, reject) => {
 			const timer = setTimeout(() => reject(new Error('Timeout')), timeoutMs);
 			fetch(url)
@@ -563,7 +563,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
 	const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
 	
-	const yahooPromise = fetchWithTimeout(allOriginsUrl, 2000)
+	const yahooPromise = fetchWithTimeout(allOriginsUrl, 4000)
 		.then(res => res.json())
 		.then(wrapper => JSON.parse(wrapper.contents))
 		.then(json => parseYahooJSON(json));
