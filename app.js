@@ -103,7 +103,7 @@ const AudioFX = {
 			// Memberikan interval 500ms agar suara tidak bertabrakan
 			setTimeout(() => {
 				this.playAudioFile('hilang.mp3');
-			}, 900);
+			}, 1200);
 		}
 	},
 	playWinJournal() {
@@ -504,7 +504,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const targetSymbol = `${ticker}.JK`;
 	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 	
-	const fetchWithTimeout = (url, timeoutMs = 4000) => {
+	const fetchWithTimeout = (url, timeoutMs = 3000) => {
 		return new Promise((resolve, reject) => {
 			const timer = setTimeout(() => reject(new Error('Timeout')), timeoutMs);
 			fetch(url)
@@ -563,7 +563,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
 	const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
 	
-	const yahooPromise = fetchWithTimeout(allOriginsUrl, 4000)
+	const yahooPromise = fetchWithTimeout(allOriginsUrl, 3000)
 		.then(res => res.json())
 		.then(wrapper => JSON.parse(wrapper.contents))
 		.then(json => parseYahooJSON(json));
@@ -852,7 +852,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	AudioFX.playSuccess();
 }
 
-function startExportCardCooldown(seconds = 10) {
+function startExportCardCooldown(seconds = 12) {
 	const btn = document.getElementById('btnExportCard');
 	if (!btn) return;
 
@@ -934,7 +934,7 @@ function exportTradingCard() {
 	});
 }
 
-function startPeerRefreshCooldown(seconds = 12) {
+function startPeerRefreshCooldown(seconds = 18) {
 	const btn = document.getElementById('btnRefreshPeer');
 	if (!btn) return;
 
