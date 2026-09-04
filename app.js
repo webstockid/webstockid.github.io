@@ -390,26 +390,35 @@ function updateMarketBadge() {
 }
 
 function renderChart(ticker) {
-	document.getElementById('tv_chart_container').innerHTML = '';
-	new TradingView.widget({
-		"autosize": true,
-		"symbol": `IDX:${ticker}`,
-		"interval": currentInterval,
-		"timezone": "Asia/Jakarta",
-		"theme": "dark",
-		"style": "1",
-		"locale": "id",
-		"toolbar_bg": "#f1f3f6",
-		"enable_publishing": true,
-		"allow_symbol_change": false,
-		"container_id": "tv_chart_container",
-		"studies": [
-			"MAExp@tv-basicstudies",
-			"MACD@tv-basicstudies",
-			"VWAP@tv-basicstudies",
-			"BB@tv-basicstudies",
-		]
-	});
+	const container = document.getElementById('tv_chart_container');
+	if (!container) return;
+	
+	container.innerHTML = '';
+	
+	// Cek pengaman agar halaman tidak crash jika TradingView diblokir AdBlocker
+	if (typeof TradingView !== 'undefined') {
+		new TradingView.widget({
+			"autosize": true,
+			"symbol": `IDX:${ticker}`,
+			"interval": currentInterval,
+			"timezone": "Asia/Jakarta",
+			"theme": "dark",
+			"style": "1",
+			"locale": "id",
+			"toolbar_bg": "#f1f3f6",
+			"enable_publishing": true,
+			"allow_symbol_change": false,
+			"container_id": "tv_chart_container",
+			"studies": [
+				"MAExp@tv-basicstudies",
+				"MACD@tv-basicstudies",
+				"VWAP@tv-basicstudies",
+				"BB@tv-basicstudies",
+			]
+		});
+	} else {
+		container.innerHTML = `<div class="flex items-center justify-center h-full text-slate-400 text-xs text-center p-4">Widget TradingView terblokir oleh koneksi atau AdBlocker.<br>Matikan AdBlocker sesaat untuk memuat grafik.</div>`;
+	}
 }
 
 function renderTechnicalGauge(ticker) {
