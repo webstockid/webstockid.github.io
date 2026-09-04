@@ -897,7 +897,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 		// Logika Action Board AI
 		if (score === 5 && stockData.volRatio >= 1.2) {
-			actionLabel = "🟢 STRONG BUY";
+			actionLabel = "🔥 STRONG BUY";
 			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
 			actionDesc = "Momentum Breakout terkonfirmasi! Lonjakan volume selaras dengan kenaikan harga.";
 		} else if (stockData.price <= stockData.bandarAvgPrice && stockData.price >= stockData.low20 && stockData.volRatio <= 1.0) {
@@ -909,7 +909,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
 			actionDesc = "Harga sudah rally kencang dan menyentuh area Resistance. Segera pasang Trailing Stop ketat!";
 		} else if (score <= 2) {
-			actionLabel = "🛑 AVOID / CUTLOSS";
+			actionLabel = "❌ AVOID / CUTLOSS";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
 			actionDesc = "Struktur tren rusak dan ada tekanan jual. Jauhi emiten ini atau batasi risiko (Cut Loss) segera.";
 		}
@@ -953,9 +953,9 @@ function renderAISignalUI(ticker, stockData, isCached) {
 					<div class="w-full bg-slate-950 rounded-full h-3 border border-slate-700/80 overflow-hidden relative p-0.5 shadow-inner">
 						<div class="bg-gradient-to-r ${bandarBarColor} h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden" style="width: ${bandarPct}%">
 							<!-- Efek Garis-garis Miring Bergerak -->
-							<div class="absolute inset-0 opacity-30" style="background-image: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.2) 75%, transparent 75%, transparent); background-size: 16px 16px; animation: progress-bar-stripes 1s linear infinite;"></div>
+							<div class="absolute inset-0 opacity-30" style="background-image: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.2) 75%, transparent 75%, transparent); background-size: 16px 16px; animation: progress-bar-stripes 0.7s linear infinite;"></div>
 							<!-- Titik Cahaya Berdenyut di Ujung Bar -->
-							<div class="absolute right-0 top-0 bottom-0 w-2 bg-white rounded-full shadow-lg shadow-white animate-pulse"></div>
+							<div class="absolute right-0 top-0 bottom-0 w-2 bg-amber rounded-full shadow-lg shadow-white animate-pulse"></div>
 						</div>
 					</div>
 					
@@ -2371,9 +2371,9 @@ function startVoiceSearch() {
 
 // DATA SELEBRASI (GAMBAR & TEKS RANDOM)
 const cuanImages = [
-	'https://media.giphy.com/media/LdOyjZ7io5Msw/giphy.gif',
 	'https://media4.giphy.com/media/H3QHCSPLCKb4Ukf2yy/giphy.gif',
 	'https://media0.giphy.com/media/ZIz7wYItfiYpCHA60F/giphy.gif',
+	'https://media.giphy.com/media/LdOyjZ7io5Msw/giphy.gif',
 	'https://media.giphy.com/media/3o6gDWzmAzrpi5DQU8/giphy.gif'
 ];
 
@@ -2381,21 +2381,21 @@ const cuanTexts = [
 	{ title: "TAKE PROFIT TERCAPAI! 🚀", desc: "Gua bilang juga apa, cuan luber kan lo!" },
 	{ title: "CUAN MAKSIMAL! 🤑", desc: "Asik! Bisa beli cilok seember nih." },
 	{ title: "BULLSEYE! 🎯", desc: "Nyeblak dulu gak sih?!" },
-	{ title: "PROFIT SECURED! 💰", desc: "Info Dealer Pajero Boss!" }
+	{ title: "PROFIT SECURED! 🌟", desc: "Info Dealer Pajero Boss!" }
 ];
 
 const lossImages = [
-	'https://media0.giphy.com/media/qKwHRZg3T8mx74psnt/giphy.gif',
-	'https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif',
 	'https://media3.giphy.com/media/XHeLeuirRbwptHhSWd/giphy.gif',
+	'https://media.giphy.com/media/ISOckXUybVfQ4/giphy.gif',
+	'https://media0.giphy.com/media/qKwHRZg3T8mx74psnt/giphy.gif',
 	'https://media2.giphy.com/media/bTnjjJn4pJLFUa0CLP/giphy.gif'
 ];
 
 const lossTexts = [
-	{ title: "STOP LOSS TERCAPAI 🛡️", desc: "Kalem Bro! Masih ada cuan disaham lain." },
+	{ title: "STOP LOSS TERCAPAI! 🛡️", desc: "Kalem Bro! Masih ada cuan disaham lain." },
 	{ title: "RISIKO DIBATASI! ❌", desc: "Cutloss mulu dah wkwkwk." },
 	{ title: "PLAN GAGAL, EVALUASI! 💪🏼", desc: "Jangan CL mulu bro, habis tuh duit!" },
-	{ title: "TERKENA STOP LOSS ⚔️", desc: "Turu dek! Wkwkwk." }
+	{ title: "TERKENA STOP LOSS! ⚔️", desc: "Turu dek! Wkwkwk." }
 ];
 
 // FUNGSI TRIGGER SELEBRASI
