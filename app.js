@@ -981,7 +981,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	const res1 = roundToBEITick(price * 1.05, 'ceil'); 
 	const res2 = roundToBEITick(price * 1.08, 'ceil'); 
 	const tp1 = roundToBEITick(price * 1.06, 'ceil'); 
-	const tp2 = roundToBEITick(price * 1.12, 'ceil'); 
+	const tp2 = roundToBEITick(price * 1.10, 'ceil'); 
 
 	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
@@ -1069,7 +1069,7 @@ function exportTradingCard() {
 	const price = roundToBEITick(globalStockData.price);
 	const sl = roundToBEITick(price * 0.92, 'floor');
 	const tp1 = roundToBEITick(price * 1.06, 'ceil');
-	const tp2 = roundToBEITick(price * 1.12, 'ceil');
+	const tp2 = roundToBEITick(price * 1.10, 'ceil');
 	const sup1 = roundToBEITick(price * 0.94, 'floor');
 	const sup2 = roundToBEITick(price * 0.96, 'floor');
 	const res1 = roundToBEITick(price * 1.05, 'ceil');
@@ -1563,7 +1563,7 @@ function renderRadarItems(dataList) {
 		const entryHigh = roundToBEITick(price * 0.96, 'floor');
 		const sl = roundToBEITick(price * 0.92, 'floor');
 		const tp1 = roundToBEITick(price * 1.06, 'ceil');
-		const tp2 = roundToBEITick(price * 1.12, 'ceil');
+		const tp2 = roundToBEITick(price * 1.10, 'ceil');
 
 		let statusSignal = "🔥 Momentum Breakout";
 		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
@@ -1957,7 +1957,7 @@ function syncAlertsFromAI() {
 	const sl = roundToBEITick(price * 0.92, 'floor'); 
 	const sup2 = roundToBEITick(price * 0.96, 'floor'); 
 	const res2 = roundToBEITick(price * 1.08, 'ceil'); 
-	const tp2 = roundToBEITick(price * 1.12, 'ceil'); 
+	const tp2 = roundToBEITick(price * 1.10, 'ceil'); 
 
 	const now = new Date();
 	const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
@@ -2750,7 +2750,7 @@ function generateAIResponse(prompt) {
 	const res2 = roundToBEITick(price * 1.08, 'ceil');
 	const sl = roundToBEITick(price * 0.92, 'floor');
 	const tp1 = roundToBEITick(price * 1.06, 'ceil');
-	const tp2 = roundToBEITick(price * 1.12, 'ceil');
+	const tp2 = roundToBEITick(price * 1.10, 'ceil');
 	
 	// 3. Kategori: Entry / Support / Area Beli
 	if (lower.includes('entry') || lower.includes('area entry') || lower.includes('support') || lower.includes('area support') || lower.includes('area') || lower.includes('area masuk') || lower.includes('masuk') || lower.includes('serok') || lower.includes('beli')) {
