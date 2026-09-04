@@ -553,7 +553,23 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 		const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
 		const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
 
-		return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, currentLot, currentValuation };
+		// [FITUR BARU] Hitung Estimasi Harga Rata-Rata Bandar (VWAP 20 Hari)
+		let totalVol20 = 0;
+		let totalValue20 = 0;
+		const len = prices.length;
+		const period = Math.min(20, len);
+		for(let i = len - period; i < len; i++) {
+			const h = highs[i] || prices[i];
+			const l = lows[i] || prices[i];
+			const c = prices[i];
+			const v = volumes[i] || 0;
+			const typicalPrice = (h + l + c) / 3;
+			totalVol20 += v;
+			totalValue20 += (typicalPrice * v);
+		}
+		const bandarAvgPrice = totalVol20 > 0 ? roundToBEITick(totalValue20 / totalVol20) : roundToBEITick(currentPrice);
+
+		return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, currentLot, currentValuation, bandarAvgPrice };
 	};
 
 	const workerPromise = fetchWithTimeout(`${WORKER_URL}?symbol=${targetSymbol}`, 1800)
@@ -595,6 +611,59 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	}
 
 	return freshData;
+}
+
+// Fungsi Global: Mengolah raw JSON dari Yahoo menjadi data matang
+function parseYahooDataGlobal(json, ticker) {
+	const result = json?.chart?.result?.[0] || json?.results?.[0];
+	if (!result) return null;
+
+	const quote = result.indicators?.quote?.[0] || result.quote;
+	const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
+	const volumes = quote?.volume?.filter(v => v !== null && v !== undefined) || [];
+	const highs = quote?.high?.filter(h => h !== null && h !== undefined) || [];
+	const lows = quote?.low?.filter(l => l !== null && l !== undefined) || [];
+
+	if (prices.length < 5) return null;
+
+	const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
+	const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
+	const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
+
+	const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+	const ma5 = getMA(5);
+	const ma10 = getMA(10);
+	const ma20 = getMA(20);
+
+	const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
+	const realVolume = result.meta?.regularMarketVolume || currentVolume;
+	const currentLot = Math.floor(realVolume / 100);
+	const currentValuation = realVolume * currentPrice;
+
+	const volSlice10 = volumes.slice(-10);
+	const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
+	const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
+
+	const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
+	const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
+
+	// [FITUR BARU] Hitung Estimasi Harga Rata-Rata Bandar (VWAP 20 Hari)
+	let totalVol20 = 0;
+	let totalValue20 = 0;
+	const len = prices.length;
+	const period = Math.min(20, len);
+	for(let i = len - period; i < len; i++) {
+		const h = highs[i] || prices[i];
+		const l = lows[i] || prices[i];
+		const c = prices[i];
+		const v = volumes[i] || 0;
+		const typicalPrice = (h + l + c) / 3;
+		totalVol20 += v;
+		totalValue20 += (typicalPrice * v);
+	}
+	const bandarAvgPrice = totalVol20 > 0 ? roundToBEITick(totalValue20 / totalVol20) : roundToBEITick(currentPrice);
+
+	return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, currentLot, currentValuation, bandarAvgPrice };
 }
 
 // Fungsi Global: Mengolah raw JSON dari Yahoo menjadi data matang
@@ -682,12 +751,14 @@ async function generateAISignal(ticker, isManualSearch = false) {
 		globalStockData = cachedData;
 		renderAISignalUI(ticker, cachedData, true);
 		checkPriceAlertsRealtime(ticker, cachedData.price);
+		checkWhaleAlertRealtime(ticker, cachedData); // [FITUR 5] Trigger Whale Alert
 
 		fetchRealtimeStockData(ticker, true).then(freshData => {
 			if (freshData) {
 				globalStockData = freshData;
 				renderAISignalUI(ticker, freshData, false);
 				checkPriceAlertsRealtime(ticker, freshData.price);
+				checkWhaleAlertRealtime(ticker, freshData); // [FITUR 5] Trigger Whale Alert
 			}
 		});
 		return;
@@ -699,9 +770,32 @@ async function generateAISignal(ticker, isManualSearch = false) {
 	if (stockData && stockData.ticker === ticker) {
 		globalStockData = stockData;
 		checkPriceAlertsRealtime(ticker, stockData.price);
+		checkWhaleAlertRealtime(ticker, stockData); // [FITUR 5] Trigger Whale Alert
 	}
 
 	renderAISignalUI(ticker, stockData, false);
+}
+
+// [FITUR 5] FUNGSI WHALE DETECTOR (BACKGROUND ALERT)
+function checkWhaleAlertRealtime(ticker, stockData) {
+	if (!stockData || !stockData.price) return;
+	
+	// Curi Start: Volume Spike > 2.5x dan Harga belum terbang jauh (0% - 3%)
+	if (stockData.volRatio >= 2.5 && stockData.changePct >= 0 && stockData.changePct <= 3.0) {
+		const lastAlertKey = `whale_alert_${ticker}`;
+		const lastAlertTime = localStorage.getItem(lastAlertKey);
+		const now = Date.now();
+		
+		// Jeda 4 jam (14400000 ms) agar user tidak ter-spam notifikasi
+		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 14400000) {
+			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} meledak ${stockData.volRatio}x lipat! Harga baru naik ${stockData.changePct}%. Bandar indikasi kumpulin barang!`;
+			
+			AudioFX.playSuccess(); 
+			sendBrowserPushNotification(`STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
+			
+			localStorage.setItem(lastAlertKey, now.toString());
+		}
+	}
 }
 
 function renderAISignalUI(ticker, stockData, isCached) {
@@ -765,7 +859,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		descEl.innerHTML = `
 			<p class="leading-relaxed"><strong class="text-sky-500">Mengapa?</strong> Saham <strong class="text-emerald-400 font-bold">${ticker}</strong> saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-500">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
-			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-500">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-500">(Support Kuat 20 Hari)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-500">(Resistance Tertinggi 20 Hari)</strong>. Posisi saat ini memberikan *Risk/Reward Ratio* yang patut dipertimbangkan sebelum mengeksekusi *Trading Plan*.</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-500">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-500">(Support Kuat)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-500">(Resistance Tertinggi)</strong>.</p>
 		`;
 
 		buktiEl.innerHTML = `
@@ -778,12 +872,8 @@ function renderAISignalUI(ticker, stockData, isCached) {
 				<span class="font-mono text-sky-500 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Total Valuasi:</span>
-				<span class="font-mono text-sky-500 font-bold">Rp ${(stockData.currentValuation || 0).toLocaleString('id-ID')}</span>
-			</li>
-			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Terendah 20 Hari / Rentang Tertinggi:</span>
-				<span class="font-mono text-sky-500 font-bold">Rp ${stockData.low20.toLocaleString('id-ID')} / Rp ${stockData.high20.toLocaleString('id-ID')}</span>
+				<span>• Estimasi Modal Bandar (20H):</span>
+				<span class="font-mono text-amber-400 font-bold">Rp ${(stockData.bandarAvgPrice || price).toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Posisi Tren MA5 / MA10 / MA20:</span>
@@ -794,6 +884,82 @@ function renderAISignalUI(ticker, stockData, isCached) {
 				<span class="font-bold font-mono ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
 			</li>
 		`;
+
+		// [FITUR 1 & 2] AI ACTION BOARD & POWER METER BANDAR
+		let actionLabel = "⏳ WAIT & SEE";
+		let actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
+		let actionDesc = "Tren sedang konsolidasi. Volume belum mengkonfirmasi arah yang jelas.";
+
+		let bandarStatus = "Netral / Sideways ⚖️";
+		let bandarColor = "text-amber-400";
+		let bandarBarColor = "bg-amber-400";
+		let bandarPct = 50;
+
+		// Logika Action Board AI
+		if (score === 5 && stockData.volRatio >= 1.2) {
+			actionLabel = "🟢 STRONG BUY";
+			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
+			actionDesc = "Momentum Breakout terkonfirmasi! Lonjakan volume selaras dengan kenaikan harga.";
+		} else if (stockData.price <= stockData.bandarAvgPrice && stockData.price >= stockData.low20 && stockData.volRatio <= 1.0) {
+			actionLabel = "🛒 ACCUMULATE (CICIL)";
+			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
+			actionDesc = "Harga berada di area Support & Modal Bandar rata-rata. Risiko sangat rendah, cocok untuk cicil serok bawah.";
+		} else if (stockData.changePct > 5 && stockData.price >= stockData.high20) {
+			actionLabel = "⚠️ TAKE PROFIT / HOLD";
+			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
+			actionDesc = "Harga sudah rally kencang dan menyentuh area Resistance. Segera pasang Trailing Stop ketat!";
+		} else if (score <= 2) {
+			actionLabel = "🛑 AVOID / CUTLOSS";
+			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
+			actionDesc = "Struktur tren rusak dan ada tekanan jual. Jauhi emiten ini atau batasi risiko (Cut Loss) segera.";
+		}
+
+		// Logika Bandar Power Meter
+		if (stockData.changePct >= 0 && stockData.volRatio >= 1.5) {
+			bandarStatus = "Masif Akumulasi 🐋";
+			bandarColor = "text-emerald-400";
+			bandarBarColor = "bg-emerald-400";
+			bandarPct = Math.min(100, 50 + (stockData.volRatio * 15));
+		} else if (stockData.changePct < 0 && stockData.volRatio < 0.8) {
+			bandarStatus = "Mark Down (Uji Support) 📉";
+			bandarColor = "text-cyan-400";
+			bandarBarColor = "bg-cyan-400";
+			bandarPct = 35;
+		} else if (stockData.changePct < 0 && stockData.volRatio >= 1.2) {
+			bandarStatus = "Distribusi Kuat (Buangan) 🚨";
+			bandarColor = "text-rose-400";
+			bandarBarColor = "bg-rose-400";
+			bandarPct = Math.max(10, 50 - (stockData.volRatio * 15));
+		}
+
+		const actionBoardEl = document.getElementById('aiActionBoard');
+		if (actionBoardEl) {
+			actionBoardEl.innerHTML = `
+				<div class="flex items-center justify-between mb-1">
+					<span class="text-[10px] lg:text-[11px] font-bold text-white uppercase tracking-wider">Rekomendasi Aksi:</span>
+					<span class="font-bold border px-2 py-0.5 rounded text-[10px] lg:text-[11px] ${actionColor}">${actionLabel}</span>
+				</div>
+				<p class="text-[10px] lg:text-[11px] text-slate-300 leading-relaxed">${actionDesc}</p>
+				
+				<div class="mt-3 pt-3 border-t border-slate-800/80">
+					<div class="flex justify-between items-center mb-1.5">
+						<span class="text-[10px] lg:text-[11px] font-bold text-white uppercase tracking-wider">Power Meter Bandar:</span>
+						<span class="font-bold text-[10px] lg:text-[11px] ${bandarColor}">${bandarStatus}</span>
+					</div>
+					<div class="w-full bg-slate-900 rounded-full h-2.5 border border-slate-700 overflow-hidden">
+						<div class="${bandarBarColor} h-full rounded-full transition-all duration-1000 ease-out relative" style="width: ${bandarPct}%">
+							<div class="absolute right-0 top-0 bottom-0 w-1 bg-white rounded-full opacity-50"></div>
+						</div>
+					</div>
+					<div class="flex justify-between text-[8px] lg:text-[9px] text-slate-500 mt-1 font-bold">
+						<span>Distribusi</span>
+						<span>Netral</span>
+						<span>Akumulasi</span>
+					</div>
+				</div>
+			`;
+			actionBoardEl.classList.remove('hidden');
+		}
 
 	} else {
 		verdikEl.innerText = "NETRAL-SELEKTIF?";
@@ -1395,7 +1561,16 @@ function renderRadarItems(dataList) {
 		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
 		let alasanTeknikal = `Perubahan <strong>${changePct}%</strong> dan bertahan kokoh di atas garis Moving Average MA5 (Rp ${item.ma5.toLocaleString('id-ID')}), menandakan tekanan beli harian masih mendominasi pasar.`;
 
-		if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0.5 && changePct < 3) {
+		// [FITUR 3] Deteksi Anomali Volume Bandar (Curi Start & Jebakan Batman)
+		if (item.volRatio >= 2.0 && changePct >= 0 && changePct <= 2.5) {
+			statusSignal = "🐋 Curi Start (Whale Acc)";
+			statusClass = "text-fuchsia-400 border-fuchsia-500/30 bg-fuchsia-500/10";
+			alasanTeknikal = `<strong>Anomali Volume Terdeteksi!</strong> Harga saham baru naik tipis (<strong>+${changePct}%</strong>), tapi volume meledak <strong>${item.volRatio}x lipat</strong> dari rata-rata. Bandar terindikasi sedang kumpulin barang diam-diam.`;
+		} else if (item.volRatio < 0.8 && changePct > 4) {
+			statusSignal = "🦇 Jebakan Batman (Fake Breakout)";
+			statusClass = "text-rose-400 border-rose-500/30 bg-rose-500/10";
+			alasanTeknikal = `<strong>Waspada!</strong> Harga naik sangat tinggi (<strong>+${changePct}%</strong>) namun tidak didukung oleh volume yang kuat (Hanya <strong>${item.volRatio}x</strong>). Kenaikan ini rawan dibanting. Hati-hati FOMO!`;
+		} else if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0.5 && changePct < 3) {
 			statusSignal = "🚀 Golden Cross Setup";
 			statusClass = "text-sky-400 border-sky-500/30 bg-sky-500/10";
 			alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah (*reversal*) awal berpotensi terbentuk.`;
@@ -1435,8 +1610,8 @@ function renderRadarItems(dataList) {
 						<span class="font-bold text-amber-400 font-mono">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-white text-[9px] lg:text-[10px] block">Support MA10</span>
-						<span class="font-bold text-cyan-400 font-mono">Rp ${item.ma10.toLocaleString('id-ID')}</span>
+						<span class="text-white text-[9px] lg:text-[10px] block">Modal Bandar (20H)</span>
+						<span class="font-bold text-fuchsia-400 font-mono">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-white text-[9px] lg:text-[10px] block">Target Profit (TP1/TP2)</span>
