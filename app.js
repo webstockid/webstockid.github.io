@@ -1967,7 +1967,9 @@ async function fetchCorporateAction(ticker) {
 }
 
 function switchTab(tabName) {
-	const tabs = ['ai','bigmoney','peer','news','fundamental','rrr','journal','alert','corporate','heatmap'];
+	// Pastikan 'bandar' dan 'calendar' dimasukkan ke dalam array ini
+	const tabs = ['ai', 'bandar', 'bigmoney', 'calendar', 'peer', 'news', 'fundamental', 'rrr', 'journal', 'alert', 'corporate', 'heatmap'];
+	
 	tabs.forEach(tab => {
 		const btn = document.getElementById(`tabBtn-${tab}`);
 		const content = document.getElementById(`tabContent-${tab}`);
