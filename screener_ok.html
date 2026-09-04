@@ -386,27 +386,13 @@
 
 			<!-- Baris Bawah: Tab Navigasi & Konten -->
 			<section class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-6 shadow-xl">
-				
-				<!-- TAB NAVIGATION (Mempertahankan struktur asli, disisipi Bandarmology & Kalender) -->
 				<div class="sticky top-[133px] lg:top-[140px] z-10 glassmorphism p-2 lg:p-2.5 rounded-xl mb-6 border border-slate-800 flex gap-1.5 lg:gap-3 overflow-x-auto shadow-xl scrollbar-thin">
 					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="sparkles" class="w-4 h-4 text-rose-400"></i> AI Signal
 					</button>
-					
-					<!-- Fitur Baru disisipkan dengan kelas gaya yang sama persis -->
-					<button onclick="switchTab('bandar')" id="tabBtn-bandar" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="users" class="w-4 h-4 text-purple-400"></i> Bandarmology
-					</button>
-					
 					<button onclick="switchTab('bigmoney')" id="tabBtn-bigmoney" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="zap" class="w-4 h-4 text-amber-400"></i> Radar Bandar
 					</button>
-					
-					<!-- Fitur Baru disisipkan -->
-					<button onclick="switchTab('calendar')" id="tabBtn-calendar" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="calendar-days" class="w-4 h-4 text-yellow-400"></i> Kalender Makro
-					</button>
-
 					<button onclick="switchTab('peer')" id="tabBtn-peer" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Peer Komparasi
 					</button>
@@ -435,7 +421,6 @@
 
 				<!-- Tab 1: AI Signal -->
 				<div id="tabContent-ai" class="space-y-4 min-h-[300px] text-xs lg:text-sm">
-					<!-- Blok baris 1 AI -->
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3">
 							<div class="flex items-center justify-between">
@@ -467,7 +452,6 @@
 						</div>
 					</div>
 
-					<!-- Blok baris 2 AI -->
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3.5">
 							<span class="font-bold text-cyan-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
@@ -521,7 +505,6 @@
 						</div>
 					</div>
 
-					<!-- Blok baris 3 AI -->
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-amber-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
@@ -541,47 +524,13 @@
 							</div>
 						</div>
 					</div>
-					
-					<!-- FITUR BARU disisipkan di dalam Tab AI (Mempertahankan struktur kotak yang sama) -->
-					<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5 mt-4">
-						<span class="font-bold text-fuchsia-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
-							<i data-lucide="scan-line" class="w-4 h-4"></i> DETEKSI POLA GRAFIK (CHART PATTERN)
-						</span>
-						<div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-slate-300 text-[11px] lg:text-xs">
-							<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800 flex justify-between items-center">
-								<span class="text-white">Pola Candlestick</span><strong class="text-emerald-400">Bullish Setup</strong>
-							</div>
-							<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800 flex justify-between items-center">
-								<span class="text-white">Struktur Tren</span><strong class="text-cyan-400">Higher High, Higher Low</strong>
-							</div>
-							<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800 flex justify-between items-center">
-								<span class="text-white">Klasifikasi Visual</span><strong class="text-amber-400">Breakout Flag</strong>
-							</div>
-						</div>
-					</div>
 
 					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/50 p-3 rounded-lg border border-slate-900 leading-normal">
 						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa harian. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
 					</p>
 				</div>
 
-				<!-- TAB BARU: Bandarmology -->
-				<div id="tabContent-bandar" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
-					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
-						<div class="space-y-1">
-							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="users" class="w-4 h-4 lg:w-5 lg:h-5 text-purple-400"></i> Detektor Jejak Bandar & Asing
-							</span>
-							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Mengidentifikasi aliran dana asing dan dominasi top broker secara proaktif.</p>
-						</div>
-					</div>
-					<!-- Konten Placeholder menggunakan kotak bawaan -->
-					<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 text-center text-slate-400">
-						Data broker dan foreign flow sedang dalam pembaruan sinkronisasi...
-					</div>
-				</div>
-
-				<!-- Tab 2 Asli: Radar Bandar -->
+				<!-- Tab 2: Radar Bandar -->
 				<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-amber-500/10 border border-amber-500/20 p-3 lg:p-4 rounded-xl gap-3">
 						<div class="flex items-center gap-2">
@@ -608,35 +557,7 @@
 					</p>
 				</div>
 
-				<!-- TAB BARU: Kalender Makro -->
-				<div id="tabContent-calendar" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
-					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
-						<div class="space-y-1">
-							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="calendar-days" class="w-4 h-4 lg:w-5 lg:h-5 text-yellow-400"></i> Kalender Makro Ekonomi Global
-							</span>
-							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Pantau jadwal pengumuman data penting dunia (NFP, Suku Bunga) yang berdampak pada pasar.</p>
-						</div>
-					</div>
-					<div class="bg-slate-950 rounded-xl border border-slate-800 h-[500px] overflow-hidden p-2 lg:p-3 shadow-xl">
-						<div class="tradingview-widget-container h-full w-full">
-							<div class="tradingview-widget-container__widget h-full"></div>
-							<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
-							{
-								"colorTheme": "dark",
-								"isTransparent": true,
-								"width": "100%",
-								"height": "100%",
-								"locale": "id",
-								"importanceFilter": "-1,0,1",
-								"currencyFilter": "USD,IDR,CNY"
-							}
-							</script>
-						</div>
-					</div>
-				</div>
-
-				<!-- Tab 3 Asli: Peer Komparasi -->
+				<!-- Tab 3: Peer Komparasi -->
 				<div id="tabContent-peer" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
@@ -675,7 +596,7 @@
 					</p>
 				</div>
 
-				<!-- Tab 4 Asli: Berita -->
+				<!-- Tab 4: Berita -->
 				<div id="tabContent-news" class="hidden space-y-3 min-h-[250px]">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs lg:text-sm text-white">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
@@ -686,21 +607,7 @@
 					</div>
 				</div>
 
-				<!-- Tab 9 Asli (Dipindah): Korporasi -->
-				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3.5 text-xs lg:text-sm">
-					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs lg:text-sm text-white">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
-						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-emerald-400 font-bold">Dividen / RUPS / Split</span>
-					</div>
-					<div id="corporateContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-						<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3">Memuat data aksi korporasi...</div>
-					</div>
-					<div class="border-t border-slate-800 pt-2.5 text-right">
-						<a href="https://www.idx.co.id/id/perusahaan-tercatat/aksi-korporasi" target="_blank" class="text-[11px] lg:text-xs text-cyan-400 hover:underline">Lihat Pengumuman Resmi BEI &rarr;</a>
-					</div>
-				</div>
-
-				<!-- Tab 5 Asli: Fundamental -->
+				<!-- Tab 5: Fundamental -->
 				<div id="tabContent-fundamental" class="hidden min-h-[300px]">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs lg:text-sm text-white">Profil & Fundamental Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
@@ -711,53 +618,7 @@
 					</div>
 				</div>
 
-				<!-- Tab 8 Asli: Smart Alert -->
-				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
-					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
-						<div class="space-y-1">
-							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="bell-ring" class="w-4 h-4 text-teal-400"></i> Smart Alert & Push Notification System
-							</span>
-							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh target pada seluruh saham yang Lu pantau.</p>
-						</div>
-						
-						<div class="flex items-center gap-2 shrink-0 self-start sm:self-auto">
-							<button id="btnToggleNotification" onclick="requestNotificationPermission()" class="text-[10px] lg:text-xs bg-teal-800 hover:bg-teal-700 text-teal-400 border border-teal-700 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm">
-								<i data-lucide="bell-off" class="w-3.5 h-3.5"></i> Aktifkan Notifikasi Browser
-							</button>
-						</div>
-					</div>
-
-					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-						<div>
-							<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
-								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Alert Untuk:<span id="alertTickerLabel" class="text-teal">MDIA</span>
-							</span>
-							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Ambil data Entry, Resistance, Take Profit, dan Stop Loss dari AI lalu tambahkan ke riwayat pantauan.</p>
-						</div>
-						<button onclick="syncAlertsFromAI()" class="bg-teal-800 hover:bg-teal-500 hover:text-white text-white px-5 py-2.5 rounded-lg border border-teal-700 font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
-							<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Tambahkan ke Alert
-						</button>
-					</div>
-
-					<div class="space-y-2.5 pt-1">
-						<div class="flex items-center justify-between">
-							<span class="text-[11px] lg:text-xs text-slate-300 font-bold block flex items-center gap-1.5">
-								<i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i> Riwayat & Daftar Alert Semua Saham:
-							</span>
-							<button onclick="clearAllAlerts()" class="text-[9px] lg:text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-2 py-1 rounded transition font-bold">Bersihkan Semua</button>
-						</div>
-						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 min-h-[100px] max-h-[400px] overflow-y-auto scrollbar-thin pr-1">
-							<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs">Belum ada alert harga yang dipasang pada saham manapun. Klik "Tambahkan ke Alert" di atas.</div>
-						</div>
-					</div>
-
-					<p class="text-[10px] lg:text-[11px] text-slate-400 italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
-						💡 <strong>Informasi Push Notification:</strong> Notifikasi browser akan dikirimkan secara otomatis bahkan saat Lu sedang membuka tab browser lain selama web Stock ID Screener tetap terbuka.
-					</p>
-				</div>
-
-				<!-- Tab 6 Asli: Smart RRR -->
+				<!-- Tab 6: Smart RRR -->
 				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
@@ -848,7 +709,7 @@
 					</div>
 				</div>
 
-				<!-- Tab 7 Asli: Journal Trading (Dengan FITUR BARU Galeri 2x2) -->
+				<!-- Tab 7: Journal Trading -->
 				<div id="tabContent-journal" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
 						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
@@ -943,35 +804,69 @@
 							<div id="kanbanColLoss" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
 						</div>
 					</div>
-					
-					<!-- FITUR BARU: Dokumentasi Profit (Galeri 2x2 Uncropped) -->
-					<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 mt-4">
-						<div class="flex items-center justify-between mb-3 border-b border-slate-800/80 pb-2">
-							<span class="font-bold text-slate-200 text-xs lg:text-sm flex items-center gap-2">
-								<i data-lucide="image" class="w-4 h-4 text-emerald-400"></i> Galeri Setup & Bukti Profit
+				</div>
+
+				<!-- Tab 8: Smart Alert -->
+				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
+						<div class="space-y-1">
+							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
+								<i data-lucide="bell-ring" class="w-4 h-4 text-teal-400"></i> Smart Alert & Push Notification System
 							</span>
-							<span class="text-[9px] text-slate-400">Direktori lokal: stockid_gambar/gain/</span>
+							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh target pada seluruh saham yang Lu pantau.</p>
 						</div>
 						
-						<!-- Grid persis 2x2 tanpa terpotong (object-contain) -->
-						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-							<div class="bg-slate-900 border border-slate-700 rounded-lg p-2 h-48 md:h-56 flex items-center justify-center">
-								<img src="stockid_gambar/gain/gain1.jpg" alt="Profit Aset 1" class="w-full h-full object-contain rounded drop-shadow-md">
-							</div>
-							<div class="bg-slate-900 border border-slate-700 rounded-lg p-2 h-48 md:h-56 flex items-center justify-center">
-								<img src="stockid_gambar/gain/gain2.jpg" alt="Profit Aset 2" class="w-full h-full object-contain rounded drop-shadow-md">
-							</div>
-							<div class="bg-slate-900 border border-slate-700 rounded-lg p-2 h-48 md:h-56 flex items-center justify-center">
-								<img src="stockid_gambar/gain/gain3.jpg" alt="Profit Aset 3" class="w-full h-full object-contain rounded drop-shadow-md">
-							</div>
-							<div class="bg-slate-900 border border-slate-700 rounded-lg p-2 h-48 md:h-56 flex items-center justify-center">
-								<img src="stockid_gambar/gain/gain4.jpg" alt="Profit Aset 4" class="w-full h-full object-contain rounded drop-shadow-md">
-							</div>
+						<div class="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+							<button id="btnToggleNotification" onclick="requestNotificationPermission()" class="text-[10px] lg:text-xs bg-teal-800 hover:bg-teal-700 text-teal-400 border border-teal-700 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm">
+								<i data-lucide="bell-off" class="w-3.5 h-3.5"></i> Aktifkan Notifikasi Browser
+							</button>
 						</div>
+					</div>
+
+					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+						<div>
+							<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
+								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Alert Untuk:<span id="alertTickerLabel" class="text-teal">MDIA</span>
+							</span>
+							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Ambil data Entry, Resistance, Take Profit, dan Stop Loss dari AI lalu tambahkan ke riwayat pantauan.</p>
+						</div>
+						<button onclick="syncAlertsFromAI()" class="bg-teal-800 hover:bg-teal-500 hover:text-white text-white px-5 py-2.5 rounded-lg border border-teal-700 font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
+							<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Tambahkan ke Alert
+						</button>
+					</div>
+
+					<div class="space-y-2.5 pt-1">
+						<div class="flex items-center justify-between">
+							<span class="text-[11px] lg:text-xs text-slate-300 font-bold block flex items-center gap-1.5">
+								<i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i> Riwayat & Daftar Alert Semua Saham:
+							</span>
+							<button onclick="clearAllAlerts()" class="text-[9px] lg:text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-2 py-1 rounded transition font-bold">Bersihkan Semua</button>
+						</div>
+						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 min-h-[100px] max-h-[400px] overflow-y-auto scrollbar-thin pr-1">
+							<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs">Belum ada alert harga yang dipasang pada saham manapun. Klik "Tambahkan ke Alert" di atas.</div>
+						</div>
+					</div>
+
+					<p class="text-[10px] lg:text-[11px] text-slate-400 italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
+						💡 <strong>Informasi Push Notification:</strong> Notifikasi browser akan dikirimkan secara otomatis bahkan saat Lu sedang membuka tab browser lain selama web Stock ID Screener tetap terbuka.
+					</p>
+				</div>
+
+				<!-- Tab 9: Aksi Korporasi -->
+				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3.5 text-xs lg:text-sm">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-xs lg:text-sm text-white">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-emerald-400 font-bold">Dividen / RUPS / Split</span>
+					</div>
+					<div id="corporateContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+						<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3">Memuat data aksi korporasi...</div>
+					</div>
+					<div class="border-t border-slate-800 pt-2.5 text-right">
+						<a href="https://www.idx.co.id/id/perusahaan-tercatat/aksi-korporasi" target="_blank" class="text-[11px] lg:text-xs text-cyan-400 hover:underline">Lihat Pengumuman Resmi BEI &rarr;</a>
 					</div>
 				</div>
 
-				<!-- Tab 10 Asli: Sector Heatmap -->
+				<!-- Tab 10: Sector Heatmap -->
 				<div id="tabContent-heatmap" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
 						<div>
@@ -1088,7 +983,7 @@
 					STOP LOSS TERCAPAI 🛡️
 				</h2>
 				<p id="lossDesc" class="text-white text-xs md:text-sm bg-rose-500/20 px-4 py-1.5 rounded-full mt-2 border border-rose-500/30 text-center">
-					Kalem Bro! Masih ada cuan disaham lain.
+					Gapapa ya, masih ada rezeki di saham lain!
 				</p>
 			</div>
 		</div>
