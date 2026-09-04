@@ -861,43 +861,29 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		let actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
 		let actionDesc = "Tren sedang konsolidasi. Volume belum mengkonfirmasi arah yang jelas.";
 
-		// --- REVISI LOGIKA REKOMENDASI AKSI ---
-		// 1. Variabel Bantuan (Biar Gampang Diatur)
-		const isBelowAllMA = stockData.price < stockData.ma5 && stockData.price < stockData.ma10 && stockData.price < stockData.ma20;
-		const isAboveMA5_10 = stockData.price > stockData.ma5 && stockData.price > stockData.ma10;
-		const isAboveMA10_20 = stockData.price > stockData.ma10 && stockData.price > stockData.ma20;
-		const isAboveMA5 = stockData.price > stockData.ma5;
-		
-		const isVolKecil = stockData.volRatio < 1.0;
-		const isVolBesar = stockData.volRatio >= 1.0;
-		const isValuasiKecil = stockData.currentValuation < 5000000000; // Valuasi < Rp 5 Miliar
-		const isValuasiBesar = stockData.currentValuation >= 5000000000; // Valuasi >= Rp 5 Miliar
-		const isSpikeActive = stockData.volRatio >= 1.5; // Rasio Volume >= 1.5x
-
-		// 2. Eksekusi 4 Aturan Spesifik AI
-		if (score === 5 && isAboveMA5 && isVolBesar && isValuasiBesar && isSpikeActive) {
-			actionLabel = "🔥 STRONG BUY";
-			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
-			actionDesc = "Momentum Breakout kuat! Harga di atas MA5 dengan lonjakan volume (Spike) dan valuasi besar.";
-		} else if ((score === 4 || score === 5) && isAboveMA10_20 && isVolBesar && isValuasiBesar) {
-			actionLabel = "⚠️ TAKE PROFIT / HOLD";
-			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
-			actionDesc = "Harga stabil di atas MA10 & MA20 dengan likuiditas tinggi. Hold untuk ikuti tren atau amankan profit (TP).";
-		} else if ((score === 2 || score === 3) && isAboveMA5_10 && isVolBesar && isValuasiBesar) {
-			actionLabel = "🛒 ACCUMULATE (CICIL)";
-			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
-			actionDesc = "Sinyal awal akumulasi. Harga naik di atas MA5 & MA10 disertai volume dan valuasi besar. Mulai cicil beli bertahap.";
-		} else if ((score === 1 || score === 2) && isBelowAllMA && isVolKecil && isValuasiKecil) {
-			actionLabel = "❌ AVOID / CUTLOSS";
-			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
-			actionDesc = "Tren hancur (di bawah MA5, MA10, MA20) dengan likuiditas dan volume sepi. Jauhi emiten ini atau Cut Loss segera!";
-		}
-		// --- END REVISI LOGIKA ---
-
 		let bandarStatus = "Netral / Sideways ⚖️";
 		let bandarColor = "text-amber-400";
 		let bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 		let bandarPct = 50;
+
+		// Logika Action Board AI
+		if (score === 5 && stockData.volRatio >= 1.2) {
+			actionLabel = "🟢 STRONG BUY";
+			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
+			actionDesc = "Momentum Breakout terkonfirmasi! Lonjakan volume selaras dengan kenaikan harga.";
+		} else if (stockData.price <= stockData.bandarAvgPrice && stockData.price >= stockData.low20 && stockData.volRatio <= 1.0) {
+			actionLabel = "🛒 ACCUMULATE (CICIL)";
+			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
+			actionDesc = "Harga berada di area Support & Modal Bandar rata-rata. Risiko sangat rendah, cocok untuk cicil serok bawah.";
+		} else if (stockData.changePct > 5 && stockData.price >= stockData.high20) {
+			actionLabel = "⚠️ TAKE PROFIT / HOLD";
+			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
+			actionDesc = "Harga sudah rally kencang dan menyentuh area Resistance. Segera pasang Trailing Stop ketat!";
+		} else if (score <= 2) {
+			actionLabel = "🛑 AVOID / CUTLOSS";
+			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
+			actionDesc = "Struktur tren rusak dan ada tekanan jual. Jauhi emiten ini atau batasi risiko (Cut Loss) segera.";
+		}
 
 		// Logika Bandar Power Meter dengan Warna Dinamis
 		if (stockData.changePct >= 0 && stockData.volRatio >= 1.5) {
@@ -938,9 +924,9 @@ function renderAISignalUI(ticker, stockData, isCached) {
 					<div class="w-full bg-slate-950 rounded-full h-3 border border-slate-700/80 overflow-hidden relative p-0.5 shadow-inner">
 						<div class="bg-gradient-to-r ${bandarBarColor} h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden" style="width: ${bandarPct}%">
 							<!-- Efek Garis-garis Miring Bergerak -->
-							<div class="absolute inset-0 opacity-30" style="background-image: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.2) 75%, transparent 75%, transparent); background-size: 16px 16px; animation: progress-bar-stripes 0.7s linear infinite;"></div>
+							<div class="absolute inset-0 opacity-30" style="background-image: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.2) 75%, transparent 75%, transparent); background-size: 16px 16px; animation: progress-bar-stripes 1s linear infinite;"></div>
 							<!-- Titik Cahaya Berdenyut di Ujung Bar -->
-							<div class="absolute right-0 top-0 bottom-0 w-2 bg-emerald-400 rounded-full shadow-lg shadow-white animate-pulse"></div>
+							<div class="absolute right-0 top-0 bottom-0 w-2 bg-white rounded-full shadow-lg shadow-white animate-pulse"></div>
 						</div>
 					</div>
 					
@@ -953,7 +939,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			`;
 			actionBoardEl.classList.remove('hidden');
 		}
-		
+
 	} else {
 		verdikEl.innerText = "NETRAL-SELEKTIF?";
 		scoreEl.innerText = "-/-";
@@ -966,7 +952,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	const res1 = roundToBEITick(price * 1.05, 'ceil'); 
 	const res2 = roundToBEITick(price * 1.08, 'ceil'); 
 	const tp1 = roundToBEITick(price * 1.06, 'ceil'); 
-	const tp2 = roundToBEITick(price * 1.10, 'ceil'); 
+	const tp2 = roundToBEITick(price * 1.12, 'ceil'); 
 
 	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
@@ -1548,7 +1534,7 @@ function renderRadarItems(dataList) {
 		const entryHigh = roundToBEITick(price * 0.96, 'floor');
 		const sl = roundToBEITick(price * 0.92, 'floor');
 		const tp1 = roundToBEITick(price * 1.06, 'ceil');
-		const tp2 = roundToBEITick(price * 1.10, 'ceil');
+		const tp2 = roundToBEITick(price * 1.12, 'ceil');
 
 		let statusSignal = "🔥 Momentum Breakout";
 		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
