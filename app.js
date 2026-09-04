@@ -666,44 +666,6 @@ function parseYahooDataGlobal(json, ticker) {
 	return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, currentLot, currentValuation, bandarAvgPrice };
 }
 
-// Fungsi Global: Mengolah raw JSON dari Yahoo menjadi data matang
-function parseYahooDataGlobal(json, ticker) {
-	const result = json?.chart?.result?.[0] || json?.results?.[0];
-	if (!result) return null;
-
-	const quote = result.indicators?.quote?.[0] || result.quote;
-	const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
-	const volumes = quote?.volume?.filter(v => v !== null && v !== undefined) || [];
-	const highs = quote?.high?.filter(h => h !== null && h !== undefined) || [];
-	const lows = quote?.low?.filter(l => l !== null && l !== undefined) || [];
-
-	if (prices.length < 5) return null;
-
-	const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
-	const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
-	const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
-
-	// roundToBEITick
-	const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
-	const ma5 = getMA(5);
-	const ma10 = getMA(10);
-	const ma20 = getMA(20);
-
-	const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
-	const realVolume = result.meta?.regularMarketVolume || currentVolume;
-	const currentLot = Math.floor(realVolume / 100);
-	const currentValuation = realVolume * currentPrice;
-
-	const volSlice10 = volumes.slice(-10);
-	const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
-	const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
-
-	const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
-	const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
-
-	return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, currentLot, currentValuation };
-}
-
 function showAISkeletonLoading() {
 	document.getElementById('aiVerdikText').innerHTML = `<span class="inline-block w-32 h-5 skeleton rounded"></span>`;
 	document.getElementById('aiScoreBadge').innerHTML = `<span class="inline-block w-12 h-4 skeleton rounded"></span>`;
