@@ -843,7 +843,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 				<span class="font-mono text-sky-500 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Estimasi Modal Bandar (20H):</span>
+				<span>• Estimasi AVG Bandar:</span>
 				<span class="font-mono text-amber-400 font-bold">Rp ${(stockData.bandarAvgPrice || price).toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
@@ -926,7 +926,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 							<!-- Efek Garis-garis Miring Bergerak -->
 							<div class="absolute inset-0 opacity-30" style="background-image: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.2) 75%, transparent 75%, transparent); background-size: 16px 16px; animation: progress-bar-stripes 1s linear infinite;"></div>
 							<!-- Titik Cahaya Berdenyut di Ujung Bar -->
-							<div class="absolute right-0 top-0 bottom-0 w-2 bg-white rounded-full shadow-lg shadow-white animate-pulse"></div>
+							<div class="absolute right-0 top-0 bottom-0 w-2 bg-blue-600 rounded-full shadow-lg shadow-white animate-pulse"></div>
 						</div>
 					</div>
 					
@@ -1589,7 +1589,7 @@ function renderRadarItems(dataList) {
 						<span class="font-bold text-amber-400 font-mono">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-white text-[9px] lg:text-[10px] block">Modal Bandar (20H)</span>
+						<span class="text-white text-[9px] lg:text-[10px] block">AVG Bandar</span>
 						<span class="font-bold text-fuchsia-400 font-mono">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
