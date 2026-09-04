@@ -949,10 +949,10 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	const sl = roundToBEITick(price * 0.92, 'floor'); 
 	const sup1 = roundToBEITick(price * 0.94, 'floor'); 
 	const sup2 = roundToBEITick(price * 0.96, 'floor'); 
-	const res1 = roundToBEITick(price * 1.05, 'ceil'); 
+	const res1 = roundToBEITick(price * 1.04, 'ceil'); 
 	const res2 = roundToBEITick(price * 1.08, 'ceil'); 
 	const tp1 = roundToBEITick(price * 1.06, 'ceil'); 
-	const tp2 = roundToBEITick(price * 1.12, 'ceil'); 
+	const tp2 = roundToBEITick(price * 1.10, 'ceil'); 
 
 	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
@@ -1039,12 +1039,12 @@ function exportTradingCard() {
 
 	const price = roundToBEITick(globalStockData.price);
 	const sl = roundToBEITick(price * 0.92, 'floor');
-	const tp1 = roundToBEITick(price * 1.06, 'ceil');
-	const tp2 = roundToBEITick(price * 1.10, 'ceil');
 	const sup1 = roundToBEITick(price * 0.94, 'floor');
 	const sup2 = roundToBEITick(price * 0.96, 'floor');
-	const res1 = roundToBEITick(price * 1.05, 'ceil');
+	const res1 = roundToBEITick(price * 1.04, 'ceil');
 	const res2 = roundToBEITick(price * 1.08, 'ceil');
+	const tp1 = roundToBEITick(price * 1.06, 'ceil');
+	const tp2 = roundToBEITick(price * 1.10, 'ceil');
 
 	const now = new Date();
 	const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -1275,7 +1275,7 @@ function deleteJournalItem(id) {
 }*/
 
 async function clearJournalHistory() {
-	const isConfirmed = await showConfirm("Apakah Anda yakin ingin menghapus seluruh riwayat Journal Trading?");
+	const isConfirmed = await showConfirm("Apakah Kamu yakin ingin menghapus seluruh riwayat Journal Trading?");
 	if (isConfirmed) {
 		localStorage.removeItem('stockid_trading_journal');
 		renderJournalTable();
@@ -1529,12 +1529,12 @@ function renderRadarItems(dataList) {
 		const ticker = item.ticker;
 		const price = roundToBEITick(item.price);
 		const changePct = item.changePct;
-
+		
+		const sl = roundToBEITick(price * 0.92, 'floor');
 		const entryLow = roundToBEITick(price * 0.94, 'floor');
 		const entryHigh = roundToBEITick(price * 0.96, 'floor');
-		const sl = roundToBEITick(price * 0.92, 'floor');
 		const tp1 = roundToBEITick(price * 1.06, 'ceil');
-		const tp2 = roundToBEITick(price * 1.12, 'ceil');
+		const tp2 = roundToBEITick(price * 1.10, 'ceil');
 
 		let statusSignal = "🔥 Momentum Breakout";
 		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
@@ -1903,7 +1903,7 @@ function clearAllAlerts() {
 */
 
 async function clearAllAlerts() {
-    const isConfirmed = await showConfirm("Yakin ingin menghapus SEMUA riwayat alert pada seluruh saham?");
+    const isConfirmed = await showConfirm("Apakah Kamu yakin ingin menghapus seluruh riwayat Alert pada seluruh saham?");
     if (isConfirmed) {
         let keysToRemove = [];
         for (let i = 0; i < localStorage.length; i++) {
@@ -1914,7 +1914,7 @@ async function clearAllAlerts() {
         }
         keysToRemove.forEach(k => localStorage.removeItem(k));
         renderAllAlerts();
-        showToast("Semua alert berhasil dihapus.");
+        showToast("Semua Alert berhasil dibersihkan.");
         AudioFX.playSuccess();
     }
 }
@@ -2350,8 +2350,8 @@ const cuanImages = [
 
 const cuanTexts = [
 	{ title: "TAKE PROFIT TERCAPAI! 🚀", desc: "Gua bilang juga apa, cuan luber kan lo!" },
-	{ title: "CUAN MAKSIMAL! 🤑", desc: "Asik! Bisa beli cilok seember nih." },
-	{ title: "BULLSEYE! 🎯", desc: "Nyeblak dulu gak sih?!" },
+	{ title: "CUAN MAKSIMAL! 👀", desc: "Asik! Bisa beli cilok seember nih." },
+	{ title: "BULLSEYE! 😎", desc: "Nyeblak dulu gak sih?!" },
 	{ title: "PROFIT SECURED! 🌟", desc: "Info Dealer Pajero Boss!" }
 ];
 
@@ -2715,11 +2715,11 @@ function generateAIResponse(prompt) {
 
 	// Kalkulasi Level Pivot Cerdas
 	const price = data.price;
+	const sl = roundToBEITick(price * 0.92, 'floor');
 	const sup1 = roundToBEITick(price * 0.94, 'floor');
 	const sup2 = roundToBEITick(price * 0.96, 'floor');
-	const res1 = roundToBEITick(price * 1.05, 'ceil');
+	const res1 = roundToBEITick(price * 1.04, 'ceil');
 	const res2 = roundToBEITick(price * 1.08, 'ceil');
-	const sl = roundToBEITick(price * 0.92, 'floor');
 	const tp1 = roundToBEITick(price * 1.06, 'ceil');
 	const tp2 = roundToBEITick(price * 1.10, 'ceil');
 	
