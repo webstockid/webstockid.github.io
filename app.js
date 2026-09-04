@@ -885,14 +885,14 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			</li>
 		`;
 
-		// [FITUR 1 & 2] AI ACTION BOARD & POWER METER BANDAR (DENGAN ANIMASI Keren)
+		// [FITUR 1 & 2] AI ACTION BOARD & POWER METER BANDAR (DENGAN ANIMASI PROGRESS BERGERAK)
 		let actionLabel = "⏳ WAIT & SEE";
 		let actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
 		let actionDesc = "Tren sedang konsolidasi. Volume belum mengkonfirmasi arah yang jelas.";
 
 		let bandarStatus = "Netral / Sideways ⚖️";
 		let bandarColor = "text-amber-400";
-		let bandarBarColor = "bg-gradient-to-r from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
+		let bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 		let bandarPct = 50;
 
 		// Logika Action Board AI
@@ -914,21 +914,21 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionDesc = "Struktur tren rusak dan ada tekanan jual. Jauhi emiten ini atau batasi risiko (Cut Loss) segera.";
 		}
 
-		// Logika Bandar Power Meter dengan Animasi Warna
+		// Logika Bandar Power Meter dengan Warna Dinamis
 		if (stockData.changePct >= 0 && stockData.volRatio >= 1.5) {
 			bandarStatus = "Masif Akumulasi 🐋";
 			bandarColor = "text-emerald-400";
-			bandarBarColor = "bg-gradient-to-r from-emerald-600 via-emerald-400 to-teal-300 shadow-[0_0_20px_rgba(52,211,153,0.5)] animate-pulse";
+			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-300 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = Math.min(100, 50 + (stockData.volRatio * 15));
 		} else if (stockData.changePct < 0 && stockData.volRatio < 0.8) {
 			bandarStatus = "Mark Down (Uji Support) 📉";
 			bandarColor = "text-cyan-400";
-			bandarBarColor = "bg-gradient-to-r from-cyan-600 via-cyan-400 to-blue-300 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
+			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-300 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
 			bandarPct = 35;
 		} else if (stockData.changePct < 0 && stockData.volRatio >= 1.2) {
 			bandarStatus = "Distribusi Kuat (Buangan) 🚨";
 			bandarColor = "text-rose-400";
-			bandarBarColor = "bg-gradient-to-r from-rose-600 via-rose-500 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)] animate-pulse";
+			bandarBarColor = "from-rose-600 via-rose-500 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)]";
 			bandarPct = Math.max(10, 50 - (stockData.volRatio * 15));
 		}
 
@@ -949,10 +949,13 @@ function renderAISignalUI(ticker, stockData, isCached) {
 						<span class="font-bold text-[10px] lg:text-[11px] ${bandarColor}">${bandarStatus}</span>
 					</div>
 					
-					<!-- Container Bar dengan Efek Shimmer Bergerak -->
+					<!-- Container Bar dengan Efek Garis Berjalan (Animated Stripes) -->
 					<div class="w-full bg-slate-950 rounded-full h-3 border border-slate-700/80 overflow-hidden relative p-0.5 shadow-inner">
-						<div class="${bandarBarColor} h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden" style="width: ${bandarPct}%">
-							<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
+						<div class="bg-gradient-to-r ${bandarBarColor} h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden" style="width: ${bandarPct}%">
+							<!-- Efek Garis-garis Miring Bergerak -->
+							<div class="absolute inset-0 opacity-30" style="background-image: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.2) 75%, transparent 75%, transparent); background-size: 16px 16px; animation: progress-bar-stripes 1s linear infinite;"></div>
+							<!-- Titik Cahaya Berdenyut di Ujung Bar -->
+							<div class="absolute right-0 top-0 bottom-0 w-2 bg-white rounded-full shadow-lg shadow-white animate-pulse"></div>
 						</div>
 					</div>
 					
@@ -965,7 +968,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			`;
 			actionBoardEl.classList.remove('hidden');
 		}
-
+		
 	} else {
 		verdikEl.innerText = "NETRAL-SELEKTIF?";
 		scoreEl.innerText = "-/-";
