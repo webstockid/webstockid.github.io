@@ -955,7 +955,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 							<!-- Efek Garis-garis Miring Bergerak -->
 							<div class="absolute inset-0 opacity-30" style="background-image: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.2) 75%, transparent 75%, transparent); background-size: 16px 16px; animation: progress-bar-stripes 0.7s linear infinite;"></div>
 							<!-- Titik Cahaya Berdenyut di Ujung Bar -->
-							<div class="absolute right-0 top-0 bottom-0 w-2 bg-amber rounded-full shadow-lg shadow-white animate-pulse"></div>
+							<div class="absolute right-0 top-0 bottom-0 w-2 bg-emerald-400 rounded-full shadow-lg shadow-white animate-pulse"></div>
 						</div>
 					</div>
 					
