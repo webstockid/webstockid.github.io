@@ -856,34 +856,48 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			</li>
 		`;
 
-		// [FITUR 1 & 2] AI ACTION BOARD & POWER METER BANDAR (DENGAN ANIMASI PROGRESS BERGERAK)
+		// [FITUR 1 & 2] AI ACTION BOARD & POWER METER BANDAR
 		let actionLabel = "⏳ WAIT & SEE";
 		let actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
 		let actionDesc = "Tren sedang konsolidasi. Volume belum mengkonfirmasi arah yang jelas.";
+
+		// --- REVISI LOGIKA REKOMENDASI AKSI ---
+		// 1. Setup Variabel Kondisi
+		const isBelowAllMA = stockData.price < stockData.ma5 && stockData.price < stockData.ma10 && stockData.price < stockData.ma20;
+		const isAboveMA5_10 = stockData.price > stockData.ma5 && stockData.price > stockData.ma10;
+		const isAboveMA10_20 = stockData.price > stockData.ma10 && stockData.price > stockData.ma20;
+		const isAboveMA5 = stockData.price > stockData.ma5;
+		
+		const isVolKecil = stockData.volRatio < 1.0;
+		const isVolBesar = stockData.volRatio >= 1.0;
+		const isValuasiKecil = stockData.currentValuation < 5000000000; // Valuasi < Rp 5 Miliar
+		const isValuasiBesar = stockData.currentValuation >= 5000000000; // Valuasi >= Rp 5 Miliar
+		const isSpikeActive = stockData.volRatio >= 1.5; // Spike Aktif (Rasio >= 1.5x)
+
+		// 2. Eksekusi 4 Aturan Spesifik AI (Urutan prioritas dari atas ke bawah)
+		if (score === 5 && isAboveMA5 && isVolBesar && isValuasiBesar && isSpikeActive) {
+			actionLabel = "🟢 STRONG BUY";
+			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
+			actionDesc = "Momentum Breakout kuat! Harga di atas MA5 dengan lonjakan volume (Spike active) dan valuasi besar.";
+		} else if ((score === 4 || score === 5) && isAboveMA10_20 && isVolBesar && isValuasiBesar) {
+			actionLabel = "⚠️ TAKE PROFIT / HOLD";
+			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
+			actionDesc = "Harga stabil di atas MA10 & MA20 dengan likuiditas besar. Tahan untuk ikuti tren atau amankan profit.";
+		} else if ((score === 2 || score === 3) && isAboveMA5_10 && isVolBesar && isValuasiBesar) {
+			actionLabel = "🛒 ACCUMULATE (CICIL)";
+			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
+			actionDesc = "Sinyal awal akumulasi. Harga naik menembus MA5 & MA10 disertai volume dan valuasi besar. Mulai cicil bertahap.";
+		} else if ((score === 1 || score === 2) && isBelowAllMA && isVolKecil && isValuasiKecil) {
+			actionLabel = "🛑 AVOID / CUTLOSS";
+			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
+			actionDesc = "Tren rusak (di bawah MA5, MA10, MA20) dengan volume dan valuasi kecil. Jauhi atau Cut Loss segera!";
+		}
+		// --- END REVISI LOGIKA ---
 
 		let bandarStatus = "Netral / Sideways ⚖️";
 		let bandarColor = "text-amber-400";
 		let bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 		let bandarPct = 50;
-
-		// Logika Action Board AI
-		if (score === 5 && stockData.volRatio >= 1.2) {
-			actionLabel = "🟢 STRONG BUY";
-			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
-			actionDesc = "Momentum Breakout terkonfirmasi! Lonjakan volume selaras dengan kenaikan harga.";
-		} else if (stockData.price <= stockData.bandarAvgPrice && stockData.price >= stockData.low20 && stockData.volRatio <= 1.0) {
-			actionLabel = "🛒 ACCUMULATE (CICIL)";
-			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
-			actionDesc = "Harga berada di area Support & Modal Bandar rata-rata. Risiko sangat rendah, cocok untuk cicil serok bawah.";
-		} else if (stockData.changePct > 5 && stockData.price >= stockData.high20) {
-			actionLabel = "⚠️ TAKE PROFIT / HOLD";
-			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
-			actionDesc = "Harga sudah rally kencang dan menyentuh area Resistance. Segera pasang Trailing Stop ketat!";
-		} else if (score <= 2) {
-			actionLabel = "🛑 AVOID / CUTLOSS";
-			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
-			actionDesc = "Struktur tren rusak dan ada tekanan jual. Jauhi emiten ini atau batasi risiko (Cut Loss) segera.";
-		}
 
 		// Logika Bandar Power Meter dengan Warna Dinamis
 		if (stockData.changePct >= 0 && stockData.volRatio >= 1.5) {
@@ -2350,7 +2364,7 @@ const cuanImages = [
 
 const cuanTexts = [
 	{ title: "TAKE PROFIT TERCAPAI! 🚀", desc: "Gua bilang juga apa, cuan luber kan lo!" },
-	{ title: "CUAN MAKSIMAL! 👀", desc: "Asik! Bisa beli cilok seember nih." },
+	{ title: "CUAN MAKSIMAL! ??", desc: "Asik! Bisa beli cilok seember nih." },
 	{ title: "BULLSEYE! 😎", desc: "Nyeblak dulu gak sih?!" },
 	{ title: "PROFIT SECURED! 🌟", desc: "Info Dealer Pajero Boss!" }
 ];
