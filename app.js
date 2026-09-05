@@ -954,7 +954,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 					<div class="w-full bg-slate-950 rounded-full h-3 border border-slate-700/80 overflow-hidden relative p-0.5 shadow-inner">
 						<div class="bg-gradient-to-r ${bandarBarColor} h-full rounded-full transition-all duration-1200 ease-out relative overflow-hidden" style="width: ${bandarPct}%">
 							<!-- Efek Garis Melintir Terang-Gelap ala Barber Shop -->
-							<div class="absolute inset-0 opacity-50" style="background-image: linear-gradient(135deg, rgba(255,255,255,0.4) 25%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 50%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.4) 75%, rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.4)); background-size: 18px 18px; animation: barberShopMove 1s linear infinite;"></div>
+							<div class="absolute inset-0 opacity-50" style="background-image: linear-gradient(135deg, rgba(255,255,255,0.4) 25%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 50%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.4) 75%, rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.4)); background-size: 18px 18px; animation: barberShopMove 0.7s linear infinite;"></div>
 							<!-- Titik Cahaya Terang Kelap-Kelip di Ujung Bar -->
 							<div class="absolute right-0 top-0 bottom-0 w-3 bg-white rounded-full shadow-[0_0_16px_#fafafa,0_0_24px_#38bdf8] animate-ping"></div>
 						</div>
