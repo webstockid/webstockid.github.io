@@ -831,7 +831,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		const trendText = stockData.changePct >= 0 ? `menguat +${stockData.changePct}%` : `terkoreksi ${stockData.changePct}%`;
 		const volText = isVolSpike 
 			? `<strong class="text-emerald-400">terjadi lonjakan volume (${stockData.volRatio}x rerata volume harian)</strong>` 
-			: `volume transaksi cenderung moderat <strong class="text-rose-400">(${stockData.volRatio}x rerata volume harian)</strong>`;
+			: `volume transaksi cenderung moderat <strong class="text-amber-400">(${stockData.volRatio}x rerata volume harian)</strong>`;
 		
 		const maAlignText = (isAboveMA5 && isAboveMA10 && isAboveMA20)
 			? "Struktur tren berada dalam susunan <strong class='text-emerald-400'>Bullish Alignment</strong> (Harga > MA5 > MA10 > MA20). Ini menandakan partisipasi pembeli mendominasi penuh seluruh horizon waktu jangka pendek."
@@ -954,7 +954,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 					<div class="w-full bg-slate-950 rounded-full h-3 border border-slate-700/80 overflow-hidden relative p-0.5 shadow-inner">
 						<div class="bg-gradient-to-r ${bandarBarColor} h-full rounded-full transition-all duration-1200 ease-out relative overflow-hidden" style="width: ${bandarPct}%">
 							<!-- Efek Garis Melintir Terang-Gelap ala Barber Shop -->
-							<div class="absolute inset-0 opacity-50" style="background-image: linear-gradient(135deg, rgba(255,255,255,0.4) 25%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 50%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.4) 75%, rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.4)); background-size: 18px 18px; animation: barberShopMove 0.6s linear infinite;"></div>
+							<div class="absolute inset-0 opacity-50" style="background-image: linear-gradient(135deg, rgba(255,255,255,0.4) 25%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 50%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.4) 75%, rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.4)); background-size: 18px 18px; animation: barberShopMove 1.2s linear infinite;"></div>
 							<!-- Titik Cahaya Terang Kelap-Kelip di Ujung Bar -->
 							<div class="absolute right-0 top-0 bottom-0 w-3 bg-white rounded-full shadow-[0_0_16px_#fafafa,0_0_24px_#38bdf8] animate-ping"></div>
 						</div>
