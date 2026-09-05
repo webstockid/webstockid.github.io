@@ -934,13 +934,13 @@ function renderAISignalUI(ticker, stockData, isCached) {
 						<span class="font-bold text-[10px] lg:text-[11px] ${bandarColor}">${bandarStatus}</span>
 					</div>
 					
-					<!-- Container Bar dengan Efek Garis Berjalan (Animated Stripes) -->
+					<!-- Container Bar dengan Efek Garis Barber Shop & Titik Kelap-kelip -->
 					<div class="w-full bg-slate-950 rounded-full h-3 border border-slate-700/80 overflow-hidden relative p-0.5 shadow-inner">
-						<div class="bg-gradient-to-r ${bandarBarColor} h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden" style="width: ${bandarPct}%">
-							<!-- Efek Garis-garis Miring Bergerak -->
-							<div class="absolute inset-0 opacity-30" style="background-image: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.2) 75%, transparent 75%, transparent); background-size: 16px 16px; animation: progress-bar-stripes 1s linear infinite;"></div>
-							<!-- Titik Cahaya Berdenyut di Ujung Bar -->
-							<div class="absolute right-0 top-0 bottom-0 w-2 bg-blue-600 rounded-full shadow-lg shadow-white animate-pulse"></div>
+						<div class="bg-gradient-to-r ${bandarBarColor} h-full rounded-full transition-all duration-1200 ease-out relative overflow-hidden" style="width: ${bandarPct}%">
+							<!-- Efek Garis Melintir Terang-Gelap ala Barber Shop -->
+							<div class="absolute inset-0 opacity-50" style="background-image: linear-gradient(135deg, rgba(255,255,255,0.4) 25%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 50%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.4) 75%, rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.4)); background-size: 20px 20px; animation: barberShopMove 0.7s linear infinite;"></div>
+							<!-- Titik Cahaya Terang Kelap-Kelip di Ujung Bar -->
+							<div class="absolute right-0 top-0 bottom-0 w-2.5 bg-white rounded-full shadow-[0_0_12px_#fff,0_0_20px_#38bdf8] animate-ping"></div>
 						</div>
 					</div>
 					
