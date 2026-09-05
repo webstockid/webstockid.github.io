@@ -913,7 +913,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		let bandarStatus = "Netral ⚖️";
 		let bandarColor = "text-amber-400";
 		let bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
-		let bandarPct = 50;
+		let bandarPct = 60;
 
 		// Logika Bandar Power Meter dengan Warna Dinamis
 		if (stockData.changePct >= 0 && stockData.volRatio >= 1.5) {
@@ -925,12 +925,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			bandarStatus = "Mark Down (Uji Support) 📉";
 			bandarColor = "text-cyan-400";
 			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-300 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
-			bandarPct = 35;
+			bandarPct = Math.max(35, 50 - (stockData.volRatio * 15)); //35;
 		} else if (stockData.changePct < 0 && stockData.volRatio >= 1.2) {
 			bandarStatus = "Distribusi Kuat (Buangan) 🚨";
 			bandarColor = "text-rose-400";
 			bandarBarColor = "from-rose-600 via-rose-500 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)]";
-			bandarPct = Math.max(10, 50 - (stockData.volRatio * 15));
+			bandarPct = Math.max(10, 35 - (stockData.volRatio * 15)); //10, 50
 		}
 
 		const actionBoardEl = document.getElementById('aiActionBoard');
