@@ -769,6 +769,18 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 	}
 }
 
+function formatValuationIDR(val) {
+    if (!val || val <= 0) return "Rp 0";
+    if (val >= 1e12) {
+        return `Rp ${(val / 1e12).toFixed(2)} Triliun`;
+    } else if (val >= 1e9) {
+        return `Rp ${(val / 1e9).toFixed(2)} Miliar`;
+    } else if (val >= 1e6) {
+        return `Rp ${(val / 1e6).toFixed(2)} Juta`;
+    }
+    return `Rp ${val.toLocaleString('id-ID')}`;
+}
+
 function renderAISignalUI(ticker, stockData, isCached) {
 	const verdikEl = document.getElementById('aiVerdikText');
 	const scoreEl = document.getElementById('aiScoreBadge');
@@ -841,6 +853,10 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Volume Transaksi:</span>
 				<span class="font-mono text-sky-500 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span>• Valuasi Transaksi:</span>
+				<span class="font-mono text-emerald-400 font-bold">Rp ${formatValuationIDR(stockData.currentValuation)}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Estimasi AVG Bandar:</span>
