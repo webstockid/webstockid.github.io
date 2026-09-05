@@ -861,21 +861,19 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		let actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
 		let actionDesc = "Tren sedang konsolidasi. Volume belum mengkonfirmasi arah yang jelas.";
 
-		// --- REVISI LOGIKA REKOMENDASI AKSI ---
-		// 1. Setup Variabel Kondisi
+		// --- REVISI LOGIKA REKOMENDASI AKSI (Tanpa deklarasi ulang const yang bentrok) ---
 		const isBelowAllMA = stockData.price < stockData.ma5 && stockData.price < stockData.ma10 && stockData.price < stockData.ma20;
 		const isAboveMA5_10 = stockData.price > stockData.ma5 && stockData.price > stockData.ma10;
 		const isAboveMA10_20 = stockData.price > stockData.ma10 && stockData.price > stockData.ma20;
-		const isAboveMA5 = stockData.price > stockData.ma5;
+		const checkAboveMA5 = stockData.price > stockData.ma5;
 		
 		const isVolKecil = stockData.volRatio < 1.0;
 		const isVolBesar = stockData.volRatio >= 1.0;
-		const isValuasiKecil = stockData.currentValuation < 5000000000; // Valuasi < Rp 5 Miliar
-		const isValuasiBesar = stockData.currentValuation >= 5000000000; // Valuasi >= Rp 5 Miliar
-		const isSpikeActive = stockData.volRatio >= 1.5; // Spike Aktif (Rasio >= 1.5x)
+		const isValuasiKecil = stockData.currentValuation < 5000000000; 
+		const isValuasiBesar = stockData.currentValuation >= 5000000000; 
+		const isSpikeActive = stockData.volRatio >= 1.5; 
 
-		// 2. Eksekusi 4 Aturan Spesifik AI (Urutan prioritas dari atas ke bawah)
-		if (score === 5 && isAboveMA5 && isVolBesar && isValuasiBesar && isSpikeActive) {
+		if (score === 5 && checkAboveMA5 && isVolBesar && isValuasiBesar && isSpikeActive) {
 			actionLabel = "🟢 STRONG BUY";
 			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
 			actionDesc = "Momentum Breakout kuat! Harga di atas MA5 dengan lonjakan volume (Spike active) dan valuasi besar.";
