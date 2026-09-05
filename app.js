@@ -856,7 +856,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Valuasi Transaksi:</span>
-				<span class="font-mono text-emerald-400 font-bold">Rp ${formatValuationIDR(stockData.currentValuation)}</span>
+				<span class="font-mono text-emerald-400 font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Estimasi AVG Bandar:</span>
@@ -886,7 +886,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 		// 1. STRONG BUY (Skor 5, di atas MA5, didukung volume/spike)
 		if (score === 5 && checkAboveMA5 && isSpikeActive) {
-			actionLabel = "🟢 STRONG BUY";
+			actionLabel = "🔥 STRONG BUY";
 			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
 			actionDesc = "Momentum Breakout kuat! Skor maksimal dengan dukungan lonjakan volume aktif.";
 		} 
@@ -904,13 +904,13 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		} 
 		// 4. AVOID / CUTLOSS (Skor 1-2 atau tekanan jual tajam)
 		else if (score <= 2 || stockData.changePct < -2.0) {
-			actionLabel = "🛑 AVOID / CUTLOSS";
+			actionLabel = "❌ AVOID / CUTLOSS";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
 			actionDesc = "Tekanan jual mendominasi atau struktur tren melemah di bawah MA utama. Batasi risiko segera.";
 		}
 		// --- END REVISI LOGIKA ---
 
-		let bandarStatus = "Netral / Sideways ⚖️";
+		let bandarStatus = "Netral ⚖️";
 		let bandarColor = "text-amber-400";
 		let bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 		let bandarPct = 50;
@@ -956,7 +956,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 							<!-- Efek Garis Melintir Terang-Gelap ala Barber Shop -->
 							<div class="absolute inset-0 opacity-50" style="background-image: linear-gradient(135deg, rgba(255,255,255,0.4) 25%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 50%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.4) 75%, rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.4)); background-size: 20px 20px; animation: barberShopMove 0.7s linear infinite;"></div>
 							<!-- Titik Cahaya Terang Kelap-Kelip di Ujung Bar -->
-							<div class="absolute right-0 top-0 bottom-0 w-2.5 bg-white rounded-full shadow-[0_0_12px_#fff,0_0_20px_#38bdf8] animate-ping"></div>
+							<div class="absolute right-0 top-0 bottom-0 w-2.5 bg-pink rounded-full shadow-[0_0_12px_#fff,0_0_20px_#38bdf8] animate-ping"></div>
 						</div>
 					</div>
 					
