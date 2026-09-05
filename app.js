@@ -861,34 +861,36 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		let actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
 		let actionDesc = "Tren sedang konsolidasi. Volume belum mengkonfirmasi arah yang jelas.";
 
-		// --- REVISI LOGIKA REKOMENDASI AKSI (Tanpa deklarasi ulang const yang bentrok) ---
-		const isBelowAllMA = stockData.price < stockData.ma5 && stockData.price < stockData.ma10 && stockData.price < stockData.ma20;
-		const isAboveMA5_10 = stockData.price > stockData.ma5 && stockData.price > stockData.ma10;
-		const isAboveMA10_20 = stockData.price > stockData.ma10 && stockData.price > stockData.ma20;
+		// --- REVISI LOGIKA REKOMENDASI AKSI (DIPERLONGGAR & DINAMIS) ---
 		const checkAboveMA5 = stockData.price > stockData.ma5;
-		
-		const isVolKecil = stockData.volRatio < 1.0;
-		const isVolBesar = stockData.volRatio >= 1.0;
-		const isValuasiKecil = stockData.currentValuation < 5000000000; 
-		const isValuasiBesar = stockData.currentValuation >= 5000000000; 
-		const isSpikeActive = stockData.volRatio >= 1.5; 
+		const checkAboveMA10 = stockData.price > stockData.ma10;
+		const checkAboveMA20 = stockData.price > stockData.ma20;
+		const isVolBesar = stockData.volRatio >= 0.8;   // Dilonggarkan dari >= 1.0
+		const isSpikeActive = stockData.volRatio >= 1.2; // Dilonggarkan dari >= 1.5
 
-		if (score === 5 && checkAboveMA5 && isVolBesar && isValuasiBesar && isSpikeActive) {
+		// 1. STRONG BUY (Skor 5, di atas MA5, didukung volume/spike)
+		if (score === 5 && checkAboveMA5 && isSpikeActive) {
 			actionLabel = "🟢 STRONG BUY";
 			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
-			actionDesc = "Momentum Breakout kuat! Harga di atas MA5 dengan lonjakan volume (Spike active) dan valuasi besar.";
-		} else if ((score === 4 || score === 5) && isAboveMA10_20 && isVolBesar && isValuasiBesar) {
+			actionDesc = "Momentum Breakout kuat! Skor maksimal dengan dukungan lonjakan volume aktif.";
+		} 
+		// 2. TAKE PROFIT / HOLD (Skor 4-5, stabil di atas MA menengah atau tren naik)
+		else if (score >= 4 && (checkAboveMA10 || checkAboveMA20 || stockData.changePct > 2)) {
 			actionLabel = "⚠️ TAKE PROFIT / HOLD";
 			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
-			actionDesc = "Harga stabil di atas MA10 & MA20 dengan likuiditas besar. Tahan untuk ikuti tren atau amankan profit.";
-		} else if ((score === 2 || score === 3) && isAboveMA5_10 && isVolBesar && isValuasiBesar) {
+			actionDesc = "Tren masih terjaga di atas garis MA menengah atau menguat stabil. Tahan atau amankan profit.";
+		} 
+		// 3. ACCUMULATE / CICIL (Skor 2-3, di atas MA5 atau koreksi sehat)
+		else if ((score === 2 || score === 3) && (checkAboveMA5 || stockData.changePct >= -2)) {
 			actionLabel = "🛒 ACCUMULATE (CICIL)";
 			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
-			actionDesc = "Sinyal awal akumulasi. Harga naik menembus MA5 & MA10 disertai volume dan valuasi besar. Mulai cicil bertahap.";
-		} else if ((score === 1 || score === 2) && isBelowAllMA && isVolKecil && isValuasiKecil) {
+			actionDesc = "Fase akumulasi / koreksi wajar. Harga bertahan dekat area support, cocok untuk cicil bertahap.";
+		} 
+		// 4. AVOID / CUTLOSS (Skor 1-2 atau tekanan jual tajam)
+		else if (score <= 2 || stockData.changePct < -2.0) {
 			actionLabel = "🛑 AVOID / CUTLOSS";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
-			actionDesc = "Tren rusak (di bawah MA5, MA10, MA20) dengan volume dan valuasi kecil. Jauhi atau Cut Loss segera!";
+			actionDesc = "Tekanan jual mendominasi atau struktur tren melemah di bawah MA utama. Batasi risiko segera.";
 		}
 		// --- END REVISI LOGIKA ---
 
