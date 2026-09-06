@@ -105,7 +105,7 @@
 					Selamat datang di Stock's ID Screener.<br>Data pasar diperbarui secara real-time pada jam bursa (09:00 - 16:00 WIB) dan disimpan dalam cache secara otomatis di latar belakang untuk pengalaman akses yang lebih cepat.
 				</p>
 				<p class="text-xs text-slate-300 leading-relaxed">
-					Disclaimer: Jika Lu baru pertama kali membuka web ini, sistem latar belakang akan otomatis mulai memperbarui data analisa berkala setiap 5 menit.
+					Disclaimer: Jika Kamu baru pertama kali membuka web ini, sistem latar belakang akan otomatis mulai memperbarui data analisa berkala setiap 5 menit.
 				</p>
 				<p class="text-xs text-slate-300 leading-relaxed">
 					<i>AI dapat membuat kesalahan, jangan jadikan AI sebagai patokan untuk Entry dan TP, gunakan prinsip dan kemandirian, analisa manual sebelum menentukan pilihan.</i>
@@ -598,7 +598,7 @@
 								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
 									<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-400"></i> Custom Strategy Builder
 								</span>
-								<p class="text-[10px] lg:text-xs text-slate-400">Rakit parameter screener Lu sendiri dengan gaya filter inststitusional.</p>
+								<p class="text-[10px] lg:text-xs text-slate-400">Rakit parameter screener Kamu sendiri dengan gaya filter inststitusional.</p>
 							</div>
 							<button id="btnRunCustomScreener" onclick="runCustomScreener()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-lg border border-blue-500 transition shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 shrink-0">
 								<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter
@@ -606,40 +606,40 @@
 						</div>
 
 						<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-900/50 p-3 lg:p-4 rounded-xl border border-slate-800">
-							<div>
-								<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">1. Tren Harga & MA</label>
-								<select id="csRuleMA" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 text-xs lg:text-sm focus:border-blue-500 outline-none transition cursor-pointer">
-									<option value="ALL">Semua Kondisi (Bebas)</option>
-									<option value="ABOVE_MA5">Harga > MA5 (Uptrend Pendek)</option>
-									<option value="ABOVE_MA20">Harga > MA20 (Uptrend Menengah)</option>
-									<option value="GOLDEN_CROSS">Golden Cross (MA5 > MA10)</option>
-									<option value="BELOW_MA20">Harga &lt; MA20 (Downtrend / Oversold)</option>
-								</select>
-							</div>
-							<div>
-								<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">2. Syarat Volume (Likuiditas)</label>
-								<select id="csRuleVol" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 text-xs lg:text-sm focus:border-blue-500 outline-none transition cursor-pointer">
-									<option value="ALL">Semua Tingkat Volume</option>
-									<option value="SPIKE_1.5">Volume Spike (> 1.5x Rerata)</option>
-									<option value="SPIKE_2.0">Volume Meledak (> 2.0x Rerata)</option>
-									<option value="DRY">Volume Kering (&lt; 0.8x Rerata)</option>
-								</select>
-							</div>
-							<div>
-								<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">3. Pergerakan Harian (%)</label>
-								<select id="csRulePrice" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 text-xs lg:text-sm focus:border-blue-500 outline-none transition cursor-pointer">
-									<option value="ALL">Semua Perubahan Harga</option>
-									<option value="GREEN">Ditutup Menguat (Hijau / > 0%)</option>
-									<option value="RED">Ditutup Melemah (Merah / &lt; 0%)</option>
-									<option value="BREAKOUT">Breakout Kuat (> 3%)</option>
-								</select>
-							</div>
-						</div>
+	<div>
+		<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">1. Tren Harga & MA</label>
+		<select id="csRuleMA" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 text-xs lg:text-sm focus:border-blue-500 outline-none transition cursor-pointer">
+			<option value="ALL" class="bg-slate-900 text-slate-200 py-2">Semua Kondisi (Bebas)</option>
+			<option value="ABOVE_MA5" class="bg-slate-900 text-slate-200 py-2">Harga > MA5 (Uptrend Pendek)</option>
+			<option value="ABOVE_MA20" class="bg-slate-900 text-slate-200 py-2">Harga > MA20 (Uptrend Menengah)</option>
+			<option value="GOLDEN_CROSS" class="bg-slate-900 text-slate-200 py-2">Golden Cross (MA5 > MA10)</option>
+			<option value="BELOW_MA20" class="bg-slate-900 text-slate-200 py-2">Harga &lt; MA20 (Downtrend / Oversold)</option>
+		</select>
+	</div>
+	<div>
+		<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">2. Syarat Volume (Likuiditas)</label>
+		<select id="csRuleVol" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 text-xs lg:text-sm focus:border-blue-500 outline-none transition cursor-pointer">
+			<option value="ALL" class="bg-slate-900 text-slate-200 py-2">Semua Tingkat Volume</option>
+			<option value="SPIKE_1.5" class="bg-slate-900 text-slate-200 py-2">Volume Spike (> 1.5x Rerata)</option>
+			<option value="SPIKE_2.0" class="bg-slate-900 text-slate-200 py-2">Volume Meledak (> 2.0x Rerata)</option>
+			<option value="DRY" class="bg-slate-900 text-slate-200 py-2">Volume Kering (&lt; 0.8x Rerata)</option>
+		</select>
+	</div>
+	<div>
+		<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">3. Pergerakan Harian (%)</label>
+		<select id="csRulePrice" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 text-xs lg:text-sm focus:border-blue-500 outline-none transition cursor-pointer">
+			<option value="ALL" class="bg-slate-900 text-slate-200 py-2">Semua Perubahan Harga</option>
+			<option value="GREEN" class="bg-slate-900 text-slate-200 py-2">Ditutup Menguat (Hijau / > 0%)</option>
+			<option value="RED" class="bg-slate-900 text-slate-200 py-2">Ditutup Melemah (Merah / &lt; 0%)</option>
+			<option value="BREAKOUT" class="bg-slate-900 text-slate-200 py-2">Breakout Kuat (> 3%)</option>
+		</select>
+	</div>
+</div>
 					</div>
 
 					<div id="csResultsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[800px] overflow-y-auto pr-1.5 scrollbar-thin">
 						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950 border-dashed">
-							Atur parameter pada menu <i>dropdown</i> di atas dan klik <b>"Jalankan Filter"</b> untuk melihat emiten yang lolos seleksi Lu.
+							Atur parameter pada menu <i>dropdown</i> di atas dan klik <b>"Jalankan Filter"</b> untuk melihat emiten yang lolos seleksi Kamu.
 						</div>
 					</div>
 				</div>
@@ -651,7 +651,7 @@
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
 								<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Komparasi Saham Harga Serupa (<strong id="peerTickerLabel" class="text-emerald-400">MDIA</strong>)
 							</span>
-							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Membandingkan emiten pilihan Lu dengan saham-saham yang berada di range harga yang sama.</p>
+							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Membandingkan emiten pilihan Kamu dengan saham-saham yang berada di range harga yang sama.</p>
 						</div>
 						<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="text-[10px] lg:text-xs bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-600 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto shadow-sm">
 							<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data
@@ -712,7 +712,7 @@
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
 								<i data-lucide="bell-ring" class="w-4 h-4 text-teal-400"></i> Smart Alert & Push Notification System
 							</span>
-							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh target pada seluruh saham yang Lu pantau.</p>
+							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh target pada seluruh saham yang Kamu pantau.</p>
 						</div>
 						
 						<div class="flex items-center gap-2 shrink-0 self-start sm:self-auto">
@@ -747,7 +747,7 @@
 					</div>
 
 					<p class="text-[10px] lg:text-[11px] text-slate-400 italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
-						💡 <strong>Informasi Push Notification:</strong> Notifikasi browser akan dikirimkan secara otomatis bahkan saat Lu sedang membuka tab browser lain selama web Stock ID Screener tetap terbuka.
+						💡 <strong>Informasi Push Notification:</strong> Notifikasi browser akan dikirimkan secara otomatis bahkan saat Kamu sedang membuka tab browser lain selama web Stock ID Screener tetap terbuka.
 					</p>
 				</div>
 				
@@ -1219,7 +1219,7 @@
 							<i data-lucide="bot" class="w-3 h-3"></i>
 						</div>
 						<div class="bg-slate-800/80 text-slate-200 p-2.5 rounded-xl rounded-tl-none border border-slate-700/60 leading-relaxed">
-							Halo! Gue asisten AI Stock ID. Ada yang bisa Gue bantu analisa hari ini? Lu bisa tanyakan emiten apa saja (contoh: <i>"Bagaimana prospek MDIA?"</i> atau <i>"Volume MDIA?"</i>).
+							Halo! Gue asisten AI Stock ID. Ada yang bisa Gue bantu analisa hari ini? Kamu bisa tanyakan emiten apa saja (contoh: <i>"Bagaimana prospek MDIA?"</i> atau <i>"Volume MDIA?"</i>).
 						</div>
 					</div>
 				</div>

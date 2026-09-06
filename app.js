@@ -3015,6 +3015,21 @@ function renderPaperTradingUI() {
 	if (window.lucide) lucide.createIcons();
 }
 
+function getPaperAccount() {
+	const defaultAccount = {
+		cash: 100000000,
+		portfolio: [],
+		history: []
+	};
+	const saved = localStorage.getItem('stockid_paper_account');
+	if (!saved) return defaultAccount;
+	try {
+		return JSON.parse(saved);
+	} catch (e) {
+		return defaultAccount;
+	}
+}
+
 // FLOATING AI CHAT ASSISTANT
 function toggleAIChat() {
 	const chatWindow = document.getElementById('aiChatWindow');
