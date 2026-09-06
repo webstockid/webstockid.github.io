@@ -2573,8 +2573,43 @@ function renderSectorHeatmap() {
 	isHeatmapLoaded = true;
 }
 
-// --- [REVISI 1] CUSTOM SCREENER COOLDOWN & RENDER STYLING MIRIP RADAR BANDAR ---
+// --- CUSTOM SCREENER BUILDER & DROPDOWN LOGIC ---
 let customScreenerCooldownTimer = null;
+
+function toggleCustomDropdown(dropdownId) {
+	const dropdown = document.getElementById(dropdownId);
+	const isHidden = dropdown.classList.contains('hidden');
+	
+	// Tutup semua dropdown lain agar tidak bertumpuk
+	['dropdownMA', 'dropdownVol', 'dropdownPrice'].forEach(id => {
+		document.getElementById(id).classList.add('hidden');
+	});
+
+	if (isHidden) {
+		dropdown.classList.remove('hidden');
+		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	}
+}
+
+function selectCustomOption(inputId, value, label, dropdownId) {
+	document.getElementById(inputId).value = value;
+	document.getElementById(inputId + '_Label').innerText = label;
+	document.getElementById(dropdownId).classList.add('hidden');
+	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+}
+
+// Menutup dropdown jika user klik area kosong di layar
+document.addEventListener('click', function(e) {
+	const dropdowns = ['dropdownMA', 'dropdownVol', 'dropdownPrice'];
+	dropdowns.forEach(id => {
+		const el = document.getElementById(id);
+		if (el && !el.classList.contains('hidden')) {
+			if (!e.target.closest(`#${id}`) && !e.target.closest(`button[onclick="toggleCustomDropdown('${id}')"]`)) {
+				el.classList.add('hidden');
+			}
+		}
+	});
+});
 
 function startCustomScreenerCooldown(seconds = 20) {
 	const btn = document.getElementById('btnRunCustomScreener');
@@ -2672,19 +2707,39 @@ async function runCustomScreener() {
 		const tp1 = roundToBEITick(price * 1.06, 'ceil');
 		const tp2 = roundToBEITick(price * 1.10, 'ceil');
 
+		// Meracik UI text informatif sesuai rules spesifik
+		let infoMA = '';
+		if (ruleMA === 'ABOVE_MA5') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Pendek:</strong> Bertahan mantap di atas MA5 (Rp ${item.ma5.toLocaleString('id-ID')}).</span></li>`;
+		else if (ruleMA === 'ABOVE_MA20') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Menengah:</strong> Solid di atas support MA20 (Rp ${item.ma20.toLocaleString('id-ID')}).</span></li>`;
+		else if (ruleMA === 'GOLDEN_CROSS') infoMA = `<li class="flex gap-2"><i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0"></i> <span><strong class="text-amber-400">Golden Cross:</strong> MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik di atas MA10.</span></li>`;
+		else if (ruleMA === 'BELOW_MA20') infoMA = `<li class="flex gap-2"><i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0"></i> <span><strong class="text-rose-400">Oversold:</strong> Di bawah MA20 (Rp ${item.ma20.toLocaleString('id-ID')}), pantau momentum teknikal rebound.</span></li>`;
+		else infoMA = `<li class="flex gap-2"><i data-lucide="info" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Tren:</strong> Area dinamis (Bebas), posisi harga akhir Rp ${price.toLocaleString('id-ID')}.</span></li>`;
+
+		let infoVol = '';
+		if (ruleVol === 'SPIKE_1.5') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-blue-400 mt-0.5 shrink-0"></i> <span><strong class="text-blue-400">Volume Spike:</strong> Indikasi akumulasi dengan rasio ${item.volRatio}x lipat dari rerata harian.</span></li>`;
+		else if (ruleVol === 'SPIKE_2.0') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-fuchsia-400 mt-0.5 shrink-0"></i> <span><strong class="text-fuchsia-400">Volume Meledak:</strong> Akumulasi sangat masif menyentuh ${item.volRatio}x rerata.</span></li>`;
+		else if (ruleVol === 'DRY') infoVol = `<li class="flex gap-2"><i data-lucide="droplet" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-400">Volume Kering:</strong> Sepi transaksi, hanya ${item.volRatio}x lipat (rawan distribusi atau akumulasi pasif).</span></li>`;
+		else infoVol = `<li class="flex gap-2"><i data-lucide="activity" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Likuiditas:</strong> Perdagangan normal dengan kekuatan volume ${item.volRatio}x.</span></li>`;
+
+		let infoPrice = '';
+		if (rulePrice === 'GREEN') infoPrice = `<li class="flex gap-2"><i data-lucide="trending-up" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Positif:</strong> Ditutup hijau (+${item.changePct}%).</span></li>`;
+		else if (rulePrice === 'RED') infoPrice = `<li class="flex gap-2"><i data-lucide="trending-down" class="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0"></i> <span><strong class="text-rose-400">Koreksi:</strong> Mengalami penurunan (${item.changePct}%).</span></li>`;
+		else if (rulePrice === 'BREAKOUT') infoPrice = `<li class="flex gap-2"><i data-lucide="rocket" class="w-3.5 h-3.5 text-cyan-400 mt-0.5 shrink-0"></i> <span><strong class="text-cyan-400">Breakout Kuat:</strong> Melaju tinggi dengan akselerasi impresif (+${item.changePct}%).</span></li>`;
+		else infoPrice = `<li class="flex gap-2"><i data-lucide="hash" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Pergerakan Harian:</strong> Tercatat sebesar ${item.changePct >= 0 ? '+' : ''}${item.changePct}%.</span></li>`;
+
 		html += `
-			<div class="bg-slate-950 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative">
+			<div class="bg-slate-950 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative hover:border-blue-500/30 transition-colors">
 				<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
 					<div class="flex items-center gap-2">
-						<span class="bg-slate-800 text-blue-400 text-[10px] px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
+						<span class="bg-slate-800 text-blue-400 text-[10px] px-2 py-0.5 rounded border border-slate-700 font-mono">#${index + 1}</span>
 						<div>
 							<div class="flex items-center gap-2">
 								<span class="font-bold text-white text-sm lg:text-base">&dollar;${item.ticker}</span>
-								<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[10px] bg-blue-600 hover:bg-emerald-600 text-white font-bold px-2.5 py-0.5 rounded transition">
+								<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[10px] bg-blue-600 hover:bg-emerald-600 text-white font-bold px-2.5 py-0.5 rounded transition shadow-sm">
 									Lihat Chart »
 								</button>
 							</div>
-							<span class="text-[10px] text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${item.changePct >= 0 ? '+' : ''}${item.changePct}%)</span>
+							<span class="text-[10px] text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (<span class="${item.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>)</span>
 						</div>
 					</div>
 					<span class="text-[9px] font-bold px-2.5 py-1 rounded-full border text-blue-400 border-blue-500/30 bg-blue-500/10">
@@ -2711,9 +2766,15 @@ async function runCustomScreener() {
 					</div>
 				</div>
 
-				<div class="bg-slate-900/50 p-2.5 rounded border border-slate-800 text-[10px] text-slate-300 leading-relaxed space-y-1">
-					<span class="text-blue-400 font-bold block">ANALISIS ATURAN CUSTOM:</span>
-					<p>Emiten lolos kriteria saringan custom (Vol Ratio: ${item.volRatio}x, Posisi MA5: Rp ${item.ma5.toLocaleString('id-ID')}).</p>
+				<div class="bg-slate-900/50 p-3 rounded border border-slate-800 text-[10px] lg:text-[11px] text-slate-300 leading-relaxed space-y-2">
+					<span class="text-blue-400 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
+						<i data-lucide="list-filter" class="w-3.5 h-3.5"></i> DETAIL KECOCOKAN FILTER:
+					</span>
+					<ul class="space-y-1.5">
+						${infoMA}
+						${infoVol}
+						${infoPrice}
+					</ul>
 				</div>
 			</div>
 		`;
@@ -2941,7 +3002,7 @@ function renderPaperTradingUI() {
 	} else if (totalEquity >= 150000000 && winRate >= 60) {
 		rankName = "EXPERT TRADER ⚡";
 		rankColor = "text-cyan-400";
-	} else if (totalEquity >= 110000000 && winRate >= 50) {
+	} else if (totalEquity >= 110000000 && winRate >= 60) { // <-- Bagian yang diperbaiki
 		rankName = "PRO TRADER  😎";
 		rankColor = "text-teal-400";
 	} else if (totalEquity >= 80000000) {

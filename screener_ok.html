@@ -561,13 +561,13 @@
 				<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 border border-amber-500/20 p-3 lg:p-4 rounded-xl gap-3">
 						<div class="flex items-center gap-2">
-							<span class="relative flex h-2 w-2">
+							<!--<span class="text-xs lg:text-sm font-bold text-amber-400">Pemindaian Saham Potensial Otomatis (All Technical Engine)</span>
+								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
+								<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-400"></i> Pemindaian Saham Potensial Otomatis
+							</span>-->
+							<!--<span class="relative flex h-2 w-2">
 								<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
 								<span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-							</span>
-							<!--<span class="text-xs lg:text-sm font-bold text-amber-400">Pemindaian Saham Potensial Otomatis (All Technical Engine)</span>-->
-							<!--<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
-									<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-400"></i> Pemindaian Saham Potensial Otomatis
 							</span>-->
 							<div class="space-y-1">
 								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
@@ -577,7 +577,7 @@
 							</div>
 						</div>
 
-						<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-black font-bold bg-amber-300 hover:bg-amber-600 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md">
+						<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-black font-bold bg-amber-800 hover:bg-amber-500 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md">
 							<i data-lucide="search" class="w-3.5 h-3.5"></i> Mulai Pindai Pasar
 						</button>
 					</div>
@@ -597,50 +597,69 @@
 				<div id="tabContent-custom" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
 					<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 shadow-lg shadow-blue-500/5">
 						<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-							<span class="relative flex h-2 w-2">
-								<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-								<span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-							</span>
 							<div class="space-y-1">
 								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
 									<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-400"></i> Custom Strategy Builder
 								</span>
-								<p class="text-[10px] lg:text-xs text-slate-400">Rakit parameter screener Kamu sendiri dengan gaya filter inststitusional.</p>
+								<p class="text-[10px] lg:text-xs text-slate-400">Rakit parameter screener Kamu sendiri dengan gaya filter institusional.</p>
 							</div>
 							<button id="btnRunCustomScreener" onclick="runCustomScreener()" class="w-full sm:w-auto bg-blue-800 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-lg border border-blue-700 transition shadow-lg shadow-blue-700/20 flex items-center justify-center gap-2 shrink-0">
 								<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter
 							</button>
 						</div>
 
+						<!-- Custom Tailwind Dropdowns -->
 						<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-900/50 p-3 lg:p-4 rounded-xl border border-slate-800">
-							<div>
+							
+							<!-- Dropdown 1: Tren & MA -->
+							<div class="relative">
 								<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">1. Tren Harga & MA</label>
-								<select id="csRuleMA" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 text-xs lg:text-sm focus:border-blue-500 outline-none transition cursor-pointer">
-									<option value="ALL" class="bg-slate-900 text-slate-200 py-2">Semua Kondisi (Bebas)</option>
-									<option value="ABOVE_MA5" class="bg-slate-900 text-slate-200 py-2">Harga > MA5 (Uptrend Pendek)</option>
-									<option value="ABOVE_MA20" class="bg-slate-900 text-slate-200 py-2">Harga > MA20 (Uptrend Menengah)</option>
-									<option value="GOLDEN_CROSS" class="bg-slate-900 text-slate-200 py-2">Golden Cross (MA5 > MA10)</option>
-									<option value="BELOW_MA20" class="bg-slate-900 text-slate-200 py-2">Harga &lt; MA20 (Downtrend / Oversold)</option>
-								</select>
+								<input type="hidden" id="csRuleMA" value="ALL">
+								<button onclick="toggleCustomDropdown('dropdownMA')" class="w-full bg-slate-950 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
+									<span id="csRuleMA_Label" class="truncate pr-2 font-medium text-blue-100">Semua Kondisi (Bebas)</span>
+									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
+								</button>
+								<ul id="dropdownMA" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl shadow-slate-950/80 max-h-48 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
+									<li onclick="selectCustomOption('csRuleMA', 'ALL', 'Semua Kondisi (Bebas)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Semua Kondisi (Bebas)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA5', 'Harga > MA5 (Uptrend Pendek)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Harga > MA5 (Uptrend Pendek)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA20', 'Harga > MA20 (Uptrend Menengah)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Harga > MA20 (Uptrend Menengah)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'GOLDEN_CROSS', 'Golden Cross (MA5 > MA10)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Golden Cross (MA5 > MA10)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'BELOW_MA20', 'Harga < MA20 (Downtrend / Oversold)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Harga &lt; MA20 (Downtrend / Oversold)</li>
+								</ul>
 							</div>
-							<div>
+
+							<!-- Dropdown 2: Volume -->
+							<div class="relative">
 								<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">2. Syarat Volume (Likuiditas)</label>
-								<select id="csRuleVol" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 text-xs lg:text-sm focus:border-blue-500 outline-none transition cursor-pointer">
-									<option value="ALL" class="bg-slate-900 text-slate-200 py-2">Semua Tingkat Volume</option>
-									<option value="SPIKE_1.5" class="bg-slate-900 text-slate-200 py-2">Volume Spike (> 1.5x Rerata)</option>
-									<option value="SPIKE_2.0" class="bg-slate-900 text-slate-200 py-2">Volume Meledak (> 2.0x Rerata)</option>
-									<option value="DRY" class="bg-slate-900 text-slate-200 py-2">Volume Kering (&lt; 0.8x Rerata)</option>
-								</select>
+								<input type="hidden" id="csRuleVol" value="ALL">
+								<button onclick="toggleCustomDropdown('dropdownVol')" class="w-full bg-slate-950 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
+									<span id="csRuleVol_Label" class="truncate pr-2 font-medium text-blue-100">Semua Tingkat Volume</span>
+									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
+								</button>
+								<ul id="dropdownVol" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl shadow-slate-950/80 max-h-48 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
+									<li onclick="selectCustomOption('csRuleVol', 'ALL', 'Semua Tingkat Volume', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Semua Tingkat Volume</li>
+									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_1.5', 'Volume Spike (> 1.5x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Volume Spike (> 1.5x Rerata)</li>
+									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_2.0', 'Volume Meledak (> 2.0x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Volume Meledak (> 2.0x Rerata)</li>
+									<li onclick="selectCustomOption('csRuleVol', 'DRY', 'Volume Kering (< 0.8x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Volume Kering (&lt; 0.8x Rerata)</li>
+								</ul>
 							</div>
-							<div>
+
+							<!-- Dropdown 3: Harga Harian -->
+							<div class="relative">
 								<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">3. Pergerakan Harian (%)</label>
-								<select id="csRulePrice" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 text-xs lg:text-sm focus:border-blue-500 outline-none transition cursor-pointer">
-									<option value="ALL" class="bg-slate-900 text-slate-200 py-2">Semua Perubahan Harga</option>
-									<option value="GREEN" class="bg-slate-900 text-slate-200 py-2">Ditutup Menguat (Hijau / > 0%)</option>
-									<option value="RED" class="bg-slate-900 text-slate-200 py-2">Ditutup Melemah (Merah / &lt; 0%)</option>
-									<option value="BREAKOUT" class="bg-slate-900 text-slate-200 py-2">Breakout Kuat (> 3%)</option>
-								</select>
+								<input type="hidden" id="csRulePrice" value="ALL">
+								<button onclick="toggleCustomDropdown('dropdownPrice')" class="w-full bg-slate-950 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
+									<span id="csRulePrice_Label" class="truncate pr-2 font-medium text-blue-100">Semua Perubahan Harga</span>
+									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
+								</button>
+								<ul id="dropdownPrice" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl shadow-slate-950/80 max-h-48 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
+									<li onclick="selectCustomOption('csRulePrice', 'ALL', 'Semua Perubahan Harga', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Semua Perubahan Harga</li>
+									<li onclick="selectCustomOption('csRulePrice', 'GREEN', 'Ditutup Menguat (Hijau / > 0%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Ditutup Menguat (Hijau / > 0%)</li>
+									<li onclick="selectCustomOption('csRulePrice', 'RED', 'Ditutup Melemah (Merah / < 0%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Ditutup Melemah (Merah / &lt; 0%)</li>
+									<li onclick="selectCustomOption('csRulePrice', 'BREAKOUT', 'Breakout Kuat (> 3%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Breakout Kuat (> 3%)</li>
+								</ul>
 							</div>
+
 						</div>
 					</div>
 
