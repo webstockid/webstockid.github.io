@@ -899,7 +899,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		if (stockData.changePct >= 0 && stockData.volRatio >= 1.5) {
 			bandarStatus = "Masif Akumulasi 🐋";
 			bandarColor = "text-emerald-400";
-			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-300 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
+			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = Math.min(100, 50 + (stockData.volRatio * 15));
 		} else if (stockData.changePct < 0 && stockData.volRatio < 0.8) {
 			bandarStatus = "Mark Down (Uji Support) 📉";
@@ -1315,10 +1315,10 @@ function renderJournalTable() {
 			<tr class="hover:bg-slate-800/40">
 				<td class="p-3.5 text-slate-400">${item.date}</td>
 				<td class="p-3.5 font-bold text-pink-400">&dollar;${item.ticker}</td>
-				<td class="p-3.5 text-sky-400">Rp ${item.entry.toLocaleString('id-ID')}</td>
+				<td class="p-3.5 text-amber-400">Rp ${item.entry.toLocaleString('id-ID')}</td>
 				<td class="p-3.5 text-rose-400">Rp ${item.sl.toLocaleString('id-ID')}</td>
 				<td class="p-3.5 text-emerald-400">Rp ${item.tp.toLocaleString('id-ID')}</td>
-				<td class="p-3.5 text-cyan-400">${item.rrr}</td>
+				<td class="p-3.5 text-sky-400">${item.rrr}</td>
 				<td class="p-3.5">${statusBadge}</td>
 				<td class="p-3.5 text-center space-x-1">
 					<button onclick="updateJournalStatus(${item.id}, 'WIN')" class="text-[9px] bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 font-bold px-2 py-1 rounded-md border border-emerald-500/30 transition">WIN</button>
@@ -1568,7 +1568,7 @@ function renderRadarItems(dataList) {
 						<div>
 							<div class="flex items-center gap-2">
 								<span class="font-bold text-white text-sm lg:text-base">&dollar;${ticker}</span>
-								<button onclick="selectTickerFromRadar('${ticker}')" class="text-[10px] lg:text-[10px] bg-amber-300 hover:bg-emerald-600 text-black hover:text-white border-amber-500/30 font-bold px-2 py-0.5 rounded transition">
+								<button onclick="selectTickerFromRadar('${ticker}')" class="text-[10px] lg:text-[10px] bg-amber-400 hover:bg-emerald-600 text-black hover:text-white border-amber-500/30 font-bold px-2 py-0.5 rounded transition">
 									Lihat Chart »
 								</button>
 							</div>
@@ -2513,12 +2513,12 @@ function renderKanbanBoard() {
 					<span class="text-[9px] text-slate-400 font-mono">${item.date}</span>
 				</div>
 				<div class="grid grid-cols-3 gap-1 text-[10px] text-slate-300 bg-slate-950 p-2 rounded border border-slate-900 text-center">
-					<div><span class="text-[7px] text-slate-500 block">ENTRY</span>Rp ${item.entry.toLocaleString('id-ID')}</div>
+					<div><span class="text-[7px] text-amber-400 block">ENTRY</span>Rp ${item.entry.toLocaleString('id-ID')}</div>
 					<div><span class="text-[7px] text-rose-400 block">SL</span>Rp ${item.sl.toLocaleString('id-ID')}</div>
 					<div><span class="text-[7px] text-emerald-400 block">TP</span>Rp ${item.tp.toLocaleString('id-ID')}</div>
 				</div>
 				<div class="flex items-center justify-between pt-1">
-					<span class="text-[9px] text-cyan-400 font-bold">RRR: ${item.rrr}</span>
+					<span class="text-[9px] text-sky-400 font-bold">RRR: ${item.rrr}</span>
 					<div class="flex items-center gap-1">
 						${item.status !== 'OPEN' ? `<button onclick="updateJournalStatus(${item.id}, 'OPEN')" class="text-[8px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded font-bold transition">Open</button>` : ''}
 						${item.status !== 'WIN' ? `<button onclick="updateJournalStatus(${item.id}, 'WIN')" class="text-[8px] bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 px-1.5 py-0.5 rounded font-bold transition">WIN</button>` : ''}
@@ -2587,7 +2587,7 @@ function toggleCustomDropdown(dropdownId) {
 
 	if (isHidden) {
 		dropdown.classList.remove('hidden');
-		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+		if (typeof AudioFX !== 'undefined') AudioFX.playDelete();
 	}
 }
 
@@ -3037,10 +3037,10 @@ function renderPaperTradingUI() {
 
 			html += `
 				<tr class="hover:bg-slate-800/40">
-					<td class="p-3.5 font-bold text-white">&dollar;${item.ticker}</td>
-					<td class="p-3.5 text-cyan-400">${item.lots.toLocaleString('id-ID')} Lot</td>
-					<td class="p-3.5 text-slate-300">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
-					<td class="p-3.5 text-white">Rp ${currentP.toLocaleString('id-ID')}</td>
+					<td class="p-3.5 font-bold text-violet-400">&dollar;${item.ticker}</td>
+					<td class="p-3.5 text-blue-400">${item.lots.toLocaleString('id-ID')} Lot</td>
+					<td class="p-3.5 text-teal-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
+					<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
 					<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
 						${isPlus ? '+' : ''}Rp ${Math.round(pnl).toLocaleString('id-ID')} (${isPlus ? '+' : ''}${pnlPct}%)
 					</td>
