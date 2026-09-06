@@ -2573,14 +2573,49 @@ function renderSectorHeatmap() {
 	isHeatmapLoaded = true;
 }
 
-// --- [FITUR BARU 1] CUSTOM STRATEGY BUILDER ---
+// --- [REVISI 1] CUSTOM SCREENER COOLDOWN & RENDER STYLING MIRIP RADAR BANDAR ---
+let customScreenerCooldownTimer = null;
+
+function startCustomScreenerCooldown(seconds = 20) {
+	const btn = document.getElementById('btnRunCustomScreener');
+	if (!btn) return;
+
+	btn.disabled = true;
+	btn.classList.add('opacity-50', 'cursor-not-allowed');
+	let remaining = seconds;
+
+	if (customScreenerCooldownTimer) clearInterval(customScreenerCooldownTimer);
+
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}s)`;
+	if (window.lucide) lucide.createIcons();
+
+	customScreenerCooldownTimer = setInterval(() => {
+		remaining--;
+		if (remaining <= 0) {
+			clearInterval(customScreenerCooldownTimer);
+			btn.disabled = false;
+			btn.classList.remove('opacity-50', 'cursor-not-allowed');
+			btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter`;
+			if (window.lucide) lucide.createIcons();
+		} else {
+			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}s)`;
+			if (window.lucide) lucide.createIcons();
+		}
+	}, 1000);
+}
+
 async function runCustomScreener() {
+	const btn = document.getElementById('btnRunCustomScreener');
+	if (btn && btn.disabled) return;
+
+	startCustomScreenerCooldown(20);
+
 	const container = document.getElementById('csResultsContainer');
 	const ruleMA = document.getElementById('csRuleMA').value;
 	const ruleVol = document.getElementById('csRuleVol').value;
 	const rulePrice = document.getElementById('csRulePrice').value;
 
-	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-400"></i> Menyaring emiten berdasarkan custom rules Lu...</div>`;
+	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950 border-dashed"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-400"></i> Memindai emiten sesuai custom rules Lu...</div>`;
 	if (window.lucide) lucide.createIcons();
 
 	const shuffled = [...uniqueRadarWatchlist];
@@ -2624,36 +2659,68 @@ async function runCustomScreener() {
 	}
 
 	if (passedItems.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2">Tidak ada emiten yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya.</div>`;
+		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950 border-dashed">Tidak ada emiten yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya.</div>`;
 		return;
 	}
 
 	let html = '';
 	passedItems.forEach((item, index) => {
 		const price = roundToBEITick(item.price);
+		const sl = roundToBEITick(price * 0.92, 'floor');
+		const entryLow = roundToBEITick(price * 0.94, 'floor');
+		const entryHigh = roundToBEITick(price * 0.96, 'floor');
+		const tp1 = roundToBEITick(price * 1.06, 'ceil');
+		const tp2 = roundToBEITick(price * 1.10, 'ceil');
+
 		html += `
-			<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
-				<div class="flex items-center justify-between border-b border-slate-800 pb-2">
+			<div class="bg-slate-950 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative">
+				<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
 					<div class="flex items-center gap-2">
-						<span class="bg-slate-900 text-blue-400 font-mono text-[10px] px-2 py-0.5 rounded border border-slate-800">#${index + 1}</span>
-						<span class="font-bold text-white text-sm">&dollar;${item.ticker}</span>
+						<span class="bg-slate-800 text-blue-400 font-mono text-[10px] px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
+						<div>
+							<div class="flex items-center gap-2">
+								<span class="font-bold text-white text-sm lg:text-base">&dollar;${item.ticker}</span>
+								<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[10px] bg-blue-600 hover:bg-emerald-600 text-white font-bold px-2.5 py-0.5 rounded transition">
+									Lihat Chart »
+								</button>
+							</div>
+							<span class="text-[10px] text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${item.changePct >= 0 ? '+' : ''}${item.changePct}%)</span>
+						</div>
 					</div>
-					<span class="font-bold font-mono ${item.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'} text-xs">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
+					<span class="text-[9px] font-bold px-2.5 py-1 rounded-full border text-blue-400 border-blue-500/30 bg-blue-500/10">
+						Custom Filter Match
+					</span>
 				</div>
-				<div class="grid grid-cols-2 gap-2 text-[11px] font-mono text-slate-300">
-					<div>Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong></div>
-					<div>Vol Ratio: <strong class="text-cyan-400">${item.volRatio}x</strong></div>
-					<div>MA5: Rp ${item.ma5.toLocaleString('id-ID')}</div>
-					<div>MA20: Rp ${item.ma20.toLocaleString('id-ID')}</div>
+
+				<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs">
+					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+						<span class="text-slate-400 text-[9px] block">Entry Ideal</span>
+						<span class="font-bold text-amber-400 font-mono">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
+					</div>
+					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+						<span class="text-slate-400 text-[9px] block">AVG Bandar</span>
+						<span class="font-bold text-fuchsia-400 font-mono">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
+					</div>
+					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+						<span class="text-slate-400 text-[9px] block">Target (TP1/TP2)</span>
+						<span class="font-bold text-emerald-300 font-mono">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
+					</div>
+					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+						<span class="text-slate-400 text-[9px] block">Stop Loss (SL)</span>
+						<span class="font-bold text-rose-400 font-mono">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
+					</div>
 				</div>
-				<div class="pt-2 flex justify-end">
-					<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[10px] bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1 rounded transition">Lihat Chart &raquo;</button>
+
+				<div class="bg-slate-900/50 p-2.5 rounded border border-slate-800 text-[10px] text-slate-300 leading-relaxed space-y-1">
+					<span class="text-blue-400 font-bold block">ANALISIS ATURAN CUSTOM:</span>
+					<p>Emiten lolos kriteria saringan custom (Vol Ratio: ${item.volRatio}x, Posisi MA5: Rp ${item.ma5.toLocaleString('id-ID')}).</p>
 				</div>
 			</div>
 		`;
 	});
 
 	container.innerHTML = html;
+	if (window.lucide) lucide.createIcons();
 	AudioFX.playSuccess();
 }
 
@@ -2663,15 +2730,25 @@ function selectTickerFromCustom(ticker) {
 	switchTab('ai');
 }
 
-// --- [FITUR BARU 2] LIVE PAPER TRADING & RANK SYSTEM ---
-function getPaperAccount() {
-	const defaultAcc = { cash: 100000000, portfolio: [], history: [] };
-	try {
-		const acc = JSON.parse(localStorage.getItem('stockid_paper_account'));
-		return acc || defaultAcc;
-	} catch(e) {
-		return defaultAcc;
+// --- [REVISI 2] PAPER TRADE TAB SWITCHER (FORM VS PORTFOLIO) ---
+function ptSwitchSubTab(subTab) {
+	const btnForm = document.getElementById('ptSubBtnForm');
+	const btnPorto = document.getElementById('ptSubBtnPorto');
+	const contentForm = document.getElementById('ptSubContentForm');
+	const contentPorto = document.getElementById('ptSubContentPorto');
+
+	if (subTab === 'form') {
+		btnForm.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-emerald-500 text-slate-950 transition flex items-center justify-center gap-2";
+		btnPorto.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition flex items-center justify-center gap-2";
+		contentForm.classList.remove('hidden');
+		contentPorto.classList.add('hidden');
+	} else {
+		btnPorto.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-emerald-500 text-slate-950 transition flex items-center justify-center gap-2";
+		btnForm.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition flex items-center justify-center gap-2";
+		contentPorto.classList.remove('hidden');
+		contentForm.classList.add('hidden');
 	}
+	AudioFX.playClick();
 }
 
 function savePaperAccount(acc) {
