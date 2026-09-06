@@ -843,19 +843,19 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Volume Transaksi:</span>
-				<span class="font-mono text-sky-500 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
+				<span class="text-sky-500 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Valuasi Transaksi:</span>
-				<span class="font-mono text-emerald-400 font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
+				<span class="text-emerald-400 font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Estimasi AVG Bandar:</span>
-				<span class="font-mono text-amber-400 font-bold">Rp ${(stockData.bandarAvgPrice || price).toLocaleString('id-ID')}</span>
+				<span class="text-amber-400 font-bold">Rp ${(stockData.bandarAvgPrice || price).toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Posisi Tren MA5 / MA10 / MA20:</span>
-				<span class="font-mono text-sky-500 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
+				<span class="text-sky-500 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Rasio Volume vs Rerata Harian:</span>
@@ -1816,7 +1816,7 @@ function renderAllAlerts() {
 					<div class="flex items-center gap-3 md:gap-4 text-right">
 						<div class="flex flex-col items-end">
 							<span class="text-[9px] md:text-[10px] text-slate-400">Tgl Dibuat</span>
-							<span class="font-mono text-teal-400 text-[10px] md:text-xs font-bold">${alertDate}</span>
+							<span class="text-teal-400 text-[10px] md:text-xs font-bold">${alertDate}</span>
 						</div>
 						<div class="bg-slate-900 p-1.5 rounded-md border border-slate-800 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/30 transition">
 							<i id="alert-icon-${ticker}" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300" style="${rotateStyle}"></i>
@@ -3210,8 +3210,8 @@ function generateAIResponse(prompt) {
 	if (lower.includes('entry') || lower.includes('area entry') || lower.includes('support') || lower.includes('area support') || lower.includes('area') || lower.includes('area masuk') || lower.includes('masuk') || lower.includes('serok') || lower.includes('beli')) {
 		return `
 			<strong class="text-amber-400 flex items-center gap-1.5"><i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Area Entry & Support $${targetTicker}:</strong>
-			Harga saat ini berada di <span class="font-mono text-white">${formatRp(price)}</span>.<br>
-			Area akumulasi (entry ideal) yang disarankan berada di rentang support kuat <strong class="font-mono text-amber-400">${formatRp(sup1)} - ${formatRp(sup2)}</strong>.<br>
+			Harga saat ini berada di <span class="text-white">${formatRp(price)}</span>.<br>
+			Area akumulasi (entry ideal) yang disarankan berada di rentang support kuat <strong class="text-amber-400">${formatRp(sup1)} - ${formatRp(sup2)}</strong>.<br>
 			<span class="text-[10px] text-slate-400 mt-1 block"><i>Tips: Cicil beli jika harga mantul (rebound) dari area ini.</i></span>
 		`;
 	}
@@ -3219,15 +3219,15 @@ function generateAIResponse(prompt) {
 	if (lower.includes('resistance') || lower.includes('resist') || lower.includes('resis') || lower.includes('target') || lower.includes('target profit') || lower.includes('profit') || lower.includes('take profit') || lower.includes('tp') || lower.includes('keluar') || lower.includes('jual') || lower.includes('area jual')) {
 		return `
 			<strong class="text-cyan-400 flex items-center gap-1.5"><i data-lucide="target" class="w-3.5 h-3.5"></i> Target Profit & Resistance $${targetTicker}:</strong>
-			Resistance terdekat untuk <i>take profit</i> ada di kisaran <strong class="font-mono text-cyan-400">${formatRp(res1)} - ${formatRp(res2)}</strong>.<br>
-			Jika berhasil <i>breakout</i> dengan volume tinggi, kamu bisa set TP1 di <strong class="text-white">${formatRp(tp1)}</strong> dan TP2 di <strong class="text-white">${formatRp(tp2)}</strong>. Jangan lupa gunakan <i>trailing stop</i>!
+			Resistance terdekat untuk <i>take profit</i> ada di kisaran <strong class="text-cyan-400">${formatRp(res1)} - ${formatRp(res2)}</strong>.<br>
+			Jika berhasil <i>breakout</i> dengan volume tinggi, kamu bisa set TP1 di <strong class="text-emerald-400">${formatRp(tp1)}</strong> dan TP2 di <strong class="text-emerald-400">${formatRp(tp2)}</strong>. Jangan lupa gunakan <i>trailing stop</i>!
 		`;
 	}
 
 	if (lower.includes('stoploss') || lower.includes('stop loss') || lower.includes('area stop loss') || lower.includes('cutloss') || lower.includes('cut loss') || lower.includes('area cut loss') || lower.includes('cl') || lower.includes('risiko') || lower.includes('buang') || lower.includes('rugi')) {
 		return `
 			<strong class="text-rose-400 flex items-center gap-1.5"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Batas Risiko (Stop Loss) $${targetTicker}:</strong>
-			Untuk membatasi kerugian, pasang Stop Loss ketat jika harga ditutup di bawah <strong class="font-mono text-rose-400">${formatRp(sl)}</strong>.<br>
+			Untuk membatasi kerugian, pasang Stop Loss ketat jika harga ditutup di bawah <strong class="text-rose-400">${formatRp(sl)}</strong>.<br>
 			<span class="text-[10px] text-slate-400 mt-1 block"><i>Note: Disiplin SL sangat penting jika tren berbalik arah dan menjebol support!</i></span>
 		`;
 	}
@@ -3268,13 +3268,13 @@ function generateAIResponse(prompt) {
 		return `
 			<strong class="text-emerald-400 flex items-center gap-1.5"><i data-lucide="cpu" class="w-3.5 h-3.5"></i> Ringkasan Teknis AI untuk $${targetTicker}:</strong>
 			Harga terkini <strong class="text-white">${formatRp(price)}</strong> (<span class="${data.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${data.changePct >= 0 ? '+' : ''}${data.changePct}%</span>).<br>
-			Secara umum, ruang pergerakan terdekat berada di antara support <strong class="font-mono text-amber-400">${formatRp(sup2)}</strong> dan resistance <strong class="font-mono text-cyan-400">${formatRp(res1)}</strong>.<br><br>
+			Secara umum, ruang pergerakan terdekat berada di antara support <strong class="text-amber-400">${formatRp(sup2)}</strong> dan resistance <strong class="text-cyan-400">${formatRp(res1)}</strong>.<br><br>
 			<span class="text-slate-300">💡 <b>Saran:</b> ${saran}</span>
 		`;
 	}
 
 	return `
-		Poin yang sangat detail! Untuk <strong class="text-emerald-400">$${targetTicker}</strong> (Posisi: ${formatRp(price)}), fokus utamanya ada di ketahanan <b>Support ${formatRp(sup2)}</b> dan uji <b>Resist ${formatRp(res1)}</b>.<br><br>
+		Poin yang sangat detail! Untuk <strong class="text-emerald-400">$${targetTicker}</strong> (Posisi: <strong class="text-emerald-400">${formatRp(price)}</strong>), fokus utamanya ada di ketahanan <b>Support <strong class="text-amber-400">${formatRp(sup2)}</strong></b> dan uji <b>Resist <strong class="text-sky-400">${formatRp(res1)}</strong></b>.<br><br>
 		Adakah metrik khusus yang ingin kamu gali seperti kalkulasi <i>Moving Average (MA)</i>, status <i>Volume</i> harian, atau butuh titik <i>Stop Loss</i>?
 	`;
 }
