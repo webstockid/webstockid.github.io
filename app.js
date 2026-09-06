@@ -2933,17 +2933,23 @@ function renderPaperTradingUI() {
 
 	document.getElementById('ptWinRate').innerHTML = `Win Rate: ${winRate}% (${totalWin}/${totalClosed})`;
 
-	let rankName = "NEWBIE TRADER";
+	let rankName = "NEWBIE TRADER 🥺";
 	let rankColor = "text-violet-400";
-	if (totalEquity >= 250000000 && winRate >= 60) {
-		rankName = "MARKET WHALE 🐋";
+	if (totalEquity >= 250000000 && winRate >= 70) {
+		rankName = "BANDAR 🐋";
 		rankColor = "text-emerald-400";
-	} else if (totalEquity >= 150000000 && winRate >= 50) {
-		rankName = "PRO TRADER ⚡";
+	} else if (totalEquity >= 150000000 && winRate >= 60) {
+		rankName = "EXPERT TRADER ⚡";
 		rankColor = "text-cyan-400";
-	} else if (totalEquity >= 110000000) {
-		rankName = "SKILLED RETAIL 📈";
+	} else if (totalEquity >= 110000000) && winRate >= 50) {
+		rankName = "PRO TRADER  😎";
+		rankColor = "text-teal-400";
+	} else if (totalEquity >= 80000000) {
+		rankName = "NORMAL TRADER 😼";
 		rankColor = "text-amber-400";
+	} else if (totalEquity >= 40000000) {
+		rankName = "NOOB TRADER 😹";
+		rankColor = "text-rose-400";
 	}
 
 	const rankBadgeEl = document.getElementById('ptRankBadge');
