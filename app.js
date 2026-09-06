@@ -1014,7 +1014,7 @@ function startExportCardCooldown(seconds = 15) {
 
 	if (exportCardCooldownTimer) clearInterval(exportCardCooldownTimer);
 
-	btn.innerHTML = `<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card (${remaining}s)`;
+	btn.innerHTML = `<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card (${remaining}d)`;
 	if (window.lucide) lucide.createIcons();
 
 	exportCardCooldownTimer = setInterval(() => {
@@ -1026,7 +1026,7 @@ function startExportCardCooldown(seconds = 15) {
 			btn.innerHTML = `<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card`;
 			if (window.lucide) lucide.createIcons();
 		} else {
-			btn.innerHTML = `<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card (${remaining}s)`;
+			btn.innerHTML = `<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card (${remaining}d)`;
 			if (window.lucide) lucide.createIcons();
 		}
 	}, 1000);
@@ -1502,7 +1502,7 @@ async function startRadarProcess() {
 
 	isRadarScanning = false;
 	btn.disabled = false;
-	btn.className = "text-[10px] lg:text-xs text-white font-bold bg-amber-400 hover:bg-amber-500 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md";
+	btn.className = "text-[10px] lg:text-xs text-slate-900 font-bold bg-amber-400 hover:bg-amber-500 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md";
 	btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Mulai Pindai`;
 	if (window.lucide) lucide.createIcons();
 
@@ -2144,7 +2144,7 @@ function startSearchCooldown(seconds) {
 
 	if (searchCooldownTimer) clearInterval(searchCooldownTimer);
 
-	btn.innerText = `Cari (${remaining}s)`;
+	btn.innerText = `Cari (${remaining}d)`;
 
 	searchCooldownTimer = setInterval(() => {
 		remaining--;
@@ -2154,7 +2154,7 @@ function startSearchCooldown(seconds) {
 			btn.classList.remove('opacity-50', 'cursor-not-allowed');
 			btn.innerText = "Cari";
 		} else {
-			btn.innerText = `Cari(${remaining}s)`;
+			btn.innerText = `Cari(${remaining}d)`;
 		}
 	}, 1000);
 }
@@ -2621,7 +2621,7 @@ function startCustomScreenerCooldown(seconds = 30) {
 
 	if (customScreenerCooldownTimer) clearInterval(customScreenerCooldownTimer);
 
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}s)`;
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}d)`;
 	if (window.lucide) lucide.createIcons();
 
 	customScreenerCooldownTimer = setInterval(() => {
@@ -2633,7 +2633,7 @@ function startCustomScreenerCooldown(seconds = 30) {
 			btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter`;
 			if (window.lucide) lucide.createIcons();
 		} else {
-			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}s)`;
+			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}d)`;
 			if (window.lucide) lucide.createIcons();
 		}
 	}, 1000);
