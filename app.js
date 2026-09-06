@@ -2738,13 +2738,13 @@ function ptSwitchSubTab(subTab) {
 	const contentPorto = document.getElementById('ptSubContentPorto');
 
 	if (subTab === 'form') {
-		btnForm.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-emerald-500 text-slate-950 transition flex items-center justify-center gap-2";
-		btnPorto.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition flex items-center justify-center gap-2";
+		btnForm.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-violet-600 text-white transition flex items-center justify-center gap-2 shadow-sm shadow-violet-600/20";
+		btnPorto.className = "flex-1 py-2 text-xs font-bold rounded-lg text-violet-300 hover:text-white hover:bg-violet-900/30 transition flex items-center justify-center gap-2";
 		contentForm.classList.remove('hidden');
 		contentPorto.classList.add('hidden');
 	} else {
-		btnPorto.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-emerald-500 text-slate-950 transition flex items-center justify-center gap-2";
-		btnForm.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition flex items-center justify-center gap-2";
+		btnPorto.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-violet-600 text-white transition flex items-center justify-center gap-2 shadow-sm shadow-violet-600/20";
+		btnForm.className = "flex-1 py-2 text-xs font-bold rounded-lg text-violet-300 hover:text-white hover:bg-violet-900/30 transition flex items-center justify-center gap-2";
 		contentPorto.classList.remove('hidden');
 		contentForm.classList.add('hidden');
 	}

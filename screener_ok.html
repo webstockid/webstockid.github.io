@@ -752,121 +752,121 @@
 				</div>
 				
 				<!-- TAB 2: PAPER TRADE (COMPACT & TABBED SWITCH) -->
-				<div id="tabContent-paper" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
-					<!-- Compact Rank & Balance Banner -->
-					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center shadow-lg shadow-violet-500/5">
-						<div class="flex items-center gap-3">
-							<div class="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-violet-400 shrink-0">
-								<i data-lucide="trophy" class="w-5 h-5"></i>
-							</div>
-							<div>
-								<span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest block">Trader Rank</span>
-								<span id="ptRankBadge" class="text-sm lg:text-base font-bold text-violet-400">NEWBIE</span>
-								<span id="ptWinRate" class="text-[10px] text-emerald-400 font-bold block">Win Rate: 0%</span>
-							</div>
-						</div>
-						<div class="border-t sm:border-t-0 sm:border-l border-slate-800 pt-3 sm:pt-0 sm:pl-4">
-							<span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest block">Buying Power (Cash)</span>
-							<span id="ptCash" class="text-base lg:text-lg font-bold text-emerald-400 font-mono">Rp 100.000.000</span>
-						</div>
-						<div class="border-t sm:border-t-0 sm:border-l border-slate-800 pt-3 sm:pt-0 sm:pl-4">
-							<span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest block">Total Equity</span>
-							<span id="ptEquity" class="text-base lg:text-lg font-bold text-cyan-400 font-mono">Rp 100.000.000</span>
-						</div>
-					</div>
+<div id="tabContent-paper" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
+	<!-- Compact Rank & Balance Banner -->
+	<div class="bg-violet-950/20 p-4 rounded-xl border border-violet-500/20 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center shadow-lg shadow-violet-500/5">
+		<div class="flex items-center gap-3">
+			<div class="w-10 h-10 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-300 shrink-0">
+				<i data-lucide="trophy" class="w-5 h-5"></i>
+			</div>
+			<div>
+				<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Trader Rank</span>
+				<span id="ptRankBadge" class="text-sm lg:text-base font-bold text-violet-300">NEWBIE</span>
+				<span id="ptWinRate" class="text-[10px] text-emerald-400 font-bold block">Win Rate: 0%</span>
+			</div>
+		</div>
+		<div class="border-t sm:border-t-0 sm:border-l border-violet-500/20 pt-3 sm:pt-0 sm:pl-4">
+			<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Buying Power (Cash)</span>
+			<span id="ptCash" class="text-base lg:text-lg font-bold text-emerald-400 font-mono">Rp 100.000.000</span>
+		</div>
+		<div class="border-t sm:border-t-0 sm:border-l border-violet-500/20 pt-3 sm:pt-0 sm:pl-4">
+			<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Total Equity</span>
+			<span id="ptEquity" class="text-base lg:text-lg font-bold text-violet-300 font-mono">Rp 100.000.000</span>
+		</div>
+	</div>
 
-					<!-- Sub-Tabs Switcher (Form vs Portfolio) -->
-					<div class="flex bg-slate-950 p-1.5 rounded-xl border border-slate-800 gap-2">
-						<button onclick="ptSwitchSubTab('form')" id="ptSubBtnForm" class="flex-1 py-2 text-xs font-bold rounded-lg bg-violet-500 text-white transition flex items-center justify-center gap-2">
-							<i data-lucide="shopping-cart" class="w-4 h-4"></i> Form Eksekusi Virtual
-						</button>
-						<button onclick="ptSwitchSubTab('portfolio')" id="ptSubBtnPorto" class="flex-1 py-2 text-xs font-bold rounded-lg text-white hover:text-white transition flex items-center justify-center gap-2">
-							<i data-lucide="briefcase" class="w-4 h-4"></i> Portofolio & Riwayat Aktif
-						</button>
-					</div>
+	<!-- Sub-Tabs Switcher (Form vs Portfolio) -->
+	<div class="flex bg-violet-950/30 p-1.5 rounded-xl border border-violet-500/20 gap-2">
+		<button onclick="ptSwitchSubTab('form')" id="ptSubBtnForm" class="flex-1 py-2 text-xs font-bold rounded-lg bg-violet-600 text-white transition flex items-center justify-center gap-2 shadow-sm shadow-violet-600/20">
+			<i data-lucide="shopping-cart" class="w-4 h-4"></i> Form Eksekusi Virtual
+		</button>
+		<button onclick="ptSwitchSubTab('portfolio')" id="ptSubBtnPorto" class="flex-1 py-2 text-xs font-bold rounded-lg text-violet-300 hover:text-white hover:bg-violet-900/30 transition flex items-center justify-center gap-2">
+			<i data-lucide="briefcase" class="w-4 h-4"></i> Portofolio & Riwayat Aktif
+		</button>
+	</div>
 
-					<!-- Sub-Tab Content 1: Form Eksekusi -->
-					<div id="ptSubContentForm" class="bg-slate-950 p-4 lg:p-6 rounded-xl border border-slate-800 space-y-4 max-w-xl mx-auto">
-						<div class="flex items-center justify-between border-b border-slate-800 pb-3">
-							<span class="font-bold text-white flex items-center gap-2 text-sm"><i data-lucide="shopping-cart" class="w-4 h-4 text-emerald-400"></i> Form Order Virtual</span>
-							<button onclick="ptSyncCurrentTicker()" class="text-[10px] bg-blue-800 hover:bg-blue-500 hover:text-white text-white px-3 py-1.5 rounded-lg border border-blue-700 transition font-bold flex items-center gap-1.5"><i data-lucide="download" class="w-3 h-3"></i> Sync Emiten Aktif</button>
-						</div>
-						
-						<div class="grid grid-cols-2 gap-3">
-							<div>
-								<label class="text-[10px] text-slate-400 font-bold block mb-1 uppercase">Saham</label>
-								<input type="text" id="ptTicker" disabled value="MDIA" class="w-full bg-violet-800 border border-violet-700 rounded-lg p-2.5 text-white font-bold font-mono text-center cursor-not-allowed text-xs">
-							</div>
-							<div>
-								<label class="text-[10px] text-slate-400 font-bold block mb-1 uppercase">Harga Eksekusi (Rp)</label>
-								<input type="number" id="ptPrice" disabled class="w-full bg-violet-800 border border-violet-700 rounded-lg p-2.5 text-white font-bold font-mono cursor-not-allowed text-xs">
-							</div>
-						</div>
-						<div>
-							<label class="text-[10px] text-slate-300 font-bold block mb-1 uppercase flex justify-between">
-								<span>Jumlah Lot Pembelian</span>
-								<span id="ptMaxLotHelper" class="text-cyan-400 cursor-pointer hover:underline" onclick="ptFillMaxLot()">Max: 0 Lot</span>
-							</label>
-							<input type="number" id="ptLots" value="10" min="1" oninput="ptCalculateTotal()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-bold font-mono focus:border-violet-500 outline-none transition text-xs">
-						</div>
-						<div class="grid grid-cols-2 gap-3">
-							<div>
-								<label class="text-[10px] text-slate-400 font-bold block mb-1 uppercase">Auto TP (Opsional)</label>
-								<input type="number" id="ptTP" placeholder="Rp" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono focus:border-emerald-500 outline-none transition text-xs">
-							</div>
-							<div>
-								<label class="text-[10px] text-slate-400 font-bold block mb-1 uppercase">Auto SL (Opsional)</label>
-								<input type="number" id="ptSL" placeholder="Rp" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white font-mono focus:border-rose-500 outline-none transition text-xs">
-							</div>
-						</div>
-						
-						<div class="pt-3 border-t border-slate-800 flex items-center justify-between">
-							<div>
-								<span class="text-[10px] text-slate-400 block font-bold">Total Nilai Beli:</span>
-								<span id="ptTotalValue" class="text-emerald-400 font-bold font-mono text-base">Rp 0</span>
-							</div>
-							<button onclick="ptExecuteBuy()" class="bg-violet-800 hover:bg-violet-500 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-lg shadow-violet-500/20 text-xs flex items-center gap-2">
-								<i data-lucide="mouse-pointer-click" class="w-4 h-4"></i> Eksekusi Beli
-							</button>
-						</div>
-					</div>
-					
-					<!-- Sub-Tab Content 2: Portofolio & Riwayat -->
-					<div id="ptSubContentPorto" class="hidden bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4">
-						<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
-							<span class="font-bold text-white flex items-center gap-2 text-sm"><i data-lucide="briefcase" class="w-4 h-4 text-cyan-400"></i> Portofolio Saham Aktif</span>
-							<div class="flex items-center gap-2">
-								<button onclick="ptResetAccount()" class="text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 px-3 py-1.5 rounded-lg border border-rose-500/30 transition font-bold flex items-center gap-1.5"><i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reset Akun</button>
-								<button onclick="ptRefreshPortoPrices()" class="text-[10px] bg-cyan-800 hover:bg-cyan-600 text-white px-3 py-1.5 rounded-lg border border-cyan-700 transition font-bold flex items-center gap-1.5 shadow-md"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Update Harga Live</button>
-							</div>
-						</div>
-						
-						<div class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner bg-slate-900/40">
-							<table class="w-full text-left text-xs text-slate-300 whitespace-nowrap min-w-[650px]">
-								<thead class="bg-slate-900 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
-									<tr>
-										<th class="p-3.5">Emiten</th>
-										<th class="p-3.5">Total Lot</th>
-										<th class="p-3.5">Modal Avg (Rp)</th>
-										<th class="p-3.5">Harga Last (Rp)</th>
-										<th class="p-3.5">Floating Profit / Loss</th>
-										<th class="p-3.5 text-center">Aksi Jual</th>
-									</tr>
-								</thead>
-								<tbody id="ptPortoBody" class="divide-y divide-slate-800/80 font-mono">
-									<tr><td colspan="6" class="p-6 text-center text-slate-500 font-sans">Belum ada posisi terbuka. Gunakan form eksekusi di atas.</td></tr>
-								</tbody>
-							</table>
-						</div>
-						
-						<div class="pt-4 space-y-3">
-							<span class="font-bold text-slate-300 flex items-center gap-2 text-xs"><i data-lucide="history" class="w-4 h-4 text-amber-400"></i> Riwayat Trade Terakhir (History)</span>
-							<div id="ptHistoryContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">
-								<div class="text-slate-500 text-xs text-center col-span-full py-4 border border-dashed border-slate-800 rounded-lg">Belum ada riwayat penjualan saham.</div>
-							</div>
-						</div>
-					</div>
-				</div>
+	<!-- Sub-Tab Content 1: Form Eksekusi -->
+	<div id="ptSubContentForm" class="bg-violet-950/20 p-4 lg:p-6 rounded-xl border border-violet-500/20 space-y-4 max-w-xl mx-auto shadow-xl shadow-violet-950/20">
+		<div class="flex items-center justify-between border-b border-violet-500/20 pb-3">
+			<span class="font-bold text-violet-200 flex items-center gap-2 text-sm"><i data-lucide="shopping-cart" class="w-4 h-4 text-violet-400"></i> Form Order Virtual</span>
+			<button onclick="ptSyncCurrentTicker()" class="text-[10px] bg-violet-600/30 hover:bg-violet-600/50 text-violet-200 px-3 py-1.5 rounded-lg border border-violet-500/30 transition font-bold flex items-center gap-1.5"><i data-lucide="download" class="w-3 h-3"></i> Sync Emiten Aktif</button>
+		</div>
+		
+		<div class="grid grid-cols-2 gap-3">
+			<div>
+				<label class="text-[10px] text-violet-300 font-bold block mb-1 uppercase">Saham</label>
+				<input type="text" id="ptTicker" disabled value="MDIA" class="w-full bg-violet-900/30 border border-violet-500/30 rounded-lg p-2.5 text-violet-200 font-bold font-mono text-center cursor-not-allowed text-xs">
+			</div>
+			<div>
+				<label class="text-[10px] text-violet-300 font-bold block mb-1 uppercase">Harga Eksekusi (Rp)</label>
+				<input type="number" id="ptPrice" disabled class="w-full bg-violet-900/30 border border-violet-500/30 rounded-lg p-2.5 text-violet-200 font-bold font-mono cursor-not-allowed text-xs">
+			</div>
+		</div>
+		<div>
+			<label class="text-[10px] text-violet-300 font-bold block mb-1 uppercase flex justify-between">
+				<span>Jumlah Lot Pembelian</span>
+				<span id="ptMaxLotHelper" class="text-violet-400 cursor-pointer hover:underline" onclick="ptFillMaxLot()">Max: 0 Lot</span>
+			</label>
+			<input type="number" id="ptLots" value="10" min="1" oninput="ptCalculateTotal()" class="w-full bg-violet-950/50 border border-violet-500/30 rounded-lg p-2.5 text-violet-100 font-bold font-mono focus:border-violet-400 outline-none transition text-xs">
+		</div>
+		<div class="grid grid-cols-2 gap-3">
+			<div>
+				<label class="text-[10px] text-violet-300 font-bold block mb-1 uppercase">Auto TP (Opsional)</label>
+				<input type="number" id="ptTP" placeholder="Rp" class="w-full bg-violet-950/50 border border-violet-500/30 rounded-lg p-2.5 text-violet-100 font-mono focus:border-emerald-500 outline-none transition text-xs placeholder-violet-500/50">
+			</div>
+			<div>
+				<label class="text-[10px] text-violet-300 font-bold block mb-1 uppercase">Auto SL (Opsional)</label>
+				<input type="number" id="ptSL" placeholder="Rp" class="w-full bg-violet-950/50 border border-violet-500/30 rounded-lg p-2.5 text-violet-100 font-mono focus:border-rose-500 outline-none transition text-xs placeholder-violet-500/50">
+			</div>
+		</div>
+		
+		<div class="pt-3 border-t border-violet-500/20 flex items-center justify-between">
+			<div>
+				<span class="text-[10px] text-violet-400 block font-bold">Total Nilai Beli:</span>
+				<span id="ptTotalValue" class="text-emerald-400 font-bold font-mono text-base">Rp 0</span>
+			</div>
+			<button onclick="ptExecuteBuy()" class="bg-violet-600 hover:bg-violet-500 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-lg shadow-violet-600/25 text-xs flex items-center gap-2">
+				<i data-lucide="mouse-pointer-click" class="w-4 h-4"></i> Eksekusi Beli
+			</button>
+		</div>
+	</div>
+	
+	<!-- Sub-Tab Content 2: Portofolio & Riwayat -->
+	<div id="ptSubContentPorto" class="hidden bg-violet-950/20 p-4 lg:p-5 rounded-xl border border-violet-500/20 space-y-4 shadow-xl shadow-violet-950/20">
+		<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-violet-500/20 pb-3">
+			<span class="font-bold text-violet-200 flex items-center gap-2 text-sm"><i data-lucide="briefcase" class="w-4 h-4 text-violet-400"></i> Portofolio Saham Aktif</span>
+			<div class="flex items-center gap-2">
+				<button onclick="ptResetAccount()" class="text-[10px] bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 px-3 py-1.5 rounded-lg border border-rose-500/30 transition font-bold flex items-center gap-1.5"><i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reset Akun</button>
+				<button onclick="ptRefreshPortoPrices()" class="text-[10px] bg-cyan-800 hover:bg-cyan-700 text-white px-3 py-1.5 rounded-lg border border-cyan-700 transition font-bold flex items-center gap-1.5 shadow-md"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Update Harga Live</button>
+			</div>
+		</div>
+		
+		<div class="overflow-x-auto rounded-xl border border-violet-500/20 scrollbar-thin shadow-inner bg-violet-950/30">
+			<table class="w-full text-left text-xs text-violet-200 whitespace-nowrap min-w-[650px]">
+				<thead class="bg-violet-950/60 text-violet-300 uppercase text-[10px] font-bold border-b border-violet-500/20">
+					<tr>
+						<th class="p-3.5">Emiten</th>
+						<th class="p-3.5">Total Lot</th>
+						<th class="p-3.5">Modal Avg (Rp)</th>
+						<th class="p-3.5">Harga Last (Rp)</th>
+						<th class="p-3.5">Floating Profit / Loss</th>
+						<th class="p-3.5 text-center">Aksi Jual</th>
+					</tr>
+				</thead>
+				<tbody id="ptPortoBody" class="divide-y divide-violet-500/10 font-mono">
+					<tr><td colspan="6" class="p-6 text-center text-violet-400 font-sans">Belum ada posisi terbuka. Gunakan form eksekusi di atas.</td></tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<div class="pt-4 space-y-3">
+			<span class="font-bold text-violet-200 flex items-center gap-2 text-xs"><i data-lucide="history" class="w-4 h-4 text-violet-400"></i> Riwayat Trade Terakhir (History)</span>
+			<div id="ptHistoryContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">
+				<div class="text-violet-400 text-xs text-center col-span-full py-4 border border-dashed border-violet-500/20 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 				<!-- Tab 6: Smart RRR -->
 				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
