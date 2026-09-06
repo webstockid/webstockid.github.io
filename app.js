@@ -1587,7 +1587,7 @@ function renderRadarItems(dataList) {
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-white text-[9px] lg:text-[10px] block">AVG Bandar</span>
-						<span class="font-bold text-fuchsia-400 font-mono">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
+						<span class="font-bold text-blue-400 font-mono">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-white text-[9px] lg:text-[10px] block">Target Profit (TP1/TP2)</span>
@@ -2699,7 +2699,7 @@ async function runCustomScreener() {
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-slate-400 text-[9px] block">AVG Bandar</span>
-						<span class="font-bold text-fuchsia-400 font-mono">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
+						<span class="font-bold text-blue-400 font-mono">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-slate-400 text-[9px] block">Target (TP1/TP2)</span>
@@ -2931,7 +2931,7 @@ function renderPaperTradingUI() {
 	const totalWin = acc.history.filter(h => h.status === 'WIN').length;
 	const winRate = totalClosed > 0 ? Math.round((totalWin / totalClosed) * 100) : 0;
 
-	document.getElementById('ptWinRate').innerHTML = `<i data-lucide="target" class="w-3 h-3"></i> Win Rate: ${winRate}% (${totalWin}/${totalClosed})`;
+	document.getElementById('ptWinRate').innerHTML = `Win Rate: ${winRate}% (${totalWin}/${totalClosed})`;
 
 	let rankName = "NEWBIE TRADER";
 	let rankColor = "text-violet-400";

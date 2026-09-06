@@ -411,12 +411,9 @@
 					<button onclick="switchTab('bigmoney')" id="tabBtn-bigmoney" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="zap" class="w-4 h-4 text-amber-400"></i> Radar Bandar
 					</button>
-					
-					<!-- TAB BARU: Custom Screener -->
 					<button onclick="switchTab('custom')" id="tabBtn-custom" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="settings-2" class="w-4 h-4 text-blue-400"></i> Custom Radar
 					</button>
-
 					<button onclick="switchTab('peer')" id="tabBtn-peer" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Peer Komparasi
 					</button>
@@ -429,15 +426,12 @@
 					<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="pie-chart" class="w-4 h-4 text-orange-400"></i> Fundamental
 					</button>
-					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="bell" class="w-4 h-4 text-teal-400"></i> Smart Alert
-					</button>
-					
-					<!-- TAB BARU: Paper Trade -->
 					<button onclick="switchTab('paper')" id="tabBtn-paper" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="gamepad-2" class="w-4 h-4 text-violet-400"></i> Paper Trade
 					</button>
-
+					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="bell" class="w-4 h-4 text-teal-400"></i> Smart Alert
+					</button>
 					<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="calculator" class="w-4 h-4 text-cyan-400"></i> Smart RRR
 					</button>
@@ -565,13 +559,20 @@
 
 				<!-- Tab 2: Radar Bandar -->
 				<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
-					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-amber-500/10 border border-amber-500/20 p-3 lg:p-4 rounded-xl gap-3">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 border border-amber-500/20 p-3 lg:p-4 rounded-xl gap-3">
 						<div class="flex items-center gap-2">
 							<span class="relative flex h-2 w-2">
 								<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
 								<span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
 							</span>
-							<span class="text-xs lg:text-sm font-bold text-amber-400">Pemindaian Saham Potensial Otomatis (All Technical Engine)</span>
+							<!--<span class="text-xs lg:text-sm font-bold text-amber-400">Pemindaian Saham Potensial Otomatis (All Technical Engine)</span>-->
+							<!--<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
+									<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-400"></i> Pemindaian Saham Potensial Otomatis
+							</span>-->
+							<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
+									<i data-lucide="zap" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-400"></i> Pemindaian Saham Potensial Otomatis
+							</span>
+							<p class="text-[10px] lg:text-xs text-slate-400">Mencari saham dalam semua kondisi dengan cepat.</p>
 						</div>
 
 						<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-black font-bold bg-amber-300 hover:bg-amber-600 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md">
