@@ -1004,7 +1004,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	AudioFX.playSuccess();
 }
 
-function startExportCardCooldown(seconds = 12) {
+function startExportCardCooldown(seconds = 15) {
 	const btn = document.getElementById('btnExportCard');
 	if (!btn) return;
 
@@ -1042,7 +1042,7 @@ function exportTradingCard() {
 		return;
 	}
 
-	startExportCardCooldown(10);
+	startExportCardCooldown(15);
 
 	const price = roundToBEITick(globalStockData.price);
 	const sl = roundToBEITick(price * 0.92, 'floor');
@@ -1086,7 +1086,7 @@ function exportTradingCard() {
 	});
 }
 
-function startPeerRefreshCooldown(seconds = 18) {
+function startPeerRefreshCooldown(seconds = 40) {
 	const btn = document.getElementById('btnRefreshPeer');
 	if (!btn) return;
 
@@ -1118,7 +1118,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	if (isManualRefresh) {
 		const btn = document.getElementById('btnRefreshPeer');
 		if (btn && btn.disabled) return;
-		startPeerRefreshCooldown(20);
+		startPeerRefreshCooldown(40);
 	}
 
 	const body = document.getElementById('peerTableBody');
@@ -1502,8 +1502,8 @@ async function startRadarProcess() {
 
 	isRadarScanning = false;
 	btn.disabled = false;
-	btn.className = "text-[10px] lg:text-xs text-slate-950 font-bold bg-amber-400 hover:bg-amber-500 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md";
-	btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Mulai Pindai Pasar`;
+	btn.className = "text-[10px] lg:text-xs text-white font-bold bg-amber-400 hover:bg-amber-500 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md";
+	btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Mulai Pindai`;
 	if (window.lucide) lucide.createIcons();
 
 	if (validData.length === 0) {
@@ -2611,7 +2611,7 @@ document.addEventListener('click', function(e) {
 	});
 });
 
-function startCustomScreenerCooldown(seconds = 20) {
+function startCustomScreenerCooldown(seconds = 30) {
 	const btn = document.getElementById('btnRunCustomScreener');
 	if (!btn) return;
 
@@ -2643,7 +2643,7 @@ async function runCustomScreener() {
 	const btn = document.getElementById('btnRunCustomScreener');
 	if (btn && btn.disabled) return;
 
-	startCustomScreenerCooldown(20);
+	startCustomScreenerCooldown(40);
 
 	const container = document.getElementById('csResultsContainer');
 	const ruleMA = document.getElementById('csRuleMA').value;
