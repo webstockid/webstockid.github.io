@@ -2941,7 +2941,7 @@ function renderPaperTradingUI() {
 	} else if (totalEquity >= 150000000 && winRate >= 60) {
 		rankName = "EXPERT TRADER ⚡";
 		rankColor = "text-cyan-400";
-	} else if (totalEquity >= 110000000) && winRate >= 50) {
+	} else if (totalEquity >= 110000000) && winRate >= 60) {
 		rankName = "PRO TRADER  😎";
 		rankColor = "text-teal-400";
 	} else if (totalEquity >= 80000000) {
