@@ -2997,7 +2997,7 @@ function renderPaperTradingUI() {
 				<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1">
 					<div class="flex justify-between items-center">
 						<span class="font-bold text-white">&dollar;${h.ticker} (${h.lots} Lot)</span>
-						<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
+						<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-violet-500/10 border border-violet-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
 					</div>
 					<div class="flex justify-between text-[11px] text-slate-300">
 						<span>Beli: Rp ${h.buyPrice.toLocaleString('id-ID')}</span>
