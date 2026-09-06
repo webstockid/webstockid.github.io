@@ -838,7 +838,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Harga: <strong class="text-sky-500 font-mono font-bold">Rp${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
+				<span>• Harga: <strong class="text-sky-500 font-bold">Rp${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
 				<span class="text-[10px] lg:text-[11px] text-white">${isCached ? 'Cache Instant' : 'Live Data'}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
@@ -859,7 +859,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Rasio Volume vs Rerata Harian:</span>
-				<span class="font-bold font-mono ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
+				<span class="font-bold ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
 			</li>
 		`;
 
@@ -1427,7 +1427,7 @@ function initSearchSuggestions() {
 
 		if (matches.length > 0) {
 			box.innerHTML = matches.map(ticker => `
-				<div onclick="selectSuggestion('${ticker}')" class="px-4 py-2.5 hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-200 text-xs font-mono font-bold cursor-pointer transition flex items-center justify-between group">
+				<div onclick="selectSuggestion('${ticker}')" class="px-4 py-2.5 hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-200 text-xs font-bold cursor-pointer transition flex items-center justify-between group">
 					<span class="flex items-center gap-2">
 						<i class="fa-solid fa-circle-arrow-right text-[10px] text-emerald-400 opacity-60 group-hover:opacity-100"></i>
 						${ticker}
@@ -1564,7 +1564,7 @@ function renderRadarItems(dataList) {
 			<div class="bg-slate-950 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative">
 				<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
 					<div class="flex items-center gap-2">
-						<span class="bg-slate-800 text-amber-400 font-mono text-[10px] lg:text-xs px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
+						<span class="bg-slate-800 text-amber-400 text-[10px] lg:text-xs px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
 						<div>
 							<div class="flex items-center gap-2">
 								<span class="font-bold text-white text-sm lg:text-base">&dollar;${ticker}</span>
@@ -1861,7 +1861,7 @@ function renderAllAlerts() {
 					<div class="flex items-center gap-3">
 						<div>
 							<span class="text-[9px] ${badgeColor} block font-bold uppercase tracking-wider mb-0.5">${labelText}</span>
-							<strong class="text-slate-200 font-mono text-xs md:text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</strong>
+							<strong class="text-slate-200 text-xs md:text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</strong>
 						</div>
 						${statusBadge}
 					</div>
@@ -2040,7 +2040,7 @@ async function fetchStockNews(ticker) {
 				container.innerHTML += `
 					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 						<div class="flex items-center gap-1.5 mb-2">
-							<span class="text-[9px] lg:text-[10px] bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded border border-emerald-500/30">${item.source?.title || 'Google News'}</span>
+							<span class="text-[9px] lg:text-[10px] bg-sky-500/20 text-sky-400 font-bold px-2 py-0.5 rounded border border-sky-500/30">${item.source?.title || 'Google News'}</span>
 							<span class="text-[10px] lg:text-xs text-white">${date}</span>
 						</div>
 						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
@@ -2082,7 +2082,7 @@ async function fetchCorporateAction(ticker) {
 				container.innerHTML += `
 					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 						<div class="flex items-center gap-1.5 mb-1">
-							<span class="text-[9px] lg:text-[10px] bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded border border-emerald-500/30">Aksi Korporasi</span>
+							<span class="text-[9px] lg:text-[10px] bg-fuchsia-500/20 text-fuchsia-400 font-bold px-2 py-0.5 rounded border border-fuchsia-500/30">Aksi Korporasi</span>
 							<span class="text-[10px] lg:text-xs text-white">${date}</span>
 						</div>
 						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
@@ -2509,16 +2509,16 @@ function renderKanbanBoard() {
 		const cardHTML = `
 			<div draggable="true" ondragstart="dragJournalCard(event, ${item.id})" class="bg-slate-900 border border-slate-800 p-3 rounded-xl cursor-grab active:cursor-grabbing hover:border-slate-700 transition space-y-2 shadow-sm">
 				<div class="flex items-center justify-between">
-					<span class="font-bold text-pink-400 font-mono text-xs">&dollar;${item.ticker}</span>
+					<span class="font-bold text-pink-400 text-xs">&dollar;${item.ticker}</span>
 					<span class="text-[9px] text-slate-400 font-mono">${item.date}</span>
 				</div>
-				<div class="grid grid-cols-3 gap-1 text-[10px] font-mono text-slate-300 bg-slate-950 p-2 rounded border border-slate-900 text-center">
+				<div class="grid grid-cols-3 gap-1 text-[10px] text-slate-300 bg-slate-950 p-2 rounded border border-slate-900 text-center">
 					<div><span class="text-[7px] text-slate-500 block">ENTRY</span>Rp ${item.entry.toLocaleString('id-ID')}</div>
 					<div><span class="text-[7px] text-rose-400 block">SL</span>Rp ${item.sl.toLocaleString('id-ID')}</div>
 					<div><span class="text-[7px] text-emerald-400 block">TP</span>Rp ${item.tp.toLocaleString('id-ID')}</div>
 				</div>
 				<div class="flex items-center justify-between pt-1">
-					<span class="text-[9px] text-cyan-400 font-mono font-bold">RRR: ${item.rrr}</span>
+					<span class="text-[9px] text-cyan-400 font-bold">RRR: ${item.rrr}</span>
 					<div class="flex items-center gap-1">
 						${item.status !== 'OPEN' ? `<button onclick="updateJournalStatus(${item.id}, 'OPEN')" class="text-[8px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded font-bold transition">Open</button>` : ''}
 						${item.status !== 'WIN' ? `<button onclick="updateJournalStatus(${item.id}, 'WIN')" class="text-[8px] bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 px-1.5 py-0.5 rounded font-bold transition">WIN</button>` : ''}
@@ -2676,7 +2676,7 @@ async function runCustomScreener() {
 			<div class="bg-slate-950 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative">
 				<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
 					<div class="flex items-center gap-2">
-						<span class="bg-slate-800 text-blue-400 font-mono text-[10px] px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
+						<span class="bg-slate-800 text-blue-400 text-[10px] px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
 						<div>
 							<div class="flex items-center gap-2">
 								<span class="font-bold text-white text-sm lg:text-base">&dollar;${item.ticker}</span>
