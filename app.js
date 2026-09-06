@@ -2941,7 +2941,7 @@ function renderPaperTradingUI() {
 	} else if (totalEquity >= 150000000 && winRate >= 60) {
 		rankName = "EXPERT TRADER ⚡";
 		rankColor = "text-cyan-400";
-	} else if (totalEquity >= 110000000) && winRate >= 60) {
+	} else if (totalEquity >= 110000000 && winRate >= 50) {
 		rankName = "PRO TRADER  😎";
 		rankColor = "text-teal-400";
 	} else if (totalEquity >= 80000000) {
@@ -2997,7 +2997,7 @@ function renderPaperTradingUI() {
 		historyContainer.innerHTML = `<div class="text-slate-500 text-xs text-center col-span-full py-4 border border-dashed border-slate-800 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>`;
 	} else {
 		let hHtml = '';
-		acc.history.slice(0, 6).forEach(h => {
+		acc.history.slice(0, 9).forEach(h => {
 			const isWin = h.status === 'WIN';
 			hHtml += `
 				<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1">
