@@ -1514,7 +1514,7 @@ function renderRadarItems(dataList) {
 			alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah (*reversal*) awal berpotensi terbentuk.`;
 		} else if (item.volRatio >= 1.5) {
 			statusSignal = "⚡ Volume Accumulation";
-			statusClass = "text-blue-400 border-blue-500/30 bg-blue-500/10";
+			statusClass = "text-blue-600 border-blue-500/30 bg-blue-500/10";
 			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata 10 hari</strong>. Mengindikasikan partisipasi modal besar (*smart money*) di pasar.`;
 		} else if (changePct < 0 && item.price >= item.ma20) {
 			statusSignal = "🛡️ Support Retest";
@@ -1549,7 +1549,7 @@ function renderRadarItems(dataList) {
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-white text-[9px] lg:text-[10px] block">AVG Bandar</span>
-						<span class="font-bold text-blue-400">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
+						<span class="font-bold text-blue-600">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-white text-[9px] lg:text-[10px] block">Take Profit</span>
@@ -1994,127 +1994,136 @@ async function fetchYahooTrending() {
 	if (window.lucide) lucide.createIcons();
 }
 
-async function fetchYahooFundamentals(ticker) {
+async function fetchRealtimeFundamentals(ticker) {
+	// Gunakan container yang sudah ada di HTML
 	const container = document.getElementById('yahooFundamentalContainer');
 	if (!container) return;
-	
-	container.innerHTML = `<div class="text-center bg-slate-950/10 rounded-xl border border-slate-800 text-slate-400 py-8 text-xs"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-orange-400"></i> Memuat data profil & fundamental $${ticker}...</div>`;
-	if (window.lucide) lucide.createIcons();
 
-	const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}.JK?modules=assetProfile,financialData,defaultKeyStatistics,summaryDetail`;
-	const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+	// Masukkan API Key FMP milikmu di sini
+	const apiKey = 'lk6Y4fAgxScdE7F1hAcBz8ApCKXjy2lV'; 
+	
+	container.innerHTML = `<div class="text-center bg-slate-950/10 rounded-xl border border-slate-800 text-slate-400 py-8 text-xs"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-orange-400"></i> Menarik data fundamental real-time dari market...</div>`;
+	if (window.lucide) lucide.createIcons();
 
 	try {
-		const response = await fetch(proxyUrl, { signal: AbortSignal.timeout(4000) });
-		const wrapper = await response.json();
-		const data = JSON.parse(wrapper.contents);
-		
-		const result = data.quoteSummary?.result?.[0];
-		if (!result) throw new Error("Data Kosong");
+		// Melakukan fetching ke dua endpoint FMP secara paralel (Profil Perusahaan & Metrik Keuangan)
+		const [profileRes, quoteRes] = await Promise.all([
+			fetch(`https://financialmodelingprep.com/api/v3/profile/${ticker}.JK?apikey=${apiKey}`),
+			fetch(`https://financialmodelingprep.com/api/v3/quote/${ticker}.JK?apikey=${apiKey}`)
+		]);
 
-		const profile = result.assetProfile || {};
-		const financial = result.financialData || {};
-		const stats = result.defaultKeyStatistics || {};
-		const detail = result.summaryDetail || {};
+		const profileData = await profileRes.json();
+		const quoteData = await quoteRes.json();
 
-		const desc = profile.longBusinessSummary || `PT ${ticker} Tbk bergerak di sektor ${profile.sector || 'keuangan/industri'} Bursa Efek Indonesia.`;
-		const sector = profile.sector || "Finansial / Industri";
-		const industry = profile.industry || "General Trading";
+		if (!profileData || profileData.length === 0) throw new Error("Data Emiten Tidak Ditemukan");
+
+		// Ekstrak data JSON
+		const profile = profileData[0];
+		const quote = quoteData && quoteData.length > 0 ? quoteData[0] : {};
+
+		// Format Data Profil
+		const sector = profile.sector || "Sektor Campuran";
+		const industry = profile.industry || "-";
+		const emp = profile.fullTimeEmployees ? parseInt(profile.fullTimeEmployees).toLocaleString('id-ID') : "-";
 		const website = profile.website || "#";
-		const emp = profile.fullTimeEmployees ? profile.fullTimeEmployees.toLocaleString('id-ID') : "1.000+";
+		const desc = profile.description || `PT ${ticker} Tbk beroperasi di Bursa Efek Indonesia.`;
 		
-		const pe = detail.trailingPE?.fmt || "12.5x";
-		const pb = stats.priceToBook?.fmt || "1.2x";
-		const roe = financial.returnOnEquity?.fmt || "14.2%";
-		const margins = financial.profitMargins?.fmt || "11.5%";
-		const debtToEq = financial.debtToEquity?.fmt || "45.0%";
-		const ebitda = financial.ebitda?.fmt || "Rp 1.5 Triliun";
-		const rec = financial.recommendationKey ? financial.recommendationKey.replace(/_/g, ' ').toUpperCase() : "BUY / ACCUMULATE";
-		const targetMean = financial.targetMeanPrice?.fmt || "Standar Pasar";
+		// Format Data Finansial
+		const pe = quote.pe !== null && quote.pe !== undefined ? `${quote.pe.toFixed(2)}x` : "-";
+		const eps = quote.eps !== null && quote.eps !== undefined ? `Rp ${quote.eps.toLocaleString('id-ID')}` : "-";
+		const mktCap = quote.marketCap !== null ? `Rp ${(quote.marketCap / 1e12).toFixed(2)} T` : "-";
+		const yearHigh = quote.yearHigh !== null ? `Rp ${quote.yearHigh.toLocaleString('id-ID')}` : "-";
+		const yearLow = quote.yearLow !== null ? `Rp ${quote.yearLow.toLocaleString('id-ID')}` : "-";
+		const avgVol = quote.avgVolume !== null ? `${(quote.avgVolume / 1000000).toFixed(2)} Juta` : "-";
+		
+		// Menentukan badge warna untuk P/E Ratio (Valuasi)
+		let peColor = 'text-white';
+		if (quote.pe > 0 && quote.pe <= 15) peColor = 'text-emerald-400'; // Undervalued
+		else if (quote.pe > 25) peColor = 'text-rose-400'; // Overvalued
 
-		renderFundamentalHTML(container, ticker, sector, industry, emp, website, desc, pe, pb, roe, margins, debtToEq, ebitda, rec, targetMean);
+		// Render UI
+		container.innerHTML = `
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+				<!-- PROFIL PERUSAHAAN -->
+				<div class="bg-slate-950/40 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm">
+					<div class="flex items-center gap-3 mb-3.5 pb-2 border-b border-slate-800">
+						${profile.image ? `<img src="${profile.image}" class="w-6 h-6 rounded bg-white p-0.5" alt="Logo" onerror="this.style.display='none'">` : `<i data-lucide="building-2" class="w-5 h-5 text-orange-400"></i>`}
+						<span class="text-orange-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs">
+							PROFIL BISNIS
+						</span>
+					</div>
+					
+					<div class="space-y-2.5 text-[11px] lg:text-xs text-slate-300">
+						<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
+							<span class="text-slate-400">Sektor Utama</span>
+							<span class="font-bold text-white">${sector}</span>
+						</div>
+						<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
+							<span class="text-slate-400">Industri</span>
+							<span class="font-bold text-white">${industry}</span>
+						</div>
+						<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
+							<span class="text-slate-400">Karyawan Aktif</span>
+							<span class="font-bold text-white">${emp} Orang</span>
+						</div>
+						<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
+							<span class="text-slate-400">Website URL</span>
+							<a href="${website}" target="_blank" class="font-bold text-cyan-400 hover:underline flex items-center gap-1">${website !== '#' ? 'Kunjungi Web <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>' : '-'}</a>
+						</div>
+						<div class="pt-2">
+							<span class="text-slate-400 block mb-1.5 font-bold">Ringkasan Operasional:</span>
+							<p class="text-[10px] lg:text-[11px] leading-relaxed text-slate-300 line-clamp-4 hover:line-clamp-none transition-all cursor-pointer bg-slate-900/40 p-2.5 rounded-lg border border-slate-800" title="Klik untuk memperluas teks">${desc}</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- DATA FUNDAMENTAL & METRIK -->
+				<div class="bg-slate-950/40 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm flex flex-col justify-between">
+					<div>
+						<span class="text-orange-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs mb-3.5 pb-2 border-b border-slate-800">
+							<i data-lucide="calculator" class="w-4 h-4"></i> METRIK KEUANGAN & VALUASI
+						</span>
+						<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs text-slate-300">
+							<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
+								<span class="block text-slate-400 text-[10px] mb-0.5">Kapitalisasi Pasar</span>
+								<span class="font-bold text-white">${mktCap}</span>
+							</div>
+							<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
+								<span class="block text-slate-400 text-[10px] mb-0.5">P/E Ratio (Valuasi)</span>
+								<span class="font-bold ${peColor}">${pe}</span>
+							</div>
+							<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
+								<span class="block text-slate-400 text-[10px] mb-0.5">Earning Per Share (EPS)</span>
+								<span class="font-bold text-white">${eps}</span>
+							</div>
+							<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
+								<span class="block text-slate-400 text-[10px] mb-0.5">Rerata Vol (Harian)</span>
+								<span class="font-bold text-cyan-400">${avgVol}</span>
+							</div>
+							<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
+								<span class="block text-slate-400 text-[10px] mb-0.5">Level Tertinggi (52W)</span>
+								<span class="font-bold text-emerald-400">${yearHigh}</span>
+							</div>
+							<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
+								<span class="block text-slate-400 text-[10px] mb-0.5">Level Terendah (52W)</span>
+								<span class="font-bold text-rose-400">${yearLow}</span>
+							</div>
+						</div>
+					</div>
+					
+					<div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-[11px] lg:text-xs">
+						<span class="text-slate-400">Status Valuasi AI:</span>
+						<span class="font-bold text-cyan-400 px-2.5 py-1 bg-cyan-900/20 rounded-md border border-cyan-800/50 flex items-center gap-1.5">
+							<i data-lucide="activity" class="w-3.5 h-3.5"></i> ${quote.pe > 0 && quote.pe <= 15 ? 'UNDERVALUED' : (quote.pe > 25 ? 'OVERVALUED' : 'FAIR VALUE')}
+						</span>
+					</div>
+				</div>
+			</div>
+		`;
+		if (window.lucide) lucide.createIcons();
 	} catch (e) {
-		// Fallback fundamental data agar tidak pernah memunculkan pesan error di UI
-		renderFundamentalHTML(container, ticker, "Sektor Utama BEI", "Perusahaan Tercatat IDX", "500+", "#", 
-			`PT ${ticker} Tbk merupakan emiten terdaftar di Bursa Efek Indonesia dengan likuiditas perdagangan aktif harian.`, 
-			"14.2x", "1.3x", "12.5%", "10.0%", "50.0%", "Rp 1.0 T", "BUY / ACCUMULATE", "Kalkulasi Market");
+		container.innerHTML = `<div class="text-center bg-slate-950/10 rounded-xl border border-slate-800 text-slate-400 py-6 text-xs">Gagal terhubung ke API Market. Pastikan koneksi stabil atau limit API tidak habis.</div>`;
 	}
-}
-
-function renderFundamentalHTML(container, ticker, sector, industry, emp, website, desc, pe, pb, roe, margins, debtToEq, ebitda, rec, targetMean) {
-	container.innerHTML = `
-		<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-			<div class="bg-slate-950/40 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm">
-				<span class="text-orange-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs mb-3.5 pb-2 border-b border-slate-800">
-					<i data-lucide="building-2" class="w-4 h-4"></i> PROFIL & EKSEKUTIF BISNIS ($${ticker})
-				</span>
-				<div class="space-y-2.5 text-[11px] lg:text-xs text-slate-300">
-					<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
-						<span class="text-slate-400">Sektor</span>
-						<span class="font-bold text-white">${sector}</span>
-					</div>
-					<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
-						<span class="text-slate-400">Industri</span>
-						<span class="font-bold text-white">${industry}</span>
-					</div>
-					<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
-						<span class="text-slate-400">Total Karyawan</span>
-						<span class="font-bold text-white">${emp} Orang</span>
-					</div>
-					<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
-						<span class="text-slate-400">Website</span>
-						<a href="${website}" target="_blank" class="font-bold text-cyan-400 hover:underline flex items-center gap-1">${website !== '#' ? 'Kunjungi Web <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>' : 'Official IDX'}</a>
-					</div>
-					<div class="pt-2">
-						<span class="text-slate-400 block mb-1.5 font-bold">Ringkasan Operasional:</span>
-						<p class="text-[10px] lg:text-[11px] leading-relaxed text-slate-300 bg-slate-900/40 p-2.5 rounded-lg border border-slate-800">${desc}</p>
-					</div>
-				</div>
-			</div>
-
-			<div class="bg-slate-950/40 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm flex flex-col justify-between">
-				<div>
-					<span class="text-orange-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs mb-3.5 pb-2 border-b border-slate-800">
-						<i data-lucide="calculator" class="w-4 h-4"></i> METRIK VALUASI & KESEHATAN ($${ticker})
-					</span>
-					<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs text-slate-300">
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-							<span class="block text-slate-400 text-[10px] mb-0.5">P/E Ratio</span>
-							<span class="font-bold text-white">${pe}</span>
-						</div>
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-							<span class="block text-slate-400 text-[10px] mb-0.5">P/BV Ratio</span>
-							<span class="font-bold text-white">${pb}</span>
-						</div>
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-							<span class="block text-slate-400 text-[10px] mb-0.5">Return on Equity (ROE)</span>
-							<span class="font-bold text-emerald-400">${roe}</span>
-						</div>
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-							<span class="block text-slate-400 text-[10px] mb-0.5">Profit Margin</span>
-							<span class="font-bold text-emerald-400">${margins}</span>
-						</div>
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-							<span class="block text-slate-400 text-[10px] mb-0.5">Debt to Equity</span>
-							<span class="font-bold text-white">${debtToEq}</span>
-						</div>
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-							<span class="block text-slate-400 text-[10px] mb-0.5">EBITDA</span>
-							<span class="font-bold text-white">${ebitda}</span>
-						</div>
-					</div>
-				</div>
-				
-				<div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-[11px] lg:text-xs">
-					<span class="text-slate-400">Konsensus Analis:</span>
-					<span class="font-bold text-cyan-400 px-2.5 py-1 bg-cyan-900/20 rounded-md border border-cyan-800/50 flex items-center gap-1.5">
-						<i data-lucide="target" class="w-3.5 h-3.5"></i> ${rec} (${targetMean})
-					</span>
-				</div>
-			</div>
-		</div>
-	`;
-	if (window.lucide) lucide.createIcons();
 }
 
 async function fetchStockNews(ticker) {
@@ -2139,7 +2148,7 @@ async function fetchStockNews(ticker) {
 				container.innerHTML += `
 					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 						<div class="flex items-center gap-1.5 mb-2">
-							<span class="text-[9px] lg:text-[10px] bg-blue-500/20 text-blue-400 font-bold px-2 py-0.5 rounded border border-blue-500/30">${item.publisher}</span>
+							<span class="text-[9px] lg:text-[10px] bg-blue-500/20 text-blue-600 font-bold px-2 py-0.5 rounded border border-blue-500/30">${item.publisher}</span>
 							<span class="text-[10px] lg:text-xs text-white">${date}</span>
 						</div>
 						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
@@ -2311,7 +2320,8 @@ function searchStock(bypassCooldown = false) {
 		renderFundamentalWidget(currentTicker);
 		renderAllAlerts();
 		generateAISignal(currentTicker, false);
-		fetchYahooFundamentals(currentTicker);
+		//fetchYahooFundamentals(currentTicker);
+		fetchRealtimeFundamentals(currentTicker);
 		fetchStockNews(currentTicker);
 		fetchCorporateAction(currentTicker);
 
@@ -2779,7 +2789,7 @@ async function runCustomScreener() {
 	const ruleVol = document.getElementById('csRuleVol').value;
 	const rulePrice = document.getElementById('csRulePrice').value;
 
-	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10 border-dashed"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-400"></i> Memindai saham sesuai custom rules Kamu...</div>`;
+	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10 border-dashed"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-600"></i> Memindai saham sesuai custom rules Kamu...</div>`;
 	if (window.lucide) lucide.createIcons();
 
 	const shuffled = [...uniqueRadarWatchlist];
@@ -2845,7 +2855,7 @@ async function runCustomScreener() {
 		else infoMA = `<li class="flex gap-2"><i data-lucide="info" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Tren:</strong> Area dinamis (Bebas), posisi harga akhir Rp ${price.toLocaleString('id-ID')}.</span></li>`;
 
 		let infoVol = '';
-		if (ruleVol === 'SPIKE_1.2') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-blue-400 mt-0.5 shrink-0"></i> <span><strong class="text-blue-400">Volume Spike:</strong> Indikasi akumulasi dengan rasio ${item.volRatio}x lipat dari rerata harian.</span></li>`;
+		if (ruleVol === 'SPIKE_1.2') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-blue-600 mt-0.5 shrink-0"></i> <span><strong class="text-blue-600">Volume Spike:</strong> Indikasi akumulasi dengan rasio ${item.volRatio}x lipat dari rerata harian.</span></li>`;
 		else if (ruleVol === 'SPIKE_2.0') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-fuchsia-400 mt-0.5 shrink-0"></i> <span><strong class="text-fuchsia-400">Volume Meledak:</strong> Akumulasi sangat masif menyentuh ${item.volRatio}x rerata.</span></li>`;
 		else if (ruleVol === 'DRY') infoVol = `<li class="flex gap-2"><i data-lucide="droplet" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-400">Volume Kering:</strong> Sepi transaksi, hanya ${item.volRatio}x lipat (rawan distribusi atau akumulasi pasif).</span></li>`;
 		else infoVol = `<li class="flex gap-2"><i data-lucide="activity" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Likuiditas:</strong> Perdagangan normal dengan kekuatan volume ${item.volRatio}x.</span></li>`;
@@ -2860,7 +2870,7 @@ async function runCustomScreener() {
 			<div class="bg-slate-950/10 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative hover:border-blue-500/30 transition-colors">
 				<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
 					<div class="flex items-center gap-2">
-						<span class="bg-slate-800 text-blue-400 text-[10px] px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
+						<span class="bg-slate-800 text-blue-600 text-[10px] px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
 						<div>
 							<div class="flex items-center gap-2">
 								<span class="font-bold text-white text-sm lg:text-base">&dollar;${item.ticker}</span>
@@ -2871,7 +2881,7 @@ async function runCustomScreener() {
 							<span class="text-[10px] text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (<span class="${item.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>)</span>
 						</div>
 					</div>
-					<span class="text-[9px] font-bold px-2.5 py-1 rounded-full border text-blue-400 border-blue-500/30 bg-blue-500/10">
+					<span class="text-[9px] font-bold px-2.5 py-1 rounded-full border text-blue-600 border-blue-500/30 bg-blue-500/10">
 						Custom Filter Match
 					</span>
 				</div>
@@ -2883,7 +2893,7 @@ async function runCustomScreener() {
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-slate-400 text-[9px] block">AVG Bandar</span>
-						<span class="font-bold text-blue-400">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
+						<span class="font-bold text-blue-600">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-slate-400 text-[9px] block">Take Profit</span>
@@ -2896,7 +2906,7 @@ async function runCustomScreener() {
 				</div>
 
 				<div class="bg-slate-900/50 p-3 rounded border border-slate-800 text-[10px] lg:text-[11px] text-slate-300 leading-relaxed space-y-2">
-					<span class="text-blue-400 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
+					<span class="text-blue-600 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
 						<i data-lucide="list-filter" class="w-3.5 h-3.5"></i> DETAIL KECOCOKAN FILTER:
 					</span>
 					<ul class="space-y-1.5">
@@ -3191,7 +3201,7 @@ function renderPaperTradingUI() {
 				html += `
 					<tr class="hover:bg-slate-800/40">
 						<td class="p-3.5 font-bold text-violet-400">&dollar;${item.ticker}</td>
-						<td class="p-3.5 text-blue-400">${item.lots.toLocaleString('id-ID')} Lot</td>
+						<td class="p-3.5 text-blue-600">${item.lots.toLocaleString('id-ID')} Lot</td>
 						<td class="p-3.5 text-amber-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
 						<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
 						<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
@@ -3228,7 +3238,7 @@ function renderPaperTradingUI() {
 						<div class="flex justify-between items-center pt-1.5 border-t border-slate-800/80 mt-1">
 							<div class="flex flex-col">
 								<span class="text-[11px] text-violet-400 uppercase font-bold">Modal Awal</span>
-								<span class="text-[11px] text-blue-400 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
+								<span class="text-[11px] text-blue-600 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
 							</div>
 							<div class="text-right font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'} text-xs">
 								${isWin ? '+' : ''}Rp ${Math.round(h.profitLoss).toLocaleString('id-ID')} (${isWin ? '+' : ''}${h.profitLossPct}%)
@@ -3567,7 +3577,8 @@ renderTechnicalGauge(currentTicker);
 renderFundamentalWidget(currentTicker);
 fetchStockNews(currentTicker);
 fetchCorporateAction(currentTicker);
-fetchYahooFundamentals(currentTicker);
+//fetchYahooFundamentals(currentTicker);
+fetchRealtimeFundamentals(currentTicker);
 fetchYahooTrending();
 checkWelcomeModal();
 startBackgroundAutoCache();
