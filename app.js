@@ -1055,7 +1055,7 @@ function startPeerRefreshCooldown(seconds = 40) {
 
 	if (peerRefreshCooldownTimer) clearInterval(peerRefreshCooldownTimer);
 
-	btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Tunggu (${remaining}d)`;
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}d)`;
 	if (window.lucide) lucide.createIcons();
 
 	peerRefreshCooldownTimer = setInterval(() => {
@@ -1064,10 +1064,10 @@ function startPeerRefreshCooldown(seconds = 40) {
 			clearInterval(peerRefreshCooldownTimer);
 			btn.disabled = false;
 			btn.classList.remove('opacity-50', 'cursor-not-allowed');
-			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Bandingkan`;
+			btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Bandingkan`;
 			if (window.lucide) lucide.createIcons();
 		} else {
-			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Tunggu (${remaining}d)`;
+			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}d)`;
 			if (window.lucide) lucide.createIcons();
 		}
 	}, 1000);
