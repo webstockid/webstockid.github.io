@@ -703,7 +703,7 @@ async function generateAISignal(ticker, isManualSearch = false) {
 function checkWhaleAlertRealtime(ticker, stockData) {
 	if (!stockData || !stockData.price) return;
 	
-	if (stockData.volRatio >= 2.5 && stockData.changePct >= 0 && stockData.changePct <= 3.0) {
+	if (stockData.volRatio >= 2.0 && stockData.changePct >= 0 && stockData.changePct <= 3.0) {
 		const lastAlertKey = `whale_alert_${ticker}`;
 		const lastAlertTime = localStorage.getItem(lastAlertKey);
 		const now = Date.now();
@@ -713,6 +713,9 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 			
 			AudioFX.playSuccess(); 
 			sendBrowserPushNotification(`STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
+			
+			// FIX: Tambahkan toast agar notifikasi pop-up muncul di dalam UI aplikasi
+			showToast(alertMsg, "info");
 			
 			localStorage.setItem(lastAlertKey, now.toString());
 		}
@@ -829,8 +832,8 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		const checkAboveMA5 = stockData.price > stockData.ma5;
 		const checkAboveMA10 = stockData.price > stockData.ma10;
 		const checkAboveMA20 = stockData.price > stockData.ma20;
-		const isVolBesar = stockData.volRatio >= 0.8;
-		const isSpikeActive = stockData.volRatio >= 1.2;
+		const isVolBesar = stockData.volRatio >= 0.8; // 0.8
+		const isSpikeActive = stockData.volRatio >= 1.2; // 1.2
 
 		if (score === 5 && checkAboveMA5 && isSpikeActive) {
 			actionLabel = "🔥 STRONG BUY";
@@ -1931,6 +1934,9 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 				
 				AudioFX.playSuccess();
 				sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
+				
+				// FIX: Tambahkan toast alert di dalam web agar user langsung sadar
+				showToast(alertMsg, "success");
 
 				if (typeof alertObj === 'object') {
 					alertObj.active = false;
@@ -2628,21 +2634,22 @@ async function runCustomScreener() {
 		for (const item of results) {
 			if (!item || !item.price) continue;
 
+			// FIX: Menambahkan fallback || 0 agar seleksi tidak bentrok jika API delay
 			let matchMA = true;
-			if (ruleMA === 'ABOVE_MA5') matchMA = item.price > item.ma5;
-			else if (ruleMA === 'ABOVE_MA20') matchMA = item.price > item.ma20;
-			else if (ruleMA === 'GOLDEN_CROSS') matchMA = item.ma5 > item.ma10;
-			else if (ruleMA === 'BELOW_MA20') matchMA = item.price < item.ma20;
+			if (ruleMA === 'ABOVE_MA5') matchMA = item.price > (item.ma5 || 0);
+			else if (ruleMA === 'ABOVE_MA20') matchMA = item.price > (item.ma20 || 0);
+			else if (ruleMA === 'GOLDEN_CROSS') matchMA = (item.ma5 || 0) > (item.ma10 || 0);
+			else if (ruleMA === 'BELOW_MA20') matchMA = item.price < (item.ma20 || 0);
 
 			let matchVol = true;
-			if (ruleVol === 'SPIKE_1.1') matchVol = item.volRatio >= 1.1;
-			else if (ruleVol === 'SPIKE_2.0') matchVol = item.volRatio >= 2.0;
-			else if (ruleVol === 'DRY') matchVol = item.volRatio < 1.0;
+			if (ruleVol === 'SPIKE_1.2') matchVol = (item.volRatio || 0) >= 1.2;
+			else if (ruleVol === 'SPIKE_2.0') matchVol = (item.volRatio || 0) >= 2.0;
+			else if (ruleVol === 'DRY') matchVol = (item.volRatio || 0) < 1.0;
 
 			let matchPrice = true;
-			if (rulePrice === 'GREEN') matchPrice = item.changePct > 0;
-			else if (rulePrice === 'RED') matchPrice = item.changePct < 0;
-			else if (rulePrice === 'BREAKOUT') matchPrice = item.changePct >= 3.0;
+			if (rulePrice === 'GREEN') matchPrice = (item.changePct || 0) > 0;
+			else if (rulePrice === 'RED') matchPrice = (item.changePct || 0) < 0;
+			else if (rulePrice === 'BREAKOUT') matchPrice = (item.changePct || 0) >= 3.0;
 
 			if (matchMA && matchVol && matchPrice) {
 				passedItems.push(item);
@@ -2666,16 +2673,15 @@ async function runCustomScreener() {
 		const tp1 = roundToBEITick(price * 1.06, 'ceil');
 		const tp2 = roundToBEITick(price * 1.10, 'ceil');
 
-		// Meracik UI text informatif sesuai rules spesifik
 		let infoMA = '';
-		if (ruleMA === 'ABOVE_MA5') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Pendek:</strong> Bertahan mantap di atas MA5 (Rp ${item.ma5.toLocaleString('id-ID')}).</span></li>`;
-		else if (ruleMA === 'ABOVE_MA20') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Menengah:</strong> Solid di atas support MA20 (Rp ${item.ma20.toLocaleString('id-ID')}).</span></li>`;
-		else if (ruleMA === 'GOLDEN_CROSS') infoMA = `<li class="flex gap-2"><i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0"></i> <span><strong class="text-amber-400">Golden Cross:</strong> MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik di atas MA10.</span></li>`;
-		else if (ruleMA === 'BELOW_MA20') infoMA = `<li class="flex gap-2"><i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0"></i> <span><strong class="text-rose-400">Oversold:</strong> Di bawah MA20 (Rp ${item.ma20.toLocaleString('id-ID')}), pantau momentum teknikal rebound.</span></li>`;
+		if (ruleMA === 'ABOVE_MA5') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Pendek:</strong> Bertahan mantap di atas MA5 (Rp ${(item.ma5 || price).toLocaleString('id-ID')}).</span></li>`;
+		else if (ruleMA === 'ABOVE_MA20') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Menengah:</strong> Solid di atas support MA20 (Rp ${(item.ma20 || price).toLocaleString('id-ID')}).</span></li>`;
+		else if (ruleMA === 'GOLDEN_CROSS') infoMA = `<li class="flex gap-2"><i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0"></i> <span><strong class="text-amber-400">Golden Cross:</strong> MA5 (Rp ${(item.ma5 || price).toLocaleString('id-ID')}) melintasi naik di atas MA10.</span></li>`;
+		else if (ruleMA === 'BELOW_MA20') infoMA = `<li class="flex gap-2"><i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0"></i> <span><strong class="text-rose-400">Oversold:</strong> Di bawah MA20 (Rp ${(item.ma20 || price).toLocaleString('id-ID')}), pantau momentum teknikal rebound.</span></li>`;
 		else infoMA = `<li class="flex gap-2"><i data-lucide="info" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Tren:</strong> Area dinamis (Bebas), posisi harga akhir Rp ${price.toLocaleString('id-ID')}.</span></li>`;
 
 		let infoVol = '';
-		if (ruleVol === 'SPIKE_1.1') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-blue-400 mt-0.5 shrink-0"></i> <span><strong class="text-blue-400">Volume Spike:</strong> Indikasi akumulasi dengan rasio ${item.volRatio}x lipat dari rerata harian.</span></li>`;
+		if (ruleVol === 'SPIKE_1.2') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-blue-400 mt-0.5 shrink-0"></i> <span><strong class="text-blue-400">Volume Spike:</strong> Indikasi akumulasi dengan rasio ${item.volRatio}x lipat dari rerata harian.</span></li>`;
 		else if (ruleVol === 'SPIKE_2.0') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-fuchsia-400 mt-0.5 shrink-0"></i> <span><strong class="text-fuchsia-400">Volume Meledak:</strong> Akumulasi sangat masif menyentuh ${item.volRatio}x rerata.</span></li>`;
 		else if (ruleVol === 'DRY') infoVol = `<li class="flex gap-2"><i data-lucide="droplet" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-400">Volume Kering:</strong> Sepi transaksi, hanya ${item.volRatio}x lipat (rawan distribusi atau akumulasi pasif).</span></li>`;
 		else infoVol = `<li class="flex gap-2"><i data-lucide="activity" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Likuiditas:</strong> Perdagangan normal dengan kekuatan volume ${item.volRatio}x.</span></li>`;
@@ -2911,29 +2917,41 @@ function ptResetAccount() {
 }
 
 async function ptRefreshPortoPrices(isAuto = false) {
-		let acc = getPaperAccount();
-		if (acc.portfolio.length === 0) {
-			if (!isAuto) showToast("Tidak ada saham aktif di portofolio.", "info");
-			return;
-		}
+	let acc = getPaperAccount();
+	if (acc.portfolio.length === 0) {
+		if (!isAuto) showToast("Tidak ada saham aktif di portofolio.", "info");
+		return;
+	}
 
-		if (!isAuto) showToast("Memperbarui harga pasar portofolio...");
-		for (let item of acc.portfolio) {
-			const data = await fetchRealtimeStockData(item.ticker);
-			if (data && data.price) {
-				if (item.tp > 0 && data.price >= item.tp) {
-					ptExecuteSell(item.id);
-					continue;
-				}
-				if (item.sl > 0 && data.price <= item.sl) {
-					ptExecuteSell(item.id);
-					continue;
-				}
+	if (!isAuto) showToast("Memperbarui harga pasar portofolio...");
+	
+	let hasUpdates = false;
+
+	for (let item of acc.portfolio) {
+		// FIX: Tambahkan parameter `true` (forceFetch) agar memaksa menarik data baru dari API
+		const data = await fetchRealtimeStockData(item.ticker, true);
+		
+		if (data && data.price) {
+			hasUpdates = true;
+			
+			if (item.tp > 0 && data.price >= item.tp) {
+				ptExecuteSell(item.id);
+				continue;
+			}
+			if (item.sl > 0 && data.price <= item.sl) {
+				ptExecuteSell(item.id);
+				continue;
 			}
 		}
-		renderPaperTradingUI();
-		if (!isAuto) AudioFX.playSuccess();
 	}
+	
+	// FIX: Hanya eksekusi ulang UI jika terdapat update harga baru
+	if (hasUpdates) {
+		renderPaperTradingUI();
+	}
+	
+	if (!isAuto) AudioFX.playSuccess();
+}
 
 function renderPaperTradingUI() {
 		const acc = getPaperAccount();
