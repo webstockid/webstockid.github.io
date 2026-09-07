@@ -379,7 +379,7 @@ function showError(msg) {
 }
 
 // UTAMA & FITUR FITUR APP
-let currentTicker = 'INET';
+let currentTicker = 'MDIA';
 let currentInterval = 'D';
 
 if (window.lucide) lucide.createIcons();
@@ -858,7 +858,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		if (stockData.changePct >= 0 && stockData.volRatio >= 1.5) {
 			bandarStatus = "Masif Akumulasi 🐋";
 			bandarColor = "text-emerald-400";
-			bandarBarColor = "from-emerald-600 via-emerald-400 to-cyan-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
+			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = Math.min(100, 50 + (stockData.volRatio * 15));
 		} else if (stockData.changePct < 0 && stockData.volRatio < 0.8) {
 			bandarStatus = "Mark Down (Uji Support) 📉";
