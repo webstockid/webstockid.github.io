@@ -602,7 +602,7 @@
 						<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 							<div class="space-y-1">
 								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
-									<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-600"></i> Pemindaian Saham Tingkat Lanjut
+									<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-500"></i> Pemindaian Saham Tingkat Lanjut
 								</span>
 								<p class="text-[10px] lg:text-xs text-slate-400">Rakit parameter screener Kamu sendiri dengan gaya filter institusional.</p>
 							</div>
@@ -623,11 +623,11 @@
 									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
 								</button>
 								<ul id="dropdownMA" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl shadow-slate-950/80 max-h-48 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
-									<li onclick="selectCustomOption('csRuleMA', 'ALL', 'Semua Kondisi (Bebas)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer transition font-medium">Semua Kondisi (Bebas)</li>
-									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA5', 'Harga > MA5 (Uptrend Pendek)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer transition font-medium">Harga > MA5 (Uptrend Pendek)</li>
-									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA20', 'Harga > MA20 (Uptrend Menengah)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer transition font-medium">Harga > MA20 (Uptrend Menengah)</li>
-									<li onclick="selectCustomOption('csRuleMA', 'GOLDEN_CROSS', 'Golden Cross (MA5 > MA10)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer transition font-medium">Golden Cross (MA5 > MA10)</li>
-									<li onclick="selectCustomOption('csRuleMA', 'BELOW_MA20', 'Harga < MA20 (Downtrend / Oversold)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer transition font-medium">Harga &lt; MA20 (Downtrend / Oversold)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'ALL', 'Semua Kondisi (Bebas)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Semua Kondisi (Bebas)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA5', 'Harga > MA5 (Uptrend Pendek)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Harga > MA5 (Uptrend Pendek)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA20', 'Harga > MA20 (Uptrend Menengah)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Harga > MA20 (Uptrend Menengah)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'GOLDEN_CROSS', 'Golden Cross (MA5 > MA10)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Golden Cross (MA5 > MA10)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'BELOW_MA20', 'Harga < MA20 (Downtrend / Oversold)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Harga &lt; MA20 (Downtrend / Oversold)</li>
 								</ul>
 							</div>
 
@@ -640,10 +640,10 @@
 									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
 								</button>
 								<ul id="dropdownVol" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl shadow-slate-950/80 max-h-48 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
-									<li onclick="selectCustomOption('csRuleVol', 'ALL', 'Semua Tingkat Volume', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer transition font-medium">Semua Tingkat Volume</li>
-									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_1.2', 'Volume Spike (> 1.2x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer transition font-medium">Volume Spike (> 1.2x Rerata)</li>
-									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_2.0', 'Volume Meledak (> 2.0x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer transition font-medium">Volume Meledak (> 2.0x Rerata)</li>
-									<li onclick="selectCustomOption('csRuleVol', 'DRY', 'Volume Kering (< 1.0x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer transition font-medium">Volume Kering (&lt; 1.0x Rerata)</li>
+									<li onclick="selectCustomOption('csRuleVol', 'ALL', 'Semua Tingkat Volume', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Semua Tingkat Volume</li>
+									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_1.2', 'Volume Spike (> 1.2x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Volume Spike (> 1.2x Rerata)</li>
+									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_2.0', 'Volume Meledak (> 2.0x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Volume Meledak (> 2.0x Rerata)</li>
+									<li onclick="selectCustomOption('csRuleVol', 'DRY', 'Volume Kering (< 1.0x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Volume Kering (&lt; 1.0x Rerata)</li>
 								</ul>
 							</div>
 
@@ -656,10 +656,10 @@
 									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
 								</button>
 								<ul id="dropdownPrice" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl shadow-slate-950/80 max-h-48 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
-									<li onclick="selectCustomOption('csRulePrice', 'ALL', 'Semua Perubahan Harga', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer transition font-medium">Semua Perubahan Harga</li>
-									<li onclick="selectCustomOption('csRulePrice', 'GREEN', 'Ditutup menguat (Hijau / > 0%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer transition font-medium">Ditutup menguat (Hijau / > 0%)</li>
-									<li onclick="selectCustomOption('csRulePrice', 'RED', 'Ditutup Melemah (Merah / < 0%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer transition font-medium">Ditutup Melemah (Merah / &lt; 0%)</li>
-									<li onclick="selectCustomOption('csRulePrice', 'BREAKOUT', 'Breakout Kuat (> 3%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-600 cursor-pointer transition font-medium">Breakout Kuat (> 3%)</li>
+									<li onclick="selectCustomOption('csRulePrice', 'ALL', 'Semua Perubahan Harga', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Semua Perubahan Harga</li>
+									<li onclick="selectCustomOption('csRulePrice', 'GREEN', 'Ditutup menguat (Hijau / > 0%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Ditutup menguat (Hijau / > 0%)</li>
+									<li onclick="selectCustomOption('csRulePrice', 'RED', 'Ditutup Melemah (Merah / < 0%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Ditutup Melemah (Merah / &lt; 0%)</li>
+									<li onclick="selectCustomOption('csRulePrice', 'BREAKOUT', 'Breakout Kuat (> 3%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Breakout Kuat (> 3%)</li>
 								</ul>
 							</div>
 
@@ -668,7 +668,7 @@
 
 					<div id="csResultsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[800px] overflow-y-auto pr-1.5 scrollbar-thin">
 						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2">
-							Atur parameter pada menu <i>dropdown</i> di atas dan klik <strong class="text-blue-600">"Jalankan Filter"</strong> untuk melihat saham yang lolos seleksi Kamu.
+							Atur parameter pada menu <i>dropdown</i> di atas dan klik <strong class="text-blue-500">"Jalankan Filter"</strong> untuk melihat saham yang lolos seleksi Kamu.
 						</div>
 						<!--<div class="text-center text-slate-400 text-xs lg:text-sm py-14 lg:col-span-4 border border-slate-800 rounded-xl bg-slate-950/10">
 							Atur parameter pada menu <i>dropdown</i> di atas dan klik <strong class="text-blue-400">"Jalankan Filter"</strong> untuk melihat saham yang lolos seleksi Kamu.

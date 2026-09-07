@@ -1514,7 +1514,7 @@ function renderRadarItems(dataList) {
 			alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah (*reversal*) awal berpotensi terbentuk.`;
 		} else if (item.volRatio >= 1.5) {
 			statusSignal = "⚡ Volume Accumulation";
-			statusClass = "text-blue-600 border-blue-500/30 bg-blue-500/10";
+			statusClass = "text-blue-500 border-blue-500/30 bg-blue-500/10";
 			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata 10 hari</strong>. Mengindikasikan partisipasi modal besar (*smart money*) di pasar.`;
 		} else if (changePct < 0 && item.price >= item.ma20) {
 			statusSignal = "🛡️ Support Retest";
@@ -1549,7 +1549,7 @@ function renderRadarItems(dataList) {
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-white text-[9px] lg:text-[10px] block">AVG Bandar</span>
-						<span class="font-bold text-blue-600">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
+						<span class="font-bold text-blue-500">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-white text-[9px] lg:text-[10px] block">Take Profit</span>
@@ -2190,7 +2190,7 @@ async function fetchStockNews(ticker) {
 				container.innerHTML += `
 					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 						<div class="flex items-center gap-1.5 mb-2">
-							<span class="text-[9px] lg:text-[10px] bg-blue-500/20 text-blue-600 font-bold px-2 py-0.5 rounded border border-blue-500/30">${item.publisher}</span>
+							<span class="text-[9px] lg:text-[10px] bg-blue-500/20 text-blue-500 font-bold px-2 py-0.5 rounded border border-blue-500/30">${item.publisher}</span>
 							<span class="text-[10px] lg:text-xs text-white">${date}</span>
 						</div>
 						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
@@ -2485,7 +2485,7 @@ function startVoiceSearch() {
 		voiceIcon.classList.remove('fa-microphone-lines', 'text-rose-500', 'animate-pulse');
 		voiceIcon.classList.add('fa-microphone', 'text-slate-400');
 		setTimeout(() => {
-			input.placeholder = "Cari saham (BBCA...) atau klik Mic";
+			input.placeholder = "Cari saham (MDIA...) atau klik Mic";
 		}, 2000);
 	};
 
@@ -2832,7 +2832,7 @@ async function runCustomScreener() {
 	const ruleVol = document.getElementById('csRuleVol').value;
 	const rulePrice = document.getElementById('csRulePrice').value;
 
-	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10 border-dashed"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-600"></i> Memindai saham sesuai custom rules Kamu...</div>`;
+	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10 border-dashed"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Memindai saham sesuai custom rules Kamu...</div>`;
 	if (window.lucide) lucide.createIcons();
 
 	const shuffled = [...uniqueRadarWatchlist];
@@ -2898,7 +2898,7 @@ async function runCustomScreener() {
 		else infoMA = `<li class="flex gap-2"><i data-lucide="info" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Tren:</strong> Area dinamis (Bebas), posisi harga akhir Rp ${price.toLocaleString('id-ID')}.</span></li>`;
 
 		let infoVol = '';
-		if (ruleVol === 'SPIKE_1.2') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-blue-600 mt-0.5 shrink-0"></i> <span><strong class="text-blue-600">Volume Spike:</strong> Indikasi akumulasi dengan rasio ${item.volRatio}x lipat dari rerata harian.</span></li>`;
+		if (ruleVol === 'SPIKE_1.2') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-blue-500 mt-0.5 shrink-0"></i> <span><strong class="text-blue-500">Volume Spike:</strong> Indikasi akumulasi dengan rasio ${item.volRatio}x lipat dari rerata harian.</span></li>`;
 		else if (ruleVol === 'SPIKE_2.0') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-fuchsia-400 mt-0.5 shrink-0"></i> <span><strong class="text-fuchsia-400">Volume Meledak:</strong> Akumulasi sangat masif menyentuh ${item.volRatio}x rerata.</span></li>`;
 		else if (ruleVol === 'DRY') infoVol = `<li class="flex gap-2"><i data-lucide="droplet" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-400">Volume Kering:</strong> Sepi transaksi, hanya ${item.volRatio}x lipat (rawan distribusi atau akumulasi pasif).</span></li>`;
 		else infoVol = `<li class="flex gap-2"><i data-lucide="activity" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Likuiditas:</strong> Perdagangan normal dengan kekuatan volume ${item.volRatio}x.</span></li>`;
@@ -2913,7 +2913,7 @@ async function runCustomScreener() {
 			<div class="bg-slate-950/10 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative hover:border-blue-500/30 transition-colors">
 				<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
 					<div class="flex items-center gap-2">
-						<span class="bg-slate-800 text-blue-600 text-[10px] px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
+						<span class="bg-slate-800 text-blue-500 text-[10px] px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
 						<div>
 							<div class="flex items-center gap-2">
 								<span class="font-bold text-white text-sm lg:text-base">&dollar;${item.ticker}</span>
@@ -2924,7 +2924,7 @@ async function runCustomScreener() {
 							<span class="text-[10px] text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (<span class="${item.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>)</span>
 						</div>
 					</div>
-					<span class="text-[9px] font-bold px-2.5 py-1 rounded-full border text-blue-600 border-blue-500/30 bg-blue-500/10">
+					<span class="text-[9px] font-bold px-2.5 py-1 rounded-full border text-blue-500 border-blue-500/30 bg-blue-500/10">
 						Custom Filter Match
 					</span>
 				</div>
@@ -2936,7 +2936,7 @@ async function runCustomScreener() {
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-slate-400 text-[9px] block">AVG Bandar</span>
-						<span class="font-bold text-blue-600">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
+						<span class="font-bold text-blue-500">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-slate-400 text-[9px] block">Take Profit</span>
@@ -2949,7 +2949,7 @@ async function runCustomScreener() {
 				</div>
 
 				<div class="bg-slate-900/50 p-3 rounded border border-slate-800 text-[10px] lg:text-[11px] text-slate-300 leading-relaxed space-y-2">
-					<span class="text-blue-600 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
+					<span class="text-blue-500 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
 						<i data-lucide="list-filter" class="w-3.5 h-3.5"></i> DETAIL KECOCOKAN FILTER:
 					</span>
 					<ul class="space-y-1.5">
@@ -3244,7 +3244,7 @@ function renderPaperTradingUI() {
 				html += `
 					<tr class="hover:bg-slate-800/40">
 						<td class="p-3.5 font-bold text-violet-400">&dollar;${item.ticker}</td>
-						<td class="p-3.5 text-blue-600">${item.lots.toLocaleString('id-ID')} Lot</td>
+						<td class="p-3.5 text-blue-500">${item.lots.toLocaleString('id-ID')} Lot</td>
 						<td class="p-3.5 text-amber-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
 						<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
 						<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
@@ -3281,7 +3281,7 @@ function renderPaperTradingUI() {
 						<div class="flex justify-between items-center pt-1.5 border-t border-slate-800/80 mt-1">
 							<div class="flex flex-col">
 								<span class="text-[11px] text-violet-400 uppercase font-bold">Modal Awal</span>
-								<span class="text-[11px] text-blue-600 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
+								<span class="text-[11px] text-blue-500 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
 							</div>
 							<div class="text-right font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'} text-xs">
 								${isWin ? '+' : ''}Rp ${Math.round(h.profitLoss).toLocaleString('id-ID')} (${isWin ? '+' : ''}${h.profitLossPct}%)
@@ -3595,12 +3595,12 @@ function showToast(message, type = 'success') {
     }, 3500);
 }
 
-initSearchSuggestions();
 checkVIPAuth();
 cleanExpiredCache();
-updateMarketBadge();
 checkUrlParamTicker();
 checkNotificationStatus();
+initSearchSuggestions();
+updateMarketBadge();
 
 document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
@@ -3611,17 +3611,17 @@ document.getElementById('alertTickerLabel').innerText = currentTicker;
 document.getElementById('corpTickerLabel').innerText = currentTicker;
 document.getElementById('peerTickerLabel').innerText = currentTicker;
 
-generateAISignal(currentTicker);
-renderAllAlerts();
-renderJournalTable();
-renderPaperTradingUI();
 renderChart(currentTicker);
+generateAISignal(currentTicker);
 renderTechnicalGauge(currentTicker);
 renderFundamentalWidget(currentTicker);
 fetchStockNews(currentTicker);
 fetchCorporateAction(currentTicker);
 //fetchYahooFundamentals(currentTicker);
 fetchRealtimeFundamentals(currentTicker);
+renderAllAlerts();
+renderJournalTable();
+renderPaperTradingUI();
 fetchYahooTrending();
 checkWelcomeModal();
 startBackgroundAutoCache();
