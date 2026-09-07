@@ -255,10 +255,11 @@
 		</div>
 
 		<!-- Fixed Search Bar Melayang -->
-		<div class="sticky top-20 left-0 w-full z-20 glassmorphism border-b border-slate-800/80 py-3 px-4">
+		<div class="sticky top-20 left-0 w-full z-20 glassmorphism border-b border-slate-800/80 py-3 px-4 space-y-2">
+			<!-- Container Trending dipindah ke luar searchContainer agar styling rapi -->
+			<div id="yahooTrendingContainer" class="max-w-md lg:max-w-xl mx-auto px-1 overflow-x-auto scrollbar-thin"></div>
+
 			<div class="max-w-md lg:max-w-xl mx-auto relative" id="searchContainer">
-				<!-- Letakkan di dalam div sticky pencarian, tepat di bawah tag penutup id="searchContainer" -->
-				<div id="yahooTrendingContainer" class="max-w-md lg:max-w-xl mx-auto mt-3 px-1 overflow-x-auto scrollbar-thin"></div>
 				<i data-lucide="search" class="absolute left-3.5 top-3 lg:top-3.5 w-4 h-4 lg:w-5 lg:h-5 text-white z-10"></i>
 				<input type="text" id="stockSearch" autocomplete="off" placeholder="Cari saham (BBCA...) atau klik Mic" 
 					class="w-full bg-slate-800 text-sm lg:text-base border border-slate-700 rounded-lg pl-10 lg:pl-11 pr-[110px] py-2 lg:py-2.5 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
