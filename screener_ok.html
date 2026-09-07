@@ -226,7 +226,7 @@
 		</div>
 		
 		<!-- Running Tape TradingView -->
-		<div class="bg-slate-950 border-b border-slate-800/80 overflow-hidden relative z-30 select-none">
+		<div class="bg-slate-950/10 border-b border-slate-800/80 overflow-hidden relative z-30 select-none">
 			<div class="tradingview-widget-container">
 				<div class="tradingview-widget-container__widget"></div>
 				<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
@@ -288,7 +288,7 @@
 
 				<div class="space-y-3">
 					<div>
-						<input type="text" id="tokenInput" placeholder="Ketik token di sini..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-center text-sm tracking-widest text-emerald-400 uppercase focus:outline-none focus:border-emerald-500 transition">
+						<input type="text" id="tokenInput" placeholder="Ketik token di sini..." class="w-full bg-slate-950/10 border border-slate-800 rounded-xl px-4 py-3 text-center text-sm tracking-widest text-emerald-400 uppercase focus:outline-none focus:border-emerald-500 transition">
 						<p id="loginErrorMsg" class="text-rose-400 text-xs text-center mt-2 hidden"></p>
 					</div>
 					<button onclick="loginVIP()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-sm">
@@ -446,7 +446,7 @@
 				<!-- Tab 1: AI Signal -->
 				<div id="tabContent-ai" class="space-y-4 min-h-[300px] text-xs lg:text-sm">
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3">
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3">
 							<div class="flex items-center justify-between">
 								<span class="font-bold text-slate-200 uppercase tracking-wider text-[11px] lg:text-xs" id="aiHeaderTicker">[MDIA] — KONDISI TEKNIKAL</span>
 								<span class="text-[10px] lg:text-[11px] text-white" id="aiDateStamp">Memuat data real-time...</span>
@@ -469,7 +469,7 @@
 							<div id="aiActionBoard" class="hidden flex flex-col space-y-2 mt-3 pt-3 border-t border-slate-800/80"></div>
 						</div>
 
-						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="check-circle-2" class="w-4 h-4"></i> BUKTI UTAMA & KATALIS TEKNIKAL
 							</span>
@@ -480,7 +480,7 @@
 					</div>
 
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3.5">
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3.5">
 							<span class="font-bold text-cyan-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="map-pin" class="w-4 h-4"></i> TRADING MAP (TECHNICAL PIVOT)
 							</span>
@@ -509,7 +509,7 @@
 									<span class="font-bold bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/40 px-2.5 py-0.5 rounded" id="tpBarCurrent">Harga: -</span>
 									<span class="text-emerald-400 font-bold" id="tpBarTP">TP1: -</span>
 								</div>
-								<div class="w-full bg-slate-950 rounded-full h-3 lg:h-3.5 overflow-hidden border border-slate-800 relative p-0.5">
+								<div class="w-full bg-slate-950/10 rounded-full h-3 lg:h-3.5 overflow-hidden border border-slate-800 relative p-0.5">
 									<div id="tpProgressBar" class="h-full rounded-full transition-all duration-1000 ease-out bg-gradient-to-r from-rose-500 via-amber-400 to-emerald-400 relative" style="width: 0%;">
 										<div class="absolute right-0 top-0 bottom-0 w-2 bg-white rounded-full shadow-lg shadow-white animate-ping"></div>
 									</div>
@@ -522,7 +522,7 @@
 							</div>
 						</div>
 
-						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-purple-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="newspaper" class="w-4 h-4"></i> BERITA RELEVAN
 							</span>
@@ -533,7 +533,7 @@
 					</div>
 
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-amber-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="git-fork" class="w-4 h-4"></i> SKENARIO PERGERAKAN HARGA
 							</span>
@@ -542,7 +542,7 @@
 							</div>
 						</div>
 
-						<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="thumbs-up" class="w-4 h-4"></i> KESIMPULAN & NOTE AI
 							</span>
@@ -588,14 +588,14 @@
 						</div>
 					</div>
 
-					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
 						💡 <strong>Pemindaian Otomatis:</strong> Mencari saham berpotensi seperti: Momentum Breakout, Volume Accumulation, Golden Cross, Curi Start dan Pengujian Support dari bursa secara otomatis tanpa perlu memfilter manual.
 					</p>
 				</div>
 				
 				<!-- TAB 1: CUSTOM SCREENER BUILDER -->
 				<div id="tabContent-custom" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
-					<div class="bg-slate-950 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 shadow-lg shadow-blue-500/5">
+					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 shadow-lg shadow-blue-500/5">
 						<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 							<div class="space-y-1">
 								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
@@ -615,7 +615,7 @@
 							<div class="relative">
 								<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">1. Tren Harga & MA</label>
 								<input type="hidden" id="csRuleMA" value="ALL">
-								<button onclick="toggleCustomDropdown('dropdownMA')" class="w-full bg-slate-950 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
+								<button onclick="toggleCustomDropdown('dropdownMA')" class="w-full bg-slate-950/10 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
 									<span id="csRuleMA_Label" class="truncate pr-2 font-medium text-blue-100">Semua Kondisi (Bebas)</span>
 									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
 								</button>
@@ -632,7 +632,7 @@
 							<div class="relative">
 								<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">2. Syarat Volume (Likuiditas)</label>
 								<input type="hidden" id="csRuleVol" value="ALL">
-								<button onclick="toggleCustomDropdown('dropdownVol')" class="w-full bg-slate-950 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
+								<button onclick="toggleCustomDropdown('dropdownVol')" class="w-full bg-slate-950/10 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
 									<span id="csRuleVol_Label" class="truncate pr-2 font-medium text-blue-100">Semua Tingkat Volume</span>
 									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
 								</button>
@@ -648,7 +648,7 @@
 							<div class="relative">
 								<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">3. Pergerakan Harian (%)</label>
 								<input type="hidden" id="csRulePrice" value="ALL">
-								<button onclick="toggleCustomDropdown('dropdownPrice')" class="w-full bg-slate-950 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
+								<button onclick="toggleCustomDropdown('dropdownPrice')" class="w-full bg-slate-950/10 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
 									<span id="csRulePrice_Label" class="truncate pr-2 font-medium text-blue-100">Semua Perubahan Harga</span>
 									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
 								</button>
@@ -664,19 +664,19 @@
 					</div>
 
 					<div id="csResultsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[800px] overflow-y-auto pr-1.5 scrollbar-thin">
-						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950 border-dashed">
+						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10 border-dashed">
 							Atur parameter pada menu <i>dropdown</i> di atas dan klik <b>"Jalankan Filter"</b> untuk melihat emiten yang lolos seleksi Kamu.
 						</div>
 					</div>
 					
-					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
 						💡 <strong>Pemindaian Manual:</strong> Mencari saham secara ketat dan presisi yang bisa didukung dengan beberapa filter sekaligus.
 					</p>
 				</div>
 
 				<!-- Tab 3: Peer Komparasi -->
 				<div id="tabContent-peer" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
-					<div class="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
+					<div class="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
 								<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Komparasi Saham Harga Serupa (<strong id="peerTickerLabel" class="text-emerald-400">MDIA</strong>)
@@ -690,7 +690,7 @@
 
 					<div class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
 						<table class="w-full text-left text-xs text-slate-300 whitespace-nowrap min-w-[700px]">
-							<thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
+							<thead class="bg-slate-950/10 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
 								<tr>
 									<th class="p-3.5">Kode Emiten</th>
 									<th class="p-3.5">Harga Terkini</th>
@@ -708,7 +708,7 @@
 						</table>
 					</div>
 					
-					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
 						💡 <strong>Logika Range Harga:</strong> Sistem menyaring daftar saham yang memiliki nilai transaksi per lembar dalam rentang ±25% serta beberapa indikator dari emiten $<span id="peerTickerRef">MDIA</span>.
 					</p>
 				</div>
@@ -737,7 +737,7 @@
 
 				<!-- Tab 8: Smart Alert -->
 				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
-					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
 								<i data-lucide="bell-ring" class="w-4 h-4 text-teal-400"></i> Smart Alert & Push Notification System
@@ -752,7 +752,7 @@
 						</div>
 					</div>
 
-					<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+					<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
 						<div>
 							<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
 								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Alert Untuk:<span id="alertTickerLabel" class="text-teal">MDIA</span>
@@ -776,7 +776,7 @@
 						</div>
 					</div>
 
-					<p class="text-[10px] lg:text-[11px] text-slate-400 italic bg-slate-950 p-3 rounded-lg border border-slate-900 leading-normal">
+					<p class="text-[10px] lg:text-[11px] text-slate-400 italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
 						💡 <strong>Informasi Push Notification:</strong> Notifikasi browser akan dikirimkan secara otomatis bahkan saat Kamu sedang membuka tab browser lain selama web Stock ID Screener tetap terbuka.
 					</p>
 				</div>
@@ -784,7 +784,7 @@
 				<!-- TAB 2: PAPER TRADE (COMPACT & TABBED SWITCH) -->
 				<div id="tabContent-paper" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
 					<!-- Compact Rank & Balance Banner -->
-					<div class="bg-slate-950 p-4 rounded-xl border border-violet-500/20 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center shadow-lg shadow-violet-500/5">
+					<div class="bg-slate-950/10 p-4 rounded-xl border border-violet-500/20 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center shadow-lg shadow-violet-500/5">
 						<div class="flex items-center gap-3">
 							<div class="w-10 h-10 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-300 shrink-0">
 								<i data-lucide="trophy" class="w-5 h-5"></i>
@@ -816,7 +816,7 @@
 					</div>
 
 					<!-- Sub-Tab Content 1: Form Eksekusi -->
-					<div id="ptSubContentForm" class="bg-slate-950 p-4 lg:p-6 rounded-xl border border-violet-500/20 space-y-4 max-w-xl mx-auto shadow-xl shadow-violet-950/20">
+					<div id="ptSubContentForm" class="bg-slate-950/10 p-4 lg:p-6 rounded-xl border border-violet-500/20 space-y-4 max-w-xl mx-auto shadow-xl shadow-violet-950/20">
 						<div class="flex items-center justify-between border-b border-violet-500/20 pb-3">
 							<span class="font-bold text-violet-200 flex items-center gap-2 text-sm"><i data-lucide="shopping-cart" class="w-4 h-4 text-violet-400"></i> Form Order Virtual</span>
 							<button onclick="ptSyncCurrentTicker()" class="text-[10px] bg-blue-800 hover:bg-blue-500 hover:text-white text-white px-3 py-1.5 rounded-lg border border-blue-700 transition font-bold flex items-center gap-1.5"><i data-lucide="wand-2" class="w-3 h-3"></i> Sync AI Signal</button>
@@ -862,7 +862,7 @@
 					</div>
 	
 					<!-- Sub-Tab Content 2: Portofolio & Riwayat -->
-					<div id="ptSubContentPorto" class="hidden bg-slate-950 p-4 lg:p-5 rounded-xl border border-violet-500/20 space-y-4 shadow-xl shadow-violet-950/20">
+					<div id="ptSubContentPorto" class="hidden bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-violet-500/20 space-y-4 shadow-xl shadow-violet-950/20">
 						<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-violet-500/20 pb-3">
 							<span class="font-bold text-violet-200 flex items-center gap-2 text-sm"><i data-lucide="briefcase" class="w-4 h-4 text-violet-400"></i> Portofolio Saham Aktif</span>
 							<div class="flex items-center gap-2">
@@ -900,7 +900,7 @@
 
 				<!-- Tab 6: Smart RRR -->
 				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
-					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
 								<i data-lucide="calculator" class="w-4 h-4 lg:w-5 lg:h-5 text-cyan-400"></i> Smart RRR & Position Sizing (<strong id="rrrTickerLabel" class="text-cyan-400">MDIA</strong>)
@@ -920,7 +920,7 @@
 
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 						<div class="space-y-4">
-							<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
+							<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-800 space-y-2.5">
 								<span class="text-[10px] lg:text-[11px] font-bold text-white uppercase tracking-wider block">1. Parameter Modal & Toleransi Risiko</span>
 								<div class="grid grid-cols-2 gap-2.5">
 									<div>
@@ -934,7 +934,7 @@
 								</div>
 							</div>
 
-							<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2.5">
+							<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-800 space-y-2.5">
 								<span class="text-[10px] lg:text-[11px] font-bold text-white uppercase tracking-wider block">2. Level Harga Trading Plan</span>
 								<div class="grid grid-cols-3 gap-2.5">
 									<div>
@@ -953,7 +953,7 @@
 							</div>
 						</div>
 
-						<div class="bg-slate-950 border border-slate-800 rounded-xl p-4 lg:p-5 space-y-3.5 flex flex-col justify-between">
+						<div class="bg-slate-950/10 border border-slate-800 rounded-xl p-4 lg:p-5 space-y-3.5 flex flex-col justify-between">
 							<div>
 								<div class="flex justify-between items-center border-b border-slate-800 pb-2.5 mb-3">
 									<span class="text-slate-300 text-xs lg:text-sm">Rasio Risk / Reward:</span>
@@ -992,25 +992,25 @@
 				<!-- Tab 7: Journal Trading -->
 				<div id="tabContent-journal" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
-						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800">
 							<span class="text-slate-400 text-[10px] uppercase block font-bold">Total Planned Trade</span>
 							<span class="text-lg font-bold text-white" id="journalTotalCount">0</span>
 						</div>
-						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800">
 							<span class="text-slate-400 text-[10px] uppercase block font-bold">Win Rate</span>
 							<span class="text-lg font-bold text-emerald-400" id="journalWinRate">0%</span>
 						</div>
-						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800">
 							<span class="text-slate-400 text-[10px] uppercase block font-bold">Successful TP</span>
 							<span class="text-lg font-bold text-emerald-300" id="journalWinCount">0</span>
 						</div>
-						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800">
 							<span class="text-slate-400 text-[10px] uppercase block font-bold">Hit Stop Loss</span>
 							<span class="text-lg font-bold text-rose-400" id="journalLossCount">0</span>
 						</div>
 					</div>
 
-					<div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center bg-slate-950 p-3.5 rounded-xl border border-slate-800 gap-3">
+					<div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center bg-slate-950/10 p-3.5 rounded-xl border border-slate-800 gap-3">
 						<div class="flex items-center gap-3">
 							<span class="font-bold text-slate-200 text-xs">Mode Tampilan:</span>
 							<div class="flex bg-slate-900 p-1 rounded-lg border border-slate-800">
@@ -1032,7 +1032,7 @@
 					<!-- Tampilan Tabel Journal -->
 					<div id="journalTableView" class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
 						<table class="w-full text-left text-xs text-slate-300 whitespace-nowrap min-w-[750px]">
-							<thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
+							<thead class="bg-slate-950/10 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
 								<tr>
 									<th class="p-3.5">Tanggal</th>
 									<th class="p-3.5">Emiten</th>
@@ -1054,7 +1054,7 @@
 
 					<!-- Tampilan Kanban Board -->
 					<div id="journalKanbanView" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
-						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'OPEN')">
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'OPEN')">
 							<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
 								<span class="text-amber-400 font-bold text-xs uppercase flex items-center gap-1.5">
 									<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> OPEN PLAN
@@ -1064,7 +1064,7 @@
 							<div id="kanbanColOpen" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
 						</div>
 
-						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'WIN')">
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'WIN')">
 							<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
 								<span class="text-emerald-400 font-bold text-xs uppercase flex items-center gap-1.5">
 									<span class="w-2 h-2 rounded-full bg-emerald-400"></span> WIN / TAKE PROFIT
@@ -1074,7 +1074,7 @@
 							<div id="kanbanColWin" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
 						</div>
 
-						<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'LOSS')">
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'LOSS')">
 							<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
 								<span class="text-rose-400 font-bold text-xs uppercase flex items-center gap-1.5">
 									<span class="w-2 h-2 rounded-full bg-rose-400"></span> LOSS / STOP LOSS
@@ -1102,7 +1102,7 @@
 
 				<!-- Tab 10: Sector Heatmap -->
 				<div id="tabContent-heatmap" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
-					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 gap-3">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
 						<div>
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
 								<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Peta Panas Sektor & Saham BEI (IDX Heatmap)
@@ -1110,7 +1110,7 @@
 							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Memantau aliran kapital dan performa sektoral Bursa Efek Indonesia secara visual interaktif.</p>
 						</div>
 					</div>
-					<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 h-[600px] overflow-hidden">
+					<div class="bg-slate-950/10 p-3 rounded-xl border border-slate-800 h-[600px] overflow-hidden">
 						<div class="tradingview-widget-container h-full w-full" id="tv_heatmap_container"></div>
 					</div>
 				</div>
@@ -1118,7 +1118,7 @@
 		</main>
 
 		<!-- Container Export Trading Card (HTML2Canvas Target) -->
-		<div id="exportCardContainer" class="fixed -left-[9999px] top-0 w-[620px] bg-slate-950 text-white p-7 rounded-3xl border-2 border-emerald-500/40 space-y-5 shadow-2xl">
+		<div id="exportCardContainer" class="fixed -left-[9999px] top-0 w-[620px] bg-slate-950/10 text-white p-7 rounded-3xl border-2 border-emerald-500/40 space-y-5 shadow-2xl">
 			<div class="flex justify-between items-center border-b border-slate-800/80 pb-4">
 				<div class="flex items-center gap-3">
 					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2.5 rounded-2xl text-slate-950 shadow-lg shadow-emerald-500/20">
@@ -1167,15 +1167,15 @@
 			<div class="bg-slate-900/70 p-4 rounded-2xl border border-slate-800/80 space-y-2">
 				<span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block">INDIKATOR TEKNIKAL UTAMA:</span>
 				<div class="grid grid-cols-3 gap-2 text-xs pt-1 border-t border-slate-800/60">
-					<div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-center">
+					<div class="bg-slate-950/10 p-2 rounded-lg border border-slate-800 text-center">
 						<span class="text-[7px] text-white block mb-1">VOL RATIO</span>
 						<span class="text-sm text-emerald-400 font-bold block" id="cardVolRatio">1.0x</span>
 					</div>
-					<div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-center">
+					<div class="bg-slate-950/10 p-2 rounded-lg border border-slate-800 text-center">
 						<span class="text-[7px] text-white block mb-1">LEVEL MA 5</span>
 						<span class="text-sm text-amber-400 font-bold block" id="cardMA5">Rp 0</span>
 					</div>
-					<div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-center">
+					<div class="bg-slate-950/10 p-2 rounded-lg border border-slate-800 text-center">
 						<span class="text-[7px] text-white block mb-1">LEVEL MA 10</span>
 						<span class="text-sm text-cyan-400 font-bold block" id="cardMA10">Rp 0</span>
 					</div>
@@ -1227,7 +1227,7 @@
 			<!-- Jendela Chat Modal (Hidden by default) -->
 			<div id="aiChatWindow" class="hidden opacity-0 scale-95 transition-all duration-300 ease-out w-80 sm:w-96 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden mb-4 flex flex-col h-[450px]">
 				<!-- Header Chat -->
-				<div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+				<div class="bg-slate-950/10 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
 					<div class="flex items-center gap-2">
 						<div class="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
 							<i data-lucide="sparkles" class="w-4 h-4"></i>
@@ -1255,7 +1255,7 @@
 				</div>
 
 				<!-- Footer Input Chat -->
-				<div class="p-3 bg-slate-950 border-t border-slate-800 flex items-center gap-2">
+				<div class="p-3 bg-slate-950/10 border-t border-slate-800 flex items-center gap-2">
 					<input type="text" id="aiChatInput" placeholder="Ketik pertanyaan saham..." 
 						class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 placeholder-slate-500">
 					<button onclick="sendAIChatMessage()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 p-2 rounded-xl transition font-bold flex items-center justify-center shrink-0">
