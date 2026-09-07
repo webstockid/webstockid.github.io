@@ -1088,7 +1088,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	const refLabel = document.getElementById('peerTickerRef');
 	if (refLabel) refLabel.innerText = targetTicker;
 
-	body.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1 text-cyan-400"></i> Memuat saham-saham dengan harga serupa...</td></tr>`;
+	body.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1 text-cyan-400"></i> Memuat saham-saham dengan harga serupa...</td></tr>`;
 	if (window.lucide) lucide.createIcons();
 
 	let baseData = globalStockData;
@@ -1097,7 +1097,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	}
 
 	if (!baseData || !baseData.price) {
-		body.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Gagal memuat harga acuan $${targetTicker}.</td></tr>`;
+		body.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-400">Gagal memuat harga acuan $${targetTicker}.</td></tr>`;
 		return;
 	}
 
@@ -1122,10 +1122,10 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 			if (item && item.price >= minPrice && item.price <= maxPrice) {
 				peerResults.push(item);
 			}
-			if (peerResults.length >= 6) break;
+			if (peerResults.length >= 8) break;
 		}
 
-		if (peerResults.length >= 6) break;
+		if (peerResults.length >= 8) break;
 	}
 
 	let rowsHTML = '';
@@ -2740,7 +2740,7 @@ document.addEventListener('click', function(e) {
 	});
 });
 
-function startCustomScreenerCooldown(seconds = 30) {
+function startCustomScreenerCooldown(seconds = 40) {
 	const btn = document.getElementById('btnRunCustomScreener');
 	if (!btn) return;
 
@@ -3192,7 +3192,7 @@ function renderPaperTradingUI() {
 					<tr class="hover:bg-slate-800/40">
 						<td class="p-3.5 font-bold text-violet-400">&dollar;${item.ticker}</td>
 						<td class="p-3.5 text-blue-400">${item.lots.toLocaleString('id-ID')} Lot</td>
-						<td class="p-3.5 text-cyan-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
+						<td class="p-3.5 text-amber-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
 						<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
 						<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
 							${isPlus ? '+' : ''}Rp ${Math.round(pnl).toLocaleString('id-ID')} (${isPlus ? '+' : ''}${pnlPct}%)
@@ -3219,16 +3219,16 @@ function renderPaperTradingUI() {
 					<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1 shadow-sm hover:border-slate-500/30 transition-colors">
 						<div class="flex justify-between items-center">
 							<span class="font-bold text-violet-400">&dollar;${h.ticker} (${h.lots} Lot)</span>
-							<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-violet-500/10 border border-slate-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
+							<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
 						</div>
 						<div class="flex justify-between text-[11px] text-slate-300 pb-1">
 							<span class="font-bold text-sky-400">Beli: Rp ${h.buyPrice.toLocaleString('id-ID')}</span>
-							<span class="font-bold text-cyan-400">Jual: Rp ${h.sellPrice.toLocaleString('id-ID')}</span>
+							<span class="font-bold text-sky-400">Jual: Rp ${h.sellPrice.toLocaleString('id-ID')}</span>
 						</div>
 						<div class="flex justify-between items-center pt-1.5 border-t border-slate-800/80 mt-1">
 							<div class="flex flex-col">
-								<span class="text-[8px] text-slate-400 uppercase font-bold">Modal Awal</span>
-								<span class="text-[10px] text-slate-300 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
+								<span class="text-[11px] text-violet-400 uppercase font-bold">Modal Awal</span>
+								<span class="text-[11px] text-blue-400 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
 							</div>
 							<div class="text-right font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'} text-xs">
 								${isWin ? '+' : ''}Rp ${Math.round(h.profitLoss).toLocaleString('id-ID')} (${isWin ? '+' : ''}${h.profitLossPct}%)
@@ -3385,7 +3385,7 @@ function generateAIResponse(prompt) {
 		`;
 	}
 
-	if (lower.includes('stoploss') || lower.includes('stop loss') || lower.includes('area stop loss') || lower.includes('cutloss') || lower.includes('cut loss') || lower.includes('area cut loss') || lower.includes('cl') || lower.includes('risiko') || lower.includes('buang') || lower.includes('rugi')) {
+	if (lower.includes('stoploss') || lower.includes('stop loss') || lower.includes('area stop loss') || lower.includes('sl') || lower.includes('cutloss') || lower.includes('cut loss') || lower.includes('area cut loss') || lower.includes('cl') || lower.includes('risiko') || lower.includes('buang') || lower.includes('rugi')) {
 		return `
 			<strong class="text-rose-400 flex items-center gap-1.5"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Batas Risiko (Stop Loss) $${targetTicker}:</strong>
 			Untuk membatasi kerugian, pasang Stop Loss ketat jika harga ditutup di bawah <strong class="text-rose-400">${formatRp(sl)}</strong>.<br>
@@ -3408,7 +3408,7 @@ function generateAIResponse(prompt) {
 		`;
 	}
 
-	if (lower.includes('lot') || lower.includes('volume') || lower.includes('valuasi') || lower.includes('rasio') || lower.includes('likuiditas') || lower.includes('transaksi') || lower.includes('ramai') || lower.includes('sepi')) {
+	if (lower.includes('lot') || lower.includes('volume') || lower.includes('vol') || lower.includes('valuasi') || lower.includes('val') || lower.includes('rasio') || lower.includes('likuiditas') || lower.includes('transaksi') || lower.includes('ramai') || lower.includes('sepi')) {
 		const volStatus = data.volRatio >= 1.5 ? '<span class="text-emerald-400 font-bold">Spike (Sangat Ramai) ⚡</span>' : (data.volRatio >= 1.0 ? '<span class="text-amber-400 font-bold">Normal</span>' : '<span class="text-slate-400">Sepi</span>');
 		return `
 			<strong class="text-emerald-400 flex items-center gap-1.5"><i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> Analisis Volume $${targetTicker}:</strong>
@@ -3421,7 +3421,7 @@ function generateAIResponse(prompt) {
 		`;
 	}
 
-	if (lower.includes('coba') || lower.includes('coba lihat') || lower.includes('prospek') || lower.includes('analisa') || lower.includes('coba analisa') || lower.includes('bagaimana') || lower.includes('gimana') || lower.includes('review') || lower.includes('teknikal')) {
+	if (lower.includes('coba') || lower.includes('coba lihat') || lower.includes('prospek') || lower.includes('info') || lower.includes('analisa') || lower.includes('coba analisa') || lower.includes('bagaimana') || lower.includes('gimana') || lower.includes('review') || lower.includes('teknikal')) {
 		const saran = (price >= data.ma5 && data.volRatio >= 1) 
 			? 'Tren cukup solid, pertimbangkan <strong class="text-emerald-400">Buy on Breakout</strong> atau *Pullback*.' 
 			: 'Tren cenderung tertekan, sebaiknya <strong class="text-amber-400">Wait & See</strong> atau *Buy on Support* dengan SL ketat.';
