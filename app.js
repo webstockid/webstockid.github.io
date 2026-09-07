@@ -1961,21 +1961,39 @@ async function fetchYahooTrending() {
 	container.innerHTML = `<div class="flex items-center gap-2 text-[10px] text-slate-400 animate-pulse"><i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-amber-400"></i> Memuat Radar Trending...</div>`;
 	if (window.lucide) lucide.createIcons();
 
-	const fallbackTrending = ['BBCA', 'PTRO', 'BMRI', 'TLKM', 'DSSA', 'MDIA', 'BUMI', 'MEDS'];
-	let tickers = fallbackTrending;
+	const url = `https://query1.finance.yahoo.com/v1/finance/trending/ID?count=5`;
+	
+	// Sistem multi-proxy yang sama
+	const proxies = [
+		`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+		`https://corsproxy.io/?${encodeURIComponent(url)}`
+	];
 
-	try {
-		const url = `https://query1.finance.yahoo.com/v1/finance/trending/ID?count=5`;
-		const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-		const response = await fetch(proxyUrl, { signal: AbortSignal.timeout(3000) });
-		const wrapper = await response.json();
-		const data = JSON.parse(wrapper.contents);
-		const quotes = data.finance?.result?.[0]?.quotes || [];
-		if (quotes.length > 0) {
-			tickers = quotes.map(q => q.symbol.replace('.JK', ''));
+	let quotes = [];
+
+	for (let i = 0; i < proxies.length; i++) {
+		try {
+			const response = await fetch(proxies[i], { signal: AbortSignal.timeout(3000) });
+			if (!response.ok) continue;
+			
+			let data = await response.json();
+			if (proxies[i].includes('allorigins')) {
+				data = JSON.parse(data.contents);
+			}
+			
+			if (data.finance?.result?.[0]?.quotes?.length > 0) {
+				quotes = data.finance.result[0].quotes;
+				break;
+			}
+		} catch (e) {
+			// Skip jika proxy gagal
 		}
-	} catch (e) {
-		// Menggunakan fallback data secara senyap jika jaringan terbatas
+	}
+
+	// Fallback senyap jika bursa benar-benar sedang mati/maintenance
+	if (quotes.length === 0) {
+		quotes = [ { symbol: 'BBCA.JK' }, { symbol: 'BBRI.JK' }, { symbol: 'BMRI.JK' }, { symbol: 'AMMN.JK' }, { symbol: 'TLKM.JK' } ];
 	}
 
 	let html = `<div class="flex flex-wrap items-center gap-2 pt-1">
@@ -1983,7 +2001,8 @@ async function fetchYahooTrending() {
 			<i data-lucide="flame" class="w-3.5 h-3.5"></i> Trending ID:
 		</span>`;
 	
-	tickers.forEach(cleanTicker => {
+	quotes.forEach(q => {
+		const cleanTicker = q.symbol.replace('.JK', '');
 		html += `<button onclick="document.getElementById('stockSearch').value='${cleanTicker}'; searchStock(true);" class="text-[9px] lg:text-[10px] bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-md transition font-bold cursor-pointer shadow-sm">
 			&dollar;${cleanTicker}
 		</button>`;
@@ -1995,135 +2014,158 @@ async function fetchYahooTrending() {
 }
 
 async function fetchRealtimeFundamentals(ticker) {
-	// Gunakan container yang sudah ada di HTML
 	const container = document.getElementById('yahooFundamentalContainer');
 	if (!container) return;
-
-	// Masukkan API Key FMP milikmu di sini
-	const apiKey = 'lk6Y4fAgxScdE7F1hAcBz8ApCKXjy2lV'; 
 	
-	container.innerHTML = `<div class="text-center bg-slate-950/10 rounded-xl border border-slate-800 text-slate-400 py-8 text-xs"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-orange-400"></i> Menarik data fundamental real-time dari market...</div>`;
+	container.innerHTML = `<div class="text-center bg-slate-950/10 rounded-xl border border-slate-800 text-slate-400 py-8 text-xs"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-orange-400"></i> Mengekstrak data fundamental dari bursa...</div>`;
 	if (window.lucide) lucide.createIcons();
 
-	try {
-		// Melakukan fetching ke dua endpoint FMP secara paralel (Profil Perusahaan & Metrik Keuangan)
-		const [profileRes, quoteRes] = await Promise.all([
-			fetch(`https://financialmodelingprep.com/api/v3/profile/${ticker}.JK?apikey=${apiKey}`),
-			fetch(`https://financialmodelingprep.com/api/v3/quote/${ticker}.JK?apikey=${apiKey}`)
-		]);
+	const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}.JK?modules=assetProfile,financialData,defaultKeyStatistics,summaryDetail`;
+	
+	// 3 Lapis Proxy Bebas CORS (Sistem Anti-Gagal)
+	const proxies = [
+		`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+		`https://corsproxy.io/?${encodeURIComponent(url)}`
+	];
 
-		const profileData = await profileRes.json();
-		const quoteData = await quoteRes.json();
+	let result = null;
 
-		if (!profileData || profileData.length === 0) throw new Error("Data Emiten Tidak Ditemukan");
+	// Loop untuk melompat otomatis jika ada proxy yang tumbang
+	for (let i = 0; i < proxies.length; i++) {
+		try {
+			const res = await fetch(proxies[i], { signal: AbortSignal.timeout(4500) });
+			if (!res.ok) continue;
+			
+			let data = await res.json();
+			
+			// Penyesuaian khusus jika menggunakan allorigins
+			if (proxies[i].includes('allorigins')) {
+				data = JSON.parse(data.contents);
+			}
+			
+			if (data && data.quoteSummary && data.quoteSummary.result) {
+				result = data.quoteSummary.result[0];
+				break; // Data didapat, hentikan loop
+			}
+		} catch (e) {
+			console.warn(`Proxy ${i+1} terblokir, melompat ke jalur alternatif...`);
+		}
+	}
 
-		// Ekstrak data JSON
-		const profile = profileData[0];
-		const quote = quoteData && quoteData.length > 0 ? quoteData[0] : {};
+	if (!result) {
+		container.innerHTML = `<div class="text-center bg-slate-950/10 rounded-xl border border-slate-800 text-slate-400 py-6 text-xs">Gagal menembus firewall bursa. Mohon gunakan metrik TradingView di bawah.</div>`;
+		return;
+	}
 
-		// Format Data Profil
-		const sector = profile.sector || "Sektor Campuran";
-		const industry = profile.industry || "-";
-		const emp = profile.fullTimeEmployees ? parseInt(profile.fullTimeEmployees).toLocaleString('id-ID') : "-";
-		const website = profile.website || "#";
-		const desc = profile.description || `PT ${ticker} Tbk beroperasi di Bursa Efek Indonesia.`;
-		
-		// Format Data Finansial
-		const pe = quote.pe !== null && quote.pe !== undefined ? `${quote.pe.toFixed(2)}x` : "-";
-		const eps = quote.eps !== null && quote.eps !== undefined ? `Rp ${quote.eps.toLocaleString('id-ID')}` : "-";
-		const mktCap = quote.marketCap !== null ? `Rp ${(quote.marketCap / 1e12).toFixed(2)} T` : "-";
-		const yearHigh = quote.yearHigh !== null ? `Rp ${quote.yearHigh.toLocaleString('id-ID')}` : "-";
-		const yearLow = quote.yearLow !== null ? `Rp ${quote.yearLow.toLocaleString('id-ID')}` : "-";
-		const avgVol = quote.avgVolume !== null ? `${(quote.avgVolume / 1000000).toFixed(2)} Juta` : "-";
-		
-		// Menentukan badge warna untuk P/E Ratio (Valuasi)
-		let peColor = 'text-white';
-		if (quote.pe > 0 && quote.pe <= 15) peColor = 'text-emerald-400'; // Undervalued
-		else if (quote.pe > 25) peColor = 'text-rose-400'; // Overvalued
+	// --- Ekstrak Data Mentah Yahoo ---
+	const profile = result.assetProfile || {};
+	const financial = result.financialData || {};
+	const stats = result.defaultKeyStatistics || {};
+	const detail = result.summaryDetail || {};
 
-		// Render UI
-		container.innerHTML = `
-			<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-				<!-- PROFIL PERUSAHAAN -->
-				<div class="bg-slate-950/40 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm">
-					<div class="flex items-center gap-3 mb-3.5 pb-2 border-b border-slate-800">
-						${profile.image ? `<img src="${profile.image}" class="w-6 h-6 rounded bg-white p-0.5" alt="Logo" onerror="this.style.display='none'">` : `<i data-lucide="building-2" class="w-5 h-5 text-orange-400"></i>`}
-						<span class="text-orange-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs">
-							PROFIL BISNIS
-						</span>
+	const sector = profile.sector || "Finansial / Industri";
+	const industry = profile.industry || "-";
+	const website = profile.website || "#";
+	const emp = profile.fullTimeEmployees ? profile.fullTimeEmployees.toLocaleString('id-ID') : "-";
+	const desc = profile.longBusinessSummary || `PT ${ticker} Tbk beroperasi secara resmi di Bursa Efek Indonesia.`;
+	
+	const pe = detail.trailingPE?.fmt ? `${detail.trailingPE.fmt}x` : "-";
+	const pb = stats.priceToBook?.fmt ? `${stats.priceToBook.fmt}x` : "-";
+	const roe = financial.returnOnEquity?.fmt || "-";
+	const margins = financial.profitMargins?.fmt || "-";
+	const debtToEq = financial.debtToEquity?.fmt ? `${financial.debtToEquity.fmt}%` : "-";
+	const ebitda = financial.ebitda?.fmt || "-";
+	
+	// Kalkulasi Valuasi Kasar berbasis P/E Ratio
+	let peColor = 'text-white';
+	let valuasiLabel = 'FAIR VALUE';
+	
+	if (detail.trailingPE?.raw > 0 && detail.trailingPE?.raw <= 15) {
+		peColor = 'text-emerald-400';
+		valuasiLabel = 'UNDERVALUED';
+	} else if (detail.trailingPE?.raw > 25) {
+		peColor = 'text-rose-400';
+		valuasiLabel = 'OVERVALUED';
+	}
+
+	// Render Tampilan UI Ala FMP API
+	container.innerHTML = `
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+			<!-- PROFIL PERUSAHAAN -->
+			<div class="bg-slate-950/40 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm">
+				<span class="text-orange-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs mb-3.5 pb-2 border-b border-slate-800">
+					<i data-lucide="building-2" class="w-4 h-4"></i> PROFIL BISNIS ($${ticker})
+				</span>
+				
+				<div class="space-y-2.5 text-[11px] lg:text-xs text-slate-300">
+					<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
+						<span class="text-slate-400">Sektor Utama</span>
+						<span class="font-bold text-white">${sector}</span>
 					</div>
-					
-					<div class="space-y-2.5 text-[11px] lg:text-xs text-slate-300">
-						<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
-							<span class="text-slate-400">Sektor Utama</span>
-							<span class="font-bold text-white">${sector}</span>
-						</div>
-						<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
-							<span class="text-slate-400">Industri</span>
-							<span class="font-bold text-white">${industry}</span>
-						</div>
-						<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
-							<span class="text-slate-400">Karyawan Aktif</span>
-							<span class="font-bold text-white">${emp} Orang</span>
-						</div>
-						<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
-							<span class="text-slate-400">Website URL</span>
-							<a href="${website}" target="_blank" class="font-bold text-cyan-400 hover:underline flex items-center gap-1">${website !== '#' ? 'Kunjungi Web <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>' : '-'}</a>
-						</div>
-						<div class="pt-2">
-							<span class="text-slate-400 block mb-1.5 font-bold">Ringkasan Operasional:</span>
-							<p class="text-[10px] lg:text-[11px] leading-relaxed text-slate-300 line-clamp-4 hover:line-clamp-none transition-all cursor-pointer bg-slate-900/40 p-2.5 rounded-lg border border-slate-800" title="Klik untuk memperluas teks">${desc}</p>
-						</div>
+					<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
+						<span class="text-slate-400">Industri</span>
+						<span class="font-bold text-white">${industry}</span>
 					</div>
-				</div>
-
-				<!-- DATA FUNDAMENTAL & METRIK -->
-				<div class="bg-slate-950/40 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm flex flex-col justify-between">
-					<div>
-						<span class="text-orange-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs mb-3.5 pb-2 border-b border-slate-800">
-							<i data-lucide="calculator" class="w-4 h-4"></i> METRIK KEUANGAN & VALUASI
-						</span>
-						<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs text-slate-300">
-							<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
-								<span class="block text-slate-400 text-[10px] mb-0.5">Kapitalisasi Pasar</span>
-								<span class="font-bold text-white">${mktCap}</span>
-							</div>
-							<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
-								<span class="block text-slate-400 text-[10px] mb-0.5">P/E Ratio (Valuasi)</span>
-								<span class="font-bold ${peColor}">${pe}</span>
-							</div>
-							<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
-								<span class="block text-slate-400 text-[10px] mb-0.5">Earning Per Share (EPS)</span>
-								<span class="font-bold text-white">${eps}</span>
-							</div>
-							<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
-								<span class="block text-slate-400 text-[10px] mb-0.5">Rerata Vol (Harian)</span>
-								<span class="font-bold text-cyan-400">${avgVol}</span>
-							</div>
-							<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
-								<span class="block text-slate-400 text-[10px] mb-0.5">Level Tertinggi (52W)</span>
-								<span class="font-bold text-emerald-400">${yearHigh}</span>
-							</div>
-							<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
-								<span class="block text-slate-400 text-[10px] mb-0.5">Level Terendah (52W)</span>
-								<span class="font-bold text-rose-400">${yearLow}</span>
-							</div>
-						</div>
+					<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
+						<span class="text-slate-400">Karyawan Aktif</span>
+						<span class="font-bold text-white">${emp} Orang</span>
 					</div>
-					
-					<div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-[11px] lg:text-xs">
-						<span class="text-slate-400">Status Valuasi AI:</span>
-						<span class="font-bold text-cyan-400 px-2.5 py-1 bg-cyan-900/20 rounded-md border border-cyan-800/50 flex items-center gap-1.5">
-							<i data-lucide="activity" class="w-3.5 h-3.5"></i> ${quote.pe > 0 && quote.pe <= 15 ? 'UNDERVALUED' : (quote.pe > 25 ? 'OVERVALUED' : 'FAIR VALUE')}
-						</span>
+					<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded">
+						<span class="text-slate-400">Website URL</span>
+						<a href="${website}" target="_blank" class="font-bold text-cyan-400 hover:underline flex items-center gap-1">${website !== '#' ? 'Kunjungi Web <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>' : '-'}</a>
+					</div>
+					<div class="pt-2">
+						<span class="text-slate-400 block mb-1.5 font-bold">Ringkasan Operasional:</span>
+						<p class="text-[10px] lg:text-[11px] leading-relaxed text-slate-300 line-clamp-4 hover:line-clamp-none transition-all cursor-pointer bg-slate-900/40 p-2.5 rounded-lg border border-slate-800" title="Klik untuk memperluas teks">${desc}</p>
 					</div>
 				</div>
 			</div>
-		`;
-		if (window.lucide) lucide.createIcons();
-	} catch (e) {
-		container.innerHTML = `<div class="text-center bg-slate-950/10 rounded-xl border border-slate-800 text-slate-400 py-6 text-xs">Gagal terhubung ke API Market. Pastikan koneksi stabil atau limit API tidak habis.</div>`;
-	}
+
+			<!-- DATA FUNDAMENTAL & METRIK -->
+			<div class="bg-slate-950/40 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm flex flex-col justify-between">
+				<div>
+					<span class="text-orange-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs mb-3.5 pb-2 border-b border-slate-800">
+						<i data-lucide="calculator" class="w-4 h-4"></i> METRIK KEUANGAN & VALUASI
+					</span>
+					<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs text-slate-300">
+						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
+							<span class="block text-slate-400 text-[10px] mb-0.5">P/E Ratio (Valuasi)</span>
+							<span class="font-bold ${peColor}">${pe}</span>
+						</div>
+						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
+							<span class="block text-slate-400 text-[10px] mb-0.5">P/BV Ratio</span>
+							<span class="font-bold text-white">${pb}</span>
+						</div>
+						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
+							<span class="block text-slate-400 text-[10px] mb-0.5">Return on Equity (ROE)</span>
+							<span class="font-bold ${roe.includes('-') ? 'text-rose-400' : 'text-emerald-400'}">${roe}</span>
+						</div>
+						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
+							<span class="block text-slate-400 text-[10px] mb-0.5">Profit Margin</span>
+							<span class="font-bold ${margins.includes('-') ? 'text-rose-400' : 'text-emerald-400'}">${margins}</span>
+						</div>
+						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
+							<span class="block text-slate-400 text-[10px] mb-0.5">Debt to Equity</span>
+							<span class="font-bold text-white">${debtToEq}</span>
+						</div>
+						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 transition">
+							<span class="block text-slate-400 text-[10px] mb-0.5">EBITDA</span>
+							<span class="font-bold text-white">${ebitda}</span>
+						</div>
+					</div>
+				</div>
+				
+				<div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-[11px] lg:text-xs">
+					<span class="text-slate-400">Valuasi Kasar AI:</span>
+					<span class="font-bold text-cyan-400 px-2.5 py-1 bg-cyan-900/20 rounded-md border border-cyan-800/50 flex items-center gap-1.5">
+						<i data-lucide="activity" class="w-3.5 h-3.5"></i> ${valuasiLabel}
+					</span>
+				</div>
+			</div>
+		</div>
+	`;
+	if (window.lucide) lucide.createIcons();
 }
 
 async function fetchStockNews(ticker) {
@@ -2313,6 +2355,7 @@ function searchStock(bypassCooldown = false) {
 		document.getElementById('rrrTickerLabel').innerText = currentTicker;
 		document.getElementById('alertTickerLabel').innerText = currentTicker;
 		document.getElementById('corpTickerLabel').innerText = currentTicker;
+		fetchRealtimeFundamentals(currentTicker);
 		document.getElementById('peerTickerLabel').innerText = currentTicker;
 		
 		renderChart(currentTicker);
