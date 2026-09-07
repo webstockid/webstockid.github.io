@@ -1961,7 +1961,7 @@ async function fetchYahooTrending() {
 	container.innerHTML = `<div class="flex items-center gap-2 text-[10px] text-slate-400 animate-pulse"><i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-amber-400"></i> Memuat Radar Trending...</div>`;
 	if (window.lucide) lucide.createIcons();
 
-	const fallbackTrending = ['BBCA', 'BBRI', 'BMRI', 'TLKM', 'ASII', 'GOTO', 'ANTM', 'ADRO'];
+	const fallbackTrending = ['BBCA', 'PTRO', 'BMRI', 'TLKM', 'DSSA', 'MDIA', 'BUMI', 'MEDS'];
 	let tickers = fallbackTrending;
 
 	try {
