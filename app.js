@@ -858,7 +858,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		if (stockData.changePct >= 0 && stockData.volRatio >= 1.5) {
 			bandarStatus = "Masif Akumulasi 🐋";
 			bandarColor = "text-emerald-400";
-			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
+			bandarBarColor = "from-emerald-600 via-emerald-400 to-cyan-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = Math.min(100, 50 + (stockData.volRatio * 15));
 		} else if (stockData.changePct < 0 && stockData.volRatio < 0.8) {
 			bandarStatus = "Mark Down (Uji Support) 📉";
@@ -1626,8 +1626,8 @@ function checkNotificationStatus() {
 	}
 
 	if (Notification.permission === "granted") {
-		btn.innerHTML = `<i data-lucide="bell-ring" class="w-3.5 h-3.5 text-teal-400"></i> Notifikasi Push Aktif`;
-		btn.className = "text-[10px] lg:text-xs bg-emerald-500/10 text-teal-400 border border-emerald-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm cursor-default";
+		btn.innerHTML = `<i data-lucide="bell-ring" class="w-3.5 h-3.5 text-cyan-400"></i> Notifikasi Push Aktif`;
+		btn.className = "text-[10px] lg:text-xs bg-emerald-500/10 text-cyan-400 border border-emerald-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm cursor-default";
 	} else if (Notification.permission === "denied") {
 		btn.innerHTML = `<i data-lucide="bell-off" class="w-3.5 h-3.5 text-rose-400"></i> Izin Notifikasi Ditolak`;
 		btn.className = "text-[10px] lg:text-xs bg-rose-500/10 text-rose-400 border border-rose-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer";
@@ -1765,17 +1765,17 @@ function renderAllAlerts() {
 						</div>
 						<div class="flex flex-col">
 							<div class="flex items-center gap-2">
-								<span class="font-bold text-teal text-sm md:text-base tracking-wide">${ticker}</span>
-								${isCurrent ? '<span class="bg-emerald-500/20 text-teal-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
+								<span class="font-bold text-cyan text-sm md:text-base tracking-wide">${ticker}</span>
+								${isCurrent ? '<span class="bg-emerald-500/20 text-cyan-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
 							</div>
-							<span class="font-bold ${activeCount > 0 ? 'text-teal-400' : 'text-slate-500'} text-[10px] md:text-xs mt-0.5">${activeCount} Alert Aktif</span>
+							<span class="font-bold ${activeCount > 0 ? 'text-cyan-400' : 'text-slate-500'} text-[10px] md:text-xs mt-0.5">${activeCount} Alert Aktif</span>
 						</div>
 					</div>
 					
 					<div class="flex items-center gap-3 md:gap-4 text-right">
 						<div class="flex flex-col items-end">
 							<span class="text-[9px] md:text-[10px] text-slate-400">Tgl Dibuat</span>
-							<span class="text-teal-400 text-[10px] md:text-xs font-bold">${alertDate}</span>
+							<span class="text-cyan-400 text-[10px] md:text-xs font-bold">${alertDate}</span>
 						</div>
 						<div class="bg-slate-900 p-1.5 rounded-md border border-slate-800 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/30 transition">
 							<i id="alert-icon-${ticker}" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300" style="${rotateStyle}"></i>
@@ -2972,7 +2972,7 @@ function renderPaperTradingUI() {
 			rankColor = "text-cyan-400";
 		} else if (totalEquity >= 110000000 && winRate >= 60) {
 			rankName = "PRO TRADER  😎";
-			rankColor = "text-teal-400";
+			rankColor = "text-cyan-400";
 		} else if (totalEquity >= 80000000) {
 			rankName = "NORMAL TRADER 😼";
 			rankColor = "text-amber-400";
@@ -3010,7 +3010,7 @@ function renderPaperTradingUI() {
 					<tr class="hover:bg-slate-800/40">
 						<td class="p-3.5 font-bold text-violet-400">&dollar;${item.ticker}</td>
 						<td class="p-3.5 text-blue-400">${item.lots.toLocaleString('id-ID')} Lot</td>
-						<td class="p-3.5 text-teal-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
+						<td class="p-3.5 text-cyan-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
 						<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
 						<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
 							${isPlus ? '+' : ''}Rp ${Math.round(pnl).toLocaleString('id-ID')} (${isPlus ? '+' : ''}${pnlPct}%)
@@ -3041,7 +3041,7 @@ function renderPaperTradingUI() {
 						</div>
 						<div class="flex justify-between text-[11px] text-slate-300 pb-1">
 							<span class="font-bold text-sky-400">Beli: Rp ${h.buyPrice.toLocaleString('id-ID')}</span>
-							<span class="font-bold text-teal-400">Jual: Rp ${h.sellPrice.toLocaleString('id-ID')}</span>
+							<span class="font-bold text-cyan-400">Jual: Rp ${h.sellPrice.toLocaleString('id-ID')}</span>
 						</div>
 						<div class="flex justify-between items-center pt-1.5 border-t border-slate-800/80 mt-1">
 							<div class="flex flex-col">
