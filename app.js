@@ -2277,7 +2277,7 @@ const cuanImages = [
 ];
 
 const cuanTexts = [
-	{ title: "TAKE PROFIT TERCAPAI! 🚀", desc: "Gua bilang juga apa, cuan luber kan lo!" },
+	{ title: "TAKE PROFIT TERCAPAI! 🚀", desc: "Saya bilang juga apa, cuan luber kan lo!" },
 	{ title: "CUAN MAKSIMAL! 🐋", desc: "Asik! Bisa beli cilok seember nih." },
 	{ title: "BULLSEYE! 😎", desc: "Nyeblak dulu gak sih?!" },
 	{ title: "PROFIT SECURED! 🌟", desc: "Info Dealer Pajero Boss!" }
