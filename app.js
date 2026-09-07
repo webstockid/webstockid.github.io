@@ -243,13 +243,22 @@ function isMarketOpen() {
 
 function cleanExpiredCache() {
 	const FIVE_MINUTES = 5 * 60 * 1000;
+	const TEN_MINUTES = 10 * 60 * 1000; // Kadaluarsa berita AI
+	
 	for (let i = localStorage.length - 1; i >= 0; i--) {
 		const key = localStorage.key(i);
-		if (key && key.startsWith('stock_cache_')) {
+		if (key) {
 			try {
-				const item = JSON.parse(localStorage.getItem(key));
-				if (Date.now() - item.timestamp >= FIVE_MINUTES) {
-					localStorage.removeItem(key);
+				if (key.startsWith('stock_cache_')) {
+					const item = JSON.parse(localStorage.getItem(key));
+					if (Date.now() - item.timestamp >= FIVE_MINUTES) {
+						localStorage.removeItem(key);
+					}
+				} else if (key.startsWith('news_cache_')) {
+					const item = JSON.parse(localStorage.getItem(key));
+					if (Date.now() - item.timestamp >= TEN_MINUTES) {
+						localStorage.removeItem(key);
+					}
 				}
 			} catch(e) {
 				localStorage.removeItem(key);
@@ -501,7 +510,7 @@ function renderFundamentalWidget(ticker) {
 	finContainer.appendChild(scriptFin);
 }
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+// const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const cachedData = getCachedStockData(ticker);
@@ -526,60 +535,10 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 		});
 	};
 
-	const parseYahooJSON = (json) => {
-		const result = json?.chart?.result?.[0] || json?.results?.[0];
-		if (!result) return null;
-
-		const quote = result.indicators?.quote?.[0] || result.quote;
-		const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
-		const volumes = quote?.volume?.filter(v => v !== null && v !== undefined) || [];
-		const highs = quote?.high?.filter(h => h !== null && h !== undefined) || [];
-		const lows = quote?.low?.filter(l => l !== null && l !== undefined) || [];
-
-		if (prices.length < 5) return null;
-
-		const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
-		const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
-		const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
-
-		const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
-		const ma5 = getMA(5);
-		const ma10 = getMA(10);
-		const ma20 = getMA(20);
-
-		const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
-		const realVolume = result.meta?.regularMarketVolume || currentVolume;
-		const currentLot = Math.floor(realVolume / 100);
-		const currentValuation = realVolume * currentPrice;
-
-		const volSlice10 = volumes.slice(-10);
-		const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
-		const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
-
-		const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
-		const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
-
-		let totalVol20 = 0;
-		let totalValue20 = 0;
-		const len = prices.length;
-		const period = Math.min(20, len);
-		for(let i = len - period; i < len; i++) {
-			const h = highs[i] || prices[i];
-			const l = lows[i] || prices[i];
-			const c = prices[i];
-			const v = volumes[i] || 0;
-			const typicalPrice = (h + l + c) / 3;
-			totalVol20 += v;
-			totalValue20 += (typicalPrice * v);
-		}
-		const bandarAvgPrice = totalVol20 > 0 ? roundToBEITick(totalValue20 / totalVol20) : roundToBEITick(currentPrice);
-
-		return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, currentLot, currentValuation, bandarAvgPrice };
-	};
-
+	// Memanggil parseYahooDataGlobal langsung agar tidak ada duplikasi kode
 	const workerPromise = fetchWithTimeout(`${WORKER_URL}?symbol=${targetSymbol}`, 1800)
 		.then(res => res.json())
-		.then(json => parseYahooJSON(json));
+		.then(json => parseYahooDataGlobal(json, ticker)); 
 
 	const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
 	const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
@@ -587,7 +546,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const yahooPromise = fetchWithTimeout(allOriginsUrl, 3000)
 		.then(res => res.json())
 		.then(wrapper => JSON.parse(wrapper.contents))
-		.then(json => parseYahooJSON(json));
+		.then(json => parseYahooDataGlobal(json, ticker));
 
 	let freshData = null;
 	try {
