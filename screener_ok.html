@@ -578,7 +578,7 @@
 						</div>
 
 						<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-slate-900 font-bold bg-amber-400 hover:bg-amber-500 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md">
-							<i data-lucide="search" class="w-3.5 h-3.5"></i> Mulai Pindai Pasar
+							<i data-lucide="play" class="w-4 h-4"></i> Mulai Pindai Pasar
 						</button>
 					</div>
 
@@ -638,9 +638,9 @@
 								</button>
 								<ul id="dropdownVol" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl shadow-slate-950/80 max-h-48 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
 									<li onclick="selectCustomOption('csRuleVol', 'ALL', 'Semua Tingkat Volume', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Semua Tingkat Volume</li>
-									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_1.5', 'Volume Spike (> 1.5x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Volume Spike (> 1.5x Rerata)</li>
+									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_1.1', 'Volume Spike (> 1.1x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Volume Spike (> 1.1x Rerata)</li>
 									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_2.0', 'Volume Meledak (> 2.0x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Volume Meledak (> 2.0x Rerata)</li>
-									<li onclick="selectCustomOption('csRuleVol', 'DRY', 'Volume Kering (< 0.8x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Volume Kering (&lt; 0.8x Rerata)</li>
+									<li onclick="selectCustomOption('csRuleVol', 'DRY', 'Volume Kering (< 1.0x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-400 cursor-pointer transition font-medium">Volume Kering (&lt; 1.0x Rerata)</li>
 								</ul>
 							</div>
 
@@ -683,9 +683,12 @@
 							</span>
 							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Membandingkan emiten pilihan Kamu dengan saham-saham yang berada di range harga yang sama.</p>
 						</div>
-						<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="text-[10px] lg:text-xs bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-600 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto shadow-sm">
-							<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data
+						<button id="btnRunCustomScreener" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="w-full sm:w-auto bg-emerald-800 hover:bg-emerald-500 text-white font-bold px-6 py-2.5 rounded-lg border border-emerald-600 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0">
+							<i data-lucide="play" class="w-4 h-4"></i> Bandingkan
 						</button>
+						<!--<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="text-[10px] lg:text-xs bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-600 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto shadow-sm">
+							<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data
+						</button>-->
 					</div>
 
 					<div class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">

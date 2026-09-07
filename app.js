@@ -1055,7 +1055,7 @@ function startPeerRefreshCooldown(seconds = 40) {
 
 	if (peerRefreshCooldownTimer) clearInterval(peerRefreshCooldownTimer);
 
-	btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data (${remaining}d)`;
+	btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Tunggu (${remaining}d)`;
 	if (window.lucide) lucide.createIcons();
 
 	peerRefreshCooldownTimer = setInterval(() => {
@@ -1064,10 +1064,10 @@ function startPeerRefreshCooldown(seconds = 40) {
 			clearInterval(peerRefreshCooldownTimer);
 			btn.disabled = false;
 			btn.classList.remove('opacity-50', 'cursor-not-allowed');
-			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data`;
+			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Bandingkan`;
 			if (window.lucide) lucide.createIcons();
 		} else {
-			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh Data (${remaining}d)`;
+			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Tunggu (${remaining}d)`;
 			if (window.lucide) lucide.createIcons();
 		}
 	}, 1000);
@@ -2635,9 +2635,9 @@ async function runCustomScreener() {
 			else if (ruleMA === 'BELOW_MA20') matchMA = item.price < item.ma20;
 
 			let matchVol = true;
-			if (ruleVol === 'SPIKE_1.5') matchVol = item.volRatio >= 1.5;
+			if (ruleVol === 'SPIKE_1.1') matchVol = item.volRatio >= 1.1;
 			else if (ruleVol === 'SPIKE_2.0') matchVol = item.volRatio >= 2.0;
-			else if (ruleVol === 'DRY') matchVol = item.volRatio < 0.8;
+			else if (ruleVol === 'DRY') matchVol = item.volRatio < 1.0;
 
 			let matchPrice = true;
 			if (rulePrice === 'GREEN') matchPrice = item.changePct > 0;
@@ -2675,7 +2675,7 @@ async function runCustomScreener() {
 		else infoMA = `<li class="flex gap-2"><i data-lucide="info" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Tren:</strong> Area dinamis (Bebas), posisi harga akhir Rp ${price.toLocaleString('id-ID')}.</span></li>`;
 
 		let infoVol = '';
-		if (ruleVol === 'SPIKE_1.5') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-blue-400 mt-0.5 shrink-0"></i> <span><strong class="text-blue-400">Volume Spike:</strong> Indikasi akumulasi dengan rasio ${item.volRatio}x lipat dari rerata harian.</span></li>`;
+		if (ruleVol === 'SPIKE_1.1') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-blue-400 mt-0.5 shrink-0"></i> <span><strong class="text-blue-400">Volume Spike:</strong> Indikasi akumulasi dengan rasio ${item.volRatio}x lipat dari rerata harian.</span></li>`;
 		else if (ruleVol === 'SPIKE_2.0') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-fuchsia-400 mt-0.5 shrink-0"></i> <span><strong class="text-fuchsia-400">Volume Meledak:</strong> Akumulasi sangat masif menyentuh ${item.volRatio}x rerata.</span></li>`;
 		else if (ruleVol === 'DRY') infoVol = `<li class="flex gap-2"><i data-lucide="droplet" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-400">Volume Kering:</strong> Sepi transaksi, hanya ${item.volRatio}x lipat (rawan distribusi atau akumulasi pasif).</span></li>`;
 		else infoVol = `<li class="flex gap-2"><i data-lucide="activity" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Likuiditas:</strong> Perdagangan normal dengan kekuatan volume ${item.volRatio}x.</span></li>`;
