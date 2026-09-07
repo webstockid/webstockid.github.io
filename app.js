@@ -790,23 +790,23 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata, mengisyaratkan perebutan momentum antara kubu *bulls* dan *bears*.";
 
 		descEl.innerHTML = `
-			<p class="leading-relaxed"><strong class="text-sky-500">Mengapa?</strong> Saham <strong class="text-emerald-400 font-bold">${ticker}</strong> saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
-			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-500">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
-			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-500">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-400">(Support Kuat)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-400">(Resistance Tertinggi)</strong>.</p>
+			<p class="leading-relaxed"><strong class="text-sky-400">Mengapa?</strong> Saham <strong class="text-emerald-400 font-bold">${ticker}</strong> saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-400">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-400">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-400">(Support Kuat)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-400">(Resistance Tertinggi)</strong>.</p>
 		`;
 
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Harga: <strong class="text-sky-500 font-bold">Rp${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
+				<span>• Harga: <strong class="text-sky-400 font-bold">Rp${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
 				<span class="text-[10px] lg:text-[11px] text-white">${isCached ? 'Cache Instant' : 'Live Data'}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Volume Transaksi:</span>
-				<span class="text-sky-500 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
+				<span class="text-violet-400 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Valuasi Transaksi:</span>
-				<span class="text-emerald-400 font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
+				<span class="text-violet-400 font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Estimasi AVG Bandar:</span>
@@ -814,7 +814,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Posisi Tren MA5 / MA10 / MA20:</span>
-				<span class="text-sky-500 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
+				<span class="text-emerald-400 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Rasio Volume vs Rerata Harian:</span>
@@ -909,7 +909,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	} else {
 		verdikEl.innerText = "NETRAL-SELEKTIF?";
 		scoreEl.innerText = "-/-";
-		descEl.innerText = `Menganalisis pergerakan teknikal emiten ${ticker} berbasis indikator grafik TradingView. Silakan evaluasi struktur pola harga harian sebelum melakukan transaksi....`;
+		descEl.innerText = `Menganalisis pergerakan teknikal saham ${ticker} berbasis indikator grafik TradingView. Silakan evaluasi struktur pola harga harian sebelum melakukan transaksi....`;
 	}
 
 	const sl = roundToBEITick(price * 0.92, 'floor'); 
@@ -1478,7 +1478,7 @@ function renderRadarItems(dataList) {
 	let htmlContent = '';
 
 	if (sorted.length === 0) {
-		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada emiten potensial yang ditemukan saat ini.</div>`;
+		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada saham potensial yang ditemukan saat ini.</div>`;
 		return;
 	}
 
@@ -1507,7 +1507,7 @@ function renderRadarItems(dataList) {
 			alasanTeknikal = `<strong>Waspada!</strong> Harga naik sangat tinggi (<strong>+${changePct}%</strong>) namun tidak didukung oleh volume yang kuat (Hanya <strong>${item.volRatio}x</strong>). Kenaikan ini rawan dibanting. Hati-hati FOMO!`;
 		} else if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0.5 && changePct < 3) {
 			statusSignal = "🚀 Golden Cross Setup";
-			statusClass = "text-sky-400 border-sky-500/30 bg-sky-500/10";
+			statusClass = "text-sky-400 border-sky-400/30 bg-sky-400/10";
 			alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah (*reversal*) awal berpotensi terbentuk.`;
 		} else if (item.volRatio >= 1.5) {
 			statusSignal = "⚡ Volume Accumulation";
@@ -1607,7 +1607,7 @@ async function fetchStockNewsForAI(ticker) {
 			document.getElementById('aiBeritaList').innerHTML = beritaHTML;
 			localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), html: beritaHTML }));
 		} else {
-			document.getElementById('aiBeritaList').innerHTML = `<div>Belum ada rilis berita khusus untuk emiten ${ticker} dalam 24 jam terakhir.</div>`;
+			document.getElementById('aiBeritaList').innerHTML = `<div>Belum ada rilis berita khusus untuk saham ${ticker} dalam 24 jam terakhir.</div>`;
 		}
 	} catch (e) {
 		document.getElementById('aiBeritaList').innerHTML = `<div>Gagal memuat berita terkini. Gunakan indikator teknikal pada chart.</div>`;
@@ -1999,7 +1999,7 @@ async function fetchStockNews(ticker) {
 				container.innerHTML += `
 					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 						<div class="flex items-center gap-1.5 mb-2">
-							<span class="text-[9px] lg:text-[10px] bg-sky-500/20 text-sky-400 font-bold px-2 py-0.5 rounded border border-sky-500/30">${item.source?.title || 'Google News'}</span>
+							<span class="text-[9px] lg:text-[10px] bg-sky-400/20 text-sky-400 font-bold px-2 py-0.5 rounded border border-sky-400/30">${item.source?.title || 'Google News'}</span>
 							<span class="text-[10px] lg:text-xs text-white">${date}</span>
 						</div>
 						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
@@ -2262,7 +2262,7 @@ function startVoiceSearch() {
 		voiceIcon.classList.remove('fa-microphone-lines', 'text-rose-500', 'animate-pulse');
 		voiceIcon.classList.add('fa-microphone', 'text-slate-400');
 		setTimeout(() => {
-			input.placeholder = "Cari emiten (BBCA...) atau klik Mic";
+			input.placeholder = "Cari saham (BBCA...) atau klik Mic";
 		}, 2000);
 	};
 
@@ -2609,7 +2609,7 @@ async function runCustomScreener() {
 	const ruleVol = document.getElementById('csRuleVol').value;
 	const rulePrice = document.getElementById('csRulePrice').value;
 
-	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10 border-dashed"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-400"></i> Memindai emiten sesuai custom rules Kamu...</div>`;
+	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10 border-dashed"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-400"></i> Memindai saham sesuai custom rules Kamu...</div>`;
 	if (window.lucide) lucide.createIcons();
 
 	const shuffled = [...uniqueRadarWatchlist];
@@ -2653,7 +2653,7 @@ async function runCustomScreener() {
 	}
 
 	if (passedItems.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10 border-dashed">Tidak ada emiten yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya.</div>`;
+		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10 border-dashed">Tidak ada saham yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya.</div>`;
 		return;
 	}
 
@@ -2778,13 +2778,13 @@ function savePaperAccount(acc) {
 
 function ptSyncCurrentTicker() {
 	if (!globalStockData || !globalStockData.ticker) {
-		showToast("Pilih emiten terlebih dahulu pada pencarian!", "warning");
+		showToast("Pilih saham terlebih dahulu pada pencarian!", "warning");
 		return;
 	}
 	document.getElementById('ptTicker').value = globalStockData.ticker;
 	document.getElementById('ptPrice').value = roundToBEITick(globalStockData.price);
 	ptCalculateTotal();
-	showToast(`Berhasil sinkronisasi emiten $${globalStockData.ticker} ke form Paper Trade.`);
+	showToast(`Berhasil sinkronisasi saham $${globalStockData.ticker} ke form Paper Trade.`);
 }
 
 function ptCalculateTotal() {
@@ -2913,7 +2913,7 @@ function ptResetAccount() {
 async function ptRefreshPortoPrices(isAuto = false) {
 		let acc = getPaperAccount();
 		if (acc.portfolio.length === 0) {
-			if (!isAuto) showToast("Tidak ada emiten aktif di portofolio.", "info");
+			if (!isAuto) showToast("Tidak ada saham aktif di portofolio.", "info");
 			return;
 		}
 
@@ -2941,7 +2941,7 @@ function renderPaperTradingUI() {
 		let stockAssetValue = 0;
 		acc.portfolio.forEach(item => {
 			let currentP = item.avgPrice;
-			// Cek cache jika emiten tidak sedang dibuka
+			// Cek cache jika saham tidak sedang dibuka
 			const cached = getCachedStockData(item.ticker);
 			if (globalStockData && globalStockData.ticker === item.ticker) {
 				currentP = globalStockData.price;
@@ -3166,7 +3166,7 @@ function generateAIResponse(prompt) {
 	const formatRp = (num) => num ? `Rp ${num.toLocaleString('id-ID')}` : 'N/A';
 
 	if (lower.includes('halo') || lower.includes('hai') || lower.includes('pagi') || lower.includes('siang') || lower.includes('sore') || lower.includes('malam')) {
-		return `Halo! Aku AI Assistant Stock ID. Mau bahas teknikal <strong class="text-emerald-400">$${targetTicker}</strong> atau ada emiten lain yang mau di-screening hari ini?`;
+		return `Halo! Aku AI Assistant Stock ID. Mau bahas teknikal <strong class="text-emerald-400">$${targetTicker}</strong> atau ada saham lain yang mau di-screening hari ini?`;
 	}
 
 	if (lower.includes('terimakasih') || lower.includes('makasih') || lower.includes('thanks') || lower.includes('oke')) {
@@ -3174,7 +3174,7 @@ function generateAIResponse(prompt) {
 	}
 
 	if (!data) {
-		return `Untuk menganalisa <strong class="text-cyan-400">$${targetTicker}</strong> lebih presisi, silakan cari emiten tersebut di kolom pencarian atas terlebih dahulu agar Aku bisa menarik data bursa terbarunya.`;
+		return `Untuk menganalisa <strong class="text-cyan-400">$${targetTicker}</strong> lebih presisi, silakan cari saham tersebut di kolom pencarian atas terlebih dahulu agar Aku bisa menarik data bursa terbarunya.`;
 	}
 
 	const price = data.price;
