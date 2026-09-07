@@ -889,7 +889,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 						<span class="font-bold text-[10px] lg:text-[11px] ${bandarColor}">${bandarStatus}</span>
 					</div>
 					
-					<div class="w-full bg-slate-950 rounded-full h-3 border border-slate-700/80 overflow-hidden relative p-0.5 shadow-inner">
+					<div class="w-full bg-slate-950/10 rounded-full h-3 border border-slate-700/80 overflow-hidden relative p-0.5 shadow-inner">
 						<div class="bg-gradient-to-r ${bandarBarColor} h-full rounded-full transition-all duration-1200 ease-out relative overflow-hidden" style="width: ${bandarPct}%">
 							<div class="absolute inset-0 opacity-50" style="background-image: linear-gradient(135deg, rgba(255,255,255,0.4) 25%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 50%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.4) 75%, rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.4)); background-size: 18px 18px; animation: barberShopMove 1.2s linear infinite;"></div>
 							<div class="absolute right-0 top-0 bottom-0 w-3 bg-white rounded-full shadow-[0_0_16px_#fafafa,0_0_24px_#38bdf8] animate-ping"></div>
@@ -1520,7 +1520,7 @@ function renderRadarItems(dataList) {
 		}
 
 		htmlContent += `
-			<div class="bg-slate-950 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative">
+			<div class="bg-slate-950/10 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative">
 				<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
 					<div class="flex items-center gap-2">
 						<span class="bg-slate-800 text-amber-400 text-[10px] lg:text-xs px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
@@ -1757,7 +1757,7 @@ function renderAllAlerts() {
 		const borderHighlight = isCurrent ? 'border-emerald-500/50 shadow-sm shadow-emerald-500/10' : 'border-slate-800';
 
 		htmlContent += `
-			<div class="bg-slate-950 rounded-xl border ${borderHighlight} overflow-hidden transition-all duration-200 col-span-1 md:col-span-2 lg:col-span-3">
+			<div class="bg-slate-950/10 rounded-xl border ${borderHighlight} overflow-hidden transition-all duration-200 col-span-1 md:col-span-2 lg:col-span-3">
 				<div onclick="toggleAlertAccordion('${ticker}')" class="p-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-900/80 transition select-none group">
 					<div class="flex items-center gap-3 md:gap-4">
 						<div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-slate-900 flex items-center justify-center border border-slate-700/60 font-bold text-white group-hover:border-emerald-500/40 transition text-xs md:text-sm shrink-0">
@@ -1968,7 +1968,7 @@ async function fetchStockNews(ticker) {
 					: 'Berita Realtime';
 
 				container.innerHTML += `
-					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
+					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 						<div class="flex items-center gap-1.5 mb-2">
 							<span class="text-[9px] lg:text-[10px] bg-blue-500/20 text-blue-400 font-bold px-2 py-0.5 rounded border border-blue-500/30">${item.publisher}</span>
 							<span class="text-[10px] lg:text-xs text-white">${date}</span>
@@ -1997,7 +1997,7 @@ async function fetchStockNews(ticker) {
 				});
 
 				container.innerHTML += `
-					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
+					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 						<div class="flex items-center gap-1.5 mb-2">
 							<span class="text-[9px] lg:text-[10px] bg-sky-500/20 text-sky-400 font-bold px-2 py-0.5 rounded border border-sky-500/30">${item.source?.title || 'Google News'}</span>
 							<span class="text-[10px] lg:text-xs text-white">${date}</span>
@@ -2039,7 +2039,7 @@ async function fetchCorporateAction(ticker) {
 				});
 
 				container.innerHTML += `
-					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
+					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 						<div class="flex items-center gap-1.5 mb-1">
 							<span class="text-[9px] lg:text-[10px] bg-fuchsia-500/20 text-fuchsia-400 font-bold px-2 py-0.5 rounded border border-fuchsia-500/30">Aksi Korporasi</span>
 							<span class="text-[10px] lg:text-xs text-white">${date}</span>
@@ -2308,7 +2308,7 @@ function triggerCuanCelebration() {
 	const randomText = cuanTexts[Math.floor(Math.random() * cuanTexts.length)];
 
 	imgContainer.innerHTML = `
-		<div class="bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center p-1 w-full">
+		<div class="bg-slate-950/10 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center p-1 w-full">
 			<img src="${randomImg}" alt="Profit Cuan" class="w-full h-48 md:h-64 object-contain rounded">
 		</div>
 	`;
@@ -2355,7 +2355,7 @@ function triggerLossCelebration() {
 	const randomText = lossTexts[Math.floor(Math.random() * lossTexts.length)];
 
 	imgContainer.innerHTML = `
-		<div class="bg-slate-950 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center p-1 w-full">
+		<div class="bg-slate-950/10 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center p-1 w-full">
 			<img src="${randomImg}" alt="Risk Management" class="w-full h-48 md:h-64 object-contain rounded">
 		</div>
 	`;
@@ -2471,7 +2471,7 @@ function renderKanbanBoard() {
 					<span class="font-bold text-pink-400 text-xs">&dollar;${item.ticker}</span>
 					<span class="text-[9px] text-slate-400">${item.date}</span>
 				</div>
-				<div class="grid grid-cols-3 gap-1 text-[10px] text-slate-300 bg-slate-950 p-2 rounded border border-slate-900 text-center">
+				<div class="grid grid-cols-3 gap-1 text-[10px] text-slate-300 bg-slate-950/10 p-2 rounded border border-slate-900 text-center">
 					<div><span class="text-[7px] text-amber-400 block">ENTRY</span>Rp ${item.entry.toLocaleString('id-ID')}</div>
 					<div><span class="text-[7px] text-rose-400 block">SL</span>Rp ${item.sl.toLocaleString('id-ID')}</div>
 					<div><span class="text-[7px] text-emerald-400 block">TP</span>Rp ${item.tp.toLocaleString('id-ID')}</div>
@@ -2609,7 +2609,7 @@ async function runCustomScreener() {
 	const ruleVol = document.getElementById('csRuleVol').value;
 	const rulePrice = document.getElementById('csRulePrice').value;
 
-	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950 border-dashed"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-400"></i> Memindai emiten sesuai custom rules Kamu...</div>`;
+	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10 border-dashed"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-400"></i> Memindai emiten sesuai custom rules Kamu...</div>`;
 	if (window.lucide) lucide.createIcons();
 
 	const shuffled = [...uniqueRadarWatchlist];
@@ -2653,7 +2653,7 @@ async function runCustomScreener() {
 	}
 
 	if (passedItems.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950 border-dashed">Tidak ada emiten yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya.</div>`;
+		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10 border-dashed">Tidak ada emiten yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya.</div>`;
 		return;
 	}
 
@@ -2687,7 +2687,7 @@ async function runCustomScreener() {
 		else infoPrice = `<li class="flex gap-2"><i data-lucide="hash" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Pergerakan Harian:</strong> Tercatat sebesar ${item.changePct >= 0 ? '+' : ''}${item.changePct}%.</span></li>`;
 
 		html += `
-			<div class="bg-slate-950 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative hover:border-blue-500/30 transition-colors">
+			<div class="bg-slate-950/10 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative hover:border-blue-500/30 transition-colors">
 				<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
 					<div class="flex items-center gap-2">
 						<span class="bg-slate-800 text-blue-400 text-[10px] px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
