@@ -1140,7 +1140,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 				<td class="p-3.5 text-white flex items-center gap-2">
 					<strong class="text-emerald-400">&dollar;${data.ticker}</strong>
 				</td>
-				<td class="p-3.5 text-sky-400">Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}</td>
+				<td class="p-3.5 text-amber-400">Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}</td>
 				<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
 					${isPlus ? '+' : ''}${data.changePct}%
 				</td>
@@ -1514,11 +1514,11 @@ function renderRadarItems(dataList) {
 			alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah (*reversal*) awal berpotensi terbentuk.`;
 		} else if (item.volRatio >= 1.5) {
 			statusSignal = "⚡ Volume Accumulation";
-			statusClass = "text-blue-500 border-blue-500/30 bg-blue-500/10";
+			statusClass = "text-blue-400 border-blue-500/30 bg-blue-500/10";
 			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata 10 hari</strong>. Mengindikasikan partisipasi modal besar (*smart money*) di pasar.`;
 		} else if (changePct < 0 && item.price >= item.ma20) {
 			statusSignal = "🛡️ Support Retest";
-			statusClass = "text-purple-400 border-purple-500/30 bg-purple-500/10";
+			statusClass = "text-pink-400 border-pink-500/30 bg-pink-500/10";
 			alasanTeknikal = `Harga sedang mengalami koreksi sehat (*pullback*) dan menguji area pertahanan MA20 (Rp ${item.ma20.toLocaleString('id-ID')}). Area ideal penampungan berisiko terukur.`;
 		}
 
