@@ -232,16 +232,16 @@
 				<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
 				{
 					"symbols": [
-						{ "description": "BBCA", "proName": "IDX:BBCA" },
+						{ "description": "MDIA", "proName": "IDX:MDIA" },
 						{ "description": "BBRI", "proName": "IDX:BBRI" },
 						{ "description": "BMRI", "proName": "IDX:BMRI" },
-						{ "description": "TLKM", "proName": "IDX:TLKM" },
+						{ "description": "DCII", "proName": "IDX:DCII" },
 						{ "description": "ASII", "proName": "IDX:ASII" },
 						{ "description": "CUAN", "proName": "IDX:CUAN" },
 						{ "description": "BRPT", "proName": "IDX:BRPT" },
 						{ "description": "ANTM", "proName": "IDX:ANTM" },
 						{ "description": "EMAS", "proName": "IDX:EMAS" },
-						{ "description": "MDIA", "proName": "IDX:MDIA" },
+						{ "description": "INET", "proName": "IDX:INET" },
 						{ "description": "PANI", "proName": "IDX:PANI" }
 					],
 					"showSymbolLogo": false,
@@ -257,15 +257,15 @@
 		<!-- Fixed Search Bar Melayang -->
 		<div class="sticky top-20 left-0 w-full z-20 glassmorphism border-b border-slate-800/80 py-3 px-4 space-y-2">
 			<!-- Container Trending dipindah ke luar searchContainer agar styling rapi -->
-			<div id="yahooTrendingContainer" class="max-w-md lg:max-w-xl mx-auto px-1 overflow-x-auto scrollbar-thin"></div>
+			<!--<div id="yahooTrendingContainer" class="max-w-md lg:max-w-xl mx-auto px-1 overflow-x-auto scrollbar-thin"></div>-->
 
 			<div class="max-w-md lg:max-w-xl mx-auto relative" id="searchContainer">
 				<i data-lucide="search" class="absolute left-3.5 top-3 lg:top-3.5 w-4 h-4 lg:w-5 lg:h-5 text-white z-10"></i>
-				<input type="text" id="stockSearch" autocomplete="off" placeholder="Cari saham (BBCA...) atau klik Mic" 
+				<input type="text" id="stockSearch" autocomplete="off" placeholder="Cari saham (MDIA...) atau klik Mic" 
 					class="w-full bg-slate-800 text-sm lg:text-base border border-slate-700 rounded-lg pl-10 lg:pl-11 pr-[110px] py-2 lg:py-2.5 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
 				
 				<!-- Tombol Pencarian Suara -->
-				<button onclick="startVoiceSearch()" id="btnVoiceSearch" title="Pencarian Suara" class="absolute right-[66px] top-[3px] lg:top-[6px] text-slate-400 hover:text-emerald-400 transition z-10 p-1">
+				<button onclick="startVoiceSearch()" id="btnVoiceSearch" title="Pencarian Suara" class="absolute right-[68px] top-[3px] lg:top-[6px] text-slate-400 hover:text-emerald-400 transition z-10 p-1">
 					<i id="voiceIcon" class="fa-solid fa-microphone text-sm lg:text-base"></i>
 				</button>
 
