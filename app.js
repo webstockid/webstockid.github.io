@@ -1510,11 +1510,11 @@ function renderRadarItems(dataList) {
 			alasanTeknikal = `<strong>Waspada!</strong> Harga naik sangat tinggi (<strong>+${changePct}%</strong>) namun tidak didukung oleh volume yang kuat (Hanya <strong>${item.volRatio}x</strong>). Kenaikan ini rawan dibanting. Hati-hati FOMO!`;
 		} else if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0.5 && changePct < 3) {
 			statusSignal = "🚀 Golden Cross Setup";
-			statusClass = "text-sky-400 border-sky-400/30 bg-sky-400/10";
+			statusClass = "text-yellow-400 border-yellow-500/30 bg-yellow-500/10";
 			alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah (*reversal*) awal berpotensi terbentuk.`;
 		} else if (item.volRatio >= 1.5) {
 			statusSignal = "⚡ Volume Accumulation";
-			statusClass = "text-cyan-400 border-cyan-500/30 bg-cyan-500/10";
+			statusClass = "text-blue-400 border-blue-500/30 bg-blue-500/10";
 			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata 10 hari</strong>. Mengindikasikan partisipasi modal besar (*smart money*) di pasar.`;
 		} else if (changePct < 0 && item.price >= item.ma20) {
 			statusSignal = "🛡️ Support Retest";
