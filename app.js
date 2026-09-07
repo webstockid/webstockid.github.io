@@ -1176,16 +1176,16 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 		rowsHTML += `
 			<tr class="${rowClass}">
 				<td class="p-3.5 text-white flex items-center gap-2">
-					<strong class="text-emerald-400 font-mono">&dollar;${data.ticker}</strong>
+					<strong class="text-emerald-400">&dollar;${data.ticker}</strong>
 				</td>
-				<td class="p-3.5 text-white">Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}</td>
+				<td class="p-3.5 text-sky-400">Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}</td>
 				<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
 					${isPlus ? '+' : ''}${data.changePct}%
 				</td>
 				<td class="p-3.5 ${data.price >= data.ma5 ? 'text-emerald-400' : 'text-rose-400'}">
 					${data.price >= data.ma5 ? 'Bullish (Above MA5)' : 'Bearish (Below MA5)'}
 				</td>
-				<td class="p-3.5 ${data.volRatio >= 1.2 ? 'text-emerald-400 font-bold' : 'text-slate-400'}">
+				<td class="p-3.5 ${data.volRatio >= 1.2 ? 'text-emerald-400 font-bold' : 'text-cyan-400'}">
 					${data.volRatio}x Vol
 				</td>
 				<td class="p-3.5 text-center">
@@ -1583,19 +1583,19 @@ function renderRadarItems(dataList) {
 				<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs">
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-white text-[9px] lg:text-[10px] block">Entry Ideal</span>
-						<span class="font-bold text-amber-400 font-mono">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
+						<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-white text-[9px] lg:text-[10px] block">AVG Bandar</span>
-						<span class="font-bold text-blue-400 font-mono">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
+						<span class="font-bold text-blue-400">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-white text-[9px] lg:text-[10px] block">Target Profit (TP1/TP2)</span>
-						<span class="font-bold text-emerald-300 font-mono">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
+						<span class="text-white text-[9px] lg:text-[10px] block">Take Profit</span>
+						<span class="font-bold text-emerald-300">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-white text-[9px] lg:text-[10px] block">Stop Loss (SL)</span>
-						<span class="font-bold text-rose-400 font-mono">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
+						<span class="text-white text-[9px] lg:text-[10px] block">Stop Loss</span>
+						<span class="font-bold text-rose-400">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
 					</div>
 				</div>
 
@@ -2510,7 +2510,7 @@ function renderKanbanBoard() {
 			<div draggable="true" ondragstart="dragJournalCard(event, ${item.id})" class="bg-slate-900 border border-slate-800 p-3 rounded-xl cursor-grab active:cursor-grabbing hover:border-slate-700 transition space-y-2 shadow-sm">
 				<div class="flex items-center justify-between">
 					<span class="font-bold text-pink-400 text-xs">&dollar;${item.ticker}</span>
-					<span class="text-[9px] text-slate-400 font-mono">${item.date}</span>
+					<span class="text-[9px] text-slate-400">${item.date}</span>
 				</div>
 				<div class="grid grid-cols-3 gap-1 text-[10px] text-slate-300 bg-slate-950 p-2 rounded border border-slate-900 text-center">
 					<div><span class="text-[7px] text-amber-400 block">ENTRY</span>Rp ${item.entry.toLocaleString('id-ID')}</div>
@@ -2731,7 +2731,7 @@ async function runCustomScreener() {
 			<div class="bg-slate-950 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative hover:border-blue-500/30 transition-colors">
 				<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
 					<div class="flex items-center gap-2">
-						<span class="bg-slate-800 text-blue-400 text-[10px] px-2 py-0.5 rounded border border-slate-700 font-mono">#${index + 1}</span>
+						<span class="bg-slate-800 text-blue-400 text-[10px] px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
 						<div>
 							<div class="flex items-center gap-2">
 								<span class="font-bold text-white text-sm lg:text-base">&dollar;${item.ticker}</span>
@@ -2750,19 +2750,19 @@ async function runCustomScreener() {
 				<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs">
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-slate-400 text-[9px] block">Entry Ideal</span>
-						<span class="font-bold text-amber-400 font-mono">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
+						<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-slate-400 text-[9px] block">AVG Bandar</span>
-						<span class="font-bold text-blue-400 font-mono">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
+						<span class="font-bold text-blue-400">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-slate-400 text-[9px] block">Target (TP1/TP2)</span>
-						<span class="font-bold text-emerald-300 font-mono">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
+						<span class="text-slate-400 text-[9px] block">Take Profit</span>
+						<span class="font-bold text-emerald-300">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-slate-400 text-[9px] block">Stop Loss (SL)</span>
-						<span class="font-bold text-rose-400 font-mono">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
+						<span class="text-slate-400 text-[9px] block">Stop Loss</span>
+						<span class="font-bold text-rose-400">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
 					</div>
 				</div>
 
@@ -2895,45 +2895,50 @@ function ptExecuteBuy() {
 }
 
 function ptExecuteSell(id) {
-	let acc = getPaperAccount();
-	const itemIndex = acc.portfolio.findIndex(p => p.id === id);
-	if (itemIndex < 0) return;
+		let acc = getPaperAccount();
+		const itemIndex = acc.portfolio.findIndex(p => p.id === id);
+		if (itemIndex < 0) return;
 
-	const item = acc.portfolio[itemIndex];
-	let sellPrice = item.avgPrice;
-	if (globalStockData && globalStockData.ticker === item.ticker) {
-		sellPrice = globalStockData.price;
+		const item = acc.portfolio[itemIndex];
+		let sellPrice = item.avgPrice;
+		
+		// Tarik harga live secara cerdas dari global atau background cache
+		const cached = getCachedStockData(item.ticker);
+		if (globalStockData && globalStockData.ticker === item.ticker) {
+			sellPrice = globalStockData.price;
+		} else if (cached && cached.price) {
+			sellPrice = cached.price;
+		}
+
+		const revenue = sellPrice * item.lots * 100;
+		const modal = item.avgPrice * item.lots * 100;
+		const profitLoss = revenue - modal;
+		const profitLossPct = parseFloat((((sellPrice - item.avgPrice) / item.avgPrice) * 100).toFixed(2));
+
+		acc.cash += revenue;
+		acc.portfolio.splice(itemIndex, 1);
+
+		acc.history.unshift({
+			ticker: item.ticker,
+			lots: item.lots,
+			buyPrice: item.avgPrice,
+			sellPrice: sellPrice,
+			profitLoss: profitLoss,
+			profitLossPct: profitLossPct,
+			status: profitLoss >= 0 ? 'WIN' : 'LOSS',
+			date: new Date().toLocaleDateString('id-ID')
+		});
+
+		savePaperAccount(acc);
+		if (profitLoss >= 0) {
+			AudioFX.playWinJournal();
+			triggerCuanCelebration();
+		} else {
+			AudioFX.playLossJournal();
+			triggerLossCelebration();
+		}
+		showToast(`Penjualan $${item.ticker} selesai. P&L: Rp ${profitLoss.toLocaleString('id-ID')} (${profitLossPct}%)`);
 	}
-
-	const revenue = sellPrice * item.lots * 100;
-	const modal = item.avgPrice * item.lots * 100;
-	const profitLoss = revenue - modal;
-	const profitLossPct = parseFloat((((sellPrice - item.avgPrice) / item.avgPrice) * 100).toFixed(2));
-
-	acc.cash += revenue;
-	acc.portfolio.splice(itemIndex, 1);
-
-	acc.history.unshift({
-		ticker: item.ticker,
-		lots: item.lots,
-		buyPrice: item.avgPrice,
-		sellPrice: sellPrice,
-		profitLoss: profitLoss,
-		profitLossPct: profitLossPct,
-		status: profitLoss >= 0 ? 'WIN' : 'LOSS',
-		date: new Date().toLocaleDateString('id-ID')
-	});
-
-	savePaperAccount(acc);
-	if (profitLoss >= 0) {
-		AudioFX.playWinJournal();
-		triggerCuanCelebration();
-	} else {
-		AudioFX.playLossJournal();
-		triggerLossCelebration();
-	}
-	showToast(`Penjualan $${item.ticker} selesai. P&L: Rp ${profitLoss.toLocaleString('id-ID')} (${profitLossPct}%)`);
-}
 
 function ptResetAccount() {
 	showConfirm("Yakin ingin mereset akun paper trading ke modal awal Rp 100 Juta?").then(isConfirmed => {
@@ -2946,141 +2951,156 @@ function ptResetAccount() {
 	});
 }
 
-async function ptRefreshPortoPrices() {
-	let acc = getPaperAccount();
-	if (acc.portfolio.length === 0) {
-		showToast("Tidak ada emiten aktif di portofolio.", "info");
-		return;
-	}
+async function ptRefreshPortoPrices(isAuto = false) {
+		let acc = getPaperAccount();
+		if (acc.portfolio.length === 0) {
+			if (!isAuto) showToast("Tidak ada emiten aktif di portofolio.", "info");
+			return;
+		}
 
-	showToast("Memperbarui harga pasar portofolio...");
-	for (let item of acc.portfolio) {
-		const data = await fetchRealtimeStockData(item.ticker);
-		if (data && data.price) {
-			if (item.tp > 0 && data.price >= item.tp) {
-				ptExecuteSell(item.id);
-				continue;
-			}
-			if (item.sl > 0 && data.price <= item.sl) {
-				ptExecuteSell(item.id);
-				continue;
+		if (!isAuto) showToast("Memperbarui harga pasar portofolio...");
+		for (let item of acc.portfolio) {
+			const data = await fetchRealtimeStockData(item.ticker);
+			if (data && data.price) {
+				if (item.tp > 0 && data.price >= item.tp) {
+					ptExecuteSell(item.id);
+					continue;
+				}
+				if (item.sl > 0 && data.price <= item.sl) {
+					ptExecuteSell(item.id);
+					continue;
+				}
 			}
 		}
+		renderPaperTradingUI();
+		if (!isAuto) AudioFX.playSuccess();
 	}
-	renderPaperTradingUI();
-	AudioFX.playSuccess();
-}
 
 function renderPaperTradingUI() {
-	const acc = getPaperAccount();
-	
-	let stockAssetValue = 0;
-	acc.portfolio.forEach(item => {
-		let currentP = item.avgPrice;
-		if (globalStockData && globalStockData.ticker === item.ticker) {
-			currentP = globalStockData.price;
-		}
-		stockAssetValue += (currentP * item.lots * 100);
-	});
-
-	const totalEquity = acc.cash + stockAssetValue;
-
-	document.getElementById('ptCash').innerText = `Rp ${Math.round(acc.cash).toLocaleString('id-ID')}`;
-	document.getElementById('ptEquity').innerText = `Rp ${Math.round(totalEquity).toLocaleString('id-ID')}`;
-
-	const totalClosed = acc.history.length;
-	const totalWin = acc.history.filter(h => h.status === 'WIN').length;
-	const winRate = totalClosed > 0 ? Math.round((totalWin / totalClosed) * 100) : 0;
-
-	document.getElementById('ptWinRate').innerHTML = `Win Rate: ${winRate}% (${totalWin}/${totalClosed})`;
-
-	let rankName = "NEWBIE TRADER 🥺";
-	let rankColor = "text-violet-400";
-	if (totalEquity >= 250000000 && winRate >= 70) {
-		rankName = "BANDAR 🐋";
-		rankColor = "text-emerald-400";
-	} else if (totalEquity >= 150000000 && winRate >= 60) {
-		rankName = "EXPERT TRADER ⚡";
-		rankColor = "text-cyan-400";
-	} else if (totalEquity >= 110000000 && winRate >= 60) { // <-- Bagian yang diperbaiki
-		rankName = "PRO TRADER  😎";
-		rankColor = "text-teal-400";
-	} else if (totalEquity >= 80000000) {
-		rankName = "NORMAL TRADER 😼";
-		rankColor = "text-amber-400";
-	} else if (totalEquity >= 40000000) {
-		rankName = "NOOB TRADER 😹";
-		rankColor = "text-rose-400";
-	}
-
-	const rankBadgeEl = document.getElementById('ptRankBadge');
-	if (rankBadgeEl) {
-		rankBadgeEl.innerText = rankName;
-		rankBadgeEl.className = `text-lg lg:text-xl font-bold ${rankColor} leading-none`;
-	}
-
-	const portoBody = document.getElementById('ptPortoBody');
-	if (acc.portfolio.length === 0) {
-		portoBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500 font-sans">Belum ada posisi terbuka. Gunakan form di sebelah kiri untuk simulasi beli.</td></tr>`;
-	} else {
-		let html = '';
+		const acc = getPaperAccount();
+		
+		let stockAssetValue = 0;
 		acc.portfolio.forEach(item => {
 			let currentP = item.avgPrice;
+			// Cek cache jika emiten tidak sedang dibuka
+			const cached = getCachedStockData(item.ticker);
 			if (globalStockData && globalStockData.ticker === item.ticker) {
 				currentP = globalStockData.price;
+			} else if (cached && cached.price) {
+				currentP = cached.price;
 			}
-			const modal = item.avgPrice * item.lots * 100;
-			const currentVal = currentP * item.lots * 100;
-			const pnl = currentVal - modal;
-			const pnlPct = parseFloat((((currentP - item.avgPrice) / item.avgPrice) * 100).toFixed(2));
-			const isPlus = pnl >= 0;
-
-			html += `
-				<tr class="hover:bg-slate-800/40">
-					<td class="p-3.5 font-bold text-violet-400">&dollar;${item.ticker}</td>
-					<td class="p-3.5 text-blue-400">${item.lots.toLocaleString('id-ID')} Lot</td>
-					<td class="p-3.5 text-teal-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
-					<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
-					<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
-						${isPlus ? '+' : ''}Rp ${Math.round(pnl).toLocaleString('id-ID')} (${isPlus ? '+' : ''}${pnlPct}%)
-					</td>
-					<td class="p-3.5 text-center">
-						<button onclick="ptExecuteSell(${item.id})" class="text-[10px] bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-400 font-bold px-3 py-1 rounded-lg border border-rose-500/30 transition">Jual</button>
-					</td>
-				</tr>
-			`;
+			stockAssetValue += (currentP * item.lots * 100);
 		});
-		portoBody.innerHTML = html;
-	}
 
-	const historyContainer = document.getElementById('ptHistoryContainer');
-	if (acc.history.length === 0) {
-		historyContainer.innerHTML = `<div class="text-slate-500 text-xs text-center col-span-full py-4 border border-dashed border-slate-800 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>`;
-	} else {
-		let hHtml = '';
-		acc.history.slice(0, 6).forEach(h => {
-			const isWin = h.status === 'WIN';
-			hHtml += `
-				<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1">
-					<div class="flex justify-between items-center">
-						<span class="font-bold text-white">&dollar;${h.ticker} (${h.lots} Lot)</span>
-						<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-violet-500/10 border border-violet-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
-					</div>
-					<div class="flex justify-between text-[11px] text-slate-300">
-						<span>Beli: Rp ${h.buyPrice.toLocaleString('id-ID')}</span>
-						<span>Jual: Rp ${h.sellPrice.toLocaleString('id-ID')}</span>
-					</div>
-					<div class="text-right font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'} text-xs">
-						${isWin ? '+' : ''}Rp ${Math.round(h.profitLoss).toLocaleString('id-ID')} (${isWin ? '+' : ''}${h.profitLossPct}%)
-					</div>
-				</div>
-			`;
-		});
-		historyContainer.innerHTML = hHtml;
-	}
+		const totalEquity = acc.cash + stockAssetValue;
 
-	if (window.lucide) lucide.createIcons();
-}
+		document.getElementById('ptCash').innerText = `Rp ${Math.round(acc.cash).toLocaleString('id-ID')}`;
+		document.getElementById('ptEquity').innerText = `Rp ${Math.round(totalEquity).toLocaleString('id-ID')}`;
+
+		const totalClosed = acc.history.length;
+		const totalWin = acc.history.filter(h => h.status === 'WIN').length;
+		const winRate = totalClosed > 0 ? Math.round((totalWin / totalClosed) * 100) : 0;
+
+		document.getElementById('ptWinRate').innerHTML = `Win Rate: ${winRate}% (${totalWin}/${totalClosed})`;
+
+		let rankName = "NEWBIE TRADER 🥺";
+		let rankColor = "text-violet-400";
+		if (totalEquity >= 250000000 && winRate >= 70) {
+			rankName = "BANDAR 🐋";
+			rankColor = "text-emerald-400";
+		} else if (totalEquity >= 150000000 && winRate >= 60) {
+			rankName = "EXPERT TRADER ⚡";
+			rankColor = "text-cyan-400";
+		} else if (totalEquity >= 110000000 && winRate >= 60) {
+			rankName = "PRO TRADER  😎";
+			rankColor = "text-teal-400";
+		} else if (totalEquity >= 80000000) {
+			rankName = "NORMAL TRADER 😼";
+			rankColor = "text-amber-400";
+		} else if (totalEquity >= 40000000) {
+			rankName = "NOOB TRADER 😹";
+			rankColor = "text-rose-400";
+		}
+
+		const rankBadgeEl = document.getElementById('ptRankBadge');
+		if (rankBadgeEl) {
+			rankBadgeEl.innerText = rankName;
+			rankBadgeEl.className = `text-lg lg:text-xl font-bold ${rankColor} leading-none`;
+		}
+
+		const portoBody = document.getElementById('ptPortoBody');
+		if (acc.portfolio.length === 0) {
+			portoBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500 font-sans">Belum ada posisi terbuka. Gunakan form di sebelah kiri untuk simulasi beli.</td></tr>`;
+		} else {
+			let html = '';
+			acc.portfolio.forEach(item => {
+				let currentP = item.avgPrice;
+				const cached = getCachedStockData(item.ticker);
+				if (globalStockData && globalStockData.ticker === item.ticker) {
+					currentP = globalStockData.price;
+				} else if (cached && cached.price) {
+					currentP = cached.price;
+				}
+				const modal = item.avgPrice * item.lots * 100;
+				const currentVal = currentP * item.lots * 100;
+				const pnl = currentVal - modal;
+				const pnlPct = parseFloat((((currentP - item.avgPrice) / item.avgPrice) * 100).toFixed(2));
+				const isPlus = pnl >= 0;
+
+				html += `
+					<tr class="hover:bg-slate-800/40">
+						<td class="p-3.5 font-bold text-violet-400">&dollar;${item.ticker}</td>
+						<td class="p-3.5 text-blue-400">${item.lots.toLocaleString('id-ID')} Lot</td>
+						<td class="p-3.5 text-teal-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
+						<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
+						<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
+							${isPlus ? '+' : ''}Rp ${Math.round(pnl).toLocaleString('id-ID')} (${isPlus ? '+' : ''}${pnlPct}%)
+						</td>
+						<td class="p-3.5 text-center">
+							<button onclick="ptExecuteSell(${item.id})" class="text-[10px] bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-400 font-bold px-3 py-1 rounded-lg border border-rose-500/30 transition">Jual</button>
+						</td>
+					</tr>
+				`;
+			});
+			portoBody.innerHTML = html;
+		}
+
+		const historyContainer = document.getElementById('ptHistoryContainer');
+		if (acc.history.length === 0) {
+			historyContainer.innerHTML = `<div class="text-slate-500 text-xs text-center col-span-full py-4 border border-dashed border-slate-800 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>`;
+		} else {
+			let hHtml = '';
+			acc.history.slice(0, 6).forEach(h => {
+				const isWin = h.status === 'WIN';
+				const modal = h.buyPrice * h.lots * 100; // Kalkulasi Modal
+				
+				hHtml += `
+					<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1 shadow-sm hover:border-violet-500/30 transition-colors">
+						<div class="flex justify-between items-center">
+							<span class="font-bold text-violet-400">&dollar;${h.ticker} (${h.lots} Lot)</span>
+							<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-violet-500/10 border border-violet-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
+						</div>
+						<div class="flex justify-between text-[11px] text-slate-300 pb-1">
+							<span class="font-bold text-sky-400">Beli: Rp ${h.buyPrice.toLocaleString('id-ID')}</span>
+							<span class="font-bold text-teal-400">Jual: Rp ${h.sellPrice.toLocaleString('id-ID')}</span>
+						</div>
+						<div class="flex justify-between items-center pt-1.5 border-t border-slate-800/80 mt-1">
+							<div class="flex flex-col">
+								<span class="text-[8px] text-slate-400 uppercase font-bold">Modal Awal</span>
+								<span class="text-[10px] text-slate-300 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
+							</div>
+							<div class="text-right font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'} text-xs">
+								${isWin ? '+' : ''}Rp ${Math.round(h.profitLoss).toLocaleString('id-ID')} (${isWin ? '+' : ''}${h.profitLossPct}%)
+							</div>
+						</div>
+					</div>
+				`;
+			});
+			historyContainer.innerHTML = hHtml;
+		}
+
+		if (window.lucide) lucide.createIcons();
+	}
 
 function getPaperAccount() {
 	const defaultAccount = {
@@ -3187,7 +3207,7 @@ function generateAIResponse(prompt) {
 	const formatRp = (num) => num ? `Rp ${num.toLocaleString('id-ID')}` : 'N/A';
 
 	if (lower.includes('halo') || lower.includes('hai') || lower.includes('pagi') || lower.includes('siang') || lower.includes('sore') || lower.includes('malam')) {
-		return `Halo! Gue AI Assistant Stock ID. Mau bahas teknikal <strong class="text-emerald-400">$${targetTicker}</strong> atau ada emiten lain yang mau di-screening hari ini?`;
+		return `Halo! Aku AI Assistant Stock ID. Mau bahas teknikal <strong class="text-emerald-400">$${targetTicker}</strong> atau ada emiten lain yang mau di-screening hari ini?`;
 	}
 
 	if (lower.includes('terimakasih') || lower.includes('makasih') || lower.includes('thanks') || lower.includes('oke')) {
@@ -3195,7 +3215,7 @@ function generateAIResponse(prompt) {
 	}
 
 	if (!data) {
-		return `Untuk menganalisa <strong class="text-cyan-400">$${targetTicker}</strong> lebih presisi, silakan cari emiten tersebut di kolom pencarian atas terlebih dahulu agar gue bisa menarik data bursa terbarunya.`;
+		return `Untuk menganalisa <strong class="text-cyan-400">$${targetTicker}</strong> lebih presisi, silakan cari emiten tersebut di kolom pencarian atas terlebih dahulu agar Aku bisa menarik data bursa terbarunya.`;
 	}
 
 	const price = data.price;
@@ -3236,7 +3256,7 @@ function generateAIResponse(prompt) {
 		const trendText = price >= data.ma5 ? '<span class="text-emerald-400 font-bold">di atas MA5 (Fase Bullish / Menguat)</span>' : '<span class="text-rose-400 font-bold">di bawah MA5 (Fase Koreksi / Lemah)</span>';
 		return `
 			<strong class="text-fuchsia-400 flex items-center gap-1.5"><i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Posisi Moving Average $${targetTicker}:</strong>
-			<ul class="space-y-0.5 mt-1 list-inside font-mono">
+			<ul class="space-y-0.5 mt-1 list-inside">
 				<li>• MA5 : <span class="text-white">${formatRp(data.ma5)}</span></li>
 				<li>• MA10: <span class="text-white">${formatRp(data.ma10)}</span></li>
 				<li>• MA20: <span class="text-white">${formatRp(data.ma20)}</span></li>
@@ -3251,7 +3271,7 @@ function generateAIResponse(prompt) {
 		const volStatus = data.volRatio >= 1.5 ? '<span class="text-emerald-400 font-bold">Spike (Sangat Ramai) ⚡</span>' : (data.volRatio >= 1.0 ? '<span class="text-amber-400 font-bold">Normal</span>' : '<span class="text-slate-400">Sepi</span>');
 		return `
 			<strong class="text-emerald-400 flex items-center gap-1.5"><i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> Analisis Volume $${targetTicker}:</strong>
-			<ul class="space-y-0.5 mt-1 font-mono">
+			<ul class="space-y-0.5 mt-1">
 				<li>• Total Lot: <span class="text-white">${(data.currentLot || 0).toLocaleString('id-ID')} Lot</span></li>
 				<li>• Valuasi: <span class="text-white">${formatRp(data.currentValuation)}</span></li>
 				<li>• Rasio Rerata: <span class="text-white">${data.volRatio}x</span> (${volStatus})</li>
@@ -3397,14 +3417,17 @@ document.getElementById('alertTickerLabel').innerText = currentTicker;
 document.getElementById('corpTickerLabel').innerText = currentTicker;
 document.getElementById('peerTickerLabel').innerText = currentTicker;
 
+generateAISignal(currentTicker);
+renderAllAlerts();
+renderJournalTable();
+renderPaperTradingUI();
 renderChart(currentTicker);
 renderTechnicalGauge(currentTicker);
 renderFundamentalWidget(currentTicker);
-renderAllAlerts();
-generateAISignal(currentTicker);
 fetchStockNews(currentTicker);
 fetchCorporateAction(currentTicker);
-renderJournalTable();
-renderPaperTradingUI();
 checkWelcomeModal();
 startBackgroundAutoCache();
+setInterval(() => {
+	ptRefreshPortoPrices(true);
+}, 300000);

@@ -30,9 +30,9 @@
 				font-family: "Lexend";
 				background-color: #0b0f19;
 			}
-			.heading-font, a, p, b, button, nav, ul, li, strong, option, div, span, label {
+			.heading-font, a, p, b, button, nav, ul, li, ol, option, select, strong, option, div, span, label {
 				font-family: "Lexend";
-				font-weight: bold !important;
+				font-weight: 800 !important;
 			}
 			.glassmorphism {
 				background: rgba(17, 24, 39, 0.75);
@@ -494,7 +494,7 @@
 									<span id="mapResist1" class="font-bold text-cyan-400">Memuat...</span>
 								</div>
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
-									<span class="text-white text-[10px] lg:text-[11px] block">Target Profit (TP1 / TP2)</span>
+									<span class="text-white text-[10px] lg:text-[11px] block">Take Profit (TP1 / TP2)</span>
 									<span id="mapTP" class="font-bold text-emerald-400">Memuat...</span>
 								</div>
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
@@ -873,9 +873,9 @@
 									<tr>
 										<th class="p-3.5">Emiten</th>
 										<th class="p-3.5">Total Lot</th>
-										<th class="p-3.5">Modal Avg (Rp)</th>
-										<th class="p-3.5">Harga Last (Rp)</th>
-										<th class="p-3.5">Floating Profit / Loss</th>
+										<th class="p-3.5">Modal Avg</th>
+										<th class="p-3.5">Harga Last</th>
+										<th class="p-3.5">Profit / Loss</th>
 										<th class="p-3.5 text-center">Aksi Jual</th>
 									</tr>
 								</thead>
@@ -934,15 +934,15 @@
 								<span class="text-[10px] lg:text-[11px] font-bold text-white uppercase tracking-wider block">2. Level Harga Trading Plan</span>
 								<div class="grid grid-cols-3 gap-2.5">
 									<div>
-										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Harga Entry (Rp)</label>
+										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Entry</label>
 										<input type="number" id="rrrEntry" placeholder="misal: 1000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-amber-500">
 									</div>
 									<div>
-										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Stop Loss (SL)</label>
+										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Stop Loss</label>
 										<input type="number" id="rrrSL" placeholder="misal: 950" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-rose-500">
 									</div>
 									<div>
-										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Target (TP1)</label>
+										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Take Profit</label>
 										<input type="number" id="rrrTP" placeholder="misal: 1150" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
 									</div>
 								</div>
@@ -1031,10 +1031,10 @@
 							<thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
 								<tr>
 									<th class="p-3.5">Tanggal</th>
-									<th class="p-3.5">Ticker</th>
-									<th class="p-3.5">Harga Entry</th>
-									<th class="p-3.5">Stop Loss (SL)</th>
-									<th class="p-3.5">Target Profit (TP)</th>
+									<th class="p-3.5">Emiten</th>
+									<th class="p-3.5">Entry</th>
+									<th class="p-3.5">Stop Loss</th>
+									<th class="p-3.5">Take Profit</th>
 									<th class="p-3.5">Rasio RRR</th>
 									<th class="p-3.5">Status Plan</th>
 									<th class="p-3.5 text-center">Tindakan</th>
