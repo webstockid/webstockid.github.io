@@ -192,7 +192,7 @@ function closeWelcomeModal(dontShowAgain) {
 
 // DATABASE TOKEN VIP
 const databaseVIP = {
-	"1": { "tanggalExpired": "2040-07-25" },
+	"555": { "tanggalExpired": "2040-07-25" },
 	"FREE123": { "tanggalExpired": "2026-08-26" },
 	"IRAM7363": { "tanggalExpired": "2026-10-24" },
 	"ANDI2636": { "tanggalExpired": "2026-09-18" },
@@ -1512,7 +1512,7 @@ function renderRadarItems(dataList) {
 			statusSignal = "🚀 Golden Cross Setup";
 			statusClass = "text-yellow-400 border-yellow-500/30 bg-yellow-500/10";
 			alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah (*reversal*) awal berpotensi terbentuk.`;
-		} else if (item.volRatio >= 1.5 && item.volRatio <= 2.5) {
+		} else if (item.volRatio >= 1.5 && item.volRatio <= 4) {
 			statusSignal = "⚡ Volume Accumulation";
 			statusClass = "text-blue-400 border-blue-500/30 bg-blue-500/10";
 			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata 10 hari</strong>. Mengindikasikan partisipasi modal besar (*smart money*) di pasar.`;
@@ -3352,7 +3352,7 @@ async function scanWhalesData() {
 	// 1. SETTING UI LOADING (State Awal)
 	btn.disabled = true;
 	btn.classList.add('cursor-not-allowed', 'opacity-70');
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-fuchsia-300"></i> Melacak Bandar...`;
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-fuchsia-300"></i> Melacak Whales...`;
 	if (window.lucide) lucide.createIcons();
 
 	container.innerHTML = `
@@ -3464,7 +3464,7 @@ async function scanWhalesData() {
 									${item.changePct >= 0 ? '+' : ''}${item.changePct}%
 								</span>
 							</span>
-							<span class="text-[10px] text-slate-400 mt-1">Close: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (Vol: <span class="text-fuchsia-400 font-bold">${item.volRatio}x</span>)</span>
+							<span class="text-[10px] text-slate-400 mt-1">Close: <strong class="text-blue-400">Rp ${price.toLocaleString('id-ID')}</strong> (Vol: <span class="text-fuchsia-400 font-bold">${item.volRatio}x</span>)</span>
 						</div>
 					</div>
 
@@ -3472,28 +3472,28 @@ async function scanWhalesData() {
 						<div class="bg-slate-900/70 p-2.5 rounded border border-slate-800/80 space-y-1">
 							<div class="flex justify-between">
 								<span class="text-slate-400">Entry Agresif / Aman:</span>
-								<span class="font-bold text-amber-400">Rp ${entryAman} - ${entryAgresif}</span>
+								<span class="font-bold text-amber-400">Rp ${entryAman.toLocaleString('id-ID')} - ${entryAgresif.toLocaleString('id-ID')}</span>
 							</div>
 							<div class="flex justify-between">
 								<span class="text-slate-400">Support (S1 / S2):</span>
-								<span class="font-bold text-cyan-400">Rp ${s1} / ${s2}</span>
+								<span class="font-bold text-cyan-400">Rp ${s1.toLocaleString('id-ID')} - ${s2.toLocaleString('id-ID')}</span>
 							</div>
 							<div class="flex justify-between">
 								<span class="text-slate-400">Resistance (R1 / R2):</span>
-								<span class="font-bold text-emerald-400">Rp ${r1} / ${r2}</span>
+								<span class="font-bold text-emerald-400">Rp ${r1.toLocaleString('id-ID')} - ${r2.toLocaleString('id-ID')}</span>
 							</div>
 							<div class="flex justify-between border-t border-slate-800 pt-1">
 								<span class="text-slate-400">Stop Loss (CL):</span>
-								<span class="font-bold text-rose-400">&lt; Rp ${cl}</span>
+								<span class="font-bold text-rose-400">&lt; Rp ${cl.toLocaleString('id-ID')}</span>
 							</div>
 						</div>
 						<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
 							<span>Total Valuasi / Lot:</span>
-							<span class="font-bold text-slate-200">${(item.currentLot || 0).toLocaleString('id-ID')} Lot (${formatValuationIDR(item.currentValuation)})</span>
+							<span class="font-bold text-violet-400">${(item.currentLot || 0).toLocaleString('id-ID')} Lot (${formatValuationIDR(item.currentValuation)})</span>
 						</div>
 					</div>
 
-					<button onclick="selectTickerFromRadar('${item.ticker}'); toggleWhaleModal();" class="mt-3.5 w-full bg-slate-800 hover:bg-emerald-600 text-white text-[10px] lg:text-[11px] font-bold py-2.5 rounded-lg border border-slate-700 transition flex items-center justify-center gap-1.5">
+					<button onclick="selectTickerFromRadar('${item.ticker}'); toggleWhaleModal();" class="mt-3.5 w-full bg-fuchsia-700 hover:bg-fuchsia-500 text-white font-bold text-[10px] lg:text-[11px] font-bold py-2.5 rounded-lg border border-fuchsia-500 shadow-lg shadow-fuchsia-600/30 transition flex items-center justify-center gap-1.5">
 						<i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Buka Chart & Detail AI
 					</button>
 				</div>
