@@ -1500,7 +1500,7 @@ function renderRadarItems(dataList) {
 		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
 		let alasanTeknikal = `Perubahan <strong>${changePct}%</strong> dan bertahan kokoh di atas garis Moving Average MA5 (Rp ${item.ma5.toLocaleString('id-ID')}), menandakan tekanan beli harian masih mendominasi pasar.`;
 
-		if (item.volRatio >= 2.0 && changePct >= 0 && changePct <= 2.5) {
+		if (item.volRatio >= 2.5 && changePct >= 0 && changePct <= 2.5) {
 			statusSignal = "🐋 Curi Start (Whale Acc)";
 			statusClass = "text-fuchsia-400 border-fuchsia-500/30 bg-fuchsia-500/10";
 			alasanTeknikal = `<strong>Anomali Volume Terdeteksi!</strong> Harga saham baru naik tipis (<strong>+${changePct}%</strong>), tapi volume meledak <strong>${item.volRatio}x lipat</strong> dari rata-rata. Bandar terindikasi sedang kumpulin barang diam-diam.`;
@@ -1512,11 +1512,11 @@ function renderRadarItems(dataList) {
 			statusSignal = "🚀 Golden Cross Setup";
 			statusClass = "text-yellow-400 border-yellow-500/30 bg-yellow-500/10";
 			alasanTeknikal = `Sinyal perpotongan garis MA5 (Rp ${item.ma5.toLocaleString('id-ID')}) melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah (*reversal*) awal berpotensi terbentuk.`;
-		} else if (item.volRatio >= 1.5) {
+		} else if (item.volRatio >= 1.5 && item.volRatio <= 2.5) {
 			statusSignal = "⚡ Volume Accumulation";
 			statusClass = "text-blue-400 border-blue-500/30 bg-blue-500/10";
 			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata 10 hari</strong>. Mengindikasikan partisipasi modal besar (*smart money*) di pasar.`;
-		} else if (changePct < 0 && item.price >= item.ma20) {
+		} else if (changePct < 0.5 && item.price >= item.ma20) {
 			statusSignal = "🛡️ Support Retest";
 			statusClass = "text-pink-400 border-pink-500/30 bg-pink-500/10";
 			alasanTeknikal = `Harga sedang mengalami koreksi sehat (*pullback*) dan menguji area pertahanan MA20 (Rp ${item.ma20.toLocaleString('id-ID')}). Area ideal penampungan berisiko terukur.`;
@@ -3396,15 +3396,15 @@ async function scanWhalesData() {
 			let tierClass = "";
 
 			// LOGIKA KATEGORI TIER (Rapi & Presisi)
-			if (vol >= 2.5 && chg >= 1.5 && chg <= 5.5 && price > ma5) {
+			if (vol >= 2.0 && chg >= 1.0 && chg <= 6.5 && price > ma5) {
 				tier = 3;
 				tierName = "PAUS KUAT (STRONG WHALE)";
 				tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-			} else if (vol >= 1.5 && vol < 2.5 && chg >= 0.5 && chg <= 4.0) {
+			} else if (vol >= 1.5 && vol < 3.0 && chg >= 0.5 && chg <= 4.0) {
 				tier = 2;
 				tierName = "PAUS SEDANG (MEDIUM WHALE)";
 				tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
-			} else if (vol >= 1.2 && vol < 1.5 && chg >= 0 && chg <= 3.0) {
+			} else if (vol >= 1.2 && vol < 2.0 && chg >= 0 && chg <= 2.0) {
 				tier = 1;
 				tierName = "INDIKASI PAUS (WHALE SIGN)";
 				tierClass = "bg-amber-500/20 border-amber-500/40 text-amber-400";
@@ -3442,13 +3442,13 @@ async function scanWhalesData() {
 		let html = '';
 		foundWhales.forEach((item) => {
 			const price = roundToBEITick(item.price);
-			const s1 = roundToBEITick(price * 0.97, 'floor');
-			const s2 = roundToBEITick(price * 0.94, 'floor');
+			const s1 = roundToBEITick(price * 0.94, 'floor');
+			const s2 = roundToBEITick(price * 0.96, 'floor');
 			const r1 = roundToBEITick(price * 1.04, 'ceil');
 			const r2 = roundToBEITick(price * 1.08, 'ceil');
 			const cl = roundToBEITick(price * 0.91, 'floor');
 			const entryAgresif = roundToBEITick(price * 0.99, 'floor');
-			const entryAman = roundToBEITick(price * 0.96, 'floor');
+			const entryAman = roundToBEITick(price * 0.97, 'floor');
 
 			html += `
 				<div class="bg-slate-950/50 p-4 rounded-xl border border-slate-700/60 hover:border-slate-500/40 transition relative group shadow-sm flex flex-col justify-between">
@@ -3472,7 +3472,7 @@ async function scanWhalesData() {
 						<div class="bg-slate-900/70 p-2.5 rounded border border-slate-800/80 space-y-1">
 							<div class="flex justify-between">
 								<span class="text-slate-400">Entry Agresif / Aman:</span>
-								<span class="font-bold text-amber-400">Rp ${entryAgresif} - ${entryAman}</span>
+								<span class="font-bold text-amber-400">Rp ${entryAman} - ${entryAgresif}</span>
 							</div>
 							<div class="flex justify-between">
 								<span class="text-slate-400">Support (S1 / S2):</span>
@@ -3505,7 +3505,7 @@ async function scanWhalesData() {
 
 	// 5. ANIMASI PENDING & COOLDOWN (30s jika kosong, 15s jika dapat hasil)
 	isWhaleScanning = false;
-	let cooldown = foundWhales.length === 0 ? 30 : 15; 
+	let cooldown = foundWhales.length === 0 ? 60 : 30; 
 	
 	if (whaleScanCooldownTimer) clearInterval(whaleScanCooldownTimer);
 
