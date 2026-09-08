@@ -708,7 +708,8 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 		const lastAlertTime = localStorage.getItem(lastAlertKey);
 		const now = Date.now();
 		
-		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 14400000) {
+		// Interval diubah menjadi 10 detik sesuai instruksi
+		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 10000) {
 			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} meledak ${stockData.volRatio}x lipat! Harga baru naik ${stockData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
 			AudioFX.playSuccess(); 
@@ -3343,104 +3344,124 @@ async function scanWhalesData() {
 	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-fuchsia-300"></i> Mendeteksi Bandar...`;
 	if (window.lucide) lucide.createIcons();
 
-	container.innerHTML = `<div class="text-center text-slate-400 text-[11px] lg:text-xs py-12 col-span-full border border-dashed border-slate-700 rounded-xl bg-slate-950/20"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-500"></i> Memindai seluruh bursa mencari anomali volume & pergerakan senyap bandar...</div>`;
+	container.innerHTML = `<div class="text-center text-slate-400 text-[11px] lg:text-xs py-12 col-span-full border border-dashed border-slate-700 rounded-xl bg-slate-950/20"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-500"></i> Memindai data 5 menit terakhir untuk anomali bandar...</div>`;
 	if (window.lucide) lucide.createIcons();
 
-	// Acak watchlist agar bervariasi setiap kali discan
-	const shuffled = [...uniqueRadarWatchlist];
-	for (let i = shuffled.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-	}
+	// Memberi jeda animasi UI sejenak
+	await new Promise(resolve => setTimeout(resolve, 500));
 
 	let whaleItems = [];
-	const BATCH_SIZE = 10;
+	
+	// Membaca dari memori Cache (data 5 menit terakhir) agar instan tanpa request API berulang
+	for (let ticker of uniqueRadarWatchlist) {
+		const cachedData = getCachedStockData(ticker);
+		if (cachedData && cachedData.price) {
+			if (cachedData.volRatio >= 1.5 && cachedData.changePct >= 0 && cachedData.changePct <= 5.0) {
+				whaleItems.push(cachedData);
+			}
+		}
+	}
 
-	// Looping Batch Data
-	for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
-		const batch = shuffled.slice(i, i + BATCH_SIZE);
-		const results = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
+	// Fallback jika cache masih kosong: Ambil sampel cepat 10 saham agar tidak lag
+	if (whaleItems.length === 0) {
+		const shuffled = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random()).slice(0, 10);
+		const results = await Promise.all(shuffled.map(t => fetchRealtimeStockData(t)));
 
 		for (const item of results) {
-			if (!item || !item.price) continue;
-			
-			// Kriteria Whale: Volume > 1.5x Rerata, Harga naik tapi tidak lebih dari 5% (Fase kumpul barang / Akumulasi)
-			if (item.volRatio >= 1.5 && item.changePct >= 0 && item.changePct <= 5.0) {
+			if (item && item.price && item.volRatio >= 1.5 && item.changePct >= 0 && item.changePct <= 5.0) {
 				whaleItems.push(item);
 			}
 		}
-		
-		// Batasi hasil maksimal 10 saham agar hasil eksklusif dan memori efisien
-		if (whaleItems.length >= 10) break;
 	}
 
-	// Render Hasil
+	// Limit 10 hasil tertinggi agar layout tetap rapi
+	whaleItems = whaleItems.slice(0, 10);
+
+	// Logika jika tidak ada bandar yang terdeteksi & Set Timeout
 	if (whaleItems.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 text-[11px] lg:text-xs py-10 col-span-full border border-dashed border-slate-700 rounded-xl bg-slate-950/20">Tidak ada pergerakan masif Whale/Bandar yang terdeteksi saat ini. Market mungkin sedang konsolidasi atau sepi.</div>`;
-	} else {
-		// Urutkan berdasarkan lonjakan volume (Vol Ratio) tertinggi
-		whaleItems.sort((a, b) => b.volRatio - a.volRatio);
+		container.innerHTML = `<div class="text-center text-slate-400 text-[11px] lg:text-xs py-10 col-span-full border border-dashed border-slate-700 rounded-xl bg-slate-950/20">Tidak ada pergerakan Whale/Bandar masif dalam 5 menit terakhir.</div>`;
 		
-		let html = '';
-		whaleItems.forEach((item) => {
-			const price = roundToBEITick(item.price);
-			const avgBandar = item.bandarAvgPrice || item.ma20;
-			
-			// Penentuan Klasifikasi Label Bandar
-			let strengthLabel = "WHALE ACCUMULATION";
-			let strengthClass = "bg-blue-500/10 border-blue-500/30 text-blue-400";
-			let pingAnimation = "";
-			
-			if (item.volRatio >= 3.0) {
-				strengthLabel = "MASSIVE WHALE 🐋🔥";
-				strengthClass = "bg-fuchsia-500/20 border-fuchsia-500/50 text-fuchsia-400 font-extrabold";
-				pingAnimation = `<span class="absolute -top-1 -right-1 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-fuchsia-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-fuchsia-500"></span></span>`;
-			} else if (item.volRatio >= 2.0) {
-				strengthLabel = "STRONG WHALE 🐋";
-				strengthClass = "bg-purple-500/20 border-purple-500/40 text-purple-400";
-			}
-
-			html += `
-				<div class="bg-slate-950/50 p-4 rounded-xl border border-slate-700/60 hover:border-fuchsia-500/40 transition relative group shadow-sm hover:shadow-fuchsia-500/10">
-					${pingAnimation}
-					<div class="absolute top-0 right-0 px-2.5 py-1 bg-slate-900 border-b border-l border-slate-700 rounded-bl-lg rounded-tr-xl text-[9px] font-bold ${strengthClass}">
-						${strengthLabel}
-					</div>
-					
-					<div class="flex items-center gap-3 mb-3 border-b border-slate-800/80 pb-3 mt-1">
-						<div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center text-white font-bold text-sm shadow-inner group-hover:bg-fuchsia-600 group-hover:border-fuchsia-400 transition-colors">
-							$${item.ticker}
-						</div>
-						<div class="flex flex-col">
-							<span class="text-sm font-bold text-white flex items-center gap-1.5">Rp ${price.toLocaleString('id-ID')} <span class="text-[9px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">+${item.changePct}%</span></span>
-							<span class="text-[9px] text-slate-400 mt-0.5">Valuasi Masuk: <strong class="text-amber-400">${formatValuationIDR(item.currentValuation)}</strong></span>
-						</div>
-					</div>
-
-					<div class="space-y-2 text-[10px] lg:text-xs text-slate-300">
-						<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
-							<span>Lonjakan Volume:</span>
-							<span class="font-bold text-fuchsia-400 flex items-center gap-1"><i data-lucide="zap" class="w-3 h-3"></i> ${item.volRatio}x Rerata</span>
-						</div>
-						<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
-							<span>Estimasi AVG Bandar:</span>
-							<span class="font-bold text-cyan-400">Rp ${avgBandar.toLocaleString('id-ID')}</span>
-						</div>
-						<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
-							<span>Struktur MA5:</span>
-							<span class="font-bold ${item.price >= item.ma5 ? 'text-emerald-400' : 'text-rose-400'}">${item.price >= item.ma5 ? 'Uptrend Aman' : 'Retest Support'}</span>
-						</div>
-					</div>
-
-					<button onclick="selectTickerFromRadar('${item.ticker}'); toggleWhaleModal();" class="mt-3.5 w-full bg-slate-800 hover:bg-emerald-600 text-white text-[10px] lg:text-[11px] font-bold py-2.5 rounded-lg border border-slate-700 transition flex items-center justify-center gap-1.5">
-						<i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Buka Chart & Detail AI
-					</button>
-				</div>
-			`;
-		});
-		container.innerHTML = html;
-		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+		// Cooldown Timeout 30 Detik
+		btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin text-fuchsia-300"></i> Pending (30s)`;
+		setTimeout(() => {
+			isWhaleScanning = false;
+			btn.disabled = false;
+			btn.classList.remove('cursor-not-allowed', 'opacity-70');
+			btn.innerHTML = `<i data-lucide="radar" class="w-4 h-4"></i> Scan Whales Sekarang`;
+			if (window.lucide) lucide.createIcons();
+		}, 30000); 
+		
+		return;
 	}
+
+	// Urutkan berdasarkan rasio lonjakan volume tertinggi
+	whaleItems.sort((a, b) => b.volRatio - a.volRatio);
+	
+	let html = '';
+	whaleItems.forEach((item) => {
+		const price = roundToBEITick(item.price);
+		const avgBandar = item.bandarAvgPrice || item.ma20;
+		
+		let strengthLabel = "WHALE ACCUMULATION";
+		let strengthClass = "bg-blue-500/10 border-blue-500/30 text-blue-400";
+		let pingAnimation = "";
+		
+		if (item.volRatio >= 3.0) {
+			strengthLabel = "MASSIVE WHALE 🐋🔥";
+			strengthClass = "bg-fuchsia-500/20 border-fuchsia-500/50 text-fuchsia-400 font-extrabold";
+			pingAnimation = `<span class="absolute -top-1 -right-1 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-fuchsia-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-fuchsia-500"></span></span>`;
+		} else if (item.volRatio >= 2.0) {
+			strengthLabel = "STRONG WHALE 🐋";
+			strengthClass = "bg-purple-500/20 border-purple-500/40 text-purple-400";
+		}
+
+		// Implementasi UI Baru
+		html += `
+			<div class="bg-slate-950/50 p-4 rounded-xl border border-slate-700/60 hover:border-fuchsia-500/40 transition relative group shadow-sm hover:shadow-fuchsia-500/10 flex flex-col justify-between">
+				${pingAnimation}
+				<div class="absolute top-0 right-0 px-2.5 py-1 bg-slate-900 border-b border-l border-slate-700 rounded-bl-lg rounded-tr-xl text-[9px] font-bold ${strengthClass}">
+					${strengthLabel}
+				</div>
+				
+				<div class="flex items-center gap-3 mb-3 border-b border-slate-800/80 pb-3 mt-1">
+					<div class="flex flex-col">
+						<span class="text-sm md:text-base font-bold text-white flex items-center gap-2">
+							$${item.ticker} 
+							<span class="text-[10px] md:text-[11px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+								+${item.changePct}%
+							</span>
+						</span>
+						<span class="text-[10px] text-slate-400 mt-1">Harga Terkini: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong></span>
+					</div>
+				</div>
+
+				<div class="space-y-2 text-[10px] lg:text-xs text-slate-300">
+					<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
+						<span>Total Volume:</span>
+						<span class="font-bold text-white">${(item.currentLot || 0).toLocaleString('id-ID')} Lot</span>
+					</div>
+					<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
+						<span>Total Valuasi:</span>
+						<span class="font-bold text-amber-400">${formatValuationIDR(item.currentValuation)}</span>
+					</div>
+					<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
+						<span>Lonjakan Volume:</span>
+						<span class="font-bold text-fuchsia-400 flex items-center gap-1"><i data-lucide="zap" class="w-3 h-3"></i> ${item.volRatio}x</span>
+					</div>
+					<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
+						<span>Estimasi AVG Bandar:</span>
+						<span class="font-bold text-cyan-400">Rp ${avgBandar.toLocaleString('id-ID')}</span>
+					</div>
+				</div>
+
+				<button onclick="selectTickerFromRadar('${item.ticker}'); toggleWhaleModal();" class="mt-3.5 w-full bg-slate-800 hover:bg-emerald-600 text-white text-[10px] lg:text-[11px] font-bold py-2.5 rounded-lg border border-slate-700 transition flex items-center justify-center gap-1.5">
+					<i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Lihat Chart & Detail AI
+				</button>
+			</div>
+		`;
+	});
+	container.innerHTML = html;
+	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 
 	// Reset State Button
 	isWhaleScanning = false;
