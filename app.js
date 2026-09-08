@@ -378,7 +378,7 @@ function showError(msg) {
 	}
 }
 
-// UTAMA & FITUR FITUR APP
+// FITUR UTAMA APP
 let currentTicker = 'MDIA';
 let currentInterval = 'D';
 
@@ -535,7 +535,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 		});
 	};
 
-	// Memanggil parseYahooDataGlobal langsung agar tidak ada duplikasi kode
+	// Memanggil parseYahooDataGlobal
 	const workerPromise = fetchWithTimeout(`${WORKER_URL}?symbol=${targetSymbol}`, 1800)
 		.then(res => res.json())
 		.then(json => parseYahooDataGlobal(json, ticker)); 
@@ -714,7 +714,6 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 			AudioFX.playSuccess(); 
 			sendBrowserPushNotification(`STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
 			
-			// FIX: Tambahkan toast agar notifikasi pop-up muncul di dalam UI aplikasi
 			showToast(alertMsg, "info");
 			
 			localStorage.setItem(lastAlertKey, now.toString());
@@ -1963,7 +1962,7 @@ async function fetchYahooTrending() {
 
 	const url = `https://query1.finance.yahoo.com/v1/finance/trending/ID?count=5`;
 	
-	// Sistem multi-proxy yang sama
+	// SISTEM MULTI-PROXY
 	const proxies = [
 		`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
 		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
@@ -2022,7 +2021,7 @@ async function fetchRealtimeFundamentals(ticker) {
 
 	const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}.JK?modules=assetProfile,financialData,defaultKeyStatistics,summaryDetail`;
 	
-	// 3 Lapis Proxy Bebas CORS (Sistem Anti-Gagal)
+	// 3 LAPIS PROXY BEBAS CORS
 	const proxies = [
 		`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
 		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
@@ -2030,8 +2029,7 @@ async function fetchRealtimeFundamentals(ticker) {
 	];
 
 	let result = null;
-
-	// Loop untuk melompat otomatis jika ada proxy yang tumbang
+	
 	for (let i = 0; i < proxies.length; i++) {
 		try {
 			const res = await fetch(proxies[i], { signal: AbortSignal.timeout(4500) });
@@ -2039,14 +2037,13 @@ async function fetchRealtimeFundamentals(ticker) {
 			
 			let data = await res.json();
 			
-			// Penyesuaian khusus jika menggunakan allorigins
 			if (proxies[i].includes('allorigins')) {
 				data = JSON.parse(data.contents);
 			}
 			
 			if (data && data.quoteSummary && data.quoteSummary.result) {
 				result = data.quoteSummary.result[0];
-				break; // Data didapat, hentikan loop
+				break;
 			}
 		} catch (e) {
 			console.warn(`Proxy ${i+1} terblokir, melompat ke jalur alternatif...`);
@@ -2058,7 +2055,7 @@ async function fetchRealtimeFundamentals(ticker) {
 		return;
 	}
 
-	// --- Ekstrak Data Mentah Yahoo ---
+	// EKSTRAK DATA MENTAH YAHOO
 	const profile = result.assetProfile || {};
 	const financial = result.financialData || {};
 	const stats = result.defaultKeyStatistics || {};
@@ -2502,7 +2499,7 @@ const cuanImages = [
 const cuanTexts = [
 	{ title: "TAKE PROFIT TERCAPAI! 🚀", desc: "Saya bilang juga apa, cuan luber kan lo!" },
 	{ title: "CUAN MAKSIMAL! 🐋", desc: "Asik! Bisa beli cilok seember nih." },
-	{ title: "BULLSEYE! 😎", desc: "Nyeblak dulu gak sih?!" },
+	{ title: "BULLSEYE! 🔥", desc: "Nyeblak dulu gak sih?!" },
 	{ title: "PROFIT SECURED! 🌟", desc: "Info Dealer Pajero Boss!" }
 ];
 
@@ -2755,14 +2752,13 @@ function renderSectorHeatmap() {
 	isHeatmapLoaded = true;
 }
 
-// --- CUSTOM SCREENER BUILDER & DROPDOWN LOGIC ---
+// CUSTOM SCREENER BUILDER & DROPDOWN LOGIC
 let customScreenerCooldownTimer = null;
 
 function toggleCustomDropdown(dropdownId) {
 	const dropdown = document.getElementById(dropdownId);
 	const isHidden = dropdown.classList.contains('hidden');
 	
-	// Tutup semua dropdown lain agar tidak bertumpuk
 	['dropdownMA', 'dropdownVol', 'dropdownPrice'].forEach(id => {
 		document.getElementById(id).classList.add('hidden');
 	});
@@ -2780,7 +2776,6 @@ function selectCustomOption(inputId, value, label, dropdownId) {
 	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
 }
 
-// Menutup dropdown jika user klik area kosong di layar
 document.addEventListener('click', function(e) {
 	const dropdowns = ['dropdownMA', 'dropdownVol', 'dropdownPrice'];
 	dropdowns.forEach(id => {
@@ -2973,7 +2968,7 @@ function selectTickerFromCustom(ticker) {
 	switchTab('ai');
 }
 
-// --- [REVISI 2] PAPER TRADE TAB SWITCHER (FORM VS PORTFOLIO) ---
+// PAPER TRADE TAB SWITCHER (FORM VS PORTFOLIO)
 function ptSwitchSubTab(subTab) {
 	const btnForm = document.getElementById('ptSubBtnForm');
 	const btnPorto = document.getElementById('ptSubBtnPorto');
@@ -3084,7 +3079,6 @@ function ptExecuteSell(id) {
 		const item = acc.portfolio[itemIndex];
 		let sellPrice = item.avgPrice;
 		
-		// Tarik harga live secara cerdas dari global atau background cache
 		const cached = getCachedStockData(item.ticker);
 		if (globalStockData && globalStockData.ticker === item.ticker) {
 			sellPrice = globalStockData.price;
@@ -3145,7 +3139,6 @@ async function ptRefreshPortoPrices(isAuto = false) {
 	let hasUpdates = false;
 
 	for (let item of acc.portfolio) {
-		// FIX: Tambahkan parameter `true` (forceFetch) agar memaksa menarik data baru dari API
 		const data = await fetchRealtimeStockData(item.ticker, true);
 		
 		if (data && data.price) {
@@ -3162,7 +3155,6 @@ async function ptRefreshPortoPrices(isAuto = false) {
 		}
 	}
 	
-	// FIX: Hanya eksekusi ulang UI jika terdapat update harga baru
 	if (hasUpdates) {
 		renderPaperTradingUI();
 	}
@@ -3266,7 +3258,7 @@ function renderPaperTradingUI() {
 			let hHtml = '';
 			acc.history.slice(0, 6).forEach(h => {
 				const isWin = h.status === 'WIN';
-				const modal = h.buyPrice * h.lots * 100; // Kalkulasi Modal
+				const modal = h.buyPrice * h.lots * 100;
 				
 				hHtml += `
 					<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1 shadow-sm hover:border-slate-500/30 transition-colors">
@@ -3309,6 +3301,153 @@ function getPaperAccount() {
 	} catch (e) {
 		return defaultAccount;
 	}
+}
+
+// FITUR WHALE DETECTOR (FLOATING UI)
+let isWhaleScanning = false;
+
+function toggleWhaleModal() {
+	const modal = document.getElementById('whaleModal');
+	const content = document.getElementById('whaleModalContent');
+	const isHidden = modal.classList.contains('hidden');
+
+	if (isHidden) {
+		modal.classList.remove('hidden');
+		setTimeout(() => {
+			modal.classList.remove('opacity-0');
+			content.classList.remove('scale-95');
+			content.classList.add('scale-100');
+		}, 10);
+		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	} else {
+		modal.classList.add('opacity-0');
+		content.classList.remove('scale-100');
+		content.classList.add('scale-95');
+		setTimeout(() => {
+			modal.classList.add('hidden');
+		}, 300);
+		if (typeof AudioFX !== 'undefined') AudioFX.playDelete();
+	}
+}
+
+async function scanWhalesData() {
+	if (isWhaleScanning) return;
+	isWhaleScanning = true;
+
+	const btn = document.getElementById('btnScanWhales');
+	const container = document.getElementById('whaleResultsContainer');
+
+	// State Loading
+	btn.disabled = true;
+	btn.classList.add('cursor-not-allowed', 'opacity-70');
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-fuchsia-300"></i> Mendeteksi Bandar...`;
+	if (window.lucide) lucide.createIcons();
+
+	container.innerHTML = `<div class="text-center text-slate-400 text-[11px] lg:text-xs py-12 col-span-full border border-dashed border-slate-700 rounded-xl bg-slate-950/20"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-500"></i> Memindai seluruh bursa mencari anomali volume & pergerakan senyap bandar...</div>`;
+	if (window.lucide) lucide.createIcons();
+
+	// Acak watchlist agar bervariasi setiap kali discan
+	const shuffled = [...uniqueRadarWatchlist];
+	for (let i = shuffled.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+	}
+
+	let whaleItems = [];
+	const BATCH_SIZE = 10;
+
+	// Looping Batch Data
+	for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
+		const batch = shuffled.slice(i, i + BATCH_SIZE);
+		const results = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
+
+		for (const item of results) {
+			if (!item || !item.price) continue;
+			
+			// Kriteria Whale: Volume > 1.5x Rerata, Harga naik tapi tidak lebih dari 5% (Fase kumpul barang / Akumulasi)
+			if (item.volRatio >= 1.5 && item.changePct >= 0 && item.changePct <= 5.0) {
+				whaleItems.push(item);
+			}
+		}
+		
+		// Batasi hasil maksimal 10 saham agar hasil eksklusif dan memori efisien
+		if (whaleItems.length >= 10) break;
+	}
+
+	// Render Hasil
+	if (whaleItems.length === 0) {
+		container.innerHTML = `<div class="text-center text-slate-400 text-[11px] lg:text-xs py-10 col-span-full border border-dashed border-slate-700 rounded-xl bg-slate-950/20">Tidak ada pergerakan masif Whale/Bandar yang terdeteksi saat ini. Market mungkin sedang konsolidasi atau sepi.</div>`;
+	} else {
+		// Urutkan berdasarkan lonjakan volume (Vol Ratio) tertinggi
+		whaleItems.sort((a, b) => b.volRatio - a.volRatio);
+		
+		let html = '';
+		whaleItems.forEach((item) => {
+			const price = roundToBEITick(item.price);
+			const avgBandar = item.bandarAvgPrice || item.ma20;
+			
+			// Penentuan Klasifikasi Label Bandar
+			let strengthLabel = "WHALE ACCUMULATION";
+			let strengthClass = "bg-blue-500/10 border-blue-500/30 text-blue-400";
+			let pingAnimation = "";
+			
+			if (item.volRatio >= 3.0) {
+				strengthLabel = "MASSIVE WHALE 🐋🔥";
+				strengthClass = "bg-fuchsia-500/20 border-fuchsia-500/50 text-fuchsia-400 font-extrabold";
+				pingAnimation = `<span class="absolute -top-1 -right-1 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-fuchsia-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-fuchsia-500"></span></span>`;
+			} else if (item.volRatio >= 2.0) {
+				strengthLabel = "STRONG WHALE 🐋";
+				strengthClass = "bg-purple-500/20 border-purple-500/40 text-purple-400";
+			}
+
+			html += `
+				<div class="bg-slate-950/50 p-4 rounded-xl border border-slate-700/60 hover:border-fuchsia-500/40 transition relative group shadow-sm hover:shadow-fuchsia-500/10">
+					${pingAnimation}
+					<div class="absolute top-0 right-0 px-2.5 py-1 bg-slate-900 border-b border-l border-slate-700 rounded-bl-lg rounded-tr-xl text-[9px] font-bold ${strengthClass}">
+						${strengthLabel}
+					</div>
+					
+					<div class="flex items-center gap-3 mb-3 border-b border-slate-800/80 pb-3 mt-1">
+						<div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center text-white font-bold text-sm shadow-inner group-hover:bg-fuchsia-600 group-hover:border-fuchsia-400 transition-colors">
+							$${item.ticker}
+						</div>
+						<div class="flex flex-col">
+							<span class="text-sm font-bold text-white flex items-center gap-1.5">Rp ${price.toLocaleString('id-ID')} <span class="text-[9px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">+${item.changePct}%</span></span>
+							<span class="text-[9px] text-slate-400 mt-0.5">Valuasi Masuk: <strong class="text-amber-400">${formatValuationIDR(item.currentValuation)}</strong></span>
+						</div>
+					</div>
+
+					<div class="space-y-2 text-[10px] lg:text-xs text-slate-300">
+						<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
+							<span>Lonjakan Volume:</span>
+							<span class="font-bold text-fuchsia-400 flex items-center gap-1"><i data-lucide="zap" class="w-3 h-3"></i> ${item.volRatio}x Rerata</span>
+						</div>
+						<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
+							<span>Estimasi AVG Bandar:</span>
+							<span class="font-bold text-cyan-400">Rp ${avgBandar.toLocaleString('id-ID')}</span>
+						</div>
+						<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
+							<span>Struktur MA5:</span>
+							<span class="font-bold ${item.price >= item.ma5 ? 'text-emerald-400' : 'text-rose-400'}">${item.price >= item.ma5 ? 'Uptrend Aman' : 'Retest Support'}</span>
+						</div>
+					</div>
+
+					<button onclick="selectTickerFromRadar('${item.ticker}'); toggleWhaleModal();" class="mt-3.5 w-full bg-slate-800 hover:bg-emerald-600 text-white text-[10px] lg:text-[11px] font-bold py-2.5 rounded-lg border border-slate-700 transition flex items-center justify-center gap-1.5">
+						<i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Buka Chart & Detail AI
+					</button>
+				</div>
+			`;
+		});
+		container.innerHTML = html;
+		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+	}
+
+	// Reset State Button
+	isWhaleScanning = false;
+	btn.disabled = false;
+	btn.classList.remove('cursor-not-allowed', 'opacity-70');
+	btn.innerHTML = `<i data-lucide="radar" class="w-4 h-4"></i> Scan Ulang Whales`;
+	if (window.lucide) lucide.createIcons();
 }
 
 // FLOATING AI CHAT ASSISTANT

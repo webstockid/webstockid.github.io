@@ -468,7 +468,6 @@
 								Menghubungkan ke server bursa untuk mengambil data real-time...
 							</div>
 							
-							<!-- [FITUR LAMA] CONTAINER AI ACTION BOARD & POWER METER BANDAR -->
 							<div id="aiActionBoard" class="hidden flex flex-col space-y-2 mt-3 pt-3 border-t border-slate-800/80"></div>
 						</div>
 
@@ -596,7 +595,7 @@
 					</p>
 				</div>
 				
-				<!-- TAB 1: CUSTOM SCREENER BUILDER -->
+				<!-- TAB 3: Custom Radar -->
 				<div id="tabContent-custom" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
 					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 shadow-lg shadow-blue-500/5">
 						<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -680,7 +679,7 @@
 					</p>
 				</div>
 
-				<!-- Tab 3: Peer Komparasi -->
+				<!-- Tab 4: Peer Komparasi -->
 				<div id="tabContent-peer" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
@@ -722,7 +721,7 @@
 					</p>
 				</div>
 
-				<!-- Tab 4: Berita -->
+				<!-- Tab 5: Berita -->
 				<div id="tabContent-news" class="hidden space-y-3 min-h-[250px]">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs lg:text-sm text-white">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
@@ -733,14 +732,13 @@
 					</div>
 				</div>
 
-				<!-- Tab 5: Fundamental -->
+				<!-- Tab 6: Fundamental -->
 				<div id="tabContent-fundamental" class="hidden min-h-[300px] space-y-4">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs lg:text-sm text-white">Profil & Fundamental Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
 						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-orange-400 font-bold">Yahoo & TradingView Data</span>
 					</div>
 					
-					<!-- INI CONTAINER BARU UNTUK YAHOO FINANCE API -->
 					<div id="yahooFundamentalContainer"></div>
 					
 					<div class="tradingview-widget-container mt-4 pt-4 border-t border-slate-800">
@@ -749,7 +747,7 @@
 				</div>
 				
 
-				<!-- Tab 8: Smart Alert -->
+				<!-- Tab 7: Smart Alert -->
 				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
@@ -795,7 +793,7 @@
 					</p>
 				</div>
 				
-				<!-- TAB 2: PAPER TRADE (COMPACT & TABBED SWITCH) -->
+				<!-- TAB 8: Paper Trade -->
 				<div id="tabContent-paper" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
 					<!-- Compact Rank & Balance Banner -->
 					<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-500/20 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center shadow-lg shadow-violet-500/5">
@@ -912,7 +910,7 @@
 					</div>
 				</div>
 
-				<!-- Tab 6: Smart RRR -->
+				<!-- Tab 9: Smart RRR -->
 				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
@@ -1003,7 +1001,7 @@
 					</div>
 				</div>
 
-				<!-- Tab 7: Journal Trading -->
+				<!-- Tab 10: Journal Trading -->
 				<div id="tabContent-journal" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
 						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800">
@@ -1100,7 +1098,7 @@
 					</div>
 				</div>
 
-				<!-- Tab 9: Aksi Korporasi -->
+				<!-- Tab 11: Aksi Korporasi -->
 				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3.5 text-xs lg:text-sm">
 					<div class="flex items-center justify-between mb-2">
 						<span class="text-xs lg:text-sm text-white">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
@@ -1114,7 +1112,7 @@
 					</div>
 				</div>
 
-				<!-- Tab 10: Sector Heatmap -->
+				<!-- Tab 12: Sector Heatmap -->
 				<div id="tabContent-heatmap" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
 						<div>
@@ -1286,7 +1284,54 @@
 		
 		<!-- Container Toast Notification Modern -->
 		<div id="toastContainer" class="fixed bottom-10 left-4 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+		
+		<!-- Whale Detector Modal -->
+		<!-- Floating Button (Kiri Tengah) -->
+		<button onclick="toggleWhaleModal()" class="fixed left-0 top-1/2 -translate-y-1/2 z-[60] bg-gradient-to-b from-fuchsia-500 to-purple-700 text-white py-3 px-1.5 sm:px-2.5 rounded-r-xl shadow-[0_0_20px_rgba(192,38,211,0.5)] border border-l-0 border-fuchsia-400 hover:pr-4 hover:pl-2 transition-all duration-300 group flex flex-col items-center gap-2 cursor-pointer">
+			<i data-lucide="radar" class="w-4 h-4 sm:w-5 sm:h-5 group-hover:animate-spin"></i>
+			<span class="text-[9px] sm:text-[10px] font-bold tracking-widest uppercase" style="writing-mode: vertical-rl; transform: rotate(180deg);">Whale Scan</span>
+		</button>
 
+		<!-- Jendela Modal Whale Detector -->
+		<div id="whaleModal" class="hidden fixed inset-0 z-[80] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 opacity-0">
+			<div id="whaleModalContent" class="transform scale-95 transition-transform duration-300 ease-out bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl shadow-fuchsia-900/20">
+				
+				<!-- Modal Header -->
+				<div class="px-4 py-3 lg:px-5 lg:py-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/50 rounded-t-2xl">
+					<div class="flex items-center gap-3">
+						<div class="bg-fuchsia-500/20 p-2 rounded-lg border border-fuchsia-500/30">
+							<i data-lucide="waves" class="w-4 h-4 lg:w-5 lg:h-5 text-fuchsia-400"></i>
+						</div>
+						<div>
+							<h3 class="text-sm lg:text-base font-bold text-white tracking-tight">Whale Detector Radar</h3>
+							<p class="text-[9px] lg:text-[10px] text-slate-400">Lacak aliran dana bandar & anomali akumulasi secara instan.</p>
+						</div>
+					</div>
+					<button onclick="toggleWhaleModal()" class="text-slate-400 hover:text-rose-400 transition p-2 bg-slate-800 rounded-lg hover:bg-slate-700">
+						<i data-lucide="x" class="w-4 h-4"></i>
+					</button>
+				</div>
+				
+				<!-- Modal Body -->
+				<div class="p-4 lg:p-5 flex-1 overflow-y-auto scrollbar-thin">
+					<div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-5 bg-slate-950/30 p-3.5 lg:p-4 rounded-xl border border-slate-800/80">
+						<div class="text-[10px] lg:text-xs text-slate-300 leading-relaxed max-w-lg">
+							<strong class="text-fuchsia-400">Parameter Pemindaian AI:</strong> Mencari jejak institusi melalui anomali lonjakan volume ekstrim (&gt; 1.5x - 2.0x Rerata 10 Hari) yang disertai kenaikan harga bertahap (akumulasi senyap) untuk meminimalisir risiko <i>Fake Breakout</i>.
+						</div>
+						<button id="btnScanWhales" onclick="scanWhalesData()" class="w-full sm:w-auto bg-fuchsia-700 hover:bg-fuchsia-500 text-white font-bold px-5 py-2.5 rounded-xl border border-fuchsia-500 transition shadow-lg shadow-fuchsia-600/30 flex items-center justify-center gap-2 shrink-0 text-xs lg:text-sm">
+							<i data-lucide="radar" class="w-4 h-4"></i> Scan Whales Sekarang
+						</button>
+					</div>
+
+					<div id="whaleResultsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4">
+						<div class="text-center text-slate-500 text-[11px] lg:text-xs py-10 col-span-full border border-dashed border-slate-700 rounded-xl bg-slate-950/10">
+							Klik tombol <strong class="text-fuchsia-400">"Scan Whales Sekarang"</strong> untuk mulai melacak bandar (Smart Money) di seluruh pasar.
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 		<!-- Script CDN TradingView -->
 		<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
