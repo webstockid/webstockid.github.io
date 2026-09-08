@@ -2836,7 +2836,7 @@ async function runCustomScreener() {
 	const ruleVol = document.getElementById('csRuleVol').value;
 	const rulePrice = document.getElementById('csRulePrice').value;
 
-	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10 border-dashed"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Memindai saham sesuai custom rules Kamu...</div>`;
+	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Memindai saham sesuai custom rules Kamu...</div>`;
 	if (window.lucide) lucide.createIcons();
 
 	const shuffled = [...uniqueRadarWatchlist];
@@ -2881,7 +2881,7 @@ async function runCustomScreener() {
 	}
 
 	if (passedItems.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10 border-dashed">Tidak ada saham yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya.</div>`;
+		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10">Tidak ada saham yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya.</div>`;
 		return;
 	}
 
@@ -3262,7 +3262,7 @@ function renderPaperTradingUI() {
 
 		const historyContainer = document.getElementById('ptHistoryContainer');
 		if (acc.history.length === 0) {
-			historyContainer.innerHTML = `<div class="text-slate-500 text-xs text-center col-span-full py-4 border border-dashed border-slate-800 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>`;
+			historyContainer.innerHTML = `<div class="text-slate-500 text-xs text-center col-span-full py-4 border border-slate-800 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>`;
 		} else {
 			let hHtml = '';
 			acc.history.slice(0, 6).forEach(h => {
@@ -3339,11 +3339,9 @@ function toggleWhaleModal() {
 	}
 }
 
-// REVISI: Fitur Whale Detector Modal (Harus Dapat Minimal 1, Scan Teliti & Terstruktur)
-// Tambahkan variabel ini di area global (jika belum ada)
+// FITUR WHALE DETECTOR MODAL
 let whaleScanCooldownTimer = null;
 
-// REVISI: Whale Detector Modal (3 Tingkat Whales, Manual Scan, Pending Animasi)
 async function scanWhalesData() {
 	if (isWhaleScanning) return;
 	isWhaleScanning = true;
@@ -3364,9 +3362,9 @@ async function scanWhalesData() {
 	if (window.lucide) lucide.createIcons();
 
 	container.innerHTML = `
-		<div class="text-center text-slate-400 text-[11px] lg:text-xs py-12 col-span-full border border-dashed border-slate-700 rounded-xl bg-slate-950/20">
+		<div class="text-center text-slate-400 text-[11px] lg:text-xs py-12 col-span-full border border-slate-700 rounded-xl bg-slate-950/20">
 			<i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-500"></i> 
-			Menyisir data pasar (cache 5 menit terakhir & live data) untuk mencari anomali volume...
+			Menyisir data pasar untuk mencari anomali volume...
 		</div>
 	`;
 	if (window.lucide) lucide.createIcons();
@@ -3440,7 +3438,7 @@ async function scanWhalesData() {
 	// 4. RENDER HTML HASIL
 	if (foundWhales.length === 0) {
 		container.innerHTML = `
-			<div class="text-center text-slate-400 text-[11px] lg:text-xs py-10 col-span-full border border-dashed border-slate-700 rounded-xl bg-slate-950/20">
+			<div class="text-center text-slate-400 text-[11px] lg:text-xs py-10 col-span-full border border-slate-700 rounded-xl bg-slate-950/20">
 				<i data-lucide="waves" class="w-6 h-6 mx-auto mb-2 text-slate-500"></i>
 				Belum ada pergerakan Whale (Bandar) yang terdeteksi. Kondisi pasar saat ini cenderung sepi atau stabil.
 			</div>
@@ -3599,7 +3597,7 @@ function sendAIChatMessage() {
 		msgContainer.scrollTop = msgContainer.scrollHeight;
 		if (window.lucide) lucide.createIcons();
 		AudioFX.playSuccess();
-	}, 600);
+	}, 1000); //600
 }
 
 function escapeHtml(text) {
@@ -3813,7 +3811,7 @@ function showToast(message, type = 'success') {
     setTimeout(() => {
         if (document.getElementById(toastId)) {
             toast.classList.add('translate-y-4', 'opacity-0');
-            setTimeout(() => toast.remove(), 300);
+            setTimeout(() => toast.remove(), 500); //300
         }
     }, 3500);
 }
@@ -3828,10 +3826,6 @@ document.getElementById('corpTickerLabel').innerText = currentTicker;
 document.getElementById('peerTickerLabel').innerText = currentTicker;
 
 checkVIPAuth();
-cleanExpiredCache();
-checkUrlParamTicker();
-checkNotificationStatus();
-checkWelcomeModal();
 initSearchSuggestions();
 updateMarketBadge();
 generateAISignal(currentTicker);
@@ -3841,6 +3835,10 @@ renderJournalTable();
 renderPaperTradingUI();
 renderTechnicalGauge(currentTicker);
 renderFundamentalWidget(currentTicker);
+cleanExpiredCache();
+checkUrlParamTicker();
+checkNotificationStatus();
+checkWelcomeModal();
 fetchStockNews(currentTicker);
 fetchCorporateAction(currentTicker);
 fetchRealtimeFundamentals(currentTicker);
