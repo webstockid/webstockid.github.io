@@ -3818,13 +3818,6 @@ function showToast(message, type = 'success') {
     }, 3500);
 }
 
-checkVIPAuth();
-cleanExpiredCache();
-checkUrlParamTicker();
-checkNotificationStatus();
-initSearchSuggestions();
-updateMarketBadge();
-
 document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
 document.getElementById('newsTickerLabel').innerText = currentTicker;
@@ -3834,19 +3827,26 @@ document.getElementById('alertTickerLabel').innerText = currentTicker;
 document.getElementById('corpTickerLabel').innerText = currentTicker;
 document.getElementById('peerTickerLabel').innerText = currentTicker;
 
-renderChart(currentTicker);
+checkVIPAuth();
+cleanExpiredCache();
+checkUrlParamTicker();
+checkNotificationStatus();
+checkWelcomeModal();
+initSearchSuggestions();
+updateMarketBadge();
 generateAISignal(currentTicker);
+renderChart(currentTicker);
+renderAllAlerts();
+renderJournalTable();
+renderPaperTradingUI();
 renderTechnicalGauge(currentTicker);
 renderFundamentalWidget(currentTicker);
 fetchStockNews(currentTicker);
 fetchCorporateAction(currentTicker);
-//fetchYahooFundamentals(currentTicker);
 fetchRealtimeFundamentals(currentTicker);
-renderAllAlerts();
-renderJournalTable();
-renderPaperTradingUI();
 fetchYahooTrending();
-checkWelcomeModal();
+//fetchYahooFundamentals(currentTicker);
+
 startBackgroundAutoCache();
 setInterval(() => {
 	ptRefreshPortoPrices(true);
