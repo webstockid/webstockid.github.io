@@ -62,58 +62,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 });
 
-// WEB AUDIO ENGINE
-const AudioFX = {
-	ctx: null,
-	init() {
-		if (!this.ctx) {
-			const AudioCtx = window.AudioContext || window.webkitAudioContext;
-			if (AudioCtx) this.ctx = new AudioCtx();
-		}
-		if (this.ctx && this.ctx.state === 'suspended') {
-			this.ctx.resume();
-		}
-	},
-	playAudioFile(filename) {
-		try {
-			const audio = new Audio(`stockid_suara/MC/${filename}`);
-			audio.play().catch(e => {});
-		} catch(e) {}
-	},
-	playClick() {
-		const clicks = ['klik1.mp3', 'klik2.mp3', 'klik3.mp3', 'klik4.mp3'];
-		const randomClick = clicks[Math.floor(Math.random() * clicks.length)];
-		this.playAudioFile(randomClick);
-	},
-	playSuccess() {
-		this.playAudioFile('sukses.mp3');
-	},
-	playAlert() {
-		this.playAudioFile('loss.mp3');
-	},
-	playTokenExpired() {
-		this.playAudioFile('hilang.mp3');
-	},
-	playSearch() {
-		this.playAudioFile('cari.mp3');
-	},
-	playDelete(withPopup = false) {
-		this.playAudioFile('hapus.mp3');
-		if (withPopup) {
-			setTimeout(() => {
-				this.playAudioFile('hilang.mp3');
-			}, 1200);
-		}
-	},
-	playWinJournal() {
-		this.playAudioFile('win.mp3');
-	},
-	playLossJournal() {
-		this.playAudioFile('loss.mp3');
-	}
-};
-
-// Tambahkan dan sesuaikan fungsi berikut di dalam file app_6.js
+// ==========================================
+// WEB AUDIO ENGINE & GLOBAL SOUND/VIBRATE UI
+// ==========================================
 
 let isSoundMuted = localStorage.getItem('stockid_sound_muted') === 'true';
 let isVibrateMuted = localStorage.getItem('stockid_vibrate_muted') === 'true';
@@ -163,7 +114,6 @@ function toggleGlobalVibrate() {
 	}
 }
 
-// Perbarui objek AudioFX pada fungsi playAudioFile agar mendeteksi status mute
 const AudioFX = {
 	ctx: null,
 	init() {
@@ -176,21 +126,65 @@ const AudioFX = {
 		}
 	},
 	playAudioFile(filename) {
-		if (isSoundMuted) return; // Cek apakah sound dimatikan
+		if (isSoundMuted) return; // Mencegah suara keluar jika tombol mute diaktifkan
 		try {
 			const audio = new Audio(`stockid_suara/MC/${filename}`);
 			audio.play().catch(e => {});
 		} catch(e) {}
 	},
-    // ... (metode AudioFX lainnya tetap dibiarkan seperti semula)
+	playClick() {
+		const clicks = ['klik1.mp3', 'klik2.mp3', 'klik3.mp3', 'klik4.mp3'];
+		const randomClick = clicks[Math.floor(Math.random() * clicks.length)];
+		this.playAudioFile(randomClick);
+	},
+	playSuccess() { this.playAudioFile('sukses.mp3'); },
+	playAlert() { this.playAudioFile('loss.mp3'); },
+	playTokenExpired() { this.playAudioFile('hilang.mp3'); },
+	playSearch() { this.playAudioFile('cari.mp3'); },
+	playDelete(withPopup = false) {
+		this.playAudioFile('hapus.mp3');
+		if (withPopup) {
+			setTimeout(() => { this.playAudioFile('hilang.mp3'); }, 1200);
+		}
+	},
+	playWinJournal() { this.playAudioFile('win.mp3'); },
+	playLossJournal() { this.playAudioFile('loss.mp3'); }
 };
 
-// Pada global click listener, bungkus fungsi getar dengan kondisi isVibrateMuted:
+// ==========================================
+// GLOBAL CLICK LISTENER (AUDIO & GETAR)
+// ==========================================
 document.addEventListener('click', function(e) {
 	const target = e.target.closest('button, a, [onclick]');
 	if (target) {
-		// ... (logika audio klik tetap berjalan via AudioFX)
+		const onclickAttr = target.getAttribute('onclick') || '';
+		const textContent = target.innerText ? target.innerText.trim() : '';
+		
+		const hasTrashIcon = target.querySelector('.fa-trash') !== null || e.target.classList.contains('fa-trash');
 
+		const isNormalDelete = hasTrashIcon || onclickAttr.includes('deleteJournalItem') || onclickAttr.includes('removePriceAlert');
+
+		const isPopupAction = !isNormalDelete && (
+			textContent.includes('Hapus Semua') || 
+			textContent.includes('Bersihkan Semua') || 
+			onclickAttr.includes('clearJournalHistory') || 
+			onclickAttr.includes('clearAllAlerts') ||
+			onclickAttr.includes('closeCuanCelebration') ||
+			onclickAttr.includes('closeLossCelebration') ||
+			textContent === '✕' || 
+			textContent === 'X'
+		);
+
+		// Logika eksekusi AudioFX
+		if (isPopupAction) {
+			AudioFX.playDelete(true); 
+		} else if (isNormalDelete) {
+			AudioFX.playDelete(false);
+		} else if (!onclickAttr.includes('toggleGlobalSound') && !onclickAttr.includes('toggleGlobalVibrate')) {
+			AudioFX.playClick();
+		}
+
+		// Logika eksekusi Getar (Vibrate)
 		if (!isVibrateMuted && 'vibrate' in navigator) {
 			navigator.vibrate(100);
 		}
