@@ -317,12 +317,6 @@
 							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Peer Komparasi Saham
 						</div>
 						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Berita & Korporasi
-						</div>
-						<div class="flex items-center gap-1.5">
-							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Fundamental Saham
-						</div>
-						<div class="flex items-center gap-1.5">
 							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Smart RRR & Position Sizing
 						</div>
 						<div class="flex items-center gap-1.5">
@@ -339,6 +333,12 @@
 						</div>
 						<div class="flex items-center gap-1.5 col-span-2">
 							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> [NEW] Live Paper Trading & Rank
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Berita & Korporasi
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Fundamental Saham
 						</div>
 						<div class="flex items-center gap-1.5 col-span-2">
 							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> [NEW] Custom Screener Builder
@@ -420,6 +420,18 @@
 					<button onclick="switchTab('peer')" id="tabBtn-peer" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Peer Komparasi
 					</button>
+					<button onclick="switchTab('journal')" id="tabBtn-journal" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="book-open" class="w-4 h-4 text-pink-400"></i> Journal Trading
+					</button>
+					<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="calculator" class="w-4 h-4 text-cyan-400"></i> Smart RRR
+					</button>
+					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="bell" class="w-4 h-4 text-teal-400"></i> Smart Alert
+					</button>
+					<button onclick="switchTab('paper')" id="tabBtn-paper" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="gamepad-2" class="w-4 h-4 text-violet-400"></i> Paper Trade
+					</button>
 					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="newspaper" class="w-4 h-4 text-sky-400"></i> Berita
 					</button>
@@ -428,18 +440,6 @@
 					</button>
 					<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="pie-chart" class="w-4 h-4 text-orange-400"></i> Fundamental
-					</button>
-					<button onclick="switchTab('paper')" id="tabBtn-paper" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="gamepad-2" class="w-4 h-4 text-violet-400"></i> Paper Trade
-					</button>
-					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="bell" class="w-4 h-4 text-teal-400"></i> Smart Alert
-					</button>
-					<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="calculator" class="w-4 h-4 text-cyan-400"></i> Smart RRR
-					</button>
-					<button onclick="switchTab('journal')" id="tabBtn-journal" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="book-open" class="w-4 h-4 text-pink-400"></i> Journal Trading
 					</button>
 					<button onclick="switchTab('heatmap')" id="tabBtn-heatmap" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Sektor Heatmap
