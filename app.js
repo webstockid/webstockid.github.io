@@ -113,6 +113,95 @@ const AudioFX = {
 	}
 };
 
+// Tambahkan dan sesuaikan fungsi berikut di dalam file app_6.js
+
+let isSoundMuted = localStorage.getItem('stockid_sound_muted') === 'true';
+let isVibrateMuted = localStorage.getItem('stockid_vibrate_muted') === 'true';
+
+function updateGlobalAudioVibrateUI() {
+	const soundBtn = document.getElementById('btnToggleSound');
+	const soundIcon = document.getElementById('soundIcon');
+	const vibrateBtn = document.getElementById('btnToggleVibrate');
+	const vibrateIcon = document.getElementById('vibrateIcon');
+
+	if (soundBtn && soundIcon) {
+		if (isSoundMuted) {
+			soundBtn.className = "px-2.5 py-1.5 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer";
+			soundIcon.className = "fa-solid fa-volume-xmark text-xs";
+		} else {
+			soundBtn.className = "px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer";
+			soundIcon.className = "fa-solid fa-volume-high text-xs";
+		}
+	}
+
+	if (vibrateBtn && vibrateIcon) {
+		if (isVibrateMuted) {
+			vibrateBtn.className = "px-2.5 py-1.5 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer";
+			vibrateIcon.className = "fa-solid fa-ban text-xs";
+		} else {
+			vibrateBtn.className = "px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer";
+			vibrateIcon.className = "fa-solid fa-mobile-screen-button text-xs";
+		}
+	}
+}
+
+function toggleGlobalSound() {
+	isSoundMuted = !isSoundMuted;
+	localStorage.setItem('stockid_sound_muted', isSoundMuted);
+	updateGlobalAudioVibrateUI();
+	if (!isSoundMuted && typeof AudioFX !== 'undefined') {
+		AudioFX.playClick();
+	}
+}
+
+function toggleGlobalVibrate() {
+	isVibrateMuted = !isVibrateMuted;
+	localStorage.setItem('stockid_vibrate_muted', isVibrateMuted);
+	updateGlobalAudioVibrateUI();
+	if (!isVibrateMuted && 'vibrate' in navigator) {
+		navigator.vibrate(100);
+	}
+}
+
+// Perbarui objek AudioFX pada fungsi playAudioFile agar mendeteksi status mute
+const AudioFX = {
+	ctx: null,
+	init() {
+		if (!this.ctx) {
+			const AudioCtx = window.AudioContext || window.webkitAudioContext;
+			if (AudioCtx) this.ctx = new AudioCtx();
+		}
+		if (this.ctx && this.ctx.state === 'suspended') {
+			this.ctx.resume();
+		}
+	},
+	playAudioFile(filename) {
+		if (isSoundMuted) return; // Cek apakah sound dimatikan
+		try {
+			const audio = new Audio(`stockid_suara/MC/${filename}`);
+			audio.play().catch(e => {});
+		} catch(e) {}
+	},
+    // ... (metode AudioFX lainnya tetap dibiarkan seperti semula)
+};
+
+// Pada global click listener, bungkus fungsi getar dengan kondisi isVibrateMuted:
+document.addEventListener('click', function(e) {
+	const target = e.target.closest('button, a, [onclick]');
+	if (target) {
+		// ... (logika audio klik tetap berjalan via AudioFX)
+
+		if (!isVibrateMuted && 'vibrate' in navigator) {
+			navigator.vibrate(100);
+		}
+	}
+});
+
+// Panggil fungsi update UI saat halaman dimuat
+document.addEventListener("DOMContentLoaded", function() {
+	updateGlobalAudioVibrateUI();
+});
+
 // GLOBAL CLICK LISTENER
 document.addEventListener('click', function(e) {
 	const target = e.target.closest('button, a, [onclick]');

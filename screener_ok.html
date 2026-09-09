@@ -386,6 +386,18 @@
 				</div>
 			</div>
 		</div>
+		
+		<!-- Tambahkan kode ini di dalam file HTML kamu (screener_ok_5.html), bisa diletakkan tepat setelah tag pembuka <body> -->
+<div class="fixed top-24 left-4 z-30 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md p-1.5 rounded-xl border border-slate-800 shadow-lg">
+	<button id="btnToggleSound" onclick="toggleGlobalSound()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Matikan/Hidupkan Sound">
+		<i id="soundIcon" class="fa-solid fa-volume-high text-xs"></i>
+		<span class="hidden sm:inline text-[10px]">Sound</span>
+	</button>
+	<button id="btnToggleVibrate" onclick="toggleGlobalVibrate()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Matikan/Hidupkan Getar">
+		<i id="vibrateIcon" class="fa-solid fa-mobile-screen-button text-xs"></i>
+		<span class="hidden sm:inline text-[10px]">Getar</span>
+	</button>
+</div>
 
 		<!-- Main Content -->
 		<main class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 lg:px-8 pt-6 lg:pt-8 pb-12 space-y-6 lg:space-y-8">
