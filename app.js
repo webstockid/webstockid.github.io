@@ -196,46 +196,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	updateGlobalAudioVibrateUI();
 });
 
-// GLOBAL CLICK LISTENER
-document.addEventListener('click', function(e) {
-	const target = e.target.closest('button, a, [onclick]');
-	if (target) {
-		const onclickAttr = target.getAttribute('onclick') || '';
-		const textContent = target.innerText ? target.innerText.trim() : '';
-		
-		const hasTrashIcon = target.querySelector('.fa-trash') !== null || e.target.classList.contains('fa-trash');
-
-		const isNormalDelete = 
-			hasTrashIcon || 
-			onclickAttr.includes('deleteJournalItem') || 
-			onclickAttr.includes('removePriceAlert');
-
-		const isPopupAction = 
-			!isNormalDelete && (
-				textContent.includes('Hapus Semua') || 
-				textContent.includes('Bersihkan Semua') || 
-				onclickAttr.includes('clearJournalHistory') || 
-				onclickAttr.includes('clearAllAlerts') ||
-				onclickAttr.includes('closeCuanCelebration') ||
-				onclickAttr.includes('closeLossCelebration') ||
-				textContent === '✕' || 
-				textContent === 'X'
-			);
-
-		if (isPopupAction) {
-			AudioFX.playDelete(true); 
-		} else if (isNormalDelete) {
-			AudioFX.playDelete(false);
-		} else {
-			AudioFX.playClick();
-		}
-
-		if ('vibrate' in navigator) {
-			navigator.vibrate(100);
-		}
-	}
-});
-
 // LOGIKA FRAKSI HARGA BURSA EFEK INDONESIA (BEI)
 function getBEITickSize(price) {
 	if (price < 200) return 1;
