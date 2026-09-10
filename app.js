@@ -751,7 +751,6 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 		const lastAlertTime = localStorage.getItem(lastAlertKey);
 		const now = Date.now();
 		
-		// Interval diubah menjadi 10 detik sesuai instruksi
 		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 10000) {
 			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} meledak ${stockData.volRatio}x lipat! Harga baru naik ${stockData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
