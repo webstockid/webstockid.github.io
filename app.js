@@ -3274,28 +3274,34 @@ function renderPaperTradingUI() {
 	document.getElementById('ptWinRate').innerHTML = `Win Rate: ${winRate}% (${totalWin}/${totalClosed})`;
 
 	let rankName = "NEWBIE TRADER 🥺";
-	let rankColor = "text-violet-400";
+	let rankColor = "from-violet-400 to-fuchsia-400";
+	let badgeClass = "bg-fuchsia-500/10 border-fuchsia-500/30";
 	if (totalEquity >= 250000000 && winRate >= 70) {
 		rankName = "BANDAR 🐋";
-		rankColor = "text-emerald-400";
+		rankColor = "from-emerald-400 to-teal-400";
+		badgeClass = "bg-emerald-500/10 border-emerald-500/30";
 	} else if (totalEquity >= 150000000 && winRate >= 60) {
 		rankName = "EXPERT TRADER ⚡";
-		rankColor = "text-cyan-400";
+		rankColor = "from-cyan-400 to-blue-400";
+		badgeClass = "bg-cyan-500/10 border-cyan-500/30";
 	} else if (totalEquity >= 110000000 && winRate >= 60) {
 		rankName = "PRO TRADER 😎";
-		rankColor = "text-cyan-400";
+		rankColor = "from-orange-400 to-amber-400";
+		badgeClass = "bg-amber-500/10 border-amber-500/30";
 	} else if (totalEquity >= 80000000) {
 		rankName = "NORMAL TRADER 😼";
-		rankColor = "text-amber-400";
+		rankColor = "from-yellow-400 to-yellow-500";
+		badgeClass = "bg-yellow-500/10 border-yellow-500/30";
 	} else if (totalEquity >= 40000000) {
 		rankName = "NOOB TRADER 😹";
-		rankColor = "text-rose-400";
+		rankColor = "from-rose-400 to-pink-400";
+		badgeClass = "bg-rose-500/10 border-rose-500/30";
 	}
 
 	const rankBadgeEl = document.getElementById('ptRankBadge');
 	if (rankBadgeEl) {
-		rankBadgeEl.innerText = rankName;
-		rankBadgeEl.className = `text-sm lg:text-base font-bold ${rankColor} leading-none`;
+		rankBadgeEl.innerHTML = `<span class="bg-gradient-to-r ${rankColor} bg-clip-text text-transparent drop-shadow-md">${rankName}</span>`;
+		rankBadgeEl.className = `text-xs lg:text-sm font-extrabold leading-none px-2.5 py-1.5 rounded-lg border inline-block mt-0.5 ${badgeClass} shadow-sm`;
 	}
 
 	const portoBody = document.getElementById('ptPortoBody');
