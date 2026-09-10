@@ -2438,6 +2438,9 @@ function startBackgroundAutoCache() {
 					if (parsedData) {
 						setCachedStockData(ticker, parsedData);
 						checkPriceAlertsRealtime(ticker, parsedData.price); 
+						
+						// Mengeksekusi pengecekan whale alert secara background
+						checkWhaleAlertRealtime(ticker, parsedData);
 					}
 				} else if (status === 'done') {
 					bgWorker.terminate();
@@ -3214,130 +3217,160 @@ async function ptRefreshPortoPrices(isAuto = false) {
 }
 
 function renderPaperTradingUI() {
-		const acc = getPaperAccount();
+	const acc = getPaperAccount();
+	
+	let stockAssetValue = 0;
+	let totalUnrealizedPnL = 0; // Untuk di tabel
+	let totalModalAktif = 0;
+
+	acc.portfolio.forEach(item => {
+		let currentP = item.avgPrice;
+		const cached = getCachedStockData(item.ticker);
+		if (globalStockData && globalStockData.ticker === item.ticker) {
+			currentP = globalStockData.price;
+		} else if (cached && cached.price) {
+			currentP = cached.price;
+		}
+		const modal = item.avgPrice * item.lots * 100;
+		const currentVal = currentP * item.lots * 100;
 		
-		let stockAssetValue = 0;
+		stockAssetValue += currentVal;
+		totalModalAktif += modal;
+		totalUnrealizedPnL += (currentVal - modal);
+	});
+
+	const totalEquity = acc.cash + stockAssetValue;
+
+	// KALKULASI REALIZED PNL (Dari histori penjualan)
+	const totalRealizedPnL = acc.history.reduce((sum, item) => sum + item.profitLoss, 0);
+	const realizedColor = totalRealizedPnL > 0 ? 'text-emerald-400' : (totalRealizedPnL < 0 ? 'text-rose-400' : 'text-slate-400');
+	const realizedSign = totalRealizedPnL > 0 ? '+' : '';
+
+	document.getElementById('ptCash').innerText = `Rp ${Math.round(acc.cash).toLocaleString('id-ID')}`;
+	document.getElementById('ptEquity').innerText = `Rp ${Math.round(totalEquity).toLocaleString('id-ID')}`;
+	
+	// Inject Data Realized PnL ke Profil UI
+	const elRealized = document.getElementById('ptRealizedPnL');
+	if (elRealized) {
+		elRealized.className = `text-sm lg:text-base font-bold ${realizedColor}`;
+		elRealized.innerText = `${realizedSign}Rp ${Math.round(totalRealizedPnL).toLocaleString('id-ID')}`;
+	}
+
+	// KALKULASI FLOATING / UNREALIZED PNL (Menempel di pojok kanan tabel)
+	const unrealizedPct = totalModalAktif > 0 ? ((totalUnrealizedPnL / totalModalAktif) * 100).toFixed(2) : 0;
+	const unrealizedColor = totalUnrealizedPnL > 0 ? 'text-emerald-400' : (totalUnrealizedPnL < 0 ? 'text-rose-400' : 'text-slate-400');
+	const unrealizedSign = totalUnrealizedPnL > 0 ? '+' : '';
+	
+	const elUnrealized = document.getElementById('ptUnrealizedPnL');
+	if (elUnrealized) {
+		elUnrealized.className = `px-3 py-1.5 rounded-t-lg text-[10px] lg:text-xs font-bold border-t border-l border-r border-slate-500/20 bg-slate-950/60 ${unrealizedColor} translate-y-[1px] relative z-10 shadow-inner`;
+		elUnrealized.innerText = `Total Floating: ${unrealizedSign}Rp ${Math.round(totalUnrealizedPnL).toLocaleString('id-ID')} (${unrealizedSign}${unrealizedPct}%)`;
+	}
+
+	const totalClosed = acc.history.length;
+	const totalWin = acc.history.filter(h => h.status === 'WIN').length;
+	const winRate = totalClosed > 0 ? Math.round((totalWin / totalClosed) * 100) : 0;
+
+	document.getElementById('ptWinRate').innerHTML = `Win Rate: ${winRate}% (${totalWin}/${totalClosed})`;
+
+	let rankName = "NEWBIE TRADER 🥺";
+	let rankColor = "text-violet-400";
+	if (totalEquity >= 250000000 && winRate >= 70) {
+		rankName = "BANDAR 🐋";
+		rankColor = "text-emerald-400";
+	} else if (totalEquity >= 150000000 && winRate >= 60) {
+		rankName = "EXPERT TRADER ⚡";
+		rankColor = "text-cyan-400";
+	} else if (totalEquity >= 110000000 && winRate >= 60) {
+		rankName = "PRO TRADER 😎";
+		rankColor = "text-cyan-400";
+	} else if (totalEquity >= 80000000) {
+		rankName = "NORMAL TRADER 😼";
+		rankColor = "text-amber-400";
+	} else if (totalEquity >= 40000000) {
+		rankName = "NOOB TRADER 😹";
+		rankColor = "text-rose-400";
+	}
+
+	const rankBadgeEl = document.getElementById('ptRankBadge');
+	if (rankBadgeEl) {
+		rankBadgeEl.innerText = rankName;
+		rankBadgeEl.className = `text-sm lg:text-base font-bold ${rankColor} leading-none`;
+	}
+
+	const portoBody = document.getElementById('ptPortoBody');
+	if (acc.portfolio.length === 0) {
+		portoBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-violet-400 font-sans border-t border-slate-500/20">Belum ada posisi terbuka. Gunakan form di sebelah kiri untuk simulasi beli.</td></tr>`;
+	} else {
+		let html = '';
 		acc.portfolio.forEach(item => {
 			let currentP = item.avgPrice;
-			// Cek cache jika saham tidak sedang dibuka
 			const cached = getCachedStockData(item.ticker);
 			if (globalStockData && globalStockData.ticker === item.ticker) {
 				currentP = globalStockData.price;
 			} else if (cached && cached.price) {
 				currentP = cached.price;
 			}
-			stockAssetValue += (currentP * item.lots * 100);
+			const modal = item.avgPrice * item.lots * 100;
+			const currentVal = currentP * item.lots * 100;
+			const pnl = currentVal - modal;
+			const pnlPct = parseFloat((((currentP - item.avgPrice) / item.avgPrice) * 100).toFixed(2));
+			const isPlus = pnl >= 0;
+
+			html += `
+				<tr class="hover:bg-slate-800/40">
+					<td class="p-3.5 font-bold text-violet-400">&dollar;${item.ticker}</td>
+					<td class="p-3.5 text-blue-500">${item.lots.toLocaleString('id-ID')} Lot</td>
+					<td class="p-3.5 text-amber-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
+					<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
+					<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
+						${isPlus ? '+' : ''}Rp ${Math.round(pnl).toLocaleString('id-ID')} (${isPlus ? '+' : ''}${pnlPct}%)
+					</td>
+					<td class="p-3.5 text-center">
+						<button onclick="ptExecuteSell(${item.id})" class="text-[10px] bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-400 font-bold px-3 py-1 rounded-lg border border-rose-500/30 transition">Jual</button>
+					</td>
+				</tr>
+			`;
 		});
+		portoBody.innerHTML = html;
+	}
 
-		const totalEquity = acc.cash + stockAssetValue;
-
-		document.getElementById('ptCash').innerText = `Rp ${Math.round(acc.cash).toLocaleString('id-ID')}`;
-		document.getElementById('ptEquity').innerText = `Rp ${Math.round(totalEquity).toLocaleString('id-ID')}`;
-
-		const totalClosed = acc.history.length;
-		const totalWin = acc.history.filter(h => h.status === 'WIN').length;
-		const winRate = totalClosed > 0 ? Math.round((totalWin / totalClosed) * 100) : 0;
-
-		document.getElementById('ptWinRate').innerHTML = `Win Rate: ${winRate}% (${totalWin}/${totalClosed})`;
-
-		let rankName = "NEWBIE TRADER 🥺";
-		let rankColor = "text-violet-400";
-		if (totalEquity >= 250000000 && winRate >= 70) {
-			rankName = "BANDAR 🐋";
-			rankColor = "text-emerald-400";
-		} else if (totalEquity >= 150000000 && winRate >= 60) {
-			rankName = "EXPERT TRADER ⚡";
-			rankColor = "text-cyan-400";
-		} else if (totalEquity >= 110000000 && winRate >= 60) {
-			rankName = "PRO TRADER  😎";
-			rankColor = "text-cyan-400";
-		} else if (totalEquity >= 80000000) {
-			rankName = "NORMAL TRADER 😼";
-			rankColor = "text-amber-400";
-		} else if (totalEquity >= 40000000) {
-			rankName = "NOOB TRADER 😹";
-			rankColor = "text-rose-400";
-		}
-
-		const rankBadgeEl = document.getElementById('ptRankBadge');
-		if (rankBadgeEl) {
-			rankBadgeEl.innerText = rankName;
-			rankBadgeEl.className = `text-lg lg:text-xl font-bold ${rankColor} leading-none`;
-		}
-
-		const portoBody = document.getElementById('ptPortoBody');
-		if (acc.portfolio.length === 0) {
-			portoBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500 font-sans">Belum ada posisi terbuka. Gunakan form di sebelah kiri untuk simulasi beli.</td></tr>`;
-		} else {
-			let html = '';
-			acc.portfolio.forEach(item => {
-				let currentP = item.avgPrice;
-				const cached = getCachedStockData(item.ticker);
-				if (globalStockData && globalStockData.ticker === item.ticker) {
-					currentP = globalStockData.price;
-				} else if (cached && cached.price) {
-					currentP = cached.price;
-				}
-				const modal = item.avgPrice * item.lots * 100;
-				const currentVal = currentP * item.lots * 100;
-				const pnl = currentVal - modal;
-				const pnlPct = parseFloat((((currentP - item.avgPrice) / item.avgPrice) * 100).toFixed(2));
-				const isPlus = pnl >= 0;
-
-				html += `
-					<tr class="hover:bg-slate-800/40">
-						<td class="p-3.5 font-bold text-violet-400">&dollar;${item.ticker}</td>
-						<td class="p-3.5 text-blue-500">${item.lots.toLocaleString('id-ID')} Lot</td>
-						<td class="p-3.5 text-amber-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
-						<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
-						<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
-							${isPlus ? '+' : ''}Rp ${Math.round(pnl).toLocaleString('id-ID')} (${isPlus ? '+' : ''}${pnlPct}%)
-						</td>
-						<td class="p-3.5 text-center">
-							<button onclick="ptExecuteSell(${item.id})" class="text-[10px] bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-400 font-bold px-3 py-1 rounded-lg border border-rose-500/30 transition">Jual</button>
-						</td>
-					</tr>
-				`;
-			});
-			portoBody.innerHTML = html;
-		}
-
-		const historyContainer = document.getElementById('ptHistoryContainer');
-		if (acc.history.length === 0) {
-			historyContainer.innerHTML = `<div class="text-slate-500 text-xs text-center col-span-full py-4 border border-slate-800 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>`;
-		} else {
-			let hHtml = '';
-			acc.history.slice(0, 6).forEach(h => {
-				const isWin = h.status === 'WIN';
-				const modal = h.buyPrice * h.lots * 100;
-				
-				hHtml += `
-					<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1 shadow-sm hover:border-slate-500/30 transition-colors">
-						<div class="flex justify-between items-center">
-							<span class="font-bold text-violet-400">&dollar;${h.ticker} (${h.lots} Lot)</span>
-							<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
+	const historyContainer = document.getElementById('ptHistoryContainer');
+	if (acc.history.length === 0) {
+		historyContainer.innerHTML = `<div class="text-violet-400 text-xs text-center col-span-full py-4 border border-dashed border-slate-500/20 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>`;
+	} else {
+		let hHtml = '';
+		acc.history.slice(0, 6).forEach(h => {
+			const isWin = h.status === 'WIN';
+			const modal = h.buyPrice * h.lots * 100;
+			
+			hHtml += `
+				<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1 shadow-sm hover:border-slate-500/30 transition-colors">
+					<div class="flex justify-between items-center">
+						<span class="font-bold text-violet-400">&dollar;${h.ticker} (${h.lots} Lot)</span>
+						<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
+					</div>
+					<div class="flex justify-between text-[11px] text-slate-300 pb-1">
+						<span class="font-bold text-sky-400">Beli: Rp ${h.buyPrice.toLocaleString('id-ID')}</span>
+						<span class="font-bold text-sky-400">Jual: Rp ${h.sellPrice.toLocaleString('id-ID')}</span>
+					</div>
+					<div class="flex justify-between items-center pt-1.5 border-t border-slate-800/80 mt-1">
+						<div class="flex flex-col">
+							<span class="text-[11px] text-violet-400 uppercase font-bold">Modal Awal</span>
+							<span class="text-[11px] text-blue-500 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
 						</div>
-						<div class="flex justify-between text-[11px] text-slate-300 pb-1">
-							<span class="font-bold text-sky-400">Beli: Rp ${h.buyPrice.toLocaleString('id-ID')}</span>
-							<span class="font-bold text-sky-400">Jual: Rp ${h.sellPrice.toLocaleString('id-ID')}</span>
-						</div>
-						<div class="flex justify-between items-center pt-1.5 border-t border-slate-800/80 mt-1">
-							<div class="flex flex-col">
-								<span class="text-[11px] text-violet-400 uppercase font-bold">Modal Awal</span>
-								<span class="text-[11px] text-blue-500 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
-							</div>
-							<div class="text-right font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'} text-xs">
-								${isWin ? '+' : ''}Rp ${Math.round(h.profitLoss).toLocaleString('id-ID')} (${isWin ? '+' : ''}${h.profitLossPct}%)
-							</div>
+						<div class="text-right font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'} text-xs">
+							${isWin ? '+' : ''}Rp ${Math.round(h.profitLoss).toLocaleString('id-ID')} (${isWin ? '+' : ''}${h.profitLossPct}%)
 						</div>
 					</div>
-				`;
-			});
-			historyContainer.innerHTML = hHtml;
-		}
-
-		if (window.lucide) lucide.createIcons();
+				</div>
+			`;
+		});
+		historyContainer.innerHTML = hHtml;
 	}
+
+	if (window.lucide) lucide.createIcons();
+}
 
 function getPaperAccount() {
 	const defaultAccount = {
