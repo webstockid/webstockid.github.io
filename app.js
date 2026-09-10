@@ -746,12 +746,12 @@ async function generateAISignal(ticker, isManualSearch = false) {
 function checkWhaleAlertRealtime(ticker, stockData) {
 	if (!stockData || !stockData.price) return;
 	
-	if (stockData.volRatio >= 2.0 && stockData.changePct >= 0 && stockData.changePct <= 3.0) {
+	if (stockData.volRatio >= 2.0 && stockData.changePct >= 0 && stockData.changePct <= 5.0) {
 		const lastAlertKey = `whale_alert_${ticker}`;
 		const lastAlertTime = localStorage.getItem(lastAlertKey);
 		const now = Date.now();
 		
-		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 10000) {
+		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 12000) {
 			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} meledak ${stockData.volRatio}x lipat! Harga baru naik ${stockData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
 			AudioFX.playSuccess(); 
@@ -885,11 +885,11 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionLabel = "⚠️ TAKE PROFIT / HOLD";
 			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
 			actionDesc = "Tren masih terjaga di atas garis MA menengah atau menguat stabil. Tahan atau amankan profit.";
-		} else if ((score === 2 || score === 3) && (checkAboveMA5 || stockData.changePct >= -2)) {
+		} else if ((score === 2 || score === 3) && (checkAboveMA5 || stockData.changePct >= -3)) {
 			actionLabel = "🛒 ACCUMULATE (CICIL)";
 			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
 			actionDesc = "Fase akumulasi / koreksi wajar. Harga bertahan dekat area support, cocok untuk cicil bertahap.";
-		} else if (score <= 2 || stockData.changePct < -2.0) {
+		} else if (score <= 2 || stockData.changePct < -8.0) {
 			actionLabel = "❌ AVOID / CUTLOSS";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
 			actionDesc = "Tekanan jual mendominasi atau struktur tren melemah di bawah MA utama. Batasi risiko segera.";
