@@ -834,26 +834,31 @@
 				<!-- TAB 8: Paper Trade -->
 				<div id="tabContent-paper" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
 					<!-- Compact Rank & Balance Banner -->
-					<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-500/20 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center shadow-lg shadow-violet-500/5">
-						<div class="flex items-center gap-3">
-							<div class="w-10 h-10 rounded-xl bg-violet-500/15 border border-slate-500/30 flex items-center justify-center text-violet-300 shrink-0">
-								<i data-lucide="trophy" class="w-5 h-5"></i>
-							</div>
-							<div>
-								<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Trader Rank</span>
-								<span id="ptRankBadge" class="text-sm lg:text-base font-bold text-violet-300">NEWBIE</span>
-								<span id="ptWinRate" class="text-[10px] text-emerald-400 font-bold block">Win Rate: 0%</span>
-							</div>
-						</div>
-						<div class="border-t sm:border-t-0 sm:border-l border-slate-500/20 pt-3 sm:pt-0 sm:pl-4">
-							<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Buying Power (Cash)</span>
-							<span id="ptCash" class="text-base lg:text-lg font-bold text-emerald-400">Rp 100.000.000</span>
-						</div>
-						<div class="border-t sm:border-t-0 sm:border-l border-slate-500/20 pt-3 sm:pt-0 sm:pl-4">
-							<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Total Equity</span>
-							<span id="ptEquity" class="text-base lg:text-lg font-bold text-violet-300">Rp 100.000.000</span>
-						</div>
-					</div>
+<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-500/20 grid grid-cols-2 md:grid-cols-4 gap-4 items-center shadow-lg shadow-violet-500/5">
+	<div class="flex items-center gap-3 col-span-2 md:col-span-1">
+		<div class="w-10 h-10 rounded-xl bg-violet-500/15 border border-slate-500/30 flex items-center justify-center text-violet-300 shrink-0">
+			<i data-lucide="trophy" class="w-5 h-5"></i>
+		</div>
+		<div>
+			<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Trader Rank</span>
+			<span id="ptRankBadge" class="text-sm lg:text-base font-bold text-violet-300">NEWBIE</span>
+			<span id="ptWinRate" class="text-[10px] text-emerald-400 font-bold block">Win Rate: 0%</span>
+		</div>
+	</div>
+	<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
+		<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Buying Power (Cash)</span>
+		<span id="ptCash" class="text-sm lg:text-base font-bold text-emerald-400">Rp 100.000.000</span>
+	</div>
+	<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
+		<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Total Equity</span>
+		<span id="ptEquity" class="text-sm lg:text-base font-bold text-violet-300">Rp 100.000.000</span>
+	</div>
+	<!-- BARIS BARU: Menampilkan Realized PnL -->
+	<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
+		<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Realized P&L</span>
+		<span id="ptRealizedPnL" class="text-sm lg:text-base font-bold text-slate-400">Rp 0</span>
+	</div>
+</div>
 
 					<!-- Sub-Tabs Switcher (Form vs Portfolio) -->
 					<div class="flex bg-slate-950/30 p-1.5 rounded-xl border border-slate-500/20 gap-2">
@@ -911,36 +916,7 @@
 						</div>
 					</div>
 	
-					<!-- Compact Rank & Balance Banner -->
-<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-500/20 grid grid-cols-2 md:grid-cols-4 gap-4 items-center shadow-lg shadow-violet-500/5">
-	<div class="flex items-center gap-3 col-span-2 md:col-span-1">
-		<div class="w-10 h-10 rounded-xl bg-violet-500/15 border border-slate-500/30 flex items-center justify-center text-violet-300 shrink-0">
-			<i data-lucide="trophy" class="w-5 h-5"></i>
-		</div>
-		<div>
-			<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Trader Rank</span>
-			<span id="ptRankBadge" class="text-sm lg:text-base font-bold text-violet-300">NEWBIE</span>
-			<span id="ptWinRate" class="text-[10px] text-emerald-400 font-bold block">Win Rate: 0%</span>
-		</div>
-	</div>
-	<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
-		<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Buying Power (Cash)</span>
-		<span id="ptCash" class="text-sm lg:text-base font-bold text-emerald-400">Rp 100.000.000</span>
-	</div>
-	<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
-		<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Total Equity</span>
-		<span id="ptEquity" class="text-sm lg:text-base font-bold text-violet-300">Rp 100.000.000</span>
-	</div>
-	<!-- BARIS BARU: Menampilkan Realized PnL -->
-	<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
-		<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Realized P&L</span>
-		<span id="ptRealizedPnL" class="text-sm lg:text-base font-bold text-slate-400">Rp 0</span>
-	</div>
-</div>
-
-<!-- ... (Sub-Tabs Switcher & Form Order dibiarkan sama) ... -->
-
-<!-- Sub-Tab Content 2: Portofolio & Riwayat -->
+					<!-- Sub-Tab Content 2: Portofolio & Riwayat -->
 <div id="ptSubContentPorto" class="hidden bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-500/20 space-y-4 shadow-xl shadow-violet-950/20">
 	<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-500/20 pb-3">
 		<span class="font-bold text-violet-200 flex items-center gap-2 text-sm"><i data-lucide="briefcase" class="w-4 h-4 text-violet-400"></i> Portofolio Saham Aktif</span>
@@ -959,7 +935,6 @@
 		</div>
 		<div class="overflow-x-auto rounded-xl rounded-tr-none border border-slate-500/20 scrollbar-thin shadow-inner bg-slate-950/30 relative z-0">
 			<table class="w-full text-left text-xs text-violet-200 whitespace-nowrap min-w-[650px]">
-				<!-- (Thead & Tbody dibiarkan sama seperti aslinya) -->
 								<thead class="bg-slate-950/60 text-violet-300 uppercase text-[10px] font-bold border-b border-slate-500/20">
 									<tr>
 										<th class="p-3.5">Emiten</th>
