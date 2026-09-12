@@ -94,8 +94,7 @@ function updateGlobalAudioVibrateUI() {
 			vibrateIcon.className = "fa-solid fa-mobile-screen-button text-xs";
 		}
 	}
-
-	// === TAMBAHKAN BLOK INI AGAR TOMBOL DI TAB PENGATURAN UPDATE INSTAN ===
+	
 	const settingSoundBtn = document.getElementById('settingBtnSound');
 	if (settingSoundBtn) {
 		settingSoundBtn.innerText = isSoundMuted ? 'Mati' : 'Menyala';
@@ -143,7 +142,7 @@ const AudioFX = {
 		}
 	},
 	playAudioFile(filename) {
-		if (isSoundMuted) return; // Mencegah suara keluar jika tombol mute diaktifkan
+		if (isSoundMuted) return;
 		try {
 			const audio = new Audio(`stockid_suara/MC/${filename}`);
 			audio.play().catch(e => {});
@@ -220,7 +219,6 @@ function initSystemSettings() {
 	if (themeSelect) themeSelect.value = savedTheme;
 
 	// 2. Load & Apply Font Size
-	// Kita gunakan properti font-size pada tag html (root) untuk skalabilitas menggunakan REM bawaan Tailwind
 	const savedFontSize = localStorage.getItem('stockid_font_size') || '16';
 	applyFontSize(savedFontSize);
 	const fontInput = document.getElementById('settingFontSize');
@@ -245,7 +243,6 @@ function applyTheme(theme) {
 }
 
 function applyFontSize(size) {
-	// Memodifikasi base font-size HTML yang akan otomatis menskalakan seluruh kelas text-xs, text-sm, dll
 	document.documentElement.style.setProperty('font-size', `${size}px`, 'important');
 	
 	const label = document.getElementById('fontSizeLabel');
@@ -265,12 +262,11 @@ function applyFontStyle(fontName) {
 			document.head.appendChild(styleEl);
 		}
 		
-		// Load font secara dinamis dari folder stockid_font/
 		styleEl.innerHTML = `
 			@font-face {
 				font-family: '${fontName}';
 				src: url('Stockid_font/${fontName}.ttf') format('truetype');
-				font-weight: bold;
+				font-weight: 800;
 				font-style: normal;
 			}
 		`;
@@ -285,7 +281,7 @@ function applyFontStyle(fontName) {
 // Panggil fungsi update UI saat halaman dimuat
 document.addEventListener("DOMContentLoaded", function() {
 	updateGlobalAudioVibrateUI();
-	// Update UI Tombol pada Tab Setting (jika tab sudah dirender)
+	// Update UI Tombol Tab Setting
 	const settingSoundBtn = document.getElementById('settingBtnSound');
 	if (settingSoundBtn) {
 		settingSoundBtn.innerText = isSoundMuted ? 'Mati' : 'Menyala';
@@ -393,7 +389,7 @@ function isMarketOpen() {
 
 function cleanExpiredCache() {
 	const FIVE_MINUTES = 5 * 60 * 1000;
-	const TEN_MINUTES = 10 * 60 * 1000; // Kadaluarsa berita AI
+	const TEN_MINUTES = 10 * 60 * 1000;
 	
 	for (let i = localStorage.length - 1; i >= 0; i--) {
 		const key = localStorage.key(i);
@@ -669,7 +665,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const targetSymbol = `${ticker}.JK`;
 	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 	
-	const fetchWithTimeout = (url, timeoutMs = 3000) => {
+	const fetchWithTimeout = (url, timeoutMs = 5000) => { //3000
 		return new Promise((resolve, reject) => {
 			const timer = setTimeout(() => reject(new Error('Timeout')), timeoutMs);
 			fetch(url)
@@ -858,7 +854,7 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 		const lastAlertTime = localStorage.getItem(lastAlertKey);
 		const now = Date.now();
 		
-		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 12000) {
+		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 10000) {
 			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} meledak ${stockData.volRatio}x lipat! Harga baru naik ${stockData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
 			AudioFX.playSuccess(); 
@@ -901,9 +897,9 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		const isAboveMA5 = stockData.price >= stockData.ma5;
 		const isAboveMA10 = stockData.price >= stockData.ma10;
 		const isAboveMA20 = stockData.price >= stockData.ma20;
-		const isVolSpike = stockData.volRatio >= 1.00;
+		const isVolSpike = stockData.volRatio >= 1.5;
 
-		if (isAboveMA5 && isAboveMA10 && isAboveMA20 && stockData.changePct > 1.5 && isVolSpike) {
+		if (isAboveMA5 && isAboveMA10 && isAboveMA20 && stockData.changePct > 3.0 && isVolSpike) {
 			score = 5;
 			verdik = "STRONG BULLISH BREAKOUT";
 			verdikClass = "font-bold text-emerald-400 text-sm lg:text-base";
@@ -913,12 +909,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			verdik = "BULLISH ACCUMULATION";
 			verdikClass = "font-bold text-emerald-300 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.changePct < -2.5 && !isAboveMA10) {
+		} else if (stockData.changePct < 5.0 && !isAboveMA10) {
 			score = 1;
 			verdik = "STRONG BEARISH / SELLING PRESSURE";
 			verdikClass = "font-bold text-rose-500 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-rose-500 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.changePct < 0) {
+		} else if (stockData.changePct < 0 && !isAboveMA5) {
 			score = 2;
 			verdik = "WEAK / BEARISH CORRECTION";
 			verdikClass = "font-bold text-rose-400 text-sm lg:text-base";
@@ -996,7 +992,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionLabel = "🛒 ACCUMULATE (CICIL)";
 			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
 			actionDesc = "Fase akumulasi / koreksi wajar. Harga bertahan dekat area support, cocok untuk cicil bertahap.";
-		} else if (score <= 2 || stockData.changePct < -8.0) {
+		} else if (score <= 2 || stockData.changePct < 8.0) {
 			actionLabel = "❌ AVOID / CUTLOSS";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
 			actionDesc = "Tekanan jual mendominasi atau struktur tren melemah di bawah MA utama. Batasi risiko segera.";
@@ -1007,7 +1003,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		let bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 		let bandarPct = 60;
 
-		if (stockData.changePct >= 0 && stockData.volRatio >= 1.5) {
+		if (stockData.changePct >= 3.0 && stockData.volRatio >= 1.5) {
 			bandarStatus = "Masif Akumulasi 🐋";
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
@@ -1017,7 +1013,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			bandarColor = "text-cyan-400";
 			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-300 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
 			bandarPct = Math.max(30, 50 - (stockData.volRatio * 15));
-		} else if (stockData.changePct < 0 && stockData.volRatio < 0.8) {
+		} else if (stockData.changePct < 5.0 && stockData.volRatio < 0.8) {
 			bandarStatus = "Distribusi Kuat (Buangan) 🚨";
 			bandarColor = "text-rose-400";
 			bandarBarColor = "from-rose-600 via-rose-500 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)]";
