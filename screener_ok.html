@@ -124,7 +124,9 @@
 				background-color: #efefef;
 				color: #0f172a;
 			}
-			body.light-mode ul, body.light-mode li {
+			body.light-mode ul {
+				color: #111 !important;
+			body.light-mode li {
 				color: #111 !important;
 			}
 			body.light-mode .bg-slate-900 { background-color: #fafafa !important; border-color: #e2e8f0 !important; color: #0f172a !important; }
@@ -139,7 +141,8 @@
 			body.light-mode .border-slate-800, body.light-mode .border-slate-700 { border-color: #cbd5e1 !important; }
 			body.light-mode .glassmorphism { background-color: #fafafa; border-color: rgba(0,0,0,0.1); }
 			body.light-mode input { background-color: #fafafa !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
-			body.light-mode button, body.light-mode btn {color: #eee !important;}
+			body.light-mode button {color: #eee !important;}
+			body.light-mode btn {color: #eee !important;}
 		</style>
 	</head>
 
@@ -1248,10 +1251,13 @@
 								<div class="flex flex-col space-y-1.5 pt-1">
 									<label class="text-slate-300 text-[11px] lg:text-xs font-bold">3. Gaya Huruf (Font Style)</label>
 									<select id="settingFontStyle" onchange="applyFontStyle(this.value)" class="w-full bg-slate-900 border border-slate-700 text-white text-[10px] lg:text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 cursor-pointer">
-										<option value="Lexend">Lexend (Default)</option>
-										<option value="Nunito">Nunito</option>
-										<option value="Quicksand">Quicksand</option>
+										<option value="Comfortaa">Comfortaa</option>
+										<option value="ComicRelief">Comic Relief</option>
 										<option value="GoogleSans">Google Sans</option>
+										<option value="Nunito">Nunito</option>
+										<option value="Quicksand">Quick Sand</option>
+										<option value="Ubounded">Ubounded</option>
+										<option value="Lexend">Lexend (Default)</option>
 										<!-- Tambahkan font lain di sini asalkan file tersedia di folder stockid_font/ -->
 									</select>
 								</div>
