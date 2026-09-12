@@ -252,7 +252,7 @@ function applyFontStyle(fontName) {
 		styleEl.innerHTML = `
 			@font-face {
 				font-family: '${fontName}';
-				src: url('stockid_font/${fontName}.ttf') format('truetype');
+				src: url('Stockid_font/${fontName}.ttf') format('truetype');
 				font-weight: bold;
 				font-style: normal;
 			}
