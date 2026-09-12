@@ -191,9 +191,99 @@ document.addEventListener('click', function(e) {
 	}
 });
 
+// ==========================================
+// SYSTEM SETTING & PREFERENCES LOGIC
+// ==========================================
+
+function initSystemSettings() {
+	// 1. Load & Apply Theme
+	const savedTheme = localStorage.getItem('stockid_theme') || 'dark';
+	applyTheme(savedTheme);
+	const themeSelect = document.getElementById('settingTheme');
+	if (themeSelect) themeSelect.value = savedTheme;
+
+	// 2. Load & Apply Font Size
+	// Kita gunakan properti font-size pada tag html (root) untuk skalabilitas menggunakan REM bawaan Tailwind
+	const savedFontSize = localStorage.getItem('stockid_font_size') || '16';
+	applyFontSize(savedFontSize);
+	const fontInput = document.getElementById('settingFontSize');
+	if (fontInput) fontInput.value = savedFontSize;
+
+	// 3. Load & Apply Font Style
+	const savedFontFamily = localStorage.getItem('stockid_font_family') || 'Lexend';
+	applyFontStyle(savedFontFamily);
+	const fontSelect = document.getElementById('settingFontStyle');
+	if (fontSelect) fontSelect.value = savedFontFamily;
+}
+
+function applyTheme(theme) {
+	if (theme === 'light') {
+		document.body.classList.add('light-mode');
+	} else {
+		document.body.classList.remove('light-mode');
+	}
+	localStorage.setItem('stockid_theme', theme);
+	
+	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+}
+
+function applyFontSize(size) {
+	// Memodifikasi base font-size HTML yang akan otomatis menskalakan seluruh kelas text-xs, text-sm, dll
+	document.documentElement.style.setProperty('font-size', `${size}px`, 'important');
+	
+	const label = document.getElementById('fontSizeLabel');
+	if (label) label.innerText = `${size}px`;
+	
+	localStorage.setItem('stockid_font_size', size);
+}
+
+function applyFontStyle(fontName) {
+	if (fontName !== 'Lexend') {
+		let styleId = 'custom-font-style-loader';
+		let styleEl = document.getElementById(styleId);
+		
+		if (!styleEl) {
+			styleEl = document.createElement('style');
+			styleEl.id = styleId;
+			document.head.appendChild(styleEl);
+		}
+		
+		// Load font secara dinamis dari folder stockid_font/
+		styleEl.innerHTML = `
+			@font-face {
+				font-family: '${fontName}';
+				src: url('stockid_font/${fontName}.ttf') format('truetype');
+				font-weight: bold;
+				font-style: normal;
+			}
+		`;
+	}
+	
+	document.documentElement.style.setProperty('--app-font-family', `"${fontName}", sans-serif`);
+	localStorage.setItem('stockid_font_family', fontName);
+	
+	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+}
+
 // Panggil fungsi update UI saat halaman dimuat
 document.addEventListener("DOMContentLoaded", function() {
 	updateGlobalAudioVibrateUI();
+	// Update UI Tombol pada Tab Setting (jika tab sudah dirender)
+	const settingSoundBtn = document.getElementById('settingBtnSound');
+	if (settingSoundBtn) {
+		settingSoundBtn.innerText = isSoundMuted ? 'Mati' : 'Menyala';
+		settingSoundBtn.className = isSoundMuted 
+			? "px-4 py-2 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-[10px] font-bold transition" 
+			: "px-4 py-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg text-[10px] font-bold transition";
+	}
+
+	const settingVibrateBtn = document.getElementById('settingBtnVibrate');
+	if (settingVibrateBtn) {
+		settingVibrateBtn.innerText = isVibrateMuted ? 'Mati' : 'Menyala';
+		settingVibrateBtn.className = isVibrateMuted 
+			? "px-4 py-2 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-[10px] font-bold transition" 
+			: "px-4 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg text-[10px] font-bold transition";
+	}
 });
 
 // LOGIKA FRAKSI HARGA BURSA EFEK INDONESIA (BEI)
@@ -2326,7 +2416,7 @@ async function fetchCorporateAction(ticker) {
 }
 
 function switchTab(tabName) {
-	const tabs = ['ai','bigmoney','custom','peer','news','fundamental','paper','rrr','journal','alert','corporate','heatmap'];
+	const tabs = ['ai','bigmoney','custom','peer','news','fundamental','paper','rrr','journal','alert','corporate','heatmap','setting'];
 	tabs.forEach(tab => {
 		const btn = document.getElementById(`tabBtn-${tab}`);
 		const content = document.getElementById(`tabContent-${tab}`);
@@ -3906,6 +3996,7 @@ document.getElementById('alertTickerLabel').innerText = currentTicker;
 document.getElementById('corpTickerLabel').innerText = currentTicker;
 document.getElementById('peerTickerLabel').innerText = currentTicker;
 
+initSystemSettings();
 checkVIPAuth();
 initSearchSuggestions();
 updateMarketBadge();

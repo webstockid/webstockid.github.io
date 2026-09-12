@@ -110,6 +110,30 @@
 			::-webkit-scrollbar-thumb:hover {
 				filter: brightness(1.2);
 			}
+			/* Setup Variabel Font Dinamis */
+			:root {
+				--app-font-family: "Lexend", sans-serif;
+			}
+			
+			body, .heading-font, a, p, b, button, nav, ul, li, ol, option, select, strong, div, span, label, input {
+				font-family: var(--app-font-family) !important;
+			}
+
+			/* Tema Terang (Light Mode) Override */
+			body.light-mode {
+				background-color: #f8fafc;
+				color: #0f172a;
+			}
+			body.light-mode .bg-slate-900 { background-color: #ffffff !important; border-color: #e2e8f0 !important; color: #0f172a !important; }
+			body.light-mode .bg-slate-950\/10, body.light-mode .bg-slate-950\/20, body.light-mode .bg-slate-950\/30, 
+			body.light-mode .bg-slate-900\/60, body.light-mode .bg-slate-900\/80, body.light-mode .bg-slate-900\/90 { 
+				background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; 
+			}
+			body.light-mode .text-slate-200, body.light-mode .text-white { color: #0f172a !important; }
+			body.light-mode .text-slate-300, body.light-mode .text-slate-400 { color: #475569 !important; }
+			body.light-mode .border-slate-800, body.light-mode .border-slate-700 { border-color: #cbd5e1 !important; }
+			body.light-mode .glassmorphism { background: rgba(255, 255, 255, 0.85); border-color: rgba(0,0,0,0.1); }
+			body.light-mode input { background-color: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
 		</style>
 	</head>
 
@@ -476,6 +500,9 @@
 					</button>
 					<button onclick="switchTab('heatmap')" id="tabBtn-heatmap" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Sektor Heatmap
+					</button>
+					<button onclick="switchTab('setting')" id="tabBtn-setting" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="settings" class="w-4 h-4 text-slate-400"></i> Pengaturan
 					</button>
 				</div>
 
@@ -1170,6 +1197,89 @@
 					</div>
 					<div class="bg-slate-950/10 p-3 rounded-xl border border-slate-800 h-[600px] overflow-hidden">
 						<div class="tradingview-widget-container h-full w-full" id="tv_heatmap_container"></div>
+					</div>
+				</div>
+				
+				<!-- Tab 13: Setting (Pengaturan) -->
+				<div id="tabContent-setting" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
+						<div>
+							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
+								<i data-lucide="settings" class="w-4 h-4 text-slate-400"></i> Pengaturan Preferensi Sistem
+							</span>
+							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Sesuaikan kenyamanan visual dan pengalaman antarmuka Kamu.</p>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<!-- Preferensi Visual -->
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4">
+							<span class="font-bold text-cyan-400 flex items-center gap-1.5 text-[11px] lg:text-xs border-b border-slate-800/80 pb-2">
+								<i data-lucide="monitor" class="w-4 h-4"></i> PREFERENSI VISUAL
+							</span>
+							
+							<div class="space-y-3">
+								<div class="flex justify-between items-center">
+									<label class="text-slate-300 text-[11px] lg:text-xs font-bold">1. Tema Tampilan (Mode)</label>
+									<select id="settingTheme" onchange="applyTheme(this.value)" class="bg-slate-900 border border-slate-700 text-white text-[10px] lg:text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-emerald-500 cursor-pointer">
+										<option value="dark">🌙 Mode Gelap (Default)</option>
+										<option value="light">☀️ Mode Terang</option>
+									</select>
+								</div>
+
+								<div class="space-y-1">
+									<div class="flex justify-between items-center">
+										<label class="text-slate-300 text-[11px] lg:text-xs font-bold">2. Ukuran Font Navigasi & Teks</label>
+										<span id="fontSizeLabel" class="text-emerald-400 font-bold text-[10px] lg:text-xs bg-slate-900 px-2 py-0.5 rounded border border-slate-700">16px</span>
+									</div>
+									<input type="range" id="settingFontSize" min="11" max="20" value="16" step="1" oninput="applyFontSize(this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+									<div class="flex justify-between text-[9px] text-slate-500">
+										<span>Terkecil (11px)</span>
+										<span>Terbesar (20px)</span>
+									</div>
+								</div>
+
+								<div class="flex flex-col space-y-1.5 pt-1">
+									<label class="text-slate-300 text-[11px] lg:text-xs font-bold">3. Gaya Huruf (Font Style)</label>
+									<select id="settingFontStyle" onchange="applyFontStyle(this.value)" class="w-full bg-slate-900 border border-slate-700 text-white text-[10px] lg:text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 cursor-pointer">
+										<option value="Lexend">Lexend (Default)</option>
+										<option value="Nunito">Nunito</option>
+										<option value="Quicksand">Quicksand</option>
+										<option value="GoogleSans">Google Sans</option>
+										<!-- Tambahkan font lain di sini asalkan file tersedia di folder stockid_font/ -->
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<!-- Preferensi Audio & Getar -->
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4">
+							<span class="font-bold text-fuchsia-400 flex items-center gap-1.5 text-[11px] lg:text-xs border-b border-slate-800/80 pb-2">
+								<i data-lucide="volume-2" class="w-4 h-4"></i> SISTEM AUDIO & HAPTIC
+							</span>
+							
+							<div class="space-y-3">
+								<div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+									<div>
+										<span class="block text-slate-200 text-[11px] lg:text-xs font-bold mb-0.5">4. Seluruh Efek Suara (Sound)</span>
+										<span class="block text-[9px] text-slate-400">Matikan notifikasi suara klik, profit, dan error.</span>
+									</div>
+									<button id="settingBtnSound" onclick="toggleGlobalSound()" class="px-4 py-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg text-[10px] font-bold transition">
+										Menyala
+									</button>
+								</div>
+
+								<div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+									<div>
+										<span class="block text-slate-200 text-[11px] lg:text-xs font-bold mb-0.5">5. Haptic & Getaran Ponsel</span>
+										<span class="block text-[9px] text-slate-400">Matikan umpan balik getaran saat klik tombol.</span>
+									</div>
+									<button id="settingBtnVibrate" onclick="toggleGlobalVibrate()" class="px-4 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg text-[10px] font-bold transition">
+										Menyala
+									</button>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</section>
