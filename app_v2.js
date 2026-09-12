@@ -4073,6 +4073,17 @@ setInterval(() => {
 			if (!main) return;
 
 			main.querySelectorAll(':scope > section, :scope > div').forEach((element) => {
+				/* Tab shell contains dropdowns, TradingView widgets and tall
+				   dynamic panels. Never apply the V2 panel's overflow:hidden
+				   behavior to this container. */
+				if (
+					element.classList.contains('v2-tab-shell') ||
+					element.querySelector('[id^="tabContent-"]')
+				) {
+					element.classList.remove('v2-panel');
+					return;
+				}
+
 				if (
 					element.classList.contains('v2-panel') ||
 					element.id === 'exportCardContainer' ||
@@ -4316,5 +4327,85 @@ setInterval(() => {
 		document.addEventListener('DOMContentLoaded', () => SIDV2.init(), { once: true });
 	} else {
 		SIDV2.init();
+	}
+})();
+
+
+/* =========================================================
+   STOCK ID V2 — TAB SAFETY LAYER
+   Keeps dynamic tab content from being clipped after
+   runtime DOM updates or className changes.
+   ========================================================= */
+(function SIDV2TabSafety() {
+	'use strict';
+
+	const TAB_NAMES = [
+		'ai', 'bigmoney', 'custom', 'peer', 'news', 'fundamental',
+		'paper', 'rrr', 'journal', 'alert', 'corporate', 'heatmap', 'setting'
+	];
+
+	function normalizeTabLayout() {
+		const shell = document.querySelector('.v2-tab-shell');
+		if (!shell) return;
+
+		shell.style.overflow = 'visible';
+
+		const nav = shell.querySelector(':scope > .sticky');
+		if (nav) {
+			nav.style.minWidth = '0';
+			nav.style.overflowX = 'auto';
+			nav.style.overflowY = 'visible';
+
+			TAB_NAMES.forEach((name) => {
+				const button = document.getElementById(`tabBtn-${name}`);
+				if (!button) return;
+
+				button.style.flex = '0 0 auto';
+				button.style.flexShrink = '0';
+				button.style.whiteSpace = 'nowrap';
+			});
+		}
+
+		TAB_NAMES.forEach((name) => {
+			const content = document.getElementById(`tabContent-${name}`);
+			if (!content) return;
+
+			content.style.minWidth = '0';
+			content.style.width = '100%';
+			content.style.overflow = 'visible';
+		});
+	}
+
+	function observeTabShell() {
+		const shell = document.querySelector('.v2-tab-shell');
+		if (!shell || !window.MutationObserver) return;
+
+		const observer = new MutationObserver(() => {
+			window.requestAnimationFrame(normalizeTabLayout);
+		});
+
+		observer.observe(shell, {
+			subtree: true,
+			attributes: true,
+			attributeFilter: ['class', 'style']
+		});
+	}
+
+	function init() {
+		normalizeTabLayout();
+		observeTabShell();
+
+		document.addEventListener('click', (event) => {
+			const button = event.target.closest('[id^="tabBtn-"]');
+			if (button) {
+				window.setTimeout(normalizeTabLayout, 0);
+			}
+		});
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', init, { once: true });
+	} else {
+		init();
 	}
 })();

@@ -1,0 +1,1905 @@
+<!DOCTYPE HTML>
+<html lang="id" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8">
+		<title>Stock ID Screener V2 — Advanced Market Intelligence</title>
+		<meta name="keywords" content="stock id vip, stockid vip, stockidvip, stock id, stockid, stock id screener, stockid screener, screener saham, saham indonesia, kelas saham">
+		<meta name="HandheldFriendly" content="True">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no">
+		<meta name="author" content="Stock ID Screener V2">
+		<meta property="og:image" content="stockid_gambar/stockidscreener.jpeg">
+		<meta property="og:url" content="https://webstockid.github.io/screener_ok.html">
+		<meta property="og:title" content="Stock ID Screener #Andaimology">
+		<meta property="og:description" content="Alat Screening Saham yang dilengkapi AI dan Analisa Teknikal">
+		<meta property="og:type" content="website">
+		
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://unpkg.com/lucide@latest"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+		
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend&display=swap">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		<link rel="icon" type="image/x-icon" href="stockid_gambar/stockidscreener.jpeg">
+		<link rel="icon" type="image/png" sizes="60x60" href="stockid_gambar/stockidscreener.jpeg">
+		<link rel="apple-touch-icon" sizes="180x180" href="stockid_gambar/stockidscreener.jpeg">
+		
+		<style>
+			body {
+				font-family: "Lexend";
+				background-color: #0b0f19;
+			}
+			.heading-font, a, p, b, button, nav, ul, li, ol, option, select, strong, option, div, span, label {
+				font-family: "Lexend";
+				font-weight: 800 !important;
+			}
+			.glassmorphism {
+				background: rgba(17, 24, 39, 0.75);
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+				border: 1px solid rgba(255, 255, 255, 0.08);
+			}
+			@keyframes progress-bar-stripes {
+				0% { background-position: 0 0; }
+				100% { background-position: 16px 0; }
+			}
+			@keyframes barberShopMove {
+				0% {
+					background-position: 0 0;
+				}
+				100% {
+					background-position: 40px 0;
+				}
+			}
+			@keyframes pulse-glow {
+				0%, 100% { opacity: 0.8; transform: scale(1); }
+				50% { opacity: 1; transform: scale(1.03); }
+			}
+			.animate-pulse-glow {
+				animation: pulse-glow 2s infinite ease-in-out;
+			}
+			@keyframes shimmer {
+				0% { background-position: -200% 0; }
+				100% { background-position: 200% 0; }
+			}
+			.skeleton {
+				background: linear-gradient(90deg, rgba(30, 41, 59, 0.6) 25%, rgba(51, 65, 85, 0.8) 50%, rgba(30, 41, 59, 0.6) 75%);
+				background-size: 200% 100%;
+				animation: shimmer 1.5s infinite;
+			}
+			@keyframes marquee {
+				0% { transform: translateX(0%); }
+				100% { transform: translateX(-50%); }
+			}
+			.animate-marquee {
+				display: inline-flex;
+				width: max-content;
+				animation: marquee 35s linear infinite;
+			}
+			.animate-marquee:hover {
+				animation-play-state: paused;
+			}
+			/* Style Floating AI Chat */
+			@keyframes float-bounce {
+				0%, 100% { transform: translateY(0); }
+				50% { transform: translateY(-10px); }
+			}
+			.animate-float {
+				animation: float-bounce 2s infinite ease-in-out;
+			}
+			@keyframes rainbowScroll {
+				0% { background-position: 0% 50%; }
+				50% { background-position: 100% 50%; }
+				100% { background-position: 0% 50%; }
+			}
+			::-webkit-scrollbar {
+				width: 2px;
+				height: 2px;
+			}
+			::-webkit-scrollbar-track {
+				background: #0b0f19;
+				border-radius: 6px;
+			}
+			::-webkit-scrollbar-thumb {
+				background: linear-gradient(270deg, #10b981, #3b82f6, #8b5cf6, #ec4899, #f59e0b);
+				background-size: 400% 400%;
+				animation: rainbowScroll 6s ease infinite;
+				border-radius: 6px;
+			}
+			::-webkit-scrollbar-thumb:hover {
+				filter: brightness(1.2);
+			}
+			/* Setup Variabel Font Dinamis */
+			:root {
+				--app-font-family: "Lexend";
+			}
+			
+			body, .heading-font, a, p, b, button, nav, ul, li, ol, option, select, strong, div, span, label, input {
+				font-family: var(--app-font-family) !important;
+			}
+
+			/* Tema Terang (Light Mode) Override */
+			body.light-mode {
+				background-color: #efefef;
+				color: #0f172a;
+			}
+			body.light-mode ul {
+				color: #111 !important;
+			body.light-mode li {
+				color: #111 !important;
+			}
+			body.light-mode .bg-slate-900 { background-color: #fafafa !important; border-color: #e2e8f0 !important; color: #0f172a !important; }
+			body.light-mode .bg-slate-950\/10, body.light-mode .bg-slate-950\/20, body.light-mode .bg-slate-950\/30, 
+			body.light-mode .bg-slate-950\/40, body.light-mode .bg-slate-950\/50, body.light-mode .bg-slate-900\/40, 
+			body.light-mode .bg-slate-900\/50, body.light-mode .bg-slate-900\/60, body.light-mode .bg-slate-900\/70, 
+			body.light-mode .bg-slate-900\/80, body.light-mode .bg-slate-900\/90 { 
+				background-color: #efefef !important; border-color: #cbd5e1 !important; 
+			}
+			body.light-mode .text-slate-200, body.light-mode .text-white { color: #0f172a !important; }
+			body.light-mode .text-slate-300, body.light-mode .text-slate-400 { color: #475569 !important; }
+			body.light-mode .border-slate-800, body.light-mode .border-slate-700 { border-color: #cbd5e1 !important; }
+			body.light-mode .glassmorphism { background-color: #fafafa; border-color: rgba(0,0,0,0.1); }
+			body.light-mode input { background-color: #fafafa !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
+			body.light-mode button {color: #eee !important;}
+			body.light-mode btn {color: #eee !important;}
+		</style>
+
+		<style id="stockid-v2-theme">
+			:root {
+				--v2-bg: #070b14;
+				--v2-panel: rgba(15, 23, 42, 0.72);
+				--v2-panel-strong: rgba(15, 23, 42, 0.9);
+				--v2-border: rgba(148, 163, 184, 0.14);
+				--v2-border-hover: rgba(52, 211, 153, 0.38);
+				--v2-accent: #34d399;
+				--v2-accent-2: #22d3ee;
+			}
+
+			html {
+				scroll-behavior: smooth;
+			}
+
+			body {
+				background:
+					radial-gradient(circle at 10% -10%, rgba(16, 185, 129, 0.12), transparent 30%),
+					radial-gradient(circle at 90% 5%, rgba(34, 211, 238, 0.08), transparent 26%),
+					linear-gradient(180deg, #070b14 0%, #0b1120 48%, #070b14 100%) !important;
+			}
+
+			body::before {
+				content: "";
+				position: fixed;
+				inset: 0;
+				pointer-events: none;
+				z-index: -1;
+				background-image:
+					linear-gradient(rgba(148, 163, 184, 0.025) 1px, transparent 1px),
+					linear-gradient(90deg, rgba(148, 163, 184, 0.025) 1px, transparent 1px);
+				background-size: 44px 44px;
+				mask-image: linear-gradient(to bottom, black, transparent 90%);
+			}
+
+			.glassmorphism {
+				background: rgba(7, 11, 20, 0.78) !important;
+				border-color: var(--v2-border) !important;
+				box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
+			}
+
+			.v2-panel {
+				position: relative;
+				background: linear-gradient(145deg, rgba(15, 23, 42, 0.82), rgba(8, 13, 24, 0.78)) !important;
+				border: 1px solid var(--v2-border) !important;
+				border-radius: 1.25rem !important;
+				box-shadow:
+					0 14px 40px rgba(0, 0, 0, 0.16),
+					inset 0 1px 0 rgba(255, 255, 255, 0.025);
+				overflow: hidden;
+			}
+
+			.v2-panel::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				height: 1px;
+				background: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.32), transparent);
+				pointer-events: none;
+			}
+
+			.v2-panel:hover {
+				border-color: var(--v2-border-hover) !important;
+				box-shadow:
+					0 18px 48px rgba(0, 0, 0, 0.22),
+					0 0 0 1px rgba(52, 211, 153, 0.025);
+			}
+
+			.v2-toolbar {
+				max-width: 48rem;
+				margin: 0.35rem auto 0;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 0.5rem;
+				padding: 0.4rem;
+				border: 1px solid rgba(148, 163, 184, 0.12);
+				border-radius: 0.85rem;
+				background: rgba(2, 6, 23, 0.38);
+			}
+
+			.v2-toolbar-meta {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				min-width: 0;
+				font-size: 9px;
+				color: #94a3b8;
+				font-weight: 800;
+				letter-spacing: 0.02em;
+			}
+
+			.v2-live-dot {
+				width: 7px;
+				height: 7px;
+				border-radius: 999px;
+				background: #f59e0b;
+				box-shadow: 0 0 12px rgba(245, 158, 11, 0.55);
+				flex: 0 0 auto;
+			}
+
+			.v2-live-dot.open {
+				background: #34d399;
+				box-shadow: 0 0 12px rgba(52, 211, 153, 0.65);
+				animation: v2Pulse 1.8s infinite;
+			}
+
+			.v2-refresh {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.35rem;
+				border: 1px solid rgba(52, 211, 153, 0.24);
+				border-radius: 0.65rem;
+				padding: 0.42rem 0.65rem;
+				background: rgba(16, 185, 129, 0.09);
+				color: #6ee7b7;
+				font-size: 9px;
+				font-weight: 900;
+				cursor: pointer;
+				transition: 180ms ease;
+			}
+
+			.v2-refresh:hover {
+				background: rgba(16, 185, 129, 0.18);
+				border-color: rgba(52, 211, 153, 0.48);
+				transform: translateY(-1px);
+			}
+
+			.v2-refresh:active {
+				transform: scale(0.97);
+			}
+
+			.v2-shortcut {
+				display: inline-flex;
+				align-items: center;
+				padding: 0.16rem 0.35rem;
+				border-radius: 0.35rem;
+				background: rgba(148, 163, 184, 0.08);
+				border: 1px solid rgba(148, 163, 184, 0.1);
+				color: #64748b;
+				font-size: 8px;
+				font-weight: 800;
+			}
+
+			#stockSearch {
+				background: rgba(15, 23, 42, 0.88) !important;
+				border-color: rgba(148, 163, 184, 0.16) !important;
+				box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+			}
+
+			#stockSearch:focus {
+				border-color: rgba(52, 211, 153, 0.62) !important;
+				box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.08);
+			}
+
+			#searchSuggestionsBox {
+				background: rgba(7, 11, 20, 0.97) !important;
+				border-color: rgba(148, 163, 184, 0.16) !important;
+				box-shadow: 0 24px 60px rgba(0, 0, 0, 0.42) !important;
+			}
+
+			main > section,
+			main > div {
+				transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+			}
+
+			.v2-section-title {
+				display: flex;
+				align-items: center;
+				gap: 0.55rem;
+			}
+
+			.v2-section-title::before {
+				content: "";
+				width: 3px;
+				height: 1.1em;
+				border-radius: 999px;
+				background: linear-gradient(#34d399, #22d3ee);
+				box-shadow: 0 0 12px rgba(52, 211, 153, 0.28);
+			}
+
+			table thead {
+				background: rgba(2, 6, 23, 0.72) !important;
+			}
+
+			table tbody tr {
+				transition: background-color 160ms ease;
+			}
+
+			input,
+			select,
+			textarea {
+				border-radius: 0.7rem !important;
+			}
+
+			button {
+				-webkit-tap-highlight-color: transparent;
+			}
+
+			#aiChatWindow {
+				box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48) !important;
+				border-color: rgba(52, 211, 153, 0.2) !important;
+			}
+
+			#whaleModalContent,
+			#vipGatewayModal > div,
+			#welcomeModal > div {
+				box-shadow: 0 30px 100px rgba(0, 0, 0, 0.55) !important;
+			}
+
+			@keyframes v2Pulse {
+				0%, 100% { opacity: 1; transform: scale(1); }
+				50% { opacity: 0.58; transform: scale(0.82); }
+			}
+
+			@media (max-width: 640px) {
+				.v2-toolbar {
+					padding: 0.35rem;
+				}
+
+				.v2-shortcut {
+					display: none;
+				}
+
+				main {
+					padding-left: 0.75rem !important;
+					padding-right: 0.75rem !important;
+				}
+
+				.v2-panel {
+					border-radius: 1rem !important;
+				}
+			}
+
+			body.light-mode {
+				background:
+					radial-gradient(circle at 10% -10%, rgba(16, 185, 129, 0.10), transparent 30%),
+					linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%) !important;
+			}
+
+			body.light-mode::before {
+				background-image:
+					linear-gradient(rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+					linear-gradient(90deg, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
+			}
+
+			body.light-mode .v2-panel {
+				background: linear-gradient(145deg, rgba(255,255,255,0.94), rgba(248,250,252,0.94)) !important;
+				border-color: rgba(15, 23, 42, 0.10) !important;
+				box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+			}
+
+			body.light-mode .v2-toolbar {
+				background: rgba(255,255,255,0.72);
+				border-color: rgba(15, 23, 42, 0.09);
+			}
+
+			body.light-mode .v2-toolbar-meta {
+				color: #475569;
+			}
+
+			body.light-mode #stockSearch {
+				background: #fff !important;
+				color: #0f172a !important;
+			}
+
+			body.light-mode #searchSuggestionsBox {
+				background: rgba(255,255,255,0.98) !important;
+			}
+		</style>
+
+
+		<style id="stockid-v2-tab-fix">
+			/* =========================================================
+			   V2 TAB LAYOUT FIX
+			   - Tab shell must never clip dropdowns/widgets.
+			   - Tab buttons keep their natural width.
+			   - Tab content can grow vertically without being cropped.
+			   ========================================================= */
+
+			.v2-tab-shell {
+				position: relative;
+				overflow: visible !important;
+				min-width: 0;
+			}
+
+			.v2-tab-shell > .sticky {
+				min-width: 0;
+				-webkit-overflow-scrolling: touch;
+				scrollbar-width: thin;
+				overscroll-behavior-x: contain;
+			}
+
+			.v2-tab-shell > .sticky > button {
+				flex: 0 0 auto !important;
+				min-width: 132px;
+				white-space: nowrap !important;
+				flex-shrink: 0 !important;
+			}
+
+			.v2-tab-shell [id^="tabContent-"] {
+				position: relative;
+				min-width: 0;
+				width: 100%;
+				overflow: visible;
+				contain: layout style;
+			}
+
+			.v2-tab-shell [id^="tabContent-"] > * {
+				min-width: 0;
+			}
+
+			/* Dropdowns inside Custom Radar must escape the panel. */
+			.v2-tab-shell [id^="tabContent-"] .absolute.z-50 {
+				max-width: min(100%, 28rem);
+			}
+
+			/* Tables/widgets should scroll inside their own area, not
+			   force the entire tab shell wider than the viewport. */
+			.v2-tab-shell table {
+				max-width: 100%;
+			}
+
+			.v2-tab-shell .overflow-x-auto {
+				max-width: 100%;
+				overscroll-behavior-x: contain;
+				-webkit-overflow-scrolling: touch;
+			}
+
+			/* TradingView/iframe/script widgets stay inside their columns. */
+			.v2-tab-shell .tradingview-widget-container,
+			.v2-tab-shell iframe {
+				max-width: 100%;
+			}
+
+			/* Prevent flex children from creating accidental horizontal
+			   overflow on narrow screens. */
+			.v2-tab-shell .flex,
+			.v2-tab-shell .grid {
+				min-width: 0;
+			}
+
+			/* Mobile: give tabs comfortable tap targets and keep the
+			   content fully visible below the tab bar. */
+			@media (max-width: 640px) {
+				.v2-tab-shell {
+					padding-left: 0.65rem !important;
+					padding-right: 0.65rem !important;
+				}
+
+				.v2-tab-shell > .sticky {
+					margin-left: -0.15rem;
+					margin-right: -0.15rem;
+					padding: 0.4rem !important;
+					gap: 0.4rem !important;
+					scroll-padding-inline: 0.4rem;
+				}
+
+				.v2-tab-shell > .sticky > button {
+					min-width: 126px;
+					padding-left: 0.8rem !important;
+					padding-right: 0.8rem !important;
+				}
+
+				.v2-tab-shell [id^="tabContent-"] {
+					padding-bottom: 0.35rem;
+				}
+			}
+
+			/* Light mode compatibility. */
+			body.light-mode .v2-tab-shell {
+				overflow: visible !important;
+			}
+		</style>
+
+	</head>
+
+	<body class="text-slate-200 antialiased overflow-x-hidden">
+
+		<!-- Modal Pop-up Welcome -->
+		<div id="welcomeModal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+			<div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 text-center">
+				<div class="inline-flex p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20 mb-1">
+					<i data-lucide="info" class="w-8 h-8 text-emerald-400"></i>
+				</div>
+				<h3 class="text-xl font-bold text-white">Informasi Layanan Screener</h3>
+				<p class="text-xs text-slate-300 leading-relaxed">
+					Selamat datang di Stock's ID Screener.<br>Data pasar diperbarui secara real-time pada jam bursa (09:00 - 16:00 WIB) dan disimpan dalam cache secara otomatis di latar belakang untuk pengalaman akses yang lebih cepat.
+				</p>
+				<p class="text-xs text-slate-300 leading-relaxed">
+					Disclaimer: Jika Kamu baru pertama kali membuka web ini, sistem latar belakang akan otomatis mulai memperbarui data analisa berkala setiap 5 menit.
+				</p>
+				<p class="text-xs text-slate-300 leading-relaxed">
+					<i>AI dapat membuat kesalahan, jangan jadikan AI sebagai patokan untuk Entry dan TP, gunakan prinsip dan kemandirian, analisa manual sebelum menentukan pilihan.</i>
+				</p>
+				<div class="flex flex-col sm:flex-row gap-3 pt-2">
+					<button onclick="closeWelcomeModal(false)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">
+						Oke
+					</button>
+					<button onclick="closeWelcomeModal(true)" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-emerald-500/20">
+						Jangan Tampilkan Lagi
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Navbar -->
+		<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
+			<div class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
+				<div class="flex items-center gap-3">
+					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2 rounded-2xl shadow-lg shadow-emerald-500/20 transition-transform duration-300 hover:scale-110 hover:rotate-6 cursor-pointer">
+						<i class="fa-solid fa-biohazard text-slate-950 text-xl font-bold"></i>
+					</div>
+					<div>
+						<span class="heading-font text-xl lg:text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">SCREENER</span></span>
+						<p class="text-[9px] lg:text-[10px] tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
+					</div>
+				</div>
+
+				<div class="relative inline-block text-left" id="navDropdownContainer">
+					<button id="menuDropdownBtn" onclick="toggleNavDropdown()" type="button" class="bg-slate-900/80 hover:bg-slate-800 active:scale-95 text-slate-200 px-4 py-2.5 rounded-xl border border-slate-700/70 hover:border-emerald-500/60 text-xs font-bold tracking-wide transition-all duration-200 flex items-center gap-2.5 shadow-md hover:shadow-emerald-500/10 cursor-pointer select-none">
+						<i class="fa-solid fa-bars text-emerald-400 transition-transform duration-300 group-hover:scale-110"></i>
+						<span>Navigasi</span>
+						<i id="dropdownChevron" class="fa-solid fa-chevron-down text-[10px] text-white transition-transform duration-300 ease-out"></i>
+					</button>
+
+					<div id="navDropdownMenu" class="hidden opacity-0 scale-95 duration-200 ease-out absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-2xl backdrop-blur-xl p-2 z-50 transform origin-top-right transition-all divide-y divide-slate-800/80">
+						<div class="pb-1.5 space-y-1">
+							<div class="px-2 py-1 text-[10px] font-bold text-white uppercase tracking-wider">
+								Aplikasi & Layanan
+							</div>
+
+							<a id="navLinkVIP" href="https://webstockid.github.io/screener" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-bold text-xs transition-all duration-200 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-wand-magic-sparkles text-amber-400 group-hover:scale-110 transition-transform w-4 text-center"></i>
+									<span>Stock ID Screener</span>
+								</div>
+								<div class="nav-status-container flex items-center gap-1.5">
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white group-hover:text-emerald-400 transition-colors default-icon"></i>
+								</div>
+							</a>
+							
+							<a href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-bold text-xs transition-all duration-150 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-crown text-white group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<span>Stock ID VIP</span>
+								</div>
+								<div class="nav-status-container flex items-center gap-1.5">
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white group-hover:text-emerald-400 transition-colors default-icon"></i>
+								</div>
+							</a>
+
+							<a href="https://webstockid.github.io/tools" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-bold text-xs transition-all duration-150 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-screwdriver-wrench text-white group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<span>Stock ID Tools</span>
+								</div>
+								<div class="nav-status-container flex items-center gap-1.5">
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white group-hover:text-emerald-400 transition-colors default-icon"></i>
+								</div>
+							</a>
+
+							<a href="https://webstockid.github.io/watchlist" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-bold text-xs transition-all duration-150 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-eye text-white group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<span>Stock ID Watchlist</span>
+								</div>
+								<div class="nav-status-container flex items-center gap-1.5">
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white group-hover:text-emerald-400 transition-colors default-icon"></i>
+								</div>
+							</a>
+
+							<a href="https://webstockid.github.io/exp" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-bold text-xs transition-all duration-150 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-circle-user text-white group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<span>Stock ID Member</span>
+								</div>
+								<div class="nav-status-container flex items-center gap-1.5">
+									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white group-hover:text-emerald-400 transition-colors default-icon"></i>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<!-- Dashboard Informasi Akun Premium -->
+		<div id="vipDashboard" class="hidden w-full bg-slate-900 border-b border-emerald-500/20 py-3 px-4 shadow-lg transition-all">
+			<div class="max-w-7xl 2xl:max-w-[1600px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 text-xs sm:text-sm lg:text-base">
+				<div class="flex flex-wrap items-center gap-3">
+					<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold flex items-center gap-1.5">
+						<i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> <span id="vipAccountStatus">Status: Aktif</span>
+					</span>
+					<div class="text-slate-300">
+						Selamat datang, <strong id="vipUserName" class="text-white font-bold text-sm lg:text-base">User</strong>
+					</div>
+				</div>
+
+				<div class="flex items-center gap-4">
+					<div class="text-white text-xs lg:text-sm">
+						Sisa Masa Aktif: <strong id="vipDaysLeft" class="text-amber-400 font-bold">0 Hari</strong>
+					</div>
+					<button onclick="logoutVIP()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs lg:text-sm font-bold transition flex items-center gap-1">
+						<i data-lucide="log-out" class="w-3.5 h-3.5"></i> Logout
+					</button>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Running Tape TradingView -->
+		<div class="bg-slate-950/10 border-b border-slate-800/80 overflow-hidden relative z-30 select-none">
+			<div class="tradingview-widget-container">
+				<div class="tradingview-widget-container__widget"></div>
+				<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+				{
+					"symbols": [
+						{ "description": "MDIA", "proName": "IDX:MDIA" },
+						{ "description": "BBRI", "proName": "IDX:BBRI" },
+						{ "description": "BMRI", "proName": "IDX:BMRI" },
+						{ "description": "DCII", "proName": "IDX:DCII" },
+						{ "description": "ASII", "proName": "IDX:ASII" },
+						{ "description": "CUAN", "proName": "IDX:CUAN" },
+						{ "description": "BRPT", "proName": "IDX:BRPT" },
+						{ "description": "ANTM", "proName": "IDX:ANTM" },
+						{ "description": "EMAS", "proName": "IDX:EMAS" },
+						{ "description": "INET", "proName": "IDX:INET" },
+						{ "description": "PANI", "proName": "IDX:PANI" }
+					],
+					"showSymbolLogo": false,
+					"isTransparent": true,
+					"displayMode": "adaptive",
+					"colorTheme": "dark",
+					"locale": "id"
+				}
+				</script>
+			</div>
+		</div>
+
+		<!-- Fixed Search Bar Melayang -->
+		<div class="sticky top-20 left-0 w-full z-20 glassmorphism border-b border-slate-800/80 py-3 px-4 space-y-2">
+			<!-- Container Trending dipindah ke luar searchContainer agar styling rapi -->
+			<!--<div id="yahooTrendingContainer" class="max-w-md lg:max-w-xl mx-auto px-1 overflow-x-auto scrollbar-thin"></div>-->
+
+			<div class="max-w-md lg:max-w-xl mx-auto relative" id="searchContainer">
+				<i data-lucide="search" class="absolute left-3.5 top-3 lg:top-3.5 w-4 h-4 lg:w-5 lg:h-5 text-white z-10"></i>
+				<input type="text" id="stockSearch" autocomplete="off" placeholder="Cari saham (MDIA...) atau klik Mic" 
+					class="w-full bg-slate-800 text-sm lg:text-base border border-slate-700 rounded-lg pl-10 lg:pl-11 pr-[110px] py-2 lg:py-2.5 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
+				
+				<!-- Tombol Pencarian Suara -->
+				<button onclick="startVoiceSearch()" id="btnVoiceSearch" title="Pencarian Suara" class="absolute right-[68px] top-[3px] lg:top-[6px] text-slate-400 hover:text-emerald-400 transition z-10 p-1">
+					<i id="voiceIcon" class="fa-solid fa-microphone text-sm lg:text-base"></i>
+				</button>
+
+				<!-- Dropdown Menu Suggestions -->
+				<div id="searchSuggestionsBox" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl backdrop-blur-xl max-h-60 overflow-y-auto z-50 divide-y divide-slate-800/60 scrollbar-thin"></div>
+
+				<button onclick="searchStock()" class="absolute right-1 top-1 text-xs lg:text-sm bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/40 font-bold px-2 py-1.5 lg:py-2 rounded-md transition z-10">
+					Cari
+				</button>
+			</div>
+		</div>
+
+		<!-- Modal Gateway Token VIP -->
+		<div id="vipGatewayModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+			<div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 relative my-8">
+				<div class="text-center space-y-1.5">
+					<div class="inline-flex p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20 mb-2">
+						<i data-lucide="key-round" class="animate-pulse w-8 h-8 text-emerald-400"></i>
+					</div>
+					<h2 class="text-2xl font-bold text-white tracking-tight">Stock ID Screener</h2>
+					<p class="text-xs text-slate-300">Masukan Akses Token Kamu</p>
+				</div>
+
+				<div class="space-y-3">
+					<div>
+						<input type="text" id="tokenInput" placeholder="Ketik token di sini..." class="w-full bg-slate-950/10 border border-slate-800 rounded-xl px-4 py-3 text-center text-sm tracking-widest text-blue-400 uppercase focus:outline-none focus:border-emerald-500 transition">
+						<p id="loginErrorMsg" class="text-rose-400 text-xs text-center mt-2 hidden"></p>
+					</div>
+					<button onclick="loginVIP()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-sm">
+						Buka Dashboard
+					</button>
+				</div>
+
+				<div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3.5 space-y-2.5 text-left">
+					<span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
+						<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Fitur Unggulan Yang Didapat:
+					</span>
+					<div class="grid grid-cols-2 gap-2 text-[10px] text-slate-300">
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> AI Signal & Trading Map
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Radar Bandar Potensial
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Chat AI Assistant
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Peer Komparasi Saham
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Smart RRR & Position Sizing
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Jurnal Trading & Win Rate
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Smart Alert & Push Notification
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Teknikal & Indikator
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Sektor Heatmap
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> [NEW] Live Paper Trading & Rank
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Berita & Korporasi
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Fundamental Saham
+						</div>
+						<div class="flex items-center gap-1.5">
+							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> [NEW] Custom Screener Builder
+						</div>
+					</div>
+				</div>
+
+				<p class="text-xs text-slate-400 text-center leading-relaxed">
+					Silakan hubungi Admin untuk mendapatkan Akses Token
+				</p>
+
+				<div class="border-t border-slate-800/80 pt-4 mt-2 space-y-3 text-center">
+					<p class="text-xs text-slate-300 font-medium leading-relaxed">
+						Dapatkan paket Stock ID Screener tanpa limit selama 35 hari penuh
+					</p>
+					<a href="https://wa.me/6289529305947?text=Halo%20admin%2C%20Saya%20ingin%20membeli%20fitur%20Stock%20ID%20Screener%2035%20hari." target="_blank" class="inline-flex items-center justify-center gap-2 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl transition shadow-lg shadow-emerald-500/20 text-xs">
+						<i class="fa-brands fa-whatsapp text-sm"></i> Beli Rp. 100,000
+					</a>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Tombol Aktif/Non Suara & Getar -->
+		<!--<div class="fixed top-80 left-4 z-30 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md p-1.5 rounded-xl border border-slate-800 shadow-lg">
+			<button id="btnToggleSound" onclick="toggleGlobalSound()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Matikan/Hidupkan Sound">
+				<i id="soundIcon" class="fa-solid fa-volume-high text-xs"></i>
+				<span class="hidden sm:inline text-[10px]">Sound</span>
+			</button>
+			<button id="btnToggleVibrate" onclick="toggleGlobalVibrate()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Matikan/Hidupkan Getar">
+				<i id="vibrateIcon" class="fa-solid fa-mobile-screen-button text-xs"></i>
+				<span class="hidden sm:inline text-[10px]">Getar</span>
+			</button>
+		</div>-->
+
+		<!-- Main Content -->
+		<main class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 lg:px-8 pt-6 lg:pt-8 pb-12 space-y-6 lg:space-y-8">
+
+			<!-- Baris Atas: Chart & Meteran Teknikal -->
+			<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+				<section class="lg:col-span-8 space-y-4">
+					<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5 flex flex-wrap justify-between items-center gap-3">
+						<div>
+							<h2 class="text-2xl lg:text-3xl font-bold text-white flex items-center gap-2" id="stockTitle">
+								IDX:MDIA
+							</h2>
+							<p class="text-xs lg:text-sm text-white mt-0.5">Bursa Efek Indonesia • 1-Day Chart</p>
+						</div>
+						
+						<div class="flex items-center gap-2">
+							<button id="btnExportCard" onclick="exportTradingCard()" class="text-xs lg:text-sm bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/40 px-3 lg:px-4 py-1.5 rounded-lg flex items-center gap-1.5 transition font-bold shadow-lg shadow-emerald-500/10">
+								<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card
+							</button>
+							<button onclick="shareStockUrl()" class="text-xs lg:text-sm bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 lg:px-4 py-1.5 rounded-lg flex items-center gap-1.5 transition font-medium">
+								<i data-lucide="share-2" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Bagikan
+							</button>
+							<span id="marketStatusBadge" class="text-xs lg:text-sm bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 lg:px-4 py-1 rounded-full font-medium flex items-center gap-1.5">
+								<span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Market Live
+							</span>
+						</div>
+					</div>
+
+					<div class="bg-slate-900 border border-slate-800 rounded-xl p-2 lg:p-3 h-[500px] lg:h-[520px] 2xl:h-[580px] overflow-hidden shadow-xl">
+						<div id="tv_chart_container" class="w-full h-full"></div>
+					</div>
+				</section>
+
+				<section class="lg:col-span-4 h-full">
+					<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5 shadow-xl h-full flex flex-col justify-between">
+						<h3 class="text-sm lg:text-base font-bold text-slate-300 mb-3 flex items-center gap-2">
+							<i data-lucide="gauge" class="w-4 h-4 lg:w-5 lg:h-5 text-cyan-400"></i> Analisa Teknikal Real-Time (TradingView Engine)
+						</h3>
+						<div class="tradingview-widget-container flex-1 flex items-center">
+							<div id="tv_technical_container" class="w-full"></div>
+						</div>
+					</div>
+				</section>
+			</div>
+
+			<!-- Baris Bawah: Tab Navigasi & Konten -->
+			<section class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-6 shadow-xl v2-tab-shell">
+				<div class="sticky top-[133px] lg:top-[140px] z-10 glassmorphism p-2 lg:p-2.5 rounded-xl mb-6 border border-slate-800 flex gap-1.5 lg:gap-3 overflow-x-auto shadow-xl scrollbar-thin">
+					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-none min-w-[132px] sm:min-w-[150px] py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="sparkles" class="w-4 h-4 text-rose-400"></i> AI Signal
+					</button>
+					<button onclick="switchTab('bigmoney')" id="tabBtn-bigmoney" class="flex-none min-w-[132px] sm:min-w-[150px] py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="zap" class="w-4 h-4 text-amber-400"></i> Radar Bandar
+					</button>
+					<button onclick="switchTab('custom')" id="tabBtn-custom" class="flex-none min-w-[132px] sm:min-w-[150px] py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="settings-2" class="w-4 h-4 text-blue-400"></i> Custom Radar
+					</button>
+					<button onclick="switchTab('peer')" id="tabBtn-peer" class="flex-none min-w-[132px] sm:min-w-[150px] py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Peer Komparasi
+					</button>
+					<button onclick="switchTab('journal')" id="tabBtn-journal" class="flex-none min-w-[132px] sm:min-w-[150px] py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="book-open" class="w-4 h-4 text-pink-400"></i> Journal Trading
+					</button>
+					<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-none min-w-[132px] sm:min-w-[150px] py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="calculator" class="w-4 h-4 text-cyan-400"></i> Smart RRR
+					</button>
+					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-none min-w-[132px] sm:min-w-[150px] py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="bell" class="w-4 h-4 text-teal-400"></i> Smart Alert
+					</button>
+					<button onclick="switchTab('paper')" id="tabBtn-paper" class="flex-none min-w-[132px] sm:min-w-[150px] py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="gamepad-2" class="w-4 h-4 text-violet-400"></i> Paper Trade
+					</button>
+					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-none min-w-[132px] sm:min-w-[150px] py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="newspaper" class="w-4 h-4 text-sky-400"></i> Berita
+					</button>
+					<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-none min-w-[132px] sm:min-w-[150px] py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="calendar" class="w-4 h-4 text-fuchsia-400"></i> Korporasi
+					</button>
+					<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-none min-w-[132px] sm:min-w-[150px] py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="pie-chart" class="w-4 h-4 text-orange-400"></i> Fundamental
+					</button>
+					<button onclick="switchTab('heatmap')" id="tabBtn-heatmap" class="flex-none min-w-[132px] sm:min-w-[150px] py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Sektor Heatmap
+					</button>
+					<button onclick="switchTab('setting')" id="tabBtn-setting" class="flex-none min-w-[132px] sm:min-w-[150px] py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="settings" class="w-4 h-4 text-slate-400"></i> Pengaturan
+					</button>
+				</div>
+
+				<!-- Tab 1: AI Signal -->
+				<div id="tabContent-ai" class="space-y-4 min-h-[300px] text-xs lg:text-sm">
+					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3">
+							<div class="flex items-center justify-between">
+								<span class="font-bold text-slate-200 uppercase tracking-wider text-[11px] lg:text-xs" id="aiHeaderTicker">[MDIA] — KONDISI TEKNIKAL</span>
+								<span class="text-[10px] lg:text-[11px] text-white" id="aiDateStamp">Memuat data real-time...</span>
+							</div>
+							<div class="flex items-center justify-between border-t border-slate-800/80 pt-2.5">
+								<div>
+									<span class="text-[10px] lg:text-xs text-white block">VERDIK AI</span>
+									<span id="aiVerdikText" class="font-bold text-amber-400 text-sm lg:text-base">MEMUAT...</span>
+								</div>
+								<div class="text-right">
+									<span class="text-[10px] lg:text-xs text-white block">SKOR AI</span>
+									<span id="aiScoreBadge" class="font-bold bg-slate-800 text-white px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700">- / 5</span>
+								</div>
+							</div>
+							<div id="aiVerdikDesc" class="text-slate-300 leading-relaxed text-[11px] lg:text-xs pt-1 border-t border-slate-900 space-y-1.5">
+								Menghubungkan ke server bursa untuk mengambil data real-time...
+							</div>
+							
+							<div id="aiActionBoard" class="hidden flex flex-col space-y-2 mt-3 pt-3 border-t border-slate-800/80"></div>
+						</div>
+
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
+							<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
+								<i data-lucide="check-circle-2" class="w-4 h-4"></i> BUKTI UTAMA & KATALIS TEKNIKAL
+							</span>
+							<ul id="aiBuktiUtamaList" class="space-y-2 text-slate-300 text-[11px] lg:text-xs list-none">
+								<li class="text-white">Memuat indikator teknikal riil (MA, Volume, Range)...</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3.5">
+							<span class="font-bold text-cyan-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
+								<i data-lucide="map-pin" class="w-4 h-4"></i> TRADING MAP (TECHNICAL PIVOT)
+							</span>
+							<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs">
+								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
+									<span class="text-white text-[10px] lg:text-[11px] block">Area Entry / Support</span>
+									<span id="mapSupport1" class="font-bold text-amber-400">Memuat...</span>
+								</div>
+								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
+									<span class="text-white text-[10px] lg:text-[11px] block">Resistance</span>
+									<span id="mapResist1" class="font-bold text-cyan-400">Memuat...</span>
+								</div>
+								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
+									<span class="text-white text-[10px] lg:text-[11px] block">Take Profit (TP1 / TP2)</span>
+									<span id="mapTP" class="font-bold text-emerald-400">Memuat...</span>
+								</div>
+								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
+									<span class="text-white text-[10px] lg:text-[11px] block">Stop Loss (SL)</span>
+									<span id="mapSL" class="font-bold text-rose-400">Memuat...</span>
+								</div>
+							</div>
+
+							<div class="bg-slate-900/90 p-3 lg:p-3.5 rounded-lg border border-slate-800 space-y-2">
+								<div class="flex justify-between items-center text-[10px] lg:text-[11px]">
+									<span class="text-rose-400 font-bold" id="tpBarSL">SL: -</span>
+									<span class="font-bold bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/40 px-2.5 py-0.5 rounded" id="tpBarCurrent">Harga: -</span>
+									<span class="text-emerald-400 font-bold" id="tpBarTP">TP1: -</span>
+								</div>
+								<div class="w-full bg-slate-950/10 rounded-full h-3 lg:h-3.5 overflow-hidden border border-slate-800 relative p-0.5">
+									<div id="tpProgressBar" class="h-full rounded-full transition-all duration-1000 ease-out bg-gradient-to-r from-rose-500 via-amber-400 to-emerald-400 relative" style="width: 0%;">
+										<div class="absolute right-0 top-0 bottom-0 w-2 bg-white rounded-full shadow-lg shadow-white animate-ping"></div>
+									</div>
+								</div>
+								<div class="flex justify-between items-center text-[9px] lg:text-[10px] text-white pt-0.5">
+									<span>Batas Risiko (Support)</span>
+									<span id="tpProgressPercent" class="font-bold text-cyan-400">Posisi: 0% dari Target Zone</span>
+									<span>Batas Target (Resist)</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
+							<span class="font-bold text-purple-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
+								<i data-lucide="newspaper" class="w-4 h-4"></i> BERITA RELEVAN
+							</span>
+							<div id="aiBeritaList" class="space-y-2 text-slate-300 text-[11px] lg:text-xs">
+								Memuat berita terkini...
+							</div>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
+							<span class="font-bold text-amber-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
+								<i data-lucide="git-fork" class="w-4 h-4"></i> SKENARIO PERGERAKAN HARGA
+							</span>
+							<div id="aiSkenarioBox" class="space-y-2 text-slate-300 text-[11px] lg:text-xs leading-relaxed">
+								Memuat skenario...
+							</div>
+						</div>
+
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
+							<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
+								<i data-lucide="thumbs-up" class="w-4 h-4"></i> KESIMPULAN & NOTE AI
+							</span>
+							<div id="aiKesimpulanText" class="text-slate-300 text-[11px] lg:text-xs leading-relaxed space-y-2">
+								Menghitung rekomendasi terstruktur...
+							</div>
+						</div>
+					</div>
+
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/50 p-3 rounded-lg border border-slate-900 leading-normal">
+						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa harian. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
+					</p>
+				</div>
+
+				<!-- Tab 2: Radar Bandar -->
+				<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 border border-slate-500/20 p-3 lg:p-4 rounded-xl gap-3">
+						<div class="flex items-center gap-2">
+							<!--<span class="text-xs lg:text-sm font-bold text-amber-400">Pemindaian Saham Potensial Otomatis (All Technical Engine)</span>
+								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
+								<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-400"></i> Pemindaian Saham Potensial Otomatis
+							</span>-->
+							<!--<span class="relative flex h-2 w-2">
+								<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+								<span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+							</span>-->
+							<div class="space-y-1">
+								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
+									<i data-lucide="zap" class="w-4 h-4 lg:w-5 lg:h-5 text-amber-400"></i> Pemindaian Saham Potensial Otomatis
+								</span>
+								<p class="text-[10px] lg:text-xs text-slate-400">Mencari saham dalam semua kondisi dengan cepat.</p>
+							</div>
+						</div>
+
+						<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-slate-900 font-bold bg-amber-400 hover:bg-amber-500 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md">
+							<i data-lucide="play" class="w-4 h-4"></i> Mulai Pindai Pasar
+						</button>
+					</div>
+
+					<div id="bigMoneyList" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[1400px] overflow-y-auto pr-1.5 scrollbar-thin">
+						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2">
+							Klik tombol <strong class="text-amber-400">"Mulai Pindai Pasar"</strong> di atas untuk memindai pasar secara otomatis berdasar gabungan indikator teknikal.
+						</div>
+					</div>
+
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
+						💡 <strong>Pemindaian Otomatis:</strong> Mencari saham berpotensi seperti: Momentum Breakout, Volume Accumulation, Golden Cross, Curi Start dan Pengujian Support dari bursa secara otomatis tanpa perlu memfilter manual.
+					</p>
+				</div>
+				
+				<!-- TAB 3: Custom Radar -->
+				<div id="tabContent-custom" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
+					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 shadow-lg shadow-blue-500/5">
+						<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+							<div class="space-y-1">
+								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
+									<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-500"></i> Pemindaian Saham Tingkat Lanjut
+								</span>
+								<p class="text-[10px] lg:text-xs text-slate-400">Rakit parameter screener Kamu sendiri dengan gaya filter institusional.</p>
+							</div>
+							<button id="btnRunCustomScreener" onclick="runCustomScreener()" class="w-full sm:w-auto bg-blue-800 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-lg border border-blue-700 transition shadow-lg shadow-blue-700/20 flex items-center justify-center gap-2 shrink-0">
+								<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter
+							</button>
+						</div>
+
+						<!-- Custom Tailwind Dropdowns -->
+						<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-900/50 p-3 lg:p-4 rounded-xl border border-slate-800">
+							
+							<!-- Dropdown 1: Tren & MA -->
+							<div class="relative">
+								<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">1. Tren Harga & MA</label>
+								<input type="hidden" id="csRuleMA" value="ALL">
+								<button onclick="toggleCustomDropdown('dropdownMA')" class="w-full bg-slate-950/10 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
+									<span id="csRuleMA_Label" class="truncate pr-2 font-medium text-blue-100">Semua Kondisi (Bebas)</span>
+									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
+								</button>
+								<ul id="dropdownMA" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl shadow-slate-950/80 max-h-48 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
+									<li onclick="selectCustomOption('csRuleMA', 'ALL', 'Semua Kondisi (Bebas)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Semua Kondisi (Bebas)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA5', 'Harga > MA5 (Uptrend Pendek)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Harga > MA5 (Uptrend Pendek)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA20', 'Harga > MA20 (Uptrend Menengah)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Harga > MA20 (Uptrend Menengah)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'GOLDEN_CROSS', 'Golden Cross (MA5 > MA10)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Golden Cross (MA5 > MA10)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'BELOW_MA20', 'Harga < MA20 (Downtrend / Oversold)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Harga &lt; MA20 (Downtrend / Oversold)</li>
+								</ul>
+							</div>
+
+							<!-- Dropdown 2: Volume -->
+							<div class="relative">
+								<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">2. Syarat Volume (Likuiditas)</label>
+								<input type="hidden" id="csRuleVol" value="ALL">
+								<button onclick="toggleCustomDropdown('dropdownVol')" class="w-full bg-slate-950/10 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
+									<span id="csRuleVol_Label" class="truncate pr-2 font-medium text-blue-100">Semua Tingkat Volume</span>
+									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
+								</button>
+								<ul id="dropdownVol" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl shadow-slate-950/80 max-h-48 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
+									<li onclick="selectCustomOption('csRuleVol', 'ALL', 'Semua Tingkat Volume', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Semua Tingkat Volume</li>
+									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_1.2', 'Volume Spike (> 1.2x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Volume Spike (> 1.2x Rerata)</li>
+									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_2.0', 'Volume Meledak (> 2.0x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Volume Meledak (> 2.0x Rerata)</li>
+									<li onclick="selectCustomOption('csRuleVol', 'DRY', 'Volume Kering (< 1.0x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Volume Kering (&lt; 1.0x Rerata)</li>
+								</ul>
+							</div>
+
+							<!-- Dropdown 3: Harga Harian -->
+							<div class="relative">
+								<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold block mb-1.5 uppercase tracking-wider">3. Pergerakan Harian (%)</label>
+								<input type="hidden" id="csRulePrice" value="ALL">
+								<button onclick="toggleCustomDropdown('dropdownPrice')" class="w-full bg-slate-950/10 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
+									<span id="csRulePrice_Label" class="truncate pr-2 font-medium text-blue-100">Semua Perubahan Harga</span>
+									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
+								</button>
+								<ul id="dropdownPrice" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl shadow-slate-950/80 max-h-48 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
+									<li onclick="selectCustomOption('csRulePrice', 'ALL', 'Semua Perubahan Harga', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Semua Perubahan Harga</li>
+									<li onclick="selectCustomOption('csRulePrice', 'GREEN', 'Ditutup menguat (Hijau / > 0%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Ditutup menguat (Hijau / > 0%)</li>
+									<li onclick="selectCustomOption('csRulePrice', 'RED', 'Ditutup Melemah (Merah / < 0%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Ditutup Melemah (Merah / &lt; 0%)</li>
+									<li onclick="selectCustomOption('csRulePrice', 'BREAKOUT', 'Breakout Kuat (> 3%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Breakout Kuat (> 3%)</li>
+								</ul>
+							</div>
+
+						</div>
+					</div>
+
+					<div id="csResultsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[800px] overflow-y-auto pr-1.5 scrollbar-thin">
+						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2">
+							Atur parameter pada menu <i>dropdown</i> di atas dan klik <strong class="text-blue-500">"Jalankan Filter"</strong> untuk melihat saham yang lolos seleksi Kamu.
+						</div>
+						<!--<div class="text-center text-slate-400 text-xs lg:text-sm py-14 lg:col-span-4 border border-slate-800 rounded-xl bg-slate-950/10">
+							Atur parameter pada menu <i>dropdown</i> di atas dan klik <strong class="text-blue-400">"Jalankan Filter"</strong> untuk melihat saham yang lolos seleksi Kamu.
+						</div>-->
+					</div>
+					
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
+						💡 <strong>Pemindaian Manual:</strong> Mencari saham secara ketat dan presisi yang bisa didukung dengan beberapa filter sekaligus.
+					</p>
+				</div>
+
+				<!-- Tab 4: Peer Komparasi -->
+				<div id="tabContent-peer" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
+					<div class="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
+						<div class="space-y-1">
+							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
+								<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Komparasi Saham Harga Serupa (<strong id="peerTickerLabel" class="text-emerald-400">MDIA</strong>)
+							</span>
+							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Membandingkan saham pilihan Kamu dengan saham-saham yang berada di range harga yang sama.</p>
+						</div>
+						<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="w-full sm:w-auto bg-emerald-700 hover:bg-emerald-500 text-white font-bold px-6 py-2.5 rounded-lg border border-emerald-700 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0">
+							<i data-lucide="play" class="w-4 h-4"></i> Bandingkan
+						</button>
+						<!--<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="text-[10px] lg:text-xs bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-600 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto shadow-sm">
+							<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Bandingkan
+						</button>-->
+					</div>
+
+					<div class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
+						<table class="w-full text-left text-xs text-slate-300 whitespace-nowrap min-w-[700px]">
+							<thead class="bg-slate-950/10 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
+								<tr>
+									<th class="p-3.5">Kode Emiten</th>
+									<th class="p-3.5">Harga Terkini</th>
+									<th class="p-3.5">Perubahan (%)</th>
+									<th class="p-3.5">Tren MA5</th>
+									<th class="p-3.5">Rasio Vol</th>
+									<th class="p-3.5 text-center">Navigasi</th>
+								</tr>
+							</thead>
+							<tbody id="peerTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60">
+								<tr>
+									<td colspan="6" class="p-6 text-center text-slate-400">Klik tombol <strong class="text-emerald-400">"Bandingkan"</strong> di atas untuk memuat data komparasi saham.</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
+						💡 <strong>Logika Range Harga:</strong> Sistem menyaring daftar saham yang memiliki nilai transaksi per lembar dalam rentang ±25% serta beberapa indikator dari saham $<span id="peerTickerRef">MDIA</span>.
+					</p>
+				</div>
+
+				<!-- Tab 5: Berita -->
+				<div id="tabContent-news" class="hidden space-y-3 min-h-[250px]">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-xs lg:text-sm text-white">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-sky-400">Live News Aggregator</span>
+					</div>
+					<div id="newsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+						<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-4">Memuat berita terkini...</div>
+					</div>
+				</div>
+
+				<!-- Tab 6: Fundamental -->
+				<div id="tabContent-fundamental" class="hidden min-h-[300px] space-y-4">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-xs lg:text-sm text-white">Profil & Fundamental Keuangan: <strong id="fundTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-orange-400 font-bold">Yahoo & TradingView Data</span>
+					</div>
+					
+					<div id="yahooFundamentalContainer"></div>
+					
+					<div class="tradingview-widget-container mt-4 pt-4 border-t border-slate-800">
+						<div id="tv_fundamental_container"></div>
+					</div>
+				</div>
+				
+
+				<!-- Tab 7: Smart Alert -->
+				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
+						<div class="space-y-1">
+							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
+								<i data-lucide="bell-ring" class="w-4 h-4 text-teal-400"></i> Smart Alert & Push Notification System
+							</span>
+							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh target pada seluruh saham yang Kamu pantau.</p>
+						</div>
+						
+						<div class="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+							<button id="btnToggleNotification" onclick="requestNotificationPermission()" class="text-[10px] lg:text-xs bg-teal-800 hover:bg-teal-700 text-teal-400 border border-teal-700 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm">
+								<i data-lucide="bell-off" class="w-3.5 h-3.5"></i> Aktifkan Notifikasi Browser
+							</button>
+						</div>
+					</div>
+
+					<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+						<div>
+							<span class="text-[11px] lg:text-xs font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
+								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Alert Untuk:<span id="alertTickerLabel" class="text-teal">MDIA</span>
+							</span>
+							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Ambil data Entry, Resistance, Take Profit, dan Stop Loss dari AI lalu tambahkan ke riwayat pantauan.</p>
+						</div>
+						<button onclick="syncAlertsFromAI()" class="bg-teal-800 hover:bg-teal-500 hover:text-white text-white px-5 py-2.5 rounded-lg border border-teal-700 font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
+							<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Tambahkan ke Alert
+						</button>
+					</div>
+
+					<div class="space-y-2.5 pt-1">
+						<div class="flex items-center justify-between">
+							<span class="text-[11px] lg:text-xs text-slate-300 font-bold block flex items-center gap-1.5">
+								<i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i> Riwayat & Daftar Alert Semua Saham:
+							</span>
+							<button onclick="clearAllAlerts()" class="text-[9px] lg:text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-2 py-1 rounded transition font-bold">Bersihkan Semua</button>
+						</div>
+						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 min-h-[100px] max-h-[400px] overflow-y-auto scrollbar-thin pr-1">
+							<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs">Belum ada alert harga yang dipasang pada saham manapun. Klik "Tambahkan ke Alert" di atas.</div>
+						</div>
+					</div>
+
+					<p class="text-[10px] lg:text-[11px] text-slate-400 italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
+						💡 <strong>Informasi Push Notification:</strong> Notifikasi browser akan dikirimkan secara otomatis bahkan saat Kamu sedang membuka tab browser lain selama web Stock ID Screener tetap terbuka.
+					</p>
+				</div>
+				
+				<!-- TAB 8: Paper Trade -->
+				<div id="tabContent-paper" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
+					<!-- Compact Rank & Balance Banner -->
+					<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-500/20 grid grid-cols-2 md:grid-cols-4 gap-4 items-center shadow-lg shadow-violet-500/5">
+						<div class="flex items-center gap-3 col-span-2 md:col-span-1">
+							<div class="w-10 h-10 rounded-xl bg-violet-500/15 border border-slate-500/30 flex items-center justify-center text-violet-300 shrink-0">
+								<i data-lucide="trophy" class="w-5 h-5"></i>
+							</div>
+							<div>
+								<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Trader Rank</span>
+								<span id="ptRankBadge" class="text-sm lg:text-base font-bold text-violet-300">NEWBIE</span>
+								<span id="ptWinRate" class="text-[10px] text-emerald-400 font-bold block">Win Rate: 0%</span>
+							</div>
+						</div>
+						<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
+							<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Buying Power (Cash)</span>
+							<span id="ptCash" class="text-sm lg:text-base font-bold text-emerald-400">Rp 100.000.000</span>
+						</div>
+						<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
+							<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Total Equity</span>
+							<span id="ptEquity" class="text-sm lg:text-base font-bold text-violet-300">Rp 100.000.000</span>
+						</div>
+						<!-- BARIS BARU: Menampilkan Realized PnL -->
+						<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
+							<span class="text-[9px] text-violet-400 font-bold uppercase tracking-widest block">Realized P&L</span>
+							<span id="ptRealizedPnL" class="text-sm lg:text-base font-bold text-slate-400">Rp 0</span>
+						</div>
+					</div>
+
+					<!-- Sub-Tabs Switcher (Form vs Portfolio) -->
+					<div class="flex bg-slate-950/30 p-1.5 rounded-xl border border-slate-500/20 gap-2">
+						<button onclick="ptSwitchSubTab('form')" id="ptSubBtnForm" class="flex-1 py-2 text-xs font-bold rounded-lg bg-violet-600 text-white transition flex items-center justify-center gap-2 shadow-sm shadow-violet-600/20">
+							<i data-lucide="shopping-cart" class="w-4 h-4"></i> Form Eksekusi
+						</button>
+						<button onclick="ptSwitchSubTab('portfolio')" id="ptSubBtnPorto" class="flex-1 py-2 text-xs font-bold rounded-lg text-violet-300 hover:text-white hover:bg-violet-900/30 transition flex items-center justify-center gap-2">
+							<i data-lucide="briefcase" class="w-4 h-4"></i> Portofolio & Riwayat
+						</button>
+					</div>
+
+					<!-- Sub-Tab Content 1: Form Eksekusi -->
+					<div id="ptSubContentForm" class="bg-slate-950/10 p-4 lg:p-6 rounded-xl border border-slate-500/20 space-y-4 max-w-xl mx-auto shadow-xl shadow-violet-950/20">
+						<div class="flex items-center justify-between border-b border-slate-500/20 pb-3">
+							<span class="font-bold text-violet-200 flex items-center gap-2 text-sm"><i data-lucide="shopping-cart" class="w-4 h-4 text-violet-400"></i> Form Order Saham</span>
+							<button onclick="ptSyncCurrentTicker()" class="text-[10px] bg-blue-800 hover:bg-blue-500 hover:text-white text-white px-3 py-1.5 rounded-lg border border-blue-700 transition font-bold flex items-center gap-1.5"><i data-lucide="wand-2" class="w-3 h-3"></i> Sync AI Signal</button>
+						</div>
+		
+						<div class="grid grid-cols-2 gap-3">
+							<div>
+								<label class="text-[10px] text-violet-300 font-bold block mb-1 uppercase">Saham</label>
+								<input type="text" id="ptTicker" disabled value="MDIA" class="w-full bg-violet-900/30 border border-slate-500/30 rounded-lg p-2.5 text-violet-200 font-bold text-center cursor-not-allowed text-xs">
+							</div>
+							<div>
+								<label class="text-[10px] text-violet-300 font-bold block mb-1 uppercase">Harga Eksekusi (Rp)</label>
+								<input type="number" id="ptPrice" placeholder="100" value="0" class="w-full bg-violet-900/30 border border-slate-500/30 rounded-lg p-2.5 text-violet-200 font-bold cursor-not-allowed text-xs">
+							</div>
+						</div>
+						<div>
+							<label class="text-[10px] text-violet-300 font-bold block mb-1 uppercase flex justify-between">
+								<span>Jumlah Lot Pembelian</span>
+								<span id="ptMaxLotHelper" class="text-violet-400 cursor-pointer hover:underline" onclick="ptFillMaxLot()">Max: 0 Lot</span>
+							</label>
+							<input type="number" id="ptLots" placeholder="10" value="10" min="1" oninput="ptCalculateTotal()" class="w-full bg-violet-950/50 border border-slate-500/30 rounded-lg p-2.5 text-violet-100 font-bold focus:border-slate-400 outline-none transition text-xs">
+						</div>
+						<div class="grid grid-cols-2 gap-3">
+							<div>
+								<label class="text-[10px] text-violet-300 font-bold block mb-1 uppercase">Auto TP (Opsional)</label>
+								<input type="number" id="ptTP" placeholder="Rp" class="w-full bg-violet-950/50 border border-slate-500/30 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none transition text-xs placeholder-violet-500/50">
+							</div>
+							<div>
+								<label class="text-[10px] text-violet-300 font-bold block mb-1 uppercase">Auto SL (Opsional)</label>
+								<input type="number" id="ptSL" placeholder="Rp" class="w-full bg-violet-950/50 border border-slate-500/30 rounded-lg p-2.5 text-white focus:border-rose-500 outline-none transition text-xs placeholder-violet-500/50">
+							</div>
+						</div>
+		
+						<div class="pt-3 border-t border-slate-500/20 flex items-center justify-between">
+							<div>
+								<span class="text-[10px] text-violet-400 block font-bold">Total Nilai Beli:</span>
+								<span id="ptTotalValue" class="text-emerald-400 font-bold text-base">Rp 0</span>
+							</div>
+							<button onclick="ptExecuteBuy()" class="bg-violet-800 hover:bg-violet-500 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-lg shadow-violet-600/25 text-xs flex items-center gap-2">
+								<i data-lucide="mouse-pointer-click" class="w-4 h-4"></i> Eksekusi Beli
+							</button>
+						</div>
+					</div>
+	
+					<!-- Sub-Tab Content 2: Portofolio & Riwayat -->
+					<div id="ptSubContentPorto" class="hidden bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-500/20 space-y-4 shadow-xl shadow-violet-950/20">
+						<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-500/20 pb-3">
+							<span class="font-bold text-violet-200 flex items-center gap-2 text-sm"><i data-lucide="briefcase" class="w-4 h-4 text-violet-400"></i> Portofolio Saham Aktif</span>
+							<div class="flex items-center gap-2">
+								<button onclick="ptResetAccount()" class="text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg transition font-bold flex items-center gap-1.5"><i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reset Akun</button>
+								<button onclick="ptRefreshPortoPrices()" class="text-[10px] bg-cyan-800 hover:bg-cyan-700 text-white px-3 py-1.5 rounded-lg border border-cyan-700 transition font-bold flex items-center gap-1.5 shadow-md"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Update Harga Live</button>
+							</div>
+						</div>
+						
+						<!-- TABEL DENGAN FLOATING PNL MENEMPEL DI ATAS KANAN -->
+						<div class="mt-2 relative">
+							<div class="flex justify-end pr-2">
+								<div id="ptUnrealizedPnL" class="px-3 py-1.5 rounded-t-lg text-[10px] lg:text-xs font-bold border-t border-l border-r border-slate-500/20 bg-slate-950/60 text-slate-400 translate-y-[1px] relative z-10 shadow-inner">
+									Total Floating: Rp 0 (0%)
+								</div>
+							</div>
+							<div class="overflow-x-auto rounded-xl rounded-tr-none border border-slate-500/20 scrollbar-thin shadow-inner bg-slate-950/30 relative z-0">
+								<table class="w-full text-left text-xs text-violet-200 whitespace-nowrap min-w-[650px]">
+									<thead class="bg-slate-950/60 text-violet-300 uppercase text-[10px] font-bold border-b border-slate-500/20">
+										<tr>
+											<th class="p-3.5">Emiten</th>
+											<th class="p-3.5">Total Lot</th>
+											<th class="p-3.5">Modal Avg</th>
+											<th class="p-3.5">Harga Last</th>
+											<th class="p-3.5">Profit / Loss</th>
+											<th class="p-3.5 text-center">Aksi Jual</th>
+										</tr>
+									</thead>
+									<tbody id="ptPortoBody" class="divide-y divide-violet-500/10">
+										<tr><td colspan="6" class="p-6 text-center text-violet-400 font-sans">Belum ada posisi terbuka. Gunakan form eksekusi di atas.</td></tr>
+									</tbody>
+								</table>
+							</div>
+		
+							<div class="pt-4 space-y-3">
+								<span class="font-bold text-violet-200 flex items-center gap-2 text-xs"><i data-lucide="history" class="w-4 h-4 text-violet-400"></i> Riwayat Trade Terakhir (History)</span>
+								<div id="ptHistoryContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">
+									<div class="text-violet-400 text-xs text-center col-span-full py-4 border border-dashed border-slate-500/20 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab 9: Smart RRR -->
+				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
+						<div class="space-y-1">
+							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
+								<i data-lucide="calculator" class="w-4 h-4 lg:w-5 lg:h-5 text-cyan-400"></i> Smart RRR & Position Sizing (<strong id="rrrTickerLabel" class="text-cyan-400">MDIA</strong>)
+							</span>
+							<p class="text-[10px] text-slate-400 mt-0.5">Kalkulasi ukuran lot & rasio risiko sebelum mengeksekusi order.</p>
+						</div>
+						
+						<div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+							<button onclick="saveTradingPlanToJournal()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-cyan-800 hover:bg-cyan-500 hover:text-white text-white font-bold px-3.5 py-2 rounded-lg border border-cyan-700 transition flex items-center justify-center gap-1.5 shadow-sm">
+								<i data-lucide="bookmark-plus" class="w-3.5 h-3.5"></i> Simpan ke Journal
+							</button>
+							<button onclick="autoFillRRRFromAI()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-blue-800 hover:bg-blue-500 hover:text-white text-white font-bold px-3.5 py-2 rounded-lg border border-blue-700 transition flex items-center justify-center gap-1.5">
+								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync AI Signal
+							</button>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+						<div class="space-y-4">
+							<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-800 space-y-2.5">
+								<span class="text-[10px] lg:text-[11px] font-bold text-white uppercase tracking-wider block">1. Parameter Modal & Toleransi Risiko</span>
+								<div class="grid grid-cols-2 gap-2.5">
+									<div>
+										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Total Modal Trading (Rp)</label>
+										<input type="number" id="rrrTotalCapital" value="25000000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
+									</div>
+									<div>
+										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Max Risk per Trade (%)</label>
+										<input type="number" id="rrrRiskPercent" value="10" step="0.5" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-amber-500">
+									</div>
+								</div>
+							</div>
+
+							<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-800 space-y-2.5">
+								<span class="text-[10px] lg:text-[11px] font-bold text-white uppercase tracking-wider block">2. Level Harga Trading Plan</span>
+								<div class="grid grid-cols-3 gap-2.5">
+									<div>
+										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Entry</label>
+										<input type="number" id="rrrEntry" placeholder="misal: 1000" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-amber-500">
+									</div>
+									<div>
+										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Stop Loss</label>
+										<input type="number" id="rrrSL" placeholder="misal: 950" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-rose-500">
+									</div>
+									<div>
+										<label class="text-[10px] lg:text-[11px] text-white block mb-1">Take Profit</label>
+										<input type="number" id="rrrTP" placeholder="misal: 1150" oninput="calculateSmartRRR()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-emerald-500">
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="bg-slate-950/10 border border-slate-800 rounded-xl p-4 lg:p-5 space-y-3.5 flex flex-col justify-between">
+							<div>
+								<div class="flex justify-between items-center border-b border-slate-800 pb-2.5 mb-3">
+									<span class="text-slate-300 text-xs lg:text-sm">Rasio Risk / Reward:</span>
+									<span id="rrrResult" class="font-bold text-base lg:text-lg text-cyan-400">1 : -</span>
+								</div>
+
+								<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs">
+									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
+										<span class="text-white text-[9px] lg:text-[10px] block">Maksimal Risiko Uang (Rp)</span>
+										<span id="rrrMaxRiskAmount" class="font-bold text-rose-400">Rp 0</span>
+									</div>
+									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
+										<span class="text-white text-[9px] lg:text-[10px] block">Maksimal Alokasi Lot</span>
+										<span id="rrrMaxLots" class="font-bold text-cyan-400">0 Lot</span>
+									</div>
+									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
+										<span class="text-white text-[9px] lg:text-[10px] block">Total Modal Terpakai</span>
+										<span id="rrrCapitalNeeded" class="font-bold text-amber-400">Rp 0</span>
+									</div>
+									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
+										<span class="text-white text-[9px] lg:text-[10px] block">Potensi Profit Bersih (Rp)</span>
+										<span id="rrrPotentialReward" class="font-bold text-emerald-300">Rp 0</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="pt-2 border-t border-slate-800/80">
+								<div id="rrrEvaluationBadge" class="p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-slate-900 text-white">
+									Masukkan harga Entry, SL, dan TP untuk evaluasi AI.
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab 10: Journal Trading -->
+				<div id="tabContent-journal" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
+					<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800">
+							<span class="text-slate-400 text-[10px] uppercase block font-bold">Total Planned Trade</span>
+							<span class="text-lg font-bold text-white" id="journalTotalCount">0</span>
+						</div>
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800">
+							<span class="text-slate-400 text-[10px] uppercase block font-bold">Win Rate</span>
+							<span class="text-lg font-bold text-emerald-400" id="journalWinRate">0%</span>
+						</div>
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800">
+							<span class="text-slate-400 text-[10px] uppercase block font-bold">Successful TP</span>
+							<span class="text-lg font-bold text-emerald-300" id="journalWinCount">0</span>
+						</div>
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800">
+							<span class="text-slate-400 text-[10px] uppercase block font-bold">Hit Stop Loss</span>
+							<span class="text-lg font-bold text-rose-400" id="journalLossCount">0</span>
+						</div>
+					</div>
+
+					<div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center bg-slate-950/10 p-3.5 rounded-xl border border-slate-800 gap-3">
+						<div class="flex items-center gap-3">
+							<span class="font-bold text-slate-200 text-xs">Mode Tampilan:</span>
+							<div class="flex bg-slate-900 p-1 rounded-lg border border-slate-800">
+								<button onclick="switchJournalView('table')" id="journalBtnTable" class="px-3 py-1 text-[10px] font-bold rounded bg-emerald-500 text-slate-950 transition">Tabel</button>
+								<button onclick="switchJournalView('kanban')" id="journalBtnKanban" class="px-3 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition">Kanban Board</button>
+							</div>
+						</div>
+
+						<div class="flex items-center gap-2">
+							<button onclick="exportJournalToCSV()" class="flex-1 sm:flex-initial text-[10px] bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 font-bold px-3 py-1.5 rounded-lg transition flex items-center justify-center gap-1.5">
+								<i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export CSV (.csv)
+							</button>
+							<button onclick="clearJournalHistory()" class="flex-1 sm:flex-initial text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 font-bold px-3 py-1.5 rounded-lg transition">
+								Hapus Semua
+							</button>
+						</div>
+					</div>
+
+					<!-- Tampilan Tabel Journal -->
+					<div id="journalTableView" class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
+						<table class="w-full text-left text-xs text-slate-300 whitespace-nowrap min-w-[750px]">
+							<thead class="bg-slate-950/10 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
+								<tr>
+									<th class="p-3.5">Tanggal</th>
+									<th class="p-3.5">Emiten</th>
+									<th class="p-3.5">Entry</th>
+									<th class="p-3.5">Stop Loss</th>
+									<th class="p-3.5">Take Profit</th>
+									<th class="p-3.5">Rasio RRR</th>
+									<th class="p-3.5">Status Plan</th>
+									<th class="p-3.5 text-center">Tindakan</th>
+								</tr>
+							</thead>
+							<tbody id="journalTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60">
+								<tr>
+									<td colspan="8" class="p-6 text-center text-slate-400">Belum ada Trading Plan tersimpan. Gunakan tombol "Simpan ke Journal" di kalkulator Smart RRR.</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- Tampilan Kanban Board -->
+					<div id="journalKanbanView" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'OPEN')">
+							<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+								<span class="text-amber-400 font-bold text-xs uppercase flex items-center gap-1.5">
+									<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> OPEN PLAN
+								</span>
+								<span id="kanbanCountOpen" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-bold">0</span>
+							</div>
+							<div id="kanbanColOpen" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
+						</div>
+
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'WIN')">
+							<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+								<span class="text-emerald-400 font-bold text-xs uppercase flex items-center gap-1.5">
+									<span class="w-2 h-2 rounded-full bg-emerald-400"></span> WIN / TAKE PROFIT
+								</span>
+								<span id="kanbanCountWin" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-bold">0</span>
+							</div>
+							<div id="kanbanColWin" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
+						</div>
+
+						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'LOSS')">
+							<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+								<span class="text-rose-400 font-bold text-xs uppercase flex items-center gap-1.5">
+									<span class="w-2 h-2 rounded-full bg-rose-400"></span> LOSS / STOP LOSS
+								</span>
+								<span id="kanbanCountLoss" class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded text-[10px] font-bold">0</span>
+							</div>
+							<div id="kanbanColLoss" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tab 11: Aksi Korporasi -->
+				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3.5 text-xs lg:text-sm">
+					<div class="flex items-center justify-between mb-2">
+						<span class="text-xs lg:text-sm text-white">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-fuchsia-400 font-bold">Dividen / RUPS / Split</span>
+					</div>
+					<div id="corporateContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+						<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3">Memuat data aksi korporasi...</div>
+					</div>
+					<div class="border-t border-slate-800 pt-2.5 text-right">
+						<a href="https://www.idx.co.id/id/perusahaan-tercatat/aksi-korporasi" target="_blank" class="text-[11px] lg:text-xs text-cyan-400 hover:underline">Lihat Pengumuman Resmi BEI &rarr;</a>
+					</div>
+				</div>
+
+				<!-- Tab 12: Sector Heatmap -->
+				<div id="tabContent-heatmap" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
+						<div>
+							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
+								<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Peta Panas Sektor & Saham BEI (IDX Heatmap)
+							</span>
+							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Memantau aliran kapital dan performa sektoral Bursa Efek Indonesia secara visual interaktif.</p>
+						</div>
+					</div>
+					<div class="bg-slate-950/10 p-3 rounded-xl border border-slate-800 h-[600px] overflow-hidden">
+						<div class="tradingview-widget-container h-full w-full" id="tv_heatmap_container"></div>
+					</div>
+				</div>
+				
+				<!-- Tab 13: Setting (Pengaturan) -->
+				<div id="tabContent-setting" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
+						<div>
+							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
+								<i data-lucide="settings" class="w-4 h-4 text-slate-400"></i> Pengaturan Preferensi Sistem
+							</span>
+							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Sesuaikan kenyamanan visual dan pengalaman antarmuka Kamu.</p>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<!-- Preferensi Visual -->
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4">
+							<span class="font-bold text-cyan-400 flex items-center gap-1.5 text-[11px] lg:text-xs border-b border-slate-800/80 pb-2">
+								<i data-lucide="monitor" class="w-4 h-4"></i> PREFERENSI VISUAL
+							</span>
+							
+							<div class="space-y-3">
+								<div class="flex justify-between items-center">
+									<label class="text-slate-300 text-[11px] lg:text-xs font-bold">1. Tema Tampilan (Mode)</label>
+									<select id="settingTheme" onchange="applyTheme(this.value)" class="bg-slate-900 border border-slate-700 text-white text-[10px] lg:text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-emerald-500 cursor-pointer">
+										<option value="dark">🌙 Mode Gelap (Default)</option>
+										<option value="light">☀️ Mode Terang</option>
+									</select>
+								</div>
+
+								<div class="space-y-1">
+									<div class="flex justify-between items-center">
+										<label class="text-slate-300 text-[11px] lg:text-xs font-bold">2. Ukuran Font Navigasi & Teks</label>
+										<span id="fontSizeLabel" class="text-emerald-400 font-bold text-[10px] lg:text-xs bg-slate-900 px-2 py-0.5 rounded border border-slate-700">16px</span>
+									</div>
+									<input type="range" id="settingFontSize" min="11" max="20" value="16" step="1" oninput="applyFontSize(this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+									<div class="flex justify-between text-[9px] text-slate-500">
+										<span>Terkecil (11px)</span>
+										<span>Terbesar (20px)</span>
+									</div>
+								</div>
+
+								<div class="flex flex-col space-y-1.5 pt-1">
+									<label class="text-slate-300 text-[11px] lg:text-xs font-bold">3. Gaya Huruf (Font Style)</label>
+									<select id="settingFontStyle" onchange="applyFontStyle(this.value)" class="w-full bg-slate-900 border border-slate-700 text-white text-[10px] lg:text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 cursor-pointer">
+										<option value="Comfortaa">Comfortaa</option>
+										<option value="ComicRelief">Comic Relief</option>
+										<option value="GoogleSans">Google Sans</option>
+										<option value="Nunito">Nunito</option>
+										<option value="Quicksand">Quick Sand</option>
+										<option value="Ubounded">Ubounded</option>
+										<option value="Lexend">Lexend (Default)</option>
+										<!-- Tambahkan font lain di sini asalkan file tersedia di folder stockid_font/ -->
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<!-- Preferensi Audio & Getar -->
+						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4">
+							<span class="font-bold text-fuchsia-400 flex items-center gap-1.5 text-[11px] lg:text-xs border-b border-slate-800/80 pb-2">
+								<i data-lucide="volume-2" class="w-4 h-4"></i> SISTEM AUDIO & HAPTIC
+							</span>
+							
+							<div class="space-y-3">
+								<div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+									<div>
+										<span class="block text-slate-200 text-[11px] lg:text-xs font-bold mb-0.5">4. Seluruh Efek Suara (Sound)</span>
+										<span class="block text-[9px] text-slate-400">Matikan notifikasi suara klik, profit, dan error.</span>
+									</div>
+									<button id="settingBtnSound" onclick="toggleGlobalSound()" class="px-4 py-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg text-[10px] font-bold transition">
+										Menyala
+									</button>
+								</div>
+
+								<div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+									<div>
+										<span class="block text-slate-200 text-[11px] lg:text-xs font-bold mb-0.5">5. Haptic & Getaran Ponsel</span>
+										<span class="block text-[9px] text-slate-400">Matikan umpan balik getaran saat klik tombol.</span>
+									</div>
+									<button id="settingBtnVibrate" onclick="toggleGlobalVibrate()" class="px-4 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg text-[10px] font-bold transition">
+										Menyala
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<!-- Container Export Trading Card (HTML2Canvas Target) -->
+		<div id="exportCardContainer" class="fixed -left-[9999px] top-0 w-[620px] bg-slate-950/10 text-white p-7 rounded-3xl border-2 border-emerald-500/40 space-y-5 shadow-2xl">
+			<div class="flex justify-between items-center border-b border-slate-800/80 pb-4">
+				<div class="flex items-center gap-3">
+					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2.5 rounded-2xl text-slate-950 shadow-lg shadow-emerald-500/20">
+						<i class="fa-solid fa-biohazard text-xl block font-bold"></i>
+					</div>
+					<div>
+						<h3 class="text-lg font-bold text-emerald-400 tracking-tight leading-none">STOCK ID SCREENER</h3>
+						<p class="text-[10px] font-bold text-emerald-400 tracking-wider mt-1">AI TRADING PLAN CARD</p>
+					</div>
+				</div>
+				<div class="text-right">
+					<span class="text-xs text-slate-400 block" id="cardDateStr">14 Ags 2026</span>
+				</div>
+			</div>
+
+			<div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-inner">
+				<div>
+					<span class="text-xs text-slate-400 uppercase tracking-widest block font-bold mb-1">EMITEN</span>
+					<h2 class="text-2xl font-bold text-cyan-400 tracking-tight leading-none" id="cardTicker">$MDIA</h2>
+				</div>
+				<div class="text-right">
+					<span class="text-xs text-slate-400 uppercase block font-bold mb-1">HARGA PASAR</span>
+					<span class="text-2xl font-bold text-emerald-400 leading-none" id="cardPrice">Rp 0</span>
+				</div>
+			</div>
+
+			<div class="grid grid-cols-2 gap-3 text-xs">
+				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+					<span class="text-slate-400 text-[10px] block mb-1">AREA ENTRY / SUPPORT</span>
+					<span class="text-amber-400 block font-bold text-sm" id="cardEntry">Rp -</span>
+				</div>
+				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+					<span class="text-slate-400 text-[10px] block mb-1">RESISTANCE</span>
+					<span class="text-cyan-400 block font-bold text-sm" id="cardRES1">Rp -</span>
+				</div>
+				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+					<span class="text-slate-400 text-[10px] block mb-1">STOP LOSS</span>
+					<span class="text-rose-400 block font-bold text-sm" id="cardSL">&lt; Rp -</span>
+				</div>
+				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+					<span class="text-slate-400 text-[10px] block mb-1">TARGET PROFIT</span>
+					<span class="text-emerald-400 block font-bold text-sm" id="cardTP2">Rp -</span>
+				</div>
+			</div>
+
+			<div class="bg-slate-900/70 p-4 rounded-2xl border border-slate-800/80 space-y-2">
+				<span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block">INDIKATOR TEKNIKAL UTAMA:</span>
+				<div class="grid grid-cols-3 gap-2 text-xs pt-1 border-t border-slate-800/60">
+					<div class="bg-slate-950/10 p-2 rounded-lg border border-slate-800 text-center">
+						<span class="text-[7px] text-white block mb-1">VOL RATIO</span>
+						<span class="text-sm text-emerald-400 font-bold block" id="cardVolRatio">1.0x</span>
+					</div>
+					<div class="bg-slate-950/10 p-2 rounded-lg border border-slate-800 text-center">
+						<span class="text-[7px] text-white block mb-1">LEVEL MA 5</span>
+						<span class="text-sm text-amber-400 font-bold block" id="cardMA5">Rp 0</span>
+					</div>
+					<div class="bg-slate-950/10 p-2 rounded-lg border border-slate-800 text-center">
+						<span class="text-[7px] text-white block mb-1">LEVEL MA 10</span>
+						<span class="text-sm text-cyan-400 font-bold block" id="cardMA10">Rp 0</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="flex justify-between items-center text-[11px] text-slate-400 border-t border-slate-800/80 pt-3.5">
+				<span>Official Technical Card • webstockid.github.io</span>
+				<span class="text-emerald-400 font-bold">#Andaimology Edition</span>
+			</div>
+		</div>
+		
+		<!-- Modal Selebrasi Cuan (Single Random Image & Text) -->
+		<div id="cuanModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 opacity-0">
+			<div id="cuanModalContent" class="transform scale-50 transition-transform duration-500 ease-out flex flex-col items-center max-w-md w-full">
+				<div class="relative bg-slate-900 p-3 rounded-2xl border-4 border-emerald-400 shadow-[0_0_40px_rgba(16,185,129,0.5)] w-full">
+					<!-- Container Gambar Tunggal -->
+					<div id="cuanImageContainer" class="w-full flex justify-center"></div>
+					<button onclick="closeCuanCelebration()" class="absolute -top-4 -right-4 bg-rose-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg hover:scale-110 transition z-10">✕</button>
+				</div>
+				<h2 id="cuanTitle" class="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mt-5 drop-shadow-lg animate-bounce text-center">
+					TAKE PROFIT TERCAPAI! 🚀
+				</h2>
+				<p id="cuanDesc" class="text-white text-xs md:text-sm bg-emerald-500/20 px-4 py-1.5 rounded-full mt-2 border border-emerald-500/30 text-center">
+					Saya bilang juga apa, cuan luber kan lo!
+				</p>
+			</div>
+		</div>
+
+		<!-- Modal Evaluasi Loss (Single Random Image & Text) -->
+		<div id="lossModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 opacity-0">
+			<div id="lossModalContent" class="transform scale-50 transition-transform duration-500 ease-out flex flex-col items-center max-w-md w-full">
+				<div class="relative bg-slate-900 p-3 rounded-2xl border-4 border-rose-500 shadow-[0_0_40px_rgba(244,63,94,0.5)] w-full">
+					<!-- Container Gambar Tunggal -->
+					<div id="lossImageContainer" class="w-full flex justify-center"></div>
+					<button onclick="closeLossCelebration()" class="absolute -top-4 -right-4 bg-rose-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg hover:scale-110 transition z-10">✕</button>
+				</div>
+				<h2 id="lossTitle" class="text-xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-amber-400 mt-5 drop-shadow-lg animate-pulse text-center">
+					STOP LOSS TERCAPAI 🛡️
+				</h2>
+				<p id="lossDesc" class="text-white text-xs md:text-sm bg-rose-500/20 px-4 py-1.5 rounded-full mt-2 border border-rose-500/30 text-center">
+					Gapapa ya, masih ada rezeki di saham lain!
+				</p>
+			</div>
+		</div>
+		
+		<!-- Floating AI Assistant Button & Chatbox -->
+		<div class="fixed bottom-6 right-6 z-40 flex flex-col items-end">
+			<!-- Jendela Chat Modal (Hidden by default) -->
+			<div id="aiChatWindow" class="hidden opacity-0 scale-95 transition-all duration-300 ease-out w-80 sm:w-96 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden mb-4 flex flex-col h-[450px]">
+				<!-- Header Chat -->
+				<div class="bg-slate-950/10 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+					<div class="flex items-center gap-2">
+						<div class="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+							<i data-lucide="sparkles" class="w-4 h-4"></i>
+						</div>
+						<div>
+							<h4 class="text-xs font-bold text-white">Stock ID AI Assistant</h4>
+							<span class="text-[9px] text-emerald-400">Online • Analis Pasar Aktif</span>
+						</div>
+					</div>
+					<button onclick="toggleAIChat()" class="text-slate-400 hover:text-white transition p-1">
+						<i data-lucide="x" class="w-4 h-4"></i>
+					</button>
+				</div>
+
+				<!-- Area Percakapan (Messages Body) -->
+				<div id="aiChatMessages" class="flex-1 p-3 overflow-y-auto space-y-3 text-xs scrollbar-thin">
+					<div class="flex items-start gap-2">
+						<div class="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+							<i data-lucide="bot" class="w-3 h-3"></i>
+						</div>
+						<div class="bg-slate-800/80 text-slate-200 p-2.5 rounded-xl rounded-tl-none border border-slate-700/60 leading-relaxed">
+							Halo! Saya asisten AI Stock ID. Ada yang bisa Saya bantu analisa hari ini? Kamu bisa tanyakan saham apa saja (contoh: <i>"Bagaimana prospek MDIA?"</i> atau <i>"Volume MDIA?"</i>).
+						</div>
+					</div>
+				</div>
+
+				<!-- Footer Input Chat -->
+				<div class="p-3 bg-slate-950/10 border-t border-slate-800 flex items-center gap-2">
+					<input type="text" id="aiChatInput" placeholder="Ketik pertanyaan saham..." 
+						class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 placeholder-slate-500">
+					<button onclick="sendAIChatMessage()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 p-2 rounded-xl transition font-bold flex items-center justify-center shrink-0">
+						<i data-lucide="send" class="w-3.5 h-3.5"></i>
+					</button>
+				</div>
+			</div>
+
+			<!-- Tombol Mengambang (Floating Action Button) -->
+			<button onclick="toggleAIChat()" class="animate-float z-40 bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 p-3.5 rounded-full shadow-[0_0_25px_rgba(16,185,129,0.4)] border border-emerald-300/40 hover:scale-110 active:scale-95 transition flex items-center justify-center group cursor-pointer" title="Tanya AI Assistant">
+				<i data-lucide="bot-message-square" class="w-6 h-6 text-slate-950 group-hover:rotate-16 transition-transform"></i>
+			</button>
+		</div>
+		
+		<!-- Container Toast Notification Modern -->
+		<div id="toastContainer" class="fixed bottom-10 left-4 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+		
+		<!-- Whale Detector Modal -->
+		<!-- Floating Button (Kiri Tengah) -->
+		<!-- Whale Detector Floating Button (Circular w/ Image) -->
+		<div class="fixed bottom-6 left-6 z-40 flex flex-col items-end">
+			<button onclick="toggleWhaleModal()" class="animate-float z-40 bg-gradient-to-tr from-fuchsia-500 to-purple-600 p-3.5 rounded-full shadow-[0_0_25px_rgba(192,38,211,0.4)] border border-fuchsia-300/40 hover:scale-110 active:scale-95 transition flex items-center justify-center group cursor-pointer" title="Whale Detector Radar">
+				<i data-lucide="radio" class="w-6 h-6 text-slate-950 group-hover:rotate-16 transition-transform"></i>
+			</button>
+		</div>
+
+		<!-- Jendela Modal Whale Detector -->
+		<div id="whaleModal" class="hidden fixed inset-0 z-[80] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 opacity-0">
+			<div id="whaleModalContent" class="transform scale-95 transition-transform duration-300 ease-out bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl shadow-fuchsia-900/20">
+				
+				<!-- Modal Header -->
+				<div class="px-4 py-3 lg:px-5 lg:py-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/50 rounded-t-2xl">
+					<div class="flex items-center gap-3">
+						<div class="bg-fuchsia-500/20 p-2 rounded-lg border border-fuchsia-500/30">
+							<i data-lucide="radio" class="w-4 h-4 lg:w-5 lg:h-5 text-fuchsia-400"></i>
+						</div>
+						<div>
+							<h3 class="text-sm lg:text-base font-bold text-white tracking-tight">Whale Detector Radar</h3>
+							<p class="text-[9px] lg:text-[10px] text-slate-400">Lacak aliran dana bandar & anomali akumulasi secara instan.</p>
+						</div>
+					</div>
+					<button onclick="toggleWhaleModal()" class="text-slate-400 hover:text-rose-400 transition p-2 bg-slate-800 rounded-lg hover:bg-slate-700">
+						<i data-lucide="x" class="w-4 h-4"></i>
+					</button>
+				</div>
+				
+				<!-- Modal Body -->
+				<div class="p-4 lg:p-5 flex-1 overflow-y-auto scrollbar-thin">
+					<div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-5 bg-slate-950/30 p-3.5 lg:p-4 rounded-xl border border-slate-800/80">
+						<div class="text-[10px] lg:text-xs text-slate-300 leading-relaxed max-w-lg">
+							<strong class="text-fuchsia-400">Parameter Pemindaian AI:</strong> Mencari jejak institusi melalui anomali lonjakan volume ekstrim (&gt; 1.2x - 6.5x Rerata 10 Hari) yang disertai kenaikan harga bertahap (akumulasi senyap) untuk meminimalisir risiko <i>Fake Breakout</i>.
+						</div>
+						<button id="btnScanWhales" onclick="scanWhalesData()" class="w-full sm:w-auto bg-fuchsia-700 hover:bg-fuchsia-500 text-white font-bold px-5 py-2.5 rounded-xl border border-fuchsia-500 transition shadow-lg shadow-fuchsia-600/30 flex items-center justify-center gap-2 shrink-0 text-xs lg:text-sm">
+							<i data-lucide="radar" class="w-4 h-4"></i> Scan Whales Sekarang
+						</button>
+					</div>
+
+					<div id="whaleResultsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4">
+						<div class="text-center text-slate-500 text-[11px] lg:text-xs py-10 col-span-full border border-dashed border-slate-700 rounded-xl bg-slate-950/10">
+							Klik tombol <strong class="text-fuchsia-400">"Scan Whales Sekarang"</strong> untuk mulai melacak bandar (Smart Money) di seluruh pasar.
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Script CDN TradingView -->
+		<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
+		<!-- Data Watchlist yang Dipisah -->
+		<script src="watchlist.js"></script>
+
+		<!-- Script Logika Aplikasi Utama -->
+		<script src="app_v2_FIXED.js"></script>
+
+		<!-- Service Worker untuk Push Notification -->
+		<script>
+			if ('serviceWorker' in navigator) {
+				window.addEventListener('load', function() {
+					navigator.serviceWorker.register('sw.js').then(function(registration) {
+						console.log('SW Notification registered successfully');
+					}).catch(function(error) {
+						console.log('SW registration failed:', error);
+					});
+				});
+			}
+		</script>
+	</body>
+</html>
