@@ -1584,7 +1584,7 @@ function renderRadarItems(dataList) {
 									Lihat Chart »
 								</button>
 							</div>
-							<span class="text-[10px] lg:text-xs text-white block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (${changePct >= 0 ? '+' : ''}${changePct}%)</span>
+							<span class="text-[10px] lg:text-xs text-white block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (<span class="${item.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>)</span>
 						</div>
 					</div>
 					<span class="text-[9px] lg:text-[10px] font-bold px-2.5 py-1 rounded-full border ${statusClass}">
