@@ -1010,43 +1010,38 @@ function renderAISignalUI(ticker, stockData, isCached) {
 				actionDesc = "Pergerakan saham biasa saja, indikator harga dan volume berjalan normal. Disarankan pantau konfirmasi lanjutan.";
 			}
 
-		let bandarPower = 50; // Persentase default jika tidak ada kondisi yang terpenuhi
-			let bandarStatus = "Tidak Terdeteksi";
-			let bandarColor = "bg-slate-500"; // Menyesuaikan warna bar indikator
+		let bandarStatus = "Konsolidasi / Normal ⚖️";
+		let bandarColor = "text-slate-400";
+		let bandarBarColor = "from-slate-600 via-slate-400 to-slate-300 shadow-[0_0_15px_rgba(148,163,184,0.4)]";
+		let bandarPct = 50;
 
-			// ==========================================
-			// 3. LOGIKA POWER METER BANDAR
-			// ==========================================
-			if (stockData.changePct > 3.0 && stockData.price > stockData.ma5 && stockData.price > stockData.ma10 && stockData.volRatio > 2.0) {
-				// Masih Akumulasi (Range: 70 - 100%)
-				bandarPower = 85; 
-				bandarStatus = "Masih Akumulasi";
-				bandarColor = "bg-emerald-500 text-emerald-100";
-			} 
-			else if (stockData.changePct >= -3.0 && stockData.volRatio > 1.2 && stockData.price > stockData.ma5 && stockData.price < stockData.ma20) {
-				// Netral (Range: 50 - 70%)
-				bandarPower = 60; 
-				bandarStatus = "Netral";
-				bandarColor = "bg-amber-500 text-amber-100";
-			} 
-			else if (stockData.changePct >= -5.0 && stockData.volRatio > 0.8 && stockData.price > stockData.ma5 && stockData.price < stockData.ma10) {
-				// Mark Down / Uji Support (Range: 30 - 50%)
-				bandarPower = 40; 
-				bandarStatus = "Mark Down (Uji Support)";
-				bandarColor = "bg-orange-500 text-orange-100";
-			} 
-			else if (stockData.changePct < -5.0 && stockData.volRatio < 1.0 && stockData.price < stockData.ma10) {
-				// Distribusi Kuat / Buangan (Range: 10 - 30%)
-				bandarPower = 20; 
-				bandarStatus = "Distribusi Kuat (Buangan)";
-				bandarColor = "bg-rose-500 text-rose-100";
-			} 
-			else {
-				// Fallback aman untuk menghindari bentrok / eror jika tidak ada kriteria ekstrim yang masuk
-				bandarPower = 50;
-				bandarStatus = "Fase Konsolidasi / Normal";
-				bandarColor = "bg-slate-400 text-slate-100";
-			}
+		if (stockData.changePct > 3.0 && stockData.price > stockData.ma5 && stockData.price > stockData.ma10 && stockData.volRatio > 2.0) {
+			bandarStatus = "Masif Akumulasi 🐋";
+			bandarColor = "text-emerald-400";
+			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
+			bandarPct = 85; 
+		} else if (stockData.changePct >= -3.0 && stockData.volRatio > 1.2 && stockData.price > stockData.ma5 && stockData.price < stockData.ma20) {
+			bandarStatus = "Netral ⚖️";
+			bandarColor = "text-amber-400";
+			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
+			bandarPct = 60; 
+		} else if (stockData.changePct >= -5.0 && stockData.volRatio > 0.8 && stockData.price > stockData.ma5 && stockData.price < stockData.ma10) {
+			bandarStatus = "Mark Down (Uji Support) 📉";
+			bandarColor = "text-cyan-400";
+			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-300 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
+			bandarPct = 40; 
+		} else if (stockData.changePct < -5.0 && stockData.volRatio < 1.0 && stockData.price < stockData.ma10) {
+			bandarStatus = "Distribusi Kuat (Buangan) 🚨";
+			bandarColor = "text-rose-400";
+			bandarBarColor = "from-rose-600 via-rose-500 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)]";
+			bandarPct = 20; 
+		} else {
+			// Fallback aman jika pergerakan biasa saja
+			bandarStatus = "Netral ⚖️";
+			bandarColor = "text-amber-400";
+			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
+			bandarPct = 50;
+		}
 
 		const actionBoardEl = document.getElementById('aiActionBoard');
 		if (actionBoardEl) {
