@@ -121,19 +121,20 @@
 
 			/* Tema Terang (Light Mode) Override */
 			body.light-mode {
-				background-color: #f8fafc;
+				background-color: #999;
 				color: #0f172a;
 			}
 			body.light-mode .bg-slate-900 { background-color: #ffffff !important; border-color: #e2e8f0 !important; color: #0f172a !important; }
 			body.light-mode .bg-slate-950\/10, body.light-mode .bg-slate-950\/20, body.light-mode .bg-slate-950\/30, 
 			body.light-mode .bg-slate-900\/60, body.light-mode .bg-slate-900\/80, body.light-mode .bg-slate-900\/90 { 
-				background-color: #EAEAEA !important; border-color: #cbd5e1 !important; 
+				background-color: #000 !important; border-color: #cbd5e1 !important; 
 			}
 			body.light-mode .text-slate-200, body.light-mode .text-white { color: #0f172a !important; }
 			body.light-mode .text-slate-300, body.light-mode .text-slate-400 { color: #475569 !important; }
 			body.light-mode .border-slate-800, body.light-mode .border-slate-700 { border-color: #cbd5e1 !important; }
-			body.light-mode .glassmorphism { background-color: #000; border-color: rgba(0,0,0,0.1); }
+			body.light-mode .glassmorphism { background: rgba(255, 255, 255, 0.85); border-color: rgba(0,0,0,0.1); }
 			body.light-mode input { background-color: #ffffff !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
+			body.light-mode button {color: #eee;}
 		</style>
 	</head>
 
@@ -407,7 +408,7 @@
 		</div>
 		
 		<!-- Tombol Aktif/Non Suara & Getar -->
-		<div class="fixed top-80 left-4 z-30 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md p-1.5 rounded-xl border border-slate-800 shadow-lg">
+		<!--<div class="fixed top-80 left-4 z-30 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md p-1.5 rounded-xl border border-slate-800 shadow-lg">
 			<button id="btnToggleSound" onclick="toggleGlobalSound()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Matikan/Hidupkan Sound">
 				<i id="soundIcon" class="fa-solid fa-volume-high text-xs"></i>
 				<span class="hidden sm:inline text-[10px]">Sound</span>
@@ -416,7 +417,7 @@
 				<i id="vibrateIcon" class="fa-solid fa-mobile-screen-button text-xs"></i>
 				<span class="hidden sm:inline text-[10px]">Getar</span>
 			</button>
-		</div>
+		</div>-->
 
 		<!-- Main Content -->
 		<main class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 lg:px-8 pt-6 lg:pt-8 pb-12 space-y-6 lg:space-y-8">
