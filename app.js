@@ -905,16 +905,16 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = Math.min(100, 50 + (stockData.volRatio * 15));
-		} else if (stockData.changePct < 0 && stockData.volRatio < 0.8) {
+		} else if (stockData.changePct < 0 && stockData.volRatio >= 1.2) {
 			bandarStatus = "Mark Down (Uji Support) 📉";
 			bandarColor = "text-cyan-400";
 			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-300 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
-			bandarPct = Math.max(35, 50 - (stockData.volRatio * 15));
-		} else if (stockData.changePct < 0 && stockData.volRatio >= 1.2) {
+			bandarPct = Math.max(30, 50 - (stockData.volRatio * 15));
+		} else if (stockData.changePct < 0 && stockData.volRatio < 0.8) {
 			bandarStatus = "Distribusi Kuat (Buangan) 🚨";
 			bandarColor = "text-rose-400";
 			bandarBarColor = "from-rose-600 via-rose-500 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)]";
-			bandarPct = Math.max(10, 35 - (stockData.volRatio * 15));
+			bandarPct = Math.max(10, 30 - (stockData.volRatio * 15));
 		}
 
 		const actionBoardEl = document.getElementById('aiActionBoard');
@@ -3353,7 +3353,7 @@ function renderPaperTradingUI() {
 			hHtml += `
 				<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1 shadow-sm hover:border-slate-500/30 transition-colors">
 					<div class="flex justify-between items-center">
-						<span class="font-bold text-violet-400">&dollar;${h.ticker} (${h.lots} Lot)</span>
+						<span class="font-bold text-violet-400">&dollar;${h.ticker} <strong class='text-blue-400'>(${h.lots} Lot)</strong></span>
 						<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
 					</div>
 					<div class="flex justify-between text-[11px] text-slate-300 pb-1">
@@ -3363,7 +3363,7 @@ function renderPaperTradingUI() {
 					<div class="flex justify-between items-center pt-1.5 border-t border-slate-800/80 mt-1">
 						<div class="flex flex-col">
 							<span class="text-[11px] text-violet-400 uppercase font-bold">Modal Awal</span>
-							<span class="text-[11px] text-blue-500 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
+							<span class="text-[11px] text-amber-400 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
 						</div>
 						<div class="text-right font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'} text-xs">
 							${isWin ? '+' : ''}Rp ${Math.round(h.profitLoss).toLocaleString('id-ID')} (${isWin ? '+' : ''}${h.profitLossPct}%)
