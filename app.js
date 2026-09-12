@@ -992,7 +992,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionLabel = "🛒 ACCUMULATE (CICIL)";
 			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
 			actionDesc = "Fase akumulasi / koreksi wajar. Harga bertahan dekat area support, cocok untuk cicil bertahap.";
-		} else if (score <= 2 || stockData.changePct < 8.0) {
+		} else if (score <= 2 || stockData.changePct >= -8.0) {
 			actionLabel = "❌ AVOID / CUTLOSS";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
 			actionDesc = "Tekanan jual mendominasi atau struktur tren melemah di bawah MA utama. Batasi risiko segera.";
