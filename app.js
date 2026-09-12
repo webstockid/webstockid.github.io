@@ -94,6 +94,23 @@ function updateGlobalAudioVibrateUI() {
 			vibrateIcon.className = "fa-solid fa-mobile-screen-button text-xs";
 		}
 	}
+
+	// === TAMBAHKAN BLOK INI AGAR TOMBOL DI TAB PENGATURAN UPDATE INSTAN ===
+	const settingSoundBtn = document.getElementById('settingBtnSound');
+	if (settingSoundBtn) {
+		settingSoundBtn.innerText = isSoundMuted ? 'Mati' : 'Menyala';
+		settingSoundBtn.className = isSoundMuted 
+			? "px-4 py-2 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-[10px] font-bold transition" 
+			: "px-4 py-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg text-[10px] font-bold transition";
+	}
+
+	const settingVibrateBtn = document.getElementById('settingBtnVibrate');
+	if (settingVibrateBtn) {
+		settingVibrateBtn.innerText = isVibrateMuted ? 'Mati' : 'Menyala';
+		settingVibrateBtn.className = isVibrateMuted 
+			? "px-4 py-2 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-[10px] font-bold transition" 
+			: "px-4 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg text-[10px] font-bold transition";
+	}
 }
 
 function toggleGlobalSound() {
