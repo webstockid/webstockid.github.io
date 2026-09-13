@@ -52,6 +52,77 @@
 				-ms-overflow-style: none;
 				scrollbar-width: none;
 			}
+			
+			/* ==========================================
+			   ANIMASI CUSTOM CHECKBOX ADD-ON
+			   ========================================== */
+			.addon-checkbox input {
+				position: absolute;
+				opacity: 0;
+				cursor: pointer;
+				height: 0;
+				width: 0;
+			}
+			.addon-checkbox {
+				display: inline-flex;
+				align-items: center;
+				gap: 10px;
+				cursor: pointer;
+				user-select: none;
+			}
+			.checkmark-box {
+				position: relative;
+				height: 18px;
+				width: 18px;
+				background-color: rgba(15, 23, 42, 0.7); /* Slate-900 */
+				border: 1px solid rgba(148, 163, 184, 0.3); /* Slate-400/30 */
+				border-radius: 4px;
+				transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			.addon-checkbox:hover .checkmark-box {
+				border-color: rgba(255, 255, 255, 0.6);
+			}
+			/* Tema Warna Kelas */
+			.addon-checkbox.emerald input:checked ~ .checkmark-box {
+				background-color: #10b981; /* Emerald-500 */
+				border-color: #10b981;
+				transform: scale(1.15);
+				box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+			}
+			.addon-checkbox.blue input:checked ~ .checkmark-box {
+				background-color: #3b82f6; /* Blue-500 */
+				border-color: #3b82f6;
+				transform: scale(1.15);
+				box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+			}
+			.addon-checkbox.amber input:checked ~ .checkmark-box {
+				background-color: #f59e0b; /* Amber-500 */
+				border-color: #f59e0b;
+				transform: scale(1.15);
+				box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+			}
+			/* Ikon Centang Animasi */
+			.checkmark-box:after {
+				content: "";
+				position: absolute;
+				width: 4px;
+				height: 9px;
+				border: solid #020617; /* Warna centang gelap agar kontras */
+				border-width: 0 2px 2px 0;
+				transform: rotate(45deg) scale(0);
+				opacity: 0;
+				margin-bottom: 2px;
+			}
+			.addon-checkbox input:checked ~ .checkmark-box:after {
+				animation: popInCheck 0.3s forwards;
+				animation-delay: 0.1s;
+			}
+			@keyframes popInCheck {
+				100% { opacity: 1; transform: rotate(45deg) scale(1); }
+			}
 		</style>
 	</head>
 	
@@ -651,7 +722,7 @@
 								<span class="text-xs text-purple-400 font-semibold bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">Hemat 80%</span>
 							</div>
 							<h3 class="heading-font text-xl font-bold text-purple-400 mt-4 flex items-center gap-2">
-								<i class="fa-solid fa-crown text-sm"></i>Paket AI Tools
+								<i class="fa-solid fa-crown text-sm"></i>Paket AI Tools + Watchlist
 							</h3>
 							<p class="text-xs text-slate-400 mt-1">Screening saham yang dibantu AI untuk memaksimalkan analisa saham Kamu.</p>
 							<div class="mt-6 space-y-1">
@@ -669,10 +740,10 @@
 									<i class="fa-solid fa-circle-check text-purple-400"></i>Masa Aktif 35 Hari
 								</li>
 								<li class="flex items-center gap-2">
-									<i class="fa-solid fa-circle-check text-purple-400"></i>Trading Map (Entry/Support, Resistent, Take Profit & Stop Loss)
+									<i class="fa-solid fa-circle-check text-purple-400"></i>AI Signal + Trading Map
 								</li>
 								<li class="flex items-center gap-2">
-									<i class="fa-solid fa-circle-check text-purple-400"></i>Chat AI Assistant
+									<i class="fa-solid fa-circle-check text-purple-400"></i>Radar Bandar & Custom Radar
 								</li>
 								<li class="flex items-center gap-2">
 									<i class="fa-solid fa-circle-check text-purple-400"></i>Peer Komparasi
@@ -684,19 +755,19 @@
 									<i class="fa-solid fa-circle-check text-purple-400"></i>Skenario & Kesimpulan AI
 								</li>
 								<li class="flex items-center gap-2">
-									<i class="fa-solid fa-circle-check text-purple-400"></i>Journal Trading & Export
+									<i class="fa-solid fa-circle-check text-purple-400"></i>Journal Trading + Export
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-purple-400"></i>Smart RRR & Smart Alert
+								</li>
+								<li class="flex items-center gap-2">
+									<i class="fa-solid fa-circle-check text-purple-400"></i>Paper Trade
 								</li>
 								<li class="flex items-center gap-2">
 									<i class="fa-solid fa-circle-check text-purple-400"></i>Sektor Heatmap
 								</li>
 								<li class="flex items-center gap-2">
-									<i class="fa-solid fa-circle-check text-purple-400"></i>Rekomendasi Saham
-								</li>
-								<li class="flex items-center gap-2">
-									<i class="fa-solid fa-circle-check text-purple-400"></i>Smart RRR & Position Sizing
-								</li>
-								<li class="flex items-center gap-2">
-									<i class="fa-solid fa-circle-check text-purple-400"></i>Smart Alert & Push Notification
+									<i class="fa-solid fa-circle-check text-purple-400"></i>Paus Radar
 								</li>
 								<li class="flex items-center gap-2">
 									<i class="fa-solid fa-circle-check text-purple-400"></i>Akurasi (92% by User)
@@ -721,7 +792,7 @@
 							<div class="mt-6 space-y-1">
 								<span class="text-xs text-slate-500 line-through">Rp 600,000</span>
 								<div class="flex items-baseline gap-1 text-emerald-400">
-									<span class="text-3xl font-black heading-font animate-pulse">Rp 330,000</span>
+									<span id="price-kelas100" data-base="330000" class="text-3xl font-black heading-font animate-pulse">Rp 330,000</span>
 								</div>
 							</div>
 							<div class="mt-4 bg-emerald-950/60 p-2.5 rounded-lg border border-emerald-500/20 text-center text-xs text-slate-300">📈 Sudah dibeli <span class="text-emerald-400 font-bold">80 kali</span> oleh member aktif</div>
@@ -751,8 +822,23 @@
 									<i class="fa-solid fa-circle-check text-emerald-400"></i>Bonus Screener Bandar Akum
 								</li>
 							</ul>
+							
+							<!-- Add-on Kelas 100 Hari -->
+							<div class="mt-4 pt-4 border-t border-emerald-500/20 space-y-2">
+								<span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block">Tambah Add-On (Opsional)</span>
+								<label class="addon-checkbox emerald text-xs text-slate-300 hover:text-white transition">
+									<input type="checkbox" id="addon-screener-100" value="50000" data-name="Paket Screener" onchange="calculateTotal('100')">
+									<span class="checkmark-box"></span>
+									<span>Paket Screener <b class="text-emerald-400">(+ Rp 50,000)</b></span>
+								</label><br>
+								<label class="addon-checkbox emerald text-xs text-slate-300 hover:text-white transition mt-2">
+									<input type="checkbox" id="addon-ai-100" value="100000" data-name="Paket AI Tools + Watchlist" onchange="calculateTotal('100')">
+									<span class="checkmark-box"></span>
+									<span>Paket AI Tools + Watchlist <b class="text-emerald-400">(+ Rp 100,000)</b></span>
+								</label>
+							</div>
 						</div>
-						<button onclick='openCheckoutModal("Kelas 100 Hari","329,999")' class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 px-4 rounded-xl text-xs transition tracking-wide mt-8 shadow-lg shadow-emerald-500/20">Ambil Kelas 100 Hari</button>
+						<button onclick="openDynamicCheckout('100', 'Kelas 100 Hari')" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 px-4 rounded-xl text-xs transition tracking-wide mt-6 shadow-lg shadow-emerald-500/20">Ambil Kelas 100 Hari</button>
 					</div>
 
 					<!-- Kelas 200 Hari (Blue / Biru) -->
@@ -770,7 +856,7 @@
 							<div class="mt-6 space-y-1">
 								<span class="text-xs text-slate-500 line-through">Rp 1,200,000</span>
 								<div class="flex items-baseline gap-1 text-blue-400">
-									<span class="text-3xl font-black heading-font animate-pulse">Rp 600,000</span>
+									<span id="price-kelas200" data-base="600000" class="text-3xl font-black heading-font animate-pulse">Rp 600,000</span>
 								</div>
 							</div>
 							<div class="mt-4 bg-blue-950/60 p-2.5 rounded-lg border border-blue-500/20 text-center text-xs text-slate-300">🚀 Sudah dibeli <span class="text-blue-400 font-bold">25 kali</span></div>
@@ -803,8 +889,23 @@
 									<i class="fa-solid fa-circle-check text-blue-400"></i>Bonus Screener BSJP
 								</li>
 							</ul>
+							
+							<!-- Add-on Kelas 200 Hari -->
+							<div class="mt-4 pt-4 border-t border-blue-500/20 space-y-2">
+								<span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest block">Tambah Add-On (Opsional)</span>
+								<label class="addon-checkbox blue text-xs text-slate-300 hover:text-white transition">
+									<input type="checkbox" id="addon-screener-200" value="50000" data-name="Paket Screener" onchange="calculateTotal('200')">
+									<span class="checkmark-box"></span>
+									<span>Paket Screener <b class="text-blue-400">(+ Rp 50,000)</b></span>
+								</label><br>
+								<label class="addon-checkbox blue text-xs text-slate-300 hover:text-white transition mt-2">
+									<input type="checkbox" id="addon-ai-200" value="150000" data-name="Paket AI Tools + Watchlist" onchange="calculateTotal('200')">
+									<span class="checkmark-box"></span>
+									<span>Paket AI Tools + Watchlist <b class="text-blue-400">(+ Rp 150,000)</b></span>
+								</label>
+							</div>
 						</div>
-						<button onclick='openCheckoutModal("Kelas 200 Hari","599,999")' class="w-full bg-blue-500 hover:bg-blue-400 text-slate-950 font-black py-3 px-4 rounded-xl text-xs transition tracking-wide mt-8 shadow-lg shadow-blue-500/20">Ambil Kelas 200 Hari</button>
+						<button onclick="openDynamicCheckout('200', 'Kelas 200 Hari')" class="w-full bg-blue-500 hover:bg-blue-400 text-slate-950 font-black py-3 px-4 rounded-xl text-xs transition tracking-wide mt-6 shadow-lg shadow-blue-500/20">Ambil Kelas 200 Hari</button>
 					</div>
 
 					<!-- Kelas 400 Hari (Amber / Kuning-Emas) -->
@@ -822,7 +923,7 @@
 							<div class="mt-6 space-y-1">
 								<span class="text-xs text-slate-500 line-through">Rp 2,400,000</span>
 								<div class="flex items-baseline gap-1 text-amber-400">
-									<span class="text-3xl font-black heading-font animate-pulse">Rp 1,050,000</span>
+									<span id="price-kelas365" data-base="1050000" class="text-3xl font-black heading-font animate-pulse">Rp 1,050,000</span>
 								</div>
 							</div>
 							<div class="mt-4 bg-amber-950/60 p-2.5 rounded-lg border border-amber-500/20 text-center text-xs text-slate-300">💎 Sudah dibeli <span class="text-amber-400 font-bold">20 kali</span> oleh member royal</div>
@@ -858,8 +959,23 @@
 									<i class="fa-solid fa-circle-check text-amber-400"></i>Bonus Screener Potential Spikes
 								</li>
 							</ul>
+							
+							<!-- Add-on Kelas 365 Hari -->
+							<div class="mt-4 pt-4 border-t border-amber-500/20 space-y-2">
+								<span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest block">Tambah Add-On (Opsional)</span>
+								<label class="addon-checkbox amber text-xs text-slate-300 hover:text-white transition">
+									<input type="checkbox" id="addon-screener-365" value="25000" data-name="Paket Screener" onchange="calculateTotal('365')">
+									<span class="checkmark-box"></span>
+									<span>Paket Screener <b class="text-amber-400">(+ Rp 25,000)</b></span>
+								</label><br>
+								<label class="addon-checkbox amber text-xs text-slate-300 hover:text-white transition mt-2">
+									<input type="checkbox" id="addon-ai-365" value="200000" data-name="Paket AI Tools + Watchlist" onchange="calculateTotal('365')">
+									<span class="checkmark-box"></span>
+									<span>Paket AI Tools + Watchlist <b class="text-amber-400">(+ Rp 200,000)</b></span>
+								</label>
+							</div>
 						</div>
-						<button onclick='openCheckoutModal("Kelas 400 Hari","1,079,000")' class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 px-4 rounded-xl text-xs transition tracking-wide mt-8 shadow-lg shadow-amber-500/20">Ambil Kelas Ultimate</button>
+						<button onclick="openDynamicCheckout('365', 'Kelas 365 Hari')" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 px-4 rounded-xl text-xs transition tracking-wide mt-6 shadow-lg shadow-amber-500/20">Ambil Kelas Ultimate</button>
 					</div>
 
 					<!-- Stock ID Free -->
@@ -1342,6 +1458,57 @@
 		</script>
 		
 		<script>
+			// ==========================================
+			// LOGIKA KALKULASI ADD-ON HARGA KELAS
+			// ==========================================
+			function calculateTotal(kelasType) {
+				const priceEl = document.getElementById(`price-kelas${kelasType}`);
+				if (!priceEl) return;
+				const basePrice = parseInt(priceEl.getAttribute('data-base'));
+				
+				const screenerCb = document.getElementById(`addon-screener-${kelasType}`);
+				const aiCb = document.getElementById(`addon-ai-${kelasType}`);
+				
+				let total = basePrice;
+				if (screenerCb && screenerCb.checked) total += parseInt(screenerCb.value);
+				if (aiCb && aiCb.checked) total += parseInt(aiCb.value);
+				
+				// Memperbarui UI ke format angka koma (contoh: 380,000)
+				priceEl.innerText = 'Rp ' + total.toLocaleString('en-US');
+			}
+
+			function openDynamicCheckout(kelasType, baseName) {
+				const priceEl = document.getElementById(`price-kelas${kelasType}`);
+				if (!priceEl) return;
+				const basePrice = parseInt(priceEl.getAttribute('data-base'));
+				
+				const screenerCb = document.getElementById(`addon-screener-${kelasType}`);
+				const aiCb = document.getElementById(`addon-ai-${kelasType}`);
+				
+				let total = basePrice;
+				let finalName = baseName;
+				let addons = [];
+				
+				// Cek jika Add-on terpilih
+				if (screenerCb && screenerCb.checked) {
+					total += parseInt(screenerCb.value);
+					addons.push(screenerCb.getAttribute('data-name'));
+				}
+				if (aiCb && aiCb.checked) {
+					total += parseInt(aiCb.value);
+					addons.push(aiCb.getAttribute('data-name'));
+				}
+				
+				// Gabungkan ke string deskripsi
+				if (addons.length > 0) {
+					finalName += " + " + addons.join(" + ");
+				}
+				
+				// Lempar variabel ke dalam Modal bawaan HTML
+				openCheckoutModal(finalName, total.toLocaleString('en-US'));
+			}
+			
+			
 			let currentPackage = "";
 			let currentPrice = "";
 
