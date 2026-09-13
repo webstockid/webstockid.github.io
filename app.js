@@ -908,12 +908,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			verdik = "STRONG BULLISH BREAKOUT";
 			verdikClass = "font-bold text-emerald-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (isAboveMA10 && stockData.changePct > 1.0 && stockData.volRatio >= 1.2) {
+		} else if (isAboveMA5 && stockData.changePct > 1.0 && stockData.volRatio >= 1.2) {
 			score = 4;
 			verdik = "BULLISH ACCUMULATION";
 			verdikClass = "font-bold text-emerald-300 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.price >= stockData.ma5 && isBelowMA20 && stockData.changePct >= -3.0) {
+		} else if (stockData.price >= stockData.ma10 && isBelowMA20 && stockData.changePct >= -3.0) {
 			score = 3;
 			verdik = "NETRAL / KONSOLIDASI";
 			verdikClass = "font-bold text-amber-400 text-sm lg:text-base";
