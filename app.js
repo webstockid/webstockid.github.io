@@ -1016,12 +1016,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 90; 
-		} else if (stockData.changePct >= -0 && stockData.volRatio > 1.0 && stockData.price > stockData.ma5 && stockData.price < stockData.ma20) {
+		} else if (stockData.changePct >= -0 && stockData.volRatio > 1.0 && stockData.price > stockData.ma5) {
 			bandarStatus = "Netral ⚖️";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 			bandarPct = 60; 
-		} else if (stockData.changePct >= -5.0 && stockData.volRatio > 0.8 && stockData.price > stockData.ma5 && stockData.price < stockData.ma20) {
+		} else if (stockData.changePct >= -5.0 && stockData.volRatio > 0.8 && stockData.price < stockData.ma5) {
 			bandarStatus = "Mark Down (Uji Support) 📉";
 			bandarColor = "text-cyan-400";
 			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-300 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
