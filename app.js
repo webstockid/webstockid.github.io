@@ -903,12 +903,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		const isVolSpike = stockData.volRatio >= 1.5;
 
 		// LOGIKA VERDIK AI
-		if (isAboveMA5 && isAboveMA10 && isAboveMA20 && stockData.changePct > 1.0 && stockData.volRatio >= 1.5) {
+		if (isAboveMA20 && stockData.changePct > 1.0 && stockData.volRatio >= 1.5) {
 			score = 5;
 			verdik = "STRONG BULLISH BREAKOUT";
 			verdikClass = "font-bold text-emerald-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (isAboveMA5 && isAboveMA10 && stockData.changePct > 1.0 && stockData.volRatio >= 1.2) {
+		} else if (isAboveMA10 && stockData.changePct > 1.0 && stockData.volRatio >= 1.2) {
 			score = 4;
 			verdik = "BULLISH ACCUMULATION";
 			verdikClass = "font-bold text-emerald-300 text-sm lg:text-base";
@@ -918,12 +918,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			verdik = "NETRAL / KONSOLIDASI";
 			verdikClass = "font-bold text-amber-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (isBelowMA5 && stockData.changePct >= -8.0 && stockData.changePct <= 2.0) {
+		} else if (isBelowMA10 && stockData.changePct >= -8.0 && stockData.changePct <= 2.0) {
 			score = 2;
 			verdik = "WEAK / BEARISH CORRECTION";
 			verdikClass = "font-bold text-rose-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (isBelowMA5 && isBelowMA10 && isBelowMA20 && stockData.changePct < -10.0) {
+		} else if (isBelowMA20 && stockData.changePct < -5.0) {
 			score = 1;
 			verdik = "STRONG BEARISH / SELLING PRESSURE";
 			verdikClass = "font-bold text-rose-500 text-sm lg:text-base";
@@ -988,7 +988,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionLabel = "🔥 STRONG BUY";
 			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
 			actionDesc = "Momentum Breakout kuat! Kenaikan harga signifikan didukung lonjakan volume masif.";
-		} else if (isAboveMA5 && isAboveMA10 && stockData.changePct > 1.0 && (score === 3 || score === 4)) {
+		} else if (isAboveMA10 && stockData.changePct > 1.0 && (score === 3 || score === 4)) {
 			actionLabel = "⚠️ TAKE PROFIT / HOLD";
 			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
 			actionDesc = "Tren masih terjaga di atas garis MA menengah. Pertimbangkan untuk menahan posisi atau amankan profit.";
@@ -996,7 +996,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionLabel = "🛒 ACCUMULATE (CICIL)";
 			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
 			actionDesc = "Fase akumulasi atau koreksi wajar. Harga bertahan dekat area support MA5, cocok untuk cicil bertahap.";
-		} else if (isBelowMA5 && isBelowMA10 && isBelowMA20 && stockData.changePct < -5.0 && (score === 1 || score === 2)) {
+		} else if (isBelowMA20 && stockData.changePct < -5.0 && (score === 1 || score === 2)) {
 			actionLabel = "❌ AVOID / CUTLOSS";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
 			actionDesc = "Tekanan jual mendominasi penuh dan struktur tren patah di bawah semua MA utama. Segera batasi risiko.";
@@ -1016,7 +1016,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 90; 
-		} else if (stockData.changePct >= -0 && stockData.volRatio > 1.0 && stockData.price > stockData.ma5) {
+		} else if (stockData.changePct >= 0 && stockData.volRatio > 1.0 && stockData.price > stockData.ma5) {
 			bandarStatus = "Netral ⚖️";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
