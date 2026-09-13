@@ -992,7 +992,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionLabel = "⚠️ TAKE PROFIT / HOLD";
 			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
 			actionDesc = "Tren masih terjaga di atas garis MA menengah. Pertimbangkan untuk menahan posisi atau amankan profit.";
-		} else if (isAboveMA5 && isBelowMA20 && stockData.volRatio >= 1.0 && (score === 2 || score === 3)) {
+		} else if (isAboveMA5 && stockData.volRatio >= 1.0 && (score === 2 || score === 3)) {
 			actionLabel = "🛒 ACCUMULATE (CICIL)";
 			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
 			actionDesc = "Fase akumulasi atau koreksi wajar. Harga bertahan dekat area support MA5, cocok untuk cicil bertahap.";
