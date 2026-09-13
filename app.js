@@ -1011,12 +1011,17 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		let bandarBarColor = "from-slate-600 via-slate-400 to-slate-300 shadow-[0_0_15px_rgba(148,163,184,0.4)]";
 		let bandarPct = 50;
 
-		if (stockData.changePct > 3.0 && stockData.price > stockData.ma5 && stockData.volRatio > 2.0) {
+		if (stockData.changePct > 3.0 && stockData.price > stockData.ma10 && stockData.volRatio > 2.0) {
 			bandarStatus = "Masif Akumulasi 🐋";
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 90; 
-		} else if (stockData.changePct >= 0 && stockData.volRatio > 1.0 && stockData.price > stockData.ma5) {
+		} else if (stockData.changePct >= 1.0 && stockData.price > stockData.ma5 && stockData.volRatio > 1.0) {
+			bandarStatus = "Akumulasi 🐳";
+			bandarColor = "text-amber-400";
+			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
+			bandarPct = 60; 
+		} else if (stockData.changePct >= -5.0 && stockData.volRatio > 1.0 && stockData.price > stockData.ma5) {
 			bandarStatus = "Netral ⚖️";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
