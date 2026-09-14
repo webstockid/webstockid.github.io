@@ -924,7 +924,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			verdik = "WEAK / BEARISH CORRECTION";
 			verdikClass = "font-bold text-rose-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.price < stockData.ma20 && stockData.changePct < -4) {
+		} else if (stockData.price < stockData.ma20 && stockData.changePct < -8 && stockData.changePct <= 0) {
 			score = 1;
 			verdik = "STRONG BEARISH / SELLING PRESSURE";
 			verdikClass = "font-bold text-rose-500 text-sm lg:text-base";
