@@ -903,27 +903,28 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		const isVolSpike = stockData.volRatio >= 1.5;
 
 		// LOGIKA VERDIK AI
-		if (isAboveMA20 && stockData.changePct > 1.0 && stockData.volRatio >= 1.5) {
+		if (isAboveMA20 && stockData.changePct > 1 && stockData.volRatio >= 1.5) {
 			score = 5;
 			verdik = "STRONG BULLISH BREAKOUT";
 			verdikClass = "font-bold text-emerald-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (isAboveMA5 && stockData.changePct > 1.0 && stockData.volRatio >= 1.2) {
+		} else if (isAboveMA5 && stockData.changePct > 1 && stockData.volRatio >= 1.2) {
 			score = 4;
 			verdik = "BULLISH ACCUMULATION";
 			verdikClass = "font-bold text-emerald-300 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.price >= stockData.ma10 && isBelowMA20 && stockData.changePct >= -3.0) {
+		} else if (isAboveMA5 && isBelowMA20 && stockData.changePct <= 3 && stockData.changePct >= -3) {
+			// stockData.price >= stockData.ma10 && isBelowMA20 && stockData.changePct >= -3.0) {
 			score = 3;
 			verdik = "NETRAL / KONSOLIDASI";
 			verdikClass = "font-bold text-amber-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (isBelowMA10 && stockData.changePct >= -8.0 && stockData.changePct <= 2.0) {
+		} else if (isAboveMA5 <= isBelowMA10 && stockData.changePct >= -8 && stockData.changePct <= 2) {
 			score = 2;
 			verdik = "WEAK / BEARISH CORRECTION";
 			verdikClass = "font-bold text-rose-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (isBelowMA20 && stockData.changePct < -5.0) {
+		} else if (isAboveMA5 <= isBelowMA20 && stockData.changePct < -2) {
 			score = 1;
 			verdik = "STRONG BEARISH / SELLING PRESSURE";
 			verdikClass = "font-bold text-rose-500 text-sm lg:text-base";
@@ -984,23 +985,27 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		let actionDesc = "Pergerakan saham biasa saja, kenaikan normal dan volume masih dalam batas normal.";
 
 		// LOGIKA REKOMENDASI AKSI
-		if (isAboveMA5 && stockData.changePct > 3.0 && stockData.volRatio >= 2.0 && (score === 4 || score === 5)) {
+		if (isAboveMA5 && stockData.changePct > 3 && stockData.volRatio >= 2) {
+			// && (score === 4 || score === 5)) 
 			actionLabel = "🔥 STRONG BUY";
 			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
 			actionDesc = "Momentum Breakout kuat! Kenaikan harga signifikan didukung lonjakan volume masif.";
-		} else if (isAboveMA10 && stockData.changePct > 1.0 && (score === 3 || score === 4)) {
+		} else if (isAboveMA10 && stockData.changePct > 1) {
+			// && (score === 3 || score === 4)) 
 			actionLabel = "⚠️ TAKE PROFIT / HOLD";
 			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
 			actionDesc = "Tren masih terjaga di atas garis MA menengah. Pertimbangkan untuk menahan posisi atau amankan profit.";
-		} else if (isAboveMA5 && stockData.volRatio >= 1.0 && (score === 2 || score === 3)) {
+		} else if (isAboveMA5 && isBelowMA20 && stockData.volRatio >= 1) {
+			// && (score === 2 || score === 3)) 
 			actionLabel = "🛒 ACCUMULATE (CICIL)";
 			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
 			actionDesc = "Fase akumulasi atau koreksi wajar. Harga bertahan dekat area support MA5, cocok untuk cicil bertahap.";
-		} else if (isBelowMA20 && stockData.changePct < -5.0 && (score === 1 || score === 2)) {
+		} else if (isBelowMA10 && isBelowMA20 && stockData.changePct < -0) {
+			// && (score === 1 || score === 2))
 			actionLabel = "❌ AVOID / CUTLOSS";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
 			actionDesc = "Tekanan jual mendominasi penuh dan struktur tren patah di bawah semua MA utama. Segera batasi risiko.";
-		} else {
+		} else (isBelowMA10 && stockData.changePct >= -5) {
 			actionLabel = "⏳ WAIT & SEE";
 			actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
 			actionDesc = "Pergerakan saham biasa saja, indikator harga dan volume berjalan normal. Disarankan pantau konfirmasi lanjutan.";
