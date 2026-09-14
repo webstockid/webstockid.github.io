@@ -1005,7 +1005,8 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionLabel = "❌ AVOID / CUTLOSS";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
 			actionDesc = "Tekanan jual mendominasi penuh dan struktur tren patah di bawah semua MA utama. Segera batasi risiko.";
-		} else (isBelowMA10 && stockData.changePct >= -5) {
+		} else {
+			// (isBelowMA10 && stockData.changePct >= -5) 
 			actionLabel = "⏳ WAIT & SEE";
 			actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
 			actionDesc = "Pergerakan saham biasa saja, indikator harga dan volume berjalan normal. Disarankan pantau konfirmasi lanjutan.";
