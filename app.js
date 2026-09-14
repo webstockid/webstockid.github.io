@@ -913,7 +913,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			verdik = "BULLISH ACCUMULATION";
 			verdikClass = "font-bold text-emerald-300 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (isAboveMA5 && isBelowMA20 && stockData.changePct <= 3 && stockData.changePct >= -3) {
+		} else if (isAboveMA5 >= isBelowMA20 && stockData.changePct >= -3 && stockData.changePct <= 3) {
 			// stockData.price >= stockData.ma10 && isBelowMA20 && stockData.changePct >= -3.0) {
 			score = 3;
 			verdik = "NETRAL / KONSOLIDASI";
@@ -924,7 +924,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			verdik = "WEAK / BEARISH CORRECTION";
 			verdikClass = "font-bold text-rose-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (isAboveMA5 <= isBelowMA20 && stockData.changePct < -2) {
+		} else if (isAboveMA5 <= isBelowMA20 && stockData.changePct < -3) {
 			score = 1;
 			verdik = "STRONG BEARISH / SELLING PRESSURE";
 			verdikClass = "font-bold text-rose-500 text-sm lg:text-base";
@@ -985,7 +985,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		let actionDesc = "Pergerakan saham biasa saja, kenaikan normal dan volume masih dalam batas normal.";
 
 		// LOGIKA REKOMENDASI AKSI
-		if (isAboveMA5 && stockData.changePct > 3 && stockData.volRatio >= 2) {
+		if (isAboveMA5 && stockData.changePct > 1 && stockData.volRatio >= 2) {
 			// && (score === 4 || score === 5)) 
 			actionLabel = "🔥 STRONG BUY";
 			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
@@ -995,12 +995,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionLabel = "⚠️ TAKE PROFIT / HOLD";
 			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
 			actionDesc = "Tren masih terjaga di atas garis MA menengah. Pertimbangkan untuk menahan posisi atau amankan profit.";
-		} else if (isAboveMA5 && isBelowMA20 && stockData.volRatio >= 1) {
+		} else if (isAboveMA5 >= isBelowMA10 && stockData.volRatio >= 1) {
 			// && (score === 2 || score === 3)) 
 			actionLabel = "🛒 ACCUMULATE (CICIL)";
 			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
 			actionDesc = "Fase akumulasi atau koreksi wajar. Harga bertahan dekat area support MA5, cocok untuk cicil bertahap.";
-		} else if (isBelowMA10 && isBelowMA20 && stockData.changePct < -0) {
+		} else if (isBelowMA20 && stockData.changePct < -2) {
 			// && (score === 1 || score === 2))
 			actionLabel = "❌ AVOID / CUTLOSS";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
@@ -1017,7 +1017,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		let bandarBarColor = "from-slate-600 via-slate-400 to-slate-300 shadow-[0_0_15px_rgba(148,163,184,0.4)]";
 		let bandarPct = 50;
 
-		if (stockData.changePct > 3 && stockData.price > stockData.ma10 && stockData.volRatio > 2) {
+		if (stockData.changePct > 1 && stockData.price > stockData.ma10 && stockData.volRatio > 2) {
 			bandarStatus = "Masif Akumulasi 🐋";
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
