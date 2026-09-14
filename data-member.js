@@ -159,6 +159,16 @@ const members = [{
 				expired: "2026-05-27",
 				history: [3]
 			}, {
+				nama: "Mas. Zaki",
+				whatsapp: "081212956937",
+				expired: "2026-12-08",
+				history: [3]
+			}, {
+				nama: "Mas. Steven",
+				whatsapp: "0",
+				expired: "2027-01-13",
+				history: [3]
+			}, {
 				nama: "Mas. Ray",
 				whatsapp: "08994666668",
 				expired: "2026-05-26",
@@ -166,8 +176,8 @@ const members = [{
 			}, {
 				nama: "Mas. Anggoro",
 				whatsapp: "089525567420",
-				expired: "2026-06-14",
-				history: [3]
+				expired: "2027-09-16",
+				history: [3, 12]
 			}, {
 				nama: "Mas. Agung",
 				whatsapp: "081907273068",
@@ -431,8 +441,8 @@ const members = [{
 			}, {
 				nama: "Mas. Izzudin",
 				whatsapp: "081910019807",
-				expired: "2026-04-10",
-				history: [1]
+				expired: "2026-12-15",
+				history: [1, 3]
 			}, {
 				nama: "Mas. Satya",
 				whatsapp: "085263019463",
@@ -601,8 +611,8 @@ const members = [{
 			}, {
 				nama: "Mas. Arif",
 				whatsapp: "081249601930",
-				expired: "2026-08-07",
-				history: [3]
+				expired: "2026-12-25",
+				history: [3, 3]
 			}, {
 				nama: "Mas. Suba",
 				whatsapp: "085851202129",
