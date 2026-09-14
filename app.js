@@ -985,22 +985,22 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		let actionDesc = "Pergerakan saham biasa saja, kenaikan normal dan volume masih dalam batas normal.";
 
 		// LOGIKA REKOMENDASI AKSI
-		if (isAboveMA5 && stockData.changePct > 1 && stockData.volRatio >= 2) {
+		if (stockData.price > stockData.ma5 && stockData.changePct > 1 && stockData.volRatio >= 2) {
 			// && (score === 4 || score === 5)) 
 			actionLabel = "🔥 STRONG BUY";
 			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
 			actionDesc = "Momentum Breakout kuat! Kenaikan harga signifikan didukung lonjakan volume masif.";
-		} else if (isAboveMA10 && stockData.changePct > 1) {
+		} else if (stockData.price > stockData.ma10 && stockData.changePct > 1) {
 			// && (score === 3 || score === 4)) 
 			actionLabel = "⚠️ TAKE PROFIT / HOLD";
 			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
 			actionDesc = "Tren masih terjaga di atas garis MA menengah. Pertimbangkan untuk menahan posisi atau amankan profit.";
-		} else if (isAboveMA5 >= isBelowMA10 && stockData.volRatio >= 1) {
+		} else if (stockData.price > stockData.ma5 && stockData.volRatio >= 1) {
 			// && (score === 2 || score === 3)) 
 			actionLabel = "🛒 ACCUMULATE (CICIL)";
 			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
 			actionDesc = "Fase akumulasi atau koreksi wajar. Harga bertahan dekat area support MA5, cocok untuk cicil bertahap.";
-		} else if (isBelowMA20 && stockData.changePct < -2) {
+		} else if (stockData.price < stockData.ma20 && stockData.changePct < -2) {
 			// && (score === 1 || score === 2))
 			actionLabel = "❌ AVOID / CUTLOSS";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
@@ -1022,17 +1022,17 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 90; 
-		} else if (stockData.changePct >= 1 && stockData.price > stockData.ma5 && stockData.volRatio > 1) {
+		} else if (stockData.changePct > 1 && stockData.price > stockData.ma5 && stockData.volRatio > 1) {
 			bandarStatus = "Akumulasi 🐳";
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 75; 
-		} else if (stockData.changePct >= -5 && stockData.volRatio > 1 && stockData.price > stockData.ma5) {
+		} else if (stockData.changePct >= -5 && stockData.price > stockData.ma5 && stockData.price < stockData.ma10 && stockData.volRatio > 1) {
 			bandarStatus = "Netral ⚖️";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 			bandarPct = 60; 
-		} else if (stockData.changePct >= -5 && stockData.volRatio > 1 && stockData.price < stockData.ma5) {
+		} else if (stockData.changePct >= -5 && stockData.price < stockData.ma5 && stockData.volRatio > 1) {
 			bandarStatus = "Mark Down (Uji Support) 📉";
 			bandarColor = "text-cyan-400";
 			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-300 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
