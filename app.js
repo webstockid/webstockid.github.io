@@ -889,7 +889,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	let price = stockData ? roundToBEITick(stockData.price) : 100;
 
 	let score = 3;
-	let verdik = "NETRAL / KONSOLIDASI";
+	let verdik = "NETRAL";
 	let verdikClass = "font-bold text-amber-400 text-sm lg:text-base";
 	let scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 
@@ -919,12 +919,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			verdik = "NETRAL / KONSOLIDASI";
 			verdikClass = "font-bold text-amber-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.price < stockData.ma10 && stockData.changePct >= -8 && stockData.changePct <= 2) {
+		} else if (stockData.price < stockData.ma10 && stockData.changePct >= -8 && stockData.changePct <= 1) {
 			score = 2;
 			verdik = "WEAK / BEARISH CORRECTION";
 			verdikClass = "font-bold text-rose-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.price < stockData.ma20 && stockData.changePct < -8 && stockData.changePct <= 0) {
+		} else if (stockData.price < stockData.ma20 && stockData.changePct < -8 && stockData.changePct <= 1) {
 			score = 1;
 			verdik = "STRONG BEARISH / SELLING PRESSURE";
 			verdikClass = "font-bold text-rose-500 text-sm lg:text-base";
@@ -1000,7 +1000,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionLabel = "🛒 ACCUMULATE (CICIL)";
 			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
 			actionDesc = "Fase akumulasi atau koreksi wajar. Harga bertahan dekat area support MA5, cocok untuk cicil bertahap.";
-		} else if (stockData.price < stockData.ma20 && stockData.changePct < -5) {
+		} else if (stockData.price < stockData.ma20 && stockData.changePct < -1 && stockData.changePct <= 1) {
 			// && (score === 1 || score === 2))
 			actionLabel = "❌ AVOID / CUTLOSS";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
