@@ -903,28 +903,28 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		const isVolSpike = stockData.volRatio >= 1.5;
 
 		// LOGIKA VERDIK AI
-		if (isAboveMA20 && stockData.changePct > 2 && stockData.volRatio >= 2) {
+		if (stockData.price > stockData.ma10 && stockData.changePct > 2 && stockData.volRatio >= 2) {
 			score = 5;
 			verdik = "STRONG BULLISH BREAKOUT";
 			verdikClass = "font-bold text-emerald-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (isAboveMA5 && stockData.changePct > 2 && stockData.volRatio >= 1.5) {
+		} else if (stockData.price > stockData.ma5 && stockData.changePct > 2 && stockData.volRatio >= 1.5) {
 			score = 4;
 			verdik = "BULLISH ACCUMULATION";
 			verdikClass = "font-bold text-emerald-300 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (isAboveMA5 >= isBelowMA20 && stockData.changePct >= -3 && stockData.changePct <= 3) {
+		} else if (stockData.price > stockData.ma5 && stockData.price < stockData.ma20 && stockData.changePct >= -3 && stockData.changePct <= 2) {
 			// stockData.price >= stockData.ma10 && isBelowMA20 && stockData.changePct >= -3.0) {
 			score = 3;
 			verdik = "NETRAL / KONSOLIDASI";
 			verdikClass = "font-bold text-amber-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (isAboveMA5 <= isBelowMA10 && stockData.changePct >= -8 && stockData.changePct <= 2) {
+		} else if (stockData.price < stockData.ma10 && stockData.changePct >= -8 && stockData.changePct <= 2) {
 			score = 2;
 			verdik = "WEAK / BEARISH CORRECTION";
 			verdikClass = "font-bold text-rose-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (isAboveMA5 <= isBelowMA20 && stockData.changePct < -4) {
+		} else if (stockData.price < stockData.ma20 && stockData.changePct < -4) {
 			score = 1;
 			verdik = "STRONG BEARISH / SELLING PRESSURE";
 			verdikClass = "font-bold text-rose-500 text-sm lg:text-base";
