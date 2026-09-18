@@ -371,6 +371,7 @@ const databaseVIP = {
 	"IKE1268": { "tanggalExpired": "2026-09-10" },
 	"WIDI6474": { "tanggalExpired": "2026-08-31" },
 	"PRAMUDYA7383": { "tanggalExpired": "2026-08-11" },
+	"ANGGORO2103": { "tanggalExpired": "2027-09-16" },
 };
 
 let globalStockData = null;
