@@ -338,7 +338,7 @@ function closeWelcomeModal(dontShowAgain) {
 
 // DATABASE TOKEN VIP
 const databaseVIP = {
-	"555": { "tanggalExpired": "2040-07-25" },
+	"HEHEHE": { "tanggalExpired": "2040-07-25" },
 	"FREE123": { "tanggalExpired": "2026-08-26" },
 	"IRAM7363": { "tanggalExpired": "2026-10-24" },
 	"ANDI2636": { "tanggalExpired": "2026-09-18" },
@@ -985,7 +985,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		let actionDesc = "Pergerakan saham biasa saja, kenaikan normal dan volume masih dalam batas normal.";
 
 		// LOGIKA REKOMENDASI AKSI
-		if (stockData.price > stockData.ma20 && stockData.changePct > 2 && stockData.volRatio >= 2) {
+		if (stockData.price > stockData.ma10 && stockData.changePct > 2 && stockData.volRatio >= 2) {
 			// && (score === 4 || score === 5)) 
 			actionLabel = "🔥 STRONG BUY";
 			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
@@ -1717,7 +1717,7 @@ function renderRadarItems(dataList) {
 									Lihat Chart »
 								</button>
 							</div>
-							<span class="text-[10px] lg:text-xs text-white block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (<span class="${item.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>)</span>
+							<span class="text-[10px] text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (<span class="${item.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>)</span>
 						</div>
 					</div>
 					<span class="text-[9px] lg:text-[10px] font-bold px-2.5 py-1 rounded-full border ${statusClass}">
