@@ -378,7 +378,7 @@ const databaseVIP = {
 let globalStockData = null;
 let searchCooldownTimer = null;
 let exportCardCooldownTimer = null;
-let peerRefreshCooldownTimer = null;
+// let peerRefreshCooldownTimer = null;
 let isRadarScanning = false;
 
 function isMarketOpen() {
@@ -1233,122 +1233,106 @@ function exportTradingCard() {
 	});
 }
 
-function startPeerRefreshCooldown(seconds = 40) {
-	const btn = document.getElementById('btnRefreshPeer');
-	if (!btn) return;
-
-	//btn.disabled = true;
-	//btn.classList.add('opacity-50', 'cursor-not-allowed');
-	//let remaining = seconds;
-	btn.disabled = true;
-	btn.className = "text-[10px] lg:text-xs text-white font-bold bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 cursor-not-allowed";
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-emerald-400"></i> Sedang Membandingkan...`;
-	if (window.lucide) lucide.createIcons();
-
-	if (peerRefreshCooldownTimer) clearInterval(peerRefreshCooldownTimer);
-
-	//btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}d)`;
-	//if (window.lucide) lucide.createIcons();
-
-	peerRefreshCooldownTimer = setInterval(() => {
-		remaining--;
-		if (remaining <= 0) {
-			clearInterval(peerRefreshCooldownTimer);
-			btn.disabled = false;
-			btn.classList.remove('opacity-50', 'cursor-not-allowed');
-			btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Bandingkan`;
-			if (window.lucide) lucide.createIcons();
-		} else {
-			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}d)`;
-			if (window.lucide) lucide.createIcons();
-		}
-	}, 1000);
-}
-
 async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
-	if (isManualRefresh) {
-		const btn = document.getElementById('btnRefreshPeer');
-		if (btn && btn.disabled) return;
-		startPeerRefreshCooldown(40);
+	const btn = document.getElementById('btnRefreshPeer');
+	
+	if (isManualRefresh && btn) {
+		if (btn.disabled) return;
+		// 1. Ubah tombol ke state "Loading"
+		btn.disabled = true;
+		btn.className = "w-full sm:w-auto bg-slate-800 border border-slate-700 text-white font-bold px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
+		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-emerald-400"></i> Sedang Membandingkan...`;
+		if (window.lucide) lucide.createIcons();
 	}
 
-	const body = document.getElementById('peerTableBody');
-	document.getElementById('peerTickerLabel').innerText = targetTicker;
-	const refLabel = document.getElementById('peerTickerRef');
-	if (refLabel) refLabel.innerText = targetTicker;
+	try {
+		const body = document.getElementById('peerTableBody');
+		document.getElementById('peerTickerLabel').innerText = targetTicker;
+		const refLabel = document.getElementById('peerTickerRef');
+		if (refLabel) refLabel.innerText = targetTicker;
 
-	body.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1 text-cyan-400"></i> Memuat saham-saham dengan harga serupa...</td></tr>`;
-	if (window.lucide) lucide.createIcons();
+		body.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1 text-cyan-400"></i> Memuat saham-saham dengan harga serupa...</td></tr>`;
+		if (window.lucide) lucide.createIcons();
 
-	let baseData = globalStockData;
-	if (!baseData || baseData.ticker !== targetTicker) {
-		baseData = await fetchRealtimeStockData(targetTicker);
-	}
+		let baseData = globalStockData;
+		if (!baseData || baseData.ticker !== targetTicker) {
+			baseData = await fetchRealtimeStockData(targetTicker);
+		}
 
-	if (!baseData || !baseData.price) {
-		body.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-400">Gagal memuat harga acuan $${targetTicker}.</td></tr>`;
-		return;
-	}
+		if (!baseData || !baseData.price) {
+			body.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-400">Gagal memuat harga acuan $${targetTicker}.</td></tr>`;
+			return;
+		}
 
-	const basePrice = baseData.price;
-	const minPrice = basePrice * 0.75;
-	const maxPrice = basePrice * 1.25;
+		const basePrice = baseData.price;
+		const minPrice = basePrice * 0.75;
+		const maxPrice = basePrice * 1.25;
 
-	const sampleCandidates = uniqueRadarWatchlist.filter(t => t !== targetTicker);
-	for (let i = sampleCandidates.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[sampleCandidates[i], sampleCandidates[j]] = [sampleCandidates[j], sampleCandidates[i]];
-	}
+		const sampleCandidates = uniqueRadarWatchlist.filter(t => t !== targetTicker);
+		for (let i = sampleCandidates.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[sampleCandidates[i], sampleCandidates[j]] = [sampleCandidates[j], sampleCandidates[i]];
+		}
 
-	const peerResults = [baseData];
-	const BATCH_SIZE = 8;
+		const peerResults = [baseData];
+		const BATCH_SIZE = 8;
 
-	for (let i = 0; i < sampleCandidates.length; i += BATCH_SIZE) {
-		const batch = sampleCandidates.slice(i, i + BATCH_SIZE);
-		const fetchedBatch = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
-		
-		for (const item of fetchedBatch) {
-			if (item && item.price >= minPrice && item.price <= maxPrice) {
-				peerResults.push(item);
+		for (let i = 0; i < sampleCandidates.length; i += BATCH_SIZE) {
+			const batch = sampleCandidates.slice(i, i + BATCH_SIZE);
+			const fetchedBatch = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
+			
+			for (const item of fetchedBatch) {
+				if (item && item.price >= minPrice && item.price <= maxPrice) {
+					peerResults.push(item);
+				}
+				if (peerResults.length >= 8) break;
 			}
+
 			if (peerResults.length >= 8) break;
 		}
 
-		if (peerResults.length >= 8) break;
+		let rowsHTML = '';
+		peerResults.forEach(data => {
+			if (!data) return;
+			const isCurrent = data.ticker === targetTicker;
+			const isPlus = data.changePct >= 0;
+			const rowClass = isCurrent ? "bg-emerald-500/10 font-bold border-l-4 border-emerald-400" : "hover:bg-slate-800/50";
+
+			rowsHTML += `
+				<tr class="${rowClass}">
+					<td class="p-3.5 text-white flex items-center gap-2">
+						<strong class="text-emerald-400">&dollar;${data.ticker}</strong>
+					</td>
+					<td class="p-3.5 text-amber-400">Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}</td>
+					<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
+						${isPlus ? '+' : ''}${data.changePct}%
+					</td>
+					<td class="p-3.5 ${data.price >= data.ma5 ? 'text-emerald-400' : 'text-rose-400'}">
+						${data.price >= data.ma5 ? 'Bullish (Above MA5)' : 'Bearish (Below MA5)'}
+					</td>
+					<td class="p-3.5 ${data.volRatio >= 1.2 ? 'text-emerald-400 font-bold' : 'text-cyan-400'}">
+						${data.volRatio}x Vol
+					</td>
+					<td class="p-3.5 text-center">
+						<button onclick="selectSuggestion('${data.ticker}')" class="text-[10px] bg-emerald-600 hover:bg-cyan-600 text-white hover:text-white px-3 py-1 rounded-lg transition border-emerald-700/30 font-bold">
+							Lihat Chart »
+						</button>
+					</td>
+				</tr>
+			`;
+		});
+
+		body.innerHTML = rowsHTML || `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tidak ditemukan saham dengan range harga serupa.</td></tr>`;
+
+	} finally {
+		// 2. Kembalikan tombol ke state awal SEGERA setelah proses selesai
+		if (isManualRefresh && btn) {
+			btn.disabled = false;
+			btn.className = "w-full sm:w-auto bg-emerald-700 hover:bg-emerald-500 text-white font-bold px-6 py-2.5 rounded-lg border border-emerald-700 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0";
+			btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Bandingkan`;
+			if (window.lucide) lucide.createIcons();
+		}
 	}
-
-	let rowsHTML = '';
-	peerResults.forEach(data => {
-		if (!data) return;
-		const isCurrent = data.ticker === targetTicker;
-		const isPlus = data.changePct >= 0;
-		const rowClass = isCurrent ? "bg-emerald-500/10 font-bold border-l-4 border-emerald-400" : "hover:bg-slate-800/50";
-
-		rowsHTML += `
-			<tr class="${rowClass}">
-				<td class="p-3.5 text-white flex items-center gap-2">
-					<strong class="text-emerald-400">&dollar;${data.ticker}</strong>
-				</td>
-				<td class="p-3.5 text-amber-400">Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}</td>
-				<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
-					${isPlus ? '+' : ''}${data.changePct}%
-				</td>
-				<td class="p-3.5 ${data.price >= data.ma5 ? 'text-emerald-400' : 'text-rose-400'}">
-					${data.price >= data.ma5 ? 'Bullish (Above MA5)' : 'Bearish (Below MA5)'}
-				</td>
-				<td class="p-3.5 ${data.volRatio >= 1.2 ? 'text-emerald-400 font-bold' : 'text-cyan-400'}">
-					${data.volRatio}x Vol
-				</td>
-				<td class="p-3.5 text-center">
-					<button onclick="selectSuggestion('${data.ticker}')" class="text-[10px] bg-emerald-600 hover:bg-cyan-600 text-white hover:text-white px-3 py-1 rounded-lg transition border-emerald-700/30 font-bold">
-						Lihat Chart »
-					</button>
-				</td>
-			</tr>
-		`;
-	});
-
-	body.innerHTML = rowsHTML || `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tidak ditemukan saham dengan range harga serupa.</td></tr>`;
 }
 
 function getJournalData() {
@@ -2946,7 +2930,7 @@ function renderSectorHeatmap() {
 }
 
 // CUSTOM SCREENER BUILDER & DROPDOWN LOGIC
-let customScreenerCooldownTimer = null;
+// let customScreenerCooldownTimer = null;
 
 function toggleCustomDropdown(dropdownId) {
 	const dropdown = document.getElementById(dropdownId);
@@ -2981,182 +2965,166 @@ document.addEventListener('click', function(e) {
 	});
 });
 
-function startCustomScreenerCooldown(seconds = 40) {
-	const btn = document.getElementById('btnRunCustomScreener');
-	if (!btn) return;
-
-	//btn.disabled = true;
-	//btn.classList.add('opacity-50', 'cursor-not-allowed');
-	//let remaining = seconds;
-	btn.disabled = true;
-	btn.className = "text-[10px] lg:text-xs text-white font-bold bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 cursor-not-allowed";
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-blue-400"></i> Sedang Memfilter...`;
-	if (window.lucide) lucide.createIcons();
-
-	if (customScreenerCooldownTimer) clearInterval(customScreenerCooldownTimer);
-	
-	//btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}d)`;
-	//if (window.lucide) lucide.createIcons();
-
-	/*customScreenerCooldownTimer = setInterval(() => {
-		remaining--;
-		if (remaining <= 0) {
-			clearInterval(customScreenerCooldownTimer);
-			btn.disabled = false;
-			btn.classList.remove('opacity-50', 'cursor-not-allowed');
-			btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter`;
-			if (window.lucide) lucide.createIcons();
-		} else {
-			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}d)`;
-			if (window.lucide) lucide.createIcons();
-		}
-	}, 1000);*/
-}
-
 async function runCustomScreener() {
 	const btn = document.getElementById('btnRunCustomScreener');
 	if (btn && btn.disabled) return;
 
-	startCustomScreenerCooldown(40);
-
-	const container = document.getElementById('csResultsContainer');
-	const ruleMA = document.getElementById('csRuleMA').value;
-	const ruleVol = document.getElementById('csRuleVol').value;
-	const rulePrice = document.getElementById('csRulePrice').value;
-
-	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Memindai saham sesuai custom rules Kamu...</div>`;
-	if (window.lucide) lucide.createIcons();
-
-	const shuffled = [...uniqueRadarWatchlist];
-	for (let i = shuffled.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+	// 1. Ubah tombol ke state "Loading" (tanpa merusak ukuran)
+	if (btn) {
+		btn.disabled = true;
+		btn.className = "w-full sm:w-auto bg-slate-800 border border-slate-700 text-white font-bold px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
+		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-blue-400"></i> Sedang Memfilter...`;
+		if (window.lucide) lucide.createIcons();
 	}
 
-	let passedItems = [];
-	const BATCH_SIZE = 10;
+	try {
+		const container = document.getElementById('csResultsContainer');
+		const ruleMA = document.getElementById('csRuleMA').value;
+		const ruleVol = document.getElementById('csRuleVol').value;
+		const rulePrice = document.getElementById('csRulePrice').value;
 
-	for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
-		const batch = shuffled.slice(i, i + BATCH_SIZE);
-		const results = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
+		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Memindai saham sesuai custom rules Kamu...</div>`;
+		if (window.lucide) lucide.createIcons();
 
-		for (const item of results) {
-			if (!item || !item.price) continue;
-
-			// FIX: Menambahkan fallback || 0 agar seleksi tidak bentrok jika API delay
-			let matchMA = true;
-			if (ruleMA === 'ABOVE_MA5') matchMA = item.price > (item.ma5 || 0);
-			else if (ruleMA === 'ABOVE_MA20') matchMA = item.price > (item.ma20 || 0);
-			else if (ruleMA === 'GOLDEN_CROSS') matchMA = (item.ma5 || 0) > (item.ma10 || 0);
-			else if (ruleMA === 'BELOW_MA20') matchMA = item.price < (item.ma20 || 0);
-
-			let matchVol = true;
-			if (ruleVol === 'SPIKE_1.2') matchVol = (item.volRatio || 0) >= 1.2;
-			else if (ruleVol === 'SPIKE_2.0') matchVol = (item.volRatio || 0) >= 2.0;
-			else if (ruleVol === 'DRY') matchVol = (item.volRatio || 0) < 1.0;
-
-			let matchPrice = true;
-			if (rulePrice === 'GREEN') matchPrice = (item.changePct || 0) > 0;
-			else if (rulePrice === 'RED') matchPrice = (item.changePct || 0) < 0;
-			else if (rulePrice === 'BREAKOUT') matchPrice = (item.changePct || 0) >= 3.0;
-
-			if (matchMA && matchVol && matchPrice) {
-				passedItems.push(item);
-			}
+		const shuffled = [...uniqueRadarWatchlist];
+		for (let i = shuffled.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
 		}
 
-		if (passedItems.length >= 8) break;
-	}
+		let passedItems = [];
+		const BATCH_SIZE = 10;
 
-	if (passedItems.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10">Tidak ada saham yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya.</div>`;
-		return;
-	}
+		for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
+			const batch = shuffled.slice(i, i + BATCH_SIZE);
+			const results = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
 
-	let html = '';
-	passedItems.forEach((item, index) => {
-		const price = roundToBEITick(item.price);
-		const sl = roundToBEITick(price * 0.92, 'floor');
-		const entryLow = roundToBEITick(price * 0.94, 'floor');
-		const entryHigh = roundToBEITick(price * 0.96, 'floor');
-		const tp1 = roundToBEITick(price * 1.06, 'ceil');
-		const tp2 = roundToBEITick(price * 1.10, 'ceil');
+			for (const item of results) {
+				if (!item || !item.price) continue;
 
-		let infoMA = '';
-		if (ruleMA === 'ABOVE_MA5') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Pendek:</strong> Bertahan mantap di atas MA5 (Rp ${(item.ma5 || price).toLocaleString('id-ID')}).</span></li>`;
-		else if (ruleMA === 'ABOVE_MA20') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Menengah:</strong> Solid di atas support MA20 (Rp ${(item.ma20 || price).toLocaleString('id-ID')}).</span></li>`;
-		else if (ruleMA === 'GOLDEN_CROSS') infoMA = `<li class="flex gap-2"><i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0"></i> <span><strong class="text-amber-400">Golden Cross:</strong> MA5 (Rp ${(item.ma5 || price).toLocaleString('id-ID')}) melintasi naik di atas MA10.</span></li>`;
-		else if (ruleMA === 'BELOW_MA20') infoMA = `<li class="flex gap-2"><i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0"></i> <span><strong class="text-rose-400">Oversold:</strong> Di bawah MA20 (Rp ${(item.ma20 || price).toLocaleString('id-ID')}), pantau momentum teknikal rebound.</span></li>`;
-		else infoMA = `<li class="flex gap-2"><i data-lucide="info" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Tren:</strong> Area dinamis (Bebas), posisi harga akhir Rp ${price.toLocaleString('id-ID')}.</span></li>`;
+				let matchMA = true;
+				if (ruleMA === 'ABOVE_MA5') matchMA = item.price > (item.ma5 || 0);
+				else if (ruleMA === 'ABOVE_MA20') matchMA = item.price > (item.ma20 || 0);
+				else if (ruleMA === 'GOLDEN_CROSS') matchMA = (item.ma5 || 0) > (item.ma10 || 0);
+				else if (ruleMA === 'BELOW_MA20') matchMA = item.price < (item.ma20 || 0);
 
-		let infoVol = '';
-		if (ruleVol === 'SPIKE_1.2') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-blue-500 mt-0.5 shrink-0"></i> <span><strong class="text-blue-500">Volume Spike:</strong> Indikasi akumulasi dengan rasio ${item.volRatio}x lipat dari rerata harian.</span></li>`;
-		else if (ruleVol === 'SPIKE_2.0') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-fuchsia-400 mt-0.5 shrink-0"></i> <span><strong class="text-fuchsia-400">Volume Meledak:</strong> Akumulasi sangat masif menyentuh ${item.volRatio}x rerata.</span></li>`;
-		else if (ruleVol === 'DRY') infoVol = `<li class="flex gap-2"><i data-lucide="droplet" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-400">Volume Kering:</strong> Sepi transaksi, hanya ${item.volRatio}x lipat (rawan distribusi atau akumulasi pasif).</span></li>`;
-		else infoVol = `<li class="flex gap-2"><i data-lucide="activity" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Likuiditas:</strong> Perdagangan normal dengan kekuatan volume ${item.volRatio}x.</span></li>`;
+				let matchVol = true;
+				if (ruleVol === 'SPIKE_1.2') matchVol = (item.volRatio || 0) >= 1.2;
+				else if (ruleVol === 'SPIKE_2.0') matchVol = (item.volRatio || 0) >= 2.0;
+				else if (ruleVol === 'DRY') matchVol = (item.volRatio || 0) < 1.0;
 
-		let infoPrice = '';
-		if (rulePrice === 'GREEN') infoPrice = `<li class="flex gap-2"><i data-lucide="trending-up" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Positif:</strong> Ditutup hijau (+${item.changePct}%).</span></li>`;
-		else if (rulePrice === 'RED') infoPrice = `<li class="flex gap-2"><i data-lucide="trending-down" class="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0"></i> <span><strong class="text-rose-400">Koreksi:</strong> Mengalami penurunan (${item.changePct}%).</span></li>`;
-		else if (rulePrice === 'BREAKOUT') infoPrice = `<li class="flex gap-2"><i data-lucide="rocket" class="w-3.5 h-3.5 text-cyan-400 mt-0.5 shrink-0"></i> <span><strong class="text-cyan-400">Breakout Kuat:</strong> Melaju tinggi dengan akselerasi impresif (+${item.changePct}%).</span></li>`;
-		else infoPrice = `<li class="flex gap-2"><i data-lucide="hash" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Pergerakan Harian:</strong> Tercatat sebesar ${item.changePct >= 0 ? '+' : ''}${item.changePct}%.</span></li>`;
+				let matchPrice = true;
+				if (rulePrice === 'GREEN') matchPrice = (item.changePct || 0) > 0;
+				else if (rulePrice === 'RED') matchPrice = (item.changePct || 0) < 0;
+				else if (rulePrice === 'BREAKOUT') matchPrice = (item.changePct || 0) >= 3.0;
 
-		html += `
-			<div class="bg-slate-950/10 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative hover:border-blue-500/30 transition-colors">
-				<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
-					<div class="flex items-center gap-2">
-						<span class="bg-slate-800 text-blue-500 text-[10px] px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
-						<div>
-							<div class="flex items-center gap-2">
-								<span class="font-bold text-white text-sm lg:text-base">&dollar;${item.ticker}</span>
-								<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[10px] bg-blue-600 hover:bg-emerald-600 text-white font-bold px-2.5 py-0.5 rounded transition shadow-sm">
-									Lihat Chart »
-								</button>
+				if (matchMA && matchVol && matchPrice) {
+					passedItems.push(item);
+				}
+			}
+
+			if (passedItems.length >= 8) break;
+		}
+
+		if (passedItems.length === 0) {
+			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10">Tidak ada saham yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya.</div>`;
+			return;
+		}
+
+		let html = '';
+		passedItems.forEach((item, index) => {
+			const price = roundToBEITick(item.price);
+			const sl = roundToBEITick(price * 0.92, 'floor');
+			const entryLow = roundToBEITick(price * 0.94, 'floor');
+			const entryHigh = roundToBEITick(price * 0.96, 'floor');
+			const tp1 = roundToBEITick(price * 1.06, 'ceil');
+			const tp2 = roundToBEITick(price * 1.10, 'ceil');
+
+			let infoMA = '';
+			if (ruleMA === 'ABOVE_MA5') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Pendek:</strong> Bertahan mantap di atas MA5 (Rp ${(item.ma5 || price).toLocaleString('id-ID')}).</span></li>`;
+			else if (ruleMA === 'ABOVE_MA20') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Menengah:</strong> Solid di atas support MA20 (Rp ${(item.ma20 || price).toLocaleString('id-ID')}).</span></li>`;
+			else if (ruleMA === 'GOLDEN_CROSS') infoMA = `<li class="flex gap-2"><i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0"></i> <span><strong class="text-amber-400">Golden Cross:</strong> MA5 (Rp ${(item.ma5 || price).toLocaleString('id-ID')}) melintasi naik di atas MA10.</span></li>`;
+			else if (ruleMA === 'BELOW_MA20') infoMA = `<li class="flex gap-2"><i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0"></i> <span><strong class="text-rose-400">Oversold:</strong> Di bawah MA20 (Rp ${(item.ma20 || price).toLocaleString('id-ID')}), pantau momentum teknikal rebound.</span></li>`;
+			else infoMA = `<li class="flex gap-2"><i data-lucide="info" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Tren:</strong> Area dinamis (Bebas), posisi harga akhir Rp ${price.toLocaleString('id-ID')}.</span></li>`;
+
+			let infoVol = '';
+			if (ruleVol === 'SPIKE_1.2') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-blue-500 mt-0.5 shrink-0"></i> <span><strong class="text-blue-500">Volume Spike:</strong> Indikasi akumulasi dengan rasio ${item.volRatio}x lipat dari rerata harian.</span></li>`;
+			else if (ruleVol === 'SPIKE_2.0') infoVol = `<li class="flex gap-2"><i data-lucide="zap" class="w-3.5 h-3.5 text-fuchsia-400 mt-0.5 shrink-0"></i> <span><strong class="text-fuchsia-400">Volume Meledak:</strong> Akumulasi sangat masif menyentuh ${item.volRatio}x rerata.</span></li>`;
+			else if (ruleVol === 'DRY') infoVol = `<li class="flex gap-2"><i data-lucide="droplet" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-400">Volume Kering:</strong> Sepi transaksi, hanya ${item.volRatio}x lipat (rawan distribusi atau akumulasi pasif).</span></li>`;
+			else infoVol = `<li class="flex gap-2"><i data-lucide="activity" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Likuiditas:</strong> Perdagangan normal dengan kekuatan volume ${item.volRatio}x.</span></li>`;
+
+			let infoPrice = '';
+			if (rulePrice === 'GREEN') infoPrice = `<li class="flex gap-2"><i data-lucide="trending-up" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Positif:</strong> Ditutup hijau (+${item.changePct}%).</span></li>`;
+			else if (rulePrice === 'RED') infoPrice = `<li class="flex gap-2"><i data-lucide="trending-down" class="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0"></i> <span><strong class="text-rose-400">Koreksi:</strong> Mengalami penurunan (${item.changePct}%).</span></li>`;
+			else if (rulePrice === 'BREAKOUT') infoPrice = `<li class="flex gap-2"><i data-lucide="rocket" class="w-3.5 h-3.5 text-cyan-400 mt-0.5 shrink-0"></i> <span><strong class="text-cyan-400">Breakout Kuat:</strong> Melaju tinggi dengan akselerasi impresif (+${item.changePct}%).</span></li>`;
+			else infoPrice = `<li class="flex gap-2"><i data-lucide="hash" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Pergerakan Harian:</strong> Tercatat sebesar ${item.changePct >= 0 ? '+' : ''}${item.changePct}%.</span></li>`;
+
+			html += `
+				<div class="bg-slate-950/10 p-3.5 lg:p-4 rounded-xl border border-slate-800 space-y-3 relative hover:border-blue-500/30 transition-colors">
+					<div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+						<div class="flex items-center gap-2">
+							<span class="bg-slate-800 text-blue-500 text-[10px] px-2 py-0.5 rounded border border-slate-700">#${index + 1}</span>
+							<div>
+								<div class="flex items-center gap-2">
+									<span class="font-bold text-white text-sm lg:text-base">&dollar;${item.ticker}</span>
+									<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[10px] bg-blue-600 hover:bg-emerald-600 text-white font-bold px-2.5 py-0.5 rounded transition shadow-sm">
+										Lihat Chart »
+									</button>
+								</div>
+								<span class="text-[10px] text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (<span class="${item.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>)</span>
 							</div>
-							<span class="text-[10px] text-slate-400 block">Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> (<span class="${item.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>)</span>
+						</div>
+						<span class="text-[9px] font-bold px-2.5 py-1 rounded-full border text-blue-500 border-blue-500/30 bg-blue-500/10">
+							Custom Filter Match
+						</span>
+					</div>
+
+					<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs">
+						<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+							<span class="text-slate-400 text-[9px] block">Entry Ideal</span>
+							<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
+						</div>
+						<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+							<span class="text-slate-400 text-[9px] block">AVG Bandar</span>
+							<span class="font-bold text-blue-500">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
+						</div>
+						<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+							<span class="text-slate-400 text-[9px] block">Take Profit</span>
+							<span class="font-bold text-emerald-300">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
+						</div>
+						<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+							<span class="text-slate-400 text-[9px] block">Stop Loss</span>
+							<span class="font-bold text-rose-400">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
 						</div>
 					</div>
-					<span class="text-[9px] font-bold px-2.5 py-1 rounded-full border text-blue-500 border-blue-500/30 bg-blue-500/10">
-						Custom Filter Match
-					</span>
-				</div>
 
-				<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs">
-					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-slate-400 text-[9px] block">Entry Ideal</span>
-						<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
-					</div>
-					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-slate-400 text-[9px] block">AVG Bandar</span>
-						<span class="font-bold text-blue-500">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
-					</div>
-					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-slate-400 text-[9px] block">Take Profit</span>
-						<span class="font-bold text-emerald-300">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
-					</div>
-					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-						<span class="text-slate-400 text-[9px] block">Stop Loss</span>
-						<span class="font-bold text-rose-400">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
+					<div class="bg-slate-900/50 p-3 rounded border border-slate-800 text-[10px] lg:text-[11px] text-slate-300 leading-relaxed space-y-2">
+						<span class="text-blue-500 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
+							<i data-lucide="list-filter" class="w-3.5 h-3.5"></i> DETAIL KECOCOKAN FILTER:
+						</span>
+						<ul class="space-y-1.5">
+							${infoMA}
+							${infoVol}
+							${infoPrice}
+						</ul>
 					</div>
 				</div>
+			`;
+		});
 
-				<div class="bg-slate-900/50 p-3 rounded border border-slate-800 text-[10px] lg:text-[11px] text-slate-300 leading-relaxed space-y-2">
-					<span class="text-blue-500 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
-						<i data-lucide="list-filter" class="w-3.5 h-3.5"></i> DETAIL KECOCOKAN FILTER:
-					</span>
-					<ul class="space-y-1.5">
-						${infoMA}
-						${infoVol}
-						${infoPrice}
-					</ul>
-				</div>
-			</div>
-		`;
-	});
+		container.innerHTML = html;
+		if (window.lucide) lucide.createIcons();
+		AudioFX.playSuccess();
 
-	container.innerHTML = html;
-	if (window.lucide) lucide.createIcons();
-	AudioFX.playSuccess();
+	} finally {
+		// 2. Kembalikan tombol ke state awal SEGERA setelah proses selesai/error
+		if (btn) {
+			btn.disabled = false;
+			btn.className = "w-full sm:w-auto bg-blue-800 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-lg border border-blue-700 transition shadow-lg shadow-blue-700/20 flex items-center justify-center gap-2 shrink-0";
+			btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter`;
+			if (window.lucide) lucide.createIcons();
+		}
+	}
 }
 
 function selectTickerFromCustom(ticker) {
