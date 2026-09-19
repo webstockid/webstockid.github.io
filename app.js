@@ -667,7 +667,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const targetSymbol = `${ticker}.JK`;
 	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 	
-	const fetchWithTimeout = (url, timeoutMs = 5000) => { //3000
+	const fetchWithTimeout = (url, timeoutMs = 6000) => { //3000
 		return new Promise((resolve, reject) => {
 			const timer = setTimeout(() => reject(new Error('Timeout')), timeoutMs);
 			fetch(url)
@@ -691,7 +691,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
 	const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
 	
-	const yahooPromise = fetchWithTimeout(allOriginsUrl, 3000)
+	const yahooPromise = fetchWithTimeout(allOriginsUrl, 6000) //3000
 		.then(res => res.json())
 		.then(wrapper => JSON.parse(wrapper.contents))
 		.then(json => parseYahooDataGlobal(json, ticker));
@@ -915,7 +915,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			verdik = "BULLISH ACCUMULATION";
 			verdikClass = "font-bold text-emerald-300 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.price > stockData.ma10 && stockData.price < stockData.ma20 && stockData.changePct >= -3 && stockData.changePct <= 2) {
+		} else if (stockData.price > stockData.ma5 && stockData.price < stockData.ma20 && stockData.changePct >= -3 && stockData.changePct <= 2) {
 			// stockData.price >= stockData.ma10 && isBelowMA20 && stockData.changePct >= -3.0) {
 			score = 3;
 			verdik = "NETRAL / KONSOLIDASI";
@@ -1019,17 +1019,17 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		let bandarBarColor = "from-slate-600 via-slate-400 to-slate-300 shadow-[0_0_15px_rgba(148,163,184,0.4)]";
 		let bandarPct = 50;
 
-		if (stockData.changePct > 2 && stockData.volRatio > 2) {
+		if (stockData.changePct > 2 && stockData.volRatio > 3) {
 			bandarStatus = "Masif Akumulasi 🐂";
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 95; 
-		} else if (stockData.changePct > 1 && stockData.volRatio > 1) {
+		} else if (stockData.changePct > 1 && stockData.volRatio > 2) {
 			bandarStatus = "Akumulasi 🐳";
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 80; 
-		} else if (stockData.changePct >= -1 && stockData.volRatio > 1) {
+		} else if (stockData.changePct >= -2 && stockData.volRatio > 1) {
 			bandarStatus = "Netral ⚖️";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
