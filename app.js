@@ -1242,7 +1242,7 @@ function startPeerRefreshCooldown(seconds = 40) {
 	//let remaining = seconds;
 	btn.disabled = true;
 	btn.className = "text-[10px] lg:text-xs text-white font-bold bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 cursor-not-allowed";
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-cyan-400"></i> Sedang Membandingkan...`;
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-emerald-400"></i> Sedang Membandingkan...`;
 	if (window.lucide) lucide.createIcons();
 
 	if (peerRefreshCooldownTimer) clearInterval(peerRefreshCooldownTimer);
@@ -1250,7 +1250,7 @@ function startPeerRefreshCooldown(seconds = 40) {
 	//btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}d)`;
 	//if (window.lucide) lucide.createIcons();
 
-	/*peerRefreshCooldownTimer = setInterval(() => {
+	peerRefreshCooldownTimer = setInterval(() => {
 		remaining--;
 		if (remaining <= 0) {
 			clearInterval(peerRefreshCooldownTimer);
@@ -1262,7 +1262,7 @@ function startPeerRefreshCooldown(seconds = 40) {
 			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}d)`;
 			if (window.lucide) lucide.createIcons();
 		}
-	}, 1000);*/
+	}, 1000);
 }
 
 async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
