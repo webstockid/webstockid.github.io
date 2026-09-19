@@ -2984,7 +2984,7 @@ async function runCustomScreener() {
 		const ruleVol = document.getElementById('csRuleVol').value;
 		const rulePrice = document.getElementById('csRulePrice').value;
 
-		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Memindai saham sesuai custom rules Kamu...</div>`;
+		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Memfilter saham sesuai custom rules Kamu...</div>`;
 		if (window.lucide) lucide.createIcons();
 
 		const shuffled = [...uniqueRadarWatchlist];
