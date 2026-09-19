@@ -1242,7 +1242,7 @@ function startPeerRefreshCooldown(seconds = 40) {
 	//let remaining = seconds;
 	btn.disabled = true;
 	btn.className = "text-[10px] lg:text-xs text-white font-bold bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 cursor-not-allowed";
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-cyan-400"></i> Sedang Memfilter...`;
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-cyan-400"></i> Sedang Membandingkan...`;
 	if (window.lucide) lucide.createIcons();
 
 	if (peerRefreshCooldownTimer) clearInterval(peerRefreshCooldownTimer);
