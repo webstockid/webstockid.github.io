@@ -813,7 +813,7 @@ async function generateAISignal(ticker, isManualSearch = false) {
 	const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
 	document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
-	document.getElementById('aiDateStamp').innerText = `Update Live: ${dateStr} ${timeStr} WIB`;
+	document.getElementById('aiDateStamp').innerText = `Update: ${dateStr} ${timeStr} WIB`;
 
 	setTimeout(() => fetchStockNewsForAI(ticker), 10);
 
@@ -2986,11 +2986,15 @@ function startCustomScreenerCooldown(seconds = 40) {
 	let remaining = seconds;
 
 	if (customScreenerCooldownTimer) clearInterval(customScreenerCooldownTimer);
-
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}d)`;
+	
+	btn.disabled = true;
+	btn.className = "text-[10px] lg:text-xs text-white font-bold bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 cursor-not-allowed";
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-amber-400"></i> Memindai Instan...`;
 	if (window.lucide) lucide.createIcons();
+	//btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}d)`;
+	//if (window.lucide) lucide.createIcons();
 
-	customScreenerCooldownTimer = setInterval(() => {
+	/*customScreenerCooldownTimer = setInterval(() => {
 		remaining--;
 		if (remaining <= 0) {
 			clearInterval(customScreenerCooldownTimer);
@@ -3002,7 +3006,7 @@ function startCustomScreenerCooldown(seconds = 40) {
 			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Tunggu (${remaining}d)`;
 			if (window.lucide) lucide.createIcons();
 		}
-	}, 1000);
+	}, 1000);*/
 }
 
 async function runCustomScreener() {
