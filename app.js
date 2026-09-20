@@ -3595,15 +3595,15 @@ async function scanWhalesData() {
 			let tierClass = "";
 
 			// LOGIKA KATEGORI TIER (Rapi & Presisi)
-			if (vol >= 2.0 && chg >= 1.0 && chg <= 6.5 && price > ma5) {
+			if (vol >= 3.0 && chg >= 1.0 && chg <= 6.0 && price > ma5) {
 				tier = 3;
 				tierName = "PAUS KUAT (STRONG WHALE)";
 				tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-			} else if (vol >= 1.5 && vol < 3.0 && chg >= 0.5 && chg <= 4.0) {
+			} else if (vol >= 2.0 && vol < 3.0 && chg >= 0 && chg <= 4.0) {
 				tier = 2;
 				tierName = "PAUS SEDANG (MEDIUM WHALE)";
 				tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
-			} else if (vol >= 1.2 && vol < 2.0 && chg >= 0 && chg <= 2.0) {
+			} else if (vol >= 1.5 && vol < 2.0 && chg >= 0 && chg <= 4.0) {
 				tier = 1;
 				tierName = "INDIKASI PAUS (WHALE SIGN)";
 				tierClass = "bg-amber-500/20 border-amber-500/40 text-amber-400";
@@ -3645,7 +3645,7 @@ async function scanWhalesData() {
 			const s2 = roundToBEITick(price * 0.96, 'floor');
 			const r1 = roundToBEITick(price * 1.04, 'ceil');
 			const r2 = roundToBEITick(price * 1.08, 'ceil');
-			const cl = roundToBEITick(price * 0.91, 'floor');
+			const cl = roundToBEITick(price * 0.92, 'floor');
 			const entryAgresif = roundToBEITick(price * 0.99, 'floor');
 			const entryAman = roundToBEITick(price * 0.97, 'floor');
 
