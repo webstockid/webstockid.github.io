@@ -913,8 +913,8 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		} else if (stockData.price > stockData.ma10 && stockData.changePct > 1 && stockData.volRatio >= 1.5) {
 			score = 4;
 			verdik = "BULLISH ACCUMULATION";
-			verdikClass = "font-bold text-emerald-300 text-sm lg:text-base";
-			scoreClass = "font-bold bg-slate-800 text-emerald-300 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+			verdikClass = "font-bold text-emerald-400 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if (stockData.price > stockData.ma5 && stockData.price < stockData.ma20 && stockData.changePct >= -3 && stockData.changePct <= 2) {
 			// stockData.price >= stockData.ma10 && isBelowMA20 && stockData.changePct >= -3.0) {
 			score = 3;
@@ -1727,7 +1727,7 @@ function renderRadarItems(dataList) {
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-white text-[9px] lg:text-[10px] block">Take Profit</span>
-						<span class="font-bold text-emerald-300">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
+						<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 						<span class="text-white text-[9px] lg:text-[10px] block">Stop Loss</span>
@@ -3091,7 +3091,7 @@ async function runCustomScreener() {
 						</div>
 						<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 							<span class="text-slate-400 text-[9px] block">Take Profit</span>
-							<span class="font-bold text-emerald-300">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
+							<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 						</div>
 						<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
 							<span class="text-slate-400 text-[9px] block">Stop Loss</span>
@@ -3766,7 +3766,7 @@ function sendAIChatMessage() {
 
 	msgContainer.innerHTML += `
 		<div class="flex items-start justify-end gap-2">
-			<div class="bg-emerald-500/20 text-emerald-300 p-2.5 rounded-xl rounded-tr-none border border-emerald-500/30 leading-relaxed max-w-[85%]">
+			<div class="bg-emerald-500/20 text-emerald-400 p-2.5 rounded-xl rounded-tr-none border border-emerald-500/30 leading-relaxed max-w-[85%]">
 				${escapeHtml(query)}
 			</div>
 		</div>

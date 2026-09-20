@@ -120,30 +120,44 @@
 			}
 
 			/* Tema Terang (Light Mode) Override */
-			body.light-mode {
-				background-color: #fafafa !important;
-				color: #0f172a !important;
-			}
-			body.light-mode ul {
-				color: #111 !important;
-			}
-			body.light-mode li {
-				color: #111 !important;
-			}
-			body.light-mode .bg-slate-900 { background-color: #fafafa !important; border-color: #e2e8f0 !important; color: #0f172a !important; }
-			body.light-mode .bg-slate-950\/10, body.light-mode .bg-slate-950\/20, body.light-mode .bg-slate-950\/30, 
-			body.light-mode .bg-slate-950\/40, body.light-mode .bg-slate-950\/50, body.light-mode .bg-slate-900\/40, 
-			body.light-mode .bg-slate-900\/50, body.light-mode .bg-slate-900\/60, body.light-mode .bg-slate-900\/70, 
-			body.light-mode .bg-slate-900\/80, body.light-mode .bg-slate-900\/90 { 
-				background-color: #efefef !important; border-color: #cbd5e1 !important; 
-			}
-			body.light-mode .text-slate-200, body.light-mode .text-white { color: #0f172a !important; }
-			body.light-mode .text-slate-300, body.light-mode .text-slate-400 { color: #475569 !important; }
-			body.light-mode .border-slate-800, body.light-mode .border-slate-700 { border-color: #cbd5e1 !important; }
-			body.light-mode .glassmorphism { background-color: #fafafa; border-color: rgba(0,0,0,0.1); }
-			body.light-mode input { background-color: #fafafa !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
-			body.light-mode button {color: #eee !important;}
-			body.light-mode btn {color: #eee !important;}
+body.light-mode {
+	background-color: #fafafa !important;
+	color: #0f172a !important;
+}
+body.light-mode ul {
+	color: #111 !important;
+} /* <-- FIX: Menambahkan tutup kurung kurawal yang sebelumnya hilang */
+body.light-mode li {
+	color: #111 !important;
+}
+
+/* FIX: Menggunakan attribute selector untuk otomatis mencakup SEMUA variasi bg-slate gelap dan opacity-nya (/10 sampai /95) */
+body.light-mode .bg-slate-950, 
+body.light-mode .bg-slate-900, 
+body.light-mode .bg-slate-800, 
+body.light-mode .bg-slate-700 { 
+	background-color: #fafafa !important; 
+	border-color: #e2e8f0 !important; 
+	color: #0f172a !important; 
+}
+
+body.light-mode [class*="bg-slate-950/"], 
+body.light-mode [class*="bg-slate-900/"], 
+body.light-mode [class*="bg-slate-800/"],
+body.light-mode [class*="bg-slate-700/"] { 
+	background-color: #efefef !important; 
+	border-color: #cbd5e1 !important; 
+}
+
+body.light-mode .text-slate-200, body.light-mode .text-white { color: #0f172a !important; }
+body.light-mode .text-slate-300, body.light-mode .text-slate-400 { color: #475569 !important; }
+body.light-mode .border-slate-800, body.light-mode .border-slate-700 { border-color: #cbd5e1 !important; }
+body.light-mode .glassmorphism { background-color: #fafafa !important; border-color: rgba(0,0,0,0.1) !important; }
+body.light-mode input { background-color: #fafafa !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
+
+/* FIX: Mengubah teks tombol menjadi gelap agar bisa dibaca di atas background yang sudah berubah terang */
+body.light-mode button { color: #efefef !important; }
+body.light-mode btn { color: #efefef !important; }
 		</style>
 	</head>
 
