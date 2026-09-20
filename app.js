@@ -3141,18 +3141,22 @@ function ptSwitchSubTab(subTab) {
 	const contentForm = document.getElementById('ptSubContentForm');
 	const contentPorto = document.getElementById('ptSubContentPorto');
 
+	// Clean code: Memasukkan deretan class Tailwind ke dalam variabel agar rapi
+	const activeClass = "flex-1 py-2 text-xs font-bold rounded-lg bg-orange-600 text-white transition flex items-center justify-center gap-2 shadow-sm shadow-orange-600/20";
+	const inactiveClass = "flex-1 py-2 text-xs font-bold rounded-lg text-orange-400 hover:text-white hover:bg-orange-900/30 transition flex items-center justify-center gap-2";
+
 	if (subTab === 'form') {
-		btnForm.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-violet-600 text-white transition flex items-center justify-center gap-2 shadow-sm shadow-violet-600/20";
-		btnPorto.className = "flex-1 py-2 text-xs font-bold rounded-lg text-violet-300 hover:text-white hover:bg-violet-900/30 transition flex items-center justify-center gap-2";
-		contentForm.classList.remove('hidden');
-		contentPorto.classList.add('hidden');
+		if (btnForm) btnForm.className = activeClass;
+		if (btnPorto) btnPorto.className = inactiveClass;
+		if (contentForm) contentForm.classList.remove('hidden');
+		if (contentPorto) contentPorto.classList.add('hidden');
 	} else {
-		btnPorto.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-violet-600 text-white transition flex items-center justify-center gap-2 shadow-sm shadow-violet-600/20";
-		btnForm.className = "flex-1 py-2 text-xs font-bold rounded-lg text-violet-300 hover:text-white hover:bg-violet-900/30 transition flex items-center justify-center gap-2";
-		contentPorto.classList.remove('hidden');
-		contentForm.classList.add('hidden');
+		if (btnPorto) btnPorto.className = activeClass;
+		if (btnForm) btnForm.className = inactiveClass;
+		if (contentPorto) contentPorto.classList.remove('hidden');
+		if (contentForm) contentForm.classList.add('hidden');
 	}
-	AudioFX.playClick();
+	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
 }
 
 function savePaperAccount(acc) {
@@ -3332,7 +3336,7 @@ function renderPaperTradingUI() {
 	const acc = getPaperAccount();
 	
 	let stockAssetValue = 0;
-	let totalUnrealizedPnL = 0; // Untuk di tabel
+	let totalUnrealizedPnL = 0; 
 	let totalModalAktif = 0;
 
 	acc.portfolio.forEach(item => {
@@ -3352,8 +3356,6 @@ function renderPaperTradingUI() {
 	});
 
 	const totalEquity = acc.cash + stockAssetValue;
-
-	// KALKULASI REALIZED PNL (Dari histori penjualan)
 	const totalRealizedPnL = acc.history.reduce((sum, item) => sum + item.profitLoss, 0);
 	const realizedColor = totalRealizedPnL > 0 ? 'text-emerald-400' : (totalRealizedPnL < 0 ? 'text-rose-400' : 'text-slate-400');
 	const realizedSign = totalRealizedPnL > 0 ? '+' : '';
@@ -3361,14 +3363,12 @@ function renderPaperTradingUI() {
 	document.getElementById('ptCash').innerText = `Rp ${Math.round(acc.cash).toLocaleString('id-ID')}`;
 	document.getElementById('ptEquity').innerText = `Rp ${Math.round(totalEquity).toLocaleString('id-ID')}`;
 	
-	// Inject Data Realized PnL ke Profil UI
 	const elRealized = document.getElementById('ptRealizedPnL');
 	if (elRealized) {
 		elRealized.className = `text-sm lg:text-base font-bold ${realizedColor}`;
 		elRealized.innerText = `${realizedSign}Rp ${Math.round(totalRealizedPnL).toLocaleString('id-ID')}`;
 	}
 
-	// KALKULASI FLOATING / UNREALIZED PNL (Menempel di pojok kanan tabel)
 	const unrealizedPct = totalModalAktif > 0 ? ((totalUnrealizedPnL / totalModalAktif) * 100).toFixed(2) : 0;
 	const unrealizedColor = totalUnrealizedPnL > 0 ? 'text-emerald-400' : (totalUnrealizedPnL < 0 ? 'text-rose-400' : 'text-slate-400');
 	const unrealizedSign = totalUnrealizedPnL > 0 ? '+' : '';
@@ -3385,9 +3385,10 @@ function renderPaperTradingUI() {
 
 	document.getElementById('ptWinRate').innerHTML = `Win Rate: ${winRate}% (${totalWin}/${totalClosed})`;
 
+	// Mengubah warna NEWBIE TRADER agar harmoni dengan nuansa orange
 	let rankName = "NEWBIE TRADER 🥺";
-	let rankColor = "from-violet-400 to-fuchsia-400";
-	let badgeClass = "bg-fuchsia-500/10 border-fuchsia-500/30";
+	let rankColor = "from-orange-400 to-amber-400";
+	let badgeClass = "bg-orange-500/10 border-orange-500/30";
 	if (totalEquity >= 250000000 && winRate >= 70) {
 		rankName = "BANDAR 🐋";
 		rankColor = "from-emerald-400 to-teal-400";
@@ -3398,7 +3399,7 @@ function renderPaperTradingUI() {
 		badgeClass = "bg-cyan-500/10 border-cyan-500/30";
 	} else if (totalEquity >= 110000000 && winRate >= 60) {
 		rankName = "PRO TRADER 😎";
-		rankColor = "from-orange-400 to-amber-400";
+		rankColor = "from-amber-400 to-yellow-500";
 		badgeClass = "bg-amber-500/10 border-amber-500/30";
 	} else if (totalEquity >= 80000000) {
 		rankName = "NORMAL TRADER 😼";
@@ -3418,7 +3419,7 @@ function renderPaperTradingUI() {
 
 	const portoBody = document.getElementById('ptPortoBody');
 	if (acc.portfolio.length === 0) {
-		portoBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-violet-400 font-sans border-t border-slate-500/20">Belum ada posisi terbuka. Gunakan form di sebelah kiri untuk simulasi beli.</td></tr>`;
+		portoBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-orange-400 font-sans border-t border-slate-500/20">Belum ada posisi terbuka. Gunakan form di sebelah kiri untuk simulasi beli.</td></tr>`;
 	} else {
 		let html = '';
 		acc.portfolio.forEach(item => {
@@ -3437,8 +3438,8 @@ function renderPaperTradingUI() {
 
 			html += `
 				<tr class="hover:bg-slate-800/40">
-					<td class="p-3.5 font-bold text-violet-400">&dollar;${item.ticker}</td>
-					<td class="p-3.5 text-blue-500">${item.lots.toLocaleString('id-ID')} Lot</td>
+					<td class="p-3.5 font-bold text-orange-400">&dollar;${item.ticker}</td>
+					<td class="p-3.5 text-blue-400">${item.lots.toLocaleString('id-ID')} Lot</td>
 					<td class="p-3.5 text-amber-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
 					<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
 					<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
@@ -3455,7 +3456,7 @@ function renderPaperTradingUI() {
 
 	const historyContainer = document.getElementById('ptHistoryContainer');
 	if (acc.history.length === 0) {
-		historyContainer.innerHTML = `<div class="text-violet-400 text-xs text-center col-span-full py-4 border border-dashed border-slate-500/20 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>`;
+		historyContainer.innerHTML = `<div class="text-orange-400 text-xs text-center col-span-full py-4 border border-dashed border-slate-500/20 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>`;
 	} else {
 		let hHtml = '';
 		acc.history.slice(0, 6).forEach(h => {
@@ -3465,7 +3466,7 @@ function renderPaperTradingUI() {
 			hHtml += `
 				<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1 shadow-sm hover:border-slate-500/30 transition-colors">
 					<div class="flex justify-between items-center">
-						<span class="font-bold text-violet-400">&dollar;${h.ticker} <strong class='text-blue-500'>(${h.lots} Lot)</strong></span>
+						<span class="font-bold text-orange-400">&dollar;${h.ticker} <strong class='text-blue-400'>(${h.lots} Lot)</strong></span>
 						<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
 					</div>
 					<div class="flex justify-between text-[11px] text-slate-300 pb-1">
@@ -3474,7 +3475,7 @@ function renderPaperTradingUI() {
 					</div>
 					<div class="flex justify-between items-center pt-1.5 border-t border-slate-800/80 mt-1">
 						<div class="flex flex-col">
-							<span class="text-[11px] text-violet-400 uppercase font-bold">Modal Awal</span>
+							<span class="text-[11px] text-orange-400 uppercase font-bold">Modal Awal</span>
 							<span class="text-[11px] text-amber-400 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
 						</div>
 						<div class="text-right font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'} text-xs">
