@@ -272,7 +272,7 @@ function applyFontStyle(fontName) {
 		`;
 	}
 	
-	document.documentElement.style.setProperty('--app-font-family', `"${fontName}", sans-serif`);
+	document.documentElement.style.setProperty('--app-font-family', `"${fontName}"`);
 	localStorage.setItem('stockid_font_family', fontName);
 	
 	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
