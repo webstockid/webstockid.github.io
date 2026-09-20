@@ -995,7 +995,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		} else if (stockData.price > stockData.ma20 && stockData.changePct > 2) {
 			// && (score === 3 || score === 4)) 
 			actionLabel = "⚠️ TAKE PROFIT / HOLD";
-			actionColor = "text-purple-400 bg-purple-500/10 border-purple-500/30";
+			actionColor = "text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/30";
 			actionDesc = "Tren masih terjaga di atas garis MA menengah. Pertimbangkan untuk menahan posisi atau amankan profit.";
 		} else if (stockData.price > stockData.ma10 && stockData.volRatio >= 1) {
 			// && (score === 2 || score === 3)) 
@@ -2433,7 +2433,7 @@ async function fetchCorporateAction(ticker) {
 				container.innerHTML += `
 					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 						<div class="flex items-center gap-1.5 mb-1">
-							<span class="text-[9px] lg:text-[10px] bg-fuchsia-500/20 text-fuchsia-400 font-bold px-2 py-0.5 rounded border border-purple-500/30">Aksi Korporasi</span>
+							<span class="text-[9px] lg:text-[10px] bg-fuchsia-500/20 text-fuchsia-400 font-bold px-2 py-0.5 rounded border border-fuchsia-500/30">Aksi Korporasi</span>
 							<span class="text-[10px] lg:text-xs text-white">${date}</span>
 						</div>
 						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
