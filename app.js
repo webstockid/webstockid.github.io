@@ -616,7 +616,7 @@ function renderChart(ticker) {
 			"interval": currentInterval,
 			"timezone": "Asia/Jakarta",
 			"theme": "dark",
-			"style": "1",
+			"style": "4",
 			"locale": "id",
 			"toolbar_bg": "#f1f3f6",
 			"enable_publishing": true,
@@ -650,7 +650,7 @@ function renderTechnicalGauge(ticker) {
 		"interval": "1D",
 		"width": "100%",
 		"isTransparent": true,
-		"height": "380",
+		"height": "360",
 		"symbol": `IDX:${ticker}`,
 		"showIntervalTabs": true,
 		"displayMode": "single",
@@ -711,7 +711,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const targetSymbol = `${ticker}.JK`;
 	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 	
-	const fetchWithTimeout = (url, timeoutMs = 6000) => { 
+	const fetchWithTimeout = (url, timeoutMs = 4000) => { 
 		return new Promise((resolve, reject) => {
 			const timer = setTimeout(() => reject(new Error('Timeout')), timeoutMs);
 			fetch(url)
@@ -930,17 +930,17 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if (stockData.price > stockData.ma5 && stockData.price < stockData.ma20 && stockData.changePct >= -3 && stockData.changePct <= 2) {
 			score = 3;
-			verdik = "NETRAL / KONSOLIDASI";
+			verdik = "KONSOLIDASI";
 			verdikClass = "font-bold text-amber-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if (stockData.price < stockData.ma10 && stockData.changePct >= -8 && stockData.changePct <= 1) {
 			score = 2;
-			verdik = "WEAK / BEARISH CORRECTION";
+			verdik = "BEARISH CORRECTION";
 			verdikClass = "font-bold text-rose-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if (stockData.price < stockData.ma20 && stockData.changePct < -8 && stockData.changePct <= 1) {
 			score = 1;
-			verdik = "STRONG BEARISH / SELLING PRESSURE";
+			verdik = "SELLING PRESSURE";
 			verdikClass = "font-bold text-rose-500 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-rose-500 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		}
@@ -1003,11 +1003,11 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
 			actionDesc = "Momentum Breakout kuat! Kenaikan harga signifikan didukung lonjakan volume masif.";
 		} else if (stockData.price > stockData.ma20 && stockData.changePct > 2) {
-			actionLabel = "⚠️ TAKE PROFIT / HOLD";
+			actionLabel = "⚠️ HOLD / TAKE PROFIT";
 			actionColor = "text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/30";
 			actionDesc = "Tren masih terjaga di atas garis MA menengah. Pertimbangkan untuk menahan posisi atau amankan profit.";
 		} else if (stockData.price > stockData.ma10 && stockData.volRatio >= 1) {
-			actionLabel = "🛒 ACCUMULATE (CICIL)";
+			actionLabel = "🛒 ACCUMULATE";
 			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
 			actionDesc = "Fase akumulasi atau koreksi wajar. Harga bertahan dekat area support MA5, cocok untuk cicil bertahap.";
 		} else if (stockData.price < stockData.ma20 && stockData.changePct < -1 && stockData.changePct <= 1) {
@@ -1041,7 +1041,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 			bandarPct = 60; 
 		} else if (stockData.changePct >= -6 && stockData.volRatio > 1) {
-			bandarStatus = "Mark Down (Uji Support) 🛡️";
+			bandarStatus = "Uji Support 🛡️";
 			bandarColor = "text-cyan-400";
 			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-300 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
 			bandarPct = 35; 
@@ -1874,7 +1874,7 @@ function renderRadarItems(dataList) {
 		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
 		let alasanTeknikal = `Perubahan <strong>${changePct}%</strong> dan bertahan kokoh di atas garis Moving Average MA5 (Rp ${item.ma5.toLocaleString('id-ID')}), menandakan tekanan beli harian masih mendominasi pasar.`;
 
-		if (item.volRatio >= 2.5 && changePct >= 0 && changePct <= 4.0) {
+		if (item.volRatio >= 2.5 && changePct >= 0 && changePct <= 5.0) {
 			statusSignal = "🐋 Curi Start (Whale Acc)";
 			statusClass = "text-fuchsia-400 border-fuchsia-500/30 bg-fuchsia-500/10";
 			alasanTeknikal = `<strong>Anomali Volume Terdeteksi!</strong> Harga saham baru naik tipis (<strong>+${changePct}%</strong>), tapi volume meledak <strong>${item.volRatio}x lipat</strong> dari rata-rata. Bandar terindikasi sedang kumpulin barang diam-diam.`;
@@ -1886,7 +1886,7 @@ function renderRadarItems(dataList) {
 			statusSignal = "🚀 Golden Cross Setup";
 			statusClass = "text-yellow-400 border-yellow-500/30 bg-yellow-500/10";
 			alasanTeknikal = `Sinyal perpotongan garis MA5 melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah berpotensi terbentuk.`;
-		} else if (item.volRatio >= 1.5 && item.volRatio <= 3.0) {
+		} else if (item.volRatio >= 1.5 && item.volRatio <= 3.0 && changePct > 2.0) {
 			statusSignal = "⚡ Volume Accumulation";
 			statusClass = "text-blue-400 border-blue-500/30 bg-blue-500/10";
 			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata</strong>. Mengindikasikan partisipasi modal besar di pasar.`;
