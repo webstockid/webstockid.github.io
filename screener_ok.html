@@ -45,12 +45,8 @@
 				100% { background-position: 16px 0; }
 			}
 			@keyframes barberShopMove {
-				0% {
-					background-position: 0 0;
-				}
-				100% {
-					background-position: 40px 0;
-				}
+				0% { background-position: 0 0; }
+				100% { background-position: 40px 0; }
 			}
 			@keyframes pulse-glow {
 				0%, 100% { opacity: 0.8; transform: scale(1); }
@@ -80,7 +76,6 @@
 			.animate-marquee:hover {
 				animation-play-state: paused;
 			}
-			/* Style Floating AI Chat */
 			@keyframes float-bounce {
 				0%, 100% { transform: translateY(0); }
 				50% { transform: translateY(-10px); }
@@ -110,54 +105,59 @@
 			::-webkit-scrollbar-thumb:hover {
 				filter: brightness(1.2);
 			}
-			/* Setup Variabel Font Dinamis */
 			:root {
 				--app-font-family: "Lexend";
 			}
-			
 			body, .heading-font, a, p, b, button, nav, ul, li, ol, option, select, strong, div, span, label, input {
 				font-family: var(--app-font-family) !important;
 			}
-
-			/* Tema Terang (Light Mode) Override */
-body.light-mode {
-	background-color: #fafafa !important;
-	color: #0f172a !important;
-}
-body.light-mode ul {
-	color: #111 !important;
-} /* <-- FIX: Menambahkan tutup kurung kurawal yang sebelumnya hilang */
-body.light-mode li {
-	color: #111 !important;
-}
-
-/* FIX: Menggunakan attribute selector untuk otomatis mencakup SEMUA variasi bg-slate gelap dan opacity-nya (/10 sampai /95) */
-body.light-mode .bg-slate-950, 
-body.light-mode .bg-slate-900, 
-body.light-mode .bg-slate-800, 
-body.light-mode .bg-slate-700 { 
-	background-color: #fafafa !important; 
-	border-color: #e2e8f0 !important; 
-	color: #0f172a !important; 
-}
-
-body.light-mode [class*="bg-slate-950/"], 
-body.light-mode [class*="bg-slate-900/"], 
-body.light-mode [class*="bg-slate-800/"],
-body.light-mode [class*="bg-slate-700/"] { 
-	background-color: #efefef !important; 
-	border-color: #cbd5e1 !important; 
-}
-
-body.light-mode .text-slate-200, body.light-mode .text-white { color: #0f172a !important; }
-body.light-mode .text-slate-300, body.light-mode .text-slate-400 { color: #475569 !important; }
-body.light-mode .border-slate-800, body.light-mode .border-slate-700 { border-color: #cbd5e1 !important; }
-body.light-mode .glassmorphism { background-color: #fafafa !important; border-color: rgba(0,0,0,0.1) !important; }
-body.light-mode input { background-color: #fafafa !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
-
-/* FIX: Mengubah teks tombol menjadi gelap agar bisa dibaca di atas background yang sudah berubah terang */
-body.light-mode button { color: #efefef !important; }
-body.light-mode btn { color: #efefef !important; }
+			body.light-mode {
+				background-color: #fafafa !important;
+				color: #0f172a !important;
+			}
+			body.light-mode ul, body.light-mode li {
+				color: #111 !important;
+			}
+			body.light-mode .bg-slate-950, 
+			body.light-mode .bg-slate-900, 
+			body.light-mode .bg-slate-800, 
+			body.light-mode .bg-slate-700 { 
+				background-color: #fafafa !important; 
+				border-color: #e2e8f0 !important; 
+				color: #0f172a !important; 
+			}
+			body.light-mode [class*="bg-slate-950/"], 
+			body.light-mode [class*="bg-slate-900/"], 
+			body.light-mode [class*="bg-slate-800/"],
+			body.light-mode [class*="bg-slate-700/"] { 
+				background-color: #efefef !important; 
+				border-color: #cbd5e1 !important; 
+			}
+			body.light-mode .text-slate-200, 
+			body.light-mode .text-white { 
+				color: #0f172a !important; 
+			}
+			body.light-mode .text-slate-300, 
+			body.light-mode .text-slate-400 { 
+				color: #475569 !important; 
+			}
+			body.light-mode .border-slate-800, 
+			body.light-mode .border-slate-700 { 
+				border-color: #cbd5e1 !important; 
+			}
+			body.light-mode .glassmorphism { 
+				background-color: #fafafa !important; 
+				border-color: rgba(0,0,0,0.1) !important; 
+			}
+			body.light-mode input { 
+				background-color: #fafafa !important; 
+				color: #0f172a !important; 
+				border-color: #cbd5e1 !important; 
+			}
+			body.light-mode button, 
+			body.light-mode btn { 
+				color: #efefef !important; 
+			}
 		</style>
 	</head>
 
@@ -325,9 +325,6 @@ body.light-mode btn { color: #efefef !important; }
 
 		<!-- Fixed Search Bar Melayang -->
 		<div class="sticky top-20 left-0 w-full z-20 glassmorphism border-b border-slate-800/80 py-3 px-4 space-y-2">
-			<!-- Container Trending dipindah ke luar searchContainer agar styling rapi -->
-			<!--<div id="yahooTrendingContainer" class="max-w-md lg:max-w-xl mx-auto px-1 overflow-x-auto scrollbar-thin"></div>-->
-
 			<div class="max-w-md lg:max-w-xl mx-auto relative" id="searchContainer">
 				<i data-lucide="search" class="absolute left-3.5 top-3 lg:top-3.5 w-4 h-4 lg:w-5 lg:h-5 text-white z-10"></i>
 				<input type="text" id="stockSearch" autocomplete="off" placeholder="Cari saham (MDIA...) atau klik Mic" 
@@ -429,18 +426,6 @@ body.light-mode btn { color: #efefef !important; }
 				</div>
 			</div>
 		</div>
-		
-		<!-- Tombol Aktif/Non Suara & Getar -->
-		<!--<div class="fixed top-80 left-4 z-30 flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md p-1.5 rounded-xl border border-slate-800 shadow-lg">
-			<button id="btnToggleSound" onclick="toggleGlobalSound()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Matikan/Hidupkan Sound">
-				<i id="soundIcon" class="fa-solid fa-volume-high text-xs"></i>
-				<span class="hidden sm:inline text-[10px]">Sound</span>
-			</button>
-			<button id="btnToggleVibrate" onclick="toggleGlobalVibrate()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer" title="Matikan/Hidupkan Getar">
-				<i id="vibrateIcon" class="fa-solid fa-mobile-screen-button text-xs"></i>
-				<span class="hidden sm:inline text-[10px]">Getar</span>
-			</button>
-		</div>-->
 
 		<!-- Main Content -->
 		<main class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 lg:px-8 pt-6 lg:pt-8 pb-12 space-y-6 lg:space-y-8">
@@ -551,7 +536,6 @@ body.light-mode btn { color: #efefef !important; }
 							<div id="aiVerdikDesc" class="text-slate-300 leading-relaxed text-[11px] lg:text-xs pt-1 border-t border-slate-900 space-y-1.5">
 								Menghubungkan ke server bursa untuk mengambil data real-time...
 							</div>
-							
 							<div id="aiActionBoard" class="hidden flex flex-col space-y-2 mt-3 pt-3 border-t border-slate-800/80"></div>
 						</div>
 
@@ -647,14 +631,6 @@ body.light-mode btn { color: #efefef !important; }
 				<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 border border-slate-500/20 p-3 lg:p-4 rounded-xl gap-3">
 						<div class="flex items-center gap-2">
-							<!--<span class="text-xs lg:text-sm font-bold text-amber-400">Pemindaian Saham Potensial Otomatis (All Technical Engine)</span>
-								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
-								<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-400"></i> Pemindaian Saham Potensial Otomatis
-							</span>-->
-							<!--<span class="relative flex h-2 w-2">
-								<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-								<span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-							</span>-->
 							<div class="space-y-1">
 								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
 									<i data-lucide="zap" class="w-4 h-4 lg:w-5 lg:h-5 text-amber-400"></i> Pemindaian Saham Potensial Otomatis
@@ -753,9 +729,6 @@ body.light-mode btn { color: #efefef !important; }
 						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2">
 							Atur parameter pada menu <i>dropdown</i> di atas dan klik <strong class="text-blue-500">"Jalankan Filter"</strong> untuk melihat saham yang lolos seleksi Kamu.
 						</div>
-						<!--<div class="text-center text-slate-400 text-xs lg:text-sm py-14 lg:col-span-4 border border-slate-800 rounded-xl bg-slate-950/10">
-							Atur parameter pada menu <i>dropdown</i> di atas dan klik <strong class="text-blue-400">"Jalankan Filter"</strong> untuk melihat saham yang lolos seleksi Kamu.
-						</div>-->
 					</div>
 					
 					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
@@ -775,9 +748,6 @@ body.light-mode btn { color: #efefef !important; }
 						<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="w-full sm:w-auto bg-emerald-700 hover:bg-emerald-500 text-white font-bold px-6 py-2.5 rounded-lg border border-emerald-700 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0">
 							<i data-lucide="play" class="w-4 h-4"></i> Bandingkan
 						</button>
-						<!--<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="text-[10px] lg:text-xs bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-600 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto shadow-sm">
-							<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Bandingkan
-						</button>-->
 					</div>
 
 					<div class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
@@ -878,134 +848,134 @@ body.light-mode btn { color: #efefef !important; }
 				</div>
 				
 				<!-- TAB 8: Paper Trade -->
-<div id="tabContent-paper" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
-	<!-- Compact Rank & Balance Banner -->
-	<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-500/20 grid grid-cols-2 md:grid-cols-4 gap-4 items-center shadow-lg shadow-blue-500/5">
-		<div class="flex items-center gap-3 col-span-2 md:col-span-1">
-			<div class="w-10 h-10 rounded-xl bg-blue-500/15 border border-slate-500/30 flex items-center justify-center text-blue-400 shrink-0">
-				<i data-lucide="trophy" class="w-5 h-5"></i>
-			</div>
-			<div>
-				<span class="text-[9px] text-blue-400 font-bold uppercase tracking-widest block">Trader Rank</span>
-				<span id="ptRankBadge" class="text-sm lg:text-base font-bold text-blue-300">NEWBIE</span>
-				<span id="ptWinRate" class="text-[10px] text-emerald-400 font-bold block">Win Rate: 0%</span>
-			</div>
-		</div>
-		<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
-			<span class="text-[9px] text-blue-400 font-bold uppercase tracking-widest block">Buying Power (Cash)</span>
-			<span id="ptCash" class="text-sm lg:text-base font-bold text-emerald-400">Rp 100.000.000</span>
-		</div>
-		<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
-			<span class="text-[9px] text-blue-400 font-bold uppercase tracking-widest block">Total Equity</span>
-			<span id="ptEquity" class="text-sm lg:text-base font-bold text-blue-300">Rp 100.000.000</span>
-		</div>
-		<!-- BARIS BARU: Menampilkan Realized PnL -->
-		<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
-			<span class="text-[9px] text-blue-400 font-bold uppercase tracking-widest block">Realized P&L</span>
-			<span id="ptRealizedPnL" class="text-sm lg:text-base font-bold text-slate-400">Rp 0</span>
-		</div>
-	</div>
+				<div id="tabContent-paper" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
+					<!-- Compact Rank & Balance Banner -->
+					<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-500/20 grid grid-cols-2 md:grid-cols-4 gap-4 items-center shadow-lg shadow-blue-500/5">
+						<div class="flex items-center gap-3 col-span-2 md:col-span-1">
+							<div class="w-10 h-10 rounded-xl bg-blue-500/15 border border-slate-500/30 flex items-center justify-center text-blue-400 shrink-0">
+								<i data-lucide="trophy" class="w-5 h-5"></i>
+							</div>
+							<div>
+								<span class="text-[9px] text-blue-400 font-bold uppercase tracking-widest block">Trader Rank</span>
+								<span id="ptRankBadge" class="text-sm lg:text-base font-bold text-blue-300">NEWBIE</span>
+								<span id="ptWinRate" class="text-[10px] text-emerald-400 font-bold block">Win Rate: 0%</span>
+							</div>
+						</div>
+						<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
+							<span class="text-[9px] text-blue-400 font-bold uppercase tracking-widest block">Buying Power (Cash)</span>
+							<span id="ptCash" class="text-sm lg:text-base font-bold text-emerald-400">Rp 100.000.000</span>
+						</div>
+						<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
+							<span class="text-[9px] text-blue-400 font-bold uppercase tracking-widest block">Total Equity</span>
+							<span id="ptEquity" class="text-sm lg:text-base font-bold text-blue-300">Rp 100.000.000</span>
+						</div>
+						<!-- BARIS BARU: Menampilkan Realized PnL -->
+						<div class="border-t md:border-t-0 md:border-l border-slate-500/20 pt-3 md:pt-0 md:pl-4">
+							<span class="text-[9px] text-blue-400 font-bold uppercase tracking-widest block">Realized P&L</span>
+							<span id="ptRealizedPnL" class="text-sm lg:text-base font-bold text-slate-400">Rp 0</span>
+						</div>
+					</div>
 
-	<!-- Sub-Tabs Switcher (Form vs Portfolio) -->
-	<div class="flex bg-slate-950/30 p-1.5 rounded-xl border border-slate-500/20 gap-2">
-		<button onclick="ptSwitchSubTab('form')" id="ptSubBtnForm" class="flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white transition flex items-center justify-center gap-2 shadow-sm shadow-blue-600/20">
-			<i data-lucide="shopping-cart" class="w-4 h-4"></i> Form Eksekusi
-		</button>
-		<button onclick="ptSwitchSubTab('portfolio')" id="ptSubBtnPorto" class="flex-1 py-2 text-xs font-bold rounded-lg text-blue-400 hover:text-white hover:bg-blue-900/30 transition flex items-center justify-center gap-2">
-			<i data-lucide="briefcase" class="w-4 h-4"></i> Portofolio & Riwayat
-		</button>
-	</div>
+					<!-- Sub-Tabs Switcher (Form vs Portfolio) -->
+					<div class="flex bg-slate-950/30 p-1.5 rounded-xl border border-slate-500/20 gap-2">
+						<button onclick="ptSwitchSubTab('form')" id="ptSubBtnForm" class="flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white transition flex items-center justify-center gap-2 shadow-sm shadow-blue-600/20">
+							<i data-lucide="shopping-cart" class="w-4 h-4"></i> Form Eksekusi
+						</button>
+						<button onclick="ptSwitchSubTab('portfolio')" id="ptSubBtnPorto" class="flex-1 py-2 text-xs font-bold rounded-lg text-blue-400 hover:text-white hover:bg-blue-900/30 transition flex items-center justify-center gap-2">
+							<i data-lucide="briefcase" class="w-4 h-4"></i> Portofolio & Riwayat
+						</button>
+					</div>
 
-	<!-- Sub-Tab Content 1: Form Eksekusi -->
-	<div id="ptSubContentForm" class="bg-slate-950/10 p-4 lg:p-6 rounded-xl border border-slate-500/20 space-y-4 max-w-xl mx-auto shadow-xl shadow-blue-900/10">
-		<div class="flex items-center justify-between border-b border-slate-500/20 pb-3">
-			<span class="font-bold text-blue-200 flex items-center gap-2 text-sm"><i data-lucide="shopping-cart" class="w-4 h-4 text-blue-400"></i> Form Order Saham</span>
-			<button onclick="ptSyncCurrentTicker()" class="text-[10px] bg-blue-800 hover:bg-blue-500 hover:text-white text-white px-3 py-1.5 rounded-lg border border-blue-700 transition font-bold flex items-center gap-1.5"><i data-lucide="wand-2" class="w-3 h-3"></i> Sync AI Signal</button>
-		</div>
+					<!-- Sub-Tab Content 1: Form Eksekusi -->
+					<div id="ptSubContentForm" class="bg-slate-950/10 p-4 lg:p-6 rounded-xl border border-slate-500/20 space-y-4 max-w-xl mx-auto shadow-xl shadow-blue-900/10">
+						<div class="flex items-center justify-between border-b border-slate-500/20 pb-3">
+							<span class="font-bold text-blue-200 flex items-center gap-2 text-sm"><i data-lucide="shopping-cart" class="w-4 h-4 text-blue-400"></i> Form Order Saham</span>
+							<button onclick="ptSyncCurrentTicker()" class="text-[10px] bg-blue-800 hover:bg-blue-500 hover:text-white text-white px-3 py-1.5 rounded-lg border border-blue-700 transition font-bold flex items-center gap-1.5"><i data-lucide="wand-2" class="w-3 h-3"></i> Sync AI Signal</button>
+						</div>
 
-		<div class="grid grid-cols-2 gap-3">
-			<div>
-				<label class="text-[10px] text-blue-300 font-bold block mb-1 uppercase">Saham</label>
-				<input type="text" id="ptTicker" disabled value="MDIA" class="w-full bg-blue-900/20 border border-slate-500/30 rounded-lg p-2.5 text-blue-200 font-bold text-center cursor-not-allowed text-xs">
-			</div>
-			<div>
-				<label class="text-[10px] text-blue-300 font-bold block mb-1 uppercase">Harga Eksekusi (Rp)</label>
-				<input type="number" id="ptPrice" placeholder="100" value="0" class="w-full bg-blue-900/20 border border-slate-500/30 rounded-lg p-2.5 text-blue-200 font-bold cursor-not-allowed text-xs">
-			</div>
-		</div>
-		<div>
-			<label class="text-[10px] text-blue-300 font-bold block mb-1 uppercase flex justify-between">
-				<span>Jumlah Lot Pembelian</span>
-				<span id="ptMaxLotHelper" class="text-blue-400 cursor-pointer hover:underline" onclick="ptFillMaxLot()">Max: 0 Lot</span>
-			</label>
-			<input type="number" id="ptLots" placeholder="10" value="10" min="1" oninput="ptCalculateTotal()" class="w-full bg-blue-950/30 border border-slate-500/30 rounded-lg p-2.5 text-blue-100 font-bold focus:border-slate-400 outline-none transition text-xs">
-		</div>
-		<div class="grid grid-cols-2 gap-3">
-			<div>
-				<label class="text-[10px] text-blue-300 font-bold block mb-1 uppercase">Auto TP (Opsional)</label>
-				<input type="number" id="ptTP" placeholder="Rp" class="w-full bg-blue-950/30 border border-slate-500/30 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none transition text-xs placeholder-blue-500/50">
-			</div>
-			<div>
-				<label class="text-[10px] text-blue-300 font-bold block mb-1 uppercase">Auto SL (Opsional)</label>
-				<input type="number" id="ptSL" placeholder="Rp" class="w-full bg-blue-950/30 border border-slate-500/30 rounded-lg p-2.5 text-white focus:border-rose-500 outline-none transition text-xs placeholder-blue-500/50">
-			</div>
-		</div>
+						<div class="grid grid-cols-2 gap-3">
+							<div>
+								<label class="text-[10px] text-blue-300 font-bold block mb-1 uppercase">Saham</label>
+								<input type="text" id="ptTicker" disabled value="MDIA" class="w-full bg-blue-900/20 border border-slate-500/30 rounded-lg p-2.5 text-blue-200 font-bold text-center cursor-not-allowed text-xs">
+							</div>
+							<div>
+								<label class="text-[10px] text-blue-300 font-bold block mb-1 uppercase">Harga Eksekusi (Rp)</label>
+								<input type="number" id="ptPrice" placeholder="100" value="0" class="w-full bg-blue-900/20 border border-slate-500/30 rounded-lg p-2.5 text-blue-200 font-bold cursor-not-allowed text-xs">
+							</div>
+						</div>
+						<div>
+							<label class="text-[10px] text-blue-300 font-bold block mb-1 uppercase flex justify-between">
+								<span>Jumlah Lot Pembelian</span>
+								<span id="ptMaxLotHelper" class="text-blue-400 cursor-pointer hover:underline" onclick="ptFillMaxLot()">Max: 0 Lot</span>
+							</label>
+							<input type="number" id="ptLots" placeholder="10" value="10" min="1" oninput="ptCalculateTotal()" class="w-full bg-blue-950/30 border border-slate-500/30 rounded-lg p-2.5 text-blue-100 font-bold focus:border-slate-400 outline-none transition text-xs">
+						</div>
+						<div class="grid grid-cols-2 gap-3">
+							<div>
+								<label class="text-[10px] text-blue-300 font-bold block mb-1 uppercase">Auto TP (Opsional)</label>
+								<input type="number" id="ptTP" placeholder="Rp" class="w-full bg-blue-950/30 border border-slate-500/30 rounded-lg p-2.5 text-white focus:border-emerald-500 outline-none transition text-xs placeholder-blue-500/50">
+							</div>
+							<div>
+								<label class="text-[10px] text-blue-300 font-bold block mb-1 uppercase">Auto SL (Opsional)</label>
+								<input type="number" id="ptSL" placeholder="Rp" class="w-full bg-blue-950/30 border border-slate-500/30 rounded-lg p-2.5 text-white focus:border-rose-500 outline-none transition text-xs placeholder-blue-500/50">
+							</div>
+						</div>
 
-		<div class="pt-3 border-t border-slate-500/20 flex items-center justify-between">
-			<div>
-				<span class="text-[10px] text-blue-400 block font-bold">Total Nilai Beli:</span>
-				<span id="ptTotalValue" class="text-emerald-400 font-bold text-base">Rp 0</span>
-			</div>
-			<button onclick="ptExecuteBuy()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-lg shadow-blue-600/25 text-xs flex items-center gap-2">
-				<i data-lucide="mouse-pointer-click" class="w-4 h-4"></i> Eksekusi Beli
-			</button>
-		</div>
-	</div>
+						<div class="pt-3 border-t border-slate-500/20 flex items-center justify-between">
+							<div>
+								<span class="text-[10px] text-blue-400 block font-bold">Total Nilai Beli:</span>
+								<span id="ptTotalValue" class="text-emerald-400 font-bold text-base">Rp 0</span>
+							</div>
+							<button onclick="ptExecuteBuy()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-lg shadow-blue-600/25 text-xs flex items-center gap-2">
+								<i data-lucide="mouse-pointer-click" class="w-4 h-4"></i> Eksekusi Beli
+							</button>
+						</div>
+					</div>
 
-	<!-- Sub-Tab Content 2: Portofolio & Riwayat -->
-	<div id="ptSubContentPorto" class="hidden bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-500/20 space-y-4 shadow-xl shadow-blue-950/10">
-		<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-500/20 pb-3">
-			<span class="font-bold text-blue-200 flex items-center gap-2 text-sm"><i data-lucide="briefcase" class="w-4 h-4 text-blue-400"></i> Portofolio Saham Aktif</span>
-			<div class="flex items-center gap-2">
-				<button onclick="ptResetAccount()" class="text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg transition font-bold flex items-center gap-1.5"><i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reset Akun</button>
-				<button onclick="ptRefreshPortoPrices()" class="text-[10px] bg-cyan-800 hover:bg-cyan-700 text-white px-3 py-1.5 rounded-lg border border-cyan-700 transition font-bold flex items-center gap-1.5 shadow-md"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Update Harga Live</button>
-			</div>
-		</div>
-		
-		<!-- TABEL DENGAN FLOATING PNL MENEMPEL DI ATAS KANAN -->
-		<div class="mt-2 relative">
-			<div class="flex justify-end pr-2">
-				<div id="ptUnrealizedPnL" class="px-3 py-1.5 rounded-t-lg text-[10px] lg:text-xs font-bold border-t border-l border-r border-slate-500/20 bg-slate-950/60 text-slate-400 translate-y-[1px] relative z-10 shadow-inner">
-					Total Floating: Rp 0 (0%)
+					<!-- Sub-Tab Content 2: Portofolio & Riwayat -->
+					<div id="ptSubContentPorto" class="hidden bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-500/20 space-y-4 shadow-xl shadow-blue-950/10">
+						<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-500/20 pb-3">
+							<span class="font-bold text-blue-200 flex items-center gap-2 text-sm"><i data-lucide="briefcase" class="w-4 h-4 text-blue-400"></i> Portofolio Saham Aktif</span>
+							<div class="flex items-center gap-2">
+								<button onclick="ptResetAccount()" class="text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg transition font-bold flex items-center gap-1.5"><i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reset Akun</button>
+								<button onclick="ptRefreshPortoPrices()" class="text-[10px] bg-cyan-800 hover:bg-cyan-700 text-white px-3 py-1.5 rounded-lg border border-cyan-700 transition font-bold flex items-center gap-1.5 shadow-md"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Update Harga Live</button>
+							</div>
+						</div>
+						
+						<!-- TABEL DENGAN FLOATING PNL MENEMPEL DI ATAS KANAN -->
+						<div class="mt-2 relative">
+							<div class="flex justify-end pr-2">
+								<div id="ptUnrealizedPnL" class="px-3 py-1.5 rounded-t-lg text-[10px] lg:text-xs font-bold border-t border-l border-r border-slate-500/20 bg-slate-950/60 text-slate-400 translate-y-[1px] relative z-10 shadow-inner">
+									Total Floating: Rp 0 (0%)
+								</div>
+							</div>
+							<div class="overflow-x-auto rounded-xl rounded-tr-none border border-slate-500/20 scrollbar-thin shadow-inner bg-slate-950/30 relative z-0">
+								<table class="w-full text-left text-xs text-blue-100 whitespace-nowrap min-w-[650px]">
+									<thead class="bg-slate-950/60 text-blue-300 uppercase text-[10px] font-bold border-b border-slate-500/20">
+										<tr>
+											<th class="p-3.5">Emiten</th>
+											<th class="p-3.5">Total Lot</th>
+											<th class="p-3.5">Modal Avg</th>
+											<th class="p-3.5">Harga Last</th>
+											<th class="p-3.5">Profit / Loss</th>
+											<th class="p-3.5 text-center">Aksi Jual</th>
+										</tr>
+									</thead>
+									<tbody id="ptPortoBody" class="divide-y divide-blue-500/10">
+										<tr><td colspan="6" class="p-6 text-center text-blue-400 font-sans">Belum ada posisi terbuka. Gunakan form eksekusi di atas.</td></tr>
+									</tbody>
+								</table>
+							</div>
+
+							<div class="pt-4 space-y-3">
+								<span class="font-bold text-blue-200 flex items-center gap-2 text-xs"><i data-lucide="history" class="w-4 h-4 text-blue-400"></i> Riwayat Trade Terakhir (History)</span>
+								<div id="ptHistoryContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">
+									<div class="text-blue-400 text-xs text-center col-span-full py-4 border border-dashed border-slate-500/20 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
-			</div>
-			<div class="overflow-x-auto rounded-xl rounded-tr-none border border-slate-500/20 scrollbar-thin shadow-inner bg-slate-950/30 relative z-0">
-				<table class="w-full text-left text-xs text-blue-100 whitespace-nowrap min-w-[650px]">
-					<thead class="bg-slate-950/60 text-blue-300 uppercase text-[10px] font-bold border-b border-slate-500/20">
-						<tr>
-							<th class="p-3.5">Emiten</th>
-							<th class="p-3.5">Total Lot</th>
-							<th class="p-3.5">Modal Avg</th>
-							<th class="p-3.5">Harga Last</th>
-							<th class="p-3.5">Profit / Loss</th>
-							<th class="p-3.5 text-center">Aksi Jual</th>
-						</tr>
-					</thead>
-					<tbody id="ptPortoBody" class="divide-y divide-blue-500/10">
-						<tr><td colspan="6" class="p-6 text-center text-blue-400 font-sans">Belum ada posisi terbuka. Gunakan form eksekusi di atas.</td></tr>
-					</tbody>
-				</table>
-			</div>
-
-			<div class="pt-4 space-y-3">
-				<span class="font-bold text-blue-200 flex items-center gap-2 text-xs"><i data-lucide="history" class="w-4 h-4 text-blue-400"></i> Riwayat Trade Terakhir (History)</span>
-				<div id="ptHistoryContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">
-					<div class="text-blue-400 text-xs text-center col-span-full py-4 border border-dashed border-slate-500/20 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 
 				<!-- Tab 9: Smart RRR -->
 				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
@@ -1273,7 +1243,6 @@ body.light-mode btn { color: #efefef !important; }
 										<option value="Quicksand">Quick Sand</option>
 										<option value="Unbounded">Unbounded</option>
 										<option value="Lexend">Lexend (Default)</option>
-										<!-- Tambahkan font lain di sini asalkan file tersedia di folder stockid_font/ -->
 									</select>
 								</div>
 							</div>
@@ -1470,7 +1439,6 @@ body.light-mode btn { color: #efefef !important; }
 		
 		<!-- Whale Detector Modal -->
 		<!-- Floating Button (Kiri Tengah) -->
-		<!-- Whale Detector Floating Button (Circular w/ Image) -->
 		<div class="fixed bottom-6 left-6 z-40 flex flex-col items-end">
 			<button onclick="toggleWhaleModal()" class="animate-float z-40 bg-gradient-to-tr from-fuchsia-500 to-fuchsia-600 p-3.5 rounded-full shadow-[0_0_25px_rgba(192,38,211,0.4)] border border-fuchsia-300/40 hover:scale-110 active:scale-95 transition flex items-center justify-center group cursor-pointer" title="Whale Detector Radar">
 				<i data-lucide="radio" class="w-6 h-6 text-slate-950 group-hover:rotate-16 transition-transform"></i>
