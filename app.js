@@ -1816,7 +1816,7 @@ async function startRadarProcess() {
 	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-amber-400"></i> Memindai Instan...`;
 	if (window.lucide) lucide.createIcons();
 
-	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai data pasar secara otomatis berdasar seluruh indikator...</div>`;
+	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai saham secara otomatis berdasar seluruh indikator...</div>`;
 	
 	const shuffled = [...uniqueRadarWatchlist];
 	for (let i = shuffled.length - 1; i > 0; i--) {
@@ -2523,7 +2523,7 @@ async function scanWhalesData() {
 	container.innerHTML = `
 		<div class="text-center text-slate-400 text-[11px] lg:text-xs py-12 col-span-full border border-slate-700 rounded-xl bg-slate-950/20">
 			<i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-500"></i> 
-			Menyisir data pasar untuk mencari anomali volume...
+			Menyisir saham untuk mencari anomali volume...
 		</div>
 	`;
 	
