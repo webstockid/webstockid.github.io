@@ -564,9 +564,13 @@ function renderChart(ticker) {
 			"container_id": "tv_chart_container",
 			"studies": [
 				"MAExp@tv-basicstudies",
+				"PSAR@tv-basicstudies",
 				"MACD@tv-basicstudies",
-				"VWAP@tv-basicstudies",
 				"BB@tv-basicstudies",
+				"StochasticRSI@tv-basicstudies",
+				"MFI@tv-basicstudies",
+				"AwesomeOscillator@tv-basicstudies",
+				"VWAP@tv-basicstudies",
 			]
 		});
 	} else {
