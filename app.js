@@ -144,6 +144,7 @@ function switchTab(tabName) {
 	if (tabName === 'alert') renderAllAlerts();
 	if (tabName === 'paper') renderPaperTradingUI();
 	if (tabName === 'heatmap') renderSectorHeatmap();
+	if (tabName === 'fundamental') renderFundamentalWidget(currentTicker); // Baru
 }
 
 // ==========================================
@@ -955,7 +956,7 @@ async function fetchAnalystConsensus(ticker) {
 		`;
 		if (window.lucide) lucide.createIcons();
 	} else {
-		container.innerHTML = `<div class="text-[10px] text-slate-500 italic mt-1">Data rating analis belum tersedia untuk emiten ini.</div>`;
+		container.innerHTML = '';
 	}
 }
 
@@ -1817,7 +1818,7 @@ function searchStock(bypassCooldown = false) {
 		
 		renderChart(currentTicker);
 		renderTechnicalGauge(currentTicker);
-		renderFundamentalWidget(currentTicker);
+		// renderFundamentalWidget(currentTicker);
 		renderAllAlerts();
 		generateAISignal(currentTicker, false);
 		fetchRealtimeFundamentals(currentTicker);
@@ -3298,7 +3299,8 @@ async function fetchRealtimeFundamentals(ticker) {
 	let result = null;
 	for (let i = 0; i < proxies.length; i++) {
 		try {
-			const res = await fetch(proxies[i], { signal: AbortSignal.timeout(4500) });
+			const res = await fetch(proxies[i]);
+			// const res = await fetch(proxies[i], { signal: AbortSignal.timeout(4500) });
 			if (!res.ok) continue;
 			let data = await res.json();
 			if (proxies[i].includes('allorigins')) data = JSON.parse(data.contents);
@@ -3515,7 +3517,8 @@ async function fetchCorporateAction(ticker) {
 		];
 		let calResult = null;
 		for (let p of proxies) {
-			const res = await fetch(p, { signal: AbortSignal.timeout(4000) });
+			const res = await fetch(p);
+			// const res = await fetch(p, { signal: AbortSignal.timeout(4000) });
 			if (res.ok) {
 				let data = await res.json();
 				if (p.includes('allorigins')) data = JSON.parse(data.contents);
