@@ -700,7 +700,9 @@ function renderFundamentalWidget(ticker) {
 	finContainer.appendChild(scriptFin);
 }
 
-// Masukkan API Key gratis kamu dari https://site.financialmodelingprep.com/
+// ==========================================
+// 9. INSIDER SEARCH (FMP API)
+// ==========================================
 const FMP_API_KEY = 'LQhjoJzWKzND3xYw4hy5CE7hqGM33YV4';
 
 async function handleInsiderSearch() {
@@ -711,14 +713,16 @@ async function handleInsiderSearch() {
 	const tableBody = document.getElementById('insiderTableBody');
 	
 	if (!query) {
-		alert("Silakan masukkan nama institusi terlebih dahulu (contoh: Blackrock).");
+		showToast("Silakan masukkan nama institusi terlebih dahulu (contoh: Blackrock).", "warning");
+		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
 	}
 
 	// Reset antarmuka ke mode loading
 	resultContainer.classList.add('hidden');
 	statusMessage.classList.remove('hidden');
-	statusMessage.innerHTML = `<span class="animate-pulse">Menghubungkan ke server FMP untuk mencari <b>"${query}"</b>...</span>`;
+	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menghubungkan ke server FMP untuk mencari <b>"${query}"</b>...</div>`;
+	if (window.lucide) lucide.createIcons();
 	tableBody.innerHTML = '';
 
 	try {
@@ -727,7 +731,7 @@ async function handleInsiderSearch() {
 		const cikData = await cikResponse.json();
 
 		if (!cikData || cikData.length === 0) {
-			statusMessage.innerHTML = `Tidak ditemukan institusi dengan nama <b>"${query}"</b> di database FMP.`;
+			statusMessage.innerHTML = `Tidak ditemukan institusi publik dengan nama <b>"${query}"</b> di database FMP.`;
 			return;
 		}
 
@@ -735,14 +739,15 @@ async function handleInsiderSearch() {
 		const targetInstitution = cikData[0];
 		const cikNumber = targetInstitution.cik;
 
-		statusMessage.innerHTML = `<span class="animate-pulse">CIK Ditemukan (${cikNumber}). Menarik data Form 13F...</span>`;
+		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> CIK Ditemukan (${cikNumber}). Menarik data portofolio Form 13F...</div>`;
+		if (window.lucide) lucide.createIcons();
 
 		// Langkah 2: Tarik portofolio Form 13F berdasarkan CIK
 		const portfolioResponse = await fetch(`https://financialmodelingprep.com/api/v3/form-thirteen/${cikNumber}?apikey=${FMP_API_KEY}`);
 		const portfolioData = await portfolioResponse.json();
 
 		if (!portfolioData || portfolioData.length === 0) {
-			statusMessage.innerHTML = `Data Form 13F (Portofolio) tidak tersedia untuk <b>${targetInstitution.name}</b>.`;
+			statusMessage.innerHTML = `Data Form 13F (Portofolio) tidak tersedia untuk <b>${targetInstitution.name}</b> saat ini.`;
 			return;
 		}
 
@@ -752,14 +757,17 @@ async function handleInsiderSearch() {
 		
 		// Render header info
 		document.getElementById('insiderInstitutionName').innerText = targetInstitution.name;
-		document.getElementById('insiderReportDate').innerText = `Tanggal Laporan Terakhir: ${portfolioData[0].date || 'N/A'}`;
+		document.getElementById('insiderReportDate').innerText = portfolioData[0].date || 'N/A';
 
-		// Render isi tabel (Batasi 50 saham terbesar agar browser tidak berat)
+		// Render isi tabel (Batasi 50 saham terbesar agar UI tetap mulus)
 		renderFMPTable(portfolioData.slice(0, 50));
+		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 
 	} catch (error) {
-		statusMessage.innerHTML = `<span class="text-red-500 font-medium">Gagal memuat data API. Pastikan koneksi internet stabil dan FMP API Key kamu valid.</span>`;
+		statusMessage.innerHTML = `<div class="text-rose-400 font-bold flex flex-col items-center gap-2"><i data-lucide="alert-triangle" class="w-6 h-6"></i> Gagal memuat data API. Pastikan koneksi internet stabil.</div>`;
+		if (window.lucide) lucide.createIcons();
 		console.error("FMP API Error:", error);
+		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 	}
 }
 
@@ -768,18 +776,19 @@ function renderFMPTable(portfolioData) {
 	let html = '';
 
 	portfolioData.forEach(item => {
-		// Format angka menjadi standar ribuan (lokal id-ID)
+		// Format angka menjadi standar ribuan
 		const sharesFormatted = new Intl.NumberFormat('id-ID').format(item.shares);
-		const valueFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(item.value);
+		// Format USD tanpa desimal agar rapi
+		const valueFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(item.value);
 
 		html += `
-			<tr class="bg-white border-b hover:bg-gray-50 transition-colors">
-				<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-					<span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-0.5 rounded">${item.tickcusip || '-'}</span>
+			<tr class="hover:bg-slate-800/40 transition-colors">
+				<th scope="row" class="p-3.5 font-medium text-white whitespace-nowrap">
+					<span class="bg-indigo-500/20 text-indigo-400 text-[10px] font-bold px-2 py-0.5 rounded border border-indigo-500/30">${item.tickcusip || '-'}</span>
 				</th>
-				<td class="px-6 py-4 text-gray-700 font-medium">${item.nameOfIssuer || '-'}</td>
-				<td class="px-6 py-4 text-gray-700 text-right">${sharesFormatted}</td>
-				<td class="px-6 py-4 text-green-600 font-semibold text-right">${valueFormatted}</td>
+				<td class="p-3.5 text-slate-300 font-medium truncate max-w-[200px]" title="${item.nameOfIssuer || '-'}">${item.nameOfIssuer || '-'}</td>
+				<td class="p-3.5 text-amber-400 font-bold text-right">${sharesFormatted}</td>
+				<td class="p-3.5 text-emerald-400 font-bold text-right">${valueFormatted}</td>
 			</tr>
 		`;
 	});
