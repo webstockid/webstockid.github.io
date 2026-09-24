@@ -126,7 +126,7 @@ document.addEventListener("click", function(event) {
 });
 
 function switchTab(tabName) {
-	const tabs = ['ai','bigmoney','custom','peer','news','fundamental','paper','rrr','journal','alert','corporate','heatmap','setting'];
+	const tabs = ['ai','bigmoney','custom','peer','news','fundamental','paper','rrr','journal','alert','corporate','insider','heatmap','setting'];
 	tabs.forEach(tab => {
 		const btn = document.getElementById(`tabBtn-${tab}`);
 		const content = document.getElementById(`tabContent-${tab}`);
