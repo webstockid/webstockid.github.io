@@ -616,7 +616,7 @@ function renderChart(ticker) {
 			"interval": currentInterval,
 			"timezone": "Asia/Jakarta",
 			"theme": "dark",
-			"style": "4",
+			"style": "2",
 			"locale": "id",
 			"toolbar_bg": "#f1f3f6",
 			"enable_publishing": true,
