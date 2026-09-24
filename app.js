@@ -700,6 +700,93 @@ function renderFundamentalWidget(ticker) {
 	finContainer.appendChild(scriptFin);
 }
 
+// Masukkan API Key gratis kamu dari https://site.financialmodelingprep.com/
+const FMP_API_KEY = 'LQhjoJzWKzND3xYw4hy5CE7hqGM33YV4';
+
+async function handleInsiderSearch() {
+	const inputEl = document.getElementById('insiderSearchInput');
+	const query = inputEl.value.trim();
+	const resultContainer = document.getElementById('insiderResultContainer');
+	const statusMessage = document.getElementById('insiderStatusMessage');
+	const tableBody = document.getElementById('insiderTableBody');
+	
+	if (!query) {
+		alert("Silakan masukkan nama institusi terlebih dahulu (contoh: Blackrock).");
+		return;
+	}
+
+	// Reset antarmuka ke mode loading
+	resultContainer.classList.add('hidden');
+	statusMessage.classList.remove('hidden');
+	statusMessage.innerHTML = `<span class="animate-pulse">Menghubungkan ke server FMP untuk mencari <b>"${query}"</b>...</span>`;
+	tableBody.innerHTML = '';
+
+	try {
+		// Langkah 1: Cari nomor CIK berdasarkan nama institusi
+		const cikResponse = await fetch(`https://financialmodelingprep.com/api/v3/mapper-cik-name?name=${encodeURIComponent(query)}&apikey=${FMP_API_KEY}`);
+		const cikData = await cikResponse.json();
+
+		if (!cikData || cikData.length === 0) {
+			statusMessage.innerHTML = `Tidak ditemukan institusi dengan nama <b>"${query}"</b> di database FMP.`;
+			return;
+		}
+
+		// Ambil hasil pencarian CIK pertama yang paling relevan
+		const targetInstitution = cikData[0];
+		const cikNumber = targetInstitution.cik;
+
+		statusMessage.innerHTML = `<span class="animate-pulse">CIK Ditemukan (${cikNumber}). Menarik data Form 13F...</span>`;
+
+		// Langkah 2: Tarik portofolio Form 13F berdasarkan CIK
+		const portfolioResponse = await fetch(`https://financialmodelingprep.com/api/v3/form-thirteen/${cikNumber}?apikey=${FMP_API_KEY}`);
+		const portfolioData = await portfolioResponse.json();
+
+		if (!portfolioData || portfolioData.length === 0) {
+			statusMessage.innerHTML = `Data Form 13F (Portofolio) tidak tersedia untuk <b>${targetInstitution.name}</b>.`;
+			return;
+		}
+
+		// Sembunyikan pesan status dan tampilkan tabel
+		statusMessage.classList.add('hidden');
+		resultContainer.classList.remove('hidden');
+		
+		// Render header info
+		document.getElementById('insiderInstitutionName').innerText = targetInstitution.name;
+		document.getElementById('insiderReportDate').innerText = `Tanggal Laporan Terakhir: ${portfolioData[0].date || 'N/A'}`;
+
+		// Render isi tabel (Batasi 50 saham terbesar agar browser tidak berat)
+		renderFMPTable(portfolioData.slice(0, 50));
+
+	} catch (error) {
+		statusMessage.innerHTML = `<span class="text-red-500 font-medium">Gagal memuat data API. Pastikan koneksi internet stabil dan FMP API Key kamu valid.</span>`;
+		console.error("FMP API Error:", error);
+	}
+}
+
+function renderFMPTable(portfolioData) {
+	const tableBody = document.getElementById('insiderTableBody');
+	let html = '';
+
+	portfolioData.forEach(item => {
+		// Format angka menjadi standar ribuan (lokal id-ID)
+		const sharesFormatted = new Intl.NumberFormat('id-ID').format(item.shares);
+		const valueFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(item.value);
+
+		html += `
+			<tr class="bg-white border-b hover:bg-gray-50 transition-colors">
+				<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+					<span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-0.5 rounded">${item.tickcusip || '-'}</span>
+				</th>
+				<td class="px-6 py-4 text-gray-700 font-medium">${item.nameOfIssuer || '-'}</td>
+				<td class="px-6 py-4 text-gray-700 text-right">${sharesFormatted}</td>
+				<td class="px-6 py-4 text-green-600 font-semibold text-right">${valueFormatted}</td>
+			</tr>
+		`;
+	});
+
+	tableBody.innerHTML = html;
+}
+
 // ==========================================
 // 9. DATA FETCHING (MARKET DATA & PARSER)
 // ==========================================

@@ -507,6 +507,9 @@
 					<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="pie-chart" class="w-4 h-4 text-violet-400"></i> Fundamental
 					</button>
+					<button onclick="switchTab('insider')" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="pie-chart" class="w-4 h-4 text-black-400"></i> Insider
+					</button>
 					<button onclick="switchTab('heatmap')" id="tabBtn-heatmap" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Sektor Heatmap
 					</button>
@@ -514,6 +517,51 @@
 						<i data-lucide="settings" class="w-4 h-4 text-slate-400"></i> Pengaturan
 					</button>
 				</div>
+				
+				<!-- Kontainer Utama Tab Insider -->
+<div id="tab-insider" class="hidden p-4 md:p-6 bg-white rounded-lg shadow-sm">
+	<div class="mb-6">
+		<h2 class="text-2xl font-bold text-gray-800 mb-2">Pencarian Institusi Global (13F)</h2>
+		<p class="text-sm text-gray-500">Cari portofolio institusi besar dunia (contoh: Blackrock, Vanguard, Renaissance) menggunakan FMP API.</p>
+	</div>
+
+	<div class="flex flex-col md:flex-row gap-3 mb-6">
+		<div class="relative w-full md:w-2/3">
+			<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+				<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+			</div>
+			<input type="text" id="insiderSearchInput" placeholder="Contoh: Blackrock..." class="w-full p-3 pl-10 text-sm border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-gray-50">
+		</div>
+		<button onclick="handleInsiderSearch()" class="w-full md:w-auto px-6 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 transition-colors">
+			Cari Portofolio
+		</button>
+	</div>
+
+	<!-- Kontainer Hasil -->
+	<div id="insiderResultContainer" class="overflow-x-auto rounded-lg border border-gray-200 hidden">
+		<div class="p-4 bg-gray-50 border-b border-gray-200">
+			<h3 id="insiderInstitutionName" class="font-bold text-gray-800"></h3>
+			<p id="insiderReportDate" class="text-xs text-gray-500"></p>
+		</div>
+		<table class="w-full text-sm text-left text-gray-500">
+			<thead class="text-xs text-gray-700 uppercase bg-gray-100">
+				<tr>
+					<th scope="col" class="px-6 py-3">Simbol Saham</th>
+					<th scope="col" class="px-6 py-3">Nama Perusahaan</th>
+					<th scope="col" class="px-6 py-3 text-right">Jumlah Lembar (Shares)</th>
+					<th scope="col" class="px-6 py-3 text-right">Nilai Pasar ($)</th>
+				</tr>
+			</thead>
+			<tbody id="insiderTableBody">
+				<!-- Data baris akan disuntikkan dari JavaScript -->
+			</tbody>
+		</table>
+	</div>
+	
+	<!-- Pesan Status / Loading -->
+	<div id="insiderStatusMessage" class="text-center py-8 text-gray-500 hidden"></div>
+</div>
+
 
 				<!-- Tab 1: AI Signal -->
 				<div id="tabContent-ai" class="space-y-4 min-h-[300px] text-xs lg:text-sm">
