@@ -485,6 +485,9 @@ const databaseVIP = {
 	"IRHAM3670": { "tanggalExpired": "2026-10-24" },
 	"DWIKY3792": { "tanggalExpired": "2026-10-23" },
 	"ERICK3826": { "tanggalExpired": "2026-10-21" },
+	// Free
+	"RAFAEL": { "tanggalExpired": "2026-10-01" },
+	"FASYA7384": { "tanggalExpired": "2026-11-05" },
 };
 
 function getExtractName(token) {
