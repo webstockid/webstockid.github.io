@@ -899,6 +899,70 @@ async function generateAISignal(ticker, isManualSearch = false) {
 	renderAISignalUI(ticker, stockData, false);
 }
 
+// FITUR BARU ~~~~~~~
+async function fetchAnalystConsensus(ticker) {
+	const container = document.getElementById('aiAnalystTargetContainer');
+	if (!container) return;
+
+	container.innerHTML = `<span class="text-[10px] text-slate-400 animate-pulse"><i class="fa-solid fa-circle-notch fa-spin"></i> Memuat Konsensus Analis Global...</span>`;
+
+	const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}.JK?modules=financialData`;
+	const proxies = [
+		`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+		`https://corsproxy.io/?${encodeURIComponent(url)}`
+	];
+
+	let result = null;
+	for (let i = 0; i < proxies.length; i++) {
+		try {
+			const res = await fetch(proxies[i], { signal: AbortSignal.timeout(4500) });
+			if (!res.ok) continue;
+			let data = await res.json();
+			if (proxies[i].includes('allorigins')) data = JSON.parse(data.contents);
+			if (data && data.quoteSummary && data.quoteSummary.result) {
+				result = data.quoteSummary.result[0].financialData;
+				break;
+			}
+		} catch (e) {}
+	}
+
+	if (result && result.targetMeanPrice && result.targetMeanPrice.raw) {
+		const meanPrice = result.targetMeanPrice.raw;
+		const highPrice = result.targetHighPrice?.raw || meanPrice;
+		const lowPrice = result.targetLowPrice?.raw || meanPrice;
+		const rec = (result.recommendationKey || "none").replace(/_/g, ' ').toUpperCase();
+		const analystCount = result.numberOfAnalystOpinions?.raw || 0;
+		
+		let recColor = 'text-amber-400';
+		if (rec.includes('BUY')) recColor = 'text-emerald-400';
+		if (rec.includes('SELL') || rec.includes('UNDERPERFORM')) recColor = 'text-rose-400';
+
+		container.innerHTML = `
+			<div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800/80 mt-1">
+				<div class="flex items-center justify-between mb-1.5">
+					<span class="text-[10px] lg:text-[11px] font-bold text-sky-400 flex items-center gap-1.5">
+						<i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Konsensus Institusi (${analystCount} Analis):
+					</span>
+					<span class="font-bold text-[9px] lg:text-[10px] ${recColor} bg-slate-950 px-2 py-0.5 rounded border border-slate-700">${rec}</span>
+				</div>
+				<div class="grid grid-cols-3 gap-2 text-center text-[10px]">
+					<div><span class="block text-slate-400 text-[9px]">Target Bawah</span><span class="font-bold text-rose-400">Rp ${lowPrice.toLocaleString('id-ID')}</span></div>
+					<div class="border-x border-slate-700"><span class="block text-slate-400 text-[9px]">Target Rata-rata</span><span class="font-bold text-amber-400">Rp ${meanPrice.toLocaleString('id-ID')}</span></div>
+					<div><span class="block text-slate-400 text-[9px]">Target Atas</span><span class="font-bold text-emerald-400">Rp ${highPrice.toLocaleString('id-ID')}</span></div>
+				</div>
+			</div>
+		`;
+		if (window.lucide) lucide.createIcons();
+	} else {
+		container.innerHTML = `<div class="text-[10px] text-slate-500 italic mt-1">Data rating analis belum tersedia untuk emiten ini.</div>`;
+	}
+}
+
+
+
+
+
 function renderAISignalUI(ticker, stockData, isCached) {
 	const verdikEl = document.getElementById('aiVerdikText');
 	const scoreEl = document.getElementById('aiScoreBadge');
@@ -965,7 +1029,11 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			<p class="leading-relaxed"><strong class="text-sky-400">Mengapa?</strong> Saham <strong class="text-emerald-400 font-bold">${ticker}</strong> saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-400">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-400">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-400">(Support Kuat)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-400">(Resistance Tertinggi)</strong>.</p>
+			<div id="aiAnalystTargetContainer" class="mt-2 pt-2 border-t border-slate-900/60"></div>
 		`;
+		
+		// Trigger pencarian data Analis
+		setTimeout(() => fetchAnalystConsensus(ticker), 50);
 
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
@@ -1069,10 +1137,11 @@ function renderAISignalUI(ticker, stockData, isCached) {
 						<span class="font-bold text-[10px] lg:text-[11px] ${bandarColor}">${bandarStatus}</span>
 					</div>
 					
+					<!-- Perubahan Animasi Progress Bar -->
 					<div class="w-full bg-slate-950/10 rounded-full h-3 border border-slate-700/80 overflow-hidden relative p-0.5 shadow-inner">
-						<div id="bandarProgressBar" class="bg-gradient-to-r ${bandarBarColor} h-full rounded-full transition-all duration-1200 ease-out relative overflow-hidden" style="width: 0%">
-							<div class="absolute inset-0 opacity-50" style="background-image: linear-gradient(135deg, rgba(255,255,255,0.4) 25%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 50%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.4) 75%, rgba(0,0,0,0.4) 75%, rgba(0,0,0,0.4)); background-size: 18px 18px; animation: barberShopMove 1.2s linear infinite;"></div>
-							<div class="absolute right-0 top-0 bottom-0 w-3 bg-white rounded-full shadow-[0_0_16px_#fafafa,0_0_24px_#38bdf8] animate-ping"></div>
+						<div id="bandarProgressBar" class="bg-gradient-to-r ${bandarBarColor} h-full rounded-full transition-all duration-1000 ease-out relative flex items-center justify-end" style="width: 0%">
+							<!-- Titik kelap-kelip di ujung -->
+							<div class="w-2 h-2 mr-0.5 bg-white rounded-full shadow-[0_0_10px_#ffffff] animate-ping"></div>
 						</div>
 					</div>
 					
@@ -1242,7 +1311,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 		if (btn.disabled) return;
 		btn.disabled = true;
 		btn.className = "w-full sm:w-auto bg-slate-800 border border-slate-700 text-white font-bold px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
-		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-emerald-400"></i> Sedang Membandingkan...`;
+		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-emerald-400"></i> Memuat Peer...`;
 		if (window.lucide) lucide.createIcons();
 	}
 
@@ -1252,48 +1321,64 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 		const refLabel = document.getElementById('peerTickerRef');
 		if (refLabel) refLabel.innerText = targetTicker;
 
-		body.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1 text-emerald-400"></i> Memuat saham-saham dengan harga serupa...</td></tr>`;
+		body.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto mb-1 text-emerald-400"></i> Mengekstrak rekomendasi saham serupa dari algoritma bursa...</td></tr>`;
 		if (window.lucide) lucide.createIcons();
 
-		let baseData = globalStockData;
-		if (!baseData || baseData.ticker !== targetTicker) {
-			baseData = await fetchRealtimeStockData(targetTicker);
-		}
+		let peerTickers = [];
+		const recUrl = `https://query2.finance.yahoo.com/v6/finance/recommendationsbysymbol/${targetTicker}.JK`;
+		const proxies = [
+			`https://api.allorigins.win/get?url=${encodeURIComponent(recUrl)}`,
+			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(recUrl)}`,
+			`https://corsproxy.io/?${encodeURIComponent(recUrl)}`
+		];
 
-		if (!baseData || !baseData.price) {
-			body.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-400">Gagal memuat harga acuan $${targetTicker}.</td></tr>`;
-			return;
-		}
-
-		const basePrice = baseData.price;
-		const minPrice = basePrice * 0.75;
-		const maxPrice = basePrice * 1.25;
-
-		const sampleCandidates = uniqueRadarWatchlist.filter(t => t !== targetTicker);
-		for (let i = sampleCandidates.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[sampleCandidates[i], sampleCandidates[j]] = [sampleCandidates[j], sampleCandidates[i]];
-		}
-
-		const peerResults = [baseData];
-		const BATCH_SIZE = 8;
-
-		for (let i = 0; i < sampleCandidates.length; i += BATCH_SIZE) {
-			const batch = sampleCandidates.slice(i, i + BATCH_SIZE);
-			const fetchedBatch = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
-			
-			for (const item of fetchedBatch) {
-				if (item && item.price >= minPrice && item.price <= maxPrice) {
-					peerResults.push(item);
+		for (let p of proxies) {
+			try {
+				const res = await fetch(p, { signal: AbortSignal.timeout(4000) });
+				if (res.ok) {
+					let data = await res.json();
+					if (p.includes('allorigins')) data = JSON.parse(data.contents);
+					const recs = data?.finance?.result?.[0]?.recommendedSymbols || [];
+					peerTickers = recs.map(r => r.symbol.replace('.JK', ''));
+					if (peerTickers.length > 0) break;
 				}
-				if (peerResults.length >= 8) break;
-			}
-			if (peerResults.length >= 8) break;
+			} catch(e) {}
 		}
+
+		// Fallback: Jika rekomendasi API kosong/gagal, kembalikan ke filter harga manual
+		if (peerTickers.length === 0) {
+			let baseData = globalStockData;
+			if (!baseData || baseData.ticker !== targetTicker) {
+				baseData = await fetchRealtimeStockData(targetTicker);
+			}
+			if (baseData && baseData.price) {
+				const basePrice = baseData.price;
+				const minPrice = basePrice * 0.75;
+				const maxPrice = basePrice * 1.25;
+				const sampleCandidates = uniqueRadarWatchlist.filter(t => t !== targetTicker).sort(() => 0.5 - Math.random());
+				
+				const BATCH_SIZE = 8;
+				for (let i = 0; i < sampleCandidates.length; i += BATCH_SIZE) {
+					const batch = sampleCandidates.slice(i, i + BATCH_SIZE);
+					const fetchedBatch = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
+					for (const item of fetchedBatch) {
+						if (item && item.price >= minPrice && item.price <= maxPrice) {
+							peerTickers.push(item.ticker);
+						}
+						if (peerTickers.length >= 8) break;
+					}
+					if (peerTickers.length >= 8) break;
+				}
+			}
+		}
+
+		// Pastikan targetTicker (Acuan utama) tetap berada di urutan atas
+		peerTickers = [...new Set([targetTicker, ...peerTickers])].slice(0, 8); 
+		const peerResults = await Promise.all(peerTickers.map(t => fetchRealtimeStockData(t)));
 
 		let rowsHTML = '';
 		peerResults.forEach(data => {
-			if (!data) return;
+			if (!data || !data.price) return;
 			const isCurrent = data.ticker === targetTicker;
 			const isPlus = data.changePct >= 0;
 			const rowClass = isCurrent ? "bg-emerald-500/10 font-bold border-l-4 border-emerald-400" : "hover:bg-slate-800/50";
@@ -1314,7 +1399,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 						${data.volRatio}x Vol
 					</td>
 					<td class="p-3.5 text-center">
-						<button onclick="selectSuggestion('${data.ticker}')" class="text-[10px] bg-emerald-600 hover:bg-cyan-600 text-white hover:text-white px-3 py-1 rounded-lg transition border-emerald-700/30 font-bold">
+						<button onclick="document.getElementById('stockSearch').value='${data.ticker}'; searchStock(true);" class="text-[10px] bg-emerald-600 hover:bg-cyan-600 text-white hover:text-white px-3 py-1 rounded-lg transition border-emerald-700/30 font-bold shadow-md">
 							Lihat Chart »
 						</button>
 					</td>
@@ -1322,7 +1407,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 			`;
 		});
 
-		body.innerHTML = rowsHTML || `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tidak ditemukan saham dengan range harga serupa.</td></tr>`;
+		body.innerHTML = rowsHTML || `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tidak ditemukan saham peer yang aktif saat ini.</td></tr>`;
 
 	} finally {
 		if (isManualRefresh && btn) {
@@ -3200,10 +3285,10 @@ async function fetchRealtimeFundamentals(ticker) {
 	const container = document.getElementById('yahooFundamentalContainer');
 	if (!container) return;
 	
-	container.innerHTML = `<div class="text-center bg-slate-950/10 rounded-xl border border-slate-800 text-slate-400 py-8 text-xs"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-400"></i> Mengekstrak data fundamental dari bursa...</div>`;
+	container.innerHTML = `<div class="text-center bg-slate-950/10 rounded-xl border border-slate-800 text-slate-400 py-8 text-xs"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-400"></i> Mengekstrak data fundamental & kepemilikan dari bursa...</div>`;
 	if (window.lucide) lucide.createIcons();
 
-	const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}.JK?modules=assetProfile,financialData,defaultKeyStatistics,summaryDetail`;
+	const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}.JK?modules=assetProfile,financialData,defaultKeyStatistics,summaryDetail,majorHoldersBreakdown,institutionOwnership`;
 	const proxies = [
 		`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
 		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
@@ -3233,6 +3318,8 @@ async function fetchRealtimeFundamentals(ticker) {
 	const financial = result.financialData || {};
 	const stats = result.defaultKeyStatistics || {};
 	const detail = result.summaryDetail || {};
+	const holders = result.majorHoldersBreakdown || {};
+	const institutions = result.institutionOwnership?.ownershipList || [];
 
 	const sector = profile.sector || "Finansial / Industri";
 	const industry = profile.industry || "-";
@@ -3258,6 +3345,20 @@ async function fetchRealtimeFundamentals(ticker) {
 		valuasiLabel = 'OVERVALUED';
 	}
 
+	const insHeld = holders.institutionsPercentHeld?.fmt || "0%";
+	const insidersHeld = holders.insidersPercentHeld?.fmt || "0%";
+	
+	let instListHTML = '';
+	institutions.slice(0, 4).forEach(inst => {
+		instListHTML += `
+			<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded mb-1.5">
+				<span class="text-slate-400 truncate max-w-[70%] leading-tight">${inst.organization}</span>
+				<span class="font-bold text-white text-right">${inst.pctHeld?.fmt || '-'}</span>
+			</div>
+		`;
+	});
+	if (!instListHTML) instListHTML = '<div class="text-[10px] text-slate-500 italic p-2">Data pemegang saham institusi rahasia / tidak tersedia.</div>';
+
 	container.innerHTML = `
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 			<div class="bg-slate-950/40 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm">
@@ -3272,21 +3373,35 @@ async function fetchRealtimeFundamentals(ticker) {
 					<div class="pt-2"><span class="text-slate-400 block mb-1.5 font-bold">Ringkasan Operasional:</span><p class="text-[10px] lg:text-[11px] leading-relaxed text-slate-300 line-clamp-4 hover:line-clamp-none transition-all cursor-pointer bg-slate-900/40 p-2.5 rounded-lg border border-slate-800" title="Klik untuk memperluas teks">${desc}</p></div>
 				</div>
 			</div>
-			<div class="bg-slate-950/40 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm flex flex-col justify-between">
-				<div>
-					<span class="text-blue-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs mb-3.5 pb-2 border-b border-slate-800"><i data-lucide="calculator" class="w-4 h-4"></i> METRIK KEUANGAN & VALUASI</span>
+			
+			<div class="space-y-4 flex flex-col justify-between">
+				<!-- Metrik Keuangan -->
+				<div class="bg-slate-950/40 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm flex-1">
+					<span class="text-emerald-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs mb-3.5 pb-2 border-b border-slate-800"><i data-lucide="calculator" class="w-4 h-4"></i> METRIK KEUANGAN & VALUASI</span>
 					<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs text-slate-300">
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800"><span class="block text-slate-400 text-[10px] mb-0.5">P/E Ratio</span><span class="font-bold ${peColor}">${pe}</span></div>
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800"><span class="block text-slate-400 text-[10px] mb-0.5">P/BV Ratio</span><span class="font-bold text-white">${pb}</span></div>
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800"><span class="block text-slate-400 text-[10px] mb-0.5">ROE</span><span class="font-bold ${roe.includes('-') ? 'text-rose-400' : 'text-emerald-400'}">${roe}</span></div>
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800"><span class="block text-slate-400 text-[10px] mb-0.5">Profit Margin</span><span class="font-bold ${margins.includes('-') ? 'text-rose-400' : 'text-emerald-400'}">${margins}</span></div>
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800"><span class="block text-slate-400 text-[10px] mb-0.5">Debt to Equity</span><span class="font-bold text-white">${debtToEq}</span></div>
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800"><span class="block text-slate-400 text-[10px] mb-0.5">EBITDA</span><span class="font-bold text-white">${ebitda}</span></div>
+					</div>
+					<div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-[11px] lg:text-xs">
+						<span class="text-slate-400">Valuasi Kasar AI:</span>
+						<span class="font-bold text-cyan-400 px-2.5 py-1 bg-cyan-900/20 rounded-md border border-cyan-800/50 flex items-center gap-1.5"><i data-lucide="activity" class="w-3.5 h-3.5"></i> ${valuasiLabel}</span>
 					</div>
 				</div>
-				<div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-[11px] lg:text-xs">
-					<span class="text-slate-400">Valuasi Kasar AI:</span>
-					<span class="font-bold text-cyan-400 px-2.5 py-1 bg-cyan-900/20 rounded-md border border-cyan-800/50 flex items-center gap-1.5"><i data-lucide="activity" class="w-3.5 h-3.5"></i> ${valuasiLabel}</span>
+
+				<!-- Major Holders -->
+				<div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800 shadow-sm">
+					<span class="text-violet-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs mb-3 pb-2 border-b border-slate-800">
+						<i data-lucide="users" class="w-4 h-4"></i> TOP PEMEGANG SAHAM INSTITUSI
+					</span>
+					<div class="flex justify-between items-center text-[10px] lg:text-[11px] mb-2 bg-slate-900 p-2 rounded">
+						<span class="text-slate-400">Total Dikuasai Institusi: <strong class="text-emerald-400">${insHeld}</strong></span>
+						<span class="text-slate-400">Insiders: <strong class="text-amber-400">${insidersHeld}</strong></span>
+					</div>
+					<div class="text-[10px] lg:text-[11px]">
+						${instListHTML}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -3387,7 +3502,53 @@ async function fetchStockNews(ticker) {
 
 async function fetchCorporateAction(ticker) {
 	const container = document.getElementById('corporateContainer');
-	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3">Memuat data aksi korporasi...</div>`;
+	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-400"></i> Memuat Kalender & Aksi Korporasi...</div>`;
+	if (window.lucide) lucide.createIcons();
+
+	let calendarUI = '';
+	try {
+		const calUrl = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}.JK?modules=calendarEvents`;
+		const proxies = [
+			`https://api.allorigins.win/get?url=${encodeURIComponent(calUrl)}`,
+			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(calUrl)}`,
+			`https://corsproxy.io/?${encodeURIComponent(calUrl)}`
+		];
+		let calResult = null;
+		for (let p of proxies) {
+			const res = await fetch(p, { signal: AbortSignal.timeout(4000) });
+			if (res.ok) {
+				let data = await res.json();
+				if (p.includes('allorigins')) data = JSON.parse(data.contents);
+				calResult = data?.quoteSummary?.result?.[0]?.calendarEvents;
+				if (calResult) break;
+			}
+		}
+		
+		if (calResult) {
+			const divDate = calResult.exDividendDate?.fmt || 'Belum Terjadwal';
+			const earnDate = calResult.earnings?.earningsDate?.[0]?.fmt || 'Belum Terjadwal';
+			
+			calendarUI = `
+				<div class="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-2 gap-3 mb-3">
+					<div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+						<div>
+							<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Ex-Date Dividen</span>
+							<span class="text-emerald-400 font-bold text-xs lg:text-sm">${divDate}</span>
+						</div>
+						<i data-lucide="coins" class="w-6 h-6 text-emerald-500/30"></i>
+					</div>
+					<div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+						<div>
+							<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Rilis Laporan (Earnings)</span>
+							<span class="text-cyan-400 font-bold text-xs lg:text-sm">${earnDate}</span>
+						</div>
+						<i data-lucide="file-bar-chart-2" class="w-6 h-6 text-cyan-500/30"></i>
+					</div>
+				</div>
+			`;
+		}
+	} catch(e) {}
+
 	const query = encodeURIComponent(`${ticker} AND (dividen OR RUPS OR "right issue" OR "stock split" OR buyback OR tender OR IPO)`);
 	const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=id&gl=ID&ceid=ID:id`;
 	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
@@ -3395,8 +3556,9 @@ async function fetchCorporateAction(ticker) {
 	try {
 		const response = await fetch(apiUrl);
 		const data = await response.json();
+		container.innerHTML = calendarUI; 
+		
 		if (data.status === 'ok' && data.items && data.items.length > 0) {
-			container.innerHTML = '';
 			data.items.slice(0, 9).forEach(item => {
 				const date = new Date(item.pubDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 				container.innerHTML += `
@@ -3409,12 +3571,13 @@ async function fetchCorporateAction(ticker) {
 					</a>
 				`;
 			});
+			if (window.lucide) lucide.createIcons();
 			AudioFX.playSuccess();
-		} else {
-			container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-3">Belum ada kabar aksi korporasi terbaru untuk ${ticker}.</div>`;
+		} else if (!calendarUI) {
+			container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-3">Belum ada kabar aksi korporasi / kalender terbaru untuk ${ticker}.</div>`;
 		}
 	} catch (e) {
-		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-3">Gagal memuat data aksi korporasi.</div>`;
+		container.innerHTML = calendarUI + `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-3">Gagal memuat berita aksi korporasi.</div>`;
 	}
 }
 
