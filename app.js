@@ -1,6 +1,6 @@
 /**
  * STOCK ID SCREENER - JAVASCRIPT ENGINE
- * Diperbarui & Dioptimalkan: Pengelompokan Fitur, Pembersihan Kode Berulang, & Penambahan RSI.
+ * Create By : Hardiansyah
  */
 
 // ==========================================
@@ -646,10 +646,10 @@ function renderTechnicalGauge(ticker) {
 	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
 	script.async = true;
 	script.text = JSON.stringify({
-		"interval": "1D",
+		"interval": "4H",
 		"width": "100%",
 		"isTransparent": true,
-		"height": "360",
+		"height": "350",
 		"symbol": `IDX:${ticker}`,
 		"showIntervalTabs": true,
 		"displayMode": "single",
@@ -703,7 +703,7 @@ function renderFundamentalWidget(ticker) {
 // ==========================================
 // 9. INSIDER SEARCH (FMP API)
 // ==========================================
-const FMP_API_KEY = 'LQhjoJzWKzND3xYw4hy5CE7hqGM33YV4';
+// const FMP_API_KEY = 'LQhjoJzWKzND3xYw4hy5CE7hqGM33YV4';
 
 async function handleInsiderSearch() {
 	const selectEl = document.getElementById('insiderSearchInput');
@@ -1176,21 +1176,41 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			verdik = "STRONG BULLISH BREAKOUT";
 			verdikClass = "font-bold text-emerald-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.price > stockData.ma10 && stockData.changePct > 1 && stockData.volRatio >= 1.5) {
+		} else if (stockData.price > stockData.ma10 && stockData.changePct > 5 && stockData.volRatio >= 2) {
 			score = 4;
 			verdik = "BULLISH ACCUMULATION";
 			verdikClass = "font-bold text-emerald-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.price > stockData.ma5 && stockData.price < stockData.ma20 && stockData.changePct >= -3 && stockData.changePct <= 2) {
+		} else if (stockData.price > stockData.ma10 && stockData.changePct > 2 && stockData.volRatio >= 1) {
+			score = 4;
+			verdik = "BULLISH ACCUMULATION";
+			verdikClass = "font-bold text-emerald-400 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+		} else if (stockData.price > stockData.ma10 && stockData.price < stockData.ma20 && stockData.changePct >= -2 && stockData.changePct <= 2) {
 			score = 3;
 			verdik = "KONSOLIDASI";
 			verdikClass = "font-bold text-amber-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+		} else if (stockData.price > stockData.ma5 && stockData.price < stockData.ma20 && stockData.changePct >= -4 && stockData.changePct <= 2) {
+			score = 3;
+			verdik = "KONSOLIDASI";
+			verdikClass = "font-bold text-amber-400 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+		} else if (stockData.price < stockData.ma10 && stockData.changePct >= -4 && stockData.changePct <= 1) {
+			score = 2;
+			verdik = "BEARISH CORRECTION";
+			verdikClass = "font-bold text-rose-400 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if (stockData.price < stockData.ma10 && stockData.changePct >= -8 && stockData.changePct <= 1) {
 			score = 2;
 			verdik = "BEARISH CORRECTION";
 			verdikClass = "font-bold text-rose-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-rose-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+		} else if (stockData.price < stockData.ma20 && stockData.changePct < -4 && stockData.changePct <= 1) {
+			score = 1;
+			verdik = "SELLING PRESSURE";
+			verdikClass = "font-bold text-rose-500 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-rose-500 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if (stockData.price < stockData.ma20 && stockData.changePct < -8 && stockData.changePct <= 1) {
 			score = 1;
 			verdik = "SELLING PRESSURE";
@@ -1287,26 +1307,46 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-green-600 via-green-400 to-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 95; 
-		} else if (stockData.changePct > 1 && stockData.volRatio > 2) {
+		} else if (stockData.changePct > 2 && stockData.volRatio > 2) {
 			bandarStatus = "Akumulasi 🐳";
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
-			bandarPct = 80; 
+			bandarPct = 85; 
+		} else if (stockData.changePct > 1 && stockData.volRatio > 1.5) {
+			bandarStatus = "Akumulasi 🐳";
+			bandarColor = "text-emerald-400";
+			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
+			bandarPct = 75; 
 		} else if (stockData.changePct >= -2 && stockData.volRatio > 1) {
 			bandarStatus = "Netral ⚖️";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
-			bandarPct = 60; 
-		} else if (stockData.changePct >= -6 && stockData.volRatio > 1) {
+			bandarPct = 65; 
+		} else if (stockData.changePct >= -4 && stockData.volRatio > 0.5) {
+			bandarStatus = "Netral ⚖️";
+			bandarColor = "text-amber-400";
+			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-300 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
+			bandarPct = 55; 
+		} else if (stockData.changePct >= -4 && stockData.volRatio > 1) {
+			bandarStatus = "Uji Support 🛡️";
+			bandarColor = "text-cyan-400";
+			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-300 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
+			bandarPct = 45; 
+		} else if (stockData.changePct >= -8 && stockData.volRatio > 0.5) {
 			bandarStatus = "Uji Support 🛡️";
 			bandarColor = "text-cyan-400";
 			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-300 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
 			bandarPct = 35; 
-		} else if (stockData.changePct < -5 && stockData.price < stockData.ma20) {
+		} else if (stockData.changePct < -4 && stockData.price < stockData.ma20) {
 			bandarStatus = "Distribusi Kuat (Buangan) 🚨";
 			bandarColor = "text-rose-400";
 			bandarBarColor = "from-rose-600 via-rose-500 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)]";
-			bandarPct = 20; 
+			bandarPct = 25; 
+		} else if (stockData.changePct < -8 && stockData.price < stockData.ma20) {
+			bandarStatus = "Distribusi Kuat (Buangan) 🚨";
+			bandarColor = "text-rose-400";
+			bandarBarColor = "from-rose-600 via-rose-500 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)]";
+			bandarPct = 15; 
 		}
 
 		const actionBoardEl = document.getElementById('aiActionBoard');
