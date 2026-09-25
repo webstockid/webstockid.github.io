@@ -721,30 +721,46 @@ async function handleInsiderSearch() {
 	const statusMessage = document.getElementById('insiderStatusMessage');
 	const tableBody = document.getElementById('insiderTableBody');
 
-	// 1. Reset UI ke mode Loading
+	// Reset UI ke mode Loading
 	resultContainer.classList.add('hidden');
 	statusMessage.classList.remove('hidden');
 	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menghubungkan ke SEC EDGAR untuk <b>${institutionName}</b>...</div>`;
 	if (window.lucide) lucide.createIcons();
 	tableBody.innerHTML = '';
 
-	try {
-		// Menggunakan proxy AllOrigins untuk membypass pemblokiran CORS dari peramban ke server SEC
-		const proxy = 'https://api.allorigins.win/raw?url=';
+	// Fungsi Helper: Rotasi Proxy (Menghindari "Failed to Fetch" & Blokir CORS)
+	const fetchSecData = async (targetUrl, isXml = false) => {
+		const proxies = [
+			`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
+			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`,
+			`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`
+		];
 		
-		// SEC mewajibkan format CIK 10 digit (contoh: 0001067983)
+		for (let p of proxies) {
+			try {
+				// AbortSignal mencegah aplikasi hang jika proxy lambat
+				const res = await fetch(p, { signal: AbortSignal.timeout(10000) });
+				if (res.ok) {
+					return isXml ? await res.text() : await res.json();
+				}
+			} catch(e) {
+				console.warn(`Jalur proxy ${p} gagal/sibuk, mencoba jalur berikutnya...`);
+			}
+		}
+		throw new Error("Koneksi ditolak oleh server SEC EDGAR atau seluruh proxy sedang sibuk (Failed to fetch).");
+	};
+
+	try {
+		// SEC mewajibkan format CIK 10 digit
 		const paddedCik = cikNumber.padStart(10, '0');
 		const secUrl = `https://data.sec.gov/submissions/CIK${paddedCik}.json`;
 		
-		// 2. Tarik Riwayat Laporan (JSON)
-		const submissionsRes = await fetch(proxy + encodeURIComponent(secUrl));
-		if (!submissionsRes.ok) throw new Error("Gagal mengakses data profil SEC.");
-		const submissionsData = await submissionsRes.json();
-
+		// 1. Tarik Riwayat Laporan (JSON)
+		const submissionsData = await fetchSecData(secUrl, false);
 		const filings = submissionsData.filings.recent;
 		let filingIndex = -1;
 		
-		// 3. Cari Laporan Portofolio (13F-HR) Terbaru
+		// 2. Cari Laporan Portofolio (13F-HR) Terbaru
 		for (let i = 0; i < filings.form.length; i++) {
 			if (filings.form[i] === '13F-HR') {
 				filingIndex = i;
@@ -759,21 +775,18 @@ async function handleInsiderSearch() {
 
 		const accessionNumber = filings.accessionNumber[filingIndex];
 		const reportDate = filings.reportDate[filingIndex];
-		const cleanAccession = accessionNumber.replace(/-/g, ''); // SEC direktori tidak menggunakan tanda hubung
+		const cleanAccession = accessionNumber.replace(/-/g, ''); 
 		const cikTrimmed = parseInt(cikNumber, 10).toString(); 
 
 		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Memindai dokumen Arsip 13F (${reportDate})...</div>`;
 		if (window.lucide) lucide.createIcons();
 
-		// 4. Tarik Index Arsip (JSON) untuk mencari file tabel portofolio
+		// 3. Tarik Index Arsip (JSON)
 		const archiveIndexUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/index.json`;
-		const indexRes = await fetch(proxy + encodeURIComponent(archiveIndexUrl));
-		if (!indexRes.ok) throw new Error("Gagal mengakses direktori arsip SEC.");
-		const indexData = await indexRes.json();
+		const indexData = await fetchSecData(archiveIndexUrl, false);
 
 		let infoTableFileName = null;
 		for (const file of indexData.directory.item) {
-			// Mencari file XML tabel (biasanya bernama infotable.xml atau form13fInfoTable.xml)
 			if (file.name.endsWith('.xml') && (file.name.toLowerCase().includes('info') || file.name.toLowerCase().includes('table'))) {
 				infoTableFileName = file.name;
 				break;
@@ -788,16 +801,12 @@ async function handleInsiderSearch() {
 		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Mengekstrak struktur XML...</div>`;
 		if (window.lucide) lucide.createIcons();
 
-		// 5. Tarik & Parsing File Portofolio Mentah (XML)
+		// 4. Tarik & Parsing File Portofolio Mentah (XML)
 		const xmlUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/${infoTableFileName}`;
-		const xmlRes = await fetch(proxy + encodeURIComponent(xmlUrl));
-		if (!xmlRes.ok) throw new Error("Gagal mengunduh XML Portofolio.");
-		const xmlText = await xmlRes.text();
+		const xmlText = await fetchSecData(xmlUrl, true);
 
 		const parser = new DOMParser();
 		const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-		
-		// Menghindari konflik namespace SEC dengan mencari node berdasarkan localName
 		const infoTables = xmlDoc.getElementsByTagName('*');
 		let portfolioData = [];
 
@@ -814,7 +823,6 @@ async function handleInsiderSearch() {
 					const child = node.childNodes[j];
 					if (child.localName === 'nameOfIssuer') nameOfIssuer = child.textContent;
 					if (child.localName === 'cusip') cusip = child.textContent;
-					// Nilai valuasi ditarik mentah sesuai standar SEC terbaru (Nearest Dollar)
 					if (child.localName === 'value') value = parseFloat(child.textContent); 
 					
 					if (child.localName === 'shrsOrPrnAmt') {
@@ -836,17 +844,16 @@ async function handleInsiderSearch() {
 			}
 		}
 
-		// 6. Urutkan berdasarkan kepemilikan nilai terbesar (Top Holdings)
+		// 5. Urutkan berdasarkan nilai terbesar
 		portfolioData.sort((a, b) => b.value - a.value);
 
-		// 7. Tampilkan ke UI
+		// 6. Tampilkan ke UI
 		statusMessage.classList.add('hidden');
 		resultContainer.classList.remove('hidden');
 		
 		document.getElementById('insiderInstitutionName').innerText = institutionName;
 		document.getElementById('insiderReportDate').innerText = reportDate || 'N/A';
 
-		// Kirim 50 data teratas ke fungsi render FMP yang sudah ada
 		renderFMPTable(portfolioData.slice(0, 50));
 		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 
