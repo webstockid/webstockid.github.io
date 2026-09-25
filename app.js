@@ -2148,7 +2148,7 @@ function renderRadarItems(dataList) {
 		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
 		let alasanTeknikal = `Perubahan <strong>${changePct}%</strong> dan bertahan kokoh di atas garis Moving Average MA5 (Rp ${item.ma5.toLocaleString('id-ID')}), menandakan tekanan beli harian masih mendominasi pasar.`;
 
-		if (item.volRatio >= 2.5 && changePct >= 0 && changePct <= 5.0) {
+		if (item.volRatio >= 2.0 && changePct >= 0 && changePct <= 5.0) {
 			statusSignal = "🐋 Curi Start (Whale Acc)";
 			statusClass = "text-fuchsia-400 border-fuchsia-500/30 bg-fuchsia-500/10";
 			alasanTeknikal = `<strong>Anomali Volume Terdeteksi!</strong> Harga saham baru naik tipis (<strong>+${changePct}%</strong>), tapi volume meledak <strong>${item.volRatio}x lipat</strong> dari rata-rata. Bandar terindikasi sedang kumpulin barang diam-diam.`;
@@ -2160,7 +2160,7 @@ function renderRadarItems(dataList) {
 			statusSignal = "🚀 Golden Cross Setup";
 			statusClass = "text-yellow-400 border-yellow-500/30 bg-yellow-500/10";
 			alasanTeknikal = `Sinyal perpotongan garis MA5 melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah berpotensi terbentuk.`;
-		} else if (item.volRatio >= 1.5 && item.volRatio <= 3.0 && changePct > 2.0) {
+		} else if (item.volRatio >= 1.0 && item.volRatio <= 3.0 && changePct > 1.0) {
 			statusSignal = "⚡ Volume Accumulation";
 			statusClass = "text-blue-400 border-blue-500/30 bg-blue-500/10";
 			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata</strong>. Mengindikasikan partisipasi modal besar di pasar.`;
