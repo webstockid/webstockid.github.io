@@ -646,7 +646,7 @@ function renderTechnicalGauge(ticker) {
 	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
 	script.async = true;
 	script.text = JSON.stringify({
-		"interval": "4H",
+		"interval": "1D",
 		"width": "100%",
 		"isTransparent": true,
 		"height": "350",
