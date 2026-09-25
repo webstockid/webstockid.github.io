@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#0b1220">
+	<meta name="description" content="Stock ID Screener — ChatGPT Edition. Analisis teknikal berbasis aturan, radar pasar, paper trading, jurnal, dan price alert.">
+	<title>Stock ID Screener — ChatGPT Edition</title>
+
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					fontFamily: {
+						display: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+					}
+				}
+			}
+		};
+	</script>
+	<script src="https://unpkg.com/lucide@latest"></script>
+	<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
+	<style>
+		:root {
+			color-scheme: dark;
+			--bg: #080d18;
+			--panel: #0d1525;
+			--panel-2: #111c2e;
+			--border: #22314a;
+			--text: #e7edf7;
+			--muted: #8390a5;
+			--accent: #34d399;
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		html {
+		scroll-behavior: smooth;
+		}
+
+		body {
+			margin: 0;
+			background:
+				radial-gradient(circle at 12% 0%, rgba(52, 211, 153, 0.08), transparent 28rem),
+				radial-gradient(circle at 92% 12%, rgba(59, 130, 246, 0.07), transparent 26rem),
+				var(--bg);
+			color: var(--text);
+			font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+		}
+
+		button,
+		input,
+		select {
+			font: inherit;
+		}
+
+		button {
+			-webkit-tap-highlight-color: transparent;
+		}
+
+		.app-shell {
+			min-height: 100vh;
+		}
+
+		.glass {
+			background: rgba(13, 21, 37, 0.84);
+			backdrop-filter: blur(16px);
+			-webkit-backdrop-filter: blur(16px);
+		}
+
+		.panel {
+			border: 1px solid var(--border);
+			background: rgba(13, 21, 37, 0.88);
+			box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
+		}
+
+		.tab-scroll {
+			scrollbar-width: thin;
+			scrollbar-color: #31425e transparent;
+		}
+
+		.tab-scroll::-webkit-scrollbar {
+			height: 5px;
+		}
+
+		.tab-scroll::-webkit-scrollbar-thumb {
+			background: #31425e;
+			border-radius: 999px;
+		}
+
+		.tab-button {
+			flex: 0 0 auto;
+			min-height: 42px;
+			border: 1px solid transparent;
+			transition: 160ms ease;
+		}
+
+		.tab-button:hover {
+			background: rgba(30, 41, 59, 0.72);
+		}
+
+		.tab-button.bg-slate-800 {
+			border-color: rgba(52, 211, 153, 0.2);
+		}
+
+		.light-mode {
+			color-scheme: light;
+			--bg: #f5f7fb;
+			--panel: #ffffff;
+			--panel-2: #f0f4f8;
+			--border: #d9e1ea;
+			--text: #172033;
+			--muted: #68768a;
+			background: #f5f7fb;
+			color: var(--text);
+		}
+
+		.light-mode .panel,
+		.light-mode .glass {
+			background: rgba(255, 255, 255, 0.92);
+			border-color: var(--border);
+			color: var(--text);
+		}
+
+		.light-mode .bg-slate-950\/30,
+		.light-mode .bg-slate-950\/40,
+		.light-mode .bg-slate-900\/60 {
+			background: #f7f9fc !important;
+		}
+
+		.light-mode .text-white,
+		.light-mode .text-slate-100,
+		.light-mode .text-slate-200,
+		.light-mode .text-slate-300 {
+			color: #1b2434 !important;
+		}
+
+		.light-mode .text-slate-400,
+		.light-mode .text-slate-500 {
+			color: #66758a !important;
+		}
+
+		.light-mode .border-slate-800,
+		.light-mode .border-slate-700 {
+			border-color: #d9e1ea !important;
+		}
+
+		.signal-line {
+			height: 5px;
+			border-radius: 999px;
+			background: linear-gradient(90deg, #f43f5e 0%, #f59e0b 50%, #34d399 100%);
+			opacity: 0.85;
+		}
+
+		.tv-frame {
+			min-height: 540px;
+		}
+
+		@media (max-width: 768px) {
+			.tv-frame {
+				min-height: 430px;
+			}
+		}
+
+		::-webkit-scrollbar {
+			width: 7px;
+			height: 7px;
+		}
+
+		::-webkit-scrollbar-thumb {
+			background: #273650;
+			border-radius: 999px;
+		}
+	</style>
+</head>
+<body>
+	<div class="app-shell">
+		<header class="sticky top-0 z-40 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-xl">
+			<div class="mx-auto max-w-[1500px] px-4 py-4 sm:px-6 lg:px-8">
+				<div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+					<div class="flex min-w-0 items-center gap-3">
+						<div class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/10">
+							<i data-lucide="scan-line" class="h-6 w-6"></i>
+						</div>
+						<div class="min-w-0">
+							<div class="truncate text-lg font-black tracking-tight sm:text-xl">STOCK ID <span class="text-emerald-400">SCREENER</span></div>
+							<div class="text-[10px] font-bold uppercase tracking-[0.24em] text-slate-500">ChatGPT Edition · Rule-Based Market Toolkit</div>
+						</div>
+					</div>
+
+					<div class="flex items-center gap-2">
+						<div id="marketStatusBadge" class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/70 px-3 py-2 text-[10px] font-bold text-slate-300">Memeriksa market...</div>
+						<button type="button" onclick="requestNotificationPermission()" class="grid h-10 w-10 place-items-center rounded-xl border border-slate-700 bg-slate-900/70 text-slate-300 transition hover:border-emerald-500/40 hover:text-emerald-400" title="Aktifkan notifikasi">
+							<i data-lucide="bell" class="h-4 w-4"></i>
+						</button>
+					</div>
+				</div>
+
+				<div class="relative mt-4">
+					<div class="flex gap-2">
+						<div class="relative min-w-0 flex-1">
+							<i data-lucide="search" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500"></i>
+							<input id="stockSearch" value="MDIA" autocomplete="off" spellcheck="false" placeholder="Cari saham (MDIA...)" class="h-12 w-full rounded-2xl border border-slate-700 bg-slate-900/80 pl-12 pr-12 text-sm font-bold text-white outline-none transition placeholder:text-slate-600 focus:border-emerald-500/60 focus:ring-4 focus:ring-emerald-500/5">
+							<button type="button" onclick="startVoiceSearch()" class="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-xl text-slate-400 transition hover:bg-slate-800 hover:text-emerald-400" title="Cari dengan suara">
+								<i data-lucide="mic" class="h-4 w-4"></i>
+							</button>
+							<div id="searchSuggestionsBox" class="absolute left-0 right-0 top-[calc(100%+8px)] z-50 hidden overflow-hidden rounded-2xl border border-slate-700 bg-slate-950 shadow-2xl"></div>
+						</div>
+						<button type="button" onclick="searchStock()" class="h-12 shrink-0 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 px-5 text-sm font-black text-emerald-400 transition hover:bg-emerald-500/15">Cari</button>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<main class="mx-auto max-w-[1500px] px-4 py-5 sm:px-6 lg:px-8">
+			<div class="panel overflow-hidden rounded-3xl">
+				<div class="tab-scroll overflow-x-auto border-b border-slate-800">
+					<nav class="flex min-w-max gap-1 p-2" aria-label="Navigasi screener">
+						<button id="tabBtn-ai" onclick="switchTab('ai')" class="tab-button rounded-xl bg-slate-800 px-4 py-2.5 text-xs font-bold text-emerald-400">Signal</button>
+						<button id="tabBtn-bigmoney" onclick="switchTab('bigmoney')" class="tab-button rounded-xl px-4 py-2.5 text-xs font-bold text-slate-300">Radar Pasar</button>
+						<button id="tabBtn-custom" onclick="switchTab('custom')" class="tab-button rounded-xl px-4 py-2.5 text-xs font-bold text-slate-300">Custom Screener</button>
+						<button id="tabBtn-peer" onclick="switchTab('peer')" class="tab-button rounded-xl px-4 py-2.5 text-xs font-bold text-slate-300">Peer</button>
+						<button id="tabBtn-news" onclick="switchTab('news')" class="tab-button rounded-xl px-4 py-2.5 text-xs font-bold text-slate-300">Berita</button>
+						<button id="tabBtn-fundamental" onclick="switchTab('fundamental')" class="tab-button rounded-xl px-4 py-2.5 text-xs font-bold text-slate-300">Fundamental</button>
+						<button id="tabBtn-paper" onclick="switchTab('paper')" class="tab-button rounded-xl px-4 py-2.5 text-xs font-bold text-slate-300">Paper Trading</button>
+						<button id="tabBtn-rrr" onclick="switchTab('rrr')" class="tab-button rounded-xl px-4 py-2.5 text-xs font-bold text-slate-300">Risk / R:R</button>
+						<button id="tabBtn-journal" onclick="switchTab('journal')" class="tab-button rounded-xl px-4 py-2.5 text-xs font-bold text-slate-300">Jurnal</button>
+						<button id="tabBtn-alert" onclick="switchTab('alert')" class="tab-button rounded-xl px-4 py-2.5 text-xs font-bold text-slate-300">Alert</button>
+						<button id="tabBtn-corporate" onclick="switchTab('corporate')" class="tab-button rounded-xl px-4 py-2.5 text-xs font-bold text-slate-300">Aksi Korporasi</button>
+						<button id="tabBtn-insider" onclick="switchTab('insider')" class="tab-button rounded-xl px-4 py-2.5 text-xs font-bold text-slate-300">Insider</button>
+						<button id="tabBtn-heatmap" onclick="switchTab('heatmap')" class="tab-button rounded-xl px-4 py-2.5 text-xs font-bold text-slate-300">Heatmap</button>
+						<button id="tabBtn-setting" onclick="switchTab('setting')" class="tab-button rounded-xl px-4 py-2.5 text-xs font-bold text-slate-300">Pengaturan</button>
+					</nav>
+				</div>
+
+				<div class="p-4 sm:p-6">
+					<section id="tabContent-ai" class="space-y-5">
+						<div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+							<div>
+								<div class="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400">Technical Signal</div>
+								<h1 id="aiHeaderTicker" class="mt-1 text-xl font-black tracking-tight sm:text-2xl">[MDIA] — KONDISI TEKNIKAL</h1>
+								<p id="aiDateStamp" class="mt-1 text-xs text-slate-500">Memuat data...</p>
+							</div>
+							<div id="stockTitle" class="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-black text-slate-300">IDX:MDIA</div>
+						</div>
+
+						<div class="grid gap-5 xl:grid-cols-[1.35fr_0.65fr]">
+							<div class="space-y-5">
+								<div class="panel rounded-2xl p-5">
+									<div class="flex items-start justify-between gap-4">
+										<div>
+											<div class="text-xs font-bold text-slate-500">Signal teknikal</div>
+											<div id="aiVerdikText" class="mt-1 text-lg font-black text-amber-400">MENUNGGU DATA</div>
+										</div>
+										<div class="text-right">
+											<div class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Score</div>
+											<div id="aiScoreBadge" class="mt-1 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-1 text-xs font-bold text-amber-400">0/5</div>
+										</div>
+									</div>
+									<div class="signal-line mt-4"></div>
+									<div id="aiVerdikDesc" class="mt-4 text-sm text-slate-300">Data pasar akan ditampilkan di sini.</div>
+								</div>
+
+								<div class="panel rounded-2xl p-5">
+									<div class="mb-3 flex items-center justify-between">
+										<h2 class="text-sm font-black">Bukti / kondisi yang terdeteksi</h2>
+										<span class="text-[10px] text-slate-500">Rule-based</span>
+									</div>
+									<ul id="aiBuktiUtamaList" class="grid gap-2 sm:grid-cols-2"></ul>
+								</div>
+
+								<div class="panel rounded-2xl p-5">
+									<h2 class="text-sm font-black">Kesimpulan teknikal</h2>
+									<div id="aiKesimpulanText" class="mt-3"></div>
+								</div>
+							</div>
+
+							<div class="space-y-5">
+								<div class="panel rounded-2xl p-5">
+									<div class="flex items-center justify-between">
+										<h2 class="text-sm font-black">Risk Map</h2>
+										<button type="button" onclick="syncAlertsFromAI()" class="rounded-lg border border-slate-700 px-2.5 py-1.5 text-[10px] font-bold text-slate-300 hover:border-emerald-500/40 hover:text-emerald-400">Buat Alert</button>
+									</div>
+									<div id="aiRiskMap" class="mt-4"></div>
+								</div>
+
+								<div class="panel rounded-2xl p-5">
+									<div class="grid grid-cols-2 gap-3 text-xs">
+										<div class="rounded-xl border border-slate-800 bg-slate-950/40 p-3"><span class="block text-slate-500">Support</span><strong id="mapSupport1" class="mt-1 block text-sky-400">-</strong></div>
+										<div class="rounded-xl border border-slate-800 bg-slate-950/40 p-3"><span class="block text-slate-500">Resistance</span><strong id="mapResist1" class="mt-1 block text-fuchsia-400">-</strong></div>
+										<div class="rounded-xl border border-slate-800 bg-slate-950/40 p-3"><span class="block text-slate-500">Stop</span><strong id="mapSL" class="mt-1 block text-rose-400">-</strong></div>
+										<div class="rounded-xl border border-slate-800 bg-slate-950/40 p-3"><span class="block text-slate-500">Target</span><strong id="mapTP" class="mt-1 block text-emerald-400">-</strong></div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="grid gap-5 xl:grid-cols-2">
+							<div class="panel overflow-hidden rounded-2xl">
+								<div class="flex items-center justify-between border-b border-slate-800 px-4 py-3">
+									<h2 class="text-sm font-black">Chart</h2>
+									<span class="text-[10px] text-slate-500">TradingView</span>
+								</div>
+								<div id="tv_chart_container" class="tv-frame"></div>
+							</div>
+							<div class="panel overflow-hidden rounded-2xl">
+								<div class="flex items-center justify-between border-b border-slate-800 px-4 py-3">
+									<h2 class="text-sm font-black">Technical Analysis</h2>
+									<span class="text-[10px] text-slate-500">TradingView</span>
+								</div>
+								<div id="tv_technical_container" class="min-h-[540px] sm:min-h-[350px]"></div>
+							</div>
+						</div>
+					</section>
+
+					<section id="tabContent-bigmoney" class="hidden space-y-5">
+						<div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+							<div><div class="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400">Market Radar</div><h2 class="mt-1 text-xl font-black">Radar Pasar</h2><p class="mt-1 text-xs text-slate-500">Pemeringkatan deterministik berdasarkan signal teknikal, volume, dan data yang berhasil diambil.</p></div>
+							<button type="button" onclick="startRadarProcess()" class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-400 px-4 py-2.5 text-xs font-black text-slate-950 hover:bg-emerald-300"><i data-lucide="radar" class="h-4 w-4"></i> Scan Radar</button>
+						</div>
+						<div id="bigMoneyList" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3"></div>
+					</section>
+
+					<section id="tabContent-custom" class="hidden space-y-5">
+						<div><div class="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400">Screening Rules</div><h2 class="mt-1 text-xl font-black">Custom Screener</h2></div>
+						<div class="grid gap-3 rounded-2xl border border-slate-800 bg-slate-950/30 p-4 sm:grid-cols-3">
+							<label class="text-xs font-bold text-slate-400">MA
+								<select id="csRuleMA" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-xs text-white outline-none"><option value="ANY">Semua</option><option value="ABOVE_MA5">Harga &gt; MA5</option><option value="ABOVE_MA20">Harga &gt; MA20</option><option value="GOLDEN_CROSS">MA5 &gt; MA10</option><option value="BELOW_MA20">Harga &lt; MA20</option></select>
+							</label>
+							<label class="text-xs font-bold text-slate-400">Volume
+								<select id="csRuleVol" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-xs text-white outline-none"><option value="ANY">Semua</option><option value="SPIKE_1.2">≥ 1.2x</option><option value="SPIKE_2.0">≥ 2.0x</option><option value="DRY">&lt; 1.0x</option></select>
+							</label>
+							<label class="text-xs font-bold text-slate-400">Harga
+								<select id="csRulePrice" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-xs text-white outline-none"><option value="ANY">Semua</option><option value="GREEN">Hari ini naik</option><option value="RED">Hari ini turun</option><option value="BREAKOUT">Perubahan ≥ 3%</option></select>
+							</label>
+						</div>
+						<button type="button" onclick="runCustomScreener()" class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-xs font-black text-emerald-400 hover:bg-emerald-500/15">Jalankan Screener</button>
+						<div id="csResultsContainer" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"></div>
+					</section>
+
+					<section id="tabContent-peer" class="hidden space-y-5">
+						<div><div class="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-400">Peer View</div><h2 id="peerTickerLabel" class="mt-1 text-xl font-black">MDIA</h2><p class="mt-1 text-xs text-slate-500">Ruang untuk perbandingan emiten sejenis. Engine saat ini belum mengambil daftar peer otomatis.</p></div>
+						<div class="rounded-2xl border border-dashed border-slate-700 p-8 text-center text-xs text-slate-500">Peer comparison belum diaktifkan pada engine ChatGPT Edition.</div>
+					</section>
+
+					<section id="tabContent-news" class="hidden space-y-5">
+						<div><div class="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-400">News Flow</div><h2 class="mt-1 text-xl font-black">Berita <span id="newsTickerLabel">MDIA</span></h2></div>
+						<div id="newsContainer" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"><div class="py-8 text-center text-xs text-slate-500">Memuat berita...</div></div>
+					</section>
+
+					<section id="tabContent-fundamental" class="hidden space-y-5">
+						<div><div class="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-400">Company Snapshot</div><h2 class="mt-1 text-xl font-black">Fundamental <span id="fundTickerLabel">MDIA</span></h2></div>
+						<div id="yahooFundamentalContainer"><div class="py-8 text-center text-xs text-slate-500">Memuat fundamental...</div></div>
+					</section>
+
+					<section id="tabContent-paper" class="hidden space-y-5">
+						<div><div class="text-[10px] font-bold uppercase tracking-[0.2em] text-violet-400">Simulation</div><h2 class="mt-1 text-xl font-black">Paper Trading</h2></div>
+						<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+							<div class="rounded-2xl border border-slate-800 bg-slate-950/30 p-4"><span class="text-[10px] text-slate-500">Cash</span><strong id="ptCash" class="mt-1 block text-lg font-black text-white">Rp 100.000.000</strong></div>
+							<div class="rounded-2xl border border-slate-800 bg-slate-950/30 p-4"><span class="text-[10px] text-slate-500">Equity</span><strong id="ptEquity" class="mt-1 block text-lg font-black text-white">Rp 100.000.000</strong></div>
+							<div class="rounded-2xl border border-slate-800 bg-slate-950/30 p-4"><span class="text-[10px] text-slate-500">Realized P/L</span><strong id="ptRealizedPnL" class="mt-1 block text-lg font-black text-emerald-400">+Rp 0</strong></div>
+							<div class="rounded-2xl border border-slate-800 bg-slate-950/30 p-4"><span id="ptWinRate" class="text-xs font-bold text-slate-400">Win Rate: 0% (0/0)</span><strong id="ptUnrealizedPnL" class="mt-2 block text-sm text-slate-300">Floating Rp 0</strong></div>
+						</div>
+						<div class="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
+							<div class="rounded-2xl border border-slate-800 bg-slate-950/30 p-5">
+								<h3 class="text-sm font-black">Order Virtual</h3>
+								<div class="mt-4 grid gap-3">
+									<input id="ptTicker" placeholder="Ticker" class="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-xs text-white outline-none">
+									<input id="ptPrice" type="number" placeholder="Harga" class="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-xs text-white outline-none">
+									<input id="ptLots" type="number" min="1" placeholder="Lot" class="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-xs text-white outline-none">
+									<div class="grid grid-cols-2 gap-3"><input id="ptTP" type="number" placeholder="Take Profit" class="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-xs text-white outline-none"><input id="ptSL" type="number" placeholder="Stop Loss" class="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-xs text-white outline-none"></div>
+									<button type="button" onclick="ptExecuteBuy()" class="rounded-xl bg-emerald-400 px-4 py-2.5 text-xs font-black text-slate-950">Buy Virtual</button>
+								</div>
+							</div>
+							<div class="rounded-2xl border border-slate-800 bg-slate-950/30 p-5">
+								<h3 class="text-sm font-black">Catatan</h3>
+								<p class="mt-3 text-xs leading-6 text-slate-400">Paper trading tersimpan lokal di browser. Tidak ada order nyata dan tidak terhubung ke rekening broker.</p>
+							</div>
+						</div>
+					</section>
+
+					<section id="tabContent-rrr" class="hidden space-y-5">
+						<div><div class="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-400">Risk Planning</div><h2 class="mt-1 text-xl font-black">Risk / Reward</h2><p class="mt-1 text-xs text-slate-500">Masukkan rencana secara eksplisit. Tool hanya menghitung rasio berdasarkan angka yang diberikan.</p></div>
+						<div class="max-w-xl rounded-2xl border border-slate-800 bg-slate-950/30 p-5">
+							<div class="grid gap-3 sm:grid-cols-3">
+								<label class="text-xs font-bold text-slate-400">Entry<input id="rrrEntry" type="number" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-xs text-white outline-none"></label>
+								<label class="text-xs font-bold text-slate-400">Stop Loss<input id="rrrSL" type="number" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-xs text-white outline-none"></label>
+								<label class="text-xs font-bold text-slate-400">Take Profit<input id="rrrTP" type="number" class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-xs text-white outline-none"></label>
+							</div>
+							<button type="button" onclick="saveTradingPlanToJournal()" class="mt-4 rounded-xl bg-amber-400 px-4 py-2.5 text-xs font-black text-slate-950">Simpan ke Jurnal</button>
+						</div>
+					</section>
+
+					<section id="tabContent-journal" class="hidden space-y-5">
+						<div><div class="text-[10px] font-bold uppercase tracking-[0.2em] text-violet-400">Trading Journal</div><h2 class="mt-1 text-xl font-black">Jurnal</h2></div>
+						<div class="overflow-x-auto rounded-2xl border border-slate-800">
+							<table class="w-full min-w-[680px] text-left"><thead class="bg-slate-900/80 text-[10px] uppercase tracking-wider text-slate-500"><tr><th class="p-3">Ticker</th><th class="p-3">Entry</th><th class="p-3">SL</th><th class="p-3">TP</th><th class="p-3">R:R</th><th class="p-3">Status</th></tr></thead><tbody id="journalTableBody"></tbody></table>
+						</div>
+					</section>
+
+					<section id="tabContent-alert" class="hidden space-y-5">
+						<div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><div class="text-[10px] font-bold uppercase tracking-[0.2em] text-rose-400">Price Monitor</div><h2 id="alertTickerLabel" class="mt-1 text-xl font-black">MDIA</h2></div><button type="button" onclick="syncAlertsFromAI()" class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-xs font-black text-emerald-400">Sinkronkan dari Risk Map</button></div>
+						<div id="alertsContainer" class="grid gap-3"></div>
+					</section>
+
+					<section id="tabContent-corporate" class="hidden space-y-5">
+						<div><div class="text-[10px] font-bold uppercase tracking-[0.2em] text-fuchsia-400">Corporate Actions</div><h2 class="mt-1 text-xl font-black">Aksi Korporasi <span id="corpTickerLabel">MDIA</span></h2></div>
+						<div id="corporateContainer" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
+					</section>
+
+					<section id="tabContent-insider" class="hidden space-y-5">
+						<div><div class="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400">Ownership</div><h2 class="mt-1 text-xl font-black">Insider / Ownership</h2></div>
+						<div class="rounded-2xl border border-dashed border-slate-700 p-8 text-center text-xs text-slate-500">Data insider belum tersedia pada engine saat ini. Tidak ada data yang akan dibuat-buat.</div>
+					</section>
+
+					<section id="tabContent-heatmap" class="hidden space-y-5">
+						<div><div class="text-[10px] font-bold uppercase tracking-[0.2em] text-orange-400">Market Overview</div><h2 class="mt-1 text-xl font-black">Heatmap</h2></div>
+						<div class="rounded-2xl border border-dashed border-slate-700 p-8 text-center text-xs text-slate-500">Heatmap sektor belum diaktifkan pada engine ChatGPT Edition.</div>
+					</section>
+
+					<section id="tabContent-setting" class="hidden space-y-5">
+						<div><div class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Preferences</div><h2 class="mt-1 text-xl font-black">Pengaturan</h2></div>
+						<div class="grid gap-4 sm:grid-cols-2">
+							<div class="rounded-2xl border border-slate-800 bg-slate-950/30 p-5"><h3 class="text-sm font-black">Notifikasi</h3><p class="mt-2 text-xs leading-6 text-slate-500">Izinkan browser mengirim notifikasi ketika price alert terpenuhi.</p><button type="button" onclick="requestNotificationPermission()" class="mt-4 rounded-xl border border-slate-700 px-3 py-2 text-xs font-bold text-slate-300 hover:border-emerald-500/40 hover:text-emerald-400">Minta Izin Notifikasi</button></div>
+							<div class="rounded-2xl border border-slate-800 bg-slate-950/30 p-5"><h3 class="text-sm font-black">Data</h3><p class="mt-2 text-xs leading-6 text-slate-500">Cache market, paper trading, jurnal, dan alert disimpan di localStorage browser ini.</p></div>
+						</div>
+					</section>
+				</div>
+			</div>
+		</main>
+
+		<div id="toastContainer" class="pointer-events-none fixed bottom-4 right-4 z-[100] flex max-w-[calc(100vw-2rem)] flex-col gap-2"></div>
+	</div>
+
+	<script>
+		const uniqueRadarWatchlist = [
+			'BBCA', 'BBRI', 'BMRI', 'BBNI', 'TLKM', 'ASII', 'GOTO', 'ANTM', 'MDKA', 'INCO',
+			'ADRO', 'PTBA', 'ITMG', 'UNTR', 'PGAS', 'MEDC', 'BUKA', 'EMTK', 'AMRT', 'ICBP',
+			'INDF', 'KLBF', 'JPFA', 'CPIN', 'SMGR', 'BRPT', 'TPIA', 'AKRA', 'ACES', 'MIKA',
+			'ERAA', 'MAPI', 'SIDO', 'SCMA', 'ESSA', 'ELSA', 'WIKA', 'WSKT', 'PANI', 'GZCO',
+			'GJTL', 'AUTO', 'DEWA', 'BUMI', 'BRMS', 'HRUM', 'RAJA', 'MBMA', 'NCKL', 'GEMS'
+		];
+	</script>
+	<script src="app_chatgpt.js"></script>
+	<script>
+		(function () {
+			const originalSwitchTab = window.switchTab;
+			window.switchTab = function (tabName) {
+				if (typeof originalSwitchTab === 'function') originalSwitchTab(tabName);
+			};
+
+			const observer = new MutationObserver(() => {
+				if (window.lucide) window.lucide.createIcons();
+			});
+			observer.observe(document.body, { childList: true, subtree: true });
+
+			if (window.lucide) window.lucide.createIcons();
+		})();
+	</script>
+</body>
+</html>
