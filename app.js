@@ -706,59 +706,42 @@ function renderFundamentalWidget(ticker) {
 const FMP_API_KEY = 'LQhjoJzWKzND3xYw4hy5CE7hqGM33YV4';
 
 async function handleInsiderSearch() {
-	const inputEl = document.getElementById('insiderSearchInput');
-	const query = inputEl.value.trim();
-	const resultContainer = document.getElementById('insiderResultContainer');
-	const statusMessage = document.getElementById('insiderStatusMessage');
-	const tableBody = document.getElementById('insiderTableBody');
+	const selectEl = document.getElementById('insiderSearchInput');
+	const cikNumber = selectEl.value; // Langsung mengambil nomor CIK dari dropdown
 	
-	if (!query) {
-		showToast("Silakan masukkan nama institusi terlebih dahulu (contoh: Blackrock).", "warning");
+	if (!cikNumber) {
+		showToast("Silakan pilih salah satu institusi dari daftar dropdown terlebih dahulu.", "warning");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
 	}
 
+	// Mengambil teks nama institusi yang dipilih pengguna untuk ditampilkan nanti
+	const institutionName = selectEl.options[selectEl.selectedIndex].text.replace(/\s\(.*?\)/, ''); 
+
+	const resultContainer = document.getElementById('insiderResultContainer');
+	const statusMessage = document.getElementById('insiderStatusMessage');
+	const tableBody = document.getElementById('insiderTableBody');
+
 	// Reset antarmuka ke mode loading
 	resultContainer.classList.add('hidden');
 	statusMessage.classList.remove('hidden');
-	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Mencari CIK untuk <b>"${query}"</b> di server FMP...</div>`;
+	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menarik portofolio 13F untuk <b>${institutionName}</b>...</div>`;
 	if (window.lucide) lucide.createIcons();
 	tableBody.innerHTML = '';
 
 	try {
-		// Langkah 1: Gunakan endpoint cik-search yang lebih akurat
-		const cikResponse = await fetch(`https://financialmodelingprep.com/api/v3/cik-search/${encodeURIComponent(query)}?apikey=${FMP_API_KEY}`);
-		const cikData = await cikResponse.json();
-
-		// Tangkap jika API merespons dengan pesan error limit / free tier
-		if (cikData && cikData["Error Message"]) {
-			statusMessage.innerHTML = `<div class="text-amber-400 font-bold text-sm">Pesan dari Server FMP:</div><div class="text-slate-300 mt-1 text-xs">${cikData["Error Message"]}</div>`;
-			return;
-		}
-
-		if (!Array.isArray(cikData) || cikData.length === 0) {
-			statusMessage.innerHTML = `Institusi <b>"${query}"</b> tidak ditemukan. Coba gunakan nama resmi perusahaan (contoh: "Berkshire Hathaway").`;
-			return;
-		}
-
-		const targetInstitution = cikData[0];
-		const cikNumber = targetInstitution.cik;
-
-		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menarik portofolio 13F (CIK: ${cikNumber})...</div>`;
-		if (window.lucide) lucide.createIcons();
-
-		// Langkah 2: Tarik portofolio Form 13F
+		// Langsung tarik portofolio menggunakan CIK yang sudah pasti akurat
 		const portfolioResponse = await fetch(`https://financialmodelingprep.com/api/v3/form-thirteen/${cikNumber}?apikey=${FMP_API_KEY}`);
 		const portfolioData = await portfolioResponse.json();
 
 		// Tangkap penolakan akses jika endpoint 13F diblokir untuk pengguna gratis
 		if (portfolioData && portfolioData["Error Message"]) {
-			statusMessage.innerHTML = `<div class="text-rose-400 font-bold text-sm">Akses Ditolak (Limit API):</div><div class="text-slate-300 mt-1 text-xs">${portfolioData["Error Message"]}</div><div class="mt-2 text-[10px] text-slate-400 italic bg-slate-900/50 p-2 rounded">*FMP biasanya membatasi akses Form 13F khusus untuk pengguna API Key Premium.</div>`;
+			statusMessage.innerHTML = `<div class="text-rose-400 font-bold text-sm">Akses Ditolak (Limit API):</div><div class="text-slate-300 mt-1 text-xs">${portfolioData["Error Message"]}</div><div class="mt-2 text-[10px] text-slate-400 italic bg-slate-900/50 p-2 rounded">*FMP membatasi akses Form 13F khusus untuk pengguna API Key Premium.</div>`;
 			return;
 		}
 
 		if (!Array.isArray(portfolioData) || portfolioData.length === 0) {
-			statusMessage.innerHTML = `Data portofolio (Form 13F) tidak tersedia untuk <b>${targetInstitution.name}</b> saat ini.`;
+			statusMessage.innerHTML = `Data portofolio (Form 13F) tidak tersedia untuk <b>${institutionName}</b> saat ini.`;
 			return;
 		}
 
@@ -766,7 +749,7 @@ async function handleInsiderSearch() {
 		statusMessage.classList.add('hidden');
 		resultContainer.classList.remove('hidden');
 		
-		document.getElementById('insiderInstitutionName').innerText = targetInstitution.name;
+		document.getElementById('insiderInstitutionName').innerText = institutionName;
 		document.getElementById('insiderReportDate').innerText = portfolioData[0].date || 'N/A';
 
 		renderFMPTable(portfolioData.slice(0, 50));
