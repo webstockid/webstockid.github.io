@@ -1401,8 +1401,8 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		sup2 = roundToBEITick(fibo.sup2, 'floor');
 		res1 = roundToBEITick(fibo.res1, 'ceil');
 		res2 = roundToBEITick(fibo.res2, 'ceil');
-		sl = roundToBEITick(fibo.sup2 * 0.98, 'floor'); // SL ketat di bawah support 2
-		tp1 = roundToBEITick(fibo.pivot, 'ceil');       // TP moderat di ekuilibrium
+		sl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
+		tp1 = roundToBEITick(fibo.pivot, 'ceil');
 		tp2 = roundToBEITick(fibo.res2, 'ceil');
 	} else {
 		// Fallback statis jika data gagal termuat
@@ -1501,21 +1501,21 @@ function exportTradingCard() {
 	startExportCardCooldown(15);
 	const price = roundToBEITick(globalStockData.price);
 	let sl, sup1, sup2, res1, res2, tp1, tp2;
-	
-	// Gunakan Fibonacci jika data High/Low 20 Hari tersedia
-	if (stockData && stockData.high20 && stockData.low20 && stockData.high20 > stockData.low20) {
-		const fibo = calculateFibonacciLevels(stockData.high20, stockData.low20);
+
+	// Gunakan Fibonacci jika data High/Low 20 Hari tersedia (Gunakan globalStockData)
+	if (globalStockData && globalStockData.high20 && globalStockData.low20 && globalStockData.high20 > globalStockData.low20) {
+		const fibo = calculateFibonacciLevels(globalStockData.high20, globalStockData.low20);
 		sup1 = roundToBEITick(fibo.sup1, 'floor');
 		sup2 = roundToBEITick(fibo.sup2, 'floor');
 		res1 = roundToBEITick(fibo.res1, 'ceil');
 		res2 = roundToBEITick(fibo.res2, 'ceil');
-		sl = roundToBEITick(fibo.sup2 * 0.98, 'floor'); // SL ketat di bawah support 2
-		tp1 = roundToBEITick(fibo.pivot, 'ceil');       // TP moderat di ekuilibrium
+		sl = roundToBEITick(fibo.sup2 * 0.98, 'floor'); 
+		tp1 = roundToBEITick(fibo.pivot, 'ceil');       
 		tp2 = roundToBEITick(fibo.res2, 'ceil');
 	} else {
 		// Fallback statis jika data gagal termuat
 		sl = roundToBEITick(price * 0.92, 'floor'); 
-		sup1 = roundToBEITick(price * 0.94, 'floor'); 
+		sup1 = roundToBEITick(price * 0.94, 'floor');
 		sup2 = roundToBEITick(price * 0.96, 'floor'); 
 		res1 = roundToBEITick(price * 1.04, 'ceil'); 
 		res2 = roundToBEITick(price * 1.08, 'ceil'); 
