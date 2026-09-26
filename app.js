@@ -3162,7 +3162,7 @@ function checkNotificationStatus() {
 
 async function sendTelegramAlert(message) {
 	const botToken = localStorage.getItem('8886777128:AAEi1xC2tzDWtOzOEHwcPtruApuw9CSOtKk');
-	const chatId = localStorage.getItem('987654321');
+	const chatId = localStorage.getItem('8280167573');
 	if (!botToken || !chatId) return;
 
 	try {
