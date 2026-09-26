@@ -3095,7 +3095,7 @@ function escapeHtml(text) {
 // Tambahkan fungsi ini di app_7.js
 async function generateAIResponse(userMessage, stockContext = null) {
     // Ambil API key dari pengaturan (localStorage)
-    const apiKey = localStorage.getItem('gemini_api_key'); 
+    const apiKey = localStorage.getItem('AQ.Ab8RN6KfJL2CpkQasypiD9-vUAnuH106t5zsDih0s6Ou0YYohQ'); 
     
     if (!apiKey) {
         return "⚠️ Sistem: Mohon masukkan API Key Gemini di menu Pengaturan terlebih dahulu.";
@@ -3161,8 +3161,8 @@ function checkNotificationStatus() {
 }
 
 async function sendTelegramAlert(message) {
-	const botToken = localStorage.getItem('telegram_bot_token');
-	const chatId = localStorage.getItem('telegram_chat_id');
+	const botToken = localStorage.getItem('8886777128:AAEi1xC2tzDWtOzOEHwcPtruApuw9CSOtKk');
+	const chatId = localStorage.getItem('987654321');
 	if (!botToken || !chatId) return;
 
 	try {
