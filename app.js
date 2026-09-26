@@ -715,43 +715,27 @@ async function handleInsiderSearch() {
 		return;
 	}
 
-	// Mengambil nama institusi tanpa teks dalam kurung untuk UI
 	const institutionName = selectEl.options[selectEl.selectedIndex].text.replace(/\s\(.*?\)/, ''); 
 	const resultContainer = document.getElementById('insiderResultContainer');
 	const statusMessage = document.getElementById('insiderStatusMessage');
 	const tableBody = document.getElementById('insiderTableBody');
 
-	// Reset UI ke mode Loading
 	resultContainer.classList.add('hidden');
 	statusMessage.classList.remove('hidden');
 	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menghubungkan ke SEC EDGAR untuk <b>${institutionName}</b>...</div>`;
 	if (window.lucide) lucide.createIcons();
 	tableBody.innerHTML = '';
 
-	// Fungsi Helper: Rotasi Proxy (Menghindari "Failed to Fetch" & Blokir CORS)
+	// MASUKKAN URL CLOUDFLARE WORKER BARU KAMU DI SINI
+	const workerProxy = 'https://URL_WORKER_KAMU_DISINI/?url=';
+
 	const fetchSecData = async (targetUrl, isXml = false) => {
-		const proxies = [
-			`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
-			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`,
-			`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`
-		];
-		
-		for (let p of proxies) {
-			try {
-				// AbortSignal mencegah aplikasi hang jika proxy lambat
-				const res = await fetch(p, { signal: AbortSignal.timeout(10000) });
-				if (res.ok) {
-					return isXml ? await res.text() : await res.json();
-				}
-			} catch(e) {
-				console.warn(`Jalur proxy ${p} gagal/sibuk, mencoba jalur berikutnya...`);
-			}
-		}
-		throw new Error("Koneksi ditolak oleh server SEC EDGAR atau seluruh proxy sedang sibuk (Failed to fetch).");
+		const res = await fetch(workerProxy + encodeURIComponent(targetUrl));
+		if (!res.ok) throw new Error("Gagal mengambil data dari SEC EDGAR.");
+		return isXml ? await res.text() : await res.json();
 	};
 
 	try {
-		// SEC mewajibkan format CIK 10 digit
 		const paddedCik = cikNumber.padStart(10, '0');
 		const secUrl = `https://data.sec.gov/submissions/CIK${paddedCik}.json`;
 		
@@ -769,7 +753,7 @@ async function handleInsiderSearch() {
 		}
 
 		if (filingIndex === -1) {
-			statusMessage.innerHTML = `Data 13F-HR tidak ditemukan untuk <b>${institutionName}</b> di database publik SEC.`;
+			statusMessage.innerHTML = `Data 13F-HR tidak ditemukan untuk <b>${institutionName}</b>.`;
 			return;
 		}
 
@@ -814,10 +798,7 @@ async function handleInsiderSearch() {
 			const node = infoTables[i];
 			
 			if (node.localName === 'infoTable') {
-				let nameOfIssuer = '';
-				let cusip = '';
-				let value = 0;
-				let shares = 0;
+				let nameOfIssuer = '', cusip = '', value = 0, shares = 0;
 
 				for (let j = 0; j < node.childNodes.length; j++) {
 					const child = node.childNodes[j];
@@ -834,20 +815,13 @@ async function handleInsiderSearch() {
 				}
 
 				if (nameOfIssuer) {
-					portfolioData.push({
-						nameOfIssuer: nameOfIssuer,
-						tickcusip: cusip,
-						shares: shares,
-						value: value
-					});
+					portfolioData.push({ nameOfIssuer, tickcusip: cusip, shares, value });
 				}
 			}
 		}
 
-		// 5. Urutkan berdasarkan nilai terbesar
+		// 5. Urutkan & Tampilkan
 		portfolioData.sort((a, b) => b.value - a.value);
-
-		// 6. Tampilkan ke UI
 		statusMessage.classList.add('hidden');
 		resultContainer.classList.remove('hidden');
 		
@@ -1171,27 +1145,27 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		const isAboveMA20 = stockData.price > stockData.ma20;
 		const isVolSpike = stockData.volRatio >= 1.5;
 
-		if (stockData.price > stockData.ma20 && stockData.changePct > 3 && stockData.volRatio >= 2) {
+		if (stockData.price > stockData.ma20 && stockData.changePct > 4 && stockData.volRatio >= 2) {
 			score = 5;
 			verdik = "STRONG BULLISH BREAKOUT";
 			verdikClass = "font-bold text-green-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-green-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.price > stockData.ma10 && stockData.changePct > 3 && stockData.volRatio >= 2) {
+		} else if (stockData.price > stockData.ma20 && stockData.changePct > 1 && stockData.volRatio >= 2) {
 			score = 4;
 			verdik = "BULLISH ACCUMULATION";
 			verdikClass = "font-bold text-emerald-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.price > stockData.ma10 && stockData.changePct > 2 && stockData.volRatio >= 1) {
+		} else if (stockData.price > stockData.ma10 && stockData.changePct > 1 && stockData.volRatio >= 1) {
 			score = 4;
 			verdik = "BULLISH ACCUMULATION";
 			verdikClass = "font-bold text-emerald-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-emerald-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.price > stockData.ma10 && stockData.price < stockData.ma20 && stockData.changePct >= -2 && stockData.changePct <= 2) {
+		} else if (stockData.price > stockData.ma10 && stockData.changePct >= -2 && stockData.changePct <= 2) {
 			score = 3;
 			verdik = "KONSOLIDASI";
 			verdikClass = "font-bold text-cyan-400 text-sm lg:text-base";
 			scoreClass = "font-bold bg-slate-800 text-cyan-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
-		} else if (stockData.price > stockData.ma5 && stockData.price < stockData.ma20 && stockData.changePct >= -4 && stockData.changePct <= 2) {
+		} else if (stockData.price > stockData.ma5 && stockData.changePct >= -4 && stockData.changePct <= 2) {
 			score = 3;
 			verdik = "KONSOLIDASI";
 			verdikClass = "font-bold text-cyan-400 text-sm lg:text-base";
