@@ -508,7 +508,7 @@
 						<i data-lucide="pie-chart" class="w-4 h-4 text-violet-400"></i> Fundamental
 					</button>
 					<button onclick="switchTab('insider')" id="tabBtn-insider" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="pie-chart" class="w-4 h-4 text-green-400"></i> Insider
+						<i data-lucide="pie-chart" class="w-4 h-4 text-indigo-400"></i> Insider
 					</button>
 					<button onclick="switchTab('heatmap')" id="tabBtn-heatmap" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Sektor Heatmap
@@ -532,39 +532,38 @@
 					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 shadow-lg shadow-indigo-500/5">
 						<div class="flex flex-col sm:flex-row gap-3">
 							<div class="relative w-full sm:flex-1">
-	<div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-		<i data-lucide="building-2" class="w-4 h-4 text-slate-400"></i>
-	</div>
-	<select id="insiderSearchInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-10 pr-10 py-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-indigo-500 transition shadow-inner appearance-none cursor-pointer">
-		<option value="" disabled selected>-- Pilih Institusi Raksasa --</option>
+								<div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+									<i data-lucide="building-2" class="w-4 h-4 text-slate-400"></i>
+								</div>
+								<select id="insiderSearchInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-10 pr-10 py-2.5 text-white text-xs lg:text-sm focus:outline-none focus:border-indigo-500 transition shadow-inner appearance-none cursor-pointer">
+									<option value="" disabled selected>-- Pilih Institusi Raksasa --</option>
+									<optgroup label="Hedge Fund & Konglomerasi" class="bg-slate-800 text-indigo-300 font-bold">
+										<option value="0001067983" class="text-white font-normal">Berkshire Hathaway (Warren Buffett)</option>
+										<option value="0001350694" class="text-white font-normal">Bridgewater Associates (Ray Dalio)</option>
+										<option value="0001336528" class="text-white font-normal">Pershing Square (Bill Ackman)</option>
+										<option value="0001423053" class="text-white font-normal">Citadel Advisors (Ken Griffin)</option>
+										<option value="0001029160" class="text-white font-normal">Soros Fund Management (George Soros)</option>
+										<option value="0001596532" class="text-white font-normal">ARK Investment Management (Cathie Wood)</option>
+									</optgroup>
 		
-		<optgroup label="Hedge Fund & Konglomerasi" class="bg-slate-800 text-indigo-300 font-bold">
-			<option value="0001067983" class="text-white font-normal">Berkshire Hathaway (Warren Buffett)</option>
-			<option value="0001350694" class="text-white font-normal">Bridgewater Associates (Ray Dalio)</option>
-			<option value="0001336528" class="text-white font-normal">Pershing Square (Bill Ackman)</option>
-			<option value="0001423053" class="text-white font-normal">Citadel Advisors (Ken Griffin)</option>
-			<option value="0001029160" class="text-white font-normal">Soros Fund Management (George Soros)</option>
-			<option value="0001596532" class="text-white font-normal">ARK Investment Management (Cathie Wood)</option>
-		</optgroup>
+									<optgroup label="Bank & Manajemen Aset Global" class="bg-slate-800 text-indigo-300 font-bold mt-2">
+										<option value="0000019617" class="text-white font-normal">JPMorgan Chase & Co.</option>
+										<option value="0000886982" class="text-white font-normal">Goldman Sachs Group</option>
+										<option value="0000895421" class="text-white font-normal">Morgan Stanley</option>
+										<option value="0000093751" class="text-white font-normal">State Street Corp</option>
+										<option value="0000315066" class="text-white font-normal">Fidelity (FMR LLC)</option>
+									</optgroup>
 		
-		<optgroup label="Bank & Manajemen Aset Global" class="bg-slate-800 text-indigo-300 font-bold mt-2">
-			<option value="0000019617" class="text-white font-normal">JPMorgan Chase & Co.</option>
-			<option value="0000886982" class="text-white font-normal">Goldman Sachs Group</option>
-			<option value="0000895421" class="text-white font-normal">Morgan Stanley</option>
-			<option value="0000093751" class="text-white font-normal">State Street Corp</option>
-			<option value="0000315066" class="text-white font-normal">Fidelity (FMR LLC)</option>
-		</optgroup>
-		
-		<optgroup label="Dana Pensiun & Yayasan Raksasa" class="bg-slate-800 text-indigo-300 font-bold mt-2">
-			<option value="0001364742" class="text-white font-normal">Bill & Melinda Gates Foundation Trust</option>
-			<option value="0001004146" class="text-white font-normal">California Public Employees Retirement System</option>
-		</optgroup>
-	</select>
-	<div class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">
-		<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
-	</div>
-</div>
-							<button onclick="handleInsiderSearch()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-2.5 rounded-lg border border-indigo-500 transition shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 shrink-0">
+									<optgroup label="Dana Pensiun & Yayasan Raksasa" class="bg-slate-800 text-indigo-300 font-bold mt-2">
+										<option value="0001364742" class="text-white font-normal">Bill & Melinda Gates Foundation Trust</option>
+										<option value="0001004146" class="text-white font-normal">California Public Employees Retirement System</option>
+									</optgroup>
+								</select>
+								<div class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">
+									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+								</div>
+							</div>
+							<button onclick="handleInsiderSearch()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-400 text-white font-bold px-6 py-2.5 rounded-lg border border-indigo-500 transition shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 shrink-0">
 								<i data-lucide="search" class="w-4 h-4"></i> Cari Portofolio
 							</button>
 						</div>

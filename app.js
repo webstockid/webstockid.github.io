@@ -336,6 +336,18 @@ function roundToBEITick(price, direction = 'round') {
 	return Math.round(price / tick) * tick;
 }
 
+function calculateFibonacciLevels(high, low) {
+	const diff = high - low;
+	return {
+		res2: high,
+		res1: Math.round(high - (diff * 0.236)),
+		pivot: Math.round(high - (diff * 0.500)),
+		sup1: Math.round(high - (diff * 0.618)),
+		sup2: Math.round(high - (diff * 0.786)),
+		bottom: low
+	};
+}
+
 function checkWelcomeModal() {
 	const hideModal = localStorage.getItem('hide_welcome_modal');
 	if (!hideModal) {
@@ -978,7 +990,12 @@ function parseYahooDataGlobal(json, ticker) {
 	}
 	const bandarAvgPrice = totalVol20 > 0 ? roundToBEITick(totalValue20 / totalVol20) : roundToBEITick(currentPrice);
 
-	return { ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, currentLot, currentValuation, bandarAvgPrice };
+	return { 
+		ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), 
+		changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, 
+		currentLot, currentValuation, bandarAvgPrice,
+		historicalPrices: prices // <--- TAMBAHKAN BARIS INI
+	};
 }
 
 function formatValuationIDR(val) {
@@ -1375,13 +1392,28 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		descEl.innerText = `Menganalisis pergerakan teknikal saham ${ticker} berbasis indikator grafik TradingView. Silakan evaluasi struktur pola harga harian sebelum melakukan transaksi....`;
 	}
 
-	const sl = roundToBEITick(price * 0.92, 'floor'); 
-	const sup1 = roundToBEITick(price * 0.94, 'floor'); 
-	const sup2 = roundToBEITick(price * 0.96, 'floor'); 
-	const res1 = roundToBEITick(price * 1.04, 'ceil'); 
-	const res2 = roundToBEITick(price * 1.08, 'ceil'); 
-	const tp1 = roundToBEITick(price * 1.06, 'ceil'); 
-	const tp2 = roundToBEITick(price * 1.10, 'ceil'); 
+	let sl, sup1, sup2, res1, res2, tp1, tp2;
+	
+	// Gunakan Fibonacci jika data High/Low 20 Hari tersedia
+	if (stockData && stockData.high20 && stockData.low20 && stockData.high20 > stockData.low20) {
+		const fibo = calculateFibonacciLevels(stockData.high20, stockData.low20);
+		sup1 = roundToBEITick(fibo.sup1, 'floor');
+		sup2 = roundToBEITick(fibo.sup2, 'floor');
+		res1 = roundToBEITick(fibo.res1, 'ceil');
+		res2 = roundToBEITick(fibo.res2, 'ceil');
+		sl = roundToBEITick(fibo.sup2 * 0.98, 'floor'); // SL ketat di bawah support 2
+		tp1 = roundToBEITick(fibo.pivot, 'ceil');       // TP moderat di ekuilibrium
+		tp2 = roundToBEITick(fibo.res2, 'ceil');
+	} else {
+		// Fallback statis jika data gagal termuat
+		sl = roundToBEITick(price * 0.92, 'floor'); 
+		sup1 = roundToBEITick(price * 0.94, 'floor'); 
+		sup2 = roundToBEITick(price * 0.96, 'floor'); 
+		res1 = roundToBEITick(price * 1.04, 'ceil'); 
+		res2 = roundToBEITick(price * 1.08, 'ceil'); 
+		tp1 = roundToBEITick(price * 1.06, 'ceil'); 
+		tp2 = roundToBEITick(price * 1.10, 'ceil'); 
+	}
 
 	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
@@ -1468,13 +1500,28 @@ function exportTradingCard() {
 
 	startExportCardCooldown(15);
 	const price = roundToBEITick(globalStockData.price);
-	const sl = roundToBEITick(price * 0.92, 'floor');
-	const sup1 = roundToBEITick(price * 0.94, 'floor');
-	const sup2 = roundToBEITick(price * 0.96, 'floor');
-	const res1 = roundToBEITick(price * 1.04, 'ceil');
-	const res2 = roundToBEITick(price * 1.08, 'ceil');
-	const tp1 = roundToBEITick(price * 1.06, 'ceil');
-	const tp2 = roundToBEITick(price * 1.10, 'ceil');
+	let sl, sup1, sup2, res1, res2, tp1, tp2;
+	
+	// Gunakan Fibonacci jika data High/Low 20 Hari tersedia
+	if (stockData && stockData.high20 && stockData.low20 && stockData.high20 > stockData.low20) {
+		const fibo = calculateFibonacciLevels(stockData.high20, stockData.low20);
+		sup1 = roundToBEITick(fibo.sup1, 'floor');
+		sup2 = roundToBEITick(fibo.sup2, 'floor');
+		res1 = roundToBEITick(fibo.res1, 'ceil');
+		res2 = roundToBEITick(fibo.res2, 'ceil');
+		sl = roundToBEITick(fibo.sup2 * 0.98, 'floor'); // SL ketat di bawah support 2
+		tp1 = roundToBEITick(fibo.pivot, 'ceil');       // TP moderat di ekuilibrium
+		tp2 = roundToBEITick(fibo.res2, 'ceil');
+	} else {
+		// Fallback statis jika data gagal termuat
+		sl = roundToBEITick(price * 0.92, 'floor'); 
+		sup1 = roundToBEITick(price * 0.94, 'floor'); 
+		sup2 = roundToBEITick(price * 0.96, 'floor'); 
+		res1 = roundToBEITick(price * 1.04, 'ceil'); 
+		res2 = roundToBEITick(price * 1.08, 'ceil'); 
+		tp1 = roundToBEITick(price * 1.06, 'ceil'); 
+		tp2 = roundToBEITick(price * 1.10, 'ceil'); 
+	}
 
 	const now = new Date();
 	const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -2277,6 +2324,27 @@ document.addEventListener('click', function(e) {
 	});
 });
 
+// 1. TEMPELKAN FUNGSI INI DI ATAS runCustomScreener
+function calculateRSI(prices, period = 14) {
+	if (!prices || prices.length < period + 1) return 50;
+	let gains = 0, losses = 0;
+	for (let i = 1; i <= period; i++) {
+		const diff = prices[i] - prices[i - 1];
+		if (diff >= 0) gains += diff; else losses -= diff;
+	}
+	let avgGain = gains / period, avgLoss = losses / period;
+	for (let i = period + 1; i < prices.length; i++) {
+		const diff = prices[i] - prices[i - 1];
+		let cGain = 0, cLoss = 0;
+		if (diff >= 0) cGain = diff; else cLoss = -diff;
+		avgGain = ((avgGain * (period - 1)) + cGain) / period;
+		avgLoss = ((avgLoss * (period - 1)) + cLoss) / period;
+	}
+	if (avgLoss === 0) return 100;
+	return 100 - (100 / (1 + (avgGain / avgLoss)));
+}
+
+// 2. TIMPA FUNGSI runCustomScreener LAMA DENGAN INI
 async function runCustomScreener() {
 	const btn = document.getElementById('btnRunCustomScreener');
 	if (btn && btn.disabled) return;
@@ -2293,15 +2361,13 @@ async function runCustomScreener() {
 		const ruleMA = document.getElementById('csRuleMA').value;
 		const ruleVol = document.getElementById('csRuleVol').value;
 		const rulePrice = document.getElementById('csRulePrice').value;
+		
+		// Deteksi jika HTML memiliki filter RSI, jika tidak anggap 'ALL'
+		const ruleRSI = document.getElementById('csRuleRSI') ? document.getElementById('csRuleRSI').value : 'ALL';
 
 		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Memfilter saham sesuai custom rules Kamu...</div>`;
 		
-		const shuffled = [...uniqueRadarWatchlist];
-		for (let i = shuffled.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-		}
-
+		const shuffled = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
 		let passedItems = [];
 		const BATCH_SIZE = 10;
 
@@ -2311,6 +2377,7 @@ async function runCustomScreener() {
 
 			for (const item of results) {
 				if (!item || !item.price) continue;
+				
 				let matchMA = true;
 				if (ruleMA === 'ABOVE_MA5') matchMA = item.price > (item.ma5 || 0);
 				else if (ruleMA === 'ABOVE_MA20') matchMA = item.price > (item.ma20 || 0);
@@ -2327,15 +2394,26 @@ async function runCustomScreener() {
 				else if (rulePrice === 'RED') matchPrice = (item.changePct || 0) < 0;
 				else if (rulePrice === 'BREAKOUT') matchPrice = (item.changePct || 0) >= 3.0;
 
-				if (matchMA && matchVol && matchPrice) passedItems.push(item);
+				let matchRSI = true;
+				if (item.historicalPrices && ruleRSI !== 'ALL') {
+					const rsiValue = calculateRSI(item.historicalPrices);
+					if (ruleRSI === 'OVERSOLD' && rsiValue >= 30) matchRSI = false;
+					if (ruleRSI === 'OVERBOUGHT' && rsiValue <= 70) matchRSI = false;
+				}
+
+				// Jika lolos MA, Vol, Harga, dan RSI, masukkan ke hasil
+				if (matchMA && matchVol && matchPrice && matchRSI) passedItems.push(item);
 			}
 			if (passedItems.length >= 8) break;
 		}
 
+		// Lanjutkan dengan kode perakitan HTML lamamu (mulai dari if(passedItems.length === 0)...)
 		if (passedItems.length === 0) {
 			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10">Tidak ada saham yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya.</div>`;
 			return;
 		}
+
+		// ... (Sisa kode render HTML lamamu tidak perlu diubah, biarkan seperti aslinya)
 
 		let html = '';
 		passedItems.forEach((item, index) => {
@@ -3014,107 +3092,47 @@ function escapeHtml(text) {
 	return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
-function generateAIResponse(prompt) {
-	const lower = prompt.toLowerCase();
-	let targetTicker = currentTicker;
+// Tambahkan fungsi ini di app_7.js
+async function generateAIResponse(userMessage, stockContext = null) {
+    // Ambil API key dari pengaturan (localStorage)
+    const apiKey = localStorage.getItem('gemini_api_key'); 
+    
+    if (!apiKey) {
+        return "⚠️ Sistem: Mohon masukkan API Key Gemini di menu Pengaturan terlebih dahulu.";
+    }
 
-	if (typeof uniqueRadarWatchlist !== 'undefined') {
-		const foundMatch = uniqueRadarWatchlist.find(t => lower.includes(t.toLowerCase()));
-		if (foundMatch) targetTicker = foundMatch;
-	}
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    
+    // Injeksi data saham riil ke dalam prompt jika konteks tersedia
+    let promptText = userMessage;
+    if (stockContext) {
+        promptText += `\n\n[Sistem] Konteks Data Saham Saat Ini: ${JSON.stringify(stockContext)}. 
+        Bertindaklah sebagai analis teknikal. Berikan analisis singkat, padat, dan objektif.`;
+    }
 
-	const isCurrent = targetTicker === currentTicker;
-	const data = isCurrent ? globalStockData : getCachedStockData(targetTicker);
-	const formatRp = (num) => num ? `Rp ${num.toLocaleString('id-ID')}` : 'N/A';
+    const payload = {
+        contents: [{
+            parts: [{ text: promptText }]
+        }]
+    };
 
-	if (lower.includes('halo') || lower.includes('hai') || lower.includes('pagi') || lower.includes('siang') || lower.includes('sore') || lower.includes('malam')) {
-		return `Halo! Aku AI Assistant Stock ID. Mau bahas teknikal <strong class="text-emerald-400">$${targetTicker}</strong> atau ada saham lain yang mau di-screening hari ini?`;
-	}
-
-	if (lower.includes('terimakasih') || lower.includes('makasih') || lower.includes('thanks') || lower.includes('oke')) {
-		return `Sama-sama cuy! Selalu terapin disiplin <i>money management</i> ya. Cuan meluber untuk member Stock ID VIP! 🚀`;
-	}
-
-	if (!data) {
-		return `Untuk menganalisa <strong class="text-cyan-400">$${targetTicker}</strong> lebih presisi, silakan cari saham tersebut di kolom pencarian atas terlebih dahulu agar Aku bisa menarik data bursa terbarunya.`;
-	}
-
-	const price = data.price;
-	const sl = roundToBEITick(price * 0.92, 'floor');
-	const sup1 = roundToBEITick(price * 0.94, 'floor');
-	const sup2 = roundToBEITick(price * 0.96, 'floor');
-	const res1 = roundToBEITick(price * 1.04, 'ceil');
-	const res2 = roundToBEITick(price * 1.08, 'ceil');
-	const tp1 = roundToBEITick(price * 1.06, 'ceil');
-	const tp2 = roundToBEITick(price * 1.10, 'ceil');
-	
-	if (lower.includes('entry') || lower.includes('support') || lower.includes('masuk') || lower.includes('beli')) {
-		return `
-			<strong class="text-amber-400 flex items-center gap-1.5"><i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Area Entry & Support $${targetTicker}:</strong>
-			Harga saat ini berada di <span class="text-white">${formatRp(price)}</span>.<br>
-			Area akumulasi (entry ideal) yang disarankan berada di rentang support kuat <strong class="text-amber-400">${formatRp(sup1)} - ${formatRp(sup2)}</strong>.<br>
-			<span class="text-[10px] text-slate-400 mt-1 block"><i>Tips: Cicil beli jika harga mantul (rebound) dari area ini.</i></span>
-		`;
-	}
-
-	if (lower.includes('resist') || lower.includes('target') || lower.includes('profit') || lower.includes('jual')) {
-		return `
-			<strong class="text-cyan-400 flex items-center gap-1.5"><i data-lucide="target" class="w-3.5 h-3.5"></i> Target Profit & Resistance $${targetTicker}:</strong>
-			Resistance terdekat untuk <i>take profit</i> ada di kisaran <strong class="text-cyan-400">${formatRp(res1)} - ${formatRp(res2)}</strong>.<br>
-			Jika berhasil <i>breakout</i> dengan volume tinggi, kamu bisa set TP1 di <strong class="text-emerald-400">${formatRp(tp1)}</strong> dan TP2 di <strong class="text-emerald-400">${formatRp(tp2)}</strong>. Jangan lupa gunakan <i>trailing stop</i>!
-		`;
-	}
-
-	if (lower.includes('stoploss') || lower.includes('sl') || lower.includes('cutloss') || lower.includes('cl') || lower.includes('buang')) {
-		return `
-			<strong class="text-rose-400 flex items-center gap-1.5"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Batas Risiko (Stop Loss) $${targetTicker}:</strong>
-			Untuk membatasi kerugian, pasang Stop Loss ketat jika harga ditutup di bawah <strong class="text-rose-400">${formatRp(sl)}</strong>.<br>
-			<span class="text-[10px] text-slate-400 mt-1 block"><i>Note: Disiplin SL sangat penting jika tren berbalik arah dan menjebol support!</i></span>
-		`;
-	}
-
-	if (lower.includes('ma5') || lower.includes('ma10') || lower.includes('ma20') || lower.includes('ma') || lower.includes('tren')) {
-		const trendText = price >= data.ma5 ? '<span class="text-emerald-400 font-bold">di atas MA5 (Fase Bullish / Menguat)</span>' : '<span class="text-rose-400 font-bold">di bawah MA5 (Fase Koreksi / Lemah)</span>';
-		return `
-			<strong class="text-fuchsia-400 flex items-center gap-1.5"><i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Posisi Moving Average $${targetTicker}:</strong>
-			<ul class="space-y-0.5 mt-1 list-inside">
-				<li>• MA5 : <span class="text-white">${formatRp(data.ma5)}</span></li>
-				<li>• MA10: <span class="text-white">${formatRp(data.ma10)}</span></li>
-				<li>• MA20: <span class="text-white">${formatRp(data.ma20)}</span></li>
-			</ul>
-			<div class="mt-1.5 border-t border-slate-700/50 pt-1.5">Struktur saat ini: Harga (${formatRp(price)}) berada ${trendText}.</div>
-		`;
-	}
-
-	if (lower.includes('lot') || lower.includes('volume') || lower.includes('vol') || lower.includes('rasio')) {
-		const volStatus = data.volRatio >= 1.5 ? '<span class="text-emerald-400 font-bold">Spike (Sangat Ramai) ⚡</span>' : (data.volRatio >= 1.0 ? '<span class="text-amber-400 font-bold">Normal</span>' : '<span class="text-slate-400">Sepi</span>');
-		return `
-			<strong class="text-emerald-400 flex items-center gap-1.5"><i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> Analisis Volume $${targetTicker}:</strong>
-			<ul class="space-y-0.5 mt-1">
-				<li>• Total Lot: <span class="text-white">${(data.currentLot || 0).toLocaleString('id-ID')} Lot</span></li>
-				<li>• Valuasi: <span class="text-white">${formatRp(data.currentValuation)}</span></li>
-				<li>• Rasio Rerata: <span class="text-white">${data.volRatio}x</span> (${volStatus})</li>
-			</ul>
-			<div class="text-[10px] text-slate-400 mt-1.5 leading-relaxed">Lonjakan volume (Spike) adalah konfirmasi mutlak yang menguatkan validasi <i>breakout</i>.</div>
-		`;
-	}
-
-	if (lower.includes('coba') || lower.includes('prospek') || lower.includes('analisa') || lower.includes('bagaimana') || lower.includes('teknikal')) {
-		const saran = (price >= data.ma5 && data.volRatio >= 1) 
-			? 'Tren cukup solid, pertimbangkan <strong class="text-emerald-400">Buy on Breakout</strong> atau *Pullback*.' 
-			: 'Tren cenderung tertekan, sebaiknya <strong class="text-amber-400">Wait & See</strong> atau *Buy on Support* dengan SL ketat.';
-		return `
-			<strong class="text-emerald-400 flex items-center gap-1.5"><i data-lucide="cpu" class="w-3.5 h-3.5"></i> Ringkasan Teknis AI untuk $${targetTicker}:</strong>
-			Harga terkini <strong class="text-white">${formatRp(price)}</strong> (<span class="${data.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${data.changePct >= 0 ? '+' : ''}${data.changePct}%</span>).<br>
-			Secara umum, ruang pergerakan terdekat berada di antara support <strong class="text-amber-400">${formatRp(sup2)}</strong> dan resistance <strong class="text-cyan-400">${formatRp(res1)}</strong>.<br><br>
-			<span class="text-slate-300">💡 <b>Saran:</b> ${saran}</span>
-		`;
-	}
-
-	return `
-		Poin yang sangat detail! Untuk <strong class="text-emerald-400">$${targetTicker}</strong> (Posisi: <strong class="text-emerald-400">${formatRp(price)}</strong>), fokus utamanya ada di ketahanan <b>Support <strong class="text-amber-400">${formatRp(sup2)}</strong></b> dan uji <b>Resist <strong class="text-sky-400">${formatRp(res1)}</strong></b>.<br><br>
-		Adakah metrik khusus yang ingin kamu gali seperti kalkulasi <i>Moving Average (MA)</i>, status <i>Volume</i> harian, atau butuh titik <i>Stop Loss</i>?
-	`;
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        const data = await response.json();
+        
+        if (data.candidates && data.candidates.length > 0) {
+            return data.candidates[0].content.parts[0].text;
+        }
+        return "Maaf, AI tidak dapat memproses permintaan saat ini.";
+    } catch (error) {
+        console.error("AI Fetch Error:", error);
+        return "Terjadi kesalahan koneksi saat menghubungi server AI.";
+    }
 }
 
 // ==========================================
@@ -3140,6 +3158,20 @@ function checkNotificationStatus() {
 		btn.className = "text-[10px] lg:text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer";
 	}
 	if (window.lucide) lucide.createIcons();
+}
+
+async function sendTelegramAlert(message) {
+	const botToken = localStorage.getItem('telegram_bot_token');
+	const chatId = localStorage.getItem('telegram_chat_id');
+	if (!botToken || !chatId) return;
+
+	try {
+		await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML' })
+		});
+	} catch (error) { console.error("Gagal mengirim Telegram Alert:", error); }
 }
 
 function requestNotificationPermission() {
@@ -3401,10 +3433,19 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 
 			if (conditionMet) {
 				const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh area ${labelText} di Rp ${targetPrice.toLocaleString('id-ID')}`;
+				
+				// 1. Eksekusi Notifikasi Bawaan Aplikasi (Instant)
 				AudioFX.playSuccess();
-				sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
 				showToast(alertMsg, "success");
+				
+				// 2. Eksekusi Browser Push Notification (Instant)
+				sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
+				
+				// 3. Eksekusi Telegram Webhook (Jalan di background, tanpa perlu "await")
+				const telegramMsg = `🚨 <b>SMART ALERT STOCK ID</b> 🚨\nSaham: <b>${ticker}</b>\nStatus: <b>Menyentuh ${labelText}</b>\nHarga Terkini: <b>Rp ${currentPrice.toLocaleString('id-ID')}</b>`;
+				sendTelegramAlert(telegramMsg);
 
+				// Update status alarm agar tidak spam
 				if (typeof alertObj === 'object') {
 					alertObj.active = false;
 					alertObj.triggered = true;
@@ -3903,7 +3944,7 @@ function loadDeviceSystemInfo() {
 	
 	// Membersihkan teks tipe GPU dari vendor yang berlebihan
 	gpu = gpu.replace(/ANGLE \(\vert{}\)|Direct3D.*|OpenGL.*/g, '').trim(); 
-	gpuEl.innerText = gpu.length > 50 ? gpu.substring(0, 50) + "..." : gpu;
+	gpuEl.innerText = gpu.length > 60 ? gpu.substring(0, 60) + "..." : gpu;
 	gpuEl.title = gpu; // Tooltip akan muncul jika tulisan terlalu panjang
 }
 
