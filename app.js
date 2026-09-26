@@ -3240,12 +3240,81 @@ function checkNotificationStatus() {
 	if (window.lucide) lucide.createIcons();
 }
 
+function initTelegramConfig() {
+	const tokenInput = document.getElementById('inputTeleToken');
+	const chatInput = document.getElementById('inputTeleChat');
+	
+	if (tokenInput && chatInput) {
+		// Ambil data dari localStorage dan masukkan kembali ke input form saat halaman dimuat
+		tokenInput.value = localStorage.getItem('telegram_bot_token') || '';
+		chatInput.value = localStorage.getItem('telegram_chat_id') || '';
+	}
+}
+
+// Panggil otomatis saat halaman selesai dimuat
+document.addEventListener('DOMContentLoaded', () => {
+	initTelegramConfig();
+});
+
+async function saveTelegramConfig() {
+	const tokenInput = document.getElementById('inputTeleToken');
+	const chatInput = document.getElementById('inputTeleChat');
+	
+	if (!tokenInput || !chatInput) return;
+
+	const token = tokenInput.value.trim();
+	const chatId = chatInput.value.trim();
+
+	// Validasi jika kosong
+	if (!token || !chatId) {
+		showToast("Harap isi Token Bot dan Chat ID terlebih dahulu!", "warning");
+		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
+		return;
+	}
+
+	// Simpan permanen ke localStorage
+	localStorage.setItem('telegram_bot_token', token);
+	localStorage.setItem('telegram_chat_id', chatId);
+	
+	showToast("Konfigurasi disimpan! Menguji koneksi Telegram...", "info", 4000);
+	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+
+	// Kirim pesan uji coba otomatis untuk memastikan bot & chat ID valid
+	await testTelegramConnection(token, chatId);
+}
+
+async function testTelegramConnection(token, chatId) {
+	try {
+		const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ 
+				chat_id: chatId, 
+				text: "🤖 <b>STOCK ID RADAR:</b> Integrasi Bot Telegram Berhasil Terhubung!", 
+				parse_mode: 'HTML' 
+			})
+		});
+		
+		const data = await response.json();
+		if (data.ok) {
+			showToast("Sukses! Pesan tes berhasil dikirim ke Telegram Anda.", "success", 6000);
+		} else {
+			showToast(`Gagal terhubung: ${data.description || "Token/Chat ID salah"}`, "error", 8000);
+		}
+	} catch (error) {
+		showToast("Gagal mengirim pesan tes. Periksa koneksi internet Anda.", "error", 6000);
+		console.error("Telegram Test Error:", error);
+	}
+}
+
 async function sendTelegramAlert(message) {
-	// Gunakan .trim() untuk mencegah error spasi yang tidak disengaja
 	const botToken = localStorage.getItem('telegram_bot_token')?.trim();
 	const chatId = localStorage.getItem('telegram_chat_id')?.trim();
 	
-	if (!botToken || !chatId) return;
+	if (!botToken || !chatId) {
+		console.warn("Telegram Token atau Chat ID belum diatur.");
+		return;
+	}
 
 	try {
 		const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
@@ -3261,32 +3330,6 @@ async function sendTelegramAlert(message) {
 	} catch (error) { 
 		console.error("Gagal mengirim Telegram Alert:", error); 
 	}
-}
-
-// Fungsi eksekutor tombol Simpan dari HTML
-function saveTelegramConfig() {
-	const tokenInput = document.getElementById('inputTeleToken');
-	const chatInput = document.getElementById('inputTeleChat');
-	
-	if (!tokenInput || !chatInput) return;
-
-	const token = tokenInput.value.trim();
-	const chatId = chatInput.value.trim();
-
-	// Validasi jika kolom input kosong
-	if (!token || !chatId) {
-		showToast("Harap isi Token Bot dan Chat ID terlebih dahulu!", "warning");
-		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
-		return;
-	}
-
-	// Simpan ke local storage jika valid
-	localStorage.setItem('telegram_bot_token', token);
-	localStorage.setItem('telegram_chat_id', chatId);
-	
-	// Gunakan toast UI modern, bukan alert() default browser
-	showToast("Data Integrasi Telegram Berhasil Disimpan!", "success");
-	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 }
 
 function requestNotificationPermission() {
