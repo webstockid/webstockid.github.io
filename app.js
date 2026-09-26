@@ -3849,6 +3849,64 @@ function startBackgroundAutoCache() {
 	setInterval(runBackgroundFetch, FIVE_MINUTES);
 }
 
+// ==========================================
+// 24. PENDETEKSI PERANGKAT (TENTANG APLIKASI)
+// ==========================================
+function loadDeviceSystemInfo() {
+	const osEl = document.getElementById('infoOS');
+	const browserEl = document.getElementById('infoBrowser');
+	const hwEl = document.getElementById('infoHardware');
+	const gpuEl = document.getElementById('infoGPU');
+	
+	if (!osEl) return;
+
+	// 1. Deteksi Sistem Operasi
+	const ua = navigator.userAgent;
+	let os = "Tidak Diketahui";
+	if (ua.indexOf("Win") !== -1) os = "Windows OS";
+	else if (ua.indexOf("Mac") !== -1 && ua.indexOf("iPhone") === -1 && ua.indexOf("iPad") === -1) os = "MacOS";
+	else if (ua.indexOf("iPhone") !== -1 || ua.indexOf("iPad") !== -1) os = "iOS (Apple)";
+	else if (ua.indexOf("Android") !== -1) os = "Android OS";
+	else if (ua.indexOf("Linux") !== -1) os = "Linux";
+	
+	// 2. Deteksi Nama Browser
+	let browser = "Lainnya";
+	if (ua.indexOf("Edg") !== -1) browser = "Microsoft Edge";
+	else if (ua.indexOf("Chrome") !== -1) browser = "Google Chrome (Blink)";
+	else if (ua.indexOf("Firefox") !== -1) browser = "Mozilla Firefox (Gecko)";
+	else if (ua.indexOf("Safari") !== -1 && ua.indexOf("Chrome") === -1) browser = "Apple Safari (WebKit)";
+	else if (ua.indexOf("Opera") !== -1 || ua.indexOf("OPR") !== -1) browser = "Opera";
+	
+	// 3. Deteksi Core Prosesor (CPU) & RAM
+	const cores = navigator.hardwareConcurrency ? navigator.hardwareConcurrency + " Cores" : "N/A";
+	const ram = navigator.deviceMemory ? "~" + navigator.deviceMemory + " GB" : "N/A";
+	
+	// 4. Deteksi Chipset Grafis (GPU WebGL)
+	let gpu = "Tidak Tersedia / Terenkripsi";
+	try {
+		const canvas = document.createElement('canvas');
+		const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+		if (gl) {
+			const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+			if (debugInfo) {
+				gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+			}
+		}
+	} catch(e) {
+		console.warn("GPU deteksi diblokir oleh peramban.");
+	}
+
+	// 5. Injeksi ke HTML (Batasi panjang karakter GPU jika terlalu panjang)
+	osEl.innerText = os;
+	browserEl.innerText = browser;
+	hwEl.innerText = `${cores} | RAM: ${ram}`;
+	
+	// Membersihkan teks tipe GPU dari vendor yang berlebihan
+	gpu = gpu.replace(/ANGLE \(\vert{}\)|Direct3D.*|OpenGL.*/g, '').trim(); 
+	gpuEl.innerText = gpu.length > 30 ? gpu.substring(0, 30) + "..." : gpu;
+	gpuEl.title = gpu; // Tooltip akan muncul jika tulisan terlalu panjang
+}
+
 const cuanImages = [
 	'https://media4.giphy.com/media/H3QHCSPLCKb4Ukf2yy/giphy.gif',
 	'https://media0.giphy.com/media/ZIz7wYItfiYpCHA60F/giphy.gif',
@@ -3987,6 +4045,7 @@ fetchStockNews(currentTicker);
 fetchCorporateAction(currentTicker);
 fetchRealtimeFundamentals(currentTicker);
 fetchYahooTrending();
+loadDeviceSystemInfo();
 
 startBackgroundAutoCache();
 setInterval(() => {
