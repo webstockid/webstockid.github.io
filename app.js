@@ -3902,9 +3902,9 @@ function loadDeviceSystemInfo() {
 	hwEl.innerText = `${cores} | RAM: ${ram}`;
 	
 	// Membersihkan teks tipe GPU dari vendor yang berlebihan
-	// gpu = gpu.replace(/ANGLE \(\vert{}\)|Direct3D.*|OpenGL.*/g, '').trim(); 
-	// gpuEl.innerText = gpu.length > 50 ? gpu.substring(0, 50) + "..." : gpu;
-	// gpuEl.title = gpu; // Tooltip akan muncul jika tulisan terlalu panjang
+	gpu = gpu.replace(/ANGLE \(\vert{}\)|Direct3D.*|OpenGL.*/g, '').trim(); 
+	gpuEl.innerText = gpu.length > 50 ? gpu.substring(0, 50) + "..." : gpu;
+	gpuEl.title = gpu; // Tooltip akan muncul jika tulisan terlalu panjang
 }
 
 const cuanImages = [
