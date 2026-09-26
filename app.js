@@ -1163,13 +1163,13 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		} else if (stockData.price > stockData.ma10 && stockData.changePct >= -2 && stockData.changePct <= 2) {
 			score = 3;
 			verdik = "KONSOLIDASI";
-			verdikClass = "font-bold text-cyan-400 text-sm lg:text-base";
-			scoreClass = "font-bold bg-slate-800 text-cyan-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+			verdikClass = "font-bold text-amber-400 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if (stockData.price > stockData.ma5 && stockData.changePct >= -4 && stockData.changePct <= 2) {
 			score = 3;
 			verdik = "KONSOLIDASI";
-			verdikClass = "font-bold text-cyan-400 text-sm lg:text-base";
-			scoreClass = "font-bold bg-slate-800 text-cyan-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+			verdikClass = "font-bold text-amber-400 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if (stockData.price < stockData.ma10 && stockData.changePct >= -4 && stockData.changePct <= 1) {
 			score = 2;
 			verdik = "BEARISH CORRECTION";
