@@ -910,6 +910,30 @@
 							</button>
 						</div>
 					</div>
+					
+					<!-- Konfigurasi Telegram Bot -->
+					<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-800 space-y-3.5 shadow-sm">
+						<div class="space-y-1">
+							<span class="text-[11px] lg:text-xs font-bold text-sky-400 uppercase tracking-wider block flex items-center gap-1.5">
+								<i data-lucide="send" class="w-3.5 h-3.5"></i> Integrasi Bot Telegram
+							</span>
+							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">
+								Buat bot melalui <strong class="text-sky-300">BotFather</strong>, kirim pesan ke bot tersebut, lalu dapatkan Chat ID menggunakan <strong class="text-sky-300">userinfobot</strong> untuk menerima notifikasi.
+							</p>
+						</div>
+						
+						<div class="flex flex-col sm:flex-row gap-3 items-stretch">
+							<div class="flex-1">
+								<input type="password" id="inputTeleToken" placeholder="Masukkan Bot Token..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-sky-500 transition shadow-inner">
+							</div>
+							<div class="flex-1">
+								<input type="password" id="inputTeleChat" placeholder="Masukkan Chat ID..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-sky-500 transition shadow-inner">
+							</div>
+							<button onclick="localStorage.setItem('telegram_bot_token', document.getElementById('inputTeleToken').value); localStorage.setItem('telegram_chat_id', document.getElementById('inputTeleChat').value); alert('Data Integrasi Telegram Berhasil Disimpan!');" class="bg-sky-800 hover:bg-sky-600 text-white font-bold px-5 py-2.5 rounded-lg border border-sky-700 transition flex items-center justify-center gap-1.5 shadow-md shrink-0 text-xs">
+								<i data-lucide="save" class="w-3.5 h-3.5"></i> Simpan
+							</button>
+						</div>
+					</div>
 
 					<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
 						<div>
@@ -1366,28 +1390,6 @@
 									<button id="settingBtnVibrate" onclick="toggleGlobalVibrate()" class="px-4 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg text-[10px] font-bold transition">
 										Menyala
 									</button>
-								</div>
-							</div>
-						</div>
-						
-						<!-- Preferensi API Key Tersembunyi -->
-						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 md:col-span-2">
-							<span class="font-bold text-amber-400 flex items-center gap-1.5 text-[11px] lg:text-xs border-b border-slate-800/80 pb-2">
-								<i data-lucide="key" class="w-4 h-4"></i> INTEGRASI API KEY (AI & TELEGRAM)
-							</span>
-							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-								<div class="space-y-2">
-									<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold">1. Gemini AI API Key</label>
-									<input type="password" id="inputGeminiKey" placeholder="Paste API Key Gemini di sini..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-[10px] lg:text-xs focus:outline-none focus:border-amber-500">
-									<button onclick="localStorage.setItem('gemini_api_key', document.getElementById('inputGeminiKey').value); alert('API Key Gemini Tersimpan!');" class="bg-slate-800 hover:bg-slate-700 text-amber-400 text-[10px] px-3 py-1.5 rounded border border-slate-700 font-bold transition">Simpan Gemini Key</button>
-								</div>
-								<div class="space-y-2">
-									<label class="text-[10px] lg:text-[11px] text-slate-300 font-bold">2. Telegram (Bot Token & Chat ID)</label>
-									<div class="flex gap-2">
-										<input type="password" id="inputTeleToken" placeholder="Bot Token..." class="w-1/2 bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-[10px] lg:text-xs focus:outline-none focus:border-cyan-500">
-										<input type="password" id="inputTeleChat" placeholder="Chat ID..." class="w-1/2 bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-[10px] lg:text-xs focus:outline-none focus:border-cyan-500">
-									</div>
-									<button onclick="localStorage.setItem('telegram_bot_token', document.getElementById('inputTeleToken').value); localStorage.setItem('telegram_chat_id', document.getElementById('inputTeleChat').value); alert('Data Telegram Tersimpan!');" class="bg-slate-800 hover:bg-slate-700 text-cyan-400 text-[10px] px-3 py-1.5 rounded border border-slate-700 font-bold transition">Simpan Telegram Data</button>
 								</div>
 							</div>
 						</div>

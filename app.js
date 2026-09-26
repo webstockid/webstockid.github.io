@@ -3069,8 +3069,28 @@ function sendAIChatMessage() {
 	msgContainer.scrollTop = msgContainer.scrollHeight;
 	AudioFX.playClick();
 
-	setTimeout(() => {
-		const aiReply = generateAIResponse(query);
+	// Tampilkan indikator loading sementara AI berpikir
+	const loadingId = 'loading-' + Date.now();
+	msgContainer.innerHTML += `
+		<div id="${loadingId}" class="flex items-start gap-2">
+			<div class="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+				<i data-lucide="bot" class="w-3 h-3"></i>
+			</div>
+			<div class="bg-slate-800/80 text-slate-400 p-2.5 rounded-xl rounded-tl-none border border-slate-700/60 leading-relaxed max-w-[85%] text-[10px] animate-pulse">
+				Mengetik...
+			</div>
+		</div>
+	`;
+	msgContainer.scrollTop = msgContainer.scrollHeight;
+	if (window.lucide) lucide.createIcons();
+
+	// PERBAIKAN: Ubah callback setTimeout menjadi async dan gunakan perintah await
+	setTimeout(async () => {
+		const aiReply = await generateAIResponse(query);
+		
+		// Hapus indikator loading setelah balasan diterima
+		document.getElementById(loadingId).remove();
+
 		msgContainer.innerHTML += `
 			<div class="flex items-start gap-2">
 				<div class="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
@@ -3084,7 +3104,7 @@ function sendAIChatMessage() {
 		msgContainer.scrollTop = msgContainer.scrollHeight;
 		if (window.lucide) lucide.createIcons();
 		AudioFX.playSuccess();
-	}, 1000);
+	}, 500);
 }
 
 function escapeHtml(text) {
@@ -3092,13 +3112,14 @@ function escapeHtml(text) {
 	return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
-// Tambahkan fungsi ini di app_7.js
 async function generateAIResponse(userMessage, stockContext = null) {
-    // Ambil API key dari pengaturan (localStorage)
-    const apiKey = localStorage.getItem('AQ.Ab8RN6KfJL2CpkQasypiD9-vUAnuH106t5zsDih0s6Ou0YYohQ'); 
+    // 1. Coba ambil API key milik pengguna dari localStorage
+    let apiKey = localStorage.getItem('gemini_api_key'); 
     
-    if (!apiKey) {
-        return "⚠️ Sistem: Mohon masukkan API Key Gemini di menu Pengaturan terlebih dahulu.";
+    // 2. Jika pengguna belum memasukkan key, gunakan API Key default bawaan sistem
+    if (!apiKey || apiKey.trim() === '') {
+        // Berdasarkan kode kamu sebelumnya, ini adalah key default sistemnya
+        apiKey = 'AQ.Ab8RN6KfJL2CpkQasypiD9-vUAnuH106t5zsDih0s6Ou0YYohQ'; 
     }
 
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
@@ -3161,8 +3182,10 @@ function checkNotificationStatus() {
 }
 
 async function sendTelegramAlert(message) {
-	const botToken = localStorage.getItem('8886777128:AAEi1xC2tzDWtOzOEHwcPtruApuw9CSOtKk');
-	const chatId = localStorage.getItem('8280167573');
+	// PERBAIKAN: Panggil nama key-nya, bukan isi tokennya
+	const botToken = localStorage.getItem('telegram_bot_token');
+	const chatId = localStorage.getItem('telegram_chat_id');
+	
 	if (!botToken || !chatId) return;
 
 	try {
@@ -3171,8 +3194,23 @@ async function sendTelegramAlert(message) {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML' })
 		});
-	} catch (error) { console.error("Gagal mengirim Telegram Alert:", error); }
+	} catch (error) { 
+        console.error("Gagal mengirim Telegram Alert:", error); 
+    }
 }
+
+// Auto-fill form Telegram jika sudah ada data di local storage
+setTimeout(() => {
+	const savedToken = localStorage.getItem('telegram_bot_token');
+	const savedChatId = localStorage.getItem('telegram_chat_id');
+	
+	if (savedToken && document.getElementById('inputTeleToken')) {
+		document.getElementById('inputTeleToken').value = savedToken;
+	}
+	if (savedChatId && document.getElementById('inputTeleChat')) {
+		document.getElementById('inputTeleChat').value = savedChatId;
+	}
+}, 500);
 
 function requestNotificationPermission() {
 	if (!("Notification" in window)) return showToast("Browser Anda tidak mendukung Web Push Notification.");
