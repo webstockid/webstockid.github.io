@@ -929,7 +929,7 @@
 							<div class="flex-1">
 								<input type="password" id="inputTeleChat" placeholder="Masukkan Chat ID..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white text-xs focus:outline-none focus:border-sky-500 transition shadow-inner">
 							</div>
-							<button onclick="localStorage.setItem('telegram_bot_token', document.getElementById('inputTeleToken').value); localStorage.setItem('telegram_chat_id', document.getElementById('inputTeleChat').value); alert('Data Integrasi Telegram Berhasil Disimpan!');" class="bg-sky-800 hover:bg-sky-600 text-white font-bold px-5 py-2.5 rounded-lg border border-sky-700 transition flex items-center justify-center gap-1.5 shadow-md shrink-0 text-xs">
+							<button onclick="saveTelegramConfig()" class="bg-sky-800 hover:bg-sky-600 text-white font-bold px-5 py-2.5 rounded-lg border border-sky-700 transition flex items-center justify-center gap-1.5 shadow-md shrink-0 text-xs">
 								<i data-lucide="save" class="w-3.5 h-3.5"></i> Simpan
 							</button>
 						</div>

@@ -413,7 +413,7 @@ function showConfirm(message) {
 	});
 }
 
-function showToast(message, type = 'success') {
+function showToast(message, type = 'success', duration = 5000) {
 	const container = document.getElementById('toastContainer');
 	if (!container) return;
 	const toastId = 'toast-' + Date.now();
@@ -453,7 +453,7 @@ function showToast(message, type = 'success') {
 			toast.classList.add('translate-y-4', 'opacity-0');
 			setTimeout(() => toast.remove(), 500);
 		}
-	}, 3500);
+	}, duration); // Menggunakan durasi dinamis
 }
 
 function shareStockUrl() {
@@ -3112,48 +3112,107 @@ function escapeHtml(text) {
 	return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
-async function generateAIResponse(userMessage, stockContext = null) {
-    // 1. Coba ambil API key milik pengguna dari localStorage
-    let apiKey = localStorage.getItem('gemini_api_key'); 
-    
-    // 2. Jika pengguna belum memasukkan key, gunakan API Key default bawaan sistem
-    if (!apiKey || apiKey.trim() === '') {
-        // Berdasarkan kode kamu sebelumnya, ini adalah key default sistemnya
-        apiKey = 'AQ.Ab8RN6KfJL2CpkQasypiD9-vUAnuH106t5zsDih0s6Ou0YYohQ'; 
-    }
+function generateAIResponse(prompt) {
+	const lower = prompt.toLowerCase();
+	let targetTicker = currentTicker;
 
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-    
-    // Injeksi data saham riil ke dalam prompt jika konteks tersedia
-    let promptText = userMessage;
-    if (stockContext) {
-        promptText += `\n\n[Sistem] Konteks Data Saham Saat Ini: ${JSON.stringify(stockContext)}. 
-        Bertindaklah sebagai analis teknikal. Berikan analisis singkat, padat, dan objektif.`;
-    }
+	if (typeof uniqueRadarWatchlist !== 'undefined') {
+		const foundMatch = uniqueRadarWatchlist.find(t => lower.includes(t.toLowerCase()));
+		if (foundMatch) targetTicker = foundMatch;
+	}
 
-    const payload = {
-        contents: [{
-            parts: [{ text: promptText }]
-        }]
-    };
+	const isCurrent = targetTicker === currentTicker;
+	const data = isCurrent ? globalStockData : getCachedStockData(targetTicker);
+	const formatRp = (num) => num ? `Rp ${num.toLocaleString('id-ID')}` : 'N/A';
 
-    try {
-        const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        
-        const data = await response.json();
-        
-        if (data.candidates && data.candidates.length > 0) {
-            return data.candidates[0].content.parts[0].text;
-        }
-        return "Maaf, AI tidak dapat memproses permintaan saat ini.";
-    } catch (error) {
-        console.error("AI Fetch Error:", error);
-        return "Terjadi kesalahan koneksi saat menghubungi server AI.";
-    }
+	if (lower.includes('halo') || lower.includes('hai') || lower.includes('pagi') || lower.includes('siang') || lower.includes('sore') || lower.includes('malam')) {
+		return `Halo! Aku AI Assistant Stock ID. Mau bahas teknikal <strong class="text-emerald-400">$${targetTicker}</strong> atau ada saham lain yang mau di-screening hari ini?`;
+	}
+
+	if (lower.includes('terimakasih') || lower.includes('makasih') || lower.includes('thanks') || lower.includes('oke')) {
+		return `Sama-sama cuy! Selalu terapin disiplin <i>money management</i> ya. Cuan meluber untuk member Stock ID VIP! 🚀`;
+	}
+
+	if (!data) {
+		return `Untuk menganalisa <strong class="text-cyan-400">$${targetTicker}</strong> lebih presisi, silakan cari saham tersebut di kolom pencarian atas terlebih dahulu agar Aku bisa menarik data bursa terbarunya.`;
+	}
+
+	const price = data.price;
+	const sl = roundToBEITick(price * 0.92, 'floor');
+	const sup1 = roundToBEITick(price * 0.94, 'floor');
+	const sup2 = roundToBEITick(price * 0.96, 'floor');
+	const res1 = roundToBEITick(price * 1.04, 'ceil');
+	const res2 = roundToBEITick(price * 1.08, 'ceil');
+	const tp1 = roundToBEITick(price * 1.06, 'ceil');
+	const tp2 = roundToBEITick(price * 1.10, 'ceil');
+	
+	if (lower.includes('entry') || lower.includes('support') || lower.includes('masuk') || lower.includes('beli')) {
+		return `
+			<strong class="text-amber-400 flex items-center gap-1.5"><i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Area Entry & Support $${targetTicker}:</strong>
+			Harga saat ini berada di <span class="text-white">${formatRp(price)}</span>.<br>
+			Area akumulasi (entry ideal) yang disarankan berada di rentang support kuat <strong class="text-amber-400">${formatRp(sup1)} - ${formatRp(sup2)}</strong>.<br>
+			<span class="text-[10px] text-slate-400 mt-1 block"><i>Tips: Cicil beli jika harga mantul (rebound) dari area ini.</i></span>
+		`;
+	}
+
+	if (lower.includes('resist') || lower.includes('target') || lower.includes('profit') || lower.includes('jual')) {
+		return `
+			<strong class="text-cyan-400 flex items-center gap-1.5"><i data-lucide="target" class="w-3.5 h-3.5"></i> Target Profit & Resistance $${targetTicker}:</strong>
+			Resistance terdekat untuk <i>take profit</i> ada di kisaran <strong class="text-cyan-400">${formatRp(res1)} - ${formatRp(res2)}</strong>.<br>
+			Jika berhasil <i>breakout</i> dengan volume tinggi, kamu bisa set TP1 di <strong class="text-emerald-400">${formatRp(tp1)}</strong> dan TP2 di <strong class="text-emerald-400">${formatRp(tp2)}</strong>. Jangan lupa gunakan <i>trailing stop</i>!
+		`;
+	}
+
+	if (lower.includes('stoploss') || lower.includes('sl') || lower.includes('cutloss') || lower.includes('cl') || lower.includes('buang')) {
+		return `
+			<strong class="text-rose-400 flex items-center gap-1.5"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Batas Risiko (Stop Loss) $${targetTicker}:</strong>
+			Untuk membatasi kerugian, pasang Stop Loss ketat jika harga ditutup di bawah <strong class="text-rose-400">${formatRp(sl)}</strong>.<br>
+			<span class="text-[10px] text-slate-400 mt-1 block"><i>Note: Disiplin SL sangat penting jika tren berbalik arah dan menjebol support!</i></span>
+		`;
+	}
+
+	if (lower.includes('ma5') || lower.includes('ma10') || lower.includes('ma20') || lower.includes('ma') || lower.includes('tren')) {
+		const trendText = price >= data.ma5 ? '<span class="text-emerald-400 font-bold">di atas MA5 (Fase Bullish / Menguat)</span>' : '<span class="text-rose-400 font-bold">di bawah MA5 (Fase Koreksi / Lemah)</span>';
+		return `
+			<strong class="text-fuchsia-400 flex items-center gap-1.5"><i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Posisi Moving Average $${targetTicker}:</strong>
+			<ul class="space-y-0.5 mt-1 list-inside">
+				<li>• MA5 : <span class="text-white">${formatRp(data.ma5)}</span></li>
+				<li>• MA10: <span class="text-white">${formatRp(data.ma10)}</span></li>
+				<li>• MA20: <span class="text-white">${formatRp(data.ma20)}</span></li>
+			</ul>
+			<div class="mt-1.5 border-t border-slate-700/50 pt-1.5">Struktur saat ini: Harga (${formatRp(price)}) berada ${trendText}.</div>
+		`;
+	}
+
+	if (lower.includes('lot') || lower.includes('volume') || lower.includes('vol') || lower.includes('rasio')) {
+		const volStatus = data.volRatio >= 1.5 ? '<span class="text-emerald-400 font-bold">Spike (Sangat Ramai) ⚡</span>' : (data.volRatio >= 1.0 ? '<span class="text-amber-400 font-bold">Normal</span>' : '<span class="text-slate-400">Sepi</span>');
+		return `
+			<strong class="text-emerald-400 flex items-center gap-1.5"><i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> Analisis Volume $${targetTicker}:</strong>
+			<ul class="space-y-0.5 mt-1">
+				<li>• Total Lot: <span class="text-white">${(data.currentLot || 0).toLocaleString('id-ID')} Lot</span></li>
+				<li>• Valuasi: <span class="text-white">${formatRp(data.currentValuation)}</span></li>
+				<li>• Rasio Rerata: <span class="text-white">${data.volRatio}x</span> (${volStatus})</li>
+			</ul>
+			<div class="text-[10px] text-slate-400 mt-1.5 leading-relaxed">Lonjakan volume (Spike) adalah konfirmasi mutlak yang menguatkan validasi <i>breakout</i>.</div>
+		`;
+	}
+
+	if (lower.includes('coba') || lower.includes('prospek') || lower.includes('analisa') || lower.includes('bagaimana') || lower.includes('teknikal')) {
+		const saran = (price >= data.ma5 && data.volRatio >= 1) 
+			? 'Tren cukup solid, pertimbangkan <strong class="text-emerald-400">Buy on Breakout</strong> atau *Pullback*.' 
+			: 'Tren cenderung tertekan, sebaiknya <strong class="text-amber-400">Wait & See</strong> atau *Buy on Support* dengan SL ketat.';
+		return `
+			<strong class="text-emerald-400 flex items-center gap-1.5"><i data-lucide="cpu" class="w-3.5 h-3.5"></i> Ringkasan Teknis AI untuk $${targetTicker}:</strong>
+			Harga terkini <strong class="text-white">${formatRp(price)}</strong> (<span class="${data.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${data.changePct >= 0 ? '+' : ''}${data.changePct}%</span>).<br>
+			Secara umum, ruang pergerakan terdekat berada di antara support <strong class="text-amber-400">${formatRp(sup2)}</strong> dan resistance <strong class="text-cyan-400">${formatRp(res1)}</strong>.<br><br>
+			<span class="text-slate-300">💡 <b>Saran:</b> ${saran}</span>
+		`;
+	}
+
+	return `
+		Poin yang sangat detail! Untuk <strong class="text-emerald-400">$${targetTicker}</strong> (Posisi: <strong class="text-emerald-400">${formatRp(price)}</strong>), fokus utamanya ada di ketahanan <b>Support <strong class="text-amber-400">${formatRp(sup2)}</strong></b> dan uji <b>Resist <strong class="text-sky-400">${formatRp(res1)}</strong></b>.<br><br>
+		Adakah metrik khusus yang ingin kamu gali seperti kalkulasi <i>Moving Average (MA)</i>, status <i>Volume</i> harian, atau butuh titik <i>Stop Loss</i>?
+	`;
 }
 
 // ==========================================
@@ -3182,35 +3241,53 @@ function checkNotificationStatus() {
 }
 
 async function sendTelegramAlert(message) {
-	// PERBAIKAN: Panggil nama key-nya, bukan isi tokennya
-	const botToken = localStorage.getItem('telegram_bot_token');
-	const chatId = localStorage.getItem('telegram_chat_id');
+	// Gunakan .trim() untuk mencegah error spasi yang tidak disengaja
+	const botToken = localStorage.getItem('telegram_bot_token')?.trim();
+	const chatId = localStorage.getItem('telegram_chat_id')?.trim();
 	
 	if (!botToken || !chatId) return;
 
 	try {
-		await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+		const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML' })
 		});
+		
+		const data = await response.json();
+		if (!data.ok) {
+			console.error("Telegram API Error:", data.description);
+		}
 	} catch (error) { 
-        console.error("Gagal mengirim Telegram Alert:", error); 
-    }
+		console.error("Gagal mengirim Telegram Alert:", error); 
+	}
 }
 
-// Auto-fill form Telegram jika sudah ada data di local storage
-setTimeout(() => {
-	const savedToken = localStorage.getItem('telegram_bot_token');
-	const savedChatId = localStorage.getItem('telegram_chat_id');
+// Fungsi eksekutor tombol Simpan dari HTML
+function saveTelegramConfig() {
+	const tokenInput = document.getElementById('inputTeleToken');
+	const chatInput = document.getElementById('inputTeleChat');
 	
-	if (savedToken && document.getElementById('inputTeleToken')) {
-		document.getElementById('inputTeleToken').value = savedToken;
+	if (!tokenInput || !chatInput) return;
+
+	const token = tokenInput.value.trim();
+	const chatId = chatInput.value.trim();
+
+	// Validasi jika kolom input kosong
+	if (!token || !chatId) {
+		showToast("Harap isi Token Bot dan Chat ID terlebih dahulu!", "warning");
+		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
+		return;
 	}
-	if (savedChatId && document.getElementById('inputTeleChat')) {
-		document.getElementById('inputTeleChat').value = savedChatId;
-	}
-}, 500);
+
+	// Simpan ke local storage jika valid
+	localStorage.setItem('telegram_bot_token', token);
+	localStorage.setItem('telegram_chat_id', chatId);
+	
+	// Gunakan toast UI modern, bukan alert() default browser
+	showToast("Data Integrasi Telegram Berhasil Disimpan!", "success");
+	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+}
 
 function requestNotificationPermission() {
 	if (!("Notification" in window)) return showToast("Browser Anda tidak mendukung Web Push Notification.");
@@ -3508,9 +3585,12 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 		
 		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 10000) {
 			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} meledak ${stockData.volRatio}x lipat! Harga baru naik ${stockData.changePct}%. Bandar indikasi kumpulin barang!`;
-			AudioFX.playSuccess(); 
+			
+			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess(); 
 			sendBrowserPushNotification(`STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
-			showToast(alertMsg, "info");
+			
+			showToast(alertMsg, "info", 10000); 
+			
 			localStorage.setItem(lastAlertKey, now.toString());
 		}
 	}
