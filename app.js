@@ -745,7 +745,7 @@ async function handleInsiderSearch() {
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
 	}
-	
+
 	const institutionName = selectEl.options[selectEl.selectedIndex].text.replace(/\s\(.*?\)/, ''); 
 	const resultContainer = document.getElementById('insiderResultContainer');
 	const statusMessage = document.getElementById('insiderStatusMessage');
@@ -753,37 +753,40 @@ async function handleInsiderSearch() {
 	
 	resultContainer.classList.add('hidden');
 	statusMessage.classList.remove('hidden');
-	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menarik data portofolio dari FMP API untuk <b>${institutionName}</b>...</div>`;
+	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menarik data portofolio dari API Forms13F untuk <b>${institutionName}</b>...</div>`;
 	if (window.lucide) lucide.createIcons();
 	tableBody.innerHTML = '';
 
 	try {
-		// Menggunakan CIK Number untuk menarik data 13F dari endpoint FMP
-		const paddedCik = cikNumber.padStart(10, '0');
-		const apiUrl = `https://financialmodelingprep.com/api/v4/institutional-ownership/portfolio?cik=${paddedCik}&apikey=${FMP_API_KEY}`;
+		// 1. Masukkan URL endpoint utama dari dokumentasi forms13f.github.io
+		// Format umumnya membutuhkan CIK number sebagai parameter pencarian
+		const apiUrl = `https://api.forms13f.com/v1/filings?cik=${cikNumber}`; 
 		
 		const response = await fetch(apiUrl);
-		if (!response.ok) throw new Error("Gagal terhubung ke server Financial Modeling Prep.");
+		if (!response.ok) throw new Error("Gagal terhubung ke server Forms13F.");
 		
-		const portfolioData = await response.json();
+		const data = await response.json();
+		
+		// 2. Sesuaikan nama array data berdasarkan dokumentasi mereka (misal: data.holdings, data.portfolio, atau langsung 'data')
+		const portfolioData = data.holdings || data; 
 		
 		if (!portfolioData || portfolioData.length === 0) {
 			statusMessage.innerHTML = `Data Portofolio 13F tidak ditemukan untuk <b>${institutionName}</b>.`;
 			return;
 		}
 
-		// Ambil tanggal laporan dari baris data pertama
-		const reportDate = portfolioData[0].date || 'Kuartal Terakhir';
-		
-		// Format ulang data JSON dari FMP agar sesuai dengan fungsi tabel kita
+		const reportDate = data.reportDate || 'Kuartal Terakhir';
+
+		// 3. Mapping data dari Forms13F agar sesuai dengan tabel aplikasi kita
 		const formattedData = portfolioData.map(item => ({
-			tickcusip: item.symbol || '-',
-			nameOfIssuer: item.securityName || '-',
-			shares: item.shares || 0,
-			value: item.value || 0
+			tickcusip: item.ticker || item.cusip || '-',
+			nameOfIssuer: item.nameOfIssuer || item.companyName || '-',
+			shares: item.shares || item.sharesHeld || 0,
+			// Jika Forms13F menyajikan angka asli, hapus "* 1000". Jika masih format SEC ($1000s), biarkan dikali 1000.
+			value: (item.value || 0) * 1000 
 		}));
 
-		// Urutkan dari valuasi yang paling besar
+		// Urutkan dari valuasi kepemilikan yang paling besar
 		formattedData.sort((a, b) => b.value - a.value);
 		
 		statusMessage.classList.add('hidden');
@@ -792,14 +795,13 @@ async function handleInsiderSearch() {
 		document.getElementById('insiderInstitutionName').innerText = institutionName;
 		document.getElementById('insiderReportDate').innerText = reportDate;
 		
-		// Batasi hanya 50 saham terbesar agar tidak berat
 		renderFMPTable(formattedData.slice(0, 50));
 		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 		
 	} catch (error) {
-		statusMessage.innerHTML = `<div class="text-rose-400 font-bold flex flex-col items-center gap-2"><i data-lucide="alert-triangle" class="w-6 h-6"></i> Gagal Mengakses FMP API</div><div class="text-xs text-slate-400 mt-1 px-4 text-center">API Key kamu mungkin limit atau butuh paket premium. ${error.message}</div>`;
+		statusMessage.innerHTML = `<div class="text-rose-400 font-bold flex flex-col items-center gap-2"><i data-lucide="alert-triangle" class="w-6 h-6"></i> Gagal Mengakses API</div><div class="text-xs text-slate-400 mt-1 px-4 text-center">${error.message}</div>`;
 		if (window.lucide) lucide.createIcons();
-		console.error("FMP API Error:", error);
+		console.error("API Error:", error);
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 	}
 }
