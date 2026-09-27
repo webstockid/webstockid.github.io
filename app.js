@@ -325,15 +325,62 @@ function roundToBEITick(price, direction = 'round') {
 	return Math.round(price / tick) * tick;
 }
 
-function calculateFibonacciLevels(high, low) {
+function getDynamicFiboLevels(high, low, currentPrice) {
+	// Fallback persentase jika data harga bursa belum lengkap
+	if (!high || !low || high <= low || !currentPrice) {
+		return {
+			entryLow: roundToBEITick(currentPrice * 0.95, 'floor'),
+			entryHigh: roundToBEITick(currentPrice * 0.98, 'floor'),
+			sl: roundToBEITick(currentPrice * 0.92, 'floor'),
+			res1: roundToBEITick(currentPrice * 1.04, 'ceil'),
+			res2: roundToBEITick(currentPrice * 1.08, 'ceil'),
+			tp1: roundToBEITick(currentPrice * 1.04, 'ceil'),
+			tp2: roundToBEITick(currentPrice * 1.08, 'ceil')
+		};
+	}
+
 	const diff = high - low;
+	// Koleksi seluruh titik rasio Fibonacci klasik (Retracement & Ekstensi)
+	const levels = [
+		low - (diff * 0.618),  // Ekstensi Bawah 2
+		low - (diff * 0.272),  // Ekstensi Bawah 1
+		low,                   // 0% (Low)
+		low + (diff * 0.236),  // 23.6%
+		low + (diff * 0.382),  // 38.2%
+		low + (diff * 0.500),  // 50.0% (Pivot)
+		low + (diff * 0.618),  // 61.8%
+		low + (diff * 0.786),  // 78.6%
+		high,                  // 100% (High)
+		low + (diff * 1.272),  // 127.2% (Ekstensi Atas 1)
+		low + (diff * 1.618),  // 161.8% (Ekstensi Atas 2)
+		low + (diff * 2.618)   // 261.8% (Ekstensi Atas 3)
+	];
+
+	// Filter Fibo adaptif: Pisahkan mana titik di bawah harga & di atas harga
+	const belowLevels = levels.filter(l => l < currentPrice).sort((a, b) => b - a); 
+	const aboveLevels = levels.filter(l => l > currentPrice).sort((a, b) => a - b); 
+
+	// Penentuan Mutlak: Support / Entry & SL (Wajib di Bawah Harga)
+	let entryHighRaw = belowLevels.length > 0 ? belowLevels[0] : currentPrice * 0.98;
+	let entryLowRaw = belowLevels.length > 1 ? belowLevels[1] : entryHighRaw * 0.97;
+	let slRaw = belowLevels.length > 2 ? belowLevels[2] : entryLowRaw * 0.96;
+
+	// Penentuan Mutlak: Target & Resistance (Wajib di Atas Harga)
+	let res1Raw = aboveLevels.length > 0 ? aboveLevels[0] : currentPrice * 1.04;
+	let res2Raw = aboveLevels.length > 1 ? aboveLevels[1] : res1Raw * 1.04;
+	
+	let tp1Raw = res1Raw; 
+	// TP2 menggunakan ekstensi Fibo murni (di atas level res 2)
+	let tp2Raw = aboveLevels.length > 2 ? aboveLevels[2] : res2Raw * 1.04; 
+
 	return {
-		res2: high,
-		res1: Math.round(high - (diff * 0.236)),
-		pivot: Math.round(high - (diff * 0.500)),
-		sup1: Math.round(high - (diff * 0.618)),
-		sup2: Math.round(high - (diff * 0.786)),
-		bottom: low
+		entryLow: roundToBEITick(entryLowRaw, 'floor'),
+		entryHigh: roundToBEITick(entryHighRaw, 'floor'),
+		sl: roundToBEITick(slRaw, 'floor'),
+		res1: roundToBEITick(res1Raw, 'ceil'),
+		res2: roundToBEITick(res2Raw, 'ceil'),
+		tp1: roundToBEITick(tp1Raw, 'ceil'),
+		tp2: roundToBEITick(tp2Raw, 'ceil')
 	};
 }
 
@@ -1380,28 +1427,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	let sl, sup1, sup2, res1, res2, tp1, tp2;
 	
 	// 1. Tentukan Resistance (Gunakan Fibo jika valid)
-	if (stockData && stockData.high20 && stockData.low20 && stockData.high20 > stockData.low20) {
-		const fibo = calculateFibonacciLevels(stockData.high20, stockData.low20);
-		
-		res1 = roundToBEITick(fibo.res1, 'ceil');
-		res2 = roundToBEITick(fibo.res2, 'ceil');
-		
-		// Validasi wajib: Resisten harus selalu di atas harga saat ini
-		if (res1 <= price) res1 = roundToBEITick(price * 1.04, 'ceil');
-		if (res2 <= res1) res2 = roundToBEITick(price * 1.08, 'ceil');
-
-		// 2. Entry & Support (Wajib di Bawah Harga Saat Ini)
-		sup2 = (fibo.sup2 < price) ? roundToBEITick(fibo.sup2, 'floor') : roundToBEITick(price * 0.98, 'floor');
-		sup1 = (fibo.sup1 < sup2) ? roundToBEITick(fibo.sup1, 'floor') : roundToBEITick(price * 0.95, 'floor');
-		sl = roundToBEITick(sup1 * 0.96, 'floor'); 
-	} else {
-		// Fallback dinamis jika Fibo tidak tersedia
-		res1 = roundToBEITick(price * 1.04, 'ceil'); 
-		res2 = roundToBEITick(price * 1.08, 'ceil'); 
-		sup2 = roundToBEITick(price * 0.98, 'floor'); 
-		sup1 = roundToBEITick(price * 0.95, 'floor'); 
-		sl = roundToBEITick(price * 0.92, 'floor');   
-	}
+	// 1. Tentukan Support & Resistance (Dynamic Fibo)
+	const fibo = getDynamicFiboLevels(stockData?.high20, stockData?.low20, price);
+	const res1 = fibo.res1, res2 = fibo.res2;
+	const sup1 = fibo.entryLow, sup2 = fibo.entryHigh;
+	const sl = fibo.sl;
+	const tp1 = fibo.tp1, tp2 = fibo.tp2;
 
 	// 3. Tentukan Take Profit (TP1 di resistance, TP2 di atas resistance)
 	tp1 = res1; 
@@ -1496,28 +1527,12 @@ function exportTradingCard() {
 	let sl, sup1, sup2, res1, res2, tp1, tp2;
 	
 	// 1. Tentukan Resistance (Gunakan Fibo jika valid)
-	if (stockData && stockData.high20 && stockData.low20 && stockData.high20 > stockData.low20) {
-		const fibo = calculateFibonacciLevels(stockData.high20, stockData.low20);
-		
-		res1 = roundToBEITick(fibo.res1, 'ceil');
-		res2 = roundToBEITick(fibo.res2, 'ceil');
-		
-		// Validasi wajib: Resisten harus selalu di atas harga saat ini
-		if (res1 <= price) res1 = roundToBEITick(price * 1.04, 'ceil');
-		if (res2 <= res1) res2 = roundToBEITick(price * 1.08, 'ceil');
-
-		// 2. Entry & Support (Wajib di Bawah Harga Saat Ini)
-		sup2 = (fibo.sup2 < price) ? roundToBEITick(fibo.sup2, 'floor') : roundToBEITick(price * 0.98, 'floor');
-		sup1 = (fibo.sup1 < sup2) ? roundToBEITick(fibo.sup1, 'floor') : roundToBEITick(price * 0.95, 'floor');
-		sl = roundToBEITick(sup1 * 0.96, 'floor'); 
-	} else {
-		// Fallback dinamis jika Fibo tidak tersedia
-		res1 = roundToBEITick(price * 1.04, 'ceil'); 
-		res2 = roundToBEITick(price * 1.08, 'ceil'); 
-		sup2 = roundToBEITick(price * 0.98, 'floor'); 
-		sup1 = roundToBEITick(price * 0.95, 'floor'); 
-		sl = roundToBEITick(price * 0.92, 'floor');   
-	}
+	// 1. Tentukan Support & Resistance (Dynamic Fibo)
+	const fibo = getDynamicFiboLevels(globalStockData?.high20, globalStockData?.low20, price);
+	const res1 = fibo.res1, res2 = fibo.res2;
+	const sup1 = fibo.entryLow, sup2 = fibo.entryHigh;
+	const sl = fibo.sl;
+	const tp1 = fibo.tp1, tp2 = fibo.tp2;
 
 	// 3. Tentukan Take Profit (TP1 di resistance, TP2 di atas resistance)
 	tp1 = res1; 
@@ -1911,24 +1926,14 @@ function renderKanbanBoard() {
 function autoFillRRRFromAI() {
 	if (globalStockData && globalStockData.price) {
 		const basePrice = globalStockData.price;
-		let entry, sl, tp;
+		const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, basePrice);
 
-		if (globalStockData.high20 && globalStockData.low20 && globalStockData.high20 > globalStockData.low20) {
-			const fibo = calculateFibonacciLevels(globalStockData.high20, globalStockData.low20);
-			entry = roundToBEITick(fibo.sup2, 'floor');
-			sl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
-			tp = roundToBEITick(fibo.res2, 'ceil');
-		} else {
-			entry = roundToBEITick(basePrice * 0.96, 'floor');
-			sl = roundToBEITick(basePrice * 0.92, 'floor');
-			tp = roundToBEITick(basePrice * 1.06, 'ceil');
-		}
-
-		document.getElementById('rrrEntry').value = entry;
-		document.getElementById('rrrSL').value = sl;
-		document.getElementById('rrrTP').value = tp;
+		document.getElementById('rrrEntry').value = fibo.entryHigh;
+		document.getElementById('rrrSL').value = fibo.sl;
+		document.getElementById('rrrTP').value = fibo.tp2; // AI Setup memprioritaskan TP2 (Ekstensi)
+		
 		calculateSmartRRR();
-		AudioFX.playSuccess();
+		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 	}
 }
 
@@ -2214,20 +2219,13 @@ function renderRadarItems(dataList) {
 		
 		// FIBONACCI SUPPORT / RESISTANCE
 		let sl, entryLow, entryHigh, tp1, tp2;
-		if (item.high20 && item.low20 && item.high20 > item.low20) {
-			const fibo = calculateFibonacciLevels(item.high20, item.low20);
-			entryLow = roundToBEITick(fibo.sup1, 'floor');
-			entryHigh = roundToBEITick(fibo.sup2, 'floor');
-			sl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
-			tp1 = roundToBEITick(fibo.pivot, 'ceil');
-			tp2 = roundToBEITick(fibo.res2, 'ceil');
-		} else {
-			sl = roundToBEITick(price * 0.92, 'floor');
-			entryLow = roundToBEITick(price * 0.94, 'floor');
-			entryHigh = roundToBEITick(price * 0.96, 'floor');
-			tp1 = roundToBEITick(price * 1.06, 'ceil');
-			tp2 = roundToBEITick(price * 1.10, 'ceil');
-		}
+		// FIBONACCI SUPPORT / RESISTANCE (Dynamic)
+		const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
+		const entryLow = fibo.entryLow;
+		const entryHigh = fibo.entryHigh;
+		const sl = fibo.sl;
+		const tp1 = fibo.tp1;
+		const tp2 = fibo.tp2;
 
 		let statusSignal = "🔥 Momentum Breakout";
 		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
@@ -2434,20 +2432,13 @@ async function runCustomScreener() {
 			
 			// FIBONACCI SUPPORT / RESISTANCE
 			let sl, entryLow, entryHigh, tp1, tp2;
-			if (item.high20 && item.low20 && item.high20 > item.low20) {
-				const fibo = calculateFibonacciLevels(item.high20, item.low20);
-				entryLow = roundToBEITick(fibo.sup1, 'floor');
-				entryHigh = roundToBEITick(fibo.sup2, 'floor');
-				sl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
-				tp1 = roundToBEITick(fibo.pivot, 'ceil');
-				tp2 = roundToBEITick(fibo.res2, 'ceil');
-			} else {
-				sl = roundToBEITick(price * 0.92, 'floor');
-				entryLow = roundToBEITick(price * 0.94, 'floor');
-				entryHigh = roundToBEITick(price * 0.96, 'floor');
-				tp1 = roundToBEITick(price * 1.06, 'ceil');
-				tp2 = roundToBEITick(price * 1.10, 'ceil');
-			}
+			// FIBONACCI SUPPORT / RESISTANCE (Dynamic)
+			const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
+			const entryLow = fibo.entryLow;
+			const entryHigh = fibo.entryHigh;
+			const sl = fibo.sl;
+			const tp1 = fibo.tp1;
+			const tp2 = fibo.tp2;
 
 			let infoMA = '';
 			if (ruleMA === 'ABOVE_MA5') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Pendek:</strong> Bertahan mantap di atas MA5.</span></li>`;
@@ -2986,24 +2977,15 @@ async function scanWhalesData() {
 			
 			// FIBONACCI SUPPORT / RESISTANCE
 			let s1, s2, r1, r2, cl, entryAgresif, entryAman;
-			if (item.high20 && item.low20 && item.high20 > item.low20) {
-				const fibo = calculateFibonacciLevels(item.high20, item.low20);
-				s1 = roundToBEITick(fibo.sup1, 'floor');
-				s2 = roundToBEITick(fibo.sup2, 'floor');
-				r1 = roundToBEITick(fibo.res1, 'ceil');
-				r2 = roundToBEITick(fibo.res2, 'ceil');
-				cl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
-				entryAgresif = roundToBEITick(fibo.sup2, 'floor');
-				entryAman = roundToBEITick(fibo.sup1, 'floor');
-			} else {
-				s1 = roundToBEITick(price * 0.94, 'floor');
-				s2 = roundToBEITick(price * 0.96, 'floor');
-				r1 = roundToBEITick(price * 1.04, 'ceil');
-				r2 = roundToBEITick(price * 1.08, 'ceil');
-				cl = roundToBEITick(price * 0.92, 'floor');
-				entryAgresif = roundToBEITick(price * 0.99, 'floor');
-				entryAman = roundToBEITick(price * 0.97, 'floor');
-			}
+			// FIBONACCI SUPPORT / RESISTANCE (Dynamic)
+			const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
+			const s1 = fibo.entryLow;
+			const s2 = fibo.entryHigh;
+			const r1 = fibo.res1;
+			const r2 = fibo.res2;
+			const cl = fibo.sl;
+			const entryAgresif = fibo.entryHigh;
+			const entryAman = fibo.entryLow;
 
 			html += `
 				<div class="bg-slate-950/50 p-4 rounded-xl border border-slate-700/60 hover:border-slate-500/40 transition relative group shadow-sm flex flex-col justify-between">
@@ -3175,27 +3157,18 @@ function generateAIResponse(prompt) {
 	}
 
 	// Tambahkan deklarasi price agar tidak error saat dihitung
-	let price = data ? roundToBEITick(data.price) : 100;
 	let sl, sup1, sup2, res1, res2, tp1, tp2;
 	
-	if (data && data.high20 && data.low20 && data.high20 > data.low20) {
-		const fibo = calculateFibonacciLevels(data.high20, data.low20);
-		
-		res1 = roundToBEITick(fibo.res1, 'ceil');
-		res2 = roundToBEITick(fibo.res2, 'ceil');
-		if (res1 <= price) res1 = roundToBEITick(price * 1.04, 'ceil');
-		if (res2 <= res1) res2 = roundToBEITick(price * 1.08, 'ceil');
-
-		sup2 = (fibo.sup2 < price) ? roundToBEITick(fibo.sup2, 'floor') : roundToBEITick(price * 0.98, 'floor');
-		sup1 = (fibo.sup1 < sup2) ? roundToBEITick(fibo.sup1, 'floor') : roundToBEITick(price * 0.95, 'floor');
-		sl = roundToBEITick(sup1 * 0.96, 'floor'); 
-	} else {
-		res1 = roundToBEITick(price * 1.04, 'ceil'); 
-		res2 = roundToBEITick(price * 1.08, 'ceil'); 
-		sup2 = roundToBEITick(price * 0.98, 'floor'); 
-		sup1 = roundToBEITick(price * 0.95, 'floor'); 
-		sl = roundToBEITick(price * 0.92, 'floor');   
-	}
+	let price = data ? roundToBEITick(data.price) : 100;
+	const fibo = getDynamicFiboLevels(data?.high20, data?.low20, price);
+	
+	const sl = fibo.sl;
+	const sup1 = fibo.entryLow;
+	const sup2 = fibo.entryHigh;
+	const res1 = fibo.res1;
+	const res2 = fibo.res2;
+	const tp1 = fibo.tp1;
+	const tp2 = fibo.tp2;
 
 	tp1 = res1; 
 	tp2 = roundToBEITick(res2 * 1.03, 'ceil');
@@ -3587,24 +3560,16 @@ async function clearAllAlerts() {
 
 function syncAlertsFromAI() {
 		let price = 100;
-		let sl, sup2, res2, tp2;
+		let sl = 92, sup2 = 96, res2 = 108, tp2 = 110;
 
 		if (globalStockData && globalStockData.price) {
 			price = roundToBEITick(globalStockData.price);
-			if (globalStockData.high20 && globalStockData.low20 && globalStockData.high20 > globalStockData.low20) {
-				const fibo = calculateFibonacciLevels(globalStockData.high20, globalStockData.low20);
-				sup2 = roundToBEITick(fibo.sup2, 'floor');
-				res2 = roundToBEITick(fibo.res2, 'ceil');
-				sl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
-				tp2 = roundToBEITick(fibo.res2, 'ceil');
-			} else {
-				sl = roundToBEITick(price * 0.92, 'floor'); 
-				sup2 = roundToBEITick(price * 0.96, 'floor'); 
-				res2 = roundToBEITick(price * 1.08, 'ceil'); 
-				tp2 = roundToBEITick(price * 1.10, 'ceil');
-			}
-		} else {
-			sl = 92; sup2 = 96; res2 = 108; tp2 = 110;
+			const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, price);
+			
+			sup2 = fibo.entryHigh;
+			res2 = fibo.res2;
+			sl = fibo.sl;
+			tp2 = fibo.tp2;
 		}
 
 		const now = new Date();
