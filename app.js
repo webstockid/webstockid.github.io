@@ -122,7 +122,7 @@ document.addEventListener("click", function(event) {
 });
 
 function switchTab(tabName) {
-	const tabs = ['ai','bigmoney','custom','global','peer','news','fundamental','paper','rrr','journal','alert','corporate','insider','heatmap','setting'];
+	const tabs = ['ai','bigmoney','custom','peer','news','fundamental','paper','rrr','journal','alert','corporate','insider','heatmap','setting'];
 	tabs.forEach(tab => {
 		const btn = document.getElementById(`tabBtn-${tab}`);
 		const content = document.getElementById(`tabContent-${tab}`);
@@ -137,8 +137,11 @@ function switchTab(tabName) {
 	if (tabName === 'journal') renderJournalTable();
 	if (tabName === 'alert') renderAllAlerts();
 	if (tabName === 'paper') renderPaperTradingUI();
-	if (tabName === 'heatmap') renderSectorHeatmap();
-	if (tabName === 'fundamental') renderFundamentalWidget(currentTicker); // Baru
+	if (tabName === 'heatmap') {
+		renderSectorHeatmap();
+		fetchMacroAndCommodities();
+	}
+	if (tabName === 'fundamental') renderFundamentalWidget(currentTicker);
 }
 
 // ==========================================
@@ -4286,130 +4289,16 @@ function checkUrlParamTicker() {
 }
 
 // ==========================================
-// 26. CROSS-ASSET RADAR (REAL-TIME CRYPTO)
-// ==========================================
-
-async function fetchRealtimeCrypto() {
-	const container = document.getElementById('cryptoRadarContainer');
-	if (!container) return;
-
-	container.innerHTML = `
-		<div class="text-center text-slate-400 text-xs py-6 lg:col-span-4 border border-slate-800 rounded-xl bg-slate-950/10">
-			<i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-400"></i> 
-			Menghubungkan ke Jaringan Binance Vision...
-		</div>
-	`;
-	if (window.lucide) lucide.createIcons();
-
-	const symbols = '["BTCUSDT","ETHUSDT","SOLUSDT","PEPEUSDT","DOGEUSDT","XRPUSDT"]';
-	const encodedSymbols = encodeURIComponent(symbols);
-	
-	// FIX: Menggunakan domain Binance Vision (tahan blokir) & Raw Proxy
-	const urls = [
-		`https://data-api.binance.vision/api/v3/ticker/24hr?symbols=${encodedSymbols}`,
-		`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.binance.com/api/v3/ticker/24hr?symbols=${encodedSymbols}`)}`,
-		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(`https://api.binance.com/api/v3/ticker/24hr?symbols=${encodedSymbols}`)}`
-	];
-
-	let data = null;
-
-	try {
-		for (let url of urls) {
-			try {
-				const response = await fetch(url, { signal: AbortSignal.timeout(6000) });
-				if (response.ok) {
-					const json = await response.json();
-					if (Array.isArray(json) && json.length > 0) {
-						data = json;
-						break; // Berhenti mencari jika data berhasil didapat
-					}
-				}
-			} catch(e) {
-				continue; // Lanjut ke URL berikutnya jika gagal
-			}
-		}
-
-		if (!data) throw new Error("Semua jalur koneksi Crypto diblokir.");
-		
-		data.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
-
-		let html = `
-			<div class="col-span-1 md:col-span-2 lg:col-span-4 mb-2 flex items-center justify-between border-b border-slate-800 pb-2">
-				<span class="text-fuchsia-400 font-bold flex items-center gap-1.5 text-xs lg:text-sm">
-					<i data-lucide="bitcoin" class="w-4 h-4"></i> CROSS-ASSET RADAR (LIVE)
-				</span>
-				<span class="text-[9px] text-slate-400 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Real-time</span>
-			</div>
-			<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 col-span-1 md:col-span-2 lg:col-span-4">
-		`;
-
-		data.forEach(coin => {
-			const symbol = coin.symbol.replace('USDT', '');
-			const price = parseFloat(coin.lastPrice);
-			const changePct = parseFloat(coin.priceChangePercent);
-			const volume = parseFloat(coin.quoteVolume);
-			
-			const isPlus = changePct >= 0;
-			const colorClass = isPlus ? 'text-emerald-400' : 'text-rose-400';
-			const bgClass = isPlus ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-rose-500/10 border-rose-500/30';
-			const iconTrend = isPlus ? 'trending-up' : 'trending-down';
-
-			let formattedPrice = '';
-			if (price >= 1000) formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(price);
-			else if (price >= 1) formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(price);
-			else formattedPrice = `$${price}`; 
-
-			let formattedVol = '';
-			if (volume >= 1e9) formattedVol = `$${(volume / 1e9).toFixed(2)}B`;
-			else if (volume >= 1e6) formattedVol = `$${(volume / 1e6).toFixed(2)}M`;
-			else formattedVol = `$${volume.toLocaleString('en-US')}`;
-
-			html += `
-				<div class="bg-slate-900/60 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition-colors shadow-sm">
-					<div class="flex items-center justify-between mb-2">
-						<span class="font-bold text-white text-xs lg:text-sm flex items-center gap-1.5">
-							<i class="fa-brands fa-${symbol.toLowerCase()} text-slate-400"></i> ${symbol}
-						</span>
-						<span class="text-[9px] font-bold ${colorClass} ${bgClass} px-1.5 py-0.5 rounded border">
-							${isPlus ? '+' : ''}${changePct.toFixed(2)}%
-						</span>
-					</div>
-					<div class="flex flex-col">
-						<span class="text-sm lg:text-base font-extrabold ${colorClass}">${formattedPrice}</span>
-						<div class="flex items-center justify-between mt-1">
-							<span class="text-[9px] text-slate-400">Vol: ${formattedVol}</span>
-							<i data-lucide="${iconTrend}" class="w-3 h-3 ${colorClass} opacity-70"></i>
-						</div>
-					</div>
-				</div>
-			`;
-		});
-
-		html += `</div>`;
-		container.innerHTML = html;
-		if (window.lucide) lucide.createIcons();
-
-	} catch (error) {
-		container.innerHTML = `
-			<div class="text-center text-rose-400 text-xs py-4 lg:col-span-4 border border-rose-900/30 rounded-xl bg-rose-500/10">
-				Gagal memuat data Crypto. Semua jalur koneksi API terblokir.
-			</div>
-		`;
-	}
-}
-
-// ==========================================
 // 27. MACRO & COMMODITY DASHBOARD (REAL-TIME)
 // ==========================================
-
 async function fetchMacroAndCommodities() {
 	const container = document.getElementById('macroRadarContainer');
 	if (!container) return;
 
 	container.innerHTML = `
-		<div class="text-center text-slate-400 text-xs py-6 lg:col-span-full border border-slate-800 rounded-xl bg-slate-950/10">
+		<div class="text-center text-slate-400 text-xs py-6 col-span-full border border-slate-800 rounded-xl bg-slate-950/10">
 			<i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-sky-400"></i> 
-			Menyinkronkan data Makro Ekonomi...
+			Menyinkronkan data Makro Ekonomi & Komoditas...
 		</div>
 	`;
 	if (window.lucide) lucide.createIcons();
@@ -4417,15 +4306,16 @@ async function fetchMacroAndCommodities() {
 	const macroAssets = [
 		{ symbol: '^DJI', name: 'Dow Jones', type: 'Indeks Global', icon: 'globe' },
 		{ symbol: '^IXIC', name: 'Nasdaq', type: 'Indeks Global', icon: 'monitor' },
-		{ symbol: 'GC=F', name: 'Gold (Emas)', type: 'Komoditas', icon: 'coins' },
-		{ symbol: 'CL=F', name: 'Crude Oil', type: 'Komoditas', icon: 'droplet' },
-		{ symbol: 'IDR=X', name: 'USD / IDR', type: 'Mata Uang', icon: 'banknote' }
+		{ symbol: 'IDR=X', name: 'USD / IDR', type: 'Mata Uang', icon: 'banknote' },
+		{ symbol: 'GC=F', name: 'Emas (Gold)', type: 'Komoditas', icon: 'coins' },
+		{ symbol: 'SI=F', name: 'Perak (Silver)', type: 'Komoditas', icon: 'coins' },
+		{ symbol: 'HG=F', name: 'Tembaga (Copper)', type: 'Komoditas', icon: 'coins' },
+		{ symbol: 'MTF=F', name: 'Batu Bara (Coal)', type: 'Komoditas', icon: 'flame' },
+		{ symbol: 'CL=F', name: 'Minyak (WTI)', type: 'Komoditas', icon: 'droplet' }
 	];
 
-	// Fungsi penarik data individual dengan sistem fallback proxy
 	const fetchSingleMacro = async (asset) => {
 		const sym = encodeURIComponent(asset.symbol);
-		// FIX: Menggunakan range 5 hari (5d) untuk mencegah data kosong saat market tutup
 		const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=5d`;
 		
 		const urls = [
@@ -4441,7 +4331,6 @@ async function fetchMacroAndCommodities() {
 					const json = await res.json();
 					const resultData = json?.chart?.result?.[0];
 					if (resultData && resultData.indicators.quote[0].close) {
-						// Ambil array harga penutupan dan hilangkan data null
 						const closes = resultData.indicators.quote[0].close.filter(c => c !== null);
 						if (closes.length >= 2) {
 							const currentPrice = closes[closes.length - 1];
@@ -4460,20 +4349,11 @@ async function fetchMacroAndCommodities() {
 		const fetchPromises = macroAssets.map(asset => fetchSingleMacro(asset));
 		let results = await Promise.all(fetchPromises);
 		
-		// Buang data yang bernilai null (gagal diambil)
 		results = results.filter(item => item !== null);
 
 		if (results.length === 0) throw new Error("Semua proxy Yahoo Finance gagal merespons.");
 
-		let html = `
-			<div class="col-span-full mb-2 flex items-center justify-between border-b border-slate-800 pb-2">
-				<span class="text-sky-400 font-bold flex items-center gap-1.5 text-xs lg:text-sm">
-					<i data-lucide="globe-2" class="w-4 h-4"></i> MACRO & COMMODITY RADAR
-				</span>
-				<span class="text-[9px] text-slate-400 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-sky-500 animate-ping"></span> Live Market</span>
-			</div>
-			<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 col-span-full">
-		`;
+		let html = '';
 
 		results.forEach(item => {
 			const isUsdIdr = item.symbol === 'IDR=X';
@@ -4516,14 +4396,13 @@ async function fetchMacroAndCommodities() {
 			`;
 		});
 
-		html += `</div>`;
 		container.innerHTML = html;
 		if (window.lucide) lucide.createIcons();
 
 	} catch (error) {
 		container.innerHTML = `
-			<div class="text-center text-rose-400 text-xs py-4 lg:col-span-full border border-rose-900/30 rounded-xl bg-rose-500/10">
-				Gagal memuat data Makro. Silakan tekan tombol Refresh.
+			<div class="text-center text-rose-400 text-xs py-4 col-span-full border border-rose-900/30 rounded-xl bg-rose-500/10">
+				Gagal memuat data Makro & Komoditas. Silakan tekan tombol Refresh.
 			</div>
 		`;
 	}
