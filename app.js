@@ -4068,7 +4068,7 @@ function renderSectorHeatmap() {
 	const container = document.getElementById('tv_heatmap_container');
 	if (!container) return;
 
-	// Kosongkan kontainer sebelum merender ulang agar tidak terjadi duplikasi widget
+	// Kosongkan kontainer sebelum merender ulang
 	container.innerHTML = '';
 
 	const script = document.createElement('script');
@@ -4076,14 +4076,16 @@ function renderSectorHeatmap() {
 	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js';
 	script.async = true;
 	
-	// Konfigurasi widget TradingView diarahkan ke Bursa Efek Indonesia (JSX)
+	// Konfigurasi widget TradingView diarahkan ke IDX (Indonesia Stock Exchange)
 	script.innerHTML = JSON.stringify({
-		"exchanges": [],
-		"dataSource": "JSX", // Kunci perbaikan: Mengarahkan data ke Jakarta Stock Exchange (IDX)
+		"exchanges": [
+			"IDX"
+		],
+		"dataSource": "IDX", 
 		"grouping": "sector",
 		"blockSize": "market_cap_basic",
 		"blockColor": "change",
-		"locale": "id", // Menggunakan bahasa Indonesia
+		"locale": "id",
 		"symbolUrl": "",
 		"colorTheme": "dark",
 		"hasTopBar": true,
