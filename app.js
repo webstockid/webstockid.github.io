@@ -734,6 +734,9 @@ function renderFundamentalWidget(ticker) {
 // 9. INSIDER SEARCH (SEC EDGAR SCRAPER)
 // ==========================================
 
+// Buka komentar API Key kamu
+const FMP_API_KEY = 'LQhjoJzWKzND3xYw4hy5CE7hqGM33YV4';
+
 async function handleInsiderSearch() {
 	const selectEl = document.getElementById('insiderSearchInput');
 	const cikNumber = selectEl.value;
@@ -742,6 +745,7 @@ async function handleInsiderSearch() {
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
 	}
+	
 	const institutionName = selectEl.options[selectEl.selectedIndex].text.replace(/\s\(.*?\)/, ''); 
 	const resultContainer = document.getElementById('insiderResultContainer');
 	const statusMessage = document.getElementById('insiderStatusMessage');
@@ -749,145 +753,53 @@ async function handleInsiderSearch() {
 	
 	resultContainer.classList.add('hidden');
 	statusMessage.classList.remove('hidden');
-	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menghubungkan ke SEC EDGAR untuk <b>${institutionName}</b>...</div>`;
+	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menarik data portofolio dari FMP API untuk <b>${institutionName}</b>...</div>`;
 	if (window.lucide) lucide.createIcons();
 	tableBody.innerHTML = '';
 
-	const fetchSecData = async (targetUrl, isXml = false) => {
-		const encodedUrl = encodeURIComponent(targetUrl);
-		
-		// Gunakan endpoint /raw agar mendapatkan respon langsung (tanpa bungkus object dari proxy)
-		const proxies = [
-			`https://api.allorigins.win/raw?url=${encodedUrl}`,
-			`https://api.codetabs.com/v1/proxy?quest=${encodedUrl}`
-		];
-
-		for (let proxy of proxies) {
-			try {
-				// Beri batas waktu agar tidak loading terus-menerus
-				const res = await fetch(proxy, { signal: AbortSignal.timeout(8000) });
-				if (!res.ok) continue; 
-				
-				let data = await res.text();
-				
-				// Cegat jika SEC memblokir proxy dan membalikkan halaman HTML Error
-				if (data.trim().toLowerCase().startsWith('<!doctype html>') || data.trim().toLowerCase().startsWith('<html')) {
-					continue; 
-				}
-				
-				return isXml ? data : JSON.parse(data);
-			} catch(e) {
-				console.warn(`Proxy gagal merespons SEC EDGAR: ${proxy}`);
-				continue; 
-			}
-		}
-		
-		throw new Error("Semua server proxy sedang dilimitasi oleh SEC EDGAR. Silakan coba kembali dalam beberapa menit.");
-	};
-
 	try {
+		// Menggunakan CIK Number untuk menarik data 13F dari endpoint FMP
 		const paddedCik = cikNumber.padStart(10, '0');
-		const secUrl = `https://data.sec.gov/submissions/CIK${paddedCik}.json`;
+		const apiUrl = `https://financialmodelingprep.com/api/v4/institutional-ownership/portfolio?cik=${paddedCik}&apikey=${FMP_API_KEY}`;
 		
-		// 1. Tarik Riwayat Laporan (JSON)
-		const submissionsData = await fetchSecData(secUrl, false);
-		const filings = submissionsData.filings.recent;
-		let filingIndex = -1;
+		const response = await fetch(apiUrl);
+		if (!response.ok) throw new Error("Gagal terhubung ke server Financial Modeling Prep.");
 		
-		// 2. Cari Laporan Portofolio (13F-HR) Terbaru
-		for (let i = 0; i < filings.form.length; i++) {
-			if (filings.form[i] === '13F-HR') {
-				filingIndex = i;
-				break;
-			}
-		}
+		const portfolioData = await response.json();
 		
-		if (filingIndex === -1) {
-			statusMessage.innerHTML = `Data Laporan Portofolio (13F-HR) tidak ditemukan untuk <b>${institutionName}</b>.`;
+		if (!portfolioData || portfolioData.length === 0) {
+			statusMessage.innerHTML = `Data Portofolio 13F tidak ditemukan untuk <b>${institutionName}</b>.`;
 			return;
 		}
+
+		// Ambil tanggal laporan dari baris data pertama
+		const reportDate = portfolioData[0].date || 'Kuartal Terakhir';
 		
-		const accessionNumber = filings.accessionNumber[filingIndex];
-		const reportDate = filings.reportDate[filingIndex];
-		const cleanAccession = accessionNumber.replace(/-/g, ''); 
-		const cikTrimmed = parseInt(cikNumber, 10).toString();
+		// Format ulang data JSON dari FMP agar sesuai dengan fungsi tabel kita
+		const formattedData = portfolioData.map(item => ({
+			tickcusip: item.symbol || '-',
+			nameOfIssuer: item.securityName || '-',
+			shares: item.shares || 0,
+			value: item.value || 0
+		}));
+
+		// Urutkan dari valuasi yang paling besar
+		formattedData.sort((a, b) => b.value - a.value);
 		
-		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Memindai dokumen Arsip 13F (${reportDate})...</div>`;
-		if (window.lucide) lucide.createIcons();
-		
-		// 3. Tarik Index Arsip (JSON)
-		const archiveIndexUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/index.json`;
-		const indexData = await fetchSecData(archiveIndexUrl, false);
-		let infoTableFileName = null;
-		
-		for (const file of indexData.directory.item) {
-			if (file.name.endsWith('.xml') && (file.name.toLowerCase().includes('info') || file.name.toLowerCase().includes('table'))) {
-				infoTableFileName = file.name;
-				break;
-			}
-		}
-		
-		if (!infoTableFileName) {
-			statusMessage.innerHTML = `File XML Information Table tidak tersedia pada arsip laporan SEC kuartal ini.`;
-			return;
-		}
-		
-		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Mengekstrak struktur XML...</div>`;
-		if (window.lucide) lucide.createIcons();
-		
-		// 4. Tarik & Parsing File Portofolio Mentah (XML)
-		const xmlUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/${infoTableFileName}`;
-		const xmlText = await fetchSecData(xmlUrl, true);
-		
-		const parser = new DOMParser();
-		const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-		const infoTables = xmlDoc.getElementsByTagName('*');
-		let portfolioData = [];
-		
-		for (let i = 0; i < infoTables.length; i++) {
-			const node = infoTables[i];
-			if (node.localName === 'infoTable') {
-				let nameOfIssuer = '', cusip = '', value = 0, shares = 0;
-				for (let j = 0; j < node.childNodes.length; j++) {
-					const child = node.childNodes[j];
-					if (child.localName === 'nameOfIssuer') nameOfIssuer = child.textContent.trim();
-					if (child.localName === 'cusip') cusip = child.textContent.trim();
-					
-					if (child.localName === 'value') {
-						// Perbaikan Bug: SEC 13F selalu melaporkan 'value' dalam ribuan dolar ($1000s)
-						value = parseFloat(child.textContent.replace(/,/g, '')) * 1000;
-					}
-					
-					if (child.localName === 'shrsOrPrnAmt') {
-						for (let k = 0; k < child.childNodes.length; k++) {
-							const shrsChild = child.childNodes[k];
-							if (shrsChild.localName === 'sshPrnamt') {
-								shares = parseFloat(shrsChild.textContent.replace(/,/g, ''));
-							}
-						}
-					}
-				}
-				if (nameOfIssuer) {
-					portfolioData.push({ nameOfIssuer, tickcusip: cusip, shares, value });
-				}
-			}
-		}
-		
-		// 5. Urutkan & Tampilkan
-		portfolioData.sort((a, b) => b.value - a.value);
 		statusMessage.classList.add('hidden');
 		resultContainer.classList.remove('hidden');
 		
 		document.getElementById('insiderInstitutionName').innerText = institutionName;
-		document.getElementById('insiderReportDate').innerText = reportDate || 'N/A';
+		document.getElementById('insiderReportDate').innerText = reportDate;
 		
-		renderFMPTable(portfolioData.slice(0, 50));
+		// Batasi hanya 50 saham terbesar agar tidak berat
+		renderFMPTable(formattedData.slice(0, 50));
 		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 		
 	} catch (error) {
-		statusMessage.innerHTML = `<div class="text-rose-400 font-bold flex flex-col items-center gap-2"><i data-lucide="alert-triangle" class="w-6 h-6"></i> Gagal Mengakses SEC EDGAR</div><div class="text-xs text-slate-400 mt-1 px-4 text-center">${error.message}</div>`;
+		statusMessage.innerHTML = `<div class="text-rose-400 font-bold flex flex-col items-center gap-2"><i data-lucide="alert-triangle" class="w-6 h-6"></i> Gagal Mengakses FMP API</div><div class="text-xs text-slate-400 mt-1 px-4 text-center">API Key kamu mungkin limit atau butuh paket premium. ${error.message}</div>`;
 		if (window.lucide) lucide.createIcons();
-		console.error("SEC EDGAR Error:", error);
+		console.error("FMP API Error:", error);
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 	}
 }
