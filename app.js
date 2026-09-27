@@ -4296,41 +4296,41 @@ async function fetchRealtimeCrypto() {
 	container.innerHTML = `
 		<div class="text-center text-slate-400 text-xs py-6 lg:col-span-4 border border-slate-800 rounded-xl bg-slate-950/10">
 			<i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-400"></i> 
-			Menembus jaringan Blockchain via Proxy...
+			Menghubungkan ke Jaringan Binance Vision...
 		</div>
 	`;
 	if (window.lucide) lucide.createIcons();
 
-	// FIX 1: URL Encode pada array simbol 
-	const symbols = encodeURIComponent('["BTCUSDT","ETHUSDT","SOLUSDT","PEPEUSDT","DOGEUSDT","XRPUSDT"]');
-	const binanceApiUrl = `https://api.binance.com/api/v3/ticker/24hr?symbols=${symbols}`;
+	const symbols = '["BTCUSDT","ETHUSDT","SOLUSDT","PEPEUSDT","DOGEUSDT","XRPUSDT"]';
+	const encodedSymbols = encodeURIComponent(symbols);
 	
-	// FIX 2: Proxy Rotasi untuk membobol blokir ISP Indonesia (IndiHome/Telkomsel) ke Binance
-	const proxies = [
-		`https://api.allorigins.win/get?url=${encodeURIComponent(binanceApiUrl)}`,
-		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(binanceApiUrl)}`
+	// FIX: Menggunakan domain Binance Vision (tahan blokir) & Raw Proxy
+	const urls = [
+		`https://data-api.binance.vision/api/v3/ticker/24hr?symbols=${encodedSymbols}`,
+		`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.binance.com/api/v3/ticker/24hr?symbols=${encodedSymbols}`)}`,
+		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(`https://api.binance.com/api/v3/ticker/24hr?symbols=${encodedSymbols}`)}`
 	];
 
 	let data = null;
 
 	try {
-		for (let p of proxies) {
+		for (let url of urls) {
 			try {
-				const response = await fetch(p, { signal: AbortSignal.timeout(6000) });
+				const response = await fetch(url, { signal: AbortSignal.timeout(6000) });
 				if (response.ok) {
 					const json = await response.json();
-					// AllOrigins membungkus data di dalam objek 'contents' (format string)
-					data = p.includes('allorigins') ? JSON.parse(json.contents) : json;
-					if (Array.isArray(data)) break;
+					if (Array.isArray(json) && json.length > 0) {
+						data = json;
+						break; // Berhenti mencari jika data berhasil didapat
+					}
 				}
 			} catch(e) {
-				continue;
+				continue; // Lanjut ke URL berikutnya jika gagal
 			}
 		}
 
-		if (!data || !Array.isArray(data)) throw new Error("Semua proxy gagal menembus Binance.");
+		if (!data) throw new Error("Semua jalur koneksi Crypto diblokir.");
 		
-		// Urutkan berdasarkan volume transaksi (Quote Volume dalam USDT)
 		data.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
 
 		let html = `
@@ -4365,10 +4365,10 @@ async function fetchRealtimeCrypto() {
 			else formattedVol = `$${volume.toLocaleString('en-US')}`;
 
 			html += `
-				<div class="bg-slate-900/60 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition-colors cursor-pointer group shadow-sm">
+				<div class="bg-slate-900/60 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition-colors shadow-sm">
 					<div class="flex items-center justify-between mb-2">
 						<span class="font-bold text-white text-xs lg:text-sm flex items-center gap-1.5">
-							<i class="fa-brands fa-${symbol.toLowerCase()} text-slate-400 group-hover:text-amber-400 transition"></i> ${symbol}
+							<i class="fa-brands fa-${symbol.toLowerCase()} text-slate-400"></i> ${symbol}
 						</span>
 						<span class="text-[9px] font-bold ${colorClass} ${bgClass} px-1.5 py-0.5 rounded border">
 							${isPlus ? '+' : ''}${changePct.toFixed(2)}%
@@ -4392,7 +4392,7 @@ async function fetchRealtimeCrypto() {
 	} catch (error) {
 		container.innerHTML = `
 			<div class="text-center text-rose-400 text-xs py-4 lg:col-span-4 border border-rose-900/30 rounded-xl bg-rose-500/10">
-				Gagal memuat data Crypto. ISP memblokir koneksi atau proxy sedang sibuk.
+				Gagal memuat data Crypto. Semua jalur koneksi API terblokir.
 			</div>
 		`;
 	}
@@ -4409,7 +4409,7 @@ async function fetchMacroAndCommodities() {
 	container.innerHTML = `
 		<div class="text-center text-slate-400 text-xs py-6 lg:col-span-full border border-slate-800 rounded-xl bg-slate-950/10">
 			<i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-sky-400"></i> 
-			Menyinkronkan data Makro Ekonomi & Komoditas Global...
+			Menyinkronkan data Makro Ekonomi...
 		</div>
 	`;
 	if (window.lucide) lucide.createIcons();
@@ -4422,52 +4422,48 @@ async function fetchMacroAndCommodities() {
 		{ symbol: 'IDR=X', name: 'USD / IDR', type: 'Mata Uang', icon: 'banknote' }
 	];
 
-	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
-	let results = [];
+	// Fungsi penarik data individual dengan sistem fallback proxy
+	const fetchSingleMacro = async (asset) => {
+		const sym = encodeURIComponent(asset.symbol);
+		// FIX: Menggunakan range 5 hari (5d) untuk mencegah data kosong saat market tutup
+		const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=5d`;
+		
+		const urls = [
+			`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`,
+			`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+		];
+
+		for (let url of urls) {
+			try {
+				const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+				if (res.ok) {
+					const json = await res.json();
+					const resultData = json?.chart?.result?.[0];
+					if (resultData && resultData.indicators.quote[0].close) {
+						// Ambil array harga penutupan dan hilangkan data null
+						const closes = resultData.indicators.quote[0].close.filter(c => c !== null);
+						if (closes.length >= 2) {
+							const currentPrice = closes[closes.length - 1];
+							const prevClose = closes[closes.length - 2];
+							const changePct = ((currentPrice - prevClose) / prevClose) * 100;
+							return { ...asset, price: currentPrice, changePct: changePct };
+						}
+					}
+				}
+			} catch(e) {}
+		}
+		return null;
+	};
 
 	try {
-		const fetchPromises = macroAssets.map(async (asset) => {
-			// FIX 3: Wajib di-encode agar simbol '^' dan '=' tidak merusak URL Request
-			const encodedSymbol = encodeURIComponent(asset.symbol);
-			const urlWorker = `${WORKER_URL}?symbol=${encodedSymbol}`;
-			const urlProxy = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${encodedSymbol}?interval=1m&range=1d`)}`;
-
-			let json = null;
-			
-			// Eksekusi: Coba Worker Utama dulu
-			try {
-				const res1 = await fetch(urlWorker, { signal: AbortSignal.timeout(4000) });
-				if (res1.ok) json = await res1.json();
-			} catch(e) {}
-
-			// Fallback: Jika Worker menolak selain .JK, lari ke Proxy
-			if (!json) {
-				try {
-					const res2 = await fetch(urlProxy, { signal: AbortSignal.timeout(5000) });
-					if (res2.ok) {
-						const wrapper = await res2.json();
-						json = JSON.parse(wrapper.contents);
-					}
-				} catch(e) {}
-			}
-
-			if (!json) return null;
-
-			const resultData = json?.chart?.result?.[0] || json?.results?.[0];
-			if (!resultData) return null;
-			
-			const meta = resultData.meta;
-			const currentPrice = meta.regularMarketPrice;
-			const prevClose = meta.chartPreviousClose;
-			const changePct = ((currentPrice - prevClose) / prevClose) * 100;
-			
-			return { ...asset, price: currentPrice, changePct: changePct };
-		});
-
-		results = await Promise.all(fetchPromises);
+		const fetchPromises = macroAssets.map(asset => fetchSingleMacro(asset));
+		let results = await Promise.all(fetchPromises);
+		
+		// Buang data yang bernilai null (gagal diambil)
 		results = results.filter(item => item !== null);
 
-		if (results.length === 0) throw new Error("Semua fetch gagal");
+		if (results.length === 0) throw new Error("Semua proxy Yahoo Finance gagal merespons.");
 
 		let html = `
 			<div class="col-span-full mb-2 flex items-center justify-between border-b border-slate-800 pb-2">
@@ -4527,7 +4523,7 @@ async function fetchMacroAndCommodities() {
 	} catch (error) {
 		container.innerHTML = `
 			<div class="text-center text-rose-400 text-xs py-4 lg:col-span-full border border-rose-900/30 rounded-xl bg-rose-500/10">
-				Gagal memuat data Makro & Komoditas. Coba segarkan halaman.
+				Gagal memuat data Makro. Silakan tekan tombol Refresh.
 			</div>
 		`;
 	}
