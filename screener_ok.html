@@ -483,6 +483,10 @@
 					<button onclick="switchTab('custom')" id="tabBtn-custom" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="settings-2" class="w-4 h-4 text-blue-400"></i> Custom Radar
 					</button>
+					<!-- Tombol Tab Global Market -->
+					<button id="tabBtn-global" onclick="switchTab('global'); fetchMacroAndCommodities(); fetchRealtimeCrypto();" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
+						<i data-lucide="globe-2" class="w-4 h-4"></i> Global Market
+					</button>
 					<button onclick="switchTab('peer')" id="tabBtn-peer" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Peer Komparasi
 					</button>
@@ -828,6 +832,62 @@
 						💡 <strong>Pemindaian Manual:</strong> Mencari saham secara ketat dan presisi yang bisa didukung dengan beberapa filter sekaligus.
 					</p>
 				</div>
+				
+				<!-- ========================================== -->
+<!-- TAB CONTENT: GLOBAL & CRYPTO RADAR         -->
+<!-- ========================================== -->
+<div id="tabContent-global" class="hidden space-y-5 animate-fade-in">
+	
+	<!-- Header Seksi -->
+	<div class="bg-slate-900/60 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm flex items-center justify-between">
+		<div>
+			<h3 class="text-white font-bold text-sm lg:text-base flex items-center gap-2 mb-1">
+				<i data-lucide="radar" class="w-5 h-5 text-sky-400"></i>
+				Live Global Market & Cross-Asset Radar
+			</h3>
+			<p class="text-slate-400 text-[10px] lg:text-xs">
+				Pantau pergerakan makro ekonomi, nilai tukar, komoditas utama, dan aset kripto secara real-time untuk memprediksi arah IHSG.
+			</p>
+		</div>
+		
+		<!-- Tombol Refresh Manual -->
+		<button onclick="fetchMacroAndCommodities(); fetchRealtimeCrypto();" class="hidden sm:flex text-[10px] lg:text-xs bg-slate-800 hover:bg-sky-600 text-white font-bold px-3 py-2 rounded-lg border border-slate-700 transition items-center gap-1.5 shadow-sm">
+			<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh
+		</button>
+	</div>
+
+	<!-- Kontainer Makro & Komoditas -->
+	<!-- JavaScript akan merender grid cards secara otomatis di dalam div ini -->
+	<div id="macroRadarContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+		<!-- Animasi Loading Bawaan (muncul sebelum JS memuat data) -->
+		<div class="text-center text-slate-400 text-[11px] lg:text-xs py-8 col-span-full border border-slate-800 rounded-xl bg-slate-950/10 shadow-inner">
+			<i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-sky-400"></i> 
+			Menyiapkan Data Makro Ekonomi...
+		</div>
+	</div>
+
+	<!-- Separator Visual -->
+	<hr class="border-slate-800/60 my-2">
+
+	<!-- Kontainer Kripto -->
+	<!-- JavaScript akan merender grid cards secara otomatis di dalam div ini -->
+	<div id="cryptoRadarContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+		<!-- Animasi Loading Bawaan (muncul sebelum JS memuat data) -->
+		<div class="text-center text-slate-400 text-[11px] lg:text-xs py-8 col-span-full border border-slate-800 rounded-xl bg-slate-950/10 shadow-inner">
+			<i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-400"></i> 
+			Menyiapkan Jaringan Data Crypto...
+		</div>
+	</div>
+	
+	<!-- Footer Keterangan -->
+	<div class="bg-slate-950/40 p-3 rounded-lg border border-slate-800/80 flex items-start gap-2.5">
+		<i data-lucide="info" class="w-4 h-4 text-slate-500 shrink-0 mt-0.5"></i>
+		<p class="text-[9px] lg:text-[10px] text-slate-500 leading-relaxed">
+			<strong>Tips Analisis:</strong> Kenaikan Indeks Global (Dow Jones/Nasdaq) biasanya membawa sentimen positif pembukaan IHSG. Pelemahan Rupiah (USD/IDR naik) berisiko memicu keluarnya dana asing. Kenaikan minyak (Crude Oil) & Emas menjadi katalis kuat untuk emiten energi dan tambang di BEI.
+		</p>
+	</div>
+
+</div>
 
 				<!-- Tab 4: Peer Komparasi -->
 				<div id="tabContent-peer" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">

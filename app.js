@@ -122,7 +122,7 @@ document.addEventListener("click", function(event) {
 });
 
 function switchTab(tabName) {
-	const tabs = ['ai','bigmoney','custom','peer','news','fundamental','paper','rrr','journal','alert','corporate','insider','heatmap','setting'];
+	const tabs = ['ai','bigmoney','custom','global','peer','news','fundamental','paper','rrr','journal','alert','corporate','insider','heatmap','setting'];
 	tabs.forEach(tab => {
 		const btn = document.getElementById(`tabBtn-${tab}`);
 		const content = document.getElementById(`tabContent-${tab}`);
@@ -756,18 +756,14 @@ async function handleInsiderSearch() {
 
 	const fetchSecData = async (targetUrl, isXml = false) => {
 		const encodedUrl = encodeURIComponent(targetUrl);
-		
-		// ⚠️ PENTING: Ganti URL di bawah ini dengan URL Cloudflare Worker milikmu sendiri!
 		const workerUrl = `https://sec-bridge.accespy-mail.workers.dev/?target=${encodedUrl}`;
 
 		try {
-			// Beri batas waktu (timeout) 10 detik agar tidak loading terus-menerus
 			const res = await fetch(workerUrl, { signal: AbortSignal.timeout(10000) });
 			if (!res.ok) throw new Error(`Worker merespons dengan status error: ${res.status}`); 
 			
 			let data = await res.text();
 			
-			// Pengecekan ekstra untuk memastikan respon bukan halaman error HTML
 			if (data.trim().toLowerCase().startsWith('<!doctype html>') || data.trim().toLowerCase().startsWith('<html')) {
 				throw new Error("Server SEC EDGAR menolak akses melalui Worker."); 
 			}
@@ -775,7 +771,7 @@ async function handleInsiderSearch() {
 			return isXml ? data : JSON.parse(data);
 		} catch(error) {
 			console.error(`Gagal mengambil data SEC EDGAR via Worker:`, error);
-			throw new Error("Gagal terhubung ke Cloudflare Worker atau SEC EDGAR sedang sibuk. Periksa kembali URL Worker kamu.");
+			throw new Error("Gagal terhubung ke Cloudflare Worker atau SEC EDGAR sedang sibuk. Periksa kembali koneksi.");
 		}
 	};
 
@@ -783,12 +779,10 @@ async function handleInsiderSearch() {
 		const paddedCik = cikNumber.padStart(10, '0');
 		const secUrl = `https://data.sec.gov/submissions/CIK${paddedCik}.json`;
 		
-		// 1. Tarik Riwayat Laporan (JSON)
 		const submissionsData = await fetchSecData(secUrl, false);
 		const filings = submissionsData.filings.recent;
 		let filingIndex = -1;
 		
-		// 2. Cari Laporan Portofolio (13F-HR) Terbaru
 		for (let i = 0; i < filings.form.length; i++) {
 			if (filings.form[i] === '13F-HR') {
 				filingIndex = i;
@@ -809,7 +803,6 @@ async function handleInsiderSearch() {
 		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Memindai dokumen Arsip 13F (${reportDate})...</div>`;
 		if (window.lucide) lucide.createIcons();
 		
-		// 3. Tarik Index Arsip (JSON)
 		const archiveIndexUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/index.json`;
 		const indexData = await fetchSecData(archiveIndexUrl, false);
 		let infoTableFileName = null;
@@ -829,7 +822,6 @@ async function handleInsiderSearch() {
 		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Mengekstrak struktur XML...</div>`;
 		if (window.lucide) lucide.createIcons();
 		
-		// 4. Tarik & Parsing File Portofolio Mentah (XML)
 		const xmlUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/${infoTableFileName}`;
 		const xmlText = await fetchSecData(xmlUrl, true);
 		
@@ -840,22 +832,27 @@ async function handleInsiderSearch() {
 		
 		for (let i = 0; i < infoTables.length; i++) {
 			const node = infoTables[i];
-			if (node.localName === 'infoTable') {
+			
+			// FIX: Menggunakan toLowerCase() agar tahan terhadap variasi format XML institusi
+			if (node.localName && node.localName.toLowerCase() === 'infotable') {
 				let nameOfIssuer = '', cusip = '', value = 0, shares = 0;
 				for (let j = 0; j < node.childNodes.length; j++) {
 					const child = node.childNodes[j];
-					if (child.localName === 'nameOfIssuer') nameOfIssuer = child.textContent.trim();
-					if (child.localName === 'cusip') cusip = child.textContent.trim();
+					if (!child.localName) continue;
 					
-					if (child.localName === 'value') {
-						// Konversi standar SEC 13F: nilai dilaporkan dalam ribuan dolar ($1000s), jadi dikali 1000
+					const childName = child.localName.toLowerCase();
+					
+					if (childName === 'nameofissuer') nameOfIssuer = child.textContent.trim();
+					if (childName === 'cusip') cusip = child.textContent.trim();
+					
+					if (childName === 'value') {
 						value = parseFloat(child.textContent.replace(/,/g, '')) * 1000;
 					}
 					
-					if (child.localName === 'shrsOrPrnAmt') {
+					if (childName === 'shrsorprnamt') {
 						for (let k = 0; k < child.childNodes.length; k++) {
 							const shrsChild = child.childNodes[k];
-							if (shrsChild.localName === 'sshPrnamt') {
+							if (shrsChild.localName && shrsChild.localName.toLowerCase() === 'sshprnamt') {
 								shares = parseFloat(shrsChild.textContent.replace(/,/g, ''));
 							}
 						}
@@ -867,7 +864,10 @@ async function handleInsiderSearch() {
 			}
 		}
 		
-		// 5. Urutkan berdasarkan valuasi terbesar & Tampilkan ke Tabel
+		if (portfolioData.length === 0) {
+             throw new Error("Gagal mengekstrak data dari dokumen XML. Struktur mungkin tidak sesuai standar SEC 13F.");
+        }
+
 		portfolioData.sort((a, b) => b.value - a.value);
 		statusMessage.classList.add('hidden');
 		resultContainer.classList.remove('hidden');
@@ -886,6 +886,7 @@ async function handleInsiderSearch() {
 	}
 }
 
+// FIX: Menghapus fungsi duplikat dan menyisakan satu yang bersih
 function renderFMPTable(portfolioData) {
 	const tableBody = document.getElementById('insiderTableBody');
 	let html = '';
@@ -2509,19 +2510,19 @@ async function runCustomScreener() {
 					</div>
 					<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs">
 						<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-							<span class="text-slate-400 text-[9px] block">Entry Ideal</span>
+							<span class="text-white text-[9px] block">Entry Ideal</span>
 							<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 						</div>
 						<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-							<span class="text-slate-400 text-[9px] block">AVG Bandar</span>
+							<span class="text-white text-[9px] block">AVG Bandar</span>
 							<span class="font-bold text-blue-500">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 						</div>
 						<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-							<span class="text-slate-400 text-[9px] block">Take Profit</span>
+							<span class="text-white text-[9px] block">Take Profit</span>
 							<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 						</div>
 						<div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-							<span class="text-slate-400 text-[9px] block">Stop Loss</span>
+							<span class="text-white text-[9px] block">Stop Loss</span>
 							<span class="font-bold text-rose-400">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
 						</div>
 					</div>
@@ -4283,6 +4284,230 @@ function checkUrlParamTicker() {
 	const tickerParam = urlParams.get('ticker');
 	if (tickerParam) currentTicker = tickerParam.toUpperCase();
 }
+
+// ==========================================
+// 26. CROSS-ASSET RADAR (REAL-TIME CRYPTO)
+// ==========================================
+
+async function fetchRealtimeCrypto() {
+	// Pastikan kamu memiliki container dengan id 'cryptoRadarContainer' di file HTML-mu
+	const container = document.getElementById('cryptoRadarContainer');
+	if (!container) return;
+
+	container.innerHTML = `
+		<div class="text-center text-slate-400 text-xs py-6 lg:col-span-4 border border-slate-800 rounded-xl bg-slate-950/10">
+			<i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-400"></i> 
+			Menghubungkan ke jaringan Blockchain (Binance API)...
+		</div>
+	`;
+	if (window.lucide) lucide.createIcons();
+
+	// Daftar koin yang ingin dipantau (Pairing USDT)
+	const symbols = '["BTCUSDT","ETHUSDT","SOLUSDT","PEPEUSDT","DOGEUSDT","XRPUSDT"]';
+	const binanceApiUrl = `https://api.binance.com/api/v3/ticker/24hr?symbols=${symbols}`;
+
+	try {
+		// API Binance sangat cepat dan bebas limitasi CORS
+		const response = await fetch(binanceApiUrl, { signal: AbortSignal.timeout(5000) });
+		if (!response.ok) throw new Error("Gagal mengambil data crypto.");
+		
+		const data = await response.json();
+		
+		// Urutkan berdasarkan volume transaksi (Quote Volume dalam USDT)
+		data.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
+
+		let html = `
+			<div class="col-span-1 md:col-span-2 lg:col-span-4 mb-2 flex items-center justify-between border-b border-slate-800 pb-2">
+				<span class="text-fuchsia-400 font-bold flex items-center gap-1.5 text-xs lg:text-sm">
+					<i data-lucide="bitcoin" class="w-4 h-4"></i> CROSS-ASSET RADAR (LIVE)
+				</span>
+				<span class="text-[9px] text-slate-400 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Real-time</span>
+			</div>
+			<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 col-span-1 md:col-span-2 lg:col-span-4">
+		`;
+
+		data.forEach(coin => {
+			const symbol = coin.symbol.replace('USDT', '');
+			const price = parseFloat(coin.lastPrice);
+			const changePct = parseFloat(coin.priceChangePercent);
+			const volume = parseFloat(coin.quoteVolume);
+			
+			const isPlus = changePct >= 0;
+			const colorClass = isPlus ? 'text-emerald-400' : 'text-rose-400';
+			const bgClass = isPlus ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-rose-500/10 border-rose-500/30';
+			const iconTrend = isPlus ? 'trending-up' : 'trending-down';
+
+			// Format Harga (BTC/ETH biasanya puluhan ribu dolar, koin meme nol koma)
+			let formattedPrice = '';
+			if (price >= 1000) formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(price);
+			else if (price >= 1) formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(price);
+			else formattedPrice = `$${price}`; // Untuk koin meme seperti PEPE
+
+			// Format Volume (Jutaan/Miliaran Dolar)
+			let formattedVol = '';
+			if (volume >= 1e9) formattedVol = `$${(volume / 1e9).toFixed(2)}B`;
+			else if (volume >= 1e6) formattedVol = `$${(volume / 1e6).toFixed(2)}M`;
+			else formattedVol = `$${volume.toLocaleString('en-US')}`;
+
+			html += `
+				<div class="bg-slate-900/60 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition-colors cursor-pointer group shadow-sm">
+					<div class="flex items-center justify-between mb-2">
+						<span class="font-bold text-white text-xs lg:text-sm flex items-center gap-1.5">
+							<i class="fa-brands fa-${symbol.toLowerCase()} text-slate-400 group-hover:text-amber-400 transition"></i> ${symbol}
+						</span>
+						<span class="text-[9px] font-bold ${colorClass} ${bgClass} px-1.5 py-0.5 rounded border">
+							${isPlus ? '+' : ''}${changePct.toFixed(2)}%
+						</span>
+					</div>
+					<div class="flex flex-col">
+						<span class="text-sm lg:text-base font-extrabold ${colorClass}">${formattedPrice}</span>
+						<div class="flex items-center justify-between mt-1">
+							<span class="text-[9px] text-slate-400">Vol: ${formattedVol}</span>
+							<i data-lucide="${iconTrend}" class="w-3 h-3 ${colorClass} opacity-70"></i>
+						</div>
+					</div>
+				</div>
+			`;
+		});
+
+		html += `</div>`;
+		container.innerHTML = html;
+		if (window.lucide) lucide.createIcons();
+
+	} catch (error) {
+		container.innerHTML = `
+			<div class="text-center text-rose-400 text-xs py-4 lg:col-span-4 border border-rose-900/30 rounded-xl bg-rose-500/10">
+				Gagal memuat data Crypto. Periksa koneksi internet.
+			</div>
+		`;
+	}
+}
+
+// ==========================================
+// 27. MACRO & COMMODITY DASHBOARD (REAL-TIME)
+// ==========================================
+
+async function fetchMacroAndCommodities() {
+	// Buat div dengan id 'macroRadarContainer' di file HTML kamu
+	const container = document.getElementById('macroRadarContainer');
+	if (!container) return;
+
+	container.innerHTML = `
+		<div class="text-center text-slate-400 text-xs py-6 lg:col-span-full border border-slate-800 rounded-xl bg-slate-950/10">
+			<i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-sky-400"></i> 
+			Menyinkronkan data Makro Ekonomi & Komoditas Global...
+		</div>
+	`;
+	if (window.lucide) lucide.createIcons();
+
+	// Daftar ticker Makro & Komoditas di Yahoo Finance
+	const macroAssets = [
+		{ symbol: '^DJI', name: 'Dow Jones', type: 'Indeks Global', icon: 'globe' },
+		{ symbol: '^IXIC', name: 'Nasdaq', type: 'Indeks Global', icon: 'monitor' },
+		{ symbol: 'GC=F', name: 'Gold (Emas)', type: 'Komoditas', icon: 'coins' },
+		{ symbol: 'CL=F', name: 'Crude Oil', type: 'Komoditas', icon: 'droplet' },
+		{ symbol: 'IDR=X', name: 'USD / IDR', type: 'Mata Uang', icon: 'banknote' }
+	];
+
+	// Menggunakan Cloudflare Worker Yahoo Finance yang sudah kamu punya
+	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
+	let results = [];
+
+	try {
+		// Mengambil data secara paralel agar sangat cepat
+		const fetchPromises = macroAssets.map(async (asset) => {
+			try {
+				const res = await fetch(`${WORKER_URL}?symbol=${asset.symbol}`, { signal: AbortSignal.timeout(6000) });
+				if (!res.ok) return null;
+				const json = await res.json();
+				const resultData = json?.chart?.result?.[0] || json?.results?.[0];
+				if (!resultData) return null;
+				
+				const meta = resultData.meta;
+				const currentPrice = meta.regularMarketPrice;
+				const prevClose = meta.chartPreviousClose;
+				const changePct = ((currentPrice - prevClose) / prevClose) * 100;
+				
+				return { ...asset, price: currentPrice, changePct: changePct };
+			} catch (e) {
+				return null;
+			}
+		});
+
+		results = await Promise.all(fetchPromises);
+		// Buang data yang gagal diambil (null)
+		results = results.filter(item => item !== null);
+
+		if (results.length === 0) throw new Error("Semua fetch gagal");
+
+		let html = `
+			<div class="col-span-full mb-2 flex items-center justify-between border-b border-slate-800 pb-2">
+				<span class="text-sky-400 font-bold flex items-center gap-1.5 text-xs lg:text-sm">
+					<i data-lucide="globe-2" class="w-4 h-4"></i> MACRO & COMMODITY RADAR
+				</span>
+				<span class="text-[9px] text-slate-400 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-sky-500 animate-ping"></span> Live Market</span>
+			</div>
+			<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 col-span-full">
+		`;
+
+		results.forEach(item => {
+			// Logika khusus untuk USD/IDR: Jika nilai tukar naik (Rupiah melemah), itu indikasi negatif (merah) bagi IHSG
+			const isUsdIdr = item.symbol === 'IDR=X';
+			let isPlus = item.changePct >= 0;
+			
+			let colorClass = isPlus ? 'text-emerald-400' : 'text-rose-400';
+			let bgClass = isPlus ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-rose-500/10 border-rose-500/30';
+			let iconTrend = isPlus ? 'trending-up' : 'trending-down';
+
+			// Pembalikan warna khusus USD/IDR (Rupiah melemah = Merah, Rupiah menguat = Hijau)
+			if (isUsdIdr) {
+				colorClass = isPlus ? 'text-rose-400' : 'text-emerald-400';
+				bgClass = isPlus ? 'bg-rose-500/10 border-rose-500/30' : 'bg-emerald-500/10 border-emerald-500/30';
+			}
+
+			// Format Harga
+			let formattedPrice = '';
+			if (isUsdIdr) {
+				formattedPrice = `Rp ${new Intl.NumberFormat('id-ID').format(Math.round(item.price))}`;
+			} else {
+				formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.price);
+			}
+
+			html += `
+				<div class="bg-slate-900/60 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition-colors shadow-sm">
+					<div class="flex items-center justify-between mb-2">
+						<span class="font-bold text-white text-[11px] lg:text-xs flex items-center gap-1.5">
+							<i data-lucide="${item.icon}" class="w-3.5 h-3.5 text-slate-400"></i> ${item.name}
+						</span>
+						<span class="text-[9px] font-bold ${colorClass} ${bgClass} px-1.5 py-0.5 rounded border">
+							${isPlus ? '+' : ''}${item.changePct.toFixed(2)}%
+						</span>
+					</div>
+					<div class="flex flex-col">
+						<span class="text-sm lg:text-base font-extrabold ${colorClass}">${formattedPrice}</span>
+						<div class="flex items-center justify-between mt-1">
+							<span class="text-[9px] text-slate-500 uppercase tracking-wider">${item.type}</span>
+							<i data-lucide="${iconTrend}" class="w-3 h-3 ${colorClass} opacity-70"></i>
+						</div>
+					</div>
+				</div>
+			`;
+		});
+
+		html += `</div>`;
+		container.innerHTML = html;
+		if (window.lucide) lucide.createIcons();
+
+	} catch (error) {
+		container.innerHTML = `
+			<div class="text-center text-rose-400 text-xs py-4 lg:col-span-full border border-rose-900/30 rounded-xl bg-rose-500/10">
+				Gagal memuat data Makro & Komoditas.
+			</div>
+		`;
+	}
+}
+
+
 
 // ==========================================
 // INISIALISASI UTAMA
