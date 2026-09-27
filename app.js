@@ -17,6 +17,7 @@ let currentJournalView = 'table';
 let openAlertDropdowns = new Set();
 let isHeatmapLoaded = false;
 let whaleScanCooldownTimer = null;
+
 if (window.lucide) lucide.createIcons();
 
 // ==========================================
@@ -704,12 +705,40 @@ async function handleInsiderSearch() {
 	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menghubungkan ke SEC EDGAR untuk <b>${institutionName}</b>...</div>`;
 	if (window.lucide) lucide.createIcons();
 	tableBody.innerHTML = '';
-	// URL CLOUDFLARE WORKER
-	const workerProxy = 'https://URL_WORKER_KAMU_DISINI/?url=';
 	const fetchSecData = async (targetUrl, isXml = false) => {
-		const res = await fetch(workerProxy + encodeURIComponent(targetUrl));
-		if (!res.ok) throw new Error("Gagal mengambil data dari SEC EDGAR.");
-		return isXml ? await res.text() : await res.json();
+		// Daftar proxy gratis untuk melewati blokir CORS dari server SEC EDGAR
+		const proxies = [
+			`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`,
+			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`,
+			`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+		];
+
+		for (let proxy of proxies) {
+			try {
+				const res = await fetch(proxy);
+				
+				// Jika server proxy ini error atau limit, lewati dan coba proxy selanjutnya
+				if (!res.ok) continue; 
+				
+				let data = await res.text();
+				
+				// Pengecekan ekstra khusus untuk AllOrigins karena response datanya bersarang di dalam object "contents"
+				if (proxy.includes('allorigins.win/get')) {
+					const json = JSON.parse(data);
+					data = json.contents;
+				}
+				
+				// Return sebagai XML/Teks biasa atau parse sebagai JSON sesuai kebutuhan parameter
+				return isXml ? data : JSON.parse(data);
+				
+			} catch(e) {
+				console.warn(`Proxy gagal merespons SEC EDGAR: ${proxy}`);
+				continue; // Lanjut looping ke proxy berikutnya di dalam array
+			}
+		}
+		
+		// Jika semua proxy dalam array gagal diakses
+		throw new Error("Semua server proxy gagal menghubungi SEC EDGAR. Silakan coba beberapa saat lagi.");
 	};
 	try {
 		const paddedCik = cikNumber.padStart(10, '0');
@@ -1081,9 +1110,22 @@ async function fetchAnalystConsensus(ticker) {
 		`;
 		if (window.lucide) lucide.createIcons();
 	} else {
-		container.innerHTML = '';
+		// FALLBACK UI KETIKA DATA ANALIS TIDAK DITEMUKAN
+		container.innerHTML = `
+			<div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800/80 mt-1">
+				<div class="flex items-center justify-between mb-1.5">
+					<span class="text-[10px] lg:text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
+						<i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Konsensus Institusi:
+					</span>
+					<span class="font-bold text-[9px] lg:text-[10px] text-slate-500 bg-slate-950 px-2 py-0.5 rounded border border-slate-700">TIDAK ADA DATA</span>
+				</div>
+				<div class="text-center text-[10px] text-slate-500 py-1">
+					Belum ada analis global yang memberikan target harga untuk emiten ini.
+				</div>
+			</div>
+		`;
+		if (window.lucide) lucide.createIcons();
 	}
-}
 
 function renderAISignalUI(ticker, stockData, isCached) {
 	const verdikEl = document.getElementById('aiVerdikText');
@@ -1850,9 +1892,18 @@ function renderKanbanBoard() {
 function autoFillRRRFromAI() {
 	if (globalStockData && globalStockData.price) {
 		const basePrice = globalStockData.price;
-		const entry = roundToBEITick(basePrice * 0.96, 'floor');
-		const sl = roundToBEITick(basePrice * 0.92, 'floor');
-		const tp = roundToBEITick(basePrice * 1.06, 'ceil');
+		let entry, sl, tp;
+
+		if (globalStockData.high20 && globalStockData.low20 && globalStockData.high20 > globalStockData.low20) {
+			const fibo = calculateFibonacciLevels(globalStockData.high20, globalStockData.low20);
+			entry = roundToBEITick(fibo.sup2, 'floor');
+			sl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
+			tp = roundToBEITick(fibo.res2, 'ceil');
+		} else {
+			entry = roundToBEITick(basePrice * 0.96, 'floor');
+			sl = roundToBEITick(basePrice * 0.92, 'floor');
+			tp = roundToBEITick(basePrice * 1.06, 'ceil');
+		}
 
 		document.getElementById('rrrEntry').value = entry;
 		document.getElementById('rrrSL').value = sl;
@@ -2142,7 +2193,7 @@ function renderRadarItems(dataList) {
 		const price = roundToBEITick(item.price);
 		const changePct = item.changePct;
 		
-		// REVISI: FIBONACCI SUPPORT / RESISTANCE
+		// FIBONACCI SUPPORT / RESISTANCE
 		let sl, entryLow, entryHigh, tp1, tp2;
 		if (item.high20 && item.low20 && item.high20 > item.low20) {
 			const fibo = calculateFibonacciLevels(item.high20, item.low20);
@@ -2239,7 +2290,7 @@ function selectTickerFromRadar(ticker) {
 }
 
 // ==========================================
-// 17. CUSTOM SCREENER BUILDER
+// 18. CUSTOM SCREENER BUILDER
 // ==========================================
 function toggleCustomDropdown(dropdownId) {
 	const dropdown = document.getElementById(dropdownId);
@@ -2362,7 +2413,7 @@ async function runCustomScreener() {
 		passedItems.forEach((item, index) => {
 			const price = roundToBEITick(item.price);
 			
-			// REVISI: FIBONACCI SUPPORT / RESISTANCE
+			// FIBONACCI SUPPORT / RESISTANCE
 			let sl, entryLow, entryHigh, tp1, tp2;
 			if (item.high20 && item.low20 && item.high20 > item.low20) {
 				const fibo = calculateFibonacciLevels(item.high20, item.low20);
@@ -2459,7 +2510,7 @@ function selectTickerFromCustom(ticker) {
 }
 
 // ==========================================
-// 18. PAPER TRADING SYSTEM
+// 19. PAPER TRADING SYSTEM
 // ==========================================
 function ptSwitchSubTab(subTab) {
 	const btnForm = document.getElementById('ptSubBtnForm');
@@ -2802,7 +2853,7 @@ function renderPaperTradingUI() {
 }
 
 // ==========================================
-// 19. WHALE DETECTOR (RADAR BANDAR KETAT)
+// 20. WHALE DETECTOR (RADAR BANDAR KETAT)
 // ==========================================
 function toggleWhaleModal() {
 	const modal = document.getElementById('whaleModal');
@@ -2914,7 +2965,7 @@ async function scanWhalesData() {
 		foundWhales.forEach((item) => {
 			const price = roundToBEITick(item.price);
 			
-			// REVISI: FIBONACCI SUPPORT / RESISTANCE
+			// FIBONACCI SUPPORT / RESISTANCE
 			let s1, s2, r1, r2, cl, entryAgresif, entryAman;
 			if (item.high20 && item.low20 && item.high20 > item.low20) {
 				const fibo = calculateFibonacciLevels(item.high20, item.low20);
@@ -2992,7 +3043,7 @@ async function scanWhalesData() {
 }
 
 // ==========================================
-// 20. AI CHAT ASSISTANT
+// 21. AI CHAT ASSISTANT
 // ==========================================
 function toggleAIChat() {
 	const chatWindow = document.getElementById('aiChatWindow');
@@ -3038,7 +3089,7 @@ function sendAIChatMessage() {
 	msgContainer.scrollTop = msgContainer.scrollHeight;
 	AudioFX.playClick();
 
-	// Tampilkan indikator loading sementara AI berpikir
+	// Indikator Loading
 	const loadingId = 'loading-' + Date.now();
 	msgContainer.innerHTML += `
 		<div id="${loadingId}" class="flex items-start gap-2">
@@ -3052,12 +3103,10 @@ function sendAIChatMessage() {
 	`;
 	msgContainer.scrollTop = msgContainer.scrollHeight;
 	if (window.lucide) lucide.createIcons();
-
-	// PERBAIKAN: Ubah callback setTimeout menjadi async dan gunakan perintah await
+	
 	setTimeout(async () => {
 		const aiReply = await generateAIResponse(query);
 		
-		// Hapus indikator loading setelah balasan diterima
 		document.getElementById(loadingId).remove();
 
 		msgContainer.innerHTML += `
@@ -3106,14 +3155,26 @@ function generateAIResponse(prompt) {
 		return `Untuk menganalisa <strong class="text-cyan-400">$${targetTicker}</strong> lebih presisi, silakan cari saham tersebut di kolom pencarian atas terlebih dahulu agar Aku bisa menarik data bursa terbarunya.`;
 	}
 
-	const price = data.price;
-	const sl = roundToBEITick(price * 0.92, 'floor');
-	const sup1 = roundToBEITick(price * 0.94, 'floor');
-	const sup2 = roundToBEITick(price * 0.96, 'floor');
-	const res1 = roundToBEITick(price * 1.04, 'ceil');
-	const res2 = roundToBEITick(price * 1.08, 'ceil');
-	const tp1 = roundToBEITick(price * 1.06, 'ceil');
-	const tp2 = roundToBEITick(price * 1.10, 'ceil');
+	let sl, sup1, sup2, res1, res2, tp1, tp2;
+	
+	if (data && data.high20 && data.low20 && data.high20 > data.low20) {
+		const fibo = calculateFibonacciLevels(data.high20, data.low20);
+		sup1 = roundToBEITick(fibo.sup1, 'floor');
+		sup2 = roundToBEITick(fibo.sup2, 'floor');
+		res1 = roundToBEITick(fibo.res1, 'ceil');
+		res2 = roundToBEITick(fibo.res2, 'ceil');
+		sl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
+		tp1 = roundToBEITick(fibo.pivot, 'ceil');
+		tp2 = roundToBEITick(fibo.res2, 'ceil');
+	} else {
+		sl = roundToBEITick(price * 0.92, 'floor');
+		sup1 = roundToBEITick(price * 0.94, 'floor');
+		sup2 = roundToBEITick(price * 0.96, 'floor');
+		res1 = roundToBEITick(price * 1.04, 'ceil');
+		res2 = roundToBEITick(price * 1.08, 'ceil');
+		tp1 = roundToBEITick(price * 1.06, 'ceil');
+		tp2 = roundToBEITick(price * 1.10, 'ceil');
+	}
 	
 	if (lower.includes('entry') || lower.includes('support') || lower.includes('masuk') || lower.includes('beli')) {
 		return `
@@ -3185,7 +3246,7 @@ function generateAIResponse(prompt) {
 }
 
 // ==========================================
-// 21. SMART ALERT & PUSH NOTIFICATION
+// 22. SMART ALERT & PUSH NOTIFICATION
 // ==========================================
 function checkNotificationStatus() {
 	const btn = document.getElementById('btnToggleNotification');
@@ -3228,10 +3289,14 @@ async function saveTelegramConfig() {
 	
 	if (!tokenInput || !chatInput) return;
 
+	//const token = tokenInput.value.trim();
+	//const chatId = chatInput.value.trim();
+	
 	const token = tokenInput.value.trim();
-	const chatId = chatInput.value.trim();
+	let chatId = chatInput.value.trim();
+	chatId = chatId.replace(/\s+/g, ''); // Hapus spasi yang terselip
 
-	// Validasi jika kosong
+	// Validasi
 	if (!token || !chatId) {
 		showToast("Harap isi Token Bot dan Chat ID terlebih dahulu!", "warning");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
@@ -3250,28 +3315,32 @@ async function saveTelegramConfig() {
 }
 
 async function testTelegramConnection(token, chatId) {
-	try {
-		const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ 
-				chat_id: chatId, 
-				text: "🤖 <b>STOCK ID RADAR:</b> Integrasi Bot Telegram Berhasil Terhubung!", 
-				parse_mode: 'HTML' 
-			})
-		});
-		
-		const data = await response.json();
-		if (data.ok) {
-			showToast("Sukses! Pesan tes berhasil dikirim ke Telegram Anda.", "success", 6000);
-		} else {
-			showToast(`Gagal terhubung: ${data.description || "Token/Chat ID salah"}`, "error", 8000);
+		try {
+			const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ 
+					chat_id: chatId, 
+					text: "🤖 <b>STOCK ID RADAR:</b> Integrasi Bot Telegram Berhasil Terhubung!", 
+					parse_mode: 'HTML' 
+				})
+			});
+			
+			const data = await response.json();
+			if (data.ok) {
+				showToast("Sukses! Pesan tes berhasil dikirim ke Telegram Anda.", "success", 6000);
+			} else {
+				let errorMsg = data.description || "Token/Chat ID salah";
+				if (errorMsg.toLowerCase().includes('chat not found')) {
+					errorMsg = "Chat not found! Pastikan Kamu sudah menekan tombol START / kirim pesan minimal 1x ke Bot Kamu di aplikasi Telegram terlebih dahulu.";
+				}
+				showToast(`Gagal terhubung: ${errorMsg}`, "error", 8000);
+			}
+		} catch (error) {
+			showToast("Gagal mengirim pesan tes. Periksa koneksi internet Anda.", "error", 6000);
+			console.error("Telegram Test Error:", error);
 		}
-	} catch (error) {
-		showToast("Gagal mengirim pesan tes. Periksa koneksi internet Anda.", "error", 6000);
-		console.error("Telegram Test Error:", error);
 	}
-}
 
 async function sendTelegramAlert(message) {
 	const botToken = localStorage.getItem('telegram_bot_token')?.trim();
@@ -3493,30 +3562,44 @@ async function clearAllAlerts() {
 }
 
 function syncAlertsFromAI() {
-	let price = 100;
-	if (globalStockData && globalStockData.price) price = roundToBEITick(globalStockData.price);
+		let price = 100;
+		let sl, sup2, res2, tp2;
 
-	const sl = roundToBEITick(price * 0.92, 'floor'); 
-	const sup2 = roundToBEITick(price * 0.96, 'floor'); 
-	const res2 = roundToBEITick(price * 1.08, 'ceil'); 
-	const tp2 = roundToBEITick(price * 1.10, 'ceil'); 
-	const now = new Date();
-	const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-	const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear().toString().slice(-2)}`;
+		if (globalStockData && globalStockData.price) {
+			price = roundToBEITick(globalStockData.price);
+			if (globalStockData.high20 && globalStockData.low20 && globalStockData.high20 > globalStockData.low20) {
+				const fibo = calculateFibonacciLevels(globalStockData.high20, globalStockData.low20);
+				sup2 = roundToBEITick(fibo.sup2, 'floor');
+				res2 = roundToBEITick(fibo.res2, 'ceil');
+				sl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
+				tp2 = roundToBEITick(fibo.res2, 'ceil');
+			} else {
+				sl = roundToBEITick(price * 0.92, 'floor'); 
+				sup2 = roundToBEITick(price * 0.96, 'floor'); 
+				res2 = roundToBEITick(price * 1.08, 'ceil'); 
+				tp2 = roundToBEITick(price * 1.10, 'ceil');
+			}
+		} else {
+			sl = 92; sup2 = 96; res2 = 108; tp2 = 110;
+		}
 
-	const syncTargets = [
-		{ price: sl, label: 'Stop Loss', active: true, triggered: false, date: dateStr },
-		{ price: sup2, label: 'Entry / Support', active: true, triggered: false, date: dateStr },
-		{ price: res2, label: 'Resistance', active: true, triggered: false, date: dateStr },
-		{ price: tp2, label: 'Take Profit', active: true, triggered: false, date: dateStr }
-	];
+		const now = new Date();
+		const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+		const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear().toString().slice(-2)}`;
 
-	saveAlerts(currentTicker, syncTargets);
-	openAlertDropdowns.add(currentTicker); 
-	renderAllAlerts();
-	AudioFX.playSuccess();
-	showToast(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
-}
+		const syncTargets = [
+			{ price: sl, label: 'Stop Loss', active: true, triggered: false, date: dateStr },
+			{ price: sup2, label: 'Entry / Support', active: true, triggered: false, date: dateStr },
+			{ price: res2, label: 'Resistance', active: true, triggered: false, date: dateStr },
+			{ price: tp2, label: 'Take Profit', active: true, triggered: false, date: dateStr }
+		];
+
+		saveAlerts(currentTicker, syncTargets);
+		openAlertDropdowns.add(currentTicker); 
+		renderAllAlerts();
+		AudioFX.playSuccess();
+		showToast(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
+	}
 
 function toggleAlertStatus(ticker, index) {
 	let alerts = getAlerts(ticker);
@@ -3599,7 +3682,7 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 			sendBrowserPushNotification(`STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
 			showToast(alertMsg, "info", 10000); 
 
-			// TAMBAHAN: Tembak notifikasi paus langsung ke Telegram
+			// Tembak notifikasi paus langsung ke Telegram
 			const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume meledak <b>${stockData.volRatio}x lipat!</b>\nHarga naik <b>+${stockData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
 			sendTelegramAlert(teleMsg);
 			
@@ -3609,7 +3692,7 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 }
 
 // ==========================================
-// 22. BERITA, KORPORASI, TRENDING & HEATMAP
+// 23. BERITA, KORPORASI, TRENDING & HEATMAP
 // ==========================================
 async function fetchYahooTrending() {
 	const container = document.getElementById('yahooTrendingContainer');
@@ -3716,10 +3799,10 @@ async function fetchRealtimeFundamentals(ticker) {
 	let peColor = 'text-white';
 	let valuasiLabel = 'FAIR VALUE';
 	
-	if (detail.trailingPE?.raw > 0 && detail.trailingPE?.raw <= 15) {
+	if (detail.trailingPE?.raw > 0 && detail.trailingPE?.raw <= 20) {
 		peColor = 'text-emerald-400';
 		valuasiLabel = 'UNDERVALUED';
-	} else if (detail.trailingPE?.raw > 25) {
+	} else if (detail.trailingPE?.raw > 30) {
 		peColor = 'text-rose-400';
 		valuasiLabel = 'OVERVALUED';
 	}
@@ -3728,7 +3811,7 @@ async function fetchRealtimeFundamentals(ticker) {
 	const insidersHeld = holders.insidersPercentHeld?.fmt || "0%";
 	
 	let instListHTML = '';
-	institutions.slice(0, 4).forEach(inst => {
+	institutions.slice(0, 5).forEach(inst => {
 		instListHTML += `
 			<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded mb-1.5">
 				<span class="text-slate-400 truncate max-w-[70%] leading-tight">${inst.organization}</span>
@@ -3977,7 +4060,7 @@ function renderSectorHeatmap() {
 }
 
 // ==========================================
-// 23. BACKGROUND WORKER & TRIGGER CELEBRATION
+// 24. BACKGROUND WORKER & TRIGGER CELEBRATION
 // ==========================================
 function startBackgroundAutoCache() {
 	const FIVE_MINUTES = 5 * 60 * 1000;
@@ -4021,7 +4104,7 @@ function startBackgroundAutoCache() {
 }
 
 // ==========================================
-// 24. PENDETEKSI PERANGKAT (TENTANG APLIKASI)
+// 25. PENDETEKSI PERANGKAT (TENTANG APLIKASI)
 // ==========================================
 function loadDeviceSystemInfo() {
 	const osEl = document.getElementById('infoOS');
@@ -4197,8 +4280,8 @@ document.getElementById('alertTickerLabel').innerText = currentTicker;
 document.getElementById('corpTickerLabel').innerText = currentTicker;
 document.getElementById('peerTickerLabel').innerText = currentTicker;
 
-initSystemSettings();
 checkVIPAuth();
+initSystemSettings();
 initSearchSuggestions();
 updateMarketBadge();
 generateAISignal(currentTicker);
