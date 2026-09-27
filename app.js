@@ -686,144 +686,76 @@ function renderFundamentalWidget(ticker) {
 // ==========================================
 // 9. INSIDER SEARCH (FMP API)
 // ==========================================
-// const FMP_API_KEY = 'LQhjoJzWKzND3xYw4hy5CE7hqGM33YV4';
+// 1. Aktifkan kembali API Key FMP (Hapus tanda komentar //)
+const FMP_API_KEY = 'LQhjoJzWKzND3xYw4hy5CE7hqGM33YV4';
 
 async function handleInsiderSearch() {
 	const selectEl = document.getElementById('insiderSearchInput');
 	const cikNumber = selectEl.value;
+	
 	if (!cikNumber) {
 		showToast("Silakan pilih salah satu institusi dari daftar dropdown terlebih dahulu.", "warning");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
 	}
+
 	const institutionName = selectEl.options[selectEl.selectedIndex].text.replace(/\s\(.*?\)/, ''); 
 	const resultContainer = document.getElementById('insiderResultContainer');
 	const statusMessage = document.getElementById('insiderStatusMessage');
 	const tableBody = document.getElementById('insiderTableBody');
+	
+	// Reset UI & Tampilkan Animasi Loading
 	resultContainer.classList.add('hidden');
 	statusMessage.classList.remove('hidden');
-	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menghubungkan ke SEC EDGAR untuk <b>${institutionName}</b>...</div>`;
+	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menarik data portofolio <b>${institutionName}</b> dari database FMP...</div>`;
 	if (window.lucide) lucide.createIcons();
 	tableBody.innerHTML = '';
-	const fetchSecData = async (targetUrl, isXml = false) => {
-		// Daftar proxy gratis untuk melewati blokir CORS dari server SEC EDGAR
-		const proxies = [
-			`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`,
-			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`,
-			`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
-		];
 
-		for (let proxy of proxies) {
-			try {
-				const res = await fetch(proxy);
-				
-				// Jika server proxy ini error atau limit, lewati dan coba proxy selanjutnya
-				if (!res.ok) continue; 
-				
-				let data = await res.text();
-				
-				// Pengecekan ekstra khusus untuk AllOrigins karena response datanya bersarang di dalam object "contents"
-				if (proxy.includes('allorigins.win/get')) {
-					const json = JSON.parse(data);
-					data = json.contents;
-				}
-				
-				// Return sebagai XML/Teks biasa atau parse sebagai JSON sesuai kebutuhan parameter
-				return isXml ? data : JSON.parse(data);
-				
-			} catch(e) {
-				console.warn(`Proxy gagal merespons SEC EDGAR: ${proxy}`);
-				continue; // Lanjut looping ke proxy berikutnya di dalam array
-			}
-		}
-		
-		// Jika semua proxy dalam array gagal diakses
-		throw new Error("Semua server proxy gagal menghubungi SEC EDGAR. Silakan coba beberapa saat lagi.");
-	};
 	try {
+		// Pastikan format CIK 10 digit (syarat standar form-13)
 		const paddedCik = cikNumber.padStart(10, '0');
-		const secUrl = `https://data.sec.gov/submissions/CIK${paddedCik}.json`;
-		// 1. Tarik Riwayat Laporan (JSON)
-		const submissionsData = await fetchSecData(secUrl, false);
-		const filings = submissionsData.filings.recent;
-		let filingIndex = -1;
 		
-		// 2. Cari Laporan Portofolio (13F-HR) Terbaru
-		for (let i = 0; i < filings.form.length; i++) {
-			if (filings.form[i] === '13F-HR') {
-				filingIndex = i;
-				break;
-			}
-		}
-		if (filingIndex === -1) {
-			statusMessage.innerHTML = `Data 13F-HR tidak ditemukan untuk <b>${institutionName}</b>.`;
+		// Tarik data Form-13F langsung dari API FMP (Jauh lebih cepat & tanpa masalah CORS)
+		const fmpUrl = `https://financialmodelingprep.com/api/v3/form-thirteen/${paddedCik}?apikey=${FMP_API_KEY}`;
+		const response = await fetch(fmpUrl);
+		
+		if (!response.ok) throw new Error("Gagal mengambil data dari server FMP. Cek sisa limit API Key Anda.");
+		const data = await response.json();
+		
+		if (!data || data.length === 0) {
+			statusMessage.innerHTML = `Data Laporan 13F tidak ditemukan untuk <b>${institutionName}</b> di kuartal ini.`;
 			return;
 		}
-		const accessionNumber = filings.accessionNumber[filingIndex];
-		const reportDate = filings.reportDate[filingIndex];
-		const cleanAccession = accessionNumber.replace(/-/g, ''); 
-		const cikTrimmed = parseInt(cikNumber, 10).toString();
-		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Memindai dokumen Arsip 13F (${reportDate})...</div>`;
-		if (window.lucide) lucide.createIcons();
-		
-		// 3. Tarik Index Arsip (JSON)
-		const archiveIndexUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/index.json`;
-		const indexData = await fetchSecData(archiveIndexUrl, false);
-		let infoTableFileName = null;
-		for (const file of indexData.directory.item) {
-			if (file.name.endsWith('.xml') && (file.name.toLowerCase().includes('info') || file.name.toLowerCase().includes('table'))) {
-				infoTableFileName = file.name;
-				break;
-			}
-		}
-		if (!infoTableFileName) {
-			statusMessage.innerHTML = `File XML Information Table tidak tersedia pada arsip laporan SEC kuartal ini.`;
-			return;
-		}
-		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Mengekstrak struktur XML...</div>`;
-		if (window.lucide) lucide.createIcons();
-		
-		// 4. Tarik & Parsing File Portofolio Mentah (XML)
-		const xmlUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/${infoTableFileName}`;
-		const xmlText = await fetchSecData(xmlUrl, true);
-		const parser = new DOMParser();
-		const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-		const infoTables = xmlDoc.getElementsByTagName('*');
-		let portfolioData = [];
-		for (let i = 0; i < infoTables.length; i++) {
-			const node = infoTables[i];
-			if (node.localName === 'infoTable') {
-				let nameOfIssuer = '', cusip = '', value = 0, shares = 0;
-				for (let j = 0; j < node.childNodes.length; j++) {
-					const child = node.childNodes[j];
-					if (child.localName === 'nameOfIssuer') nameOfIssuer = child.textContent;
-					if (child.localName === 'cusip') cusip = child.textContent;
-					if (child.localName === 'value') value = parseFloat(child.textContent);
-					if (child.localName === 'shrsOrPrnAmt') {
-						for (let k = 0; k < child.childNodes.length; k++) {
-							const shrsChild = child.childNodes[k];
-							if (shrsChild.localName === 'sshPrnamt') shares = parseFloat(shrsChild.textContent);
-						}
-					}
-				}
-				if (nameOfIssuer) {
-					portfolioData.push({ nameOfIssuer, tickcusip: cusip, shares, value });
-				}
-			}
-		}
-		
-		// 5. Urutkan & Tampilkan
+
+		// FMP mengembalikan data langsung dalam bentuk array object yang bersih
+		let portfolioData = data.map(item => ({
+			nameOfIssuer: item.nameOfIssuer || item.issuer || '-',
+			tickcusip: item.tickcusip || item.cusip || '-',
+			shares: parseFloat(item.shares) || 0,
+			value: parseFloat(item.value) || 0
+		}));
+
+		// Urutkan berdasarkan total valuasi USD terbesar (Descending)
 		portfolioData.sort((a, b) => b.value - a.value);
+		
+		// Persiapkan dan Tampilkan ke UI
 		statusMessage.classList.add('hidden');
 		resultContainer.classList.remove('hidden');
+		
 		document.getElementById('insiderInstitutionName').innerText = institutionName;
-		document.getElementById('insiderReportDate').innerText = reportDate || 'N/A';
+		
+		// Ambil parameter tanggal laporan (Jika disediakan API, jika tidak gunakan fallback label)
+		const reportDate = data[0].date || data[0].reportDate || data[0].periodOfReport || 'Kuartal Terakhir';
+		document.getElementById('insiderReportDate').innerText = reportDate;
+		
+		// Kirim maksimal 50 data teratas ke fungsi render (Fungsi renderFMPTable tetap menggunakan bawaanmu)
 		renderFMPTable(portfolioData.slice(0, 50));
 		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+
 	} catch (error) {
-		statusMessage.innerHTML = `<div class="text-rose-400 font-bold flex flex-col items-center gap-2"><i data-lucide="alert-triangle" class="w-6 h-6"></i> Kesalahan Ekstraksi SEC EDGAR</div><div class="text-xs text-slate-400 mt-1">${error.message}</div>`;
+		statusMessage.innerHTML = `<div class="text-rose-400 font-bold flex flex-col items-center gap-2"><i data-lucide="alert-triangle" class="w-6 h-6"></i> Kesalahan Ekstraksi FMP API</div><div class="text-xs text-slate-400 mt-1">${error.message}</div>`;
 		if (window.lucide) lucide.createIcons();
-		console.error("SEC EDGAR Error:", error);
+		console.error("FMP API Error:", error);
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 	}
 }
@@ -1378,24 +1310,33 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 	let sl, sup1, sup2, res1, res2, tp1, tp2;
 	
+	// 1. Tentukan Resistance (Gunakan Fibo jika valid)
 	if (stockData && stockData.high20 && stockData.low20 && stockData.high20 > stockData.low20) {
 		const fibo = calculateFibonacciLevels(stockData.high20, stockData.low20);
-		sup1 = roundToBEITick(fibo.sup1, 'floor');
-		sup2 = roundToBEITick(fibo.sup2, 'floor');
+		
 		res1 = roundToBEITick(fibo.res1, 'ceil');
 		res2 = roundToBEITick(fibo.res2, 'ceil');
-		sl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
-		tp1 = roundToBEITick(fibo.pivot, 'ceil');
-		tp2 = roundToBEITick(fibo.res2, 'ceil');
+		
+		// Validasi wajib: Resisten harus selalu di atas harga saat ini
+		if (res1 <= price) res1 = roundToBEITick(price * 1.04, 'ceil');
+		if (res2 <= res1) res2 = roundToBEITick(price * 1.08, 'ceil');
+
+		// 2. Entry & Support (Wajib di Bawah Harga Saat Ini)
+		sup2 = (fibo.sup2 < price) ? roundToBEITick(fibo.sup2, 'floor') : roundToBEITick(price * 0.98, 'floor');
+		sup1 = (fibo.sup1 < sup2) ? roundToBEITick(fibo.sup1, 'floor') : roundToBEITick(price * 0.95, 'floor');
+		sl = roundToBEITick(sup1 * 0.96, 'floor'); 
 	} else {
-		sl = roundToBEITick(price * 0.92, 'floor'); 
-		sup1 = roundToBEITick(price * 0.94, 'floor'); 
-		sup2 = roundToBEITick(price * 0.96, 'floor'); 
+		// Fallback dinamis jika Fibo tidak tersedia
 		res1 = roundToBEITick(price * 1.04, 'ceil'); 
 		res2 = roundToBEITick(price * 1.08, 'ceil'); 
-		tp1 = roundToBEITick(price * 1.06, 'ceil'); 
-		tp2 = roundToBEITick(price * 1.10, 'ceil'); 
+		sup2 = roundToBEITick(price * 0.98, 'floor'); 
+		sup1 = roundToBEITick(price * 0.95, 'floor'); 
+		sl = roundToBEITick(price * 0.92, 'floor');   
 	}
+
+	// 3. Tentukan Take Profit (TP1 di resistance, TP2 di atas resistance)
+	tp1 = res1; 
+	tp2 = roundToBEITick(res2 * 1.03, 'ceil'); // +3% di atas resistance kedua (Breakout)
 
 	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
@@ -1485,24 +1426,33 @@ function exportTradingCard() {
 	
 	let sl, sup1, sup2, res1, res2, tp1, tp2;
 	
-	if (globalStockData && globalStockData.high20 && globalStockData.low20 && globalStockData.high20 > globalStockData.low20) {
-		const fibo = calculateFibonacciLevels(globalStockData.high20, globalStockData.low20);
-		sup1 = roundToBEITick(fibo.sup1, 'floor');
-		sup2 = roundToBEITick(fibo.sup2, 'floor');
+	// 1. Tentukan Resistance (Gunakan Fibo jika valid)
+	if (stockData && stockData.high20 && stockData.low20 && stockData.high20 > stockData.low20) {
+		const fibo = calculateFibonacciLevels(stockData.high20, stockData.low20);
+		
 		res1 = roundToBEITick(fibo.res1, 'ceil');
 		res2 = roundToBEITick(fibo.res2, 'ceil');
-		sl = roundToBEITick(fibo.sup2 * 0.98, 'floor'); 
-		tp1 = roundToBEITick(fibo.pivot, 'ceil');       
-		tp2 = roundToBEITick(fibo.res2, 'ceil');
+		
+		// Validasi wajib: Resisten harus selalu di atas harga saat ini
+		if (res1 <= price) res1 = roundToBEITick(price * 1.04, 'ceil');
+		if (res2 <= res1) res2 = roundToBEITick(price * 1.08, 'ceil');
+
+		// 2. Entry & Support (Wajib di Bawah Harga Saat Ini)
+		sup2 = (fibo.sup2 < price) ? roundToBEITick(fibo.sup2, 'floor') : roundToBEITick(price * 0.98, 'floor');
+		sup1 = (fibo.sup1 < sup2) ? roundToBEITick(fibo.sup1, 'floor') : roundToBEITick(price * 0.95, 'floor');
+		sl = roundToBEITick(sup1 * 0.96, 'floor'); 
 	} else {
-		sl = roundToBEITick(price * 0.92, 'floor'); 
-		sup1 = roundToBEITick(price * 0.94, 'floor');
-		sup2 = roundToBEITick(price * 0.96, 'floor'); 
+		// Fallback dinamis jika Fibo tidak tersedia
 		res1 = roundToBEITick(price * 1.04, 'ceil'); 
 		res2 = roundToBEITick(price * 1.08, 'ceil'); 
-		tp1 = roundToBEITick(price * 1.06, 'ceil'); 
-		tp2 = roundToBEITick(price * 1.10, 'ceil'); 
+		sup2 = roundToBEITick(price * 0.98, 'floor'); 
+		sup1 = roundToBEITick(price * 0.95, 'floor'); 
+		sl = roundToBEITick(price * 0.92, 'floor');   
 	}
+
+	// 3. Tentukan Take Profit (TP1 di resistance, TP2 di atas resistance)
+	tp1 = res1; 
+	tp2 = roundToBEITick(res2 * 1.03, 'ceil'); // +3% di atas resistance kedua (Breakout)
 
 	const now = new Date();
 	const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -3155,26 +3105,31 @@ function generateAIResponse(prompt) {
 		return `Untuk menganalisa <strong class="text-cyan-400">$${targetTicker}</strong> lebih presisi, silakan cari saham tersebut di kolom pencarian atas terlebih dahulu agar Aku bisa menarik data bursa terbarunya.`;
 	}
 
+	// Tambahkan deklarasi price agar tidak error saat dihitung
+	let price = data ? roundToBEITick(data.price) : 100;
 	let sl, sup1, sup2, res1, res2, tp1, tp2;
 	
 	if (data && data.high20 && data.low20 && data.high20 > data.low20) {
 		const fibo = calculateFibonacciLevels(data.high20, data.low20);
-		sup1 = roundToBEITick(fibo.sup1, 'floor');
-		sup2 = roundToBEITick(fibo.sup2, 'floor');
+		
 		res1 = roundToBEITick(fibo.res1, 'ceil');
 		res2 = roundToBEITick(fibo.res2, 'ceil');
-		sl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
-		tp1 = roundToBEITick(fibo.pivot, 'ceil');
-		tp2 = roundToBEITick(fibo.res2, 'ceil');
+		if (res1 <= price) res1 = roundToBEITick(price * 1.04, 'ceil');
+		if (res2 <= res1) res2 = roundToBEITick(price * 1.08, 'ceil');
+
+		sup2 = (fibo.sup2 < price) ? roundToBEITick(fibo.sup2, 'floor') : roundToBEITick(price * 0.98, 'floor');
+		sup1 = (fibo.sup1 < sup2) ? roundToBEITick(fibo.sup1, 'floor') : roundToBEITick(price * 0.95, 'floor');
+		sl = roundToBEITick(sup1 * 0.96, 'floor'); 
 	} else {
-		sl = roundToBEITick(price * 0.92, 'floor');
-		sup1 = roundToBEITick(price * 0.94, 'floor');
-		sup2 = roundToBEITick(price * 0.96, 'floor');
-		res1 = roundToBEITick(price * 1.04, 'ceil');
-		res2 = roundToBEITick(price * 1.08, 'ceil');
-		tp1 = roundToBEITick(price * 1.06, 'ceil');
-		tp2 = roundToBEITick(price * 1.10, 'ceil');
+		res1 = roundToBEITick(price * 1.04, 'ceil'); 
+		res2 = roundToBEITick(price * 1.08, 'ceil'); 
+		sup2 = roundToBEITick(price * 0.98, 'floor'); 
+		sup1 = roundToBEITick(price * 0.95, 'floor'); 
+		sl = roundToBEITick(price * 0.92, 'floor');   
 	}
+
+	tp1 = res1; 
+	tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 	
 	if (lower.includes('entry') || lower.includes('support') || lower.includes('masuk') || lower.includes('beli')) {
 		return `
