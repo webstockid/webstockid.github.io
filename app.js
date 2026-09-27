@@ -1424,19 +1424,13 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		descEl.innerText = `Menganalisis pergerakan teknikal saham ${ticker} berbasis indikator grafik TradingView. Silakan evaluasi struktur pola harga harian sebelum melakukan transaksi....`;
 	}
 
-	let sl, sup1, sup2, res1, res2, tp1, tp2;
-	
-	// 1. Tentukan Resistance (Gunakan Fibo jika valid)
 	// 1. Tentukan Support & Resistance (Dynamic Fibo)
 	const fibo = getDynamicFiboLevels(stockData?.high20, stockData?.low20, price);
-	const res1 = fibo.res1, res2 = fibo.res2;
-	const sup1 = fibo.entryLow, sup2 = fibo.entryHigh;
-	const sl = fibo.sl;
-	const tp1 = fibo.tp1, tp2 = fibo.tp2;
-
-	// 3. Tentukan Take Profit (TP1 di resistance, TP2 di atas resistance)
-	tp1 = res1; 
-	tp2 = roundToBEITick(res2 * 1.03, 'ceil'); // +3% di atas resistance kedua (Breakout)
+	let res1 = fibo.res1, res2 = fibo.res2;
+	let sup1 = fibo.entryLow, sup2 = fibo.entryHigh;
+	let sl = fibo.sl;
+	let tp1 = res1; 
+	let tp2 = roundToBEITick(res2 * 1.03, 'ceil'); // +3% di atas resistance kedua
 
 	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
@@ -1524,19 +1518,13 @@ function exportTradingCard() {
 	startExportCardCooldown(15);
 	const price = roundToBEITick(globalStockData.price);
 	
-	let sl, sup1, sup2, res1, res2, tp1, tp2;
-	
-	// 1. Tentukan Resistance (Gunakan Fibo jika valid)
 	// 1. Tentukan Support & Resistance (Dynamic Fibo)
 	const fibo = getDynamicFiboLevels(globalStockData?.high20, globalStockData?.low20, price);
-	const res1 = fibo.res1, res2 = fibo.res2;
-	const sup1 = fibo.entryLow, sup2 = fibo.entryHigh;
-	const sl = fibo.sl;
-	const tp1 = fibo.tp1, tp2 = fibo.tp2;
-
-	// 3. Tentukan Take Profit (TP1 di resistance, TP2 di atas resistance)
-	tp1 = res1; 
-	tp2 = roundToBEITick(res2 * 1.03, 'ceil'); // +3% di atas resistance kedua (Breakout)
+	let res1 = fibo.res1, res2 = fibo.res2;
+	let sup1 = fibo.entryLow, sup2 = fibo.entryHigh;
+	let sl = fibo.sl;
+	let tp1 = res1; 
+	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 
 	const now = new Date();
 	const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -2217,15 +2205,13 @@ function renderRadarItems(dataList) {
 		const price = roundToBEITick(item.price);
 		const changePct = item.changePct;
 		
-		// FIBONACCI SUPPORT / RESISTANCE
-		let sl, entryLow, entryHigh, tp1, tp2;
 		// FIBONACCI SUPPORT / RESISTANCE (Dynamic)
 		const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
-		const entryLow = fibo.entryLow;
-		const entryHigh = fibo.entryHigh;
-		const sl = fibo.sl;
-		const tp1 = fibo.tp1;
-		const tp2 = fibo.tp2;
+		let entryLow = fibo.entryLow;
+		let entryHigh = fibo.entryHigh;
+		let sl = fibo.sl;
+		let tp1 = fibo.tp1;
+		let tp2 = fibo.tp2;
 
 		let statusSignal = "🔥 Momentum Breakout";
 		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
@@ -2430,15 +2416,13 @@ async function runCustomScreener() {
 		passedItems.forEach((item, index) => {
 			const price = roundToBEITick(item.price);
 			
-			// FIBONACCI SUPPORT / RESISTANCE
-			let sl, entryLow, entryHigh, tp1, tp2;
 			// FIBONACCI SUPPORT / RESISTANCE (Dynamic)
 			const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
-			const entryLow = fibo.entryLow;
-			const entryHigh = fibo.entryHigh;
-			const sl = fibo.sl;
-			const tp1 = fibo.tp1;
-			const tp2 = fibo.tp2;
+			let entryLow = fibo.entryLow;
+			let entryHigh = fibo.entryHigh;
+			let sl = fibo.sl;
+			let tp1 = fibo.tp1;
+			let tp2 = fibo.tp2;
 
 			let infoMA = '';
 			if (ruleMA === 'ABOVE_MA5') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Pendek:</strong> Bertahan mantap di atas MA5.</span></li>`;
@@ -2975,17 +2959,15 @@ async function scanWhalesData() {
 		foundWhales.forEach((item) => {
 			const price = roundToBEITick(item.price);
 			
-			// FIBONACCI SUPPORT / RESISTANCE
-			let s1, s2, r1, r2, cl, entryAgresif, entryAman;
 			// FIBONACCI SUPPORT / RESISTANCE (Dynamic)
 			const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
-			const s1 = fibo.entryLow;
-			const s2 = fibo.entryHigh;
-			const r1 = fibo.res1;
-			const r2 = fibo.res2;
-			const cl = fibo.sl;
-			const entryAgresif = fibo.entryHigh;
-			const entryAman = fibo.entryLow;
+			let s1 = fibo.entryLow;
+			let s2 = fibo.entryHigh;
+			let r1 = fibo.res1;
+			let r2 = fibo.res2;
+			let cl = fibo.sl;
+			let entryAgresif = fibo.entryHigh;
+			let entryAman = fibo.entryLow;
 
 			html += `
 				<div class="bg-slate-950/50 p-4 rounded-xl border border-slate-700/60 hover:border-slate-500/40 transition relative group shadow-sm flex flex-col justify-between">
@@ -3156,22 +3138,16 @@ function generateAIResponse(prompt) {
 		return `Untuk menganalisa <strong class="text-cyan-400">$${targetTicker}</strong> lebih presisi, silakan cari saham tersebut di kolom pencarian atas terlebih dahulu agar Aku bisa menarik data bursa terbarunya.`;
 	}
 
-	// Tambahkan deklarasi price agar tidak error saat dihitung
-	let sl, sup1, sup2, res1, res2, tp1, tp2;
-	
 	let price = data ? roundToBEITick(data.price) : 100;
 	const fibo = getDynamicFiboLevels(data?.high20, data?.low20, price);
 	
-	const sl = fibo.sl;
-	const sup1 = fibo.entryLow;
-	const sup2 = fibo.entryHigh;
-	const res1 = fibo.res1;
-	const res2 = fibo.res2;
-	const tp1 = fibo.tp1;
-	const tp2 = fibo.tp2;
-
-	tp1 = res1; 
-	tp2 = roundToBEITick(res2 * 1.03, 'ceil');
+	let sl = fibo.sl;
+	let sup1 = fibo.entryLow;
+	let sup2 = fibo.entryHigh;
+	let res1 = fibo.res1;
+	let res2 = fibo.res2;
+	let tp1 = res1;
+	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 	
 	if (lower.includes('entry') || lower.includes('support') || lower.includes('masuk') || lower.includes('beli')) {
 		return `
