@@ -1058,6 +1058,7 @@ async function fetchAnalystConsensus(ticker) {
 		`;
 		if (window.lucide) lucide.createIcons();
 	}
+}
 
 function renderAISignalUI(ticker, stockData, isCached) {
 	const verdikEl = document.getElementById('aiVerdikText');
