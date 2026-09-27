@@ -4295,38 +4295,40 @@ async function fetchMacroAndCommodities() {
 	const container = document.getElementById('macroRadarContainer');
 	if (!container) return;
 
-	container.innerHTML = `
-		<div class="text-center text-slate-400 text-xs py-6 col-span-full border border-slate-800 rounded-xl bg-slate-950/10">
-			<i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-sky-400"></i> 
-			Menyinkronkan data Makro Ekonomi & Komoditas...
-		</div>
-	`;
-	if (window.lucide) lucide.createIcons();
-
 	const macroAssets = [
-		{ symbol: '^DJI', name: 'Dow Jones', type: 'Indeks Global', icon: 'globe' },
-		{ symbol: '^IXIC', name: 'Nasdaq', type: 'Indeks Global', icon: 'monitor' },
-		{ symbol: 'IDR=X', name: 'USD / IDR', type: 'Mata Uang', icon: 'banknote' },
-		{ symbol: 'GC=F', name: 'Emas (Gold)', type: 'Komoditas', icon: 'coins' },
-		{ symbol: 'SI=F', name: 'Perak (Silver)', type: 'Komoditas', icon: 'coins' },
-		{ symbol: 'HG=F', name: 'Tembaga (Copper)', type: 'Komoditas', icon: 'coins' },
-		{ symbol: 'MTF=F', name: 'Batu Bara (Coal)', type: 'Komoditas', icon: 'flame' },
-		{ symbol: 'CL=F', name: 'Minyak (WTI)', type: 'Komoditas', icon: 'droplet' }
+		{ id: 'mac-dji', symbol: '^DJI', name: 'Dow Jones', type: 'Indeks Global', icon: 'globe' },
+		{ id: 'mac-ixic', symbol: '^IXIC', name: 'Nasdaq', type: 'Indeks Global', icon: 'monitor' },
+		{ id: 'mac-idr', symbol: 'IDR=X', name: 'USD / IDR', type: 'Mata Uang', icon: 'banknote' },
+		{ id: 'mac-gold', symbol: 'GC=F', name: 'Emas (Gold)', type: 'Komoditas', icon: 'coins' },
+		{ id: 'mac-silver', symbol: 'SI=F', name: 'Perak (Silver)', type: 'Komoditas', icon: 'coins' },
+		{ id: 'mac-copper', symbol: 'HG=F', name: 'Tembaga', type: 'Komoditas', icon: 'coins' },
+		{ id: 'mac-coal', symbol: 'MTF=F', name: 'Batu Bara', type: 'Komoditas', icon: 'flame' },
+		{ id: 'mac-oil', symbol: 'CL=F', name: 'Minyak WTI', type: 'Komoditas', icon: 'droplet' }
 	];
 
-	const fetchSingleMacro = async (asset) => {
+	// 1. Render kerangka kotak (Skeleton Loading) terlebih dahulu
+	container.innerHTML = macroAssets.map(asset => `
+		<div id="${asset.id}" class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 shadow-sm flex flex-col justify-center items-center min-h-[85px]">
+			<i data-lucide="loader-2" class="w-5 h-5 animate-spin text-sky-400 mb-2"></i>
+			<span class="text-[10px] text-slate-400 text-center animate-pulse">Memuat ${asset.name}...</span>
+		</div>
+	`).join('');
+	if (window.lucide) lucide.createIcons();
+
+	// 2. Fetch data satu per satu agar tidak terkena Rate Limit Proxy
+	for (const asset of macroAssets) {
 		const sym = encodeURIComponent(asset.symbol);
 		const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=5d`;
 		
 		const urls = [
 			`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
-			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`,
-			`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`
 		];
 
+		let dataObtained = null;
 		for (let url of urls) {
 			try {
-				const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+				const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
 				if (res.ok) {
 					const json = await res.json();
 					const resultData = json?.chart?.result?.[0];
@@ -4336,75 +4338,65 @@ async function fetchMacroAndCommodities() {
 							const currentPrice = closes[closes.length - 1];
 							const prevClose = closes[closes.length - 2];
 							const changePct = ((currentPrice - prevClose) / prevClose) * 100;
-							return { ...asset, price: currentPrice, changePct: changePct };
+							dataObtained = { ...asset, price: currentPrice, changePct: changePct };
+							break; // Sukses, hentikan pencarian proxy untuk aset ini
 						}
 					}
 				}
 			} catch(e) {}
 		}
-		return null;
-	};
 
-	try {
-		const fetchPromises = macroAssets.map(asset => fetchSingleMacro(asset));
-		let results = await Promise.all(fetchPromises);
-		
-		results = results.filter(item => item !== null);
+		// 3. Update tampilan UI per kotak yang sudah selesai ditarik datanya
+		const box = document.getElementById(asset.id);
+		if (!box) continue;
 
-		if (results.length === 0) throw new Error("Semua proxy Yahoo Finance gagal merespons.");
-
-		let html = '';
-
-		results.forEach(item => {
-			const isUsdIdr = item.symbol === 'IDR=X';
-			let isPlus = item.changePct >= 0;
+		if (dataObtained) {
+			const isUsdIdr = asset.symbol === 'IDR=X';
+			let isPlus = dataObtained.changePct >= 0;
 			
 			let colorClass = isPlus ? 'text-emerald-400' : 'text-rose-400';
 			let bgClass = isPlus ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-rose-500/10 border-rose-500/30';
 			let iconTrend = isPlus ? 'trending-up' : 'trending-down';
 
+			// Kebalikan warna khusus untuk USD/IDR (Naik = Merah, Turun = Hijau)
 			if (isUsdIdr) {
 				colorClass = isPlus ? 'text-rose-400' : 'text-emerald-400';
 				bgClass = isPlus ? 'bg-rose-500/10 border-rose-500/30' : 'bg-emerald-500/10 border-emerald-500/30';
 			}
 
-			let formattedPrice = '';
-			if (isUsdIdr) {
-				formattedPrice = `Rp ${new Intl.NumberFormat('id-ID').format(Math.round(item.price))}`;
-			} else {
-				formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(item.price);
-			}
+			let formattedPrice = isUsdIdr 
+				? `Rp ${new Intl.NumberFormat('id-ID').format(Math.round(dataObtained.price))}`
+				: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(dataObtained.price);
 
-			html += `
-				<div class="bg-slate-900/60 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition-colors shadow-sm">
+			box.outerHTML = `
+				<div class="bg-slate-900/60 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition-colors shadow-sm animate-in fade-in zoom-in duration-300">
 					<div class="flex items-center justify-between mb-2">
 						<span class="font-bold text-white text-[11px] lg:text-xs flex items-center gap-1.5">
-							<i data-lucide="${item.icon}" class="w-3.5 h-3.5 text-slate-400"></i> ${item.name}
+							<i data-lucide="${asset.icon}" class="w-3.5 h-3.5 text-slate-400"></i> ${asset.name}
 						</span>
 						<span class="text-[9px] font-bold ${colorClass} ${bgClass} px-1.5 py-0.5 rounded border">
-							${isPlus ? '+' : ''}${item.changePct.toFixed(2)}%
+							${isPlus ? '+' : ''}${dataObtained.changePct.toFixed(2)}%
 						</span>
 					</div>
 					<div class="flex flex-col">
 						<span class="text-sm lg:text-base font-extrabold ${colorClass}">${formattedPrice}</span>
 						<div class="flex items-center justify-between mt-1">
-							<span class="text-[9px] text-slate-500 uppercase tracking-wider">${item.type}</span>
+							<span class="text-[9px] text-slate-500 uppercase tracking-wider">${asset.type}</span>
 							<i data-lucide="${iconTrend}" class="w-3 h-3 ${colorClass} opacity-70"></i>
 						</div>
 					</div>
 				</div>
 			`;
-		});
-
-		container.innerHTML = html;
+		} else {
+			// Jika semua proxy gagal memuat aset ini, tampilkan pesan error khusus untuk kotak ini
+			box.outerHTML = `
+				<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 shadow-sm flex flex-col justify-center items-center min-h-[85px] opacity-70">
+					<i data-lucide="alert-circle" class="w-4 h-4 text-rose-500 mb-1"></i>
+					<span class="text-[10px] text-slate-400 text-center">Gagal memuat ${asset.name}</span>
+				</div>
+			`;
+		}
 		if (window.lucide) lucide.createIcons();
-
-	} catch (error) {
-		container.innerHTML = `
-			<div class="text-center text-rose-400 text-xs py-4 col-span-full border border-rose-900/30 rounded-xl bg-rose-500/10">
-				Gagal memuat data Makro & Komoditas. Silakan tekan tombol Refresh.
-			</div>
-		`;
 	}
 }
 
