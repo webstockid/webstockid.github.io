@@ -17,7 +17,6 @@ let currentJournalView = 'table';
 let openAlertDropdowns = new Set();
 let isHeatmapLoaded = false;
 let whaleScanCooldownTimer = null;
-
 if (window.lucide) lucide.createIcons();
 
 // ==========================================
@@ -34,7 +33,6 @@ function isMarketOpen() {
 function cleanExpiredCache() {
 	const FIVE_MINUTES = 5 * 60 * 1000;
 	const TEN_MINUTES = 10 * 60 * 1000;
-	
 	for (let i = localStorage.length - 1; i >= 0; i--) {
 		const key = localStorage.key(i);
 		if (key) {
@@ -61,7 +59,6 @@ function getCachedStockData(ticker) {
 	const cacheKey = `stock_cache_${ticker}`;
 	const cachedRaw = localStorage.getItem(cacheKey);
 	if (!cachedRaw) return null;
-
 	try {
 		const cache = JSON.parse(cachedRaw);
 		const FIVE_MINUTES = 5 * 60 * 1000;
@@ -91,7 +88,6 @@ function toggleNavDropdown() {
 	const menu = document.getElementById("navDropdownMenu");
 	const chevron = document.getElementById("dropdownChevron");
 	const isHidden = menu.classList.contains("hidden");
-
 	if (isHidden) {
 		menu.classList.remove("hidden");
 		setTimeout(() => {
@@ -111,7 +107,6 @@ function closeNavDropdown() {
 		menu.classList.remove("opacity-100", "scale-100");
 		menu.classList.add("opacity-0", "scale-95");
 		chevron.classList.remove("rotate-180");
-		
 		setTimeout(() => {
 			menu.classList.add("hidden");
 		}, 200);
@@ -130,7 +125,6 @@ function switchTab(tabName) {
 	tabs.forEach(tab => {
 		const btn = document.getElementById(`tabBtn-${tab}`);
 		const content = document.getElementById(`tabContent-${tab}`);
-		
 		if (tab === tabName) {
 			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition";
 			if (content) content.classList.remove('hidden');
@@ -139,7 +133,6 @@ function switchTab(tabName) {
 			if (content) content.classList.add('hidden');
 		}
 	});
-
 	if (tabName === 'journal') renderJournalTable();
 	if (tabName === 'alert') renderAllAlerts();
 	if (tabName === 'paper') renderPaperTradingUI();
@@ -198,7 +191,6 @@ function updateGlobalAudioVibrateUI() {
 			? "px-4 py-2 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-[10px] font-bold transition" 
 			: "px-4 py-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg text-[10px] font-bold transition";
 	}
-
 	const settingVibrateBtn = document.getElementById('settingBtnVibrate');
 	if (settingVibrateBtn) {
 		settingVibrateBtn.innerText = isVibrateMuted ? 'Mati' : 'Menyala';
@@ -239,7 +231,6 @@ document.addEventListener('click', function(e) {
 			textContent === '✕' || 
 			textContent === 'X'
 		);
-
 		if (isPopupAction) {
 			AudioFX.playDelete(true); 
 		} else if (isNormalDelete) {
@@ -247,7 +238,6 @@ document.addEventListener('click', function(e) {
 		} else if (!onclickAttr.includes('toggleGlobalSound') && !onclickAttr.includes('toggleGlobalVibrate')) {
 			AudioFX.playClick();
 		}
-
 		if (!isVibrateMuted && 'vibrate' in navigator) {
 			navigator.vibrate(100);
 		}
@@ -262,12 +252,10 @@ function initSystemSettings() {
 	applyTheme(savedTheme);
 	const themeSelect = document.getElementById('settingTheme');
 	if (themeSelect) themeSelect.value = savedTheme;
-
 	const savedFontSize = localStorage.getItem('stockid_font_size') || '16';
 	applyFontSize(savedFontSize);
 	const fontInput = document.getElementById('settingFontSize');
 	if (fontInput) fontInput.value = savedFontSize;
-
 	const savedFontFamily = localStorage.getItem('stockid_font_family') || 'Lexend';
 	applyFontStyle(savedFontFamily);
 	const fontSelect = document.getElementById('settingFontStyle');
@@ -393,10 +381,8 @@ function showConfirm(message) {
 			document.getElementById('customConfirmContent').classList.remove('scale-90');
 			document.getElementById('customConfirmContent').classList.add('scale-100');
 		}, 10);
-
 		const btnOk = document.getElementById('customConfirmBtnOk');
 		const btnCancel = document.getElementById('customConfirmBtnCancel');
-
 		const closeModel = (result) => {
 			modal.classList.remove('opacity-100');
 			modal.classList.add('opacity-0');
@@ -407,7 +393,6 @@ function showConfirm(message) {
 				resolve(result);
 			}, 300);
 		};
-
 		btnOk.onclick = () => closeModel(true);
 		btnCancel.onclick = () => closeModel(false);
 	});
@@ -421,7 +406,6 @@ function showToast(message, type = 'success', duration = 5000) {
 	let bgColor = 'bg-slate-900/95';
 	let iconColor = 'text-emerald-400';
 	let iconClass = 'fa-circle-check';
-	
 	if (type === 'error' || type === 'loss') {
 		borderColor = 'border-rose-500/40';
 		iconColor = 'text-rose-400';
@@ -435,7 +419,6 @@ function showToast(message, type = 'success', duration = 5000) {
 		iconColor = 'text-cyan-400';
 		iconClass = 'fa-circle-info';
 	}
-
 	const toast = document.createElement('div');
 	toast.id = toastId;
 	toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3.5 rounded-xl ${bgColor} border ${borderColor} shadow-2xl backdrop-blur-xl text-slate-200 text-xs sm:text-sm font-bold transform translate-y-4 opacity-0 transition-all duration-300 max-w-sm`;
@@ -453,7 +436,7 @@ function showToast(message, type = 'success', duration = 5000) {
 			toast.classList.add('translate-y-4', 'opacity-0');
 			setTimeout(() => toast.remove(), 500);
 		}
-	}, duration); // Menggunakan durasi dinamis
+	}, duration);
 }
 
 function shareStockUrl() {
@@ -520,16 +503,13 @@ function checkVIPAuth() {
 	const savedToken = localStorage.getItem('vip_token');
 	const modal = document.getElementById('vipGatewayModal');
 	const dashboard = document.getElementById('vipDashboard');
-
 	if (!savedToken || !databaseVIP[savedToken]) {
 		if(modal) modal.classList.remove('hidden');
 		if(dashboard) dashboard.classList.add('hidden');
 		return;
 	}
-
 	const account = databaseVIP[savedToken];
 	const daysLeft = calculateDaysLeft(account.tanggalExpired);
-
 	if (daysLeft < 0) {
 		showError("Masa aktif Akses Token kamu telah habis. Silakan minta ke Admin.");
 		localStorage.removeItem('vip_token');
@@ -537,10 +517,8 @@ function checkVIPAuth() {
 		if(dashboard) dashboard.classList.add('hidden');
 		return;
 	}
-
 	if(modal) modal.classList.add('hidden');
 	if(dashboard) dashboard.classList.remove('hidden');
-
 	const name = getExtractName(savedToken);
 	document.getElementById('vipUserName').innerText = name;
 	document.getElementById('vipDaysLeft').innerText = `${daysLeft} Hari Lagi`;
@@ -551,10 +529,8 @@ function loginVIP() {
 	const tokenInput = document.getElementById('tokenInput').value.trim().toUpperCase();
 	if (!tokenInput) return showError("Silakan masukan token terlebih dahulu!");
 	if (!databaseVIP[tokenInput]) return showError("Akses Token tidak terdaftar / salah!");
-	
 	const daysLeft = calculateDaysLeft(databaseVIP[tokenInput].tanggalExpired);
 	if (daysLeft < 0) return showError("Akses Token ini sudah kedaluwarsa!");
-
 	localStorage.setItem('vip_token', tokenInput);
 	document.getElementById('loginErrorMsg').classList.add('hidden');
 	AudioFX.playSuccess();
@@ -578,7 +554,6 @@ function showError(msg) {
 document.addEventListener("DOMContentLoaded", function() {
 	const path = window.location.pathname;
 	const isExpPage = path.includes("screener_ok.html") || path.endsWith("/screener_ok") || path.includes("screener.html");
-
 	if (isExpPage) {
 		const linkVIP = document.getElementById("navLinkVIP");
 		if (linkVIP) {
@@ -617,9 +592,7 @@ function updateMarketBadge() {
 function renderChart(ticker) {
 	const container = document.getElementById('tv_chart_container');
 	if (!container) return;
-	
 	container.innerHTML = '';
-	
 	if (typeof TradingView !== 'undefined') {
 		new TradingView.widget({
 			"autosize": true,
@@ -680,7 +653,6 @@ function renderFundamentalWidget(ticker) {
 			<div id="tv_fundamental_data_widget" class="w-full h-[500px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
 		</div>
 	`;
-
 	const profileContainer = document.getElementById('tv_profile_widget');
 	const scriptProfile = document.createElement('script');
 	scriptProfile.type = 'text/javascript';
@@ -690,7 +662,6 @@ function renderFundamentalWidget(ticker) {
 		"width": "100%", "height": "100%", "colorTheme": "dark", "isTransparent": true, "symbol": `IDX:${ticker}`, "locale": "id"
 	});
 	profileContainer.appendChild(scriptProfile);
-
 	const fundDataContainer = document.getElementById('tv_fundamental_data_widget');
 	const scriptFundData = document.createElement('script');
 	scriptFundData.type = 'text/javascript';
@@ -700,7 +671,6 @@ function renderFundamentalWidget(ticker) {
 		"isTransparent": true, "largeChartUrl": "", "displayMode": "regular", "width": "100%", "height": "100%", "symbol": `IDX:${ticker}`, "colorTheme": "dark", "locale": "id"
 	});
 	fundDataContainer.appendChild(scriptFundData);
-
 	const finContainer = document.getElementById('tv_financials_widget');
 	const scriptFin = document.createElement('script');
 	scriptFin.type = 'text/javascript';
@@ -720,37 +690,30 @@ function renderFundamentalWidget(ticker) {
 async function handleInsiderSearch() {
 	const selectEl = document.getElementById('insiderSearchInput');
 	const cikNumber = selectEl.value;
-	
 	if (!cikNumber) {
 		showToast("Silakan pilih salah satu institusi dari daftar dropdown terlebih dahulu.", "warning");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
 	}
-
 	const institutionName = selectEl.options[selectEl.selectedIndex].text.replace(/\s\(.*?\)/, ''); 
 	const resultContainer = document.getElementById('insiderResultContainer');
 	const statusMessage = document.getElementById('insiderStatusMessage');
 	const tableBody = document.getElementById('insiderTableBody');
-
 	resultContainer.classList.add('hidden');
 	statusMessage.classList.remove('hidden');
 	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menghubungkan ke SEC EDGAR untuk <b>${institutionName}</b>...</div>`;
 	if (window.lucide) lucide.createIcons();
 	tableBody.innerHTML = '';
-
-	// MASUKKAN URL CLOUDFLARE WORKER BARU KAMU DI SINI
+	// URL CLOUDFLARE WORKER
 	const workerProxy = 'https://URL_WORKER_KAMU_DISINI/?url=';
-
 	const fetchSecData = async (targetUrl, isXml = false) => {
 		const res = await fetch(workerProxy + encodeURIComponent(targetUrl));
 		if (!res.ok) throw new Error("Gagal mengambil data dari SEC EDGAR.");
 		return isXml ? await res.text() : await res.json();
 	};
-
 	try {
 		const paddedCik = cikNumber.padStart(10, '0');
 		const secUrl = `https://data.sec.gov/submissions/CIK${paddedCik}.json`;
-		
 		// 1. Tarik Riwayat Laporan (JSON)
 		const submissionsData = await fetchSecData(secUrl, false);
 		const filings = submissionsData.filings.recent;
@@ -763,24 +726,20 @@ async function handleInsiderSearch() {
 				break;
 			}
 		}
-
 		if (filingIndex === -1) {
 			statusMessage.innerHTML = `Data 13F-HR tidak ditemukan untuk <b>${institutionName}</b>.`;
 			return;
 		}
-
 		const accessionNumber = filings.accessionNumber[filingIndex];
 		const reportDate = filings.reportDate[filingIndex];
 		const cleanAccession = accessionNumber.replace(/-/g, ''); 
-		const cikTrimmed = parseInt(cikNumber, 10).toString(); 
-
+		const cikTrimmed = parseInt(cikNumber, 10).toString();
 		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Memindai dokumen Arsip 13F (${reportDate})...</div>`;
 		if (window.lucide) lucide.createIcons();
-
+		
 		// 3. Tarik Index Arsip (JSON)
 		const archiveIndexUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/index.json`;
 		const indexData = await fetchSecData(archiveIndexUrl, false);
-
 		let infoTableFileName = null;
 		for (const file of indexData.directory.item) {
 			if (file.name.endsWith('.xml') && (file.name.toLowerCase().includes('info') || file.name.toLowerCase().includes('table'))) {
@@ -788,36 +747,29 @@ async function handleInsiderSearch() {
 				break;
 			}
 		}
-
 		if (!infoTableFileName) {
 			statusMessage.innerHTML = `File XML Information Table tidak tersedia pada arsip laporan SEC kuartal ini.`;
 			return;
 		}
-
 		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Mengekstrak struktur XML...</div>`;
 		if (window.lucide) lucide.createIcons();
-
+		
 		// 4. Tarik & Parsing File Portofolio Mentah (XML)
 		const xmlUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/${infoTableFileName}`;
 		const xmlText = await fetchSecData(xmlUrl, true);
-
 		const parser = new DOMParser();
 		const xmlDoc = parser.parseFromString(xmlText, "text/xml");
 		const infoTables = xmlDoc.getElementsByTagName('*');
 		let portfolioData = [];
-
 		for (let i = 0; i < infoTables.length; i++) {
 			const node = infoTables[i];
-			
 			if (node.localName === 'infoTable') {
 				let nameOfIssuer = '', cusip = '', value = 0, shares = 0;
-
 				for (let j = 0; j < node.childNodes.length; j++) {
 					const child = node.childNodes[j];
 					if (child.localName === 'nameOfIssuer') nameOfIssuer = child.textContent;
 					if (child.localName === 'cusip') cusip = child.textContent;
-					if (child.localName === 'value') value = parseFloat(child.textContent); 
-					
+					if (child.localName === 'value') value = parseFloat(child.textContent);
 					if (child.localName === 'shrsOrPrnAmt') {
 						for (let k = 0; k < child.childNodes.length; k++) {
 							const shrsChild = child.childNodes[k];
@@ -825,24 +777,20 @@ async function handleInsiderSearch() {
 						}
 					}
 				}
-
 				if (nameOfIssuer) {
 					portfolioData.push({ nameOfIssuer, tickcusip: cusip, shares, value });
 				}
 			}
 		}
-
+		
 		// 5. Urutkan & Tampilkan
 		portfolioData.sort((a, b) => b.value - a.value);
 		statusMessage.classList.add('hidden');
 		resultContainer.classList.remove('hidden');
-		
 		document.getElementById('insiderInstitutionName').innerText = institutionName;
 		document.getElementById('insiderReportDate').innerText = reportDate || 'N/A';
-
 		renderFMPTable(portfolioData.slice(0, 50));
 		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
-
 	} catch (error) {
 		statusMessage.innerHTML = `<div class="text-rose-400 font-bold flex flex-col items-center gap-2"><i data-lucide="alert-triangle" class="w-6 h-6"></i> Kesalahan Ekstraksi SEC EDGAR</div><div class="text-xs text-slate-400 mt-1">${error.message}</div>`;
 		if (window.lucide) lucide.createIcons();
@@ -854,13 +802,11 @@ async function handleInsiderSearch() {
 function renderFMPTable(portfolioData) {
 	const tableBody = document.getElementById('insiderTableBody');
 	let html = '';
-
 	portfolioData.forEach(item => {
-		// Format angka menjadi standar ribuan
+		// Format angka ribuan
 		const sharesFormatted = new Intl.NumberFormat('id-ID').format(item.shares);
-		// Format USD tanpa desimal agar rapi
+		// Format USD
 		const valueFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(item.value);
-
 		html += `
 			<tr class="hover:bg-slate-800/40 transition-colors">
 				<th scope="row" class="p-3.5 font-medium text-white whitespace-nowrap">
@@ -877,7 +823,7 @@ function renderFMPTable(portfolioData) {
 }
 
 // ==========================================
-// 9. DATA FETCHING (MARKET DATA & PARSER)
+// 10. DATA FETCHING (MARKET DATA & PARSER)
 // ==========================================
 async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const cachedData = getCachedStockData(ticker);
@@ -994,7 +940,7 @@ function parseYahooDataGlobal(json, ticker) {
 		ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), 
 		changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, 
 		currentLot, currentValuation, bandarAvgPrice,
-		historicalPrices: prices // <--- TAMBAHKAN BARIS INI
+		historicalPrices: prices
 	};
 }
 
@@ -1011,7 +957,7 @@ function formatValuationIDR(val) {
 }
 
 // ==========================================
-// 10. AI SIGNAL & TRADING MAP
+// 11. AI SIGNAL & TRADING MAP
 // ==========================================
 function showAISkeletonLoading() {
 	document.getElementById('aiVerdikText').innerHTML = `<span class="inline-block w-32 h-5 skeleton rounded"></span>`;
@@ -1138,10 +1084,6 @@ async function fetchAnalystConsensus(ticker) {
 		container.innerHTML = '';
 	}
 }
-
-
-
-
 
 function renderAISignalUI(ticker, stockData, isCached) {
 	const verdikEl = document.getElementById('aiVerdikText');
@@ -1394,7 +1336,6 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 	let sl, sup1, sup2, res1, res2, tp1, tp2;
 	
-	// Gunakan Fibonacci jika data High/Low 20 Hari tersedia
 	if (stockData && stockData.high20 && stockData.low20 && stockData.high20 > stockData.low20) {
 		const fibo = calculateFibonacciLevels(stockData.high20, stockData.low20);
 		sup1 = roundToBEITick(fibo.sup1, 'floor');
@@ -1405,7 +1346,6 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		tp1 = roundToBEITick(fibo.pivot, 'ceil');
 		tp2 = roundToBEITick(fibo.res2, 'ceil');
 	} else {
-		// Fallback statis jika data gagal termuat
 		sl = roundToBEITick(price * 0.92, 'floor'); 
 		sup1 = roundToBEITick(price * 0.94, 'floor'); 
 		sup2 = roundToBEITick(price * 0.96, 'floor'); 
@@ -1459,7 +1399,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 }
 
 // ==========================================
-// 11. FITUR EXPORT TRADING CARD (HTML2CANVAS)
+// 12. FITUR EXPORT TRADING CARD (HTML2CANVAS)
 // ==========================================
 function startExportCardCooldown(seconds = 15) {
 	const btn = document.getElementById('btnExportCard');
@@ -1500,9 +1440,9 @@ function exportTradingCard() {
 
 	startExportCardCooldown(15);
 	const price = roundToBEITick(globalStockData.price);
+	
 	let sl, sup1, sup2, res1, res2, tp1, tp2;
-
-	// Gunakan Fibonacci jika data High/Low 20 Hari tersedia (Gunakan globalStockData)
+	
 	if (globalStockData && globalStockData.high20 && globalStockData.low20 && globalStockData.high20 > globalStockData.low20) {
 		const fibo = calculateFibonacciLevels(globalStockData.high20, globalStockData.low20);
 		sup1 = roundToBEITick(fibo.sup1, 'floor');
@@ -1513,7 +1453,6 @@ function exportTradingCard() {
 		tp1 = roundToBEITick(fibo.pivot, 'ceil');       
 		tp2 = roundToBEITick(fibo.res2, 'ceil');
 	} else {
-		// Fallback statis jika data gagal termuat
 		sl = roundToBEITick(price * 0.92, 'floor'); 
 		sup1 = roundToBEITick(price * 0.94, 'floor');
 		sup2 = roundToBEITick(price * 0.96, 'floor'); 
@@ -1556,7 +1495,7 @@ function exportTradingCard() {
 }
 
 // ==========================================
-// 12. PEER KOMPARASI SAHAM
+// 13. PEER KOMPARASI SAHAM
 // ==========================================
 async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	const btn = document.getElementById('btnRefreshPeer');
@@ -1599,7 +1538,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 			} catch(e) {}
 		}
 
-		// Fallback: Jika rekomendasi API kosong/gagal, kembalikan ke filter harga manual
+		// Fallback
 		if (peerTickers.length === 0) {
 			let baseData = globalStockData;
 			if (!baseData || baseData.ticker !== targetTicker) {
@@ -1625,8 +1564,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 				}
 			}
 		}
-
-		// Pastikan targetTicker (Acuan utama) tetap berada di urutan atas
+		
 		peerTickers = [...new Set([targetTicker, ...peerTickers])].slice(0, 8); 
 		const peerResults = await Promise.all(peerTickers.map(t => fetchRealtimeStockData(t)));
 
@@ -1674,7 +1612,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 }
 
 // ==========================================
-// 13. TRADING JOURNAL & KANBAN
+// 14. TRADING JOURNAL & KANBAN
 // ==========================================
 function getJournalData() {
 	return JSON.parse(localStorage.getItem('stockid_trading_journal') || '[]');
@@ -1907,7 +1845,7 @@ function renderKanbanBoard() {
 }
 
 // ==========================================
-// 14. SMART RRR CALCULATOR
+// 15. SMART RRR CALCULATOR
 // ==========================================
 function autoFillRRRFromAI() {
 	if (globalStockData && globalStockData.price) {
@@ -1982,7 +1920,7 @@ function calculateSmartRRR() {
 }
 
 // ==========================================
-// 15. FITUR PENCARIAN & VOICE SEARCH
+// 16. FITUR PENCARIAN & VOICE SEARCH
 // ==========================================
 function initSearchSuggestions() {
 	const input = document.getElementById('stockSearch');
@@ -2141,7 +2079,7 @@ function startVoiceSearch() {
 }
 
 // ==========================================
-// 16. RADAR BANDAR (AUTO SCREENER)
+// 17. RADAR BANDAR (AUTO SCREENER)
 // ==========================================
 async function startRadarProcess() {
 	if (isRadarScanning) return;
@@ -2203,11 +2141,23 @@ function renderRadarItems(dataList) {
 		const ticker = item.ticker;
 		const price = roundToBEITick(item.price);
 		const changePct = item.changePct;
-		const sl = roundToBEITick(price * 0.92, 'floor');
-		const entryLow = roundToBEITick(price * 0.94, 'floor');
-		const entryHigh = roundToBEITick(price * 0.96, 'floor');
-		const tp1 = roundToBEITick(price * 1.06, 'ceil');
-		const tp2 = roundToBEITick(price * 1.10, 'ceil');
+		
+		// REVISI: FIBONACCI SUPPORT / RESISTANCE
+		let sl, entryLow, entryHigh, tp1, tp2;
+		if (item.high20 && item.low20 && item.high20 > item.low20) {
+			const fibo = calculateFibonacciLevels(item.high20, item.low20);
+			entryLow = roundToBEITick(fibo.sup1, 'floor');
+			entryHigh = roundToBEITick(fibo.sup2, 'floor');
+			sl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
+			tp1 = roundToBEITick(fibo.pivot, 'ceil');
+			tp2 = roundToBEITick(fibo.res2, 'ceil');
+		} else {
+			sl = roundToBEITick(price * 0.92, 'floor');
+			entryLow = roundToBEITick(price * 0.94, 'floor');
+			entryHigh = roundToBEITick(price * 0.96, 'floor');
+			tp1 = roundToBEITick(price * 1.06, 'ceil');
+			tp2 = roundToBEITick(price * 1.10, 'ceil');
+		}
 
 		let statusSignal = "🔥 Momentum Breakout";
 		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
@@ -2324,7 +2274,6 @@ document.addEventListener('click', function(e) {
 	});
 });
 
-// 1. TEMPELKAN FUNGSI INI DI ATAS runCustomScreener
 function calculateRSI(prices, period = 14) {
 	if (!prices || prices.length < period + 1) return 50;
 	let gains = 0, losses = 0;
@@ -2344,7 +2293,6 @@ function calculateRSI(prices, period = 14) {
 	return 100 - (100 / (1 + (avgGain / avgLoss)));
 }
 
-// 2. TIMPA FUNGSI runCustomScreener LAMA DENGAN INI
 async function runCustomScreener() {
 	const btn = document.getElementById('btnRunCustomScreener');
 	if (btn && btn.disabled) return;
@@ -2362,7 +2310,6 @@ async function runCustomScreener() {
 		const ruleVol = document.getElementById('csRuleVol').value;
 		const rulePrice = document.getElementById('csRulePrice').value;
 		
-		// Deteksi jika HTML memiliki filter RSI, jika tidak anggap 'ALL'
 		const ruleRSI = document.getElementById('csRuleRSI') ? document.getElementById('csRuleRSI').value : 'ALL';
 
 		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Memfilter saham sesuai custom rules Kamu...</div>`;
@@ -2400,29 +2347,37 @@ async function runCustomScreener() {
 					if (ruleRSI === 'OVERSOLD' && rsiValue >= 30) matchRSI = false;
 					if (ruleRSI === 'OVERBOUGHT' && rsiValue <= 70) matchRSI = false;
 				}
-
-				// Jika lolos MA, Vol, Harga, dan RSI, masukkan ke hasil
+				
 				if (matchMA && matchVol && matchPrice && matchRSI) passedItems.push(item);
 			}
 			if (passedItems.length >= 8) break;
 		}
-
-		// Lanjutkan dengan kode perakitan HTML lamamu (mulai dari if(passedItems.length === 0)...)
+		
 		if (passedItems.length === 0) {
 			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10">Tidak ada saham yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya.</div>`;
 			return;
 		}
 
-		// ... (Sisa kode render HTML lamamu tidak perlu diubah, biarkan seperti aslinya)
-
 		let html = '';
 		passedItems.forEach((item, index) => {
 			const price = roundToBEITick(item.price);
-			const sl = roundToBEITick(price * 0.92, 'floor');
-			const entryLow = roundToBEITick(price * 0.94, 'floor');
-			const entryHigh = roundToBEITick(price * 0.96, 'floor');
-			const tp1 = roundToBEITick(price * 1.06, 'ceil');
-			const tp2 = roundToBEITick(price * 1.10, 'ceil');
+			
+			// REVISI: FIBONACCI SUPPORT / RESISTANCE
+			let sl, entryLow, entryHigh, tp1, tp2;
+			if (item.high20 && item.low20 && item.high20 > item.low20) {
+				const fibo = calculateFibonacciLevels(item.high20, item.low20);
+				entryLow = roundToBEITick(fibo.sup1, 'floor');
+				entryHigh = roundToBEITick(fibo.sup2, 'floor');
+				sl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
+				tp1 = roundToBEITick(fibo.pivot, 'ceil');
+				tp2 = roundToBEITick(fibo.res2, 'ceil');
+			} else {
+				sl = roundToBEITick(price * 0.92, 'floor');
+				entryLow = roundToBEITick(price * 0.94, 'floor');
+				entryHigh = roundToBEITick(price * 0.96, 'floor');
+				tp1 = roundToBEITick(price * 1.06, 'ceil');
+				tp2 = roundToBEITick(price * 1.10, 'ceil');
+			}
 
 			let infoMA = '';
 			if (ruleMA === 'ABOVE_MA5') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Pendek:</strong> Bertahan mantap di atas MA5.</span></li>`;
@@ -2958,13 +2913,27 @@ async function scanWhalesData() {
 		let html = '';
 		foundWhales.forEach((item) => {
 			const price = roundToBEITick(item.price);
-			const s1 = roundToBEITick(price * 0.94, 'floor');
-			const s2 = roundToBEITick(price * 0.96, 'floor');
-			const r1 = roundToBEITick(price * 1.04, 'ceil');
-			const r2 = roundToBEITick(price * 1.08, 'ceil');
-			const cl = roundToBEITick(price * 0.92, 'floor');
-			const entryAgresif = roundToBEITick(price * 0.99, 'floor');
-			const entryAman = roundToBEITick(price * 0.97, 'floor');
+			
+			// REVISI: FIBONACCI SUPPORT / RESISTANCE
+			let s1, s2, r1, r2, cl, entryAgresif, entryAman;
+			if (item.high20 && item.low20 && item.high20 > item.low20) {
+				const fibo = calculateFibonacciLevels(item.high20, item.low20);
+				s1 = roundToBEITick(fibo.sup1, 'floor');
+				s2 = roundToBEITick(fibo.sup2, 'floor');
+				r1 = roundToBEITick(fibo.res1, 'ceil');
+				r2 = roundToBEITick(fibo.res2, 'ceil');
+				cl = roundToBEITick(fibo.sup2 * 0.98, 'floor');
+				entryAgresif = roundToBEITick(fibo.sup2, 'floor');
+				entryAman = roundToBEITick(fibo.sup1, 'floor');
+			} else {
+				s1 = roundToBEITick(price * 0.94, 'floor');
+				s2 = roundToBEITick(price * 0.96, 'floor');
+				r1 = roundToBEITick(price * 1.04, 'ceil');
+				r2 = roundToBEITick(price * 1.08, 'ceil');
+				cl = roundToBEITick(price * 0.92, 'floor');
+				entryAgresif = roundToBEITick(price * 0.99, 'floor');
+				entryAman = roundToBEITick(price * 0.97, 'floor');
+			}
 
 			html += `
 				<div class="bg-slate-950/50 p-4 rounded-xl border border-slate-700/60 hover:border-slate-500/40 transition relative group shadow-sm flex flex-col justify-between">
@@ -3245,16 +3214,13 @@ function initTelegramConfig() {
 	const chatInput = document.getElementById('inputTeleChat');
 	
 	if (tokenInput && chatInput) {
-		// Ambil data dari localStorage dan masukkan kembali ke input form saat halaman dimuat
 		tokenInput.value = localStorage.getItem('telegram_bot_token') || '';
 		chatInput.value = localStorage.getItem('telegram_chat_id') || '';
 	}
 }
 
-// Panggil otomatis saat halaman selesai dimuat
-document.addEventListener('DOMContentLoaded', () => {
-	initTelegramConfig();
-});
+initTelegramConfig();
+document.addEventListener('DOMContentLoaded', initTelegramConfig);
 
 async function saveTelegramConfig() {
 	const tokenInput = document.getElementById('inputTeleToken');
@@ -3631,8 +3597,11 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 			
 			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess(); 
 			sendBrowserPushNotification(`STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
-			
 			showToast(alertMsg, "info", 10000); 
+
+			// TAMBAHAN: Tembak notifikasi paus langsung ke Telegram
+			const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume meledak <b>${stockData.volRatio}x lipat!</b>\nHarga naik <b>+${stockData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
+			sendTelegramAlert(teleMsg);
 			
 			localStorage.setItem(lastAlertKey, now.toString());
 		}
