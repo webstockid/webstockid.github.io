@@ -2210,6 +2210,11 @@ function renderRadarItems(dataList) {
 		let entryLow = fibo.entryLow;
 		let entryHigh = fibo.entryHigh;
 		let sl = fibo.sl;
+		
+		// Tarik data resistance untuk kalkulasi TP custom
+		let res1 = fibo.res1;
+		let res2 = fibo.res2;
+		
 		let tp1 = res1;
 		let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 
@@ -2421,6 +2426,11 @@ async function runCustomScreener() {
 			let entryLow = fibo.entryLow;
 			let entryHigh = fibo.entryHigh;
 			let sl = fibo.sl;
+			
+			// Tarik data resistance untuk kalkulasi TP custom
+			let res1 = fibo.res1;
+			let res2 = fibo.res2;
+			
 			let tp1 = res1;
 			let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 
