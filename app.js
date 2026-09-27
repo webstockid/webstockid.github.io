@@ -731,9 +731,8 @@ function renderFundamentalWidget(ticker) {
 }
 
 // ==========================================
-// 9. INSIDER SEARCH (FMP API)
+// 9. INSIDER SEARCH (SEC EDGAR SCRAPER)
 // ==========================================
-// const FMP_API_KEY = 'LQhjoJzWKzND3xYw4hy5CE7hqGM33YV4';
 
 async function handleInsiderSearch() {
 	const selectEl = document.getElementById('insiderSearchInput');
@@ -747,49 +746,49 @@ async function handleInsiderSearch() {
 	const resultContainer = document.getElementById('insiderResultContainer');
 	const statusMessage = document.getElementById('insiderStatusMessage');
 	const tableBody = document.getElementById('insiderTableBody');
+	
 	resultContainer.classList.add('hidden');
 	statusMessage.classList.remove('hidden');
 	statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Menghubungkan ke SEC EDGAR untuk <b>${institutionName}</b>...</div>`;
 	if (window.lucide) lucide.createIcons();
 	tableBody.innerHTML = '';
+
 	const fetchSecData = async (targetUrl, isXml = false) => {
-		// Daftar proxy gratis untuk melewati blokir CORS dari server SEC EDGAR
+		const encodedUrl = encodeURIComponent(targetUrl);
+		
+		// Gunakan endpoint /raw agar mendapatkan respon langsung (tanpa bungkus object dari proxy)
 		const proxies = [
-			`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`,
-			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`,
-			`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+			`https://api.allorigins.win/raw?url=${encodedUrl}`,
+			`https://api.codetabs.com/v1/proxy?quest=${encodedUrl}`
 		];
 
 		for (let proxy of proxies) {
 			try {
-				const res = await fetch(proxy);
-				
-				// Jika server proxy ini error atau limit, lewati dan coba proxy selanjutnya
+				// Beri batas waktu agar tidak loading terus-menerus
+				const res = await fetch(proxy, { signal: AbortSignal.timeout(8000) });
 				if (!res.ok) continue; 
 				
 				let data = await res.text();
 				
-				// Pengecekan ekstra khusus untuk AllOrigins karena response datanya bersarang di dalam object "contents"
-				if (proxy.includes('allorigins.win/get')) {
-					const json = JSON.parse(data);
-					data = json.contents;
+				// Cegat jika SEC memblokir proxy dan membalikkan halaman HTML Error
+				if (data.trim().toLowerCase().startsWith('<!doctype html>') || data.trim().toLowerCase().startsWith('<html')) {
+					continue; 
 				}
 				
-				// Return sebagai XML/Teks biasa atau parse sebagai JSON sesuai kebutuhan parameter
 				return isXml ? data : JSON.parse(data);
-				
 			} catch(e) {
 				console.warn(`Proxy gagal merespons SEC EDGAR: ${proxy}`);
-				continue; // Lanjut looping ke proxy berikutnya di dalam array
+				continue; 
 			}
 		}
 		
-		// Jika semua proxy dalam array gagal diakses
-		throw new Error("Semua server proxy gagal menghubungi SEC EDGAR. Silakan coba beberapa saat lagi.");
+		throw new Error("Semua server proxy sedang dilimitasi oleh SEC EDGAR. Silakan coba kembali dalam beberapa menit.");
 	};
+
 	try {
 		const paddedCik = cikNumber.padStart(10, '0');
 		const secUrl = `https://data.sec.gov/submissions/CIK${paddedCik}.json`;
+		
 		// 1. Tarik Riwayat Laporan (JSON)
 		const submissionsData = await fetchSecData(secUrl, false);
 		const filings = submissionsData.filings.recent;
@@ -802,14 +801,17 @@ async function handleInsiderSearch() {
 				break;
 			}
 		}
+		
 		if (filingIndex === -1) {
-			statusMessage.innerHTML = `Data 13F-HR tidak ditemukan untuk <b>${institutionName}</b>.`;
+			statusMessage.innerHTML = `Data Laporan Portofolio (13F-HR) tidak ditemukan untuk <b>${institutionName}</b>.`;
 			return;
 		}
+		
 		const accessionNumber = filings.accessionNumber[filingIndex];
 		const reportDate = filings.reportDate[filingIndex];
 		const cleanAccession = accessionNumber.replace(/-/g, ''); 
 		const cikTrimmed = parseInt(cikNumber, 10).toString();
+		
 		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Memindai dokumen Arsip 13F (${reportDate})...</div>`;
 		if (window.lucide) lucide.createIcons();
 		
@@ -817,39 +819,51 @@ async function handleInsiderSearch() {
 		const archiveIndexUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/index.json`;
 		const indexData = await fetchSecData(archiveIndexUrl, false);
 		let infoTableFileName = null;
+		
 		for (const file of indexData.directory.item) {
 			if (file.name.endsWith('.xml') && (file.name.toLowerCase().includes('info') || file.name.toLowerCase().includes('table'))) {
 				infoTableFileName = file.name;
 				break;
 			}
 		}
+		
 		if (!infoTableFileName) {
 			statusMessage.innerHTML = `File XML Information Table tidak tersedia pada arsip laporan SEC kuartal ini.`;
 			return;
 		}
+		
 		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Mengekstrak struktur XML...</div>`;
 		if (window.lucide) lucide.createIcons();
 		
 		// 4. Tarik & Parsing File Portofolio Mentah (XML)
 		const xmlUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/${infoTableFileName}`;
 		const xmlText = await fetchSecData(xmlUrl, true);
+		
 		const parser = new DOMParser();
 		const xmlDoc = parser.parseFromString(xmlText, "text/xml");
 		const infoTables = xmlDoc.getElementsByTagName('*');
 		let portfolioData = [];
+		
 		for (let i = 0; i < infoTables.length; i++) {
 			const node = infoTables[i];
 			if (node.localName === 'infoTable') {
 				let nameOfIssuer = '', cusip = '', value = 0, shares = 0;
 				for (let j = 0; j < node.childNodes.length; j++) {
 					const child = node.childNodes[j];
-					if (child.localName === 'nameOfIssuer') nameOfIssuer = child.textContent;
-					if (child.localName === 'cusip') cusip = child.textContent;
-					if (child.localName === 'value') value = parseFloat(child.textContent);
+					if (child.localName === 'nameOfIssuer') nameOfIssuer = child.textContent.trim();
+					if (child.localName === 'cusip') cusip = child.textContent.trim();
+					
+					if (child.localName === 'value') {
+						// Perbaikan Bug: SEC 13F selalu melaporkan 'value' dalam ribuan dolar ($1000s)
+						value = parseFloat(child.textContent.replace(/,/g, '')) * 1000;
+					}
+					
 					if (child.localName === 'shrsOrPrnAmt') {
 						for (let k = 0; k < child.childNodes.length; k++) {
 							const shrsChild = child.childNodes[k];
-							if (shrsChild.localName === 'sshPrnamt') shares = parseFloat(shrsChild.textContent);
+							if (shrsChild.localName === 'sshPrnamt') {
+								shares = parseFloat(shrsChild.textContent.replace(/,/g, ''));
+							}
 						}
 					}
 				}
@@ -863,12 +877,15 @@ async function handleInsiderSearch() {
 		portfolioData.sort((a, b) => b.value - a.value);
 		statusMessage.classList.add('hidden');
 		resultContainer.classList.remove('hidden');
+		
 		document.getElementById('insiderInstitutionName').innerText = institutionName;
 		document.getElementById('insiderReportDate').innerText = reportDate || 'N/A';
+		
 		renderFMPTable(portfolioData.slice(0, 50));
 		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+		
 	} catch (error) {
-		statusMessage.innerHTML = `<div class="text-rose-400 font-bold flex flex-col items-center gap-2"><i data-lucide="alert-triangle" class="w-6 h-6"></i> Kesalahan Ekstraksi SEC EDGAR</div><div class="text-xs text-slate-400 mt-1">${error.message}</div>`;
+		statusMessage.innerHTML = `<div class="text-rose-400 font-bold flex flex-col items-center gap-2"><i data-lucide="alert-triangle" class="w-6 h-6"></i> Gagal Mengakses SEC EDGAR</div><div class="text-xs text-slate-400 mt-1 px-4 text-center">${error.message}</div>`;
 		if (window.lucide) lucide.createIcons();
 		console.error("SEC EDGAR Error:", error);
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
@@ -878,15 +895,16 @@ async function handleInsiderSearch() {
 function renderFMPTable(portfolioData) {
 	const tableBody = document.getElementById('insiderTableBody');
 	let html = '';
+	
 	portfolioData.forEach(item => {
-		// Format angka ribuan
 		const sharesFormatted = new Intl.NumberFormat('id-ID').format(item.shares);
-		// Format USD
 		const valueFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(item.value);
+		
+		// Penambahan style "border-b border-slate-800/50 last:border-0" agar pemisah tabel lebih rapi
 		html += `
-			<tr class="hover:bg-slate-800/40 transition-colors">
+			<tr class="hover:bg-slate-800/40 transition-colors border-b border-slate-800/50 last:border-0">
 				<th scope="row" class="p-3.5 font-medium text-white whitespace-nowrap">
-					<span class="bg-indigo-500/20 text-indigo-400 text-[10px] font-bold px-2 py-0.5 rounded border border-indigo-500/30">${item.tickcusip || '-'}</span>
+					<span class="bg-indigo-500/20 text-indigo-400 text-[10px] font-bold px-2.5 py-1 rounded border border-indigo-500/30">${item.tickcusip || '-'}</span>
 				</th>
 				<td class="p-3.5 text-slate-300 font-medium truncate max-w-[200px]" title="${item.nameOfIssuer || '-'}">${item.nameOfIssuer || '-'}</td>
 				<td class="p-3.5 text-amber-400 font-bold text-right">${sharesFormatted}</td>
@@ -1916,9 +1934,13 @@ function autoFillRRRFromAI() {
 		const basePrice = globalStockData.price;
 		const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, basePrice);
 
+		// Tarik data resistance untuk kalkulasi TP custom
+		let res2 = fibo.res2;
+		let customTP2 = roundToBEITick(res2 * 1.03, 'ceil');
+
 		document.getElementById('rrrEntry').value = fibo.entryHigh;
 		document.getElementById('rrrSL').value = fibo.sl;
-		document.getElementById('rrrTP').value = fibo.tp2; // AI Setup memprioritaskan TP2 (Ekstensi)
+		document.getElementById('rrrTP').value = customTP2; // AI Setup memprioritaskan TP2 custom
 		
 		calculateSmartRRR();
 		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
@@ -3545,36 +3567,38 @@ async function clearAllAlerts() {
 }
 
 function syncAlertsFromAI() {
-		let price = 100;
-		let sl = 92, sup2 = 96, res2 = 108, tp2 = 110;
+	let price = 100;
+	let sl = 92, sup2 = 96, res2 = 108, tp2 = 110;
 
-		if (globalStockData && globalStockData.price) {
-			price = roundToBEITick(globalStockData.price);
-			const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, price);
-			
-			sup2 = fibo.entryHigh;
-			res2 = fibo.res2;
-			sl = fibo.sl;
-			tp2 = fibo.tp2;
-		}
-
-		const now = new Date();
-		const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-		const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear().toString().slice(-2)}`;
-
-		const syncTargets = [
-			{ price: sl, label: 'Stop Loss', active: true, triggered: false, date: dateStr },
-			{ price: sup2, label: 'Entry / Support', active: true, triggered: false, date: dateStr },
-			{ price: res2, label: 'Resistance', active: true, triggered: false, date: dateStr },
-			{ price: tp2, label: 'Take Profit', active: true, triggered: false, date: dateStr }
-		];
-
-		saveAlerts(currentTicker, syncTargets);
-		openAlertDropdowns.add(currentTicker); 
-		renderAllAlerts();
-		AudioFX.playSuccess();
-		showToast(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
+	if (globalStockData && globalStockData.price) {
+		price = roundToBEITick(globalStockData.price);
+		const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, price);
+		
+		sup2 = fibo.entryHigh;
+		res2 = fibo.res2;
+		sl = fibo.sl;
+		
+		// Tarik data resistance untuk kalkulasi TP custom
+		tp2 = roundToBEITick(res2 * 1.03, 'ceil'); 
 	}
+
+	const now = new Date();
+	const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+	const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear().toString().slice(-2)}`;
+
+	const syncTargets = [
+		{ price: sl, label: 'Stop Loss', active: true, triggered: false, date: dateStr },
+		{ price: sup2, label: 'Entry / Support', active: true, triggered: false, date: dateStr },
+		{ price: res2, label: 'Resistance', active: true, triggered: false, date: dateStr },
+		{ price: tp2, label: 'Take Profit', active: true, triggered: false, date: dateStr }
+	];
+
+	saveAlerts(currentTicker, syncTargets);
+	openAlertDropdowns.add(currentTicker); 
+	renderAllAlerts();
+	AudioFX.playSuccess();
+	showToast(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
+}
 
 function toggleAlertStatus(ticker, index) {
 	let alerts = getAlerts(ticker);
