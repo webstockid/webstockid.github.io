@@ -2210,8 +2210,8 @@ function renderRadarItems(dataList) {
 		let entryLow = fibo.entryLow;
 		let entryHigh = fibo.entryHigh;
 		let sl = fibo.sl;
-		let tp1 = fibo.tp1;
-		let tp2 = fibo.tp2;
+		let tp1 = res1;
+		let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 
 		let statusSignal = "🔥 Momentum Breakout";
 		let statusClass = "text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
@@ -2421,8 +2421,8 @@ async function runCustomScreener() {
 			let entryLow = fibo.entryLow;
 			let entryHigh = fibo.entryHigh;
 			let sl = fibo.sl;
-			let tp1 = fibo.tp1;
-			let tp2 = fibo.tp2;
+			let tp1 = res1;
+			let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 
 			let infoMA = '';
 			if (ruleMA === 'ABOVE_MA5') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Pendek:</strong> Bertahan mantap di atas MA5.</span></li>`;
