@@ -938,69 +938,73 @@ function renderFMPTable(portfolioData) {
 }
 
 // ==========================================
-// 10. DATA FETCHING (MARKET DATA & PARSER)
+// 10. DATA FETCHING (DEDUPLICATION ENGINE)
 // ==========================================
+// Menyimpan janji (Promise) request yang sedang berjalan agar tidak dobel
+const pendingFetchRequests = new Map();
+
 async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const cachedData = getCachedStockData(ticker);
 	if (cachedData && !forceFetch) return cachedData;
 
-	const targetSymbol = `${ticker}.JK`;
-	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
-	
-	const fetchWithTimeout = (url, timeoutMs = 4000) => { 
-		return new Promise((resolve, reject) => {
-			const timer = setTimeout(() => reject(new Error('Timeout')), timeoutMs);
-			fetch(url)
-				.then(res => {
-					clearTimeout(timer);
-					if (res.ok) resolve(res);
-					else reject(new Error('Response not OK'));
-				})
-				.catch(err => {
-					clearTimeout(timer);
-					reject(err);
-				});
-		});
-	};
+	// Cegah eksekusi berulang: Jika saham ini sedang ditarik, gabung ke antrean yang sama
+	if (pendingFetchRequests.has(ticker)) {
+		return pendingFetchRequests.get(ticker);
+	}
 
-	const workerPromise = fetchWithTimeout(`${WORKER_URL}?symbol=${targetSymbol}`, 1800)
-		.then(res => res.json())
-		.then(json => parseYahooDataGlobal(json, ticker)); 
+	const fetchPromise = (async () => {
+		const targetSymbol = `${ticker}.JK`;
+		const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
+		
+		const fetchWithTimeout = async (url, timeoutMs = 4000) => {
+			const controller = new AbortController();
+			const timerId = setTimeout(() => controller.abort(), timeoutMs);
+			try {
+				const res = await fetch(url, { signal: controller.signal });
+				clearTimeout(timerId);
+				if (!res.ok) throw new Error('Response not OK');
+				return res;
+			} catch (err) {
+				clearTimeout(timerId);
+				throw err;
+			}
+		};
 
-	const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
-	const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
-	
-	const yahooPromise = fetchWithTimeout(allOriginsUrl, 6000) 
-		.then(res => res.json())
-		.then(wrapper => JSON.parse(wrapper.contents))
-		.then(json => parseYahooDataGlobal(json, ticker));
+		let freshData = null;
+		
+		// 1. Eksekusi Worker Cepat
+		try {
+			const res = await fetchWithTimeout(`${WORKER_URL}?symbol=${targetSymbol}`, 2500);
+			const json = await res.json();
+			freshData = parseYahooDataGlobal(json, ticker);
+		} catch(e) {
+			console.warn(`Worker Utama gagal untuk ${ticker}, memanggil Fallback...`);
+		}
 
-	let freshData = null;
-	try {
-		freshData = await Promise.race([
-			workerPromise.catch(() => null),
-			yahooPromise.catch(() => null)
-		]);
-
+		// 2. Fallback Proxy Darurat
 		if (!freshData) {
-			const results = await Promise.allSettled([workerPromise, yahooPromise]);
-			for (const res of results) {
-				if (res.status === 'fulfilled' && res.value) {
-					freshData = res.value;
-					break;
-				}
+			try {
+				const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
+				const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
+				const res = await fetchWithTimeout(allOriginsUrl, 6000);
+				const wrapper = await res.json();
+				freshData = parseYahooDataGlobal(JSON.parse(wrapper.contents), ticker);
+			} catch(e) {
+				console.error(`Kegagalan total menarik data ${ticker}`);
 			}
 		}
-	} catch (e) {
-		console.warn(`Fetch error for ${ticker}`);
-	}
 
-	if (freshData) {
-		setCachedStockData(ticker, freshData);
-	} else if (cachedData) {
-		return cachedData;
-	}
-	return freshData;
+		if (freshData) {
+			setCachedStockData(ticker, freshData);
+		}
+		
+		// Hapus dari antrean setelah selesai
+		pendingFetchRequests.delete(ticker);
+		return freshData || cachedData;
+	})();
+
+	pendingFetchRequests.set(ticker, fetchPromise);
+	return fetchPromise;
 }
 
 function parseYahooDataGlobal(json, ticker) {
