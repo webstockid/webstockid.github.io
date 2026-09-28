@@ -3296,6 +3296,42 @@ function checkNotificationStatus() {
 	if (window.lucide) lucide.createIcons();
 }
 
+function toggleTelegramSnooze() {
+	const snoozeUntil = localStorage.getItem('telegram_snooze_until');
+	
+	if (snoozeUntil && Date.now() < parseInt(snoozeUntil)) {
+		// Batalkan Snooze
+		localStorage.removeItem('telegram_snooze_until');
+		showToast("Notifikasi Telegram diaktifkan kembali.", "success");
+		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	} else {
+		// Aktifkan Snooze (1 Jam)
+		const snoozeTime = Date.now() + (60 * 60 * 1000); 
+		localStorage.setItem('telegram_snooze_until', snoozeTime.toString());
+		showToast("Notifikasi Telegram ditunda selama 1 Jam.", "info");
+		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	}
+	updateTelegramSnoozeUI();
+}
+
+function updateTelegramSnoozeUI() {
+	const btnSnooze = document.getElementById('btnSnoozeTelegram');
+	if (!btnSnooze) return;
+
+	const snoozeUntil = localStorage.getItem('telegram_snooze_until');
+	if (snoozeUntil && Date.now() < parseInt(snoozeUntil)) {
+		const dateObj = new Date(parseInt(snoozeUntil));
+		const timeStr = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+		
+		btnSnooze.innerHTML = `<i data-lucide="bell-off" class="w-4 h-4"></i> Ditunda s/d ${timeStr}`;
+		btnSnooze.className = "w-full sm:w-auto bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 font-bold px-4 py-2.5 rounded-lg transition text-xs flex items-center justify-center gap-2";
+	} else {
+		btnSnooze.innerHTML = `<i data-lucide="bell-off" class="w-4 h-4"></i> Tunda Notif 1 Jam`;
+		btnSnooze.className = "w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold px-4 py-2.5 rounded-lg transition text-xs flex items-center justify-center gap-2";
+	}
+	if (window.lucide) lucide.createIcons();
+}
+
 function initTelegramConfig() {
 	const tokenInput = document.getElementById('inputTeleToken');
 	const chatInput = document.getElementById('inputTeleChat');
@@ -3304,6 +3340,7 @@ function initTelegramConfig() {
 		tokenInput.value = localStorage.getItem('telegram_bot_token') || '';
 		chatInput.value = localStorage.getItem('telegram_chat_id') || '';
 	}
+	updateTelegramSnoozeUI();
 }
 
 initTelegramConfig();
@@ -3369,13 +3406,15 @@ async function testTelegramConnection(token, chatId) {
 	}
 
 async function sendTelegramAlert(message) {
+	const snoozeUntil = localStorage.getItem('telegram_snooze_until');
+	if (snoozeUntil && Date.now() < parseInt(snoozeUntil)) {
+		return; // Eksekusi berhenti, notifikasi ditunda
+	}
+
 	const botToken = localStorage.getItem('telegram_bot_token')?.trim();
 	const chatId = localStorage.getItem('telegram_chat_id')?.trim();
 	
-	if (!botToken || !chatId) {
-		console.warn("Telegram Token atau Chat ID belum diatur.");
-		return;
-	}
+	if (!botToken || !chatId) return;
 
 	try {
 		const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
@@ -3385,9 +3424,7 @@ async function sendTelegramAlert(message) {
 		});
 		
 		const data = await response.json();
-		if (!data.ok) {
-			console.error("Telegram API Error:", data.description);
-		}
+		if (!data.ok) console.error("Telegram API Error:", data.description);
 	} catch (error) { 
 		console.error("Gagal mengirim Telegram Alert:", error); 
 	}
