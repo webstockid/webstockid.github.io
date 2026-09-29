@@ -3635,53 +3635,69 @@ async function clearAllAlerts() {
  */
 
 // 1. Fungsi untuk membuka modal dan memasukkan data dari AI
-function openEditAlertModal(ticker, aiEntry, aiResistance, aiTakeProfit, aiStopLoss) {
-	document.getElementById('alertModalTicker').value = ticker || '';
-	document.getElementById('alertModalEntry').value = aiEntry || 0;
-	document.getElementById('alertModalResistance').value = aiResistance || 0;
-	document.getElementById('alertModalTP').value = aiTakeProfit || 0;
-	document.getElementById('alertModalSL').value = aiStopLoss || 0;
+function openEditAlertModal() {
+	let price = 100;
+	let sl = 0, entry = 0, resist = 0, tp = 0;
+
+	if (globalStockData && globalStockData.price) {
+		price = roundToBEITick(globalStockData.price);
+		const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, price);
+		
+		entry = fibo.entryHigh;
+		resist = fibo.res1;
+		sl = fibo.sl;
+		tp = roundToBEITick(fibo.res2 * 1.03, 'ceil');
+	}
+
+	document.getElementById('alertModalTicker').value = currentTicker || '';
+	document.getElementById('alertModalEntry').value = entry || 0;
+	document.getElementById('alertModalResistance').value = resist || 0;
+	document.getElementById('alertModalTP').value = tp || 0;
+	document.getElementById('alertModalSL').value = sl || 0;
 	
 	const modal = document.getElementById('editAlertModal');
-	modal.classList.remove('hidden');
+	if (modal) modal.classList.remove('hidden');
 }
 
 // 2. Fungsi untuk menutup modal
 function closeEditAlertModal() {
 	const modal = document.getElementById('editAlertModal');
-	modal.classList.add('hidden');
+	if (modal) modal.classList.add('hidden');
 }
 
 // 3. Fungsi utama penyimpan data yang sudah divalidasi
 function saveFinalEditedAlert() {
-	const tickerInput = document.getElementById('alertModalTicker').value;
+	const tickerInput = document.getElementById('alertModalTicker').value.trim();
 	const entryInput = parseFloat(document.getElementById('alertModalEntry').value) || 0;
 	const resistanceInput = parseFloat(document.getElementById('alertModalResistance').value) || 0;
 	const tpInput = parseFloat(document.getElementById('alertModalTP').value) || 0;
 	const slInput = parseFloat(document.getElementById('alertModalSL').value) || 0;
 	
 	if (!tickerInput) {
-		// REVISI: Menggunakan toast kustom berdesain error
 		showToast('Simbol saham tidak valid! Gagal menyimpan.', 'error');
+		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
 	}
 
-	const finalAlertData = {
-		ticker: tickerInput,
-		entry: entryInput,
-		resistance: resistanceInput,
-		takeProfit: tpInput,
-		stopLoss: slInput,
-		timestamp: new Date().toISOString()
-	};
+	const now = new Date();
+	const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+	const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear().toString().slice(-2)}`;
 
-	// ---------------------------------------------------------
-	// PENTING: Ganti dengan fungsi penyimpan asli Anda
-	// simpanKeDaftarPantauanAsli(finalAlertData); 
-	// ---------------------------------------------------------
+	// Susun format data yang sesuai dengan sistem Alert utama
+	const newAlerts = [
+		{ price: slInput, label: 'Stop Loss', active: true, triggered: false, date: dateStr },
+		{ price: entryInput, label: 'Entry / Support', active: true, triggered: false, date: dateStr },
+		{ price: resistanceInput, label: 'Resistance', active: true, triggered: false, date: dateStr },
+		{ price: tpInput, label: 'Take Profit', active: true, triggered: false, date: dateStr }
+	];
+
+	// Eksekusi fungsi simpan dari sistem utama
+	saveAlerts(tickerInput, newAlerts);
+	openAlertDropdowns.add(tickerInput); 
+	renderAllAlerts();
 	
-	// REVISI: Menggunakan toast kustom berdesain sukses
-	showToast(`Alert saham ${tickerInput} berhasil disesuaikan dan disimpan.`, 'success');
+	showToast(`Alert saham $${tickerInput} berhasil disesuaikan dan disimpan.`, 'success');
+	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 	
 	closeEditAlertModal();
 }
