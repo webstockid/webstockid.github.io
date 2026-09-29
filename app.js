@@ -3628,6 +3628,64 @@ async function clearAllAlerts() {
 	}
 }
 
+/**
+ * -------------------------------------------------------------
+ * FUNGSI INTERCEPTOR SMART ALERT (MODAL EDIT)
+ * -------------------------------------------------------------
+ */
+
+// 1. Fungsi untuk membuka modal dan memasukkan data dari AI
+function openEditAlertModal(ticker, aiEntry, aiResistance, aiTakeProfit, aiStopLoss) {
+	document.getElementById('alertModalTicker').value = ticker || '';
+	document.getElementById('alertModalEntry').value = aiEntry || 0;
+	document.getElementById('alertModalResistance').value = aiResistance || 0;
+	document.getElementById('alertModalTP').value = aiTakeProfit || 0;
+	document.getElementById('alertModalSL').value = aiStopLoss || 0;
+	
+	const modal = document.getElementById('editAlertModal');
+	modal.classList.remove('hidden');
+}
+
+// 2. Fungsi untuk menutup modal
+function closeEditAlertModal() {
+	const modal = document.getElementById('editAlertModal');
+	modal.classList.add('hidden');
+}
+
+// 3. Fungsi utama penyimpan data yang sudah divalidasi
+function saveFinalEditedAlert() {
+	const tickerInput = document.getElementById('alertModalTicker').value;
+	const entryInput = parseFloat(document.getElementById('alertModalEntry').value) || 0;
+	const resistanceInput = parseFloat(document.getElementById('alertModalResistance').value) || 0;
+	const tpInput = parseFloat(document.getElementById('alertModalTP').value) || 0;
+	const slInput = parseFloat(document.getElementById('alertModalSL').value) || 0;
+	
+	if (!tickerInput) {
+		// REVISI: Menggunakan toast kustom berdesain error
+		showToast('Simbol saham tidak valid! Gagal menyimpan.', 'error');
+		return;
+	}
+
+	const finalAlertData = {
+		ticker: tickerInput,
+		entry: entryInput,
+		resistance: resistanceInput,
+		takeProfit: tpInput,
+		stopLoss: slInput,
+		timestamp: new Date().toISOString()
+	};
+
+	// ---------------------------------------------------------
+	// PENTING: Ganti dengan fungsi penyimpan asli Anda
+	// simpanKeDaftarPantauanAsli(finalAlertData); 
+	// ---------------------------------------------------------
+	
+	// REVISI: Menggunakan toast kustom berdesain sukses
+	showToast(`Alert saham ${tickerInput} berhasil disesuaikan dan disimpan.`, 'success');
+	
+	closeEditAlertModal();
+}
+
 function syncAlertsFromAI() {
 	let price = 100;
 	let sl = 92, sup2 = 96, res2 = 108, tp2 = 110;

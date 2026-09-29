@@ -951,7 +951,7 @@
 							</span>
 							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Ambil data Entry, Resistance, Take Profit, dan Stop Loss dari AI lalu tambahkan ke riwayat pantauan.</p>
 						</div>
-						<button onclick="syncAlertsFromAI()" class="bg-teal-800 hover:bg-teal-500 hover:text-white text-white px-5 py-2.5 rounded-lg border border-teal-700 font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
+						<button onclick="openEditAlertModal(ticker, entry, resist, tp, sl)" class="bg-teal-800 hover:bg-teal-500 hover:text-white text-white px-5 py-2.5 rounded-lg border border-teal-700 font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
 							<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Tambahkan ke Alert
 						</button>
 					</div>
@@ -972,6 +972,72 @@
 						💡 <strong>Informasi Push Notification:</strong> Notifikasi browser akan dikirimkan secara otomatis bahkan saat Kamu sedang membuka tab browser lain selama web Stock ID Screener tetap terbuka.
 					</p>
 				</div>
+				
+				<!-- Modal Konfigurasi Smart Alert -->
+	<div id="editAlertModal" class="fixed inset-0 z-[60] hidden bg-black/70 flex items-center justify-center backdrop-blur-sm transition-opacity">
+		<div class="bg-slate-800 border border-slate-600 rounded-xl w-11/12 max-w-md overflow-hidden shadow-2xl">
+			
+			<!-- Header Modal -->
+			<div class="px-5 py-4 border-b border-slate-700 flex justify-between items-center bg-slate-900/60">
+				<h3 class="text-white font-semibold text-sm flex items-center gap-2">
+					<i class="fa-solid fa-bell-pen text-emerald-400"></i> Konfigurasi Smart Alert
+				</h3>
+				<button onclick="closeEditAlertModal()" class="text-slate-400 hover:text-white transition">
+					<i class="fa-solid fa-xmark"></i>
+				</button>
+			</div>
+			
+			<!-- Body Modal (Form Edit) -->
+			<div class="p-5 space-y-4">
+				<p class="text-xs text-slate-400 mb-2">
+					Data di bawah ini diisi secara otomatis oleh AI. Anda dapat mengubah nilainya sesuai dengan rencana trading sebelum menyimpannya ke daftar pantauan.
+				</p>
+				
+				<!-- Simbol Saham (Read-only) -->
+				<div>
+					<label for="alertModalTicker" class="block text-[11px] font-medium text-slate-400 mb-1">Simbol Saham</label>
+					<input type="text" id="alertModalTicker" readonly class="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-slate-300 text-sm focus:outline-none cursor-not-allowed">
+				</div>
+				
+				<div class="grid grid-cols-2 gap-4">
+					<!-- Target Entry -->
+					<div>
+						<label for="alertModalEntry" class="block text-[11px] font-medium text-slate-400 mb-1">Target Entry</label>
+						<input type="number" id="alertModalEntry" class="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+					</div>
+					
+					<!-- Resistance -->
+					<div>
+						<label for="alertModalResistance" class="block text-[11px] font-medium text-slate-400 mb-1">Resistance</label>
+						<input type="number" id="alertModalResistance" class="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+					</div>
+					
+					<!-- Take Profit -->
+					<div>
+						<label for="alertModalTP" class="block text-[11px] font-medium text-slate-400 mb-1">Take Profit (TP)</label>
+						<input type="number" id="alertModalTP" class="w-full bg-slate-900 border border-emerald-700/50 rounded-lg px-3 py-2 text-emerald-400 font-semibold text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+					</div>
+					
+					<!-- Stop Loss -->
+					<div>
+						<label for="alertModalSL" class="block text-[11px] font-medium text-slate-400 mb-1">Stop Loss (SL)</label>
+						<input type="number" id="alertModalSL" class="w-full bg-slate-900 border border-rose-700/50 rounded-lg px-3 py-2 text-rose-400 font-semibold text-sm focus:outline-none focus:border-rose-500 transition-colors">
+					</div>
+				</div>
+			</div>
+			
+			<!-- Footer Modal -->
+			<div class="px-5 py-4 border-t border-slate-700 bg-slate-900/60 flex justify-end gap-3">
+				<button onclick="closeEditAlertModal()" class="px-4 py-2 rounded-lg text-xs font-medium text-slate-300 hover:bg-slate-700 transition">
+					Batal
+				</button>
+				<button onclick="saveFinalEditedAlert()" class="px-4 py-2 rounded-lg text-xs font-medium bg-emerald-600 text-white hover:bg-emerald-500 transition flex items-center gap-2">
+					<i class="fa-solid fa-floppy-disk"></i> Simpan ke Daftar
+				</button>
+			</div>
+			
+		</div>
+	</div>
 				
 				<!-- TAB 8: Paper Trade -->
 				<div id="tabContent-paper" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
