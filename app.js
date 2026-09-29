@@ -164,7 +164,7 @@ const AudioFX = {
 	playAudioFile(filename) {
 		if (isSoundMuted) return;
 		try {
-			const audio = new Audio(`stockid_suara/MC/${filename}`);
+			const audio = new Audio(`stockid_suara/s/${filename}`);
 			audio.play().catch(e => {});
 		} catch(e) {}
 	},
@@ -177,10 +177,11 @@ const AudioFX = {
 	playAlert() { this.playAudioFile('loss.mp3'); },
 	playTokenExpired() { this.playAudioFile('hilang.mp3'); },
 	playSearch() { this.playAudioFile('cari.mp3'); },
+	playNotif() { this.playAudioFile('notif.mp3'); },
 	playDelete(withPopup = false) {
 		this.playAudioFile('hapus.mp3');
 		if (withPopup) {
-			setTimeout(() => { this.playAudioFile('hilang.mp3'); }, 1200);
+			setTimeout(() => { this.playAudioFile('hilang.mp3'); }, 1800);
 		}
 	},
 	playWinJournal() { this.playAudioFile('win.mp3'); },
@@ -3813,9 +3814,9 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 10000) {
 			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} meledak ${stockData.volRatio}x lipat! Harga baru naik ${stockData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
-			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess(); 
+			if (typeof AudioFX !== 'undefined') AudioFX.playNotif(); 
 			sendBrowserPushNotification(`STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
-			showToast(alertMsg, "info", 10000); 
+			showToast(alertMsg, "info", 7000); 
 
 			// Tembak notifikasi paus langsung ke Telegram
 			const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume meledak <b>${stockData.volRatio}x lipat!</b>\nHarga naik <b>+${stockData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
