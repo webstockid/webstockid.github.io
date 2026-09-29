@@ -267,6 +267,81 @@ function initSystemSettings() {
 	applyFontStyle(savedFontFamily);
 	const fontSelect = document.getElementById('settingFontStyle');
 	if (fontSelect) fontSelect.value = savedFontFamily;
+
+	// Inisialisasi Pengaturan Notifikasi Baru
+	const savedSnoozeVal = localStorage.getItem('stockid_notif_snooze_val') || '0';
+	const snoozeInput = document.getElementById('settingNotifSnooze');
+	if (snoozeInput) {
+		snoozeInput.value = savedSnoozeVal;
+		applyNotifSnooze(savedSnoozeVal, true);
+	}
+
+	const savedNotifMute = localStorage.getItem('stockid_notif_mute_sound') === 'true';
+	const notifMuteInput = document.getElementById('settingNotifMuteSound');
+	if (notifMuteInput) notifMuteInput.checked = savedNotifMute;
+
+	const savedNotifType = localStorage.getItem('stockid_notif_type') || 'both';
+	const notifTypeInput = document.getElementById('settingNotifType');
+	if (notifTypeInput) notifTypeInput.value = savedNotifType;
+}
+
+function applyNotifSnooze(val, isInit = false) {
+	const value = parseInt(val);
+	const statusEl = document.getElementById('notifSnoozeStatus');
+	const estimateContainer = document.getElementById('notifSnoozeEstimate');
+	const resumeTimeEl = document.getElementById('notifResumeTime');
+	
+	if (!isInit) {
+		let target = 0;
+		const now = Date.now();
+		if (value === 1) target = now + (1 * 60 * 60 * 1000); // 1 Jam
+		else if (value === 2) target = now + (3 * 60 * 60 * 1000); // 3 Jam
+		else if (value === 3) target = now + (8 * 60 * 60 * 1000); // 8 Jam
+		else if (value === 4) target = now + (24 * 60 * 60 * 1000); // 1 Hari
+		
+		localStorage.setItem('stockid_notif_snooze_val', value);
+		localStorage.setItem('stockid_notif_snooze_target', target);
+		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	}
+
+	const currentTarget = parseInt(localStorage.getItem('stockid_notif_snooze_target') || '0');
+	
+	if (value === 0 || currentTarget < Date.now()) {
+		if (statusEl) {
+			statusEl.innerText = "Aktif";
+			statusEl.className = "text-emerald-400 font-bold text-[10px] lg:text-[11px] bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/30";
+		}
+		if (estimateContainer) estimateContainer.classList.add('hidden');
+		
+		// Auto reset UI jika expired
+		if (isInit && currentTarget > 0 && currentTarget < Date.now()) {
+			const snoozeInput = document.getElementById('settingNotifSnooze');
+			if (snoozeInput) snoozeInput.value = 0;
+			localStorage.setItem('stockid_notif_snooze_val', 0);
+			localStorage.setItem('stockid_notif_snooze_target', 0);
+		}
+	} else {
+		if (statusEl) {
+			statusEl.innerText = "Ditunda";
+			statusEl.className = "text-amber-400 font-bold text-[10px] lg:text-[11px] bg-amber-500/10 px-2 py-1 rounded border border-amber-500/30";
+		}
+		if (estimateContainer) estimateContainer.classList.remove('hidden');
+		
+		const dateObj = new Date(currentTarget);
+		const timeStr = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+		const dateStr = dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+		if (resumeTimeEl) resumeTimeEl.innerText = `${timeStr} WIB (${dateStr})`;
+	}
+}
+
+function applyNotifMuteSound(isChecked) {
+	localStorage.setItem('stockid_notif_mute_sound', isChecked);
+	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+}
+
+function applyNotifType(typeVal) {
+	localStorage.setItem('stockid_notif_type', typeVal);
+	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
 }
 
 function applyTheme(theme) {
@@ -3766,6 +3841,16 @@ function removePriceAlert(ticker, index) {
 
 function checkPriceAlertsRealtime(ticker, currentPrice) {
 	if (!currentPrice || currentPrice <= 0) return;
+	
+	// Cek Pengaturan Notifikasi Terbaru
+	const snoozeTarget = parseInt(localStorage.getItem('stockid_notif_snooze_target') || '0');
+	if (snoozeTarget > Date.now()) return; // Notifikasi sedang disnooze
+
+	const notifType = localStorage.getItem('stockid_notif_type') || 'both';
+	if (notifType === 'whales') return; // Hanya terima whales, abaikan smart alert
+
+	const muteNotifSound = localStorage.getItem('stockid_notif_mute_sound') === 'true';
+
 	let alerts = getAlerts(ticker);
 	let updated = false;
 
@@ -3782,13 +3867,15 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 				const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh area ${labelText} di Rp ${targetPrice.toLocaleString('id-ID')}`;
 				
 				// 1. Eksekusi Notifikasi Bawaan Aplikasi (Instant)
-				AudioFX.playSuccess();
+				if (!muteNotifSound && typeof AudioFX !== 'undefined') {
+					AudioFX.playSuccess();
+				}
 				showToast(alertMsg, "success");
 				
 				// 2. Eksekusi Browser Push Notification (Instant)
 				sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
 				
-				// 3. Eksekusi Telegram Webhook (Jalan di background, tanpa perlu "await")
+				// 3. Eksekusi Telegram Webhook
 				const telegramMsg = `🚨 <b>SMART ALERT STOCK ID</b> 🚨\nSaham: <b>${ticker}</b>\nStatus: <b>Menyentuh ${labelText}</b>\nHarga Terkini: <b>Rp ${currentPrice.toLocaleString('id-ID')}</b>`;
 				sendTelegramAlert(telegramMsg);
 
@@ -3810,6 +3897,15 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 function checkWhaleAlertRealtime(ticker, stockData) {
 	if (!stockData || !stockData.price) return;
 	
+	// Cek Pengaturan Notifikasi Terbaru
+	const snoozeTarget = parseInt(localStorage.getItem('stockid_notif_snooze_target') || '0');
+	if (snoozeTarget > Date.now()) return; // Notifikasi sedang disnooze
+
+	const notifType = localStorage.getItem('stockid_notif_type') || 'both';
+	if (notifType === 'smart_alert') return; // Hanya terima smart alert, abaikan whales
+
+	const muteNotifSound = localStorage.getItem('stockid_notif_mute_sound') === 'true';
+	
 	if (stockData.volRatio >= 2.0 && stockData.changePct >= 0 && stockData.changePct <= 5.0) {
 		const lastAlertKey = `whale_alert_${ticker}`;
 		const lastAlertTime = localStorage.getItem(lastAlertKey);
@@ -3818,7 +3914,11 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 10000) {
 			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} meledak ${stockData.volRatio}x lipat! Harga baru naik ${stockData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
-			if (typeof AudioFX !== 'undefined') AudioFX.playNotif(); 
+			// Eksekusi Notifikasi dengan logika mute
+			if (!muteNotifSound && typeof AudioFX !== 'undefined') {
+				AudioFX.playNotif(); 
+			}
+			
 			sendBrowserPushNotification(`STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
 			showToast(alertMsg, "info", 7000); 
 
