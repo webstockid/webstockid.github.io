@@ -229,8 +229,10 @@ document.addEventListener('click', function(e) {
 		const isPopupAction = !isNormalDelete && (
 			textContent.includes('Hapus Semua') || 
 			textContent.includes('Bersihkan Semua') || 
+			textContent.includes('Reset Akun') || 
 			onclickAttr.includes('clearJournalHistory') || 
 			onclickAttr.includes('clearAllAlerts') ||
+			onclickAttr.includes('ptResetAccount') ||
 			onclickAttr.includes('closeCuanCelebration') ||
 			onclickAttr.includes('closeLossCelebration') ||
 			textContent === '✕' || 
@@ -1800,6 +1802,7 @@ async function clearJournalHistory() {
 		localStorage.removeItem('stockid_trading_journal');
 		renderJournalTable();
 		showToast("Riwayat Journal Trading berhasil dibersihkan.");
+		AudioFX.playTokenExpired();
 	}
 }
 
@@ -2358,7 +2361,7 @@ function toggleCustomDropdown(dropdownId) {
 
 	if (isHidden) {
 		dropdown.classList.remove('hidden');
-		if (typeof AudioFX !== 'undefined') AudioFX.playDelete();
+		// if (typeof AudioFX !== 'undefined') AudioFX.playDelete();
 	}
 }
 
@@ -2601,6 +2604,7 @@ function savePaperAccount(acc) {
 
 function ptSyncCurrentTicker() {
 	if (!globalStockData || !globalStockData.ticker) {
+		AudioFX.playSuccess();
 		showToast("Pilih saham terlebih dahulu pada pencarian!", "warning");
 		return;
 	}
@@ -2723,7 +2727,7 @@ function ptResetAccount() {
 			localStorage.removeItem('stockid_paper_account');
 			renderPaperTradingUI();
 			showToast("Akun Paper Trading berhasil direset.");
-			AudioFX.playSuccess();
+			AudioFX.playTokenExpired();
 		}
 	});
 }
@@ -3625,7 +3629,7 @@ async function clearAllAlerts() {
 		keysToRemove.forEach(k => localStorage.removeItem(k));
 		renderAllAlerts();
 		showToast("Semua Alert berhasil dibersihkan.");
-		AudioFX.playSuccess();
+		AudioFX.playTokenExpired();
 	}
 }
 
