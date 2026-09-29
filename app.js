@@ -169,7 +169,7 @@ const AudioFX = {
 		} catch(e) {}
 	},
 	playClick() {
-		const clicks = ['klik1.mp3', 'klik2.mp3', 'klik3.mp3', 'klik4.mp3'];
+		const clicks = ['klik1.mp3'];
 		const randomClick = clicks[Math.floor(Math.random() * clicks.length)];
 		this.playAudioFile(randomClick);
 	},
