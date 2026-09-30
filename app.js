@@ -4642,9 +4642,9 @@ async function loadLiveMacro() {
     const symbols = 'IDR=X,GC=F,CL=F,^TNX'; 
     const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
     
-    // Sistem 3 Proxy Cadangan untuk mengatasi "Kadang Muncul Kadang Tidak"
+    // Sistem 3 Proxy Cadangan dengan /get untuk allorigins
     const proxies = [
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+        `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
         `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
         `https://corsproxy.io/?${encodeURIComponent(url)}`
     ];
@@ -4652,10 +4652,21 @@ async function loadLiveMacro() {
     let data = null;
     for (let proxy of proxies) {
         try {
-            const response = await fetch(proxy, { signal: AbortSignal.timeout(8000) }); // Timeout 8 detik
+            const response = await fetch(proxy, { signal: AbortSignal.timeout(8000) });
             if (response.ok) {
-                data = await response.json();
-                break; // Berhenti mencari jika proxy berhasil
+                let resData = await response.json();
+                
+                // Parsing khusus untuk allorigins.win/get
+                if (proxy.includes('allorigins')) {
+                    data = JSON.parse(resData.contents);
+                } else {
+                    data = resData;
+                }
+                
+                // Validasi kelengkapan data sebelum memutus loop
+                if (data && data.quoteResponse && data.quoteResponse.result) {
+                    break;
+                }
             }
         } catch (error) {
             console.warn(`Proxy gagal memuat makro: ${proxy}`);
