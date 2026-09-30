@@ -630,6 +630,19 @@
 								Menghubungkan ke server bursa untuk mengambil data real-time...
 							</div>
 							<div id="aiActionBoard" class="hidden flex flex-col space-y-2 mt-3 pt-3 border-t border-slate-800/80"></div>
+							<!-- 1. MULTI-TIMEFRAME AI ANALYSIS -->
+							<div class="mt-4 pt-4 border-t border-slate-800/80">
+								<h4 class="text-[11px] lg:text-xs font-bold text-white mb-2 flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5 text-blue-400"></i> MULTI-TIMEFRAME ANALYSIS</h4>
+								<div class="flex space-x-2 mb-3 overflow-x-auto scrollbar-thin pb-1">
+									<button class="px-3 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-300 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap" onclick="analyzeAITimeframe('15m', '5d')">15 Min</button>
+									<button class="px-3 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-300 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap" onclick="analyzeAITimeframe('60m', '1mo')">1 Hour</button>
+									<button class="px-3 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-300 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap" onclick="analyzeAITimeframe('1d', '3mo')">1 Day</button>
+									<button class="px-3 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-300 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap" onclick="analyzeAITimeframe('1wk', '1y')">1 Week</button>
+								</div>
+								<div id="ai-tf-result" class="text-[10px] lg:text-[11px] text-slate-400">
+									Pilih timeframe di atas untuk melihat analisis tren intraday hingga jangka panjang.
+								</div>
+							</div>
 						</div>
 
 						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
@@ -1254,6 +1267,60 @@
 							<div class="pt-2 border-t border-slate-800/80">
 								<div id="rrrEvaluationBadge" class="p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-slate-900 text-white">
 									Masukkan harga Entry, SL, dan TP untuk evaluasi AI.
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- 2. KALKULATOR AVERAGING DOWN / UP -->
+					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 mt-4 shadow-xl">
+						<span class="text-[11px] lg:text-xs font-bold text-amber-400 uppercase tracking-wider block mb-4 flex items-center gap-1.5">
+							<i data-lucide="layers" class="w-4 h-4"></i> Kalkulator Averaging Down / Up
+						</span>
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+							<!-- Portofolio Saat Ini -->
+							<div class="space-y-3 bg-slate-900/50 p-3 lg:p-4 rounded-xl border border-slate-800/80">
+								<span class="text-[10px] lg:text-[11px] font-bold text-slate-300 uppercase block border-b border-slate-700/80 pb-2">Posisi Saat Ini</span>
+								<div class="grid grid-cols-2 gap-3">
+									<div>
+										<label class="block text-[10px] lg:text-[11px] text-slate-400 mb-1">Harga Rata-rata (Avg)</label>
+										<input type="number" id="avg-current-price" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-xs lg:text-sm focus:outline-none focus:border-amber-500" placeholder="Contoh: 1500" oninput="calculateAveraging()">
+									</div>
+									<div>
+										<label class="block text-[10px] lg:text-[11px] text-slate-400 mb-1">Jumlah Lot</label>
+										<input type="number" id="avg-current-lot" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-xs lg:text-sm focus:outline-none focus:border-amber-500" placeholder="Contoh: 100" oninput="calculateAveraging()">
+									</div>
+								</div>
+							</div>
+							<!-- Rencana Pembelian Baru -->
+							<div class="space-y-3 bg-slate-900/50 p-3 lg:p-4 rounded-xl border border-slate-800/80">
+								<span class="text-[10px] lg:text-[11px] font-bold text-cyan-400 uppercase block border-b border-slate-700/80 pb-2">Rencana Beli Baru</span>
+								<div class="grid grid-cols-2 gap-3">
+									<div>
+										<label class="block text-[10px] lg:text-[11px] text-slate-400 mb-1">Harga Beli Baru</label>
+										<input type="number" id="avg-new-price" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-xs lg:text-sm focus:outline-none focus:border-cyan-500" placeholder="Contoh: 1350" oninput="calculateAveraging()">
+									</div>
+									<div>
+										<label class="block text-[10px] lg:text-[11px] text-slate-400 mb-1">Jumlah Lot Baru</label>
+										<input type="number" id="avg-new-lot" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-xs lg:text-sm focus:outline-none focus:border-cyan-500" placeholder="Contoh: 200" oninput="calculateAveraging()">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Hasil Averaging -->
+						<div class="mt-4 p-3 lg:p-4 bg-slate-900/80 rounded-xl border border-slate-700 shadow-inner">
+							<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px] lg:text-xs">
+								<div class="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800 text-center">
+									<span class="text-slate-400 block mb-1">Harga Rata-rata Baru (New Avg)</span>
+									<span id="avg-result-price" class="text-sm lg:text-base font-bold text-amber-400">Rp 0</span>
+								</div>
+								<div class="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800 text-center">
+									<span class="text-slate-400 block mb-1">Total Lot Akhir</span>
+									<span id="avg-result-lot" class="text-sm lg:text-base font-bold text-white">0 Lot</span>
+								</div>
+								<div class="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800 text-center">
+									<span class="text-slate-400 block mb-1">Total Dana Diperlukan</span>
+									<span id="avg-result-fund" class="text-sm lg:text-base font-bold text-cyan-400">Rp 0</span>
 								</div>
 							</div>
 						</div>

@@ -991,30 +991,6 @@ function renderFMPTable(portfolioData) {
 	tableBody.innerHTML = html;
 }
 
-function renderFMPTable(portfolioData) {
-	const tableBody = document.getElementById('insiderTableBody');
-	let html = '';
-	
-	portfolioData.forEach(item => {
-		const sharesFormatted = new Intl.NumberFormat('id-ID').format(item.shares);
-		const valueFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(item.value);
-		
-		// Penambahan style "border-b border-slate-800/50 last:border-0" agar pemisah tabel lebih rapi
-		html += `
-			<tr class="hover:bg-slate-800/40 transition-colors border-b border-slate-800/50 last:border-0">
-				<th scope="row" class="p-3.5 font-medium text-white whitespace-nowrap">
-					<span class="bg-indigo-500/20 text-indigo-400 text-[10px] font-bold px-2.5 py-1 rounded border border-indigo-500/30">${item.tickcusip || '-'}</span>
-				</th>
-				<td class="p-3.5 text-slate-300 font-medium truncate max-w-[200px]" title="${item.nameOfIssuer || '-'}">${item.nameOfIssuer || '-'}</td>
-				<td class="p-3.5 text-amber-400 font-bold text-right">${sharesFormatted}</td>
-				<td class="p-3.5 text-emerald-400 font-bold text-right">${valueFormatted}</td>
-			</tr>
-		`;
-	});
-
-	tableBody.innerHTML = html;
-}
-
 // ==========================================
 // 10. DATA FETCHING (DEDUPLICATION ENGINE)
 // ==========================================
@@ -1318,8 +1294,8 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		if (stockData.price > stockData.ma20 && stockData.changePct > 4 && stockData.volRatio >= 2) {
 			score = 5;
 			verdik = "STRONG BULLISH BREAKOUT";
-			verdikClass = "font-bold text-green-400 text-sm lg:text-base";
-			scoreClass = "font-bold bg-slate-800 text-green-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+			verdikClass = "font-bold text-teal-400 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-teal-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if (stockData.price > stockData.ma20 && stockData.changePct > 1 && stockData.volRatio >= 2) {
 			score = 4;
 			verdik = "BULLISH ACCUMULATION";
@@ -1353,13 +1329,13 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		} else if (stockData.price < stockData.ma20 && stockData.changePct < -4 && stockData.changePct <= 1) {
 			score = 1;
 			verdik = "SELLING PRESSURE";
-			verdikClass = "font-bold text-red-500 text-sm lg:text-base";
-			scoreClass = "font-bold bg-slate-800 text-red-500 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+			verdikClass = "font-bold text-red-400 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-red-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if (stockData.price < stockData.ma20 && stockData.changePct < -8 && stockData.changePct <= 1) {
 			score = 1;
 			verdik = "SELLING PRESSURE";
-			verdikClass = "font-bold text-red-500 text-sm lg:text-base";
-			scoreClass = "font-bold bg-slate-800 text-red-500 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+			verdikClass = "font-bold text-red-400 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-red-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		}
 
 		verdikEl.innerText = verdik;
@@ -4529,7 +4505,127 @@ function checkUrlParamTicker() {
 }
 
 // ==========================================
-// 27. MACRO & COMMODITY DASHBOARD (REAL-TIME)
+// 27. MULTI-TIMEFRAME AI ANALYSIS
+// ==========================================
+async function analyzeAITimeframe(interval, range) {
+	const targetSymbol = `${currentTicker}.JK`;
+	const resultContainer = document.getElementById('ai-tf-result');
+	
+	if (!resultContainer) return;
+	
+	resultContainer.innerHTML = `<div class="flex items-center gap-2 text-amber-400 animate-pulse py-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Menganalisis pergerakan timeframe ${interval}...</div>`;
+	if (window.lucide) lucide.createIcons();
+
+	try {
+		const url = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=${interval}&range=${range}`;
+		const proxies = [
+			`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+			`https://corsproxy.io/?${encodeURIComponent(url)}`
+		];
+		
+		let data = null;
+		for (let p of proxies) {
+			try {
+				const res = await fetch(p, { signal: AbortSignal.timeout(6000) });
+				if (res.ok) { 
+					data = await res.json(); 
+					break; 
+				}
+			} catch(e) {
+				console.warn(`Proxy gagal untuk timeframe: ${p}`);
+			}
+		}
+		
+		if (!data || !data.chart || !data.chart.result || data.chart.result.length === 0) {
+			throw new Error("Data bursa tidak merespons atau kosong.");
+		}
+
+		const quotes = data.chart.result[0].indicators.quote[0];
+		const closes = quotes.close.filter(c => c !== null && c !== undefined);
+		const volumes = quotes.volume.filter(v => v !== null && v !== undefined);
+
+		if (closes.length < 5) {
+			throw new Error("Data candlestick terlalu sedikit untuk dianalisis.");
+		}
+
+		const currentClose = closes[closes.length - 1];
+		const prevClose = closes[closes.length - 2];
+		const avgVol = volumes.slice(-5).reduce((a, b) => a + b, 0) / 5;
+		const currentVol = volumes[volumes.length - 1];
+
+		const changePct = (((currentClose - prevClose) / prevClose) * 100).toFixed(2);
+		let trend = currentClose > prevClose ? "BULLISH" : (currentClose < prevClose ? "BEARISH" : "SIDEWAYS");
+		let momentum = currentVol > avgVol ? "STRONG (Spike)" : "WEAK (Dry)";
+		
+		let signalColor = trend === "BULLISH" ? "text-emerald-400" : (trend === "BEARISH" ? "text-rose-400" : "text-amber-400");
+		let iconTrend = trend === "BULLISH" ? "trending-up" : (trend === "BEARISH" ? "trending-down" : "minus");
+
+		resultContainer.innerHTML = `
+			<div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700 mt-2 text-[11px] lg:text-xs shadow-inner transition-all">
+				<div class="flex justify-between items-center mb-2 border-b border-slate-800 pb-2">
+					<span class="text-slate-400 flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Timeframe Chart:</span>
+					<span class="font-bold text-white uppercase bg-slate-800 px-2 py-0.5 rounded border border-slate-700">${interval}</span>
+				</div>
+				<div class="flex justify-between items-center mb-1.5">
+					<span class="text-slate-400">Status Harga Terakhir:</span>
+					<span class="font-bold text-white">Rp ${currentClose.toLocaleString('id-ID')} (<span class="${signalColor}">${changePct > 0 ? '+' : ''}${changePct}%</span>)</span>
+				</div>
+				<div class="flex justify-between items-center mb-1.5">
+					<span class="text-slate-400">Trend Signal (Micro):</span>
+					<span class="font-bold ${signalColor} flex items-center gap-1"><i data-lucide="${iconTrend}" class="w-3.5 h-3.5"></i> ${trend}</span>
+				</div>
+				<div class="flex justify-between items-center">
+					<span class="text-slate-400">Momentum Volume:</span>
+					<span class="font-bold ${currentVol > avgVol ? 'text-blue-400' : 'text-slate-400'}">${momentum}</span>
+				</div>
+			</div>
+		`;
+		if (window.lucide) lucide.createIcons();
+		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	} catch (error) {
+		resultContainer.innerHTML = `
+			<div class="bg-rose-500/10 border border-rose-500/30 p-2.5 rounded-lg mt-2 text-rose-400 text-[10px] lg:text-[11px] flex items-center gap-1.5">
+				<i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> Gagal memuat analisis: ${error.message}
+			</div>
+		`;
+		if (window.lucide) lucide.createIcons();
+	}
+}
+
+// ==========================================
+// 28. KALKULATOR AVERAGING DOWN / UP
+// ==========================================
+function calculateAveraging() {
+	const currentPrice = parseFloat(document.getElementById('avg-current-price').value) || 0;
+	const currentLot = parseFloat(document.getElementById('avg-current-lot').value) || 0;
+	const newPrice = parseFloat(document.getElementById('avg-new-price').value) || 0;
+	const newLot = parseFloat(document.getElementById('avg-new-lot').value) || 0;
+
+	if (currentPrice === 0 && newPrice === 0) {
+		document.getElementById('avg-result-price').innerText = "Rp 0";
+		document.getElementById('avg-result-lot').innerText = "0 Lot";
+		document.getElementById('avg-result-fund').innerText = "Rp 0";
+		return;
+	}
+
+	const currentTotalValue = currentPrice * (currentLot * 100);
+	const newTotalValue = newPrice * (newLot * 100);
+	const totalValue = currentTotalValue + newTotalValue;
+	const totalLot = currentLot + newLot;
+	
+	let newAvgPrice = 0;
+	if (totalLot > 0) {
+		newAvgPrice = totalValue / (totalLot * 100);
+	}
+
+	document.getElementById('avg-result-price').innerText = `Rp ${Math.round(newAvgPrice).toLocaleString('id-ID')}`;
+	document.getElementById('avg-result-lot').innerText = `${totalLot.toLocaleString('id-ID')} Lot`;
+	document.getElementById('avg-result-fund').innerText = `Rp ${Math.round(newTotalValue).toLocaleString('id-ID')}`;
+}
+
+// ==========================================
+// 29. MACRO & COMMODITY DASHBOARD (REAL-TIME)
 // ==========================================
 async function fetchMacroAndCommodities() {
 	const container = document.getElementById('macroRadarContainer');
