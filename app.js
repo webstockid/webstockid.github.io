@@ -257,18 +257,19 @@ document.addEventListener('click', function(e) {
 function initSystemSettings() {
 	const savedTheme = localStorage.getItem('stockid_theme') || 'dark';
 	applyTheme(savedTheme);
-	const themeSelect = document.getElementById('settingTheme');
-	if (themeSelect) themeSelect.value = savedTheme;
+	const themeRadio = document.querySelector(`input[name="settingTheme"][value="${savedTheme}"]`);
+	if (themeRadio) themeRadio.checked = true;
+
 	const savedFontSize = localStorage.getItem('stockid_font_size') || '16';
 	applyFontSize(savedFontSize);
 	const fontInput = document.getElementById('settingFontSize');
 	if (fontInput) fontInput.value = savedFontSize;
+
 	const savedFontFamily = localStorage.getItem('stockid_font_family') || 'Lexend';
 	applyFontStyle(savedFontFamily);
-	const fontSelect = document.getElementById('settingFontStyle');
-	if (fontSelect) fontSelect.value = savedFontFamily;
+	const fontRadio = document.querySelector(`input[name="settingFontStyle"][value="${savedFontFamily}"]`);
+	if (fontRadio) fontRadio.checked = true;
 
-	// Inisialisasi Pengaturan Notifikasi Baru
 	const savedSnoozeVal = localStorage.getItem('stockid_notif_snooze_val') || '0';
 	const snoozeInput = document.getElementById('settingNotifSnooze');
 	if (snoozeInput) {
@@ -281,8 +282,8 @@ function initSystemSettings() {
 	if (notifMuteInput) notifMuteInput.checked = savedNotifMute;
 
 	const savedNotifType = localStorage.getItem('stockid_notif_type') || 'both';
-	const notifTypeInput = document.getElementById('settingNotifType');
-	if (notifTypeInput) notifTypeInput.value = savedNotifType;
+	const notifTypeRadio = document.querySelector(`input[name="settingNotifType"][value="${savedNotifType}"]`);
+	if (notifTypeRadio) notifTypeRadio.checked = true;
 }
 
 function applyNotifSnooze(val, isInit = false) {
@@ -3924,7 +3925,6 @@ async function fetchRealtimeFundamentals(ticker) {
 	const container = document.getElementById('yahooFundamentalContainer');
 	const tvContainer = document.getElementById('tv_fundamental_container');
 	
-	// Sembunyikan TradingView Container secara permanen
 	if (tvContainer) {
 		tvContainer.innerHTML = '';
 		tvContainer.classList.add('hidden');
@@ -3932,76 +3932,83 @@ async function fetchRealtimeFundamentals(ticker) {
 
 	if (!container) return;
 
-	// Ubah Label Header ke API Baru
 	const labelMetrik = document.querySelector('#tabContent-fundamental .text-fuchsia-400.font-bold:not(#fundTickerLabel)');
 	if (labelMetrik) {
-		labelMetrik.innerHTML = '<i data-lucide="database" class="w-3.5 h-3.5 inline"></i> Financial Modeling Prep API';
+		labelMetrik.innerHTML = '<i data-lucide="database" class="w-3.5 h-3.5 inline"></i> Global Financial Data API (Free)';
 	}
 
 	container.classList.remove('hidden');
 	container.innerHTML = `
 		<div class="flex flex-col items-center justify-center py-12 space-y-3">
 			<i data-lucide="loader-2" class="w-8 h-8 animate-spin text-fuchsia-400"></i>
-			<span class="text-xs text-slate-400 animate-pulse">Mengambil data fundamental real-time dari FMP API...</span>
+			<span class="text-xs text-slate-400 animate-pulse">Mengekstrak data fundamental perusahaan secara real-time...</span>
 		</div>
 	`;
 	if (window.lucide) lucide.createIcons();
 
-	// ⚠️ KUNCI API FMP (HARAP GANTI)
-	// Daftar gratis di financialmodelingprep.com untuk mendapatkan API Key
-	const FMP_API_KEY = "sQcbrQE9VKor9rWHYmoKxVf6DF2nrKx5";
-
 	try {
-		if (!FMP_API_KEY) {
-			container.innerHTML = `
-				<div class="bg-rose-500/10 border border-rose-500/30 p-5 rounded-xl text-center space-y-3 shadow-sm">
-					<i data-lucide="key" class="w-8 h-8 text-rose-400 mx-auto"></i>
-					<h4 class="text-sm font-bold text-white">API Key Fundamental Belum Diisi</h4>
-					<p class="text-xs text-slate-400 leading-relaxed max-w-md mx-auto">
-						Fitur ini menggunakan <strong>Financial Modeling Prep (FMP)</strong>.
-					</p>
-				</div>
-			`;
-			if (window.lucide) lucide.createIcons();
-			return;
-		}
-
 		const targetSymbol = `${ticker}.JK`;
-		const [profileRes, metricsRes] = await Promise.all([
-			fetch(`https://financialmodelingprep.com/api/v3/profile/${targetSymbol}?apikey=${FMP_API_KEY}`, { signal: AbortSignal.timeout(8000) }),
-			fetch(`https://financialmodelingprep.com/api/v3/key-metrics/${targetSymbol}?limit=1&apikey=${FMP_API_KEY}`, { signal: AbortSignal.timeout(8000) })
-		]);
+		const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${targetSymbol}?modules=summaryDetail,defaultKeyStatistics,financialData,assetProfile`;
+		
+		const proxies = [
+			`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+			`https://corsproxy.io/?${encodeURIComponent(url)}`
+		];
 
-		const profileData = await profileRes.json();
-		const metricsData = await metricsRes.json();
-
-		if (!profileData || profileData.length === 0 || profileData["Error Message"]) {
-			throw new Error(profileData["Error Message"] || "Data fundamental perusahaan tidak ditemukan di database global.");
+		let result = null;
+		for (let i = 0; i < proxies.length; i++) {
+			try {
+				const res = await fetch(proxies[i], { signal: AbortSignal.timeout(7000) });
+				if (!res.ok) continue;
+				let data = await res.json();
+				if (proxies[i].includes('allorigins')) data = JSON.parse(data.contents);
+				
+				if (data && data.quoteSummary && data.quoteSummary.result) {
+					result = data.quoteSummary.result[0];
+					break;
+				}
+			} catch (e) {
+				console.warn(`Proxy ${i} failed for fundamentals.`);
+			}
 		}
 
-		const profile = profileData[0];
-		const metrics = (metricsData && metricsData.length > 0) ? metricsData[0] : {};
+		if (!result) {
+			throw new Error("Data fundamental perusahaan tidak ditemukan di database global.");
+		}
 
-		const mktCap = profile.mktCap ? formatValuationIDR(profile.mktCap) : 'N/A';
-		const peRatio = metrics.peRatio ? metrics.peRatio.toFixed(2) + 'x' : 'N/A';
-		const pbRatio = metrics.pbRatio ? metrics.pbRatio.toFixed(2) + 'x' : 'N/A';
-		const divYield = profile.lastDiv ? (profile.lastDiv).toFixed(2) + '%' : '0.00%';
-		const roe = metrics.roe ? (metrics.roe * 100).toFixed(2) + '%' : 'N/A';
-		const debtToEquity = metrics.debtToEquity ? metrics.debtToEquity.toFixed(2) + 'x' : 'N/A';
-		const beta = profile.beta ? profile.beta.toFixed(2) : 'N/A';
+		// Ekstraksi Objek
+		const profile = result.assetProfile || {};
+		const summary = result.summaryDetail || {};
+		const stats = result.defaultKeyStatistics || {};
+		const finance = result.financialData || {};
+
+		// Formatting Data (Fallback ke N/A jika null)
+		const companyName = profile.longName || ticker;
+		const sector = profile.sector || 'Sektor N/A';
+		const industry = profile.industry || 'Industri N/A';
+		const website = profile.website || '#';
+		const description = profile.longBusinessSummary || 'Deskripsi perusahaan belum tersedia di database.';
+
+		const mktCap = summary.marketCap?.raw ? formatValuationIDR(summary.marketCap.raw) : 'N/A';
+		const peRatio = summary.trailingPE?.raw ? summary.trailingPE.raw.toFixed(2) + 'x' : 'N/A';
+		const pbRatio = stats.priceToBook?.raw ? stats.priceToBook.raw.toFixed(2) + 'x' : 'N/A';
+		const divYield = summary.dividendYield?.raw ? (summary.dividendYield.raw * 100).toFixed(2) + '%' : '0.00%';
+		const roe = finance.returnOnEquity?.raw ? (finance.returnOnEquity.raw * 100).toFixed(2) + '%' : 'N/A';
+		const debtToEquity = finance.debtToEquity?.raw ? (finance.debtToEquity.raw / 100).toFixed(2) + 'x' : 'N/A';
+		const beta = stats.beta?.raw ? stats.beta.raw.toFixed(2) : 'N/A';
 
 		container.innerHTML = `
 			<div class="space-y-4">
 				<div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 flex items-start gap-4 shadow-sm">
-					${profile.image ? `<img src="${profile.image}" class="w-12 h-12 rounded-lg bg-white p-1 object-contain shrink-0" onerror="this.style.display='none'">` : ''}
 					<div>
-						<h3 class="text-base lg:text-lg font-bold text-white mb-1">${profile.companyName || ticker}</h3>
+						<h3 class="text-base lg:text-lg font-bold text-white mb-1">${companyName}</h3>
 						<div class="flex flex-wrap gap-2 text-[10px] lg:text-[11px] mb-2">
-							<span class="bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/30 px-2 py-0.5 rounded font-bold">${profile.sector || 'Sektor N/A'}</span>
-							<span class="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded font-bold">${profile.industry || 'Industri N/A'}</span>
-							<span class="bg-slate-800 text-slate-300 border border-slate-700 px-2 py-0.5 rounded font-bold">${profile.exchangeShortName || 'IDX'}</span>
+							<span class="bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/30 px-2 py-0.5 rounded font-bold">${sector}</span>
+							<span class="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded font-bold">${industry}</span>
+							<span class="bg-slate-800 text-slate-300 border border-slate-700 px-2 py-0.5 rounded font-bold">IDX</span>
 						</div>
-						<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed line-clamp-3">${profile.description || 'Deskripsi perusahaan belum tersedia di database API.'}</p>
+						<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed line-clamp-3">${description}</p>
 					</div>
 				</div>
 
@@ -4036,7 +4043,7 @@ async function fetchRealtimeFundamentals(ticker) {
 					</div>
 					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center flex flex-col justify-center">
 						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Website Resmi</span>
-						<a href="${profile.website}" target="_blank" class="text-[10px] lg:text-xs font-bold text-sky-400 hover:underline mt-1 truncate">Kunjungi <i data-lucide="external-link" class="w-3 h-3 inline"></i></a>
+						${website !== '#' ? `<a href="${website}" target="_blank" class="text-[10px] lg:text-xs font-bold text-sky-400 hover:underline mt-1 truncate">Kunjungi <i data-lucide="external-link" class="w-3 h-3 inline"></i></a>` : '<span class="text-[10px] lg:text-xs font-bold text-slate-500 mt-1">Tidak Tersedia</span>'}
 					</div>
 				</div>
 			</div>
@@ -4477,17 +4484,35 @@ function checkUrlParamTicker() {
 // ==========================================
 // 27. MULTI-TIMEFRAME AI ANALYSIS
 // ==========================================
-async function analyzeAITimeframe(interval, range) {
+async function analyzeAITimeframe(tfLabel) {
 	const targetSymbol = `${currentTicker}.JK`;
 	const resultContainer = document.getElementById('ai-tf-result');
 	
 	if (!resultContainer) return;
 	
-	resultContainer.innerHTML = `<div class="flex items-center gap-2 text-amber-400 animate-pulse py-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Menganalisis pergerakan timeframe ${interval}...</div>`;
+	let displayLabel = tfLabel;
+	if (tfLabel === '15m') displayLabel = '15 Menit';
+	if (tfLabel === '30m') displayLabel = '30 Menit';
+	if (tfLabel === '1h') displayLabel = '1 Jam';
+	if (tfLabel === '3h') displayLabel = '3 Jam';
+	if (tfLabel === '6h') displayLabel = '6 Jam';
+
+	resultContainer.innerHTML = `<div class="flex items-center gap-2 text-amber-400 animate-pulse py-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Menganalisis pergerakan timeframe ${displayLabel}...</div>`;
 	if (window.lucide) lucide.createIcons();
 
 	try {
-		const url = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=${interval}&range=${range}`;
+		// Konfigurasi Parameter (Yahoo Finance tidak mendukung native 3h dan 6h, maka kita agregasi dari data 60m/1h)
+		let apiInterval = '15m'; 
+		let apiRange = '5d';
+		let lookbackCandles = 2; // Default perbandingan 1 candle sebelumnya
+
+		if (tfLabel === '15m') { apiInterval = '15m'; apiRange = '5d'; }
+		else if (tfLabel === '30m') { apiInterval = '30m'; apiRange = '5d'; }
+		else if (tfLabel === '1h') { apiInterval = '60m'; apiRange = '1mo'; }
+		else if (tfLabel === '3h') { apiInterval = '60m'; apiRange = '1mo'; lookbackCandles = 3; } // Bandingkan harga sekarang dgn 3 jam (3 candle) lalu
+		else if (tfLabel === '6h') { apiInterval = '60m'; apiRange = '1mo'; lookbackCandles = 6; } // Bandingkan harga sekarang dgn 6 jam (6 candle) lalu
+
+		const url = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=${apiInterval}&range=${apiRange}`;
 		const proxies = [
 			`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
 			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
@@ -4515,18 +4540,21 @@ async function analyzeAITimeframe(interval, range) {
 		const closes = quotes.close.filter(c => c !== null && c !== undefined);
 		const volumes = quotes.volume.filter(v => v !== null && v !== undefined);
 
-		if (closes.length < 5) {
-			throw new Error("Data candlestick terlalu sedikit untuk dianalisis.");
+		if (closes.length < lookbackCandles) {
+			throw new Error("Data candlestick terlalu sedikit untuk rentang waktu ini.");
 		}
 
+		// Kalkulasi berdasarkan Lookback yang telah disesuaikan
 		const currentClose = closes[closes.length - 1];
-		const prevClose = closes[closes.length - 2];
-		const avgVol = volumes.slice(-5).reduce((a, b) => a + b, 0) / 5;
-		const currentVol = volumes[volumes.length - 1];
+		const prevClose = closes[closes.length - lookbackCandles] || closes[0]; 
+		
+		// Rerata volume sesuai jumlah rentang candle
+		const avgVol = volumes.slice(-lookbackCandles).reduce((a, b) => a + b, 0) / lookbackCandles;
+		const currentVol = volumes.slice(-(Math.ceil(lookbackCandles / 2))).reduce((a, b) => a + b, 0) / Math.ceil(lookbackCandles / 2); // Volume terbaru relatif
 
 		const changePct = (((currentClose - prevClose) / prevClose) * 100).toFixed(2);
 		let trend = currentClose > prevClose ? "BULLISH" : (currentClose < prevClose ? "BEARISH" : "SIDEWAYS");
-		let momentum = currentVol > avgVol ? "STRONG (Spike)" : "WEAK (Dry)";
+		let momentum = currentVol > (avgVol * 1.1) ? "STRONG (Akumulasi)" : "WEAK (Distribusi/Sepi)";
 		
 		let signalColor = trend === "BULLISH" ? "text-emerald-400" : (trend === "BEARISH" ? "text-rose-400" : "text-amber-400");
 		let iconTrend = trend === "BULLISH" ? "trending-up" : (trend === "BEARISH" ? "trending-down" : "minus");
@@ -4534,15 +4562,15 @@ async function analyzeAITimeframe(interval, range) {
 		resultContainer.innerHTML = `
 			<div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700 mt-2 text-[11px] lg:text-xs shadow-inner transition-all">
 				<div class="flex justify-between items-center mb-2 border-b border-slate-800 pb-2">
-					<span class="text-slate-400 flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Timeframe Chart:</span>
-					<span class="font-bold text-white uppercase bg-slate-800 px-2 py-0.5 rounded border border-slate-700">${interval}</span>
+					<span class="text-slate-400 flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Timeframe (Agregasi):</span>
+					<span class="font-bold text-white uppercase bg-slate-800 px-2 py-0.5 rounded border border-slate-700">${displayLabel}</span>
 				</div>
 				<div class="flex justify-between items-center mb-1.5">
 					<span class="text-slate-400">Status Harga Terakhir:</span>
 					<span class="font-bold text-white">Rp ${currentClose.toLocaleString('id-ID')} (<span class="${signalColor}">${changePct > 0 ? '+' : ''}${changePct}%</span>)</span>
 				</div>
 				<div class="flex justify-between items-center mb-1.5">
-					<span class="text-slate-400">Trend Signal (Micro):</span>
+					<span class="text-slate-400">Trend Signal (${displayLabel}):</span>
 					<span class="font-bold ${signalColor} flex items-center gap-1"><i data-lucide="${iconTrend}" class="w-3.5 h-3.5"></i> ${trend}</span>
 				</div>
 				<div class="flex justify-between items-center">
@@ -4607,14 +4635,18 @@ async function loadLiveMacro() {
 		</div>`;
 	if (window.lucide) lucide.createIcons();
 
-	// Menggunakan Worker internal aplikasi Kamu sendiri (Bypass CORS Public API yang sering diblokir)
 	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 	
+	// Penambahan Variasi Komoditas dan Pasangan Mata Uang
 	const symbols = [
 		{ id: 'IDR=X', name: 'USD/IDR', icon: 'banknote', prefix: 'Rp ', suffix: '' },
+		{ id: 'EURIDR=X', name: 'EUR/IDR', icon: 'euro', prefix: 'Rp ', suffix: '' },
 		{ id: 'GC=F', name: 'Gold (Emas)', icon: 'coins', prefix: '$', suffix: '' },
+		{ id: 'SI=F', name: 'Silver (Perak)', icon: 'coins', prefix: '$', suffix: '' },
+		{ id: 'HG=F', name: 'Copper (Tembaga)', icon: 'cpu', prefix: '$', suffix: '' },
 		{ id: 'CL=F', name: 'WTI Crude Oil', icon: 'droplet', prefix: '$', suffix: '' },
-		{ id: '^TNX', name: 'US 10Y Bond', icon: 'trending-up', prefix: '', suffix: '%' }
+		{ id: 'NG=F', name: 'Natural Gas', icon: 'flame', prefix: '$', suffix: '' },
+		{ id: 'BTC-USD', name: 'Bitcoin (BTC)', icon: 'bitcoin', prefix: '$', suffix: '' }
 	];
 
 	let htmlContent = '';
@@ -4657,10 +4689,8 @@ async function loadLiveMacro() {
 			const sign = isUp ? '+' : '';
 
 			let formattedPrice = data.price;
-			if (data.id === 'IDR=X') {
+			if (data.id === 'IDR=X' || data.id === 'EURIDR=X') {
 				formattedPrice = data.price.toLocaleString('id-ID', { maximumFractionDigits: 0 });
-			} else if (data.id === '^TNX') {
-				formattedPrice = data.price.toFixed(3);
 			} else {
 				formattedPrice = data.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 			}

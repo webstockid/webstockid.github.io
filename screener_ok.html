@@ -634,11 +634,12 @@
 							<div class="mt-4 pt-4 border-t border-slate-800/80">
 								<h4 class="text-[11px] lg:text-xs font-bold text-white mb-2 flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5 text-blue-400"></i> MULTI-TIMEFRAME ANALYSIS</h4>
 								<div class="flex space-x-2 mb-3 overflow-x-auto scrollbar-thin pb-1">
-									<button class="px-3 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap" onclick="analyzeAITimeframe('15m', '5d')">15 Min</button>
-									<button class="px-3 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap" onclick="analyzeAITimeframe('60m', '1mo')">1 Hour</button>
-									<button class="px-3 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap" onclick="analyzeAITimeframe('1d', '3mo')">1 Day</button>
-									<button class="px-3 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap" onclick="analyzeAITimeframe('1wk', '1y')">1 Week</button>
-								</div>
+	<button class="px-4 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap focus:bg-blue-600 focus:text-white" onclick="analyzeAITimeframe('15m')">15 Min</button>
+	<button class="px-4 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap focus:bg-blue-600 focus:text-white" onclick="analyzeAITimeframe('30m')">30 Min</button>
+	<button class="px-4 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap focus:bg-blue-600 focus:text-white" onclick="analyzeAITimeframe('1h')">1 Jam</button>
+	<button class="px-4 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap focus:bg-blue-600 focus:text-white" onclick="analyzeAITimeframe('3h')">3 Jam</button>
+	<button class="px-4 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap focus:bg-blue-600 focus:text-white" onclick="analyzeAITimeframe('6h')">6 Jam</button>
+</div>
 								<div id="ai-tf-result" class="text-[10px] lg:text-[11px] text-slate-400">
 									Pilih timeframe di atas untuk melihat analisis tren intraday hingga jangka panjang.
 								</div>
@@ -1495,13 +1496,22 @@
 								<i data-lucide="monitor" class="w-4 h-4"></i> PREFERENSI VISUAL
 							</span>
 							
-							<div class="space-y-3">
-								<div class="flex justify-between items-center">
-									<label class="text-slate-200 text-[11px] lg:text-xs font-bold">1. Tema Tampilan (Mode)</label>
-									<select id="settingTheme" onchange="applyTheme(this.value)" class="bg-slate-900 border border-slate-700 text-white text-[10px] lg:text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-emerald-500 cursor-pointer">
-										<option value="dark">🌙 Mode Gelap (Default)</option>
-										<option value="light">☀️ Mode Terang</option>
-									</select>
+							<div class="space-y-2">
+								<label class="text-slate-200 text-[11px] lg:text-xs font-bold block">1. Tema Tampilan (Mode)</label>
+									<div class="grid grid-cols-2 gap-2">
+										<label class="cursor-pointer relative">
+											<input type="radio" name="settingTheme" value="dark" onchange="applyTheme(this.value)" class="peer sr-only">
+											<div class="text-center bg-slate-900 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2 transition-all peer-checked:bg-emerald-500/20 peer-checked:text-emerald-400 peer-checked:border-emerald-500/50 font-bold">
+												🌙 Mode Gelap
+											</div>
+										</label>
+										<label class="cursor-pointer relative">
+											<input type="radio" name="settingTheme" value="light" onchange="applyTheme(this.value)" class="peer sr-only">
+											<div class="text-center bg-slate-900 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2 transition-all peer-checked:bg-amber-500/20 peer-checked:text-amber-400 peer-checked:border-amber-500/50 font-bold">
+												☀️ Mode Terang
+											</div>
+										</label>
+									</div>
 								</div>
 
 								<div class="space-y-1">
@@ -1568,16 +1578,31 @@
 								</div>
 
 								<!-- 3. Jenis Notifikasi -->
-								<div class="flex flex-col justify-center bg-slate-900/60 p-3 lg:p-4 rounded-lg border border-slate-800 space-y-2">
+								<div class="flex flex-col bg-slate-900/60 p-3 lg:p-4 rounded-lg border border-slate-800 space-y-3">
 									<div>
 										<span class="block text-slate-200 text-[11px] lg:text-xs font-bold mb-0.5">3. Filter Kategori Notifikasi</span>
 										<span class="block text-[9px] text-slate-400">Pilih tipe alert yang ingin diterima.</span>
 									</div>
-									<select id="settingNotifType" onchange="applyNotifType(this.value)" class="w-full bg-slate-950 border border-slate-700 text-white text-[10px] lg:text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-teal-500 cursor-pointer">
-										<option value="both">Keduanya (Smart Alert & Whales)</option>
-										<option value="smart_alert">Hanya Smart Alert</option>
-										<option value="whales">Hanya Whales Detected</option>
-									</select>
+									<div class="flex flex-col gap-2">
+										<label class="cursor-pointer">
+											<input type="radio" name="settingNotifType" value="both" onchange="applyNotifType(this.value)" class="peer sr-only">
+											<div class="w-full text-left bg-slate-950 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2.5 transition-all peer-checked:bg-teal-500/20 peer-checked:text-teal-400 peer-checked:border-teal-500/50 font-medium">
+												✅ Keduanya (Smart Alert & Whales)
+											</div>
+										</label>
+										<label class="cursor-pointer">
+											<input type="radio" name="settingNotifType" value="smart_alert" onchange="applyNotifType(this.value)" class="peer sr-only">
+											<div class="w-full text-left bg-slate-950 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2.5 transition-all peer-checked:bg-teal-500/20 peer-checked:text-teal-400 peer-checked:border-teal-500/50 font-medium">
+												🎯 Hanya Smart Alert
+											</div>
+										</label>
+										<label class="cursor-pointer">
+											<input type="radio" name="settingNotifType" value="whales" onchange="applyNotifType(this.value)" class="peer sr-only">
+											<div class="w-full text-left bg-slate-950 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2.5 transition-all peer-checked:bg-teal-500/20 peer-checked:text-teal-400 peer-checked:border-teal-500/50 font-medium">
+												🐋 Hanya Whales Detected
+											</div>
+										</label>
+									</div>
 								</div>
 							</div>
 						</div>
