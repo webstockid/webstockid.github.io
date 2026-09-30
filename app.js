@@ -773,85 +773,6 @@ function renderTechnicalGauge(ticker) {
 	container.appendChild(script);
 }
 
-function renderFundamentalWidget(ticker) {
-		const container = document.getElementById('tv_fundamental_container');
-		
-		// Siapkan layout grid untuk widget TradingView agar rapih dan proporsional
-		container.innerHTML = `
-			<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-				<!-- Profile Widget -->
-				<div id="tv_profile_widget" class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl h-[450px]"></div>
-				
-				<!-- Fundamental Data Widget -->
-				<div id="tv_fundamental_data_widget" class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl h-[450px]"></div>
-				
-				<!-- Financials Widget (Full Width) -->
-				<div id="tv_financials_widget" class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl h-[600px]"></div>
-			</div>
-		`;
-		
-		// Helper function untuk injeksi script TradingView dengan struktur container yang wajib ada
-		const injectWidget = (id, src, config) => {
-			const wrapper = document.getElementById(id);
-			if (!wrapper) return;
-			
-			const tvContainer = document.createElement('div');
-			tvContainer.className = 'tradingview-widget-container';
-			tvContainer.style.height = '100%';
-			tvContainer.style.width = '100%';
-			
-			const tvWidget = document.createElement('div');
-			tvWidget.className = 'tradingview-widget-container__widget';
-			tvWidget.style.height = '100%';
-			tvWidget.style.width = '100%';
-			
-			const script = document.createElement('script');
-			script.type = 'text/javascript';
-			script.src = src;
-			script.async = true;
-			script.text = JSON.stringify(config);
-			
-			tvContainer.appendChild(tvWidget);
-			tvContainer.appendChild(script);
-			wrapper.appendChild(tvContainer);
-		};
-		
-		// 3. Financials Widget
-		injectWidget('tv_financials_widget', 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js', {
-			"isTransparent": true,
-			"largeChartUrl": "",
-			"displayMode": "regular",
-			"width": "100%",
-			"height": "100%",
-			"symbol": `IDX:${ticker}`,
-			"colorTheme": "dark",
-			"locale": "id",
-			"showSymbolLogo": true
-		});
-		
-		// 1. Company Profile Widget (Memperbaiki profil yang sebelumnya tidak muncul)
-		injectWidget('tv_profile_widget', 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js', {
-			"width": "100%",
-			"height": "100%",
-			"colorTheme": "dark",
-			"isTransparent": true,
-			"symbol": `IDX:${ticker}`,
-			"locale": "id"
-		});
-
-		// 2. Fundamental Data Widget
-		injectWidget('tv_fundamental_data_widget', 'https://s3.tradingview.com/external-embedding/embed-widget-fundamental-data.js', {
-			"isTransparent": true,
-			"largeChartUrl": "",
-			"displayMode": "regular",
-			"width": "100%",
-			"height": "100%",
-			"symbol": `IDX:${ticker}`,
-			"colorTheme": "dark",
-			"locale": "id"
-		});
-	}
-
 // ==========================================
 // 9. INSIDER SEARCH (SEC EDGAR VIA CLOUDFLARE WORKER)
 // ==========================================
@@ -4001,16 +3922,139 @@ async function fetchYahooTrending() {
 
 async function fetchRealtimeFundamentals(ticker) {
 	const container = document.getElementById('yahooFundamentalContainer');
-	if (container) {
-		container.innerHTML = '';
-		container.classList.add('hidden');
-	}
+	const tvContainer = document.getElementById('tv_fundamental_container');
 	
+	// Sembunyikan TradingView Container secara permanen
+	if (tvContainer) {
+		tvContainer.innerHTML = '';
+		tvContainer.classList.add('hidden');
+	}
+
+	if (!container) return;
+
+	// Ubah Label Header ke API Baru
 	const labelMetrik = document.querySelector('#tabContent-fundamental .text-fuchsia-400.font-bold:not(#fundTickerLabel)');
 	if (labelMetrik) {
-		labelMetrik.innerText = "Real-Time TradingView Data";
+		labelMetrik.innerHTML = '<i data-lucide="database" class="w-3.5 h-3.5 inline"></i> Financial Modeling Prep API';
 	}
-	renderFundamentalWidget(ticker);
+
+	container.classList.remove('hidden');
+	container.innerHTML = `
+		<div class="flex flex-col items-center justify-center py-12 space-y-3">
+			<i data-lucide="loader-2" class="w-8 h-8 animate-spin text-fuchsia-400"></i>
+			<span class="text-xs text-slate-400 animate-pulse">Mengambil data fundamental real-time dari FMP API...</span>
+		</div>
+	`;
+	if (window.lucide) lucide.createIcons();
+
+	// ⚠️ KUNCI API FMP (HARAP GANTI)
+	// Daftar gratis di financialmodelingprep.com untuk mendapatkan API Key
+	const FMP_API_KEY = "sQcbrQE9VKor9rWHYmoKxVf6DF2nrKx5";
+
+	try {
+		if (FMP_API_KEY === "sQcbrQE9VKor9rWHYmoKxVf6DF2nrKx5" || !FMP_API_KEY) {
+			container.innerHTML = `
+				<div class="bg-rose-500/10 border border-rose-500/30 p-5 rounded-xl text-center space-y-3 shadow-sm">
+					<i data-lucide="key" class="w-8 h-8 text-rose-400 mx-auto"></i>
+					<h4 class="text-sm font-bold text-white">API Key Fundamental Belum Diisi</h4>
+					<p class="text-xs text-slate-400 leading-relaxed max-w-md mx-auto">
+						Fitur ini menggunakan <strong>Financial Modeling Prep (FMP)</strong> agar stabil tanpa Yahoo/TradingView. Silakan daftar gratis di <i>financialmodelingprep.com</i> dan masukkan kuncinya pada variabel <code class="bg-slate-900 text-fuchsia-400 border border-slate-700 px-1 py-0.5 rounded">FMP_API_KEY</code> di dalam kode JavaScript Kamu.
+					</p>
+				</div>
+			`;
+			if (window.lucide) lucide.createIcons();
+			return;
+		}
+
+		const targetSymbol = `${ticker}.JK`;
+		const [profileRes, metricsRes] = await Promise.all([
+			fetch(`https://financialmodelingprep.com/api/v3/profile/${targetSymbol}?apikey=${FMP_API_KEY}`, { signal: AbortSignal.timeout(8000) }),
+			fetch(`https://financialmodelingprep.com/api/v3/key-metrics/${targetSymbol}?limit=1&apikey=${FMP_API_KEY}`, { signal: AbortSignal.timeout(8000) })
+		]);
+
+		const profileData = await profileRes.json();
+		const metricsData = await metricsRes.json();
+
+		if (!profileData || profileData.length === 0 || profileData["Error Message"]) {
+			throw new Error(profileData["Error Message"] || "Data fundamental perusahaan tidak ditemukan di database global.");
+		}
+
+		const profile = profileData[0];
+		const metrics = (metricsData && metricsData.length > 0) ? metricsData[0] : {};
+
+		const mktCap = profile.mktCap ? formatValuationIDR(profile.mktCap) : 'N/A';
+		const peRatio = metrics.peRatio ? metrics.peRatio.toFixed(2) + 'x' : 'N/A';
+		const pbRatio = metrics.pbRatio ? metrics.pbRatio.toFixed(2) + 'x' : 'N/A';
+		const divYield = profile.lastDiv ? (profile.lastDiv).toFixed(2) + '%' : '0.00%';
+		const roe = metrics.roe ? (metrics.roe * 100).toFixed(2) + '%' : 'N/A';
+		const debtToEquity = metrics.debtToEquity ? metrics.debtToEquity.toFixed(2) + 'x' : 'N/A';
+		const beta = profile.beta ? profile.beta.toFixed(2) : 'N/A';
+
+		container.innerHTML = `
+			<div class="space-y-4">
+				<div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 flex items-start gap-4 shadow-sm">
+					${profile.image ? `<img src="${profile.image}" class="w-12 h-12 rounded-lg bg-white p-1 object-contain shrink-0" onerror="this.style.display='none'">` : ''}
+					<div>
+						<h3 class="text-base lg:text-lg font-bold text-white mb-1">${profile.companyName || ticker}</h3>
+						<div class="flex flex-wrap gap-2 text-[10px] lg:text-[11px] mb-2">
+							<span class="bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/30 px-2 py-0.5 rounded font-bold">${profile.sector || 'Sektor N/A'}</span>
+							<span class="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded font-bold">${profile.industry || 'Industri N/A'}</span>
+							<span class="bg-slate-800 text-slate-300 border border-slate-700 px-2 py-0.5 rounded font-bold">${profile.exchangeShortName || 'IDX'}</span>
+						</div>
+						<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed line-clamp-3">${profile.description || 'Deskripsi perusahaan belum tersedia di database API.'}</p>
+					</div>
+				</div>
+
+				<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
+						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Market Cap</span>
+						<span class="text-sm lg:text-base font-bold text-emerald-400">${mktCap}</span>
+					</div>
+					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
+						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">P/E Ratio</span>
+						<span class="text-sm lg:text-base font-bold text-amber-400">${peRatio}</span>
+					</div>
+					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
+						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">P/B Ratio</span>
+						<span class="text-sm lg:text-base font-bold text-cyan-400">${pbRatio}</span>
+					</div>
+					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
+						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Dividend Yield</span>
+						<span class="text-sm lg:text-base font-bold text-fuchsia-400">${divYield}</span>
+					</div>
+					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
+						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Return on Equity (ROE)</span>
+						<span class="text-sm lg:text-base font-bold text-blue-400">${roe}</span>
+					</div>
+					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
+						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Debt to Equity</span>
+						<span class="text-sm lg:text-base font-bold text-rose-400">${debtToEquity}</span>
+					</div>
+					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
+						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Beta (Volatilitas)</span>
+						<span class="text-sm lg:text-base font-bold text-white">${beta}</span>
+					</div>
+					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center flex flex-col justify-center">
+						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Website Resmi</span>
+						<a href="${profile.website}" target="_blank" class="text-[10px] lg:text-xs font-bold text-sky-400 hover:underline mt-1 truncate">Kunjungi <i data-lucide="external-link" class="w-3 h-3 inline"></i></a>
+					</div>
+				</div>
+			</div>
+		`;
+		
+		if (window.lucide) lucide.createIcons();
+		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+
+	} catch (error) {
+		container.innerHTML = `
+			<div class="bg-rose-500/10 border border-rose-500/30 p-4 rounded-xl text-center space-y-2">
+				<i data-lucide="alert-triangle" class="w-6 h-6 text-rose-400 mx-auto"></i>
+				<h4 class="text-sm font-bold text-rose-400">Gagal Memuat Fundamental</h4>
+				<p class="text-xs text-slate-400">${error.message}</p>
+			</div>
+		`;
+		if (window.lucide) lucide.createIcons();
+	}
 }
 
 async function fetchStockNewsForAI(ticker) {
@@ -4554,120 +4598,106 @@ function calculateAveraging() {
 // LIVE MACRO & KOMODITAS GLOBAL
 // ==========================================
 async function loadLiveMacro() {
-    const container = document.getElementById('macro-container');
-    if (!container) return;
+	const container = document.getElementById('macro-container');
+	if (!container) return;
 
-    // Set status loading
-    container.innerHTML = `
-        <div class="col-span-full flex justify-center items-center py-6 text-cyan-400 text-xs animate-pulse">
-            <i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i> Menghubungkan ke server global...
-        </div>`;
-    if (window.lucide) lucide.createIcons();
+	container.innerHTML = `
+		<div class="col-span-full flex justify-center items-center py-6 text-cyan-400 text-xs animate-pulse">
+			<i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i> Menghubungkan ke Worker Live Macro...
+		</div>`;
+	if (window.lucide) lucide.createIcons();
 
-    // Ticker Yahoo Finance: USD/IDR, Gold, WTI Oil, US 10Y Bond
-    const symbols = 'IDR=X,GC=F,CL=F,^TNX'; 
-    const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
-    
-    // Sistem 3 Proxy Cadangan dengan /get untuk allorigins
-    const proxies = [
-        `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-        `https://corsproxy.io/?${encodeURIComponent(url)}`
-    ];
+	// Menggunakan Worker internal aplikasi Kamu sendiri (Bypass CORS Public API yang sering diblokir)
+	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
+	
+	const symbols = [
+		{ id: 'IDR=X', name: 'USD/IDR', icon: 'banknote', prefix: 'Rp ', suffix: '' },
+		{ id: 'GC=F', name: 'Gold (Emas)', icon: 'coins', prefix: '$', suffix: '' },
+		{ id: 'CL=F', name: 'WTI Crude Oil', icon: 'droplet', prefix: '$', suffix: '' },
+		{ id: '^TNX', name: 'US 10Y Bond', icon: 'trending-up', prefix: '', suffix: '%' }
+	];
 
-    let data = null;
-    for (let proxy of proxies) {
-        try {
-            const response = await fetch(proxy, { signal: AbortSignal.timeout(8000) });
-            if (response.ok) {
-                let resData = await response.json();
-                
-                // Parsing khusus untuk allorigins.win/get
-                if (proxy.includes('allorigins')) {
-                    data = JSON.parse(resData.contents);
-                } else {
-                    data = resData;
-                }
-                
-                // Validasi kelengkapan data sebelum memutus loop
-                if (data && data.quoteResponse && data.quoteResponse.result) {
-                    break;
-                }
-            }
-        } catch (error) {
-            console.warn(`Proxy gagal memuat makro: ${proxy}`);
-        }
-    }
+	let htmlContent = '';
 
-    // Penanganan Error jika semua proxy gagal
-    if (!data || !data.quoteResponse || !data.quoteResponse.result) {
-        container.innerHTML = `
-            <div class="col-span-full bg-rose-500/10 p-3 rounded-lg border border-rose-500/30 flex items-center justify-center gap-2 text-rose-400 text-xs">
-                <i data-lucide="wifi-off" class="w-4 h-4"></i> Gagal memuat data API. Silakan klik Segarkan.
-            </div>`;
-        if (window.lucide) lucide.createIcons();
-        return;
-    }
+	try {
+		const promises = symbols.map(async (sym) => {
+			try {
+				const res = await fetch(`${WORKER_URL}?symbol=${sym.id}`, { signal: AbortSignal.timeout(6000) });
+				const json = await res.json();
+				const result = json?.chart?.result?.[0];
+				
+				if (!result) return null;
+				
+				const quote = result.indicators?.quote?.[0];
+				const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
+				
+				if (prices.length < 2) return null;
+				
+				const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
+				const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
+				const changePct = ((currentPrice - previousClose) / previousClose) * 100;
 
-    const results = data.quoteResponse.result;
-    let htmlContent = '';
-    
-    // Konfigurasi Tampilan Masing-masing Instrumen
-    const config = {
-        'IDR=X': { name: 'USD/IDR', icon: 'banknote', prefix: 'Rp ', suffix: '' },
-        'GC=F':  { name: 'Gold (Emas)', icon: 'coins', prefix: '$', suffix: '' },
-        'CL=F':  { name: 'WTI Crude Oil', icon: 'droplet', prefix: '$', suffix: '' },
-        '^TNX':  { name: 'US 10Y Bond', icon: 'trending-up', prefix: '', suffix: '%' }
-    };
+				return { ...sym, price: currentPrice, changePct };
+			} catch(e) {
+				return null;
+			}
+		});
 
-    results.forEach(quote => {
-        const sym = quote.symbol;
-        if (!config[sym]) return;
-        
-        const info = config[sym];
-        const price = quote.regularMarketPrice;
-        const changePct = quote.regularMarketChangePercent;
-        
-        const isUp = changePct > 0;
-        const isDown = changePct < 0;
-        const colorClass = isUp ? 'text-emerald-400' : (isDown ? 'text-rose-400' : 'text-slate-400');
-        const bgClass = isUp ? 'bg-emerald-500/5 border-emerald-500/20' : (isDown ? 'bg-rose-500/5 border-rose-500/20' : 'bg-slate-800/50 border-slate-700');
-        const sign = isUp ? '+' : '';
+		const results = await Promise.all(promises);
+		
+		let successCount = 0;
+		results.forEach(data => {
+			if (!data) return;
+			successCount++;
+			
+			const isUp = data.changePct > 0;
+			const isDown = data.changePct < 0;
+			const colorClass = isUp ? 'text-emerald-400' : (isDown ? 'text-rose-400' : 'text-slate-400');
+			const bgClass = isUp ? 'bg-emerald-500/5 border-emerald-500/20' : (isDown ? 'bg-rose-500/5 border-rose-500/20' : 'bg-slate-800/50 border-slate-700');
+			const sign = isUp ? '+' : '';
 
-        // Format angka sesuai instrumen
-        let formattedPrice = price;
-        if (sym === 'IDR=X') {
-            formattedPrice = price.toLocaleString('id-ID');
-        } else if (sym === '^TNX') {
-            formattedPrice = price.toFixed(3);
-        } else {
-            formattedPrice = price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
+			let formattedPrice = data.price;
+			if (data.id === 'IDR=X') {
+				formattedPrice = data.price.toLocaleString('id-ID', { maximumFractionDigits: 0 });
+			} else if (data.id === '^TNX') {
+				formattedPrice = data.price.toFixed(3);
+			} else {
+				formattedPrice = data.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+			}
 
-        htmlContent += `
-            <div class="p-3 rounded-xl border ${bgClass} flex flex-col justify-between hover:bg-slate-800/80 transition-colors">
-                <div class="flex items-start justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                        <div class="p-1.5 rounded-lg bg-slate-900 border border-slate-700/50">
-                            <i data-lucide="${info.icon}" class="w-3.5 h-3.5 text-slate-400"></i>
-                        </div>
-                        <span class="text-[10px] lg:text-[11px] text-slate-400 font-medium whitespace-nowrap">${info.name}</span>
-                    </div>
-                </div>
-                <div>
-                    <div class="text-sm lg:text-base font-bold text-white mb-0.5 tracking-tight">
-                        ${info.prefix}${formattedPrice}${info.suffix}
-                    </div>
-                    <div class="text-[10px] lg:text-[11px] font-bold ${colorClass}">
-                        ${sign}${changePct.toFixed(2)}%
-                    </div>
-                </div>
-            </div>
-        `;
-    });
+			htmlContent += `
+				<div class="p-3 rounded-xl border ${bgClass} flex flex-col justify-between hover:bg-slate-800/80 transition-colors shadow-sm">
+					<div class="flex items-start justify-between mb-2">
+						<div class="flex items-center gap-2">
+							<div class="p-1.5 rounded-lg bg-slate-900 border border-slate-700/50 shadow-inner">
+								<i data-lucide="${data.icon}" class="w-3.5 h-3.5 text-slate-400"></i>
+							</div>
+							<span class="text-[10px] lg:text-[11px] text-slate-400 font-bold whitespace-nowrap">${data.name}</span>
+						</div>
+					</div>
+					<div>
+						<div class="text-sm lg:text-base font-bold text-white mb-0.5 tracking-tight">
+							${data.prefix}${formattedPrice}${data.suffix}
+						</div>
+						<div class="text-[10px] lg:text-[11px] font-bold ${colorClass}">
+							${sign}${data.changePct.toFixed(2)}%
+						</div>
+					</div>
+				</div>
+			`;
+		});
 
-    container.innerHTML = htmlContent;
-    if (window.lucide) lucide.createIcons();
+		if (successCount === 0) throw new Error("API Timeout / Tidak ada data respons dari Worker.");
+		container.innerHTML = htmlContent;
+
+	} catch (error) {
+		container.innerHTML = `
+			<div class="col-span-full bg-rose-500/10 p-3 rounded-lg border border-rose-500/30 flex items-center justify-center gap-2 text-rose-400 text-xs">
+				<i data-lucide="wifi-off" class="w-4 h-4"></i> Gagal menghubungkan ke Worker Macro. Silakan klik Segarkan.
+			</div>`;
+	}
+	
+	if (window.lucide) lucide.createIcons();
 }
 
 
@@ -4694,7 +4724,7 @@ renderAllAlerts();
 renderJournalTable();
 renderPaperTradingUI();
 renderTechnicalGauge(currentTicker);
-renderFundamentalWidget(currentTicker);
+//renderFundamentalWidget(currentTicker);
 cleanExpiredCache();
 checkUrlParamTicker();
 checkNotificationStatus();
