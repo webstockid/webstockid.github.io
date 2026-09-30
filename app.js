@@ -1161,80 +1161,6 @@ async function generateAISignal(ticker, isManualSearch = false) {
 	renderAISignalUI(ticker, stockData, false);
 }
 
-// FITUR BARU ~~~~~~~
-async function fetchAnalystConsensus(ticker) {
-	const container = document.getElementById('aiAnalystTargetContainer');
-	if (!container) return;
-
-	container.innerHTML = `<span class="text-[10px] text-slate-400 animate-pulse"><i class="fa-solid fa-circle-notch fa-spin"></i> Memuat Konsensus Analis Global...</span>`;
-
-	const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}.JK?modules=financialData`;
-	const proxies = [
-		`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-		`https://corsproxy.io/?${encodeURIComponent(url)}`
-	];
-
-	let result = null;
-	for (let i = 0; i < proxies.length; i++) {
-		try {
-			const res = await fetch(proxies[i], { signal: AbortSignal.timeout(4500) });
-			if (!res.ok) continue;
-			let data = await res.json();
-			if (proxies[i].includes('allorigins')) data = JSON.parse(data.contents);
-			if (data && data.quoteSummary && data.quoteSummary.result) {
-				result = data.quoteSummary.result[0].financialData;
-				break;
-			}
-		} catch (e) {}
-	}
-
-	if (result && result.targetMeanPrice && result.targetMeanPrice.raw) {
-		const meanPrice = result.targetMeanPrice.raw;
-		const highPrice = result.targetHighPrice?.raw || meanPrice;
-		const lowPrice = result.targetLowPrice?.raw || meanPrice;
-		const rec = (result.recommendationKey || "none").replace(/_/g, ' ').toUpperCase();
-		const analystCount = result.numberOfAnalystOpinions?.raw || 0;
-		
-		let recColor = 'text-amber-400';
-		if (rec.includes('BUY')) recColor = 'text-emerald-400';
-		if (rec.includes('SELL') || rec.includes('UNDERPERFORM')) recColor = 'text-rose-400';
-
-		container.innerHTML = `
-			<div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800/80 mt-1">
-				<div class="flex items-center justify-between mb-1.5">
-					<span class="text-[10px] lg:text-[11px] font-bold text-sky-400 flex items-center gap-1.5">
-						<i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Konsensus Institusi (${analystCount} Analis):
-					</span>
-					<span class="font-bold text-[9px] lg:text-[10px] ${recColor} bg-slate-950 px-2 py-0.5 rounded border border-slate-700">${rec}</span>
-				</div>
-				<div class="grid grid-cols-3 gap-2 text-center text-[10px]">
-					<div><span class="block text-slate-400 text-[9px]">Target Bawah</span><span class="font-bold text-rose-400">Rp ${lowPrice.toLocaleString('id-ID')}</span></div>
-					<div class="border-x border-slate-700"><span class="block text-slate-400 text-[9px]">Target Rata-rata</span><span class="font-bold text-amber-400">Rp ${meanPrice.toLocaleString('id-ID')}</span></div>
-					<div><span class="block text-slate-400 text-[9px]">Target Atas</span><span class="font-bold text-emerald-400">Rp ${highPrice.toLocaleString('id-ID')}</span></div>
-				</div>
-			</div>
-		`;
-		if (window.lucide) lucide.createIcons();
-	} else {
-		// FALLBACK UI KETIKA DATA ANALIS TIDAK DITEMUKAN
-		container.innerHTML = `
-			<div class="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800/80 mt-1">
-				<div class="flex items-center justify-between mb-1.5">
-					<span class="text-[10px] lg:text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
-						<i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Konsensus Institusi:
-					</span>
-					<span class="font-bold text-[9px] lg:text-[10px] text-slate-500 bg-slate-950 px-2 py-0.5 rounded border border-slate-700">TIDAK ADA DATA</span>
-				</div>
-				<div class="text-center text-[10px] text-slate-500 py-1">
-					Belum ada analis global yang memberikan target harga untuk emiten ini.
-				</div>
-			</div>
-		`;
-		if (window.lucide) lucide.createIcons();
-	}
-}
-
 function renderAISignalUI(ticker, stockData, isCached) {
 	const verdikEl = document.getElementById('aiVerdikText');
 	const scoreEl = document.getElementById('aiScoreBadge');
@@ -1321,11 +1247,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			<p class="leading-relaxed"><strong class="text-sky-400">Mengapa?</strong> Saham <strong class="text-emerald-400 font-bold">${ticker}</strong> saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-400">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-400">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-400">(Support Kuat)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-400">(Resistance Tertinggi)</strong>.</p>
-			<div id="aiAnalystTargetContainer" class="mt-2 pt-2 border-t border-slate-900/60"></div>
 		`;
-		
-		// Trigger pencarian data Analis
-		setTimeout(() => fetchAnalystConsensus(ticker), 50);
 
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">

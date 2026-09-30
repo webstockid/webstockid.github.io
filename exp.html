@@ -55,6 +55,13 @@
 			::-webkit-scrollbar-thumb:hover {
 				background: #334155;
 			}
+			@keyframes blinkDot {
+				0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px #ffffff; }
+				50% { opacity: 0.3; transform: scale(0.7); box-shadow: 0 0 2px #ffffff; }
+			}
+			.animate-blink-dot {
+				animation: blinkDot 1.2s infinite ease-in-out;
+			}
 		</style>
 	</head>
 
@@ -430,7 +437,7 @@
 				<h3 class="heading-font text-base font-bold text-white mb-2 flex items-center gap-2">
 					<i class="fa-solid fa-circle-exclamation text-amber-400"></i>Setup Device Reminder
 				</h3>
-				<p class="text-xs text-slate-400 leading-relaxed mb-4">Cari & pilih profil nama Anda untuk mengaktifkan notifikasi pengingat sebelum masa langganan habis.</p>
+				<p class="text-xs text-slate-400 leading-relaxed mb-4">Cari & pilih profil nama Anda untuk mengaktifkan notifikasi pengingat secara otomatis walau tidak membuka halaman ini lagi.</p>
 				
 				<div class="relative mb-3">
 					<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 text-xs">
@@ -574,7 +581,6 @@
 				const diffTime = expMs - now;
 				const sisaHari = Math.ceil(diffTime / DAY);
 
-				// Notifikasi dikirimkan khusus saat sisa hari tepat di angka 10, 5, atau 1 hari
 				if (sisaHari === 10 || sisaHari === 5 || sisaHari === 1) {
 					const todayKey = new Date().toISOString().split('T')[0];
 					const notifLog = JSON.parse(localStorage.getItem("notifSentHistory") || "{}");
@@ -670,6 +676,38 @@
 
 					if (!m.nama.toLowerCase().includes(key)) return;
 
+					// --- RUMUS BARU: Hitung persentase progres dari total durasi masa aktif sejak join ---
+					// Total durasi bulan langganan (asumsi 1 bulan = 30 hari sebagai estimasi berbasis history paket)
+					const totalBulanJoin = m.history.reduce((acc, curr) => acc + Number(curr), 0) || 1;
+					const totalTotalHari = totalBulanJoin * 30;
+					
+					let progressPercent = 0;
+					if (m.ms <= 0) {
+						progressPercent = 0;
+					} else {
+						const sisaHariAktif = Math.max(daysLeft, 0);
+						progressPercent = Math.min(Math.max((sisaHariAktif / totalTotalHari) * 100, 2), 100);
+					}
+
+					// --- PENENTUAN WARNA BERDASARKAN RENTANG PERSENTASE ---
+					// 0-20% rose, 21-40% amber, 41-65% sky, 66-85% emerald, 86-100% fuchsia
+					let barColorClass = "bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]";
+					let percentRounded = Math.round(progressPercent);
+
+					if (m.ms <= 0) {
+						barColorClass = "bg-rose-600";
+					} else if (progressPercent <= 20) {
+						barColorClass = "bg-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.6)] animate-pulse";
+					} else if (progressPercent <= 40) {
+						barColorClass = "bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]";
+					} else if (progressPercent <= 65) {
+						barColorClass = "bg-sky-500 shadow-[0_0_10px_rgba(14,165,233,0.5)]";
+					} else if (progressPercent <= 85) {
+						barColorClass = "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]";
+					} else {
+						barColorClass = "bg-fuchsia-500 shadow-[0_0_12px_rgba(217,70,239,0.6)]";
+					}
+
 					let statusCardBorder = "border-slate-800 bg-slate-900/60 shadow-lg"; 
 					let daysBadgeColor = "bg-slate-800 text-slate-300 border-slate-700";
 					let sisaTeks = `${daysLeft} Hari Lagi`;
@@ -709,7 +747,8 @@
 										${sisaTeks}
 									</span>
 								</div>
-								<div class="space-y-2 text-xs font-medium">
+
+								<div class="space-y-2 text-xs font-medium mb-4">
 									<div class="flex items-center gap-2 text-slate-300">
 										<i class="fa-solid fa-calendar-days text-[14px] text-orange-500 w-4"></i>
 										<span>Expired: 
@@ -735,7 +774,22 @@
 										</span>
 									</div>
 								</div>
+
+								<!-- ANIMASI PROGRESS BAR DENGAN TITIK PUTIH KELAP KELIP DI UJUNG -->
+								<div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800/70 space-y-1.5">
+									<div class="flex justify-between items-center text-[10px]">
+										<span class="text-slate-400 font-bold uppercase tracking-wider text-[9px]">Masa Aktif Member</span>
+										<span class="text-white font-black">${percentRounded}%</span>
+									</div>
+									<div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-800/80 relative flex items-center">
+										<div class="h-full rounded-full transition-all duration-1000 ease-out relative ${barColorClass}" style="width: ${progressPercent}%">
+											<!-- Titik putih kelap-kelip tepat di ujung bar -->
+											<span class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full animate-blink-dot shadow-[0_0_6px_#fff]"></span>
+										</div>
+									</div>
+								</div>
 							</div>
+
 							${isAdmin ? `
 							<div class="grid grid-cols-2 gap-2 mt-4 pt-3.5 border-t border-slate-800/80">
 								<button class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[10px] font-bold py-2 px-3 rounded-xl transition cursor-pointer" onclick="tambahHistory(${index})">
