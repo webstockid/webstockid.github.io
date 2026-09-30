@@ -774,42 +774,83 @@ function renderTechnicalGauge(ticker) {
 }
 
 function renderFundamentalWidget(ticker) {
-	const container = document.getElementById('tv_fundamental_container');
-	container.innerHTML = `
-		<div class="space-y-4">
-			<div id="tv_financials_widget" class="w-full h-[540px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
-			<div id="tv_profile_widget" class="w-full h-[400px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
-			<div id="tv_fundamental_data_widget" class="w-full h-[500px] bg-slate-900 border border-slate-800 rounded-lg overflow-hidden"></div>
-		</div>
-	`;
-	const profileContainer = document.getElementById('tv_profile_widget');
-	const scriptProfile = document.createElement('script');
-	scriptProfile.type = 'text/javascript';
-	scriptProfile.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js';
-	scriptProfile.async = true;
-	scriptProfile.text = JSON.stringify({
-		"width": "100%", "height": "100%", "colorTheme": "dark", "isTransparent": true, "symbol": `IDX:${ticker}`, "locale": "id"
-	});
-	profileContainer.appendChild(scriptProfile);
-	const fundDataContainer = document.getElementById('tv_fundamental_data_widget');
-	const scriptFundData = document.createElement('script');
-	scriptFundData.type = 'text/javascript';
-	scriptFundData.src = 'https://s3.tradingview.com/external-embedding/embed-widget-fundamental-data.js';
-	scriptFundData.async = true;
-	scriptFundData.text = JSON.stringify({
-		"isTransparent": true, "largeChartUrl": "", "displayMode": "regular", "width": "100%", "height": "100%", "symbol": `IDX:${ticker}`, "colorTheme": "dark", "locale": "id"
-	});
-	fundDataContainer.appendChild(scriptFundData);
-	const finContainer = document.getElementById('tv_financials_widget');
-	const scriptFin = document.createElement('script');
-	scriptFin.type = 'text/javascript';
-	scriptFin.src = 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js';
-	scriptFin.async = true;
-	scriptFin.text = JSON.stringify({
-		"colorTheme": "dark", "isTransparent": true, "largeChartUrl": "", "displayMode": "regular", "width": "100%", "height": "100%", "symbol": `IDX:${ticker}`, "locale": "id", "showSymbolLogo": true
-	});
-	finContainer.appendChild(scriptFin);
-}
+		const container = document.getElementById('tv_fundamental_container');
+		
+		// Siapkan layout grid untuk widget TradingView agar rapih dan proporsional
+		container.innerHTML = `
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+				<!-- Profile Widget -->
+				<div id="tv_profile_widget" class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl h-[450px]"></div>
+				
+				<!-- Fundamental Data Widget -->
+				<div id="tv_fundamental_data_widget" class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl h-[450px]"></div>
+				
+				<!-- Financials Widget (Full Width) -->
+				<div id="tv_financials_widget" class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl h-[600px]"></div>
+			</div>
+		`;
+		
+		// Helper function untuk injeksi script TradingView dengan struktur container yang wajib ada
+		const injectWidget = (id, src, config) => {
+			const wrapper = document.getElementById(id);
+			if (!wrapper) return;
+			
+			const tvContainer = document.createElement('div');
+			tvContainer.className = 'tradingview-widget-container';
+			tvContainer.style.height = '100%';
+			tvContainer.style.width = '100%';
+			
+			const tvWidget = document.createElement('div');
+			tvWidget.className = 'tradingview-widget-container__widget';
+			tvWidget.style.height = '100%';
+			tvWidget.style.width = '100%';
+			
+			const script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.src = src;
+			script.async = true;
+			script.text = JSON.stringify(config);
+			
+			tvContainer.appendChild(tvWidget);
+			tvContainer.appendChild(script);
+			wrapper.appendChild(tvContainer);
+		};
+
+		// 1. Company Profile Widget (Memperbaiki profil yang sebelumnya tidak muncul)
+		injectWidget('tv_profile_widget', 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js', {
+			"width": "100%",
+			"height": "100%",
+			"colorTheme": "dark",
+			"isTransparent": true,
+			"symbol": `IDX:${ticker}`,
+			"locale": "id"
+		});
+
+		// 2. Fundamental Data Widget
+		injectWidget('tv_fundamental_data_widget', 'https://s3.tradingview.com/external-embedding/embed-widget-fundamental-data.js', {
+			"isTransparent": true,
+			"largeChartUrl": "",
+			"displayMode": "regular",
+			"width": "100%",
+			"height": "100%",
+			"symbol": `IDX:${ticker}`,
+			"colorTheme": "dark",
+			"locale": "id"
+		});
+
+		// 3. Financials Widget
+		injectWidget('tv_financials_widget', 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js', {
+			"isTransparent": true,
+			"largeChartUrl": "",
+			"displayMode": "regular",
+			"width": "100%",
+			"height": "100%",
+			"symbol": `IDX:${ticker}`,
+			"colorTheme": "dark",
+			"locale": "id",
+			"showSymbolLogo": true
+		});
+	}
 
 // ==========================================
 // 9. INSIDER SEARCH (SEC EDGAR VIA CLOUDFLARE WORKER)
@@ -3959,133 +4000,23 @@ async function fetchYahooTrending() {
 }
 
 async function fetchRealtimeFundamentals(ticker) {
-	const container = document.getElementById('yahooFundamentalContainer');
-	if (!container) return;
-	
-	container.innerHTML = `<div class="text-center bg-slate-950/10 rounded-xl border border-slate-800 text-slate-400 py-8 text-xs"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-400"></i> Mengekstrak data fundamental & kepemilikan dari bursa...</div>`;
-	if (window.lucide) lucide.createIcons();
+		const container = document.getElementById('yahooFundamentalContainer');
+		if (container) {
+			// Hapus UI fundamental Yahoo lama yang selalu terblokir CORS / Firewall.
+			// Pendekatan baru 100% menggunakan metrik real-time dari TradingView agar sangat stabil dan akurat.
+			container.innerHTML = '';
+			container.classList.add('hidden');
+		}
+		
+		// Ubah badge sumber data pada HTML agar sesuai dengan perubahan (Hanya TradingView)
+		const labelMetrik = document.querySelector('#tabContent-fundamental .text-fuchsia-400.font-bold:not(#fundTickerLabel)');
+		if (labelMetrik) {
+			labelMetrik.innerText = "Real-Time TradingView Data";
+		}
 
-	const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}.JK?modules=assetProfile,financialData,defaultKeyStatistics,summaryDetail,majorHoldersBreakdown,institutionOwnership`;
-	const proxies = [
-		`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-		`https://corsproxy.io/?${encodeURIComponent(url)}`
-	];
-
-	let result = null;
-	for (let i = 0; i < proxies.length; i++) {
-		try {
-			const res = await fetch(proxies[i]);
-			// const res = await fetch(proxies[i], { signal: AbortSignal.timeout(4500) });
-			if (!res.ok) continue;
-			let data = await res.json();
-			if (proxies[i].includes('allorigins')) data = JSON.parse(data.contents);
-			if (data && data.quoteSummary && data.quoteSummary.result) {
-				result = data.quoteSummary.result[0];
-				break;
-			}
-		} catch (e) {}
+		// Panggil fungsi render widget TradingView yang telah dioptimalkan di atas
+		renderFundamentalWidget(ticker);
 	}
-
-	if (!result) {
-		container.innerHTML = `<div class="text-center bg-slate-950/10 rounded-xl border border-slate-800 text-slate-400 py-6 text-xs">Gagal menembus firewall bursa. Mohon gunakan metrik TradingView di bawah.</div>`;
-		return;
-	}
-
-	const profile = result.assetProfile || {};
-	const financial = result.financialData || {};
-	const stats = result.defaultKeyStatistics || {};
-	const detail = result.summaryDetail || {};
-	const holders = result.majorHoldersBreakdown || {};
-	const institutions = result.institutionOwnership?.ownershipList || [];
-
-	const sector = profile.sector || "Finansial / Industri";
-	const industry = profile.industry || "-";
-	const website = profile.website || "#";
-	const emp = profile.fullTimeEmployees ? profile.fullTimeEmployees.toLocaleString('id-ID') : "-";
-	const desc = profile.longBusinessSummary || `PT ${ticker} Tbk beroperasi secara resmi di Bursa Efek Indonesia.`;
-	
-	const pe = detail.trailingPE?.fmt ? `${detail.trailingPE.fmt}x` : "-";
-	const pb = stats.priceToBook?.fmt ? `${stats.priceToBook.fmt}x` : "-";
-	const roe = financial.returnOnEquity?.fmt || "-";
-	const margins = financial.profitMargins?.fmt || "-";
-	const debtToEq = financial.debtToEquity?.fmt ? `${financial.debtToEquity.fmt}%` : "-";
-	const ebitda = financial.ebitda?.fmt || "-";
-	
-	let peColor = 'text-white';
-	let valuasiLabel = 'FAIR VALUE';
-	
-	if (detail.trailingPE?.raw > 0 && detail.trailingPE?.raw <= 20) {
-		peColor = 'text-emerald-400';
-		valuasiLabel = 'UNDERVALUED';
-	} else if (detail.trailingPE?.raw > 30) {
-		peColor = 'text-rose-400';
-		valuasiLabel = 'OVERVALUED';
-	}
-
-	const insHeld = holders.institutionsPercentHeld?.fmt || "0%";
-	const insidersHeld = holders.insidersPercentHeld?.fmt || "0%";
-	
-	let instListHTML = '';
-	institutions.slice(0, 5).forEach(inst => {
-		instListHTML += `
-			<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded mb-1.5">
-				<span class="text-slate-400 truncate max-w-[70%] leading-tight">${inst.organization}</span>
-				<span class="font-bold text-white text-right">${inst.pctHeld?.fmt || '-'}</span>
-			</div>
-		`;
-	});
-	if (!instListHTML) instListHTML = '<div class="text-[10px] text-slate-500 italic p-2">Data pemegang saham institusi rahasia / tidak tersedia.</div>';
-
-	container.innerHTML = `
-		<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-			<div class="bg-slate-950/40 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm">
-				<span class="text-blue-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs mb-3.5 pb-2 border-b border-slate-800">
-					<i data-lucide="building-2" class="w-4 h-4"></i> PROFIL BISNIS ($${ticker})
-				</span>
-				<div class="space-y-2.5 text-[11px] lg:text-xs text-slate-300">
-					<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded"><span class="text-slate-400">Sektor Utama</span><span class="font-bold text-white">${sector}</span></div>
-					<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded"><span class="text-slate-400">Industri</span><span class="font-bold text-white">${industry}</span></div>
-					<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded"><span class="text-slate-400">Karyawan Aktif</span><span class="font-bold text-white">${emp} Orang</span></div>
-					<div class="flex justify-between items-center bg-slate-900/40 px-2 py-1.5 rounded"><span class="text-slate-400">Website URL</span><a href="${website}" target="_blank" class="font-bold text-cyan-400 hover:underline flex items-center gap-1">${website !== '#' ? 'Kunjungi Web <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>' : '-'}</a></div>
-					<div class="pt-2"><span class="text-slate-400 block mb-1.5 font-bold">Ringkasan Operasional:</span><p class="text-[10px] lg:text-[11px] leading-relaxed text-slate-300 line-clamp-4 hover:line-clamp-none transition-all cursor-pointer bg-slate-900/40 p-2.5 rounded-lg border border-slate-800" title="Klik untuk memperluas teks">${desc}</p></div>
-				</div>
-			</div>
-			
-			<div class="space-y-4 flex flex-col justify-between">
-				<!-- Metrik Keuangan -->
-				<div class="bg-slate-950/40 p-4 lg:p-5 rounded-xl border border-slate-800 shadow-sm flex-1">
-					<span class="text-emerald-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs mb-3.5 pb-2 border-b border-slate-800"><i data-lucide="calculator" class="w-4 h-4"></i> METRIK KEUANGAN & VALUASI</span>
-					<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs text-slate-300">
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800"><span class="block text-slate-400 text-[10px] mb-0.5">P/E Ratio</span><span class="font-bold ${peColor}">${pe}</span></div>
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800"><span class="block text-slate-400 text-[10px] mb-0.5">P/BV Ratio</span><span class="font-bold text-white">${pb}</span></div>
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800"><span class="block text-slate-400 text-[10px] mb-0.5">ROE</span><span class="font-bold ${roe.includes('-') ? 'text-rose-400' : 'text-emerald-400'}">${roe}</span></div>
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800"><span class="block text-slate-400 text-[10px] mb-0.5">Profit Margin</span><span class="font-bold ${margins.includes('-') ? 'text-rose-400' : 'text-emerald-400'}">${margins}</span></div>
-					</div>
-					<div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-[11px] lg:text-xs">
-						<span class="text-slate-400">Valuasi Kasar AI:</span>
-						<span class="font-bold text-cyan-400 px-2.5 py-1 bg-cyan-900/20 rounded-md border border-cyan-800/50 flex items-center gap-1.5"><i data-lucide="activity" class="w-3.5 h-3.5"></i> ${valuasiLabel}</span>
-					</div>
-				</div>
-
-				<!-- Major Holders -->
-				<div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800 shadow-sm">
-					<span class="text-violet-400 font-bold flex items-center gap-1.5 text-[11px] lg:text-xs mb-3 pb-2 border-b border-slate-800">
-						<i data-lucide="users" class="w-4 h-4"></i> TOP PEMEGANG SAHAM INSTITUSI
-					</span>
-					<div class="flex justify-between items-center text-[10px] lg:text-[11px] mb-2 bg-slate-900 p-2 rounded">
-						<span class="text-slate-400">Total Dikuasai Institusi: <strong class="text-emerald-400">${insHeld}</strong></span>
-						<span class="text-slate-400">Insiders: <strong class="text-amber-400">${insidersHeld}</strong></span>
-					</div>
-					<div class="text-[10px] lg:text-[11px]">
-						${instListHTML}
-					</div>
-				</div>
-			</div>
-		</div>
-	`;
-	if (window.lucide) lucide.createIcons();
-}
 
 async function fetchStockNewsForAI(ticker) {
 	const cacheKey = `news_cache_${ticker}`;
