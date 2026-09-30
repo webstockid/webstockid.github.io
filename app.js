@@ -4625,115 +4625,112 @@ function calculateAveraging() {
 }
 
 // ==========================================
-// 29. MACRO & COMMODITY DASHBOARD (REAL-TIME)
+// LIVE MACRO & KOMODITAS GLOBAL
 // ==========================================
-async function fetchMacroAndCommodities() {
-	const container = document.getElementById('macroRadarContainer');
-	if (!container) return;
+async function loadLiveMacro() {
+    const container = document.getElementById('macro-container');
+    if (!container) return;
 
-	const macroAssets = [
-		{ id: 'mac-dji', symbol: '^DJI', name: 'Dow Jones', type: 'Indeks Global', icon: 'globe' },
-		{ id: 'mac-ixic', symbol: '^IXIC', name: 'Nasdaq', type: 'Indeks Global', icon: 'monitor' },
-		{ id: 'mac-idr', symbol: 'IDR=X', name: 'USD / IDR', type: 'Mata Uang', icon: 'banknote' },
-		{ id: 'mac-gold', symbol: 'GC=F', name: 'Emas (Gold)', type: 'Komoditas', icon: 'coins' },
-		{ id: 'mac-silver', symbol: 'SI=F', name: 'Perak (Silver)', type: 'Komoditas', icon: 'coins' },
-		{ id: 'mac-copper', symbol: 'HG=F', name: 'Tembaga', type: 'Komoditas', icon: 'coins' },
-		{ id: 'mac-coal', symbol: 'MTF=F', name: 'Batu Bara', type: 'Komoditas', icon: 'flame' },
-		{ id: 'mac-oil', symbol: 'CL=F', name: 'Minyak WTI', type: 'Komoditas', icon: 'droplet' }
-	];
+    // Set status loading
+    container.innerHTML = `
+        <div class="col-span-full flex justify-center items-center py-6 text-cyan-400 text-xs animate-pulse">
+            <i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i> Menghubungkan ke server global...
+        </div>`;
+    if (window.lucide) lucide.createIcons();
 
-	// 1. Render kerangka kotak (Skeleton Loading) terlebih dahulu
-	container.innerHTML = macroAssets.map(asset => `
-		<div id="${asset.id}" class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 shadow-sm flex flex-col justify-center items-center min-h-[85px]">
-			<i data-lucide="loader-2" class="w-5 h-5 animate-spin text-sky-400 mb-2"></i>
-			<span class="text-[10px] text-slate-400 text-center animate-pulse">Memuat ${asset.name}...</span>
-		</div>
-	`).join('');
-	if (window.lucide) lucide.createIcons();
+    // Ticker Yahoo Finance: USD/IDR, Gold, WTI Oil, US 10Y Bond
+    const symbols = 'IDR=X,GC=F,CL=F,^TNX'; 
+    const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
+    
+    // Sistem 3 Proxy Cadangan untuk mengatasi "Kadang Muncul Kadang Tidak"
+    const proxies = [
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+        `https://corsproxy.io/?${encodeURIComponent(url)}`
+    ];
 
-	// 2. Fetch data satu per satu agar tidak terkena Rate Limit Proxy
-	for (const asset of macroAssets) {
-		const sym = encodeURIComponent(asset.symbol);
-		const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=5d`;
-		
-		const urls = [
-			`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
-			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`
-		];
+    let data = null;
+    for (let proxy of proxies) {
+        try {
+            const response = await fetch(proxy, { signal: AbortSignal.timeout(8000) }); // Timeout 8 detik
+            if (response.ok) {
+                data = await response.json();
+                break; // Berhenti mencari jika proxy berhasil
+            }
+        } catch (error) {
+            console.warn(`Proxy gagal memuat makro: ${proxy}`);
+        }
+    }
 
-		let dataObtained = null;
-		for (let url of urls) {
-			try {
-				const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
-				if (res.ok) {
-					const json = await res.json();
-					const resultData = json?.chart?.result?.[0];
-					if (resultData && resultData.indicators.quote[0].close) {
-						const closes = resultData.indicators.quote[0].close.filter(c => c !== null);
-						if (closes.length >= 2) {
-							const currentPrice = closes[closes.length - 1];
-							const prevClose = closes[closes.length - 2];
-							const changePct = ((currentPrice - prevClose) / prevClose) * 100;
-							dataObtained = { ...asset, price: currentPrice, changePct: changePct };
-							break; // Sukses, hentikan pencarian proxy untuk aset ini
-						}
-					}
-				}
-			} catch(e) {}
-		}
+    // Penanganan Error jika semua proxy gagal
+    if (!data || !data.quoteResponse || !data.quoteResponse.result) {
+        container.innerHTML = `
+            <div class="col-span-full bg-rose-500/10 p-3 rounded-lg border border-rose-500/30 flex items-center justify-center gap-2 text-rose-400 text-xs">
+                <i data-lucide="wifi-off" class="w-4 h-4"></i> Gagal memuat data API. Silakan klik Segarkan.
+            </div>`;
+        if (window.lucide) lucide.createIcons();
+        return;
+    }
 
-		// 3. Update tampilan UI per kotak yang sudah selesai ditarik datanya
-		const box = document.getElementById(asset.id);
-		if (!box) continue;
+    const results = data.quoteResponse.result;
+    let htmlContent = '';
+    
+    // Konfigurasi Tampilan Masing-masing Instrumen
+    const config = {
+        'IDR=X': { name: 'USD/IDR', icon: 'banknote', prefix: 'Rp ', suffix: '' },
+        'GC=F':  { name: 'Gold (Emas)', icon: 'coins', prefix: '$', suffix: '' },
+        'CL=F':  { name: 'WTI Crude Oil', icon: 'droplet', prefix: '$', suffix: '' },
+        '^TNX':  { name: 'US 10Y Bond', icon: 'trending-up', prefix: '', suffix: '%' }
+    };
 
-		if (dataObtained) {
-			const isUsdIdr = asset.symbol === 'IDR=X';
-			let isPlus = dataObtained.changePct >= 0;
-			
-			let colorClass = isPlus ? 'text-emerald-400' : 'text-rose-400';
-			let bgClass = isPlus ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-rose-500/10 border-rose-500/30';
-			let iconTrend = isPlus ? 'trending-up' : 'trending-down';
+    results.forEach(quote => {
+        const sym = quote.symbol;
+        if (!config[sym]) return;
+        
+        const info = config[sym];
+        const price = quote.regularMarketPrice;
+        const changePct = quote.regularMarketChangePercent;
+        
+        const isUp = changePct > 0;
+        const isDown = changePct < 0;
+        const colorClass = isUp ? 'text-emerald-400' : (isDown ? 'text-rose-400' : 'text-slate-400');
+        const bgClass = isUp ? 'bg-emerald-500/5 border-emerald-500/20' : (isDown ? 'bg-rose-500/5 border-rose-500/20' : 'bg-slate-800/50 border-slate-700');
+        const sign = isUp ? '+' : '';
 
-			// Kebalikan warna khusus untuk USD/IDR (Naik = Merah, Turun = Hijau)
-			if (isUsdIdr) {
-				colorClass = isPlus ? 'text-rose-400' : 'text-emerald-400';
-				bgClass = isPlus ? 'bg-rose-500/10 border-rose-500/30' : 'bg-emerald-500/10 border-emerald-500/30';
-			}
+        // Format angka sesuai instrumen
+        let formattedPrice = price;
+        if (sym === 'IDR=X') {
+            formattedPrice = price.toLocaleString('id-ID');
+        } else if (sym === '^TNX') {
+            formattedPrice = price.toFixed(3);
+        } else {
+            formattedPrice = price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
 
-			let formattedPrice = isUsdIdr 
-				? `Rp ${new Intl.NumberFormat('id-ID').format(Math.round(dataObtained.price))}`
-				: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(dataObtained.price);
+        htmlContent += `
+            <div class="p-3 rounded-xl border ${bgClass} flex flex-col justify-between hover:bg-slate-800/80 transition-colors">
+                <div class="flex items-start justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                        <div class="p-1.5 rounded-lg bg-slate-900 border border-slate-700/50">
+                            <i data-lucide="${info.icon}" class="w-3.5 h-3.5 text-slate-400"></i>
+                        </div>
+                        <span class="text-[10px] lg:text-[11px] text-slate-400 font-medium whitespace-nowrap">${info.name}</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-sm lg:text-base font-bold text-white mb-0.5 tracking-tight">
+                        ${info.prefix}${formattedPrice}${info.suffix}
+                    </div>
+                    <div class="text-[10px] lg:text-[11px] font-bold ${colorClass}">
+                        ${sign}${changePct.toFixed(2)}%
+                    </div>
+                </div>
+            </div>
+        `;
+    });
 
-			box.outerHTML = `
-				<div class="bg-slate-900/60 hover:bg-slate-800 p-3 rounded-xl border border-slate-800 transition-colors shadow-sm animate-in fade-in zoom-in duration-300">
-					<div class="flex items-center justify-between mb-2">
-						<span class="font-bold text-white text-[11px] lg:text-xs flex items-center gap-1.5">
-							<i data-lucide="${asset.icon}" class="w-3.5 h-3.5 text-slate-400"></i> ${asset.name}
-						</span>
-						<span class="text-[9px] font-bold ${colorClass} ${bgClass} px-1.5 py-0.5 rounded border">
-							${isPlus ? '+' : ''}${dataObtained.changePct.toFixed(2)}%
-						</span>
-					</div>
-					<div class="flex flex-col">
-						<span class="text-sm lg:text-base font-extrabold ${colorClass}">${formattedPrice}</span>
-						<div class="flex items-center justify-between mt-1">
-							<span class="text-[9px] text-slate-500 uppercase tracking-wider">${asset.type}</span>
-							<i data-lucide="${iconTrend}" class="w-3 h-3 ${colorClass} opacity-70"></i>
-						</div>
-					</div>
-				</div>
-			`;
-		} else {
-			// Jika semua proxy gagal memuat aset ini, tampilkan pesan error khusus untuk kotak ini
-			box.outerHTML = `
-				<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 shadow-sm flex flex-col justify-center items-center min-h-[85px] opacity-70">
-					<i data-lucide="alert-circle" class="w-4 h-4 text-rose-500 mb-1"></i>
-					<span class="text-[10px] text-slate-400 text-center">Gagal memuat ${asset.name}</span>
-				</div>
-			`;
-		}
-		if (window.lucide) lucide.createIcons();
-	}
+    container.innerHTML = htmlContent;
+    if (window.lucide) lucide.createIcons();
 }
 
 
@@ -4770,6 +4767,13 @@ fetchCorporateAction(currentTicker);
 fetchRealtimeFundamentals(currentTicker);
 fetchYahooTrending();
 loadDeviceSystemInfo();
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Fungsi lain yang mungkin sudah ada...
+    
+    // Panggil makro otomatis saat halaman dimuat
+    loadLiveMacro();
+});
 
 startBackgroundAutoCache();
 setInterval(() => {
