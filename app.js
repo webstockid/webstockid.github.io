@@ -815,7 +815,20 @@ function renderFundamentalWidget(ticker) {
 			tvContainer.appendChild(script);
 			wrapper.appendChild(tvContainer);
 		};
-
+		
+		// 3. Financials Widget
+		injectWidget('tv_financials_widget', 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js', {
+			"isTransparent": true,
+			"largeChartUrl": "",
+			"displayMode": "regular",
+			"width": "100%",
+			"height": "100%",
+			"symbol": `IDX:${ticker}`,
+			"colorTheme": "dark",
+			"locale": "id",
+			"showSymbolLogo": true
+		});
+		
 		// 1. Company Profile Widget (Memperbaiki profil yang sebelumnya tidak muncul)
 		injectWidget('tv_profile_widget', 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js', {
 			"width": "100%",
@@ -836,19 +849,6 @@ function renderFundamentalWidget(ticker) {
 			"symbol": `IDX:${ticker}`,
 			"colorTheme": "dark",
 			"locale": "id"
-		});
-
-		// 3. Financials Widget
-		injectWidget('tv_financials_widget', 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js', {
-			"isTransparent": true,
-			"largeChartUrl": "",
-			"displayMode": "regular",
-			"width": "100%",
-			"height": "100%",
-			"symbol": `IDX:${ticker}`,
-			"colorTheme": "dark",
-			"locale": "id",
-			"showSymbolLogo": true
 		});
 	}
 
@@ -4000,23 +4000,18 @@ async function fetchYahooTrending() {
 }
 
 async function fetchRealtimeFundamentals(ticker) {
-		const container = document.getElementById('yahooFundamentalContainer');
-		if (container) {
-			// Hapus UI fundamental Yahoo lama yang selalu terblokir CORS / Firewall.
-			// Pendekatan baru 100% menggunakan metrik real-time dari TradingView agar sangat stabil dan akurat.
-			container.innerHTML = '';
-			container.classList.add('hidden');
-		}
-		
-		// Ubah badge sumber data pada HTML agar sesuai dengan perubahan (Hanya TradingView)
-		const labelMetrik = document.querySelector('#tabContent-fundamental .text-fuchsia-400.font-bold:not(#fundTickerLabel)');
-		if (labelMetrik) {
-			labelMetrik.innerText = "Real-Time TradingView Data";
-		}
-
-		// Panggil fungsi render widget TradingView yang telah dioptimalkan di atas
-		renderFundamentalWidget(ticker);
+	const container = document.getElementById('yahooFundamentalContainer');
+	if (container) {
+		container.innerHTML = '';
+		container.classList.add('hidden');
 	}
+	
+	const labelMetrik = document.querySelector('#tabContent-fundamental .text-fuchsia-400.font-bold:not(#fundTickerLabel)');
+	if (labelMetrik) {
+		labelMetrik.innerText = "Real-Time TradingView Data";
+	}
+	renderFundamentalWidget(ticker);
+}
 
 async function fetchStockNewsForAI(ticker) {
 	const cacheKey = `news_cache_${ticker}`;
