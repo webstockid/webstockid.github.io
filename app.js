@@ -3952,7 +3952,7 @@ async function fetchRealtimeFundamentals(ticker) {
 	const FMP_API_KEY = "sQcbrQE9VKor9rWHYmoKxVf6DF2nrKx5";
 
 	try {
-		if (FMP_API_KEY === "sQcbrQE9VKor9rWHYmoKxVf6DF2nrKx5" || !FMP_API_KEY) {
+		if (!FMP_API_KEY) {
 			container.innerHTML = `
 				<div class="bg-rose-500/10 border border-rose-500/30 p-5 rounded-xl text-center space-y-3 shadow-sm">
 					<i data-lucide="key" class="w-8 h-8 text-rose-400 mx-auto"></i>
