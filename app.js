@@ -3958,7 +3958,7 @@ async function fetchRealtimeFundamentals(ticker) {
 					<i data-lucide="key" class="w-8 h-8 text-rose-400 mx-auto"></i>
 					<h4 class="text-sm font-bold text-white">API Key Fundamental Belum Diisi</h4>
 					<p class="text-xs text-slate-400 leading-relaxed max-w-md mx-auto">
-						Fitur ini menggunakan <strong>Financial Modeling Prep (FMP)</strong> agar stabil tanpa Yahoo/TradingView. Silakan daftar gratis di <i>financialmodelingprep.com</i> dan masukkan kuncinya pada variabel <code class="bg-slate-900 text-fuchsia-400 border border-slate-700 px-1 py-0.5 rounded">FMP_API_KEY</code> di dalam kode JavaScript Kamu.
+						Fitur ini menggunakan <strong>Financial Modeling Prep (FMP)</strong>.
 					</p>
 				</div>
 			`;
