@@ -4738,6 +4738,7 @@ async function loadLiveMacro() {
 // 29. FITUR BSJP SCREENER (REAL-TIME ENGINE)
 // ==========================================
 let isBSJPScanning = false;
+let bsjpCooldownTimer = null;
 
 async function startBSJPProcess() {
 	if (isBSJPScanning) return;
@@ -4746,9 +4747,15 @@ async function startBSJPProcess() {
 	const btn = document.getElementById('btnStartBSJP');
 	const container = document.getElementById('bsjpListContainer');
 
+	// Mencegah spam klik saat status sedang pending
+	if (btn.disabled && btn.innerHTML.includes('Pending')) {
+		isBSJPScanning = false;
+		return;
+	}
+
 	// State Loading pada Tombol
 	btn.disabled = true;
-	btn.className = "w-full sm:w-auto bg-slate-800 text-white font-bold px-6 py-2.5 rounded-lg border border-slate-700 flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
+	btn.className = "w-full sm:w-auto bg-slate-800 text-white font-bold px-6 py-2.5 rounded-lg border border-slate-700 flex items-center justify-center gap-2 shrink-0 cursor-not-allowed opacity-70";
 	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-orange-400"></i> Memindai BSJP...`;
 	if (window.lucide) lucide.createIcons();
 
@@ -4769,6 +4776,8 @@ async function startBSJPProcess() {
 					}
 				}
 			}
+			// Batasi pencarian di cache agar saat di-scan ulang, hasilnya bervariasi dan tidak selalu saham yang sama
+			if (bsjpCandidates.length >= 30) break;
 		}
 
 		// STRATEGI 2: FALLBACK API JARINGAN DENGAN BATCH LEBIH BESAR
@@ -4783,7 +4792,8 @@ async function startBSJPProcess() {
 				if (maxBatchLimit > 3) break; 
 
 				const batch = remainingWatchlist.slice(i, i + BATCH_SIZE);
-				const fetchedData = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
+				// Gunakan force fetch = true agar memaksa update data baru dari API
+				const fetchedData = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker, true)));
 
 				for (const item of fetchedData) {
 					if (!item || !item.price) continue;
@@ -4793,7 +4803,7 @@ async function startBSJPProcess() {
 						}
 					}
 				}
-				if (bsjpCandidates.length >= 6) break;
+				if (bsjpCandidates.length >= 10) break;
 			}
 		}
 
@@ -4801,18 +4811,34 @@ async function startBSJPProcess() {
 		if (bsjpCandidates.length === 0) {
 			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30">Belum ada saham yang memenuhi syarat ketat BSJP pada sesi ini.</div>`;
 		} else {
-			const topCandidates = bsjpCandidates.sort((a, b) => b.volRatio - a.volRatio).slice(0, 6);
+			// Acak kandidat yang memenuhi kriteria sebelum ditampilkan agar saham yang muncul selalu baru/berganti
+			const randomSelection = bsjpCandidates.sort(() => 0.5 - Math.random()).slice(0, 6);
+			// Urutkan 6 saham terpilih berdasarkan rasio volume tertinggi
+			const topCandidates = randomSelection.sort((a, b) => b.volRatio - a.volRatio);
 			renderBSJPItems(topCandidates);
 			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 		}
 	} finally {
 		isBSJPScanning = false;
 		
-		// Kembalikan Tombol ke Semula dengan jaminan (menggunakan blok try..finally)
-		btn.disabled = false;
-		btn.className = "w-full sm:w-auto bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold px-6 py-2.5 rounded-lg border border-orange-500/50 transition shadow-lg shadow-orange-600/20 flex items-center justify-center gap-2 shrink-0";
-		btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Scan Ulang BSJP`;
-		if (window.lucide) lucide.createIcons();
+		// Cooldown timer agar tombol tidak dispam dan memberi visualisasi proses siap kembali
+		let cooldown = 5;
+		if (bsjpCooldownTimer) clearInterval(bsjpCooldownTimer);
+		
+		bsjpCooldownTimer = setInterval(() => {
+			cooldown--;
+			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-orange-400"></i> Pending (${cooldown}s)`;
+			if (window.lucide) lucide.createIcons();
+			
+			if (cooldown <= 0) {
+				clearInterval(bsjpCooldownTimer);
+				btn.disabled = false;
+				btn.classList.remove('cursor-not-allowed', 'opacity-70');
+				btn.className = "w-full sm:w-auto bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold px-6 py-2.5 rounded-lg border border-orange-500/50 transition shadow-lg shadow-orange-600/20 flex items-center justify-center gap-2 shrink-0";
+				btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Scan Ulang BSJP`;
+				if (window.lucide) lucide.createIcons();
+			}
+		}, 1000);
 	}
 }
 
