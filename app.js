@@ -1596,7 +1596,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 				const maxPrice = basePrice * 1.25;
 				const sampleCandidates = uniqueRadarWatchlist.filter(t => t !== targetTicker).sort(() => 0.5 - Math.random());
 				
-				const BATCH_SIZE = 8;
+				const BATCH_SIZE = 15; //8
 				for (let i = 0; i < sampleCandidates.length; i += BATCH_SIZE) {
 					const batch = sampleCandidates.slice(i, i + BATCH_SIZE);
 					const fetchedBatch = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
@@ -2152,7 +2152,7 @@ async function startRadarProcess() {
 	}
 	
 	const validData = [];
-	const BATCH_SIZE = 10;
+	const BATCH_SIZE = 20; //10
 
 	for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
 		const batch = shuffled.slice(i, i + BATCH_SIZE);
@@ -2362,7 +2362,7 @@ async function runCustomScreener() {
 		
 		const shuffled = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
 		let passedItems = [];
-		const BATCH_SIZE = 10;
+		const BATCH_SIZE = 20; //10
 
 		for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
 			const batch = shuffled.slice(i, i + BATCH_SIZE);
@@ -2898,7 +2898,7 @@ async function scanWhalesData() {
 	await new Promise(resolve => setTimeout(resolve, 400));
 	let foundWhales = [];
 	const scanList = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
-	const BATCH_SIZE = 12;
+	const BATCH_SIZE = 15; //12
 
 	for (let i = 0; i < scanList.length; i += BATCH_SIZE) {
 		const batch = scanList.slice(i, i + BATCH_SIZE);
@@ -4694,11 +4694,14 @@ async function startBSJPProcess() {
 	if (bsjpCandidates.length < 6) {
 		const candidateTickers = bsjpCandidates.map(c => c.ticker);
 		const remainingWatchlist = shuffledWatchlist.filter(t => !candidateTickers.includes(t));
-		const BATCH_SIZE = 15; // Ditingkatkan dari 8 ke 15 untuk paralel yang lebih luas
+		const BATCH_SIZE = 20; // Ditingkatkan untuk paralel yang lebih luas
+		let maxBatchLimit = 0;
 
 		for (let i = 0; i < remainingWatchlist.length; i += BATCH_SIZE) {
+			maxBatchLimit++;
+			if (maxBatchLimit > 3) break; // Maksimal 3 putaran (60 saham)
+
 			const batch = remainingWatchlist.slice(i, i + BATCH_SIZE);
-			const fetchedData = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
 
 			for (const item of fetchedData) {
 				if (!item || !item.price) continue;
