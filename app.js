@@ -2455,10 +2455,10 @@ async function runCustomScreener() {
 
 			// Konstruksi Filter Badge Berdasarkan Rule MA
 			let filterBadgeHtml = '';
-			if (ruleMA === 'ABOVE_MA5') { filterBadgeHtml = '<i data-lucide="trending-up" class="w-3.5 h-3.5"></i> ↑ Uptrend MA5'; }
-			else if (ruleMA === 'ABOVE_MA20') { filterBadgeHtml = '<i data-lucide="trending-up" class="w-3.5 h-3.5"></i> ↑ Uptrend MA20'; }
+			if (ruleMA === 'ABOVE_MA5') { filterBadgeHtml = '<i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Uptrend MA5'; }
+			else if (ruleMA === 'ABOVE_MA20') { filterBadgeHtml = '<i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Uptrend MA20'; }
 			else if (ruleMA === 'GOLDEN_CROSS') { filterBadgeHtml = '<i data-lucide="git-merge" class="w-3.5 h-3.5"></i> Golden Cross'; }
-			else if (ruleMA === 'BELOW_MA20') { filterBadgeHtml = '<i data-lucide="trending-down" class="w-3.5 h-3.5"></i> ↓ Downtrend MA20'; }
+			else if (ruleMA === 'BELOW_MA20') { filterBadgeHtml = '<i data-lucide="trending-down" class="w-3.5 h-3.5"></i> Downtrend MA20'; }
 			else { filterBadgeHtml = '<i data-lucide="list-filter" class="w-3.5 h-3.5"></i> Filter Match'; }
 
 			html += `
@@ -2936,129 +2936,173 @@ async function scanWhalesData() {
 	await new Promise(resolve => setTimeout(resolve, 400));
 	let foundWhales = [];
 	const scanList = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
-	const BATCH_SIZE = 15; //12
 
-	for (let i = 0; i < scanList.length; i += BATCH_SIZE) {
-		const batch = scanList.slice(i, i + BATCH_SIZE);
-		const results = await Promise.all(batch.map(async (ticker) => {
-			let data = getCachedStockData(ticker); 
-			if (!data || !data.price) {
-				try { data = await fetchRealtimeStockData(ticker); } catch(e){}
-			}
-			return data;
-		}));
+	try {
+		// STRATEGI 1: FILTER INSTAN DARI CACHE (Anti-Lag & Sangat Cepat)
+		for (const ticker of scanList) {
+			const cachedItem = getCachedStockData(ticker);
+			if (cachedItem && cachedItem.price) {
+				const vol = cachedItem.volRatio || 0;
+				const chg = cachedItem.changePct || 0;
+				const price = cachedItem.price;
+				const ma5 = cachedItem.ma5 || price;
+				let tier = 0, tierName = "", tierClass = "";
 
-		for (const item of results) {
-			if (!item || !item.price) continue;
-			const vol = item.volRatio || 0;
-			const chg = item.changePct || 0;
-			const price = item.price;
-			const ma5 = item.ma5 || price;
-			let tier = 0, tierName = "", tierClass = "";
+				if (vol >= 3.0 && chg >= 1.0 && chg <= 6.0 && price > ma5) {
+					tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
+					tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
+				} else if (vol >= 2.0 && vol < 3.0 && chg >= 0 && chg <= 4.0) {
+					tier = 2; tierName = "PAUS SEDANG (MEDIUM WHALE)";
+					tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
+				} else if (vol >= 1.5 && vol < 2.0 && chg >= 0 && chg <= 4.0) {
+					tier = 1; tierName = "INDIKASI PAUS (WHALE SIGN)";
+					tierClass = "bg-amber-500/20 border-amber-500/40 text-amber-400";
+				}
 
-			if (vol >= 3.0 && chg >= 1.0 && chg <= 6.0 && price > ma5) {
-				tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
-				tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-			} else if (vol >= 2.0 && vol < 3.0 && chg >= 0 && chg <= 4.0) {
-				tier = 2; tierName = "PAUS SEDANG (MEDIUM WHALE)";
-				tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
-			} else if (vol >= 1.5 && vol < 2.0 && chg >= 0 && chg <= 4.0) {
-				tier = 1; tierName = "INDIKASI PAUS (WHALE SIGN)";
-				tierClass = "bg-amber-500/20 border-amber-500/40 text-amber-400";
-			}
-
-			if (tier > 0) {
-				item.whaleTier = tier;
-				item.whaleTierName = tierName;
-				item.whaleTierClass = tierClass;
-				foundWhales.push(item);
+				if (tier > 0) {
+					if (!foundWhales.some(c => c.ticker === ticker)) {
+						cachedItem.whaleTier = tier;
+						cachedItem.whaleTierName = tierName;
+						cachedItem.whaleTierClass = tierClass;
+						foundWhales.push(cachedItem);
+					}
+				}
 			}
 		}
-		if (foundWhales.length >= 10) break;
-	}
 
-	foundWhales.sort((a, b) => {
-		if (b.whaleTier !== a.whaleTier) return b.whaleTier - a.whaleTier;
-		return b.volRatio - a.volRatio;
-	});
-	foundWhales = foundWhales.slice(0, 10);
+		// STRATEGI 2: FALLBACK API JARINGAN DENGAN BATCH LIMIT (Mencegah Browser Hang)
+		if (foundWhales.length < 10) {
+			const candidateTickers = foundWhales.map(c => c.ticker);
+			const remainingWatchlist = scanList.filter(t => !candidateTickers.includes(t));
+			const BATCH_SIZE = 20;
+			let maxBatchLimit = 0;
 
-	if (foundWhales.length === 0) {
-		container.innerHTML = `
-			<div class="text-center text-slate-400 text-[11px] lg:text-xs py-10 col-span-full border border-slate-700 rounded-xl bg-slate-950/20">
-				<i data-lucide="waves" class="w-6 h-6 mx-auto mb-2 text-slate-500"></i>
-				Belum ada pergerakan Whale (Bandar) yang terdeteksi. Kondisi pasar saat ini cenderung sepi atau stabil.
-			</div>
-		`;
-	} else {
-		let html = '';
-		foundWhales.forEach((item) => {
-			const price = roundToBEITick(item.price);
-			
-			// FIBONACCI SUPPORT / RESISTANCE (Dynamic)
-			const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
-			let s1 = fibo.entryLow;
-			let s2 = fibo.entryHigh;
-			let r1 = fibo.res1;
-			let r2 = fibo.res2;
-			let cl = fibo.sl;
-			let entryAgresif = fibo.entryHigh;
-			let entryAman = fibo.entryLow;
+			for (let i = 0; i < remainingWatchlist.length; i += BATCH_SIZE) {
+				maxBatchLimit++;
+				// Maksimal 3 batch (~60 saham) untuk menjaga performa perangkat
+				if (maxBatchLimit > 3) break; 
 
-			html += `
-				<div class="bg-slate-950/50 p-4 rounded-xl border border-slate-700/60 hover:border-slate-500/40 transition relative group shadow-sm flex flex-col justify-between">
-					<div class="absolute top-0 right-0 px-2.5 py-1 bg-slate-900 border-b border-l border-slate-700 rounded-bl-lg rounded-tr-xl text-[9px] font-bold ${item.whaleTierClass}">
-						${item.whaleTierName}
-					</div>
-					<div class="flex items-center gap-3 mb-3 border-b border-slate-800/80 pb-3 mt-1">
-						<div class="flex flex-col">
-							<span class="text-sm md:text-base font-bold text-white flex items-center gap-2">
-								$${item.ticker} 
-								<span class="text-[10px] md:text-[11px] ${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'} px-2 py-0.5 rounded border">
-									${item.changePct >= 0 ? '+' : ''}${item.changePct}%
-								</span>
-							</span>
-							<span class="text-[10px] text-slate-400 mt-1">Close: <strong class="text-blue-400">Rp ${price.toLocaleString('id-ID')}</strong> (Vol: <span class="text-fuchsia-400 font-bold">${item.volRatio}x</span>)</span>
-						</div>
-					</div>
-					<div class="space-y-2 text-[10px] lg:text-xs text-slate-300">
-						<div class="bg-slate-900/70 p-2.5 rounded border border-slate-800/80 space-y-1">
-							<div class="flex justify-between"><span class="text-slate-400">Entry Agresif / Aman:</span><span class="font-bold text-amber-400">Rp ${entryAman.toLocaleString('id-ID')} - ${entryAgresif.toLocaleString('id-ID')}</span></div>
-							<div class="flex justify-between"><span class="text-slate-400">Support (S1 / S2):</span><span class="font-bold text-cyan-400">Rp ${s1.toLocaleString('id-ID')} - ${s2.toLocaleString('id-ID')}</span></div>
-							<div class="flex justify-between"><span class="text-slate-400">Resistance (R1 / R2):</span><span class="font-bold text-emerald-400">Rp ${r1.toLocaleString('id-ID')} - ${r2.toLocaleString('id-ID')}</span></div>
-							<div class="flex justify-between border-t border-slate-800 pt-1"><span class="text-slate-400">Stop Loss (CL):</span><span class="font-bold text-rose-400">&lt; Rp ${cl.toLocaleString('id-ID')}</span></div>
-						</div>
-						<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
-							<span>Total Valuasi / Lot:</span><span class="font-bold text-violet-400">${(item.currentLot || 0).toLocaleString('id-ID')} Lot (${formatValuationIDR(item.currentValuation)})</span>
-						</div>
-					</div>
-					<button onclick="selectTickerFromRadar('${item.ticker}'); toggleWhaleModal();" class="mt-3.5 w-full bg-fuchsia-700 hover:bg-fuchsia-500 text-white font-bold text-[10px] lg:text-[11px] py-2.5 rounded-lg border border-fuchsia-500 shadow-lg shadow-fuchsia-600/30 transition flex items-center justify-center gap-1.5">
-						<i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Buka Chart & Detail AI
-					</button>
+				const batch = remainingWatchlist.slice(i, i + BATCH_SIZE);
+				const fetchedData = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
+
+				for (const item of fetchedData) {
+					if (!item || !item.price) continue;
+					const vol = item.volRatio || 0;
+					const chg = item.changePct || 0;
+					const price = item.price;
+					const ma5 = item.ma5 || price;
+					let tier = 0, tierName = "", tierClass = "";
+
+					if (vol >= 3.0 && chg >= 1.0 && chg <= 6.0 && price > ma5) {
+						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
+						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
+					} else if (vol >= 2.0 && vol < 3.0 && chg >= 0 && chg <= 4.0) {
+						tier = 2; tierName = "PAUS SEDANG (MEDIUM WHALE)";
+						tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
+					} else if (vol >= 1.5 && vol < 2.0 && chg >= 0 && chg <= 4.0) {
+						tier = 1; tierName = "INDIKASI PAUS (WHALE SIGN)";
+						tierClass = "bg-amber-500/20 border-amber-500/40 text-amber-400";
+					}
+
+					if (tier > 0) {
+						if (!foundWhales.some(c => c.ticker === item.ticker)) {
+							item.whaleTier = tier;
+							item.whaleTierName = tierName;
+							item.whaleTierClass = tierClass;
+							foundWhales.push(item);
+						}
+					}
+				}
+				if (foundWhales.length >= 10) break;
+			}
+		}
+
+		// Urutkan berdasarkan tier terkuat, lalu volume rasio terbesar
+		foundWhales.sort((a, b) => {
+			if (b.whaleTier !== a.whaleTier) return b.whaleTier - a.whaleTier;
+			return b.volRatio - a.volRatio;
+		});
+		foundWhales = foundWhales.slice(0, 10);
+
+		if (foundWhales.length === 0) {
+			container.innerHTML = `
+				<div class="text-center text-slate-400 text-[11px] lg:text-xs py-10 col-span-full border border-slate-700 rounded-xl bg-slate-950/20">
+					<i data-lucide="waves" class="w-6 h-6 mx-auto mb-2 text-slate-500"></i>
+					Belum ada pergerakan Whale (Bandar) yang terdeteksi. Kondisi pasar saat ini cenderung sepi atau stabil.
 				</div>
 			`;
-		});
-		container.innerHTML = html;
-		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
-	}
+		} else {
+			let html = '';
+			foundWhales.forEach((item) => {
+				const price = roundToBEITick(item.price);
+				
+				// FIBONACCI SUPPORT / RESISTANCE (Dynamic)
+				const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
+				let s1 = fibo.entryLow;
+				let s2 = fibo.entryHigh;
+				let r1 = fibo.res1;
+				let r2 = fibo.res2;
+				let cl = fibo.sl;
+				let entryAgresif = fibo.entryHigh;
+				let entryAman = fibo.entryLow;
 
-	isWhaleScanning = false;
-	let cooldown = foundWhales.length === 0 ? 60 : 30; 
-	if (whaleScanCooldownTimer) clearInterval(whaleScanCooldownTimer);
-
-	whaleScanCooldownTimer = setInterval(() => {
-		cooldown--;
-		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-amber-400"></i> Pending (${cooldown}s)`;
-		if (window.lucide) lucide.createIcons();
-		
-		if (cooldown <= 0) {
-			clearInterval(whaleScanCooldownTimer);
-			btn.disabled = false;
-			btn.classList.remove('cursor-not-allowed', 'opacity-70');
-			btn.innerHTML = `<i data-lucide="radar" class="w-4 h-4"></i> Scan Ulang Whales`;
-			if (window.lucide) lucide.createIcons();
+				html += `
+					<div class="bg-slate-950/50 p-4 rounded-xl border border-slate-700/60 hover:border-slate-500/40 transition relative group shadow-sm flex flex-col justify-between">
+						<div class="absolute top-0 right-0 px-2.5 py-1 bg-slate-900 border-b border-l border-slate-700 rounded-bl-lg rounded-tr-xl text-[9px] font-bold ${item.whaleTierClass}">
+							${item.whaleTierName}
+						</div>
+						<div class="flex items-center gap-3 mb-3 border-b border-slate-800/80 pb-3 mt-1">
+							<div class="flex flex-col">
+								<span class="text-sm md:text-base font-bold text-white flex items-center gap-2">
+									$${item.ticker} 
+									<span class="text-[10px] md:text-[11px] ${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'} px-2 py-0.5 rounded border">
+										${item.changePct >= 0 ? '+' : ''}${item.changePct}%
+									</span>
+								</span>
+								<span class="text-[10px] text-slate-400 mt-1">Close: <strong class="text-blue-400">Rp ${price.toLocaleString('id-ID')}</strong> (Vol: <span class="text-fuchsia-400 font-bold">${item.volRatio}x</span>)</span>
+							</div>
+						</div>
+						<div class="space-y-2 text-[10px] lg:text-xs text-slate-300">
+							<div class="bg-slate-900/70 p-2.5 rounded border border-slate-800/80 space-y-1">
+								<div class="flex justify-between"><span class="text-slate-400">Entry Agresif / Aman:</span><span class="font-bold text-amber-400">Rp ${entryAman.toLocaleString('id-ID')} - ${entryAgresif.toLocaleString('id-ID')}</span></div>
+								<div class="flex justify-between"><span class="text-slate-400">Support (S1 / S2):</span><span class="font-bold text-cyan-400">Rp ${s1.toLocaleString('id-ID')} - ${s2.toLocaleString('id-ID')}</span></div>
+								<div class="flex justify-between"><span class="text-slate-400">Resistance (R1 / R2):</span><span class="font-bold text-emerald-400">Rp ${r1.toLocaleString('id-ID')} - ${r2.toLocaleString('id-ID')}</span></div>
+								<div class="flex justify-between border-t border-slate-800 pt-1"><span class="text-slate-400">Stop Loss (CL):</span><span class="font-bold text-rose-400">&lt; Rp ${cl.toLocaleString('id-ID')}</span></div>
+							</div>
+							<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
+								<span>Total Valuasi / Lot:</span><span class="font-bold text-violet-400">${(item.currentLot || 0).toLocaleString('id-ID')} Lot (${formatValuationIDR(item.currentValuation)})</span>
+							</div>
+						</div>
+						<button onclick="selectTickerFromRadar('${item.ticker}'); toggleWhaleModal();" class="mt-3.5 w-full bg-fuchsia-700 hover:bg-fuchsia-500 text-white font-bold text-[10px] lg:text-[11px] py-2.5 rounded-lg border border-fuchsia-500 shadow-lg shadow-fuchsia-600/30 transition flex items-center justify-center gap-1.5">
+							<i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Buka Chart & Detail AI
+						</button>
+					</div>
+				`;
+			});
+			container.innerHTML = html;
+			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 		}
-	}, 1000);
+
+	} finally {
+		// Menggunakan blok try-finally memastikan timer dan tombol selalu direset
+		isWhaleScanning = false;
+		let cooldown = foundWhales.length === 0 ? 60 : 30; 
+		if (whaleScanCooldownTimer) clearInterval(whaleScanCooldownTimer);
+
+		whaleScanCooldownTimer = setInterval(() => {
+			cooldown--;
+			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-amber-400"></i> Pending (${cooldown}s)`;
+			if (window.lucide) lucide.createIcons();
+			
+			if (cooldown <= 0) {
+				clearInterval(whaleScanCooldownTimer);
+				btn.disabled = false;
+				btn.classList.remove('cursor-not-allowed', 'opacity-70');
+				btn.innerHTML = `<i data-lucide="radar" class="w-4 h-4"></i> Scan Ulang Whales`;
+				if (window.lucide) lucide.createIcons();
+			}
+		}, 1000);
+	}
 }
 
 // ==========================================
