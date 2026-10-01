@@ -122,7 +122,7 @@ document.addEventListener("click", function(event) {
 });
 
 function switchTab(tabName) {
-	const tabs = ['ai','bigmoney','custom','peer','news','fundamental','paper','rrr','journal','alert','corporate','insider','heatmap','setting'];
+	const tabs = ['ai','bigmoney','custom','bsjp','peer','news','fundamental','paper','rrr','journal','alert','corporate','insider','heatmap','setting'];
 	tabs.forEach(tab => {
 		const btn = document.getElementById(`tabBtn-${tab}`);
 		const content = document.getElementById(`tabContent-${tab}`);
@@ -4652,7 +4652,166 @@ async function loadLiveMacro() {
 	if (window.lucide) lucide.createIcons();
 }
 
+// ==========================================
+// 29. FITUR BSJP SCREENER (REAL-TIME ENGINE)
+// ==========================================
+let isBSJPScanning = false;
 
+async function startBSJPProcess() {
+	if (isBSJPScanning) return;
+	isBSJPScanning = true;
+
+	const btn = document.getElementById('btnStartBSJP');
+	const container = document.getElementById('bsjpListContainer');
+
+	// State Loading pada Tombol
+	btn.disabled = true;
+	btn.className = "w-full sm:w-auto bg-slate-800 text-white font-bold px-6 py-2.5 rounded-lg border border-slate-700 flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-orange-400"></i> Memindai BSJP...`;
+	if (window.lucide) lucide.createIcons();
+
+	// State Loading pada Kontainer
+	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-orange-500"></i> Menyaring saham dengan Valuasi > 3 Miliar & Momentum Akumulasi...</div>`;
+	
+	// Acak list saham untuk menghindari hasil yang repetitif dari atas
+	const shuffledWatchlist = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
+	let bsjpCandidates = [];
+	const BATCH_SIZE = 12;
+
+	// Loop dan fetch data secara concurrent dengan batas batch agar tidak hit limit
+	for (let i = 0; i < shuffledWatchlist.length; i += BATCH_SIZE) {
+		const batch = shuffledWatchlist.slice(i, i + BATCH_SIZE);
+		const fetchedData = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
+
+		for (const item of fetchedData) {
+			if (!item || !item.price) continue;
+			
+			// SYARAT MUTLAK BSJP:
+			// 1. Valuasi Transaksi > 3.000.000.000 (3 Miliar)
+			// 2. Harga ditutup/berada di atas MA5 (Fase Uptrend / Kuat Support)
+			// 3. Volume Hari ini di atas rata-rata (volRatio >= 1.2x)
+			// 4. Harga dalam posisi hijau (+), mengindikasikan dominasi Buyer
+			if (item.currentValuation > 3000000000 && item.price >= item.ma5 && item.volRatio >= 1.2 && item.changePct > 0) {
+				bsjpCandidates.push(item);
+			}
+		}
+
+		// Jika sudah dapat minimal 8 saham yang cocok, hentikan pencarian agar lebih cepat
+		if (bsjpCandidates.length >= 8) break;
+	}
+
+	// Selesai Scanning
+	isBSJPScanning = false;
+	
+	// Kembalikan Tombol ke Semula
+	btn.disabled = false;
+	btn.className = "w-full sm:w-auto bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold px-6 py-2.5 rounded-lg border border-orange-500/50 transition shadow-lg shadow-orange-600/20 flex items-center justify-center gap-2 shrink-0";
+	btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Scan Ulang BSJP`;
+	if (window.lucide) lucide.createIcons();
+
+	// Render Hasil
+	if (bsjpCandidates.length === 0) {
+		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30">Belum ada saham yang memenuhi syarat ketat BSJP (Valuasi > Rp3 Miliar, Harga > MA5, Vol > 1.2x) pada sesi ini.</div>`;
+	} else {
+		renderBSJPItems(bsjpCandidates);
+		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+	}
+}
+
+function renderBSJPItems(dataList) {
+	const container = document.getElementById('bsjpListContainer');
+	
+	// Urutkan berdasarkan momentum akumulasi volume paling besar
+	const sortedData = [...dataList].sort((a, b) => b.volRatio - a.volRatio);
+	let html = '';
+
+	sortedData.forEach((item, index) => {
+		const price = roundToBEITick(item.price);
+		
+		// Kalkulasi Fibonacci (Support, Resisten, Entry, SL, TP)
+		const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
+		const entryAman = fibo.entryLow;
+		const entryAgresif = fibo.entryHigh;
+		const stopLoss = fibo.sl;
+		const tp1 = fibo.res1;
+		const tp2 = roundToBEITick(fibo.res2 * 1.03, 'ceil');
+		
+		// Hitung Rasio Risk & Reward
+		const riskPct = price > stopLoss ? (((price - stopLoss) / price) * 100).toFixed(2) : 0;
+		const rewardPct = tp1 > price ? (((tp1 - price) / price) * 100).toFixed(2) : 0;
+		
+		html += `
+			<div class="bg-slate-950/30 p-4 lg:p-5 rounded-xl border border-slate-700/60 hover:border-orange-500/50 transition-colors duration-300 relative shadow-sm flex flex-col justify-between">
+				<!-- Badge Potensi Profit -->
+				<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l from-orange-600/30 to-amber-500/10 border-b border-l border-orange-500/30 rounded-bl-xl rounded-tr-xl text-[10px] font-bold text-orange-400 flex items-center gap-1.5 shadow-sm">
+					<i data-lucide="trending-up" class="w-3 h-3"></i> Potensi TP Pagi: +${rewardPct}%
+				</div>
+				
+				<!-- Header Card Saham -->
+				<div class="flex items-center gap-3 border-b border-slate-800/80 pb-3 mt-1">
+					<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center text-orange-500 font-bold shrink-0 text-sm shadow-inner">
+						#${index + 1}
+					</div>
+					<div class="flex flex-col">
+						<div class="flex items-center gap-2">
+							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
+							<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[9px] bg-orange-600/20 hover:bg-orange-500 hover:text-white text-orange-400 border border-orange-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
+						</div>
+						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
+							Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
+							<span class="text-emerald-400 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded ml-1 border border-emerald-500/20">+${item.changePct}%</span>
+						</span>
+					</div>
+				</div>
+				
+				<!-- Trading Plan Matrix (Fibo) -->
+				<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs mt-3">
+					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left">
+						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Entry Sore (S2-S1)</span>
+						<span class="font-bold text-white">Rp ${entryAman.toLocaleString('id-ID')} - ${entryAgresif.toLocaleString('id-ID')}</span>
+					</div>
+					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left">
+						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Target Pagi (TP1-TP2)</span>
+						<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
+					</div>
+					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left">
+						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Valuasi (> 3 Miliar)</span>
+						<span class="font-bold text-violet-400">${formatValuationIDR(item.currentValuation)}</span>
+					</div>
+					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-900/30 text-left relative overflow-hidden">
+						<div class="absolute right-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
+						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Stop Loss (Risk)</span>
+						<span class="font-bold text-rose-400">&lt; Rp ${stopLoss.toLocaleString('id-ID')} (-${riskPct}%)</span>
+					</div>
+				</div>
+				
+				<!-- Keterangan Detail Indikator -->
+				<div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800 text-[10px] lg:text-[11px] text-slate-300 leading-relaxed space-y-2 mt-3">
+					<span class="text-amber-400 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
+						<i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> ANALISIS TEKNIKAL BSJP:
+					</span>
+					<ul class="space-y-1.5 mt-1 list-none">
+						<li class="flex gap-2">
+							<i data-lucide="zap" class="w-3.5 h-3.5 text-blue-400 mt-0.5 shrink-0"></i>
+							<span><strong class="text-blue-400">Lonjakan Volume:</strong> Terjadi akumulasi sebesar <strong>${item.volRatio}x</strong> dari rata-rata harian yang menjamin ketersediaan likuiditas paginya.</span>
+						</li>
+						<li class="flex gap-2">
+							<i data-lucide="trending-up" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i>
+							<span><strong class="text-emerald-400">Posisi Tren:</strong> Harga ditutup di atas garis Moving Average 5 (Rp ${item.ma5.toLocaleString('id-ID')}). Tren jangka pendek valid ke atas.</span>
+						</li>
+						<li class="flex gap-2">
+							<i data-lucide="crosshair" class="w-3.5 h-3.5 text-orange-400 mt-0.5 shrink-0"></i>
+							<span><strong class="text-orange-400">Skema Eksekusi:</strong> Antre Beli sore hari di dekat harga <i>last</i>. Jika besok pagi terjadi <i>Gap Up</i>, langsung pasang <i>Trailing Stop</i> untuk mengunci profit.</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+		`;
+	});
+
+	container.innerHTML = html;
+	if (window.lucide) lucide.createIcons();
+}
 
 // ==========================================
 // INISIALISASI UTAMA
