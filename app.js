@@ -4702,6 +4702,9 @@ async function startBSJPProcess() {
 			if (maxBatchLimit > 3) break; // Maksimal 3 putaran (60 saham)
 
 			const batch = remainingWatchlist.slice(i, i + BATCH_SIZE);
+			
+			// [PERBAIKAN KODE: Melakukan Fetch API untuk array fetchedData sebelum di-looping]
+			const fetchedData = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
 
 			for (const item of fetchedData) {
 				if (!item || !item.price) continue;
