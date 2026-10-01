@@ -4861,8 +4861,8 @@ function renderBSJPItems(dataList) {
 		const tp2 = roundToBEITick(fibo.res2 * 1.03, 'ceil');
 		
 		// Hitung Rasio Risk & Reward
-		const riskPct = price > stopLoss ? (((price - stopLoss) / price) * 100).toFixed(4) : 0;
-		const rewardPct = tp1 > price ? (((tp1 - price) / price) * 100).toFixed(4) : 0;
+		const riskPct = price > stopLoss ? (((price - stopLoss) / price) * 90).toFixed(2) : 0;
+		const rewardPct = tp1 > price ? (((tp1 - price) / price) * 90).toFixed(2) : 0;
 		
 		html += `
 			<div class="bg-slate-950/30 p-4 lg:p-5 rounded-xl border border-slate-700/60 hover:border-orange-500/50 transition-colors duration-300 relative shadow-sm flex flex-col justify-between">
