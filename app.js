@@ -4673,34 +4673,45 @@ async function startBSJPProcess() {
 	// State Loading pada Kontainer
 	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-orange-500"></i> Menyaring saham yang cocok untuk BSJP...</div>`;
 	
-	// Acak list saham untuk menghindari hasil yang repetitif dari atas
 	const shuffledWatchlist = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
 	let bsjpCandidates = [];
-	const BATCH_SIZE = 8;
 
-	// Loop dan fetch data secara concurrent dengan batas batch agar tidak hit limit
-	for (let i = 0; i < shuffledWatchlist.length; i += BATCH_SIZE) {
-		const batch = shuffledWatchlist.slice(i, i + BATCH_SIZE);
-		const fetchedData = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
-
-		for (const item of fetchedData) {
-			if (!item || !item.price) continue;
-			
-			// SYARAT MUTLAK BSJP:
-			// 1. Valuasi Transaksi > 3.000.000.000 (3 Miliar)
-			// 2. Harga ditutup/berada di atas MA5 (Fase Uptrend / Kuat Support)
-			// 3. Volume Hari ini di atas rata-rata (volRatio >= 1.2x)
-			// 4. Harga dalam posisi hijau (+), mengindikasikan dominasi Buyer
-			if (item.currentValuation > 3000000000 && item.price >= item.ma5 && item.volRatio >= 1.2 && item.changePct > 0) {
-				bsjpCandidates.push(item);
+	// STRATEGI 1: FILTER INSTAN DARI CACHE (Meningkatkan kecepatan hingga 90%)
+	// Mengambil data yang sudah di-fetch oleh background worker
+	for (const ticker of shuffledWatchlist) {
+		const cachedItem = getCachedStockData(ticker);
+		if (cachedItem && cachedItem.price) {
+			if (cachedItem.currentValuation > 3000000000 && cachedItem.price >= cachedItem.ma5 && cachedItem.volRatio >= 1.2 && cachedItem.changePct > 0) {
+				if (!bsjpCandidates.some(c => c.ticker === ticker)) {
+					bsjpCandidates.push(cachedItem);
+				}
 			}
 		}
-
-		// Jika sudah dapat minimal 8 saham yang cocok, hentikan pencarian agar lebih cepat
-		if (bsjpCandidates.length >= 6) break;
 	}
 
-	// Selesai Scanning
+	// STRATEGI 2: FALLBACK API JARINGAN DENGAN BATCH LEBIH BESAR
+	// Jika dari cache belum memenuhi kuota 6 saham, baru fetch sisanya
+	if (bsjpCandidates.length < 6) {
+		const candidateTickers = bsjpCandidates.map(c => c.ticker);
+		const remainingWatchlist = shuffledWatchlist.filter(t => !candidateTickers.includes(t));
+		const BATCH_SIZE = 15; // Ditingkatkan dari 8 ke 15 untuk paralel yang lebih luas
+
+		for (let i = 0; i < remainingWatchlist.length; i += BATCH_SIZE) {
+			const batch = remainingWatchlist.slice(i, i + BATCH_SIZE);
+			const fetchedData = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
+
+			for (const item of fetchedData) {
+				if (!item || !item.price) continue;
+				if (item.currentValuation > 3000000000 && item.price >= item.ma5 && item.volRatio >= 1.2 && item.changePct > 0) {
+					if (!bsjpCandidates.some(c => c.ticker === item.ticker)) {
+						bsjpCandidates.push(item);
+					}
+				}
+			}
+			if (bsjpCandidates.length >= 6) break;
+		}
+	}
+
 	isBSJPScanning = false;
 	
 	// Kembalikan Tombol ke Semula
@@ -4713,7 +4724,9 @@ async function startBSJPProcess() {
 	if (bsjpCandidates.length === 0) {
 		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30">Belum ada saham yang memenuhi syarat ketat BSJP pada sesi ini.</div>`;
 	} else {
-		renderBSJPItems(bsjpCandidates);
+		// Sortir berdasarkan Volume tertinggi dan potong ke 6 hasil terbaik agar UI tidak lag
+		const topCandidates = bsjpCandidates.sort((a, b) => b.volRatio - a.volRatio).slice(0, 6);
+		renderBSJPItems(topCandidates);
 		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 	}
 }
