@@ -4671,12 +4671,12 @@ async function startBSJPProcess() {
 	if (window.lucide) lucide.createIcons();
 
 	// State Loading pada Kontainer
-	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-orange-500"></i> Menyaring saham dengan Valuasi > 3 Miliar & Momentum Akumulasi...</div>`;
+	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-orange-500"></i> Menyaring saham yang cocok untuk BSJP...</div>`;
 	
 	// Acak list saham untuk menghindari hasil yang repetitif dari atas
 	const shuffledWatchlist = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
 	let bsjpCandidates = [];
-	const BATCH_SIZE = 12;
+	const BATCH_SIZE = 8;
 
 	// Loop dan fetch data secara concurrent dengan batas batch agar tidak hit limit
 	for (let i = 0; i < shuffledWatchlist.length; i += BATCH_SIZE) {
@@ -4697,7 +4697,7 @@ async function startBSJPProcess() {
 		}
 
 		// Jika sudah dapat minimal 8 saham yang cocok, hentikan pencarian agar lebih cepat
-		if (bsjpCandidates.length >= 8) break;
+		if (bsjpCandidates.length >= 6) break;
 	}
 
 	// Selesai Scanning
@@ -4711,7 +4711,7 @@ async function startBSJPProcess() {
 
 	// Render Hasil
 	if (bsjpCandidates.length === 0) {
-		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30">Belum ada saham yang memenuhi syarat ketat BSJP (Valuasi > Rp3 Miliar, Harga > MA5, Vol > 1.2x) pada sesi ini.</div>`;
+		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30">Belum ada saham yang memenuhi syarat ketat BSJP pada sesi ini.</div>`;
 	} else {
 		renderBSJPItems(bsjpCandidates);
 		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
