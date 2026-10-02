@@ -2234,23 +2234,23 @@ function renderRadarItems(dataList) {
 		let statusClass = "from-emerald-600/30 to-teal-500/10 border-emerald-500/30 text-emerald-400";
 		let alasanTeknikal = `Perubahan <strong>${changePct}%</strong> dan bertahan kokoh di atas garis Moving Average MA5 (Rp ${item.ma5.toLocaleString('id-ID')}), menandakan tekanan beli harian masih mendominasi pasar.`;
 
-		if (item.volRatio >= 2.0 && changePct >= 0 && changePct <= 5.0) {
+		if (item.volRatio >= 2 && changePct >= 0 && changePct <= 5) {
 			statusSignal = '<i data-lucide="activity" class="w-3.5 h-3.5 inline"></i> Curi Start (Whale Acc)';
 			statusClass = "from-fuchsia-600/30 to-fuchsia-500/10 border-fuchsia-500/30 text-fuchsia-400";
 			alasanTeknikal = `<strong>Anomali Volume Terdeteksi!</strong> Harga saham baru naik tipis (<strong>+${changePct}%</strong>), tapi volume meledak <strong>${item.volRatio}x lipat</strong> dari rata-rata. Bandar terindikasi sedang kumpulin barang diam-diam.`;
-		} else if (item.volRatio < 1.0 && changePct > 4.0) {
+		} else if (item.volRatio < 1 && changePct > 4) {
 			statusSignal = '<i data-lucide="alert-triangle" class="w-3.5 h-3.5 inline"></i> Jebakan Batman (Fake Breakout)';
 			statusClass = "from-rose-600/30 to-rose-500/10 border-rose-500/30 text-rose-400";
 			alasanTeknikal = `<strong>Waspada!</strong> Harga naik sangat tinggi (<strong>+${changePct}%</strong>) namun tidak didukung oleh volume yang kuat (Hanya <strong>${item.volRatio}x</strong>). Kenaikan ini rawan dibanting. Hati-hati FOMO!`;
-		} else if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0 && changePct < 5.0) {
+		} else if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0 && changePct < 5) {
 			statusSignal = '<i data-lucide="rocket" class="w-3.5 h-3.5 inline"></i> Golden Cross Setup';
 			statusClass = "from-yellow-600/30 to-amber-500/10 border-yellow-500/30 text-yellow-400";
 			alasanTeknikal = `Sinyal perpotongan garis MA5 melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah berpotensi terbentuk.`;
-		} else if (item.volRatio >= 1.0 && item.volRatio <= 3.0 && changePct > 1.0) {
+		} else if (item.volRatio >= 1.5 && item.volRatio <= 5 && changePct > 1) {
 			statusSignal = '<i data-lucide="zap" class="w-3.5 h-3.5 inline"></i> Volume Accumulation';
 			statusClass = "from-blue-600/30 to-blue-500/10 border-blue-500/30 text-blue-400";
 			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata</strong>. Mengindikasikan partisipasi modal besar di pasar.`;
-		} else if (changePct < 1.0 && item.price >= item.ma10) {
+		} else if (changePct < 1 && item.price >= item.ma10) {
 			statusSignal = '<i data-lucide="shield" class="w-3.5 h-3.5 inline"></i> Support Retest';
 			statusClass = "from-pink-600/30 to-pink-500/10 border-pink-500/30 text-pink-400";
 			alasanTeknikal = `Harga sedang mengalami koreksi sehat dan menguji area pertahanan MA20 (Rp ${item.ma20.toLocaleString('id-ID')}).`;
