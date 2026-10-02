@@ -2192,7 +2192,7 @@ async function startRadarProcess() {
 	isRadarScanning = false;
 	btn.disabled = false;
 	btn.className = "text-[10px] lg:text-xs text-slate-900 font-bold bg-amber-400 hover:bg-amber-500 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md";
-	btn.innerHTML = `<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Mulai Pindai`;
+	btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Pindai Pasar Ulang`;
 	if (window.lucide) lucide.createIcons();
 
 	if (validData.length === 0) {
