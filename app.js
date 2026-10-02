@@ -3085,7 +3085,6 @@ async function scanWhalesData() {
 						<div class="flex items-start justify-between border-b border-slate-700/60 pb-4 mb-4 mt-1 relative z-10">
 							<div class="flex items-center gap-3.5">
 								<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center text-slate-200 font-black text-lg shadow-inner relative overflow-hidden shrink-0">
-									<i data-lucide="activity" class="w-6 h-6 text-fuchsia-400/20 absolute"></i>
 									<span class="relative z-10">#${index + 1}</span>
 								</div>
 								<div class="flex flex-col">
@@ -5056,6 +5055,87 @@ function renderBSJPItems(dataList) {
 	container.innerHTML = html;
 	if (window.lucide) lucide.createIcons();
 }
+
+// ==========================================
+// 30. GLOBAL GRADIENT BUTTON ENGINE
+// ==========================================
+function applyGlobalButtonGradients() {
+    // Memilih seluruh elemen tombol dan link bergaya tombol di seluruh aplikasi
+    const buttons = document.querySelectorAll('button, a[class*="bg-"]');
+    
+    buttons.forEach(btn => {
+        // Lewati jika tombol sudah menggunakan gradiasi bawaan dari awal (seperti tombol Whale / BSJP)
+        if (btn.classList.contains('bg-gradient-to-r') || btn.classList.contains('bg-gradient-to-tr') || btn.classList.contains('bg-gradient-to-l')) return;
+        
+        // Deteksi warna dasar solid Tailwind (contoh: bg-emerald-500, bg-slate-800, bg-rose-500/20)
+        const bgClassMatch = Array.from(btn.classList).find(c => /^bg-([a-z]+)-(\d+)(\/\d+)?$/.test(c));
+        
+        if (bgClassMatch) {
+            const match = bgClassMatch.match(/^bg-([a-z]+)-(\d+)(\/\d+)?$/);
+            const color = match[1];
+            const shade = parseInt(match[2]);
+            const opacity = match[3] || ''; // Mengambil setting opacity seperti /20
+            
+            // Rumus gradiasi: Warna akhir (to) dibuat lebih terang (kurangi shade 100)
+            let toShade = shade - 100;
+            
+            // Cegah shade habis (<100) dan penyesuaian khusus untuk warna gelap slate
+            if (toShade < 100) toShade = 200;
+            if (color === 'slate' || color === 'gray') {
+                toShade = shade >= 800 ? shade - 100 : shade + 100;
+            }
+            
+            const fromClass = `from-${color}-${shade}${opacity}`;
+            const toClass = `to-${color}-${toShade}${opacity}`;
+            
+            // Terapkan Gradiasi Modern
+            btn.classList.remove(bgClassMatch);
+            btn.classList.add('bg-gradient-to-r', fromClass, toClass);
+            
+            // --- PROSES EFEK HOVER OTOMATIS ---
+            // Ekstrak hover warna solid bawaan (contoh: hover:bg-emerald-400) agar ikut menjadi gradiasi
+            const hoverClassMatch = Array.from(btn.classList).find(c => /^hover:bg-([a-z]+)-(\d+)(\/\d+)?$/.test(c));
+            if (hoverClassMatch) {
+                const hMatch = hoverClassMatch.match(/^hover:bg-([a-z]+)-(\d+)(\/\d+)?$/);
+                const hColor = hMatch[1];
+                const hShade = parseInt(hMatch[2]);
+                const hOpacity = hMatch[3] || '';
+                
+                let hToShade = hShade - 100;
+                if (hToShade < 100) hToShade = 200;
+                if (hColor === 'slate' || hColor === 'gray') {
+                    hToShade = hShade >= 800 ? hShade - 100 : hShade + 100;
+                }
+                
+                btn.classList.remove(hoverClassMatch);
+                btn.classList.add(`hover:from-${hColor}-${hShade}${hOpacity}`, `hover:to-${hColor}-${hToShade}${hOpacity}`);
+            }
+        }
+    });
+}
+
+// Inisialisasi: Terapkan saat web HTML selesai diload
+document.addEventListener("DOMContentLoaded", () => {
+    applyGlobalButtonGradients();
+    
+    // Gunakan MutationObserver agar tombol yang muncul belakangan (dari render AI/Radar/Custom Search)
+    // otomatis langsung disulap menjadi tombol gradiasi.
+    const observer = new MutationObserver((mutations) => {
+        let shouldUpdate = false;
+        for (let m of mutations) {
+            if (m.addedNodes.length > 0) {
+                shouldUpdate = true;
+                break;
+            }
+        }
+        if (shouldUpdate) {
+            // Beri sedikit jeda (10ms) agar DOM selesai di-render oleh Javascript sebelum diproses
+            setTimeout(applyGlobalButtonGradients, 10);
+        }
+    });
+    
+    observer.observe(document.body, { childList: true, subtree: true });
+});
 
 // ==========================================
 // INISIALISASI UTAMA
