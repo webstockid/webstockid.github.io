@@ -1619,26 +1619,51 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 			if (!data || !data.price) return;
 			const isCurrent = data.ticker === targetTicker;
 			const isPlus = data.changePct >= 0;
-			const rowClass = isCurrent ? "bg-emerald-500/10 font-bold border-l-4 border-emerald-400" : "hover:bg-slate-800/50";
+			
+			// Penyesuaian style baris yang lebih modern & highlight target yang presisi
+			const rowClass = isCurrent 
+				? "bg-emerald-500/10 font-bold border-l-[3px] border-emerald-400 shadow-sm" 
+				: "hover:bg-slate-800/50 transition-colors duration-200 border-l-[3px] border-transparent";
 
 			rowsHTML += `
-				<tr class="${rowClass}">
-					<td class="p-3.5 text-white flex items-center gap-2">
-						<strong class="text-emerald-400">&dollar;${data.ticker}</strong>
+				<tr class="${rowClass} group">
+					<td class="p-4 align-middle">
+						<div class="flex items-center gap-3">
+							<div class="w-8 h-8 rounded-lg ${isCurrent ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400' : 'bg-slate-800 border border-slate-700 text-slate-400'} flex items-center justify-center shrink-0 shadow-inner">
+								<i class="fa-solid fa-building text-xs"></i>
+							</div>
+							<div class="flex flex-col">
+								<strong class="text-emerald-400 text-sm tracking-wide">&dollar;${data.ticker}</strong>
+								${isCurrent ? '<span class="text-[9px] text-emerald-400/80 font-medium tracking-wide">Sedang Dipantau</span>' : '<span class="text-[9px] text-slate-500 font-medium tracking-wide">Saham Serupa</span>'}
+							</div>
+						</div>
 					</td>
-					<td class="p-3.5 text-amber-400">Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}</td>
-					<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
-						${isPlus ? '+' : ''}${data.changePct}%
+					<td class="p-4 align-middle">
+						<span class="text-amber-400 font-bold bg-amber-500/10 px-2.5 py-1.5 rounded-lg border border-amber-500/20 whitespace-nowrap shadow-sm">
+							Rp ${roundToBEITick(data.price).toLocaleString('id-ID')}
+						</span>
 					</td>
-					<td class="p-3.5 ${data.price >= data.ma5 ? 'text-emerald-400' : 'text-rose-400'}">
-						${data.price >= data.ma5 ? 'Bullish (Above MA5)' : 'Bearish (Below MA5)'}
+					<td class="p-4 align-middle">
+						<span class="${isPlus ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'} font-bold px-2.5 py-1.5 rounded-lg border text-xs flex items-center w-max gap-1.5 whitespace-nowrap shadow-sm">
+							<i class="fa-solid ${isPlus ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down'}"></i>
+							${isPlus ? '+' : ''}${data.changePct}%
+						</span>
 					</td>
-					<td class="p-3.5 ${data.volRatio >= 1.2 ? 'text-emerald-400 font-bold' : 'text-cyan-400'}">
-						${data.volRatio}x Vol
+					<td class="p-4 align-middle">
+						<span class="${data.price >= data.ma5 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'} font-medium px-2.5 py-1.5 rounded-lg text-xs border flex items-center w-max gap-1.5 whitespace-nowrap shadow-sm">
+							<span class="w-1.5 h-1.5 rounded-full ${data.price >= data.ma5 ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'}"></span>
+							${data.price >= data.ma5 ? 'Bullish (Above MA5)' : 'Bearish (Below MA5)'}
+						</span>
 					</td>
-					<td class="p-3.5 text-center">
-						<button onclick="document.getElementById('stockSearch').value='${data.ticker}'; searchStock(true);" class="text-[10px] bg-emerald-600 hover:bg-cyan-600 text-white hover:text-white px-3 py-1 rounded-lg transition border-emerald-700/30 font-bold shadow-md">
-							Buka Chart »
+					<td class="p-4 align-middle">
+						<span class="${data.volRatio >= 1.2 ? 'text-emerald-400 font-bold bg-emerald-500/10 border-emerald-500/30' : 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20'} px-2.5 py-1.5 rounded-lg text-xs border flex items-center w-max gap-1.5 whitespace-nowrap shadow-sm">
+							<i class="fa-solid fa-chart-simple"></i>
+							${data.volRatio}x Vol
+						</span>
+					</td>
+					<td class="p-4 align-middle text-center">
+						<button onclick="document.getElementById('stockSearch').value='${data.ticker}'; searchStock(true);" class="text-[10px] bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white px-3 py-2 rounded-lg border border-slate-700 hover:border-emerald-500 transition-all duration-200 font-bold shadow-sm flex items-center justify-center gap-1.5 mx-auto group-hover:bg-emerald-500/20 group-hover:text-emerald-400 group-hover:border-emerald-500/40 whitespace-nowrap">
+							Buka Chart <i class="fa-solid fa-chevron-right text-[9px] opacity-80"></i>
 						</button>
 					</td>
 				</tr>
