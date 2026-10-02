@@ -2948,13 +2948,13 @@ async function scanWhalesData() {
 				const ma5 = cachedItem.ma5 || price;
 				let tier = 0, tierName = "", tierClass = "";
 
-				if (vol >= 3.0 && chg >= 1.0 && chg <= 6.0 && price > ma5) {
+				if (vol >= 4 && chg >= 1.0 && chg <= 6.0 && price > ma5) {
 					tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 					tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-				} else if (vol >= 2.0 && vol < 3.0 && chg >= 0 && chg <= 4.0) {
+				} else if (vol >= 3 && vol < 4 && chg >= 0 && chg <= 4.0) {
 					tier = 2; tierName = "PAUS SEDANG (MEDIUM WHALE)";
 					tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
-				} else if (vol >= 1.5 && vol < 2.0 && chg >= 0 && chg <= 4.0) {
+				} else if (vol >= 2 && vol < 3 && chg >= 0 && chg <= 4.0) {
 					tier = 1; tierName = "INDIKASI PAUS (WHALE SIGN)";
 					tierClass = "bg-amber-500/20 border-amber-500/40 text-amber-400";
 				}
@@ -2993,13 +2993,13 @@ async function scanWhalesData() {
 					const ma5 = item.ma5 || price;
 					let tier = 0, tierName = "", tierClass = "";
 
-					if (vol >= 3.0 && chg >= 1.0 && chg <= 6.0 && price > ma5) {
+					if (vol >= 4 && chg >= 1.0 && chg <= 6.0 && price > ma5) {
 						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-					} else if (vol >= 2.0 && vol < 3.0 && chg >= 0 && chg <= 4.0) {
+					} else if (vol >= 3 && vol < 4 && chg >= 0 && chg <= 4.0) {
 						tier = 2; tierName = "PAUS SEDANG (MEDIUM WHALE)";
 						tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
-					} else if (vol >= 1.5 && vol < 2.0 && chg >= 0 && chg <= 4.0) {
+					} else if (vol >= 2 && vol < 3 && chg >= 0 && chg <= 4.0) {
 						tier = 1; tierName = "INDIKASI PAUS (WHALE SIGN)";
 						tierClass = "bg-amber-500/20 border-amber-500/40 text-amber-400";
 					}
@@ -3123,7 +3123,7 @@ function toggleAIChat() {
 	} else {
 		chatWindow.classList.remove('opacity-100', 'scale-100');
 		chatWindow.classList.add('opacity-0', 'scale-95');
-		setTimeout(() => { chatWindow.classList.add('hidden'); }, 300);
+		setTimeout(() => { chatWindow.classList.add('hidden'); }, 600);
 	}
 	if (window.lucide) lucide.createIcons();
 }
