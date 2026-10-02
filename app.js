@@ -2257,20 +2257,23 @@ function renderRadarItems(dataList) {
 				
 				<!-- Trading Plan Matrix (Fibo) -->
 				<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs mt-3">
-					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left">
+					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
+						<div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50"></div>
 						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Entry Ideal</span>
 						<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 					</div>
-					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left">
+					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
+						<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>
 						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Target Profit</span>
 						<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 					</div>
-					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left">
+					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
+						<div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50"></div>
 						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">AVG Bandar</span>
 						<span class="font-bold text-blue-400">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-900/30 text-left relative overflow-hidden">
-						<div class="absolute right-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
+						<div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
 						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Stop Loss</span>
 						<span class="font-bold text-rose-400">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
 					</div>
@@ -2487,20 +2490,23 @@ async function runCustomScreener() {
 					
 					<!-- Trading Plan Matrix (Fibo) -->
 					<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs mt-3">
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left">
+						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
+							<div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50"></div>
 							<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Entry Ideal</span>
 							<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 						</div>
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left">
+						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
+							<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>
 							<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Target Profit</span>
 							<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 						</div>
-						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left">
+						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
+							<div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50"></div>
 							<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">AVG Bandar</span>
 							<span class="font-bold text-blue-400">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 						</div>
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-900/30 text-left relative overflow-hidden">
-							<div class="absolute right-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
+							<div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
 							<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Stop Loss</span>
 							<span class="font-bold text-rose-400">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
 						</div>
@@ -4627,6 +4633,60 @@ function calculateAveraging() {
 }
 
 // ==========================================
+// 28.B KALKULATOR TRAILING STOP & PARSIAL PROFIT
+// ==========================================
+function calculateTrailingStop() {
+	const avgPrice = parseFloat(document.getElementById('ts-avg-price').value) || 0;
+	const totalLot = parseFloat(document.getElementById('ts-total-lot').value) || 0;
+	const tp1Price = parseFloat(document.getElementById('ts-tp1-price').value) || 0;
+	const tp2Price = parseFloat(document.getElementById('ts-tp2-price').value) || 0;
+
+	const resProfit1 = document.getElementById('ts-result-profit1');
+	const resLotHold = document.getElementById('ts-result-lot-hold');
+	const resNewSL = document.getElementById('ts-result-new-sl');
+	const resTotalProfit = document.getElementById('ts-result-total-profit');
+	const descEl = document.getElementById('ts-scenario-desc');
+
+	if (avgPrice <= 0 || totalLot <= 0 || tp1Price <= avgPrice) {
+		resProfit1.innerText = "Rp 0";
+		resLotHold.innerText = "0 Lot";
+		resNewSL.innerText = "Rp 0";
+		resTotalProfit.innerText = "Rp 0";
+		descEl.innerHTML = "Masukkan harga modal, total lot, dan 2 titik target profit (TP) untuk melihat kalkulasi skenario pengamanan modal <i>Risk-Free</i>.";
+		return;
+	}
+
+	// Kalkulasi Lot Parsial (Amankan 50% di TP 1)
+	const lotTP1 = Math.floor(totalLot / 2);
+	const lotTP2 = totalLot - lotTP1;
+
+	// Profit berjalan yang diamankan di TP 1
+	const profitTP1 = (tp1Price - avgPrice) * (lotTP1 * 100);
+	
+	// Titik Trailing Stop (Break Even Point) dipindahkan ke harga modal awal 
+	const newTrailingStop = avgPrice;
+	
+	// Profit jika sisa lot menyentuh TP 2
+	let profitTP2 = 0;
+	if (tp2Price > avgPrice) {
+		profitTP2 = (tp2Price - avgPrice) * (lotTP2 * 100);
+	}
+	
+	const totalProfit = profitTP1 + profitTP2;
+
+	resProfit1.innerText = `Rp ${Math.round(profitTP1).toLocaleString('id-ID')}`;
+	resLotHold.innerText = `${lotTP2.toLocaleString('id-ID')} Lot`;
+	resNewSL.innerText = `Rp ${newTrailingStop.toLocaleString('id-ID')}`;
+	resTotalProfit.innerText = `Rp ${Math.round(totalProfit).toLocaleString('id-ID')}`;
+
+	descEl.innerHTML = `
+		<strong class="text-emerald-400">Skenario Risk-Free:</strong> Saat harga menyentuh TP1 (Rp ${tp1Price.toLocaleString('id-ID')}), jual <strong class="text-white">${lotTP1} Lot</strong> untuk mengamankan modal dan profit. 
+		Sisa <strong class="text-white">${lotTP2} Lot</strong> di-<i>hold</i> menuju TP2 (Rp ${tp2Price.toLocaleString('id-ID')}) dengan memindahkan Stop Loss menjadi Trailing Stop ke titik impas di <strong class="text-white">Rp ${newTrailingStop.toLocaleString('id-ID')}</strong>. 
+		Jika harga gagal naik dan berbalik menyentuh modal, sisa posisi tertutup tanpa ada risiko kerugian tambahan.
+	`;
+}
+
+// ==========================================
 // LIVE MACRO & KOMODITAS GLOBAL
 // ==========================================
 async function loadLiveMacro() {
@@ -4856,13 +4916,15 @@ function renderBSJPItems(dataList) {
 		const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
 		const entryAman = fibo.entryLow;
 		const entryAgresif = fibo.entryHigh;
-		const stopLoss = fibo.sl;
-		const tp1 = fibo.res1;
+		
+		// Penyesuaian TP naik 3% dan SL turun 2%
+		const stopLoss = roundToBEITick(fibo.sl * 0.98, 'floor');
+		const tp1 = roundToBEITick(fibo.res1 * 1.03, 'ceil');
 		const tp2 = roundToBEITick(fibo.res2 * 1.03, 'ceil');
 		
 		// Hitung Rasio Risk & Reward
-		const riskPct = price > stopLoss ? (((price - stopLoss) / price) * 80).toFixed(2) : 0;
-		const rewardPct = tp1 > price ? (((tp1 - price) / price) * 80).toFixed(2) : 0;
+		const riskPct = price > stopLoss ? (((price - stopLoss) / price) * 100).toFixed(2) : 0;
+		const rewardPct = tp1 > price ? (((tp1 - price) / price) * 100).toFixed(2) : 0;
 		
 		html += `
 			<div class="bg-slate-950/30 p-4 lg:p-5 rounded-xl border border-slate-700/60 hover:border-orange-500/50 transition-colors duration-300 relative shadow-sm flex flex-col justify-between">
@@ -4890,20 +4952,23 @@ function renderBSJPItems(dataList) {
 				
 				<!-- Trading Plan Matrix (Fibo) -->
 				<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs mt-3">
-					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left">
+					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
+						<div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50"></div>
 						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Entry Sore (Clossing)</span>
 						<span class="font-bold text-amber-400">Rp ${entryAman.toLocaleString('id-ID')} - ${entryAgresif.toLocaleString('id-ID')}</span>
 					</div>
-					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left">
+					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
+						<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>
 						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Target Pagi (TP1-TP2)</span>
 						<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 					</div>
-					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left">
+					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
+						<div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50"></div>
 						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Valuasi (Transaksi)</span>
 						<span class="font-bold text-blue-400">${formatValuationIDR(item.currentValuation)}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-900/30 text-left relative overflow-hidden">
-						<div class="absolute right-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
+						<div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
 						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]">Stop Loss (Risk)</span>
 						<span class="font-bold text-rose-400">&lt; Rp ${stopLoss.toLocaleString('id-ID')} (-${riskPct}%)</span>
 					</div>

@@ -770,7 +770,7 @@
 						<div class="flex items-center gap-2">
 							<div class="space-y-1">
 								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
-									<i data-lucide="zap" class="w-4 h-4 lg:w-5 lg:h-5 text-amber-400"></i> Pemindaian Saham Potensial Otomatis
+									<i data-lucide="zap" class="w-4 h-4 lg:w-5 lg:h-5 text-amber-400"></i> Pemindaian Saham Secara Otomatis
 								</span>
 								<p class="text-[10px] lg:text-xs text-slate-400">Mencari saham dalam semua kondisi dengan cepat.</p>
 							</div>
@@ -783,7 +783,7 @@
 
 					<div id="bigMoneyList" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[1400px] overflow-y-auto pr-1.5 scrollbar-thin">
 						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2">
-							Klik tombol <strong class="text-amber-400">"Mulai Pindai Pasar"</strong> di atas untuk memindai pasar secara otomatis berdasar gabungan indikator teknikal.
+							Klik tombol <strong class="text-amber-400">"Mulai Pindai Pasar"</strong> di atas untuk memindai pasar secara otomatis berdasarkan seluruh indikator teknikal.
 						</div>
 					</div>
 
@@ -800,7 +800,7 @@
 								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
 									<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-500"></i> Pemindaian Saham Tingkat Lanjut
 								</span>
-								<p class="text-[10px] lg:text-xs text-slate-400">Rakit parameter screener Kamu sendiri dengan gaya filter institusional.</p>
+								<p class="text-[10px] lg:text-xs text-slate-400">Rakit parameter radar Kamu sendiri dengan gaya filter institusional.</p>
 							</div>
 							<button id="btnRunCustomScreener" onclick="runCustomScreener()" class="w-full sm:w-auto bg-blue-800 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-lg border border-blue-700 transition shadow-lg shadow-blue-700/20 flex items-center justify-center gap-2 shrink-0">
 								<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter
@@ -1353,6 +1353,67 @@
 									<span class="text-slate-400 block mb-1">Total Dana Diperlukan</span>
 									<span id="avg-result-fund" class="text-sm lg:text-base font-bold text-emerald-400">Rp 0</span>
 								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- 3. KALKULATOR TRAILING STOP & PARSIAL PROFIT -->
+					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 mt-4 shadow-xl">
+						<span class="text-[11px] lg:text-xs font-bold text-slate-200 uppercase tracking-wider block mb-4 flex items-center gap-1.5">
+							<i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> Kalkulator Trailing Stop & Jual Parsial
+						</span>
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+							<!-- Posisi Saat Ini -->
+							<div class="space-y-3 bg-slate-900/50 p-3 lg:p-4 rounded-xl border border-slate-800/80">
+								<span class="text-[10px] lg:text-[11px] font-bold text-slate-200 uppercase block border-b border-slate-700/80 pb-2">Posisi Saat Ini</span>
+								<div class="grid grid-cols-2 gap-3">
+									<div>
+										<label class="block text-[10px] lg:text-[11px] text-slate-400 mb-1">Harga Modal (Avg)</label>
+										<input type="number" id="ts-avg-price" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-xs lg:text-sm focus:outline-none focus:border-emerald-500" placeholder="Contoh: 1000" oninput="calculateTrailingStop()">
+									</div>
+									<div>
+										<label class="block text-[10px] lg:text-[11px] text-slate-400 mb-1">Total Lot</label>
+										<input type="number" id="ts-total-lot" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-xs lg:text-sm focus:outline-none focus:border-emerald-500" placeholder="Contoh: 100" oninput="calculateTrailingStop()">
+									</div>
+								</div>
+							</div>
+							<!-- Rencana Take Profit -->
+							<div class="space-y-3 bg-slate-900/50 p-3 lg:p-4 rounded-xl border border-slate-800/80">
+								<span class="text-[10px] lg:text-[11px] font-bold text-slate-200 uppercase block border-b border-slate-700/80 pb-2">Rencana Take Profit (TP)</span>
+								<div class="grid grid-cols-2 gap-3">
+									<div>
+										<label class="block text-[10px] lg:text-[11px] text-slate-400 mb-1">Target TP 1 (Jual 50%)</label>
+										<input type="number" id="ts-tp1-price" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-xs lg:text-sm focus:outline-none focus:border-cyan-500" placeholder="Contoh: 1100" oninput="calculateTrailingStop()">
+									</div>
+									<div>
+										<label class="block text-[10px] lg:text-[11px] text-slate-400 mb-1">Target TP 2 (Jual 50%)</label>
+										<input type="number" id="ts-tp2-price" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white text-xs lg:text-sm focus:outline-none focus:border-cyan-500" placeholder="Contoh: 1250" oninput="calculateTrailingStop()">
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Hasil Analisa Skenario -->
+						<div class="mt-4 p-3 lg:p-4 bg-slate-900/80 rounded-xl border border-slate-700 shadow-inner">
+							<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-[11px] lg:text-xs">
+								<div class="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800 text-center">
+									<span class="text-slate-400 block mb-1">Amankan Profit (TP1)</span>
+									<span id="ts-result-profit1" class="text-sm lg:text-base font-bold text-emerald-400">Rp 0</span>
+								</div>
+								<div class="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800 text-center">
+									<span class="text-slate-400 block mb-1">Sisa Lot di Hold</span>
+									<span id="ts-result-lot-hold" class="text-sm lg:text-base font-bold text-amber-400">0 Lot</span>
+								</div>
+								<div class="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800 text-center">
+									<span class="text-slate-400 block mb-1">Trailing Stop (BEP)</span>
+									<span id="ts-result-new-sl" class="text-sm lg:text-base font-bold text-cyan-400">Rp 0</span>
+								</div>
+								<div class="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800 text-center">
+									<span class="text-slate-400 block mb-1">Max Profit (Kena TP2)</span>
+									<span id="ts-result-total-profit" class="text-sm lg:text-base font-bold text-fuchsia-400">Rp 0</span>
+								</div>
+							</div>
+							<div class="mt-3 pt-3 border-t border-slate-800/80 text-[10px] lg:text-[11px] text-slate-400 leading-relaxed" id="ts-scenario-desc">
+								Masukkan harga modal, total lot, dan 2 titik target profit (TP) untuk melihat kalkulasi skenario pengamanan modal <i>Risk-Free</i>.
 							</div>
 						</div>
 					</div>
