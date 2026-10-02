@@ -1218,13 +1218,13 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		} else if (stockData.price < stockData.ma20 && stockData.changePct < -4 && stockData.changePct <= 1) {
 			score = 1;
 			verdik = "SELLING PRESSURE";
-			verdikClass = "font-bold text-red-300 text-sm lg:text-base";
-			scoreClass = "font-bold bg-slate-800 text-red-300 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+			verdikClass = "font-bold text-red-500 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-red-500 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		} else if (stockData.price < stockData.ma20 && stockData.changePct < -8 && stockData.changePct <= 1) {
 			score = 1;
 			verdik = "SELLING PRESSURE";
-			verdikClass = "font-bold text-red-300 text-sm lg:text-base";
-			scoreClass = "font-bold bg-slate-800 text-red-300 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
+			verdikClass = "font-bold text-red-500 text-sm lg:text-base";
+			scoreClass = "font-bold bg-slate-800 text-red-500 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 		}
 
 		verdikEl.innerText = verdik;
@@ -1638,7 +1638,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 					</td>
 					<td class="p-3.5 text-center">
 						<button onclick="document.getElementById('stockSearch').value='${data.ticker}'; searchStock(true);" class="text-[10px] bg-emerald-600 hover:bg-cyan-600 text-white hover:text-white px-3 py-1 rounded-lg transition border-emerald-700/30 font-bold shadow-md">
-							Buka Chart <i data-lucide="square-arrow-out-up-right" class="w-4 h-4"></i>
+							Buka Chart »
 						</button>
 					</td>
 				</tr>
@@ -2246,7 +2246,7 @@ function renderRadarItems(dataList) {
 					<div class="flex flex-col">
 						<div class="flex items-center gap-2">
 							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${ticker}</span>
-							<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] bg-amber-500/20 hover:bg-amber-500 hover:text-black text-amber-400 border border-amber-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart <i data-lucide="square-arrow-out-up-right" class="w-4 h-4"></i></button>
+							<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] bg-amber-500/20 hover:bg-amber-500 hover:text-black text-amber-400 border border-amber-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
 							Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
@@ -2479,7 +2479,7 @@ async function runCustomScreener() {
 						<div class="flex flex-col">
 							<div class="flex items-center gap-2">
 								<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
-								<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[9px] bg-blue-600/20 hover:bg-blue-500 hover:text-white text-blue-400 border border-blue-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart <i data-lucide="square-arrow-out-up-right" class="w-4 h-4"></i></button>
+								<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[9px] bg-blue-600/20 hover:bg-blue-500 hover:text-white text-blue-400 border border-blue-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
 							</div>
 							<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
 								Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
@@ -4941,7 +4941,7 @@ function renderBSJPItems(dataList) {
 					<div class="flex flex-col">
 						<div class="flex items-center gap-2">
 							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
-							<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[9px] bg-orange-600/20 hover:bg-orange-500 hover:text-white text-orange-400 border border-orange-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart <i data-lucide="square-arrow-out-up-right" class="w-4 h-4"></i></button>
+							<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[9px] bg-orange-600/20 hover:bg-orange-500 hover:text-white text-orange-400 border border-orange-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
 							Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
