@@ -2977,17 +2977,18 @@ async function scanWhalesData() {
 				const chg = cachedItem.changePct || 0;
 				const price = cachedItem.price;
 				const ma5 = cachedItem.ma5 || price;
+				const valuasi = cachedItem.currentValuation || 0;
 				let tier = 0, tierName = "", tierClass = "";
 
-				if (vol >= 4 && chg >= 1.0 && chg <= 6.0 && price > ma5) {
-					tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
-					tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-				} else if (vol >= 3 && vol < 4 && chg >= 0 && chg <= 4.0) {
-					tier = 2; tierName = "PAUS SEDANG (MEDIUM WHALE)";
-					tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
-				} else if (vol >= 2 && vol < 3 && chg >= 0 && chg <= 4.0) {
-					tier = 1; tierName = "INDIKASI PAUS (WHALE SIGN)";
-					tierClass = "bg-amber-500/20 border-amber-500/40 text-amber-400";
+				// Logika pencarian baru: Volume > 3x, Valuasi > 1 Miliar, Kenaikan 0% - 5%
+				if (vol > 3 && valuasi > 1000000000 && chg > 0 && chg < 5) {
+					if (price > ma5) {
+						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
+						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
+					} else {
+						tier = 2; tierName = "PAUS AKUMULASI (ACC WHALE)";
+						tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
+					}
 				}
 
 				if (tier > 0) {
@@ -3022,17 +3023,18 @@ async function scanWhalesData() {
 					const chg = item.changePct || 0;
 					const price = item.price;
 					const ma5 = item.ma5 || price;
+					const valuasi = item.currentValuation || 0;
 					let tier = 0, tierName = "", tierClass = "";
 
-					if (vol >= 4 && chg >= 1.0 && chg <= 6.0 && price > ma5) {
-						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
-						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-					} else if (vol >= 3 && vol < 4 && chg >= 0 && chg <= 4.0) {
-						tier = 2; tierName = "PAUS SEDANG (MEDIUM WHALE)";
-						tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
-					} else if (vol >= 2 && vol < 3 && chg >= 0 && chg <= 4.0) {
-						tier = 1; tierName = "INDIKASI PAUS (WHALE SIGN)";
-						tierClass = "bg-amber-500/20 border-amber-500/40 text-amber-400";
+					// Logika pencarian baru: Volume > 3x, Valuasi > 1 Miliar, Kenaikan 0% - 5%
+					if (vol > 3 && valuasi > 1000000000 && chg > 0 && chg < 5) {
+						if (price > ma5) {
+							tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
+							tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
+						} else {
+							tier = 2; tierName = "PAUS AKUMULASI (ACC WHALE)";
+							tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
+						}
 					}
 
 					if (tier > 0) {
@@ -3048,11 +3050,8 @@ async function scanWhalesData() {
 			}
 		}
 
-		// Urutkan berdasarkan tier terkuat, lalu volume rasio terbesar
-		foundWhales.sort((a, b) => {
-			if (b.whaleTier !== a.whaleTier) return b.whaleTier - a.whaleTier;
-			return b.volRatio - a.volRatio;
-		});
+		// Urutkan berdasarkan valuasi terbesar di posisi teratas
+		foundWhales.sort((a, b) => b.currentValuation - a.currentValuation);
 		foundWhales = foundWhales.slice(0, 10);
 
 		if (foundWhales.length === 0) {
@@ -3064,16 +3063,11 @@ async function scanWhalesData() {
 			`;
 		} else {
 			let html = '';
-			foundWhales.forEach((item) => {
+			foundWhales.forEach((item, index) => {
 				const price = roundToBEITick(item.price);
 				
 				// FIBONACCI SUPPORT / RESISTANCE (Dynamic)
 				const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
-				let s1 = fibo.entryLow;
-				let s2 = fibo.entryHigh;
-				let r1 = fibo.res1;
-				let r2 = fibo.res2;
-				let cl = fibo.sl;
 				let entryAgresif = fibo.entryHigh;
 				let entryAman = fibo.entryLow;
 
@@ -3092,7 +3086,7 @@ async function scanWhalesData() {
 							<div class="flex items-center gap-3.5">
 								<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center text-slate-200 font-black text-lg shadow-inner relative overflow-hidden shrink-0">
 									<i data-lucide="activity" class="w-6 h-6 text-fuchsia-400/20 absolute"></i>
-									<span class="relative z-10">$</span>
+									<span class="relative z-10">#${index + 1}</span>
 								</div>
 								<div class="flex flex-col">
 									<div class="flex items-center gap-2.5">
@@ -3102,7 +3096,7 @@ async function scanWhalesData() {
 										</span>
 									</div>
 									<div class="flex items-center gap-2 mt-1.5 text-[10px] lg:text-xs">
-										<span class="text-slate-400">Close: <strong class="text-blue-400">Rp ${price.toLocaleString('id-ID')}</strong></span>
+										<span class="text-slate-400">Harga Last: <strong class="text-blue-400">Rp ${price.toLocaleString('id-ID')}</strong></span>
 										<span class="w-1 h-1 rounded-full bg-slate-600 shrink-0"></span>
 										<span class="text-slate-400">Vol: <strong class="text-fuchsia-400">${item.volRatio}x</strong></span>
 									</div>
@@ -3120,28 +3114,22 @@ async function scanWhalesData() {
 							</div>
 							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
 								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
-									<i data-lucide="shield-check" class="w-3 h-3 text-cyan-400"></i> Support (S1/S2)
+									<i data-lucide="bar-chart-2" class="w-3 h-3 text-blue-400"></i> AVG Bandar
 								</span>
-								<span class="font-bold text-cyan-400 text-xs truncate">Rp ${s1.toLocaleString('id-ID')} - ${s2.toLocaleString('id-ID')}</span>
+								<span class="font-bold text-blue-400 text-xs truncate">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 							</div>
 							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
 								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
-									<i data-lucide="trending-up" class="w-3 h-3 text-emerald-400"></i> Resist (R1/R2)
+									<i data-lucide="activity" class="w-3 h-3 text-fuchsia-400"></i> Total Volume (Lot)
 								</span>
-								<span class="font-bold text-emerald-400 text-xs truncate">Rp ${r1.toLocaleString('id-ID')} - ${r2.toLocaleString('id-ID')}</span>
+								<span class="font-bold text-fuchsia-400 text-xs truncate">${(item.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 							</div>
 							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
 								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
-									<i data-lucide="shield-alert" class="w-3 h-3 text-rose-400"></i> Stop Loss (CL)
+									<i data-lucide="coins" class="w-3 h-3 text-violet-400"></i> Total Valuasi
 								</span>
-								<span class="font-bold text-rose-400 text-xs truncate">&lt; Rp ${cl.toLocaleString('id-ID')}</span>
+								<span class="font-bold text-violet-400 text-xs truncate">${formatValuationIDR(item.currentValuation)}</span>
 							</div>
-						</div>
-						
-						<!-- Valuasi Transaksi -->
-						<div class="flex justify-between items-center bg-slate-900/40 border border-slate-800/60 px-3 py-2 rounded-lg mt-3 relative z-10 text-[10px] lg:text-[11px]">
-							<span class="text-slate-400 flex items-center gap-1.5"><i data-lucide="coins" class="w-3 h-3 text-violet-400"></i> Total Valuasi / Lot:</span>
-							<span class="font-bold text-violet-400 truncate">${(item.currentLot || 0).toLocaleString('id-ID')} Lot (${formatValuationIDR(item.currentValuation)})</span>
 						</div>
 						
 						<!-- Action Button -->
