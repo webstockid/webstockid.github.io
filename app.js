@@ -3078,34 +3078,76 @@ async function scanWhalesData() {
 				let entryAman = fibo.entryLow;
 
 				html += `
-					<div class="bg-slate-950/50 p-4 rounded-xl border border-slate-700/60 hover:border-slate-500/40 transition relative group shadow-sm flex flex-col justify-between">
-						<div class="absolute top-0 right-0 px-2.5 py-1 bg-slate-900 border-b border-l border-slate-700 rounded-bl-lg rounded-tr-xl text-[9px] font-bold ${item.whaleTierClass}">
+					<div class="bg-slate-950/40 p-5 rounded-2xl border border-slate-700/50 hover:border-fuchsia-500/50 transition-all duration-300 relative group shadow-lg flex flex-col justify-between overflow-hidden">
+						<!-- Glow Effect Background -->
+						<div class="absolute -top-20 -right-20 w-40 h-40 bg-fuchsia-500/10 rounded-full blur-3xl group-hover:bg-fuchsia-500/20 transition-colors pointer-events-none"></div>
+						
+						<!-- Badge (Tier) -->
+						<div class="absolute top-0 right-0 px-3 py-1.5 border-b border-l border-slate-700/60 rounded-bl-xl rounded-tr-2xl text-[9px] lg:text-[10px] font-extrabold uppercase tracking-wider ${item.whaleTierClass} shadow-sm backdrop-blur-sm z-10">
 							${item.whaleTierName}
 						</div>
-						<div class="flex items-center gap-3 mb-3 border-b border-slate-800/80 pb-3 mt-1">
-							<div class="flex flex-col">
-								<span class="text-sm md:text-base font-bold text-white flex items-center gap-2">
-									$${item.ticker} 
-									<span class="text-[10px] md:text-[11px] ${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'} px-2 py-0.5 rounded border">
-										${item.changePct >= 0 ? '+' : ''}${item.changePct}%
-									</span>
+						
+						<!-- Header Card Saham -->
+						<div class="flex items-start justify-between border-b border-slate-700/60 pb-4 mb-4 mt-1 relative z-10">
+							<div class="flex items-center gap-3.5">
+								<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center text-slate-200 font-black text-lg shadow-inner relative overflow-hidden shrink-0">
+									<i data-lucide="activity" class="w-6 h-6 text-fuchsia-400/20 absolute"></i>
+									<span class="relative z-10">$</span>
+								</div>
+								<div class="flex flex-col">
+									<div class="flex items-center gap-2.5">
+										<span class="font-black text-white text-lg lg:text-xl tracking-tight leading-none">${item.ticker}</span>
+										<span class="text-[10px] lg:text-[11px] ${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'} px-2 py-0.5 rounded-md border font-bold shadow-sm">
+											${item.changePct >= 0 ? '+' : ''}${item.changePct}%
+										</span>
+									</div>
+									<div class="flex items-center gap-2 mt-1.5 text-[10px] lg:text-xs">
+										<span class="text-slate-400">Close: <strong class="text-blue-400">Rp ${price.toLocaleString('id-ID')}</strong></span>
+										<span class="w-1 h-1 rounded-full bg-slate-600 shrink-0"></span>
+										<span class="text-slate-400">Vol: <strong class="text-fuchsia-400">${item.volRatio}x</strong></span>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- Detail Info (Matrix) -->
+						<div class="grid grid-cols-2 gap-3 text-[10px] lg:text-xs relative z-10">
+							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
+								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
+									<i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Agresif / Aman
 								</span>
-								<span class="text-[10px] text-slate-400 mt-1">Close: <strong class="text-blue-400">Rp ${price.toLocaleString('id-ID')}</strong> (Vol: <span class="text-fuchsia-400 font-bold">${item.volRatio}x</span>)</span>
+								<span class="font-bold text-amber-400 text-xs truncate">Rp ${entryAman.toLocaleString('id-ID')} - ${entryAgresif.toLocaleString('id-ID')}</span>
+							</div>
+							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
+								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
+									<i data-lucide="shield-check" class="w-3 h-3 text-cyan-400"></i> Support (S1/S2)
+								</span>
+								<span class="font-bold text-cyan-400 text-xs truncate">Rp ${s1.toLocaleString('id-ID')} - ${s2.toLocaleString('id-ID')}</span>
+							</div>
+							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
+								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
+									<i data-lucide="trending-up" class="w-3 h-3 text-emerald-400"></i> Resist (R1/R2)
+								</span>
+								<span class="font-bold text-emerald-400 text-xs truncate">Rp ${r1.toLocaleString('id-ID')} - ${r2.toLocaleString('id-ID')}</span>
+							</div>
+							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
+								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
+									<i data-lucide="shield-alert" class="w-3 h-3 text-rose-400"></i> Stop Loss (CL)
+								</span>
+								<span class="font-bold text-rose-400 text-xs truncate">&lt; Rp ${cl.toLocaleString('id-ID')}</span>
 							</div>
 						</div>
-						<div class="space-y-2 text-[10px] lg:text-xs text-slate-300">
-							<div class="bg-slate-900/70 p-2.5 rounded border border-slate-800/80 space-y-1">
-								<div class="flex justify-between"><span class="text-slate-400">Entry Agresif / Aman:</span><span class="font-bold text-amber-400">Rp ${entryAman.toLocaleString('id-ID')} - ${entryAgresif.toLocaleString('id-ID')}</span></div>
-								<div class="flex justify-between"><span class="text-slate-400">Support (S1 / S2):</span><span class="font-bold text-cyan-400">Rp ${s1.toLocaleString('id-ID')} - ${s2.toLocaleString('id-ID')}</span></div>
-								<div class="flex justify-between"><span class="text-slate-400">Resistance (R1 / R2):</span><span class="font-bold text-emerald-400">Rp ${r1.toLocaleString('id-ID')} - ${r2.toLocaleString('id-ID')}</span></div>
-								<div class="flex justify-between border-t border-slate-800 pt-1"><span class="text-slate-400">Stop Loss (CL):</span><span class="font-bold text-rose-400">&lt; Rp ${cl.toLocaleString('id-ID')}</span></div>
-							</div>
-							<div class="flex justify-between items-center bg-slate-900/60 px-2.5 py-1.5 rounded">
-								<span>Total Valuasi / Lot:</span><span class="font-bold text-violet-400">${(item.currentLot || 0).toLocaleString('id-ID')} Lot (${formatValuationIDR(item.currentValuation)})</span>
-							</div>
+						
+						<!-- Valuasi Transaksi -->
+						<div class="flex justify-between items-center bg-slate-900/40 border border-slate-800/60 px-3 py-2 rounded-lg mt-3 relative z-10 text-[10px] lg:text-[11px]">
+							<span class="text-slate-400 flex items-center gap-1.5"><i data-lucide="coins" class="w-3 h-3 text-violet-400"></i> Total Valuasi / Lot:</span>
+							<span class="font-bold text-violet-400 truncate">${(item.currentLot || 0).toLocaleString('id-ID')} Lot (${formatValuationIDR(item.currentValuation)})</span>
 						</div>
-						<button onclick="selectTickerFromRadar('${item.ticker}'); toggleWhaleModal();" class="mt-3.5 w-full bg-fuchsia-700 hover:bg-fuchsia-500 text-white font-bold text-[10px] lg:text-[11px] py-2.5 rounded-lg border border-fuchsia-500 shadow-lg shadow-fuchsia-600/30 transition flex items-center justify-center gap-1.5">
-							<i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Buka Chart & Detail AI
+						
+						<!-- Action Button -->
+						<button onclick="selectTickerFromRadar('${item.ticker}'); toggleWhaleModal();" class="mt-4 w-full bg-slate-800/80 hover:bg-fuchsia-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-3 rounded-xl border border-slate-700 hover:border-fuchsia-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
+							<span>Buka Chart & Detail AI</span>
+							<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
 						</button>
 					</div>
 				`;
