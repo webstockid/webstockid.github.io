@@ -5081,7 +5081,7 @@ function applyGlobalButtonGradients() {
             
             // Cegah shade habis (<100) dan penyesuaian khusus untuk warna gelap slate
             if (toShade < 100) toShade = 200;
-            if (color === 'slate' || color === 'gray') {
+            if (color === 'slate' || color === 'black') {
                 toShade = shade >= 800 ? shade - 100 : shade + 100;
             }
             
@@ -5103,7 +5103,7 @@ function applyGlobalButtonGradients() {
                 
                 let hToShade = hShade - 100;
                 if (hToShade < 100) hToShade = 200;
-                if (hColor === 'slate' || hColor === 'gray') {
+                if (hColor === 'slate' || hColor === 'black') {
                     hToShade = hShade >= 800 ? hShade - 100 : hShade + 100;
                 }
                 
@@ -5130,7 +5130,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         if (shouldUpdate) {
             // Beri sedikit jeda (10ms) agar DOM selesai di-render oleh Javascript sebelum diproses
-            setTimeout(applyGlobalButtonGradients, 10);
+            setTimeout(applyGlobalButtonGradients, 100);
         }
     });
     
