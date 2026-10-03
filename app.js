@@ -443,9 +443,9 @@ function getDynamicFiboLevels(high, low, currentPrice) {
 	const aboveLevels = levels.filter(l => l > currentPrice).sort((a, b) => a - b); 
 
 	// Penentuan Mutlak: Support / Entry & SL (Wajib di Bawah Harga)
-	let entryHighRaw = belowLevels.length > 0 ? belowLevels[0] : currentPrice * 0.98;
-	let entryLowRaw = belowLevels.length > 1 ? belowLevels[1] : entryHighRaw * 0.97;
-	let slRaw = belowLevels.length > 2 ? belowLevels[2] : entryLowRaw * 0.96;
+	let entryHighRaw = belowLevels.length > 0 ? belowLevels[0] : currentPrice * 0.96; //98
+	let entryLowRaw = belowLevels.length > 1 ? belowLevels[1] : entryHighRaw * 0.95; //97
+	let slRaw = belowLevels.length > 2 ? belowLevels[2] : entryLowRaw * 0.93; //96
 
 	// Penentuan Mutlak: Target & Resistance (Wajib di Atas Harga)
 	let res1Raw = aboveLevels.length > 0 ? aboveLevels[0] : currentPrice * 1.04;
@@ -1928,7 +1928,7 @@ function autoFillRRRFromAI() {
 		let res2 = fibo.res2;
 		let customTP2 = roundToBEITick(res2 * 1.03, 'ceil');
 
-		document.getElementById('rrrEntry').value = fibo.entryHigh;
+		document.getElementById('rrrEntry').value = fibo.entryLow;
 		document.getElementById('rrrSL').value = fibo.sl;
 		document.getElementById('rrrTP').value = customTP2; // AI Setup memprioritaskan TP2 custom
 		
@@ -3726,7 +3726,7 @@ function openEditAlertModal() {
 		price = roundToBEITick(globalStockData.price);
 		const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, price);
 		
-		entry = fibo.entryHigh;
+		entry = fibo.entryLow;
 		resist = fibo.res1;
 		sl = fibo.sl;
 		tp = roundToBEITick(fibo.res2 * 1.03, 'ceil');
