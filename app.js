@@ -1276,83 +1276,83 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			</li>
 		`;
 
-		let actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='orbit' class='w-3 h-3'></i> NETRAL</span>";
+		let actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='orbit' class='w-4 h-4'></i> NETRAL</span>";
 		let actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
 		let actionDesc = "Pergerakan saham biasa saja, kenaikan normal dan volume masih dalam batas normal.";
 
 		if (stockData.price > stockData.ma10 && stockData.changePct > 2 && stockData.volRatio >= 2) {
-			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='flame' class='w-3 h-3'></i> STRONG BUY</span>";
+			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='flame' class='w-4 h-4'></i> STRONG BUY</span>";
 			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
 			actionDesc = "Momentum Breakout kuat! Kenaikan harga signifikan didukung lonjakan volume masif.";
 		} else if (stockData.price > stockData.ma20 && stockData.changePct > 2) {
-			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='badge-dollar-sign' class='w-3 h-3'></i> TAKE PROFIT / HOLD</span>";
+			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='badge-dollar-sign' class='w-4 h-4'></i> TAKE PROFIT / HOLD</span>";
 			actionColor = "text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/30";
 			actionDesc = "Tren masih terjaga di atas garis MA menengah. Pertimbangkan untuk menahan posisi atau amankan profit.";
 		} else if (stockData.price > stockData.ma10 && stockData.volRatio >= 1 && stockData.changePct >= -2) {
-			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='sparkles' class='w-3 h-3'></i> ACCUMULATE</span>";
+			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='sparkles' class='w-4 h-4'></i> ACCUMULATE</span>";
 			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
 			actionDesc = "Fase akumulasi atau koreksi wajar. Harga bertahan dekat area cicil MA10, cocok untuk cicil bertahap.";
 		} else if (stockData.price > stockData.ma5 && stockData.volRatio >= 0.5 && stockData.changePct >= -2) {
-			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='coffee' class='w-3 h-3'></i> WAIT & SEE</span>";
+			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='coffee' class='w-4 h-4'></i> WAIT & SEE</span>";
 			actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
 			actionDesc = "Fase akumulasi atau koreksi wajar. Harga bertahan dekat area support MA5, pantau dulu.";
 		} else if (stockData.price < stockData.ma20 && stockData.changePct < -1 && stockData.changePct <= 1) {
-			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='octagon-x' class='w-3 h-3'></i> AVOID / CUTLOSS</span>";
+			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='octagon-x' class='w-4 h-4'></i> AVOID / CUTLOSS</span>";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
 			actionDesc = "Tekanan jual mendominasi penuh dan struktur tren patah di bawah semua MA utama. Segera batasi risiko.";
 		} else {
-			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='orbit' class='w-3 h-3'></i> NETRAL</span>";
+			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='orbit' class='w-4 h-4'></i> NETRAL</span>";
 			actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
 			actionDesc = "Pergerakan saham biasa saja, indikator harga dan volume berjalan normal. Disarankan pantau konfirmasi lanjutan.";
 		}
 
-		let bandarStatus = "<span class='inline-flex items-center gap-0.5'>NETRAL <i data-lucide='scale' class='w-3 h-3'></i></span>";
+		let bandarStatus = "<span class='inline-flex items-center gap-0.5'>NETRAL <i data-lucide='scale' class='w-4 h-4'></i></span>";
 		let bandarColor = "text-yellow-400";
 		let bandarBarColor = "from-yellow-600 via-yellow-400 to-amber-400 shadow-[0_0_15px_rgba(148,163,184,0.4)]";
 		let bandarPct = 50;
 
 		if (stockData.changePct > 2 && stockData.volRatio > 3) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Masif Akumulasi <i data-lucide='rabbit' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Masif Akumulasi <i data-lucide='rabbit' class='w-4 h-4'></i></span>";
 			bandarColor = "text-green-400";
 			bandarBarColor = "from-green-600 via-green-400 to-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 95; 
 		} else if (stockData.changePct > 2 && stockData.volRatio > 2) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Akumulasi <i data-lucide='radio' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Akumulasi <i data-lucide='radio' class='w-4 h-4'></i></span>";
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 85; 
 		} else if (stockData.changePct > 1 && stockData.volRatio > 1.5) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Akumulasi <i data-lucide='radio' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Akumulasi <i data-lucide='radio' class='w-4 h-4'></i></span>";
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 75; 
 		} else if (stockData.changePct >= -2 && stockData.volRatio > 1) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-4 h-4'></i></span>";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 			bandarPct = 65; 
 		} else if (stockData.changePct >= -4 && stockData.volRatio > 0.5) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-4 h-4'></i></span>";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 			bandarPct = 55; 
 		} else if (stockData.changePct >= -4 && stockData.volRatio > 1) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Support <i data-lucide='hand-fist' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Support <i data-lucide='hand-fist' class='w-4 h-4'></i></span>";
 			bandarColor = "text-cyan-400";
 			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
 			bandarPct = 45; 
 		} else if (stockData.changePct >= -8 && stockData.volRatio > 0.5) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Support <i data-lucide='hand-fist' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Support <i data-lucide='hand-fist' class='w-4 h-4'></i></span>";
 			bandarColor = "text-cyan-400";
 			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
 			bandarPct = 35; 
 		} else if (stockData.changePct < -4 && stockData.price < stockData.ma20) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Distribusi Kuat <i data-lucide='siren' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Distribusi Kuat <i data-lucide='siren' class='w-4 h-4'></i></span>";
 			bandarColor = "text-rose-400";
 			bandarBarColor = "from-rose-600 via-rose-400 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)]";
 			bandarPct = 25; 
 		} else if (stockData.changePct < -8 && stockData.price < stockData.ma20) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Distribusi Kuat <i data-lucide='siren' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Distribusi Kuat <i data-lucide='siren' class='w-4 h-4'></i></span>";
 			bandarColor = "text-rose-400";
 			bandarBarColor = "from-rose-600 via-rose-400 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)]";
 			bandarPct = 15; 
@@ -2609,7 +2609,7 @@ function savePaperAccount(acc) {
 
 function ptSyncCurrentTicker() {
 	if (!globalStockData || !globalStockData.ticker) {
-		AudioFX.playSuccess();
+		AudioFX.playAlert();
 		showToast("Pilih saham terlebih dahulu pada pencarian!", "warning");
 		return;
 	}
@@ -3630,7 +3630,7 @@ function renderAllAlerts() {
 						<div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-slate-900 flex items-center justify-center border border-slate-700/60 font-bold text-white group-hover:border-emerald-500/40 transition text-xs md:text-sm shrink-0">$</div>
 						<div class="flex flex-col">
 							<div class="flex items-center gap-2">
-								<span class="font-bold text-cyan text-sm md:text-base tracking-wide">${ticker}</span>
+								<span class="font-bold text-cyan-400 text-sm md:text-base tracking-wide">${ticker}</span>
 								${isCurrent ? '<span class="bg-emerald-500/20 text-cyan-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
 							</div>
 							<span class="font-bold ${activeCount > 0 ? 'text-cyan-400' : 'text-slate-500'} text-[10px] md:text-xs mt-0.5">${activeCount} Alert Aktif</span>
