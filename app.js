@@ -4972,7 +4972,7 @@ function renderBSJPItems(dataList) {
 		const entryAgresif = fibo.entryHigh;
 		
 		// Penyesuaian TP naik 3% dan SL turun 2%
-		const stopLoss = roundToBEITick(fibo.sl * 0.98, 'floor');
+		const stopLoss = roundToBEITick(fibo.sl * 0.99, 'floor'); //0.98
 		const tp1 = roundToBEITick(fibo.res1 * 1.03, 'ceil');
 		const tp2 = roundToBEITick(fibo.res2 * 1.03, 'ceil');
 		
