@@ -1276,32 +1276,32 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			</li>
 		`;
 
-		let actionLabel = "<span class='inline-flex items-center gap-0'><i data-lucide='orbit' class='w-3 h-3'></i> NETRAL</span>";
+		let actionLabel = "<span class='inline-flex items-center gap-2.5'><i data-lucide='orbit' class='w-3 h-3'></i> NETRAL</span>";
 		let actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
 		let actionDesc = "Pergerakan saham biasa saja, kenaikan normal dan volume masih dalam batas normal.";
 
 		if (stockData.price > stockData.ma10 && stockData.changePct > 2 && stockData.volRatio >= 2) {
-			actionLabel = "<span class='inline-flex items-center gap-0'><i data-lucide='flame' class='w-3 h-3'></i> STRONG BUY</span>";
+			actionLabel = "<span class='inline-flex items-center gap-2.5'><i data-lucide='flame' class='w-3 h-3'></i> STRONG BUY</span>";
 			actionColor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
 			actionDesc = "Momentum Breakout kuat! Kenaikan harga signifikan didukung lonjakan volume masif.";
 		} else if (stockData.price > stockData.ma20 && stockData.changePct > 2) {
-			actionLabel = "<span class='inline-flex items-center gap-0'><i data-lucide='badge-dollar-sign' class='w-3 h-3'></i> TAKE PROFIT / HOLD</span>";
+			actionLabel = "<span class='inline-flex items-center gap-2.5'><i data-lucide='badge-dollar-sign' class='w-3 h-3'></i> TAKE PROFIT / HOLD</span>";
 			actionColor = "text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/30";
 			actionDesc = "Tren masih terjaga di atas garis MA menengah. Pertimbangkan untuk menahan posisi atau amankan profit.";
 		} else if (stockData.price > stockData.ma10 && stockData.volRatio >= 1 && stockData.changePct >= -2) {
-			actionLabel = "<span class='inline-flex items-center gap-0'><i data-lucide='sparkles' class='w-3 h-3'></i> ACCUMULATE</span>";
+			actionLabel = "<span class='inline-flex items-center gap-2.5'><i data-lucide='sparkles' class='w-3 h-3'></i> ACCUMULATE</span>";
 			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
 			actionDesc = "Fase akumulasi atau koreksi wajar. Harga bertahan dekat area cicil MA10, cocok untuk cicil bertahap.";
 		} else if (stockData.price > stockData.ma5 && stockData.volRatio >= 0.5 && stockData.changePct >= -2) {
-			actionLabel = "<span class='inline-flex items-center gap-0'><i data-lucide='coffee' class='w-3 h-3'></i> WAIT & SEE</span>";
+			actionLabel = "<span class='inline-flex items-center gap-2.5'><i data-lucide='coffee' class='w-3 h-3'></i> WAIT & SEE</span>";
 			actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
 			actionDesc = "Fase akumulasi atau koreksi wajar. Harga bertahan dekat area support MA5, pantau dulu.";
 		} else if (stockData.price < stockData.ma20 && stockData.changePct < -1 && stockData.changePct <= 1) {
-			actionLabel = "<span class='inline-flex items-center gap-0'><i data-lucide='octagon-x' class='w-3 h-3'></i> AVOID / CUTLOSS</span>";
+			actionLabel = "<span class='inline-flex items-center gap-2.5'><i data-lucide='octagon-x' class='w-3 h-3'></i> AVOID / CUTLOSS</span>";
 			actionColor = "text-rose-400 bg-rose-500/10 border-rose-500/30";
 			actionDesc = "Tekanan jual mendominasi penuh dan struktur tren patah di bawah semua MA utama. Segera batasi risiko.";
 		} else {
-			actionLabel = "<span class='inline-flex items-center gap-0'><i data-lucide='orbit' class='w-3 h-3'></i> NETRAL</span>";
+			actionLabel = "<span class='inline-flex items-center gap-2.5'><i data-lucide='orbit' class='w-3 h-3'></i> NETRAL</span>";
 			actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
 			actionDesc = "Pergerakan saham biasa saja, indikator harga dan volume berjalan normal. Disarankan pantau konfirmasi lanjutan.";
 		}
