@@ -1306,7 +1306,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionDesc = "Pergerakan saham biasa saja, indikator harga dan volume berjalan normal. Disarankan pantau konfirmasi lanjutan.";
 		}
 
-		let bandarStatus = "<span class='inline-flex items-center gap-1.5'>NETRAL <i data-lucide='chevrons-left-right' class='w-3 h-3'></i></span>";
+		let bandarStatus = "<span class='inline-flex items-center gap-1.5'>NETRAL <i data-lucide='scale' class='w-3 h-3'></i></span>";
 		let bandarColor = "text-yellow-400";
 		let bandarBarColor = "from-yellow-600 via-yellow-400 to-amber-400 shadow-[0_0_15px_rgba(148,163,184,0.4)]";
 		let bandarPct = 50;
@@ -1327,12 +1327,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 75; 
 		} else if (stockData.changePct >= -2 && stockData.volRatio > 1) {
-			bandarStatus = "<span class='inline-flex items-center gap-1.5'>Uji Resistent <i data-lucide='trending-up-down' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-1.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-3 h-3'></i></span>";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 			bandarPct = 65; 
 		} else if (stockData.changePct >= -4 && stockData.volRatio > 0.5) {
-			bandarStatus = "<span class='inline-flex items-center gap-1.5'>Uji Resistent <i data-lucide='trending-up-down' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-1.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-3 h-3'></i></span>";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 			bandarPct = 55; 
