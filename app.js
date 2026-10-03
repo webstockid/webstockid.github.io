@@ -2284,12 +2284,12 @@ function renderRadarItems(dataList) {
 				<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs mt-3">
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50"></div>
-						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Ideal</span>
+						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Ideal</span>
 						<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>
-						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Target Profit</span>
+						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Target Profit</span>
 						<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
@@ -2299,7 +2299,7 @@ function renderRadarItems(dataList) {
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-900/30 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
-						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss</span>
+						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss</span>
 						<span class="font-bold text-rose-400">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
 					</div>
 				</div>
@@ -2517,12 +2517,12 @@ async function runCustomScreener() {
 					<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs mt-3">
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 							<div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50"></div>
-							<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Ideal</span>
+							<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Ideal</span>
 							<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 						</div>
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 							<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>
-							<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Target Profit</span>
+							<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Target Profit</span>
 							<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 						</div>
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
@@ -2532,7 +2532,7 @@ async function runCustomScreener() {
 						</div>
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-900/30 text-left relative overflow-hidden">
 							<div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
-							<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss</span>
+							<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss</span>
 							<span class="font-bold text-rose-400">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
 						</div>
 					</div>
@@ -5008,22 +5008,22 @@ function renderBSJPItems(dataList) {
 				<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs mt-3">
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50"></div>
-						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Sore (Clossing)</span>
+						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Sore (Clossing)</span>
 						<span class="font-bold text-amber-400">Rp ${entryAman.toLocaleString('id-ID')} - ${entryAgresif.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>
-						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Target Pagi (TP1-TP2)</span>
+						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Target Pagi (TP1-TP2)</span>
 						<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50"></div>
-						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="coins" class="w-3 h-3 text-blue-400"></i> Valuasi (Transaksi)</span>
+						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="coins" class="w-3 h-3 text-blue-400"></i> Valuasi (Transaksi)</span>
 						<span class="font-bold text-blue-400">${formatValuationIDR(item.currentValuation)}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-900/30 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
-						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss (Risk)</span>
+						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss (Risk)</span>
 						<span class="font-bold text-rose-400">&lt; Rp ${stopLoss.toLocaleString('id-ID')} (-${riskPct}%)</span>
 					</div>
 				</div>
