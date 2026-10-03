@@ -2294,7 +2294,7 @@ function renderRadarItems(dataList) {
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50"></div>
-						<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="bar-chart-2" class="w-3 h-3 text-blue-400"></i> Avg Bandar</span>
+						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="bar-chart-2" class="w-3 h-3 text-blue-400"></i> Avg Bandar</span>
 						<span class="font-bold text-blue-400">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-900/30 text-left relative overflow-hidden">
@@ -2527,7 +2527,7 @@ async function runCustomScreener() {
 						</div>
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 							<div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50"></div>
-							<span class="text-slate-400 block mb-0.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="bar-chart-2" class="w-3 h-3 text-blue-400"></i> Avg Bandar</span>
+							<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="bar-chart-2" class="w-3 h-3 text-blue-400"></i> Avg Bandar</span>
 							<span class="font-bold text-blue-400">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 						</div>
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-900/30 text-left relative overflow-hidden">
