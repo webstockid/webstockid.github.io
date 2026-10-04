@@ -4935,7 +4935,7 @@ function renderBSJPItems(dataList) {
 		const rewardPct = tp1 > price ? (((tp1 - price) / price) * 100).toFixed(2) : 0;
 		
 		html += `
-			<div class="bg-slate-950/30 p-4 lg:p-5 pt-9 rounded-xl border border-slate-700/60 hover:border-orange-500/50 transition-colors duration-300 relative shadow-sm flex flex-col justify-between">
+			<div class="bg-slate-950/30 p-4 lg:p-5 rounded-xl border border-slate-700/60 hover:border-orange-500/50 transition-colors duration-300 relative shadow-sm flex flex-col justify-between">
 				<!-- Badge Potensi Profit (Absolute Top Right dengan z-index) -->
 				<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l from-orange-600/30 to-amber-500/10 border-b border-l border-orange-500/30 rounded-bl-xl rounded-tr-xl text-[10px] font-bold text-orange-400 flex items-center gap-1.5 shadow-sm z-10">
 					<i data-lucide="trending-up" class="w-3 h-3"></i> Potensi TP Pagi: +${rewardPct}%
