@@ -1588,9 +1588,11 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 				const basePrice = baseData.price;
 				const minPrice = basePrice * 0.75;
 				const maxPrice = basePrice * 1.25;
-				const sampleCandidates = uniqueRadarWatchlist.filter(t => t !== targetTicker).sort(() => 0.5 - Math.random());
+				// Pastikan uniqueRadarWatchlist tersedia, jika tidak gunakan fallback
+				const watchlist = typeof uniqueRadarWatchlist !== 'undefined' ? uniqueRadarWatchlist : [targetTicker];
+				const sampleCandidates = watchlist.filter(t => t !== targetTicker).sort(() => 0.5 - Math.random());
 				
-				const BATCH_SIZE = 15; //8
+				const BATCH_SIZE = 15;
 				for (let i = 0; i < sampleCandidates.length; i += BATCH_SIZE) {
 					const batch = sampleCandidates.slice(i, i + BATCH_SIZE);
 					const fetchedBatch = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
@@ -1624,10 +1626,10 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 						<div class="flex items-center gap-3">
 							<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
 								<img 
-								src="https://assets.stockbit.com/logos/companies/${peer}.png" 
-								alt="${peer}" 
-								class="w-full h-full object-contain drop-shadow-sm" 
-								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${peer.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${peer.substring(0,3)}</span>';};"
+									src="https://assets.stockbit.com/logos/companies/${data.ticker}.png" 
+									alt="${data.ticker}" 
+									class="w-full h-full object-contain drop-shadow-sm" 
+									onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${data.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${data.ticker.substring(0,3)}</span>';};"
 								>
 							</div>
 							<div class="flex flex-col">
@@ -1670,6 +1672,10 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 
 		body.innerHTML = rowsHTML || `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tidak ditemukan saham peer yang aktif saat ini.</td></tr>`;
 
+	} catch (error) {
+		console.error("Error loading peers:", error);
+		const body = document.getElementById('peerTableBody');
+		if(body) body.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-rose-400">Terjadi kesalahan saat memuat data peer.</td></tr>`;
 	} finally {
 		if (isManualRefresh && btn) {
 			btn.disabled = false;
@@ -2012,7 +2018,14 @@ function initSearchSuggestions() {
 			box.innerHTML = matches.map(ticker => `
 				<div onclick="selectSuggestion('${ticker}')" class="px-4 py-2.5 hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-200 text-xs font-bold cursor-pointer transition flex items-center justify-between group">
 					<span class="flex items-center gap-2.5">
-						<img src="https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg" alt="${ticker}" class="w-5 h-5 rounded-md object-contain bg-slate-900 border border-slate-700" onerror="this.style.display='none'">
+						<div class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
+							<img 
+								src="https://assets.stockbit.com/logos/companies/${ticker}.png" 
+								alt="${ticker}" 
+								class="w-full h-full object-contain drop-shadow-sm" 
+								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[9px] font-black text-slate-400 tracking-wider\\'>${ticker.substring(0,3)}</span>';};"
+							>
+						</div>
 						${ticker}
 					</span>
 					<span class="text-[9px] text-slate-500 group-hover:text-emerald-400">IDX</span>
@@ -3635,8 +3648,13 @@ function renderAllAlerts() {
 			<div class="bg-slate-950/10 rounded-xl border ${borderHighlight} overflow-hidden transition-all duration-200 col-span-1 md:col-span-2 lg:col-span-3">
 				<div onclick="toggleAlertAccordion('${ticker}')" class="p-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-900/80 transition select-none group">
 					<div class="flex items-center gap-3 md:gap-4">
-						<div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center overflow-hidden border border-slate-700/60 group-hover:border-emerald-500/40 transition shrink-0">
-							<img src="https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg" alt="${ticker}" class="w-full h-full object-contain bg-slate-900" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\\'text-[10px] font-bold text-white\\'>$</span>';">
+						<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1 group-hover:border-emerald-500/40 transition">
+							<img 
+								src="https://assets.stockbit.com/logos/companies/${ticker}.png" 
+								alt="${ticker}" 
+								class="w-full h-full object-contain drop-shadow-sm" 
+								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${ticker.substring(0,3)}</span>';};"
+							>
 						</div>
 						<div class="flex flex-col">
 							<div class="flex items-center gap-2">
