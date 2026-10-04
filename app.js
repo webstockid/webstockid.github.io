@@ -2255,8 +2255,13 @@ function renderRadarItems(dataList) {
 				
 				<!-- Header Card Saham -->
 				<div class="flex items-center gap-3 border-b border-slate-800/80 pb-3 mt-1">
-					<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
-						<img src="https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg" alt="${ticker}" class="w-full h-full object-contain bg-slate-900" onerror="this.onerror=null; this.src='https://assets.tradingview.com/country/Indonesia/${ticker}.svg'; this.onerror=function(){this.parentElement.innerHTML='<span class=\\'text-xs font-bold text-amber-500\\'>${ticker.substring(0,3)}</span>';};">
+					<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
+						<img 
+							src="https://assets.stockbit.com/logos/companies/${ticker}.png" 
+							alt="${ticker}" 
+							class="w-full h-full object-contain drop-shadow-sm" 
+							onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${ticker.substring(0,3)}</span>';};"
+						>
 					</div>
 					<div class="flex flex-col w-full">
 						<div class="flex items-center gap-2">
@@ -2489,8 +2494,13 @@ async function runCustomScreener() {
 					
 					<!-- Header Card Saham -->
 					<div class="flex items-center gap-3 border-b border-slate-800/80 pb-3 mt-1">
-						<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
-							<img src="https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg" alt="${item.ticker}" class="w-full h-full object-contain bg-slate-900" onerror="this.onerror=null; this.src='https://assets.tradingview.com/country/Indonesia/${item.ticker}.svg'; this.onerror=function(){this.parentElement.innerHTML='<span class=\\'text-xs font-bold text-blue-500\\'>${item.ticker.substring(0,3)}</span>';};">
+						<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
+							<img 
+								src="https://assets.stockbit.com/logos/companies/${item.ticker}.png" 
+								alt="${item.ticker}" 
+								class="w-full h-full object-contain drop-shadow-sm" 
+								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};"
+							>
 						</div>
 						<div class="flex flex-col w-full">
 							<div class="flex items-center gap-2">
@@ -3625,7 +3635,7 @@ function renderAllAlerts() {
 							</div>
 							<span class="font-bold ${activeCount > 0 ? 'text-cyan-400' : 'text-slate-500'} text-[10px] md:text-xs mt-0.5">${activeCount} Alert Aktif</span>
 						</div>
- 					</div>
+					</div>
 					<div class="flex items-center gap-3 md:gap-4 text-right">
 						<div class="flex flex-col items-end">
 							<span class="text-[9px] md:text-[10px] text-slate-400">Tgl Dibuat</span>
@@ -4945,8 +4955,13 @@ function renderBSJPItems(dataList) {
 				
 				<!-- Header Card Saham (Diberi pr-24 agar tidak bertabrakan dengan badge absolute) -->
 				<div class="flex items-center gap-3 border-b border-slate-800/80 pb-3 mt-1">
-					<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
-						<img src="https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg" alt="${item.ticker}" class="w-full h-full object-contain bg-slate-900" onerror="this.onerror=null; this.src='https://assets.tradingview.com/country/Indonesia/${item.ticker}.svg'; this.onerror=function(){this.parentElement.innerHTML='<span class=\\'text-xs font-bold text-orange-500\\'>${item.ticker.substring(0,3)}</span>';};">
+					<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
+						<img 
+							src="https://assets.stockbit.com/logos/companies/${item.ticker}.png" 
+							alt="${item.ticker}" 
+							class="w-full h-full object-contain drop-shadow-sm" 
+							onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};"
+						>
 					</div>
 					<div class="flex flex-col w-full pr-24">
 						<div class="flex items-center gap-2 flex-wrap">
