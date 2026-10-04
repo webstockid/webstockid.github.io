@@ -408,7 +408,7 @@ function roundToBEITick(price, direction = 'round') {
 }
 
 function getDynamicFiboLevels(high, low, currentPrice) {
-	// Fallback persentase jika data harga bursa belum lengkap
+	// Fallback
 	if (!high || !low || high <= low || !currentPrice) {
 		return {
 			entryLow: roundToBEITick(currentPrice * 0.95, 'floor'),
@@ -438,21 +438,20 @@ function getDynamicFiboLevels(high, low, currentPrice) {
 		low + (diff * 2.618)   // 261.8% (Ekstensi Atas 3)
 	];
 
-	// Filter Fibo adaptif: Pisahkan mana titik di bawah harga & di atas harga
+	// Filter Fibo adaptif
 	const belowLevels = levels.filter(l => l < currentPrice).sort((a, b) => b - a); 
 	const aboveLevels = levels.filter(l => l > currentPrice).sort((a, b) => a - b); 
 
-	// Penentuan Mutlak: Support / Entry & SL (Wajib di Bawah Harga)
+	// Penentuan Mutlak
 	let entryHighRaw = belowLevels.length > 0 ? belowLevels[0] : currentPrice * 0.96; //98
 	let entryLowRaw = belowLevels.length > 1 ? belowLevels[1] : entryHighRaw * 0.95; //97
 	let slRaw = belowLevels.length > 2 ? belowLevels[2] : entryLowRaw * 0.93; //96
 
-	// Penentuan Mutlak: Target & Resistance (Wajib di Atas Harga)
+	// Penentuan Mutlak
 	let res1Raw = aboveLevels.length > 0 ? aboveLevels[0] : currentPrice * 1.04;
 	let res2Raw = aboveLevels.length > 1 ? aboveLevels[1] : res1Raw * 1.04;
 	
 	let tp1Raw = res1Raw; 
-	// TP2 menggunakan ekstensi Fibo murni (di atas level res 2)
 	let tp2Raw = aboveLevels.length > 2 ? aboveLevels[2] : res2Raw * 1.04; 
 
 	return {
@@ -877,7 +876,6 @@ async function handleInsiderSearch() {
 		for (let i = 0; i < infoTables.length; i++) {
 			const node = infoTables[i];
 			
-			// FIX: Menggunakan toLowerCase() agar tahan terhadap variasi format XML institusi
 			if (node.localName && node.localName.toLowerCase() === 'infotable') {
 				let nameOfIssuer = '', cusip = '', value = 0, shares = 0;
 				for (let j = 0; j < node.childNodes.length; j++) {
@@ -930,7 +928,6 @@ async function handleInsiderSearch() {
 	}
 }
 
-// FIX: Menghapus fungsi duplikat dan menyisakan satu yang bersih
 function renderFMPTable(portfolioData) {
 	const tableBody = document.getElementById('insiderTableBody');
 	let html = '';
@@ -957,14 +954,12 @@ function renderFMPTable(portfolioData) {
 // ==========================================
 // 10. DATA FETCHING (DEDUPLICATION ENGINE)
 // ==========================================
-// Menyimpan janji (Promise) request yang sedang berjalan agar tidak dobel
 const pendingFetchRequests = new Map();
 
 async function fetchRealtimeStockData(ticker, forceFetch = false) {
 	const cachedData = getCachedStockData(ticker);
 	if (cachedData && !forceFetch) return cachedData;
-
-	// Cegah eksekusi berulang: Jika saham ini sedang ditarik, gabung ke antrean yang sama
+	
 	if (pendingFetchRequests.has(ticker)) {
 		return pendingFetchRequests.get(ticker);
 	}
@@ -989,7 +984,7 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 
 		let freshData = null;
 		
-		// 1. Eksekusi Worker Cepat
+		// 1. Eksekusi Worker
 		try {
 			const res = await fetchWithTimeout(`${WORKER_URL}?symbol=${targetSymbol}`, 2500);
 			const json = await res.json();
@@ -1015,7 +1010,6 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 			setCachedStockData(ticker, freshData);
 		}
 		
-		// Hapus dari antrean setelah selesai
 		pendingFetchRequests.delete(ticker);
 		return freshData || cachedData;
 	})();
@@ -1406,13 +1400,13 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		descEl.innerText = `Menganalisis pergerakan teknikal saham ${ticker} berbasis indikator grafik TradingView. Silakan evaluasi struktur pola harga harian sebelum melakukan transaksi....`;
 	}
 
-	// 1. Tentukan Support & Resistance (Dynamic Fibo)
+	// 1. Dynamic Fibo
 	const fibo = getDynamicFiboLevels(stockData?.high20, stockData?.low20, price);
 	let res1 = fibo.res1, res2 = fibo.res2;
 	let sup1 = fibo.entryLow, sup2 = fibo.entryHigh;
 	let sl = fibo.sl;
 	let tp1 = res1; 
-	let tp2 = roundToBEITick(res2 * 1.03, 'ceil'); // +3% di atas resistance kedua
+	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 
 	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
@@ -1500,7 +1494,7 @@ function exportTradingCard() {
 	startExportCardCooldown(15);
 	const price = roundToBEITick(globalStockData.price);
 	
-	// 1. Tentukan Support & Resistance (Dynamic Fibo)
+	// 1. Dynamic Fibo
 	const fibo = getDynamicFiboLevels(globalStockData?.high20, globalStockData?.low20, price);
 	let res1 = fibo.res1, res2 = fibo.res2;
 	let sup1 = fibo.entryLow, sup2 = fibo.entryHigh;
@@ -1620,7 +1614,6 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 			const isCurrent = data.ticker === targetTicker;
 			const isPlus = data.changePct >= 0;
 			
-			// Penyesuaian style baris yang lebih modern & highlight target yang presisi
 			const rowClass = isCurrent 
 				? "bg-emerald-500/10 font-bold border-l-[3px] border-emerald-400 shadow-sm" 
 				: "hover:bg-slate-800/50 transition-colors duration-200 border-l-[3px] border-transparent";
@@ -1923,14 +1916,13 @@ function autoFillRRRFromAI() {
 	if (globalStockData && globalStockData.price) {
 		const basePrice = globalStockData.price;
 		const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, basePrice);
-
-		// Tarik data resistance untuk kalkulasi TP custom
+		
 		let res2 = fibo.res2;
 		let customTP2 = roundToBEITick(res2 * 1.03, 'ceil');
 
 		document.getElementById('rrrEntry').value = fibo.entryLow;
 		document.getElementById('rrrSL').value = fibo.sl;
-		document.getElementById('rrrTP').value = customTP2; // AI Setup memprioritaskan TP2 custom
+		document.getElementById('rrrTP').value = customTP2;
 		
 		calculateSmartRRR();
 		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
@@ -2217,13 +2209,12 @@ function renderRadarItems(dataList) {
 		const price = roundToBEITick(item.price);
 		const changePct = item.changePct;
 		
-		// FIBONACCI SUPPORT / RESISTANCE (Dynamic)
+		// 1. Dynamic Fibo
 		const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
 		let entryLow = fibo.entryLow;
 		let entryHigh = fibo.entryHigh;
 		let sl = fibo.sl;
 		
-		// Tarik data resistance untuk kalkulasi TP custom
 		let res1 = fibo.res1;
 		let res2 = fibo.res2;
 		
@@ -2449,13 +2440,12 @@ async function runCustomScreener() {
 		passedItems.forEach((item, index) => {
 			const price = roundToBEITick(item.price);
 			
-			// FIBONACCI SUPPORT / RESISTANCE (Dynamic)
+			// 1. Dynamic Fibo
 			const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
 			let entryLow = fibo.entryLow;
 			let entryHigh = fibo.entryHigh;
 			let sl = fibo.sl;
 			
-			// Tarik data resistance untuk kalkulasi TP custom
 			let res1 = fibo.res1;
 			let res2 = fibo.res2;
 			
@@ -2480,8 +2470,7 @@ async function runCustomScreener() {
 			else if (rulePrice === 'RED') infoPrice = `<li class="flex gap-2"><i data-lucide="trending-down" class="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0"></i> <span><strong class="text-rose-400">Koreksi:</strong> Mengalami penurunan (${item.changePct}%).</span></li>`;
 			else if (rulePrice === 'BREAKOUT') infoPrice = `<li class="flex gap-2"><i data-lucide="rocket" class="w-3.5 h-3.5 text-cyan-400 mt-0.5 shrink-0"></i> <span><strong class="text-cyan-400">Breakout Kuat:</strong> Akselerasi (+${item.changePct}%).</span></li>`;
 			else infoPrice = `<li class="flex gap-2"><i data-lucide="hash" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Harian:</strong> Pergerakan ${item.changePct >= 0 ? '+' : ''}${item.changePct}%.</span></li>`;
-
-			// Konstruksi Filter Badge Berdasarkan Rule MA
+			
 			let filterBadgeHtml = '';
 			if (ruleMA === 'ABOVE_MA5') { filterBadgeHtml = '<i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Uptrend MA5'; }
 			else if (ruleMA === 'ABOVE_MA20') { filterBadgeHtml = '<i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Uptrend MA20'; }
@@ -2969,7 +2958,7 @@ async function scanWhalesData() {
 	const scanList = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
 
 	try {
-		// STRATEGI 1: FILTER INSTAN DARI CACHE (Anti-Lag & Sangat Cepat)
+		// STRATEGI 1
 		for (const ticker of scanList) {
 			const cachedItem = getCachedStockData(ticker);
 			if (cachedItem && cachedItem.price) {
@@ -2979,8 +2968,7 @@ async function scanWhalesData() {
 				const ma5 = cachedItem.ma5 || price;
 				const valuasi = cachedItem.currentValuation || 0;
 				let tier = 0, tierName = "", tierClass = "";
-
-				// Logika pencarian baru: Volume > 3x, Valuasi > 1 Miliar, Kenaikan 0% - 5%
+				
 				if (vol > 3 && valuasi > 1000000000 && chg > 0 && chg < 5) {
 					if (price > ma5) {
 						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
@@ -3002,7 +2990,7 @@ async function scanWhalesData() {
 			}
 		}
 
-		// STRATEGI 2: FALLBACK API JARINGAN DENGAN BATCH LIMIT (Mencegah Browser Hang)
+		// STRATEGI 2
 		if (foundWhales.length < 10) {
 			const candidateTickers = foundWhales.map(c => c.ticker);
 			const remainingWatchlist = scanList.filter(t => !candidateTickers.includes(t));
@@ -3011,7 +2999,7 @@ async function scanWhalesData() {
 
 			for (let i = 0; i < remainingWatchlist.length; i += BATCH_SIZE) {
 				maxBatchLimit++;
-				// Maksimal 3 batch (~60 saham) untuk menjaga performa perangkat
+				
 				if (maxBatchLimit > 3) break; 
 
 				const batch = remainingWatchlist.slice(i, i + BATCH_SIZE);
@@ -3025,8 +3013,7 @@ async function scanWhalesData() {
 					const ma5 = item.ma5 || price;
 					const valuasi = item.currentValuation || 0;
 					let tier = 0, tierName = "", tierClass = "";
-
-					// Logika pencarian baru: Volume > 3x, Valuasi > 1 Miliar, Kenaikan 0% - 5%
+					
 					if (vol > 3 && valuasi > 1000000000 && chg > 0 && chg < 5) {
 						if (price > ma5) {
 							tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
@@ -3049,8 +3036,7 @@ async function scanWhalesData() {
 				if (foundWhales.length >= 10) break;
 			}
 		}
-
-		// Urutkan berdasarkan valuasi terbesar di posisi teratas
+		
 		foundWhales.sort((a, b) => b.currentValuation - a.currentValuation);
 		foundWhales = foundWhales.slice(0, 10);
 
@@ -3066,7 +3052,7 @@ async function scanWhalesData() {
 			foundWhales.forEach((item, index) => {
 				const price = roundToBEITick(item.price);
 				
-				// FIBONACCI SUPPORT / RESISTANCE (Dynamic)
+				// 1. Dynamic Fibo
 				const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
 				let entryAgresif = fibo.entryHigh;
 				let entryAman = fibo.entryLow;
@@ -3144,7 +3130,6 @@ async function scanWhalesData() {
 		}
 
 	} finally {
-		// Menggunakan blok try-finally memastikan timer dan tombol selalu direset
 		isWhaleScanning = false;
 		let cooldown = foundWhales.length === 0 ? 60 : 30; 
 		if (whaleScanCooldownTimer) clearInterval(whaleScanCooldownTimer);
@@ -3444,23 +3429,20 @@ async function saveTelegramConfig() {
 	
 	const token = tokenInput.value.trim();
 	let chatId = chatInput.value.trim();
-	chatId = chatId.replace(/\s+/g, ''); // Hapus spasi yang terselip
-
-	// Validasi
+	chatId = chatId.replace(/\s+/g, '');
+	
 	if (!token || !chatId) {
 		showToast("Harap isi Token Bot dan Chat ID terlebih dahulu!", "warning");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
 	}
-
-	// Simpan permanen ke localStorage
+	
 	localStorage.setItem('telegram_bot_token', token);
 	localStorage.setItem('telegram_chat_id', chatId);
 	
 	showToast("Konfigurasi disimpan! Menguji koneksi Telegram...", "info", 4000);
 	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
-
-	// Kirim pesan uji coba otomatis untuk memastikan bot & chat ID valid
+	
 	await testTelegramConnection(token, chatId);
 }
 
@@ -3495,7 +3477,7 @@ async function testTelegramConnection(token, chatId) {
 async function sendTelegramAlert(message) {
 	const snoozeUntil = localStorage.getItem('telegram_snooze_until');
 	if (snoozeUntil && Date.now() < parseInt(snoozeUntil)) {
-		return; // Eksekusi berhenti, notifikasi ditunda
+		return;
 	}
 
 	const botToken = localStorage.getItem('telegram_bot_token')?.trim();
@@ -3711,13 +3693,7 @@ async function clearAllAlerts() {
 	}
 }
 
-/**
- * -------------------------------------------------------------
- * FUNGSI INTERCEPTOR SMART ALERT (MODAL EDIT)
- * -------------------------------------------------------------
- */
-
-// 1. Fungsi untuk membuka modal dan memasukkan data dari AI
+// FUNGSI INTERCEPTOR SMART ALERT (MODAL EDIT)
 function openEditAlertModal() {
 	let price = 100;
 	let sl = 0, entry = 0, resist = 0, tp = 0;
@@ -3742,13 +3718,11 @@ function openEditAlertModal() {
 	if (modal) modal.classList.remove('hidden');
 }
 
-// 2. Fungsi untuk menutup modal
 function closeEditAlertModal() {
 	const modal = document.getElementById('editAlertModal');
 	if (modal) modal.classList.add('hidden');
 }
 
-// 3. Fungsi utama penyimpan data yang sudah divalidasi
 function saveFinalEditedAlert() {
 	const tickerInput = document.getElementById('alertModalTicker').value.trim();
 	const entryInput = parseFloat(document.getElementById('alertModalEntry').value) || 0;
@@ -3765,16 +3739,14 @@ function saveFinalEditedAlert() {
 	const now = new Date();
 	const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 	const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear().toString().slice(-2)}`;
-
-	// Susun format data yang sesuai dengan sistem Alert utama
+	
 	const newAlerts = [
 		{ price: slInput, label: 'Stop Loss', active: true, triggered: false, date: dateStr },
 		{ price: entryInput, label: 'Entry / Support', active: true, triggered: false, date: dateStr },
 		{ price: resistanceInput, label: 'Resistance', active: true, triggered: false, date: dateStr },
 		{ price: tpInput, label: 'Take Profit', active: true, triggered: false, date: dateStr }
 	];
-
-	// Eksekusi fungsi simpan dari sistem utama
+	
 	saveAlerts(tickerInput, newAlerts);
 	openAlertDropdowns.add(tickerInput); 
 	renderAllAlerts();
@@ -3797,7 +3769,6 @@ function syncAlertsFromAI() {
 		res2 = fibo.res2;
 		sl = fibo.sl;
 		
-		// Tarik data resistance untuk kalkulasi TP custom
 		tp2 = roundToBEITick(res2 * 1.03, 'ceil'); 
 	}
 
@@ -3845,12 +3816,11 @@ function removePriceAlert(ticker, index) {
 function checkPriceAlertsRealtime(ticker, currentPrice) {
 	if (!currentPrice || currentPrice <= 0) return;
 	
-	// Cek Pengaturan Notifikasi Terbaru
 	const snoozeTarget = parseInt(localStorage.getItem('stockid_notif_snooze_target') || '0');
-	if (snoozeTarget > Date.now()) return; // Notifikasi sedang disnooze
+	if (snoozeTarget > Date.now()) return;
 
 	const notifType = localStorage.getItem('stockid_notif_type') || 'both';
-	if (notifType === 'whales') return; // Hanya terima whales, abaikan smart alert
+	if (notifType === 'whales') return;
 
 	const muteNotifSound = localStorage.getItem('stockid_notif_mute_sound') === 'true';
 
@@ -3869,20 +3839,19 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 			if (conditionMet) {
 				const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh area ${labelText} di Rp ${targetPrice.toLocaleString('id-ID')}`;
 				
-				// 1. Eksekusi Notifikasi Bawaan Aplikasi (Instant)
+				// 1. Eksekusi Notifikasi Bawaan Aplikasi
 				if (!muteNotifSound && typeof AudioFX !== 'undefined') {
 					AudioFX.playSuccess();
 				}
 				showToast(alertMsg, "success");
 				
-				// 2. Eksekusi Browser Push Notification (Instant)
+				// 2. Eksekusi Browser Push Notification
 				sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
 				
 				// 3. Eksekusi Telegram Webhook
 				const telegramMsg = `🚨 <b>SMART ALERT STOCK ID</b> 🚨\nSaham: <b>${ticker}</b>\nStatus: <b>Menyentuh ${labelText}</b>\nHarga Terkini: <b>Rp ${currentPrice.toLocaleString('id-ID')}</b>`;
 				sendTelegramAlert(telegramMsg);
-
-				// Update status alarm agar tidak spam
+				
 				if (typeof alertObj === 'object') {
 					alertObj.active = false;
 					alertObj.triggered = true;
@@ -3900,12 +3869,11 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 function checkWhaleAlertRealtime(ticker, stockData) {
 	if (!stockData || !stockData.price) return;
 	
-	// Cek Pengaturan Notifikasi Terbaru
 	const snoozeTarget = parseInt(localStorage.getItem('stockid_notif_snooze_target') || '0');
-	if (snoozeTarget > Date.now()) return; // Notifikasi sedang disnooze
+	if (snoozeTarget > Date.now()) return;
 
 	const notifType = localStorage.getItem('stockid_notif_type') || 'both';
-	if (notifType === 'smart_alert') return; // Hanya terima smart alert, abaikan whales
+	if (notifType === 'smart_alert') return;
 
 	const muteNotifSound = localStorage.getItem('stockid_notif_mute_sound') === 'true';
 	
@@ -3917,15 +3885,13 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 10000) {
 			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} meledak ${stockData.volRatio}x lipat! Harga baru naik ${stockData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
-			// Eksekusi Notifikasi dengan logika mute
 			if (!muteNotifSound && typeof AudioFX !== 'undefined') {
 				AudioFX.playNotif(); 
 			}
 			
 			sendBrowserPushNotification(`STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
 			showToast(alertMsg, "info", 7000); 
-
-			// Tembak notifikasi paus langsung ke Telegram
+			
 			const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume meledak <b>${stockData.volRatio}x lipat!</b>\nHarga naik <b>+${stockData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
 			sendTelegramAlert(teleMsg);
 			
@@ -4047,7 +4013,7 @@ async function fetchRealtimeFundamentals(ticker) {
 		const stats = result.defaultKeyStatistics || {};
 		const finance = result.financialData || {};
 
-		// Formatting Data (Fallback ke N/A jika null)
+		// Formatting Data
 		const companyName = profile.longName || ticker;
 		const sector = profile.sector || 'Sektor N/A';
 		const industry = profile.industry || 'Industri N/A';
@@ -4304,8 +4270,7 @@ async function fetchCorporateAction(ticker) {
 function renderSectorHeatmap() {
 	const container = document.getElementById('tv_heatmap_container');
 	if (!container) return;
-
-	// Kosongkan kontainer sebelum merender ulang
+	
 	container.innerHTML = '';
 
 	const script = document.createElement('script');
@@ -4313,7 +4278,6 @@ function renderSectorHeatmap() {
 	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js';
 	script.async = true;
 	
-	// Konfigurasi widget TradingView diarahkan ke IDX (Indonesia Stock Exchange)
 	script.innerHTML = JSON.stringify({
 		"exchanges": [
 			"IDX"
@@ -4427,12 +4391,11 @@ function loadDeviceSystemInfo() {
 		console.warn("GPU deteksi diblokir oleh peramban.");
 	}
 
-	// 5. Injeksi ke HTML (Batasi panjang karakter GPU jika terlalu panjang)
+	// 5. Injeksi ke HTML
 	osEl.innerText = os;
 	browserEl.innerText = browser;
 	hwEl.innerText = `${cores} | RAM: ${ram}`;
 	
-	// Membersihkan teks tipe GPU dari vendor yang berlebihan
 	gpu = gpu.replace(/ANGLE \(\vert{}\)|Direct3D.*|OpenGL.*/g, '').trim(); 
 	gpuEl.innerText = gpu.length > 60 ? gpu.substring(0, 60) + "..." : gpu;
 	gpuEl.title = gpu; // Tooltip akan muncul jika tulisan terlalu panjang
@@ -4565,10 +4528,9 @@ async function analyzeAITimeframe(tfLabel) {
 	if (window.lucide) lucide.createIcons();
 
 	try {
-		// Konfigurasi Parameter (Yahoo Finance tidak mendukung native 3h dan 6h, maka kita agregasi dari data 60m/1h)
 		let apiInterval = '15m'; 
 		let apiRange = '5d';
-		let lookbackCandles = 2; // Default perbandingan 1 candle sebelumnya
+		let lookbackCandles = 2;
 
 		if (tfLabel === '15m') { apiInterval = '15m'; apiRange = '5d'; }
 		else if (tfLabel === '30m') { apiInterval = '30m'; apiRange = '5d'; }
@@ -4607,12 +4569,10 @@ async function analyzeAITimeframe(tfLabel) {
 		if (closes.length < lookbackCandles) {
 			throw new Error("Data candlestick terlalu sedikit untuk rentang waktu ini.");
 		}
-
-		// Kalkulasi berdasarkan Lookback yang telah disesuaikan
+		
 		const currentClose = closes[closes.length - 1];
 		const prevClose = closes[closes.length - lookbackCandles] || closes[0]; 
 		
-		// Rerata volume sesuai jumlah rentang candle
 		const avgVol = volumes.slice(-lookbackCandles).reduce((a, b) => a + b, 0) / lookbackCandles;
 		const currentVol = volumes.slice(-(Math.ceil(lookbackCandles / 2))).reduce((a, b) => a + b, 0) / Math.ceil(lookbackCandles / 2); // Volume terbaru relatif
 
@@ -4709,18 +4669,14 @@ function calculateTrailingStop() {
 		descEl.innerHTML = "Masukkan harga modal, total lot, dan 2 titik target profit (TP) untuk melihat kalkulasi skenario pengamanan modal <i>Risk-Free</i>.";
 		return;
 	}
-
-	// Kalkulasi Lot Parsial (Amankan 50% di TP 1)
+	
 	const lotTP1 = Math.floor(totalLot / 2);
 	const lotTP2 = totalLot - lotTP1;
-
-	// Profit berjalan yang diamankan di TP 1
+	
 	const profitTP1 = (tp1Price - avgPrice) * (lotTP1 * 100);
 	
-	// Titik Trailing Stop (Break Even Point) dipindahkan ke harga modal awal 
 	const newTrailingStop = avgPrice;
 	
-	// Profit jika sisa lot menyentuh TP 2
 	let profitTP2 = 0;
 	if (tp2Price > avgPrice) {
 		profitTP2 = (tp2Price - avgPrice) * (lotTP2 * 100);
@@ -4755,7 +4711,6 @@ async function loadLiveMacro() {
 
 	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 	
-	// Penambahan Variasi Komoditas dan Pasangan Mata Uang
 	const symbols = [
 		{ id: 'IDR=X', name: 'USD/IDR', icon: 'banknote', prefix: 'Rp ', suffix: '' },
 		{ id: 'EURIDR=X', name: 'EUR/IDR', icon: 'euro', prefix: 'Rp ', suffix: '' },
@@ -4860,27 +4815,24 @@ async function startBSJPProcess() {
 
 	const btn = document.getElementById('btnStartBSJP');
 	const container = document.getElementById('bsjpListContainer');
-
-	// Mencegah spam klik saat status sedang pending
+	
 	if (btn.disabled && btn.innerHTML.includes('Pending')) {
 		isBSJPScanning = false;
 		return;
 	}
-
-	// State Loading pada Tombol
+	
 	btn.disabled = true;
 	btn.className = "w-full sm:w-auto bg-slate-800 text-white font-bold px-6 py-2.5 rounded-lg border border-slate-700 flex items-center justify-center gap-2 shrink-0 cursor-not-allowed opacity-70";
 	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-orange-400"></i> Memindai BSJP...`;
 	if (window.lucide) lucide.createIcons();
-
-	// State Loading pada Kontainer
+	
 	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-orange-500"></i> Menyaring saham yang cocok untuk BSJP...</div>`;
 	
 	const shuffledWatchlist = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
 	let bsjpCandidates = [];
 
 	try {
-		// STRATEGI 1: FILTER INSTAN DARI CACHE (Meningkatkan kecepatan hingga 90%)
+		// STRATEGI 1
 		for (const ticker of shuffledWatchlist) {
 			const cachedItem = getCachedStockData(ticker);
 			if (cachedItem && cachedItem.price) {
@@ -4890,11 +4842,10 @@ async function startBSJPProcess() {
 					}
 				}
 			}
-			// Batasi pencarian di cache agar saat di-scan ulang, hasilnya bervariasi dan tidak selalu saham yang sama
 			if (bsjpCandidates.length >= 30) break;
 		}
 
-		// STRATEGI 2: FALLBACK API JARINGAN DENGAN BATCH LEBIH BESAR
+		// STRATEGI 2
 		if (bsjpCandidates.length < 6) {
 			const candidateTickers = bsjpCandidates.map(c => c.ticker);
 			const remainingWatchlist = shuffledWatchlist.filter(t => !candidateTickers.includes(t));
@@ -4906,7 +4857,6 @@ async function startBSJPProcess() {
 				if (maxBatchLimit > 3) break; 
 
 				const batch = remainingWatchlist.slice(i, i + BATCH_SIZE);
-				// Gunakan force fetch = true agar memaksa update data baru dari API
 				const fetchedData = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker, true)));
 
 				for (const item of fetchedData) {
@@ -4920,14 +4870,11 @@ async function startBSJPProcess() {
 				if (bsjpCandidates.length >= 10) break;
 			}
 		}
-
-		// Render Hasil
+		
 		if (bsjpCandidates.length === 0) {
 			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30">Belum ada saham yang memenuhi syarat ketat BSJP pada sesi ini.</div>`;
 		} else {
-			// Acak kandidat yang memenuhi kriteria sebelum ditampilkan agar saham yang muncul selalu baru/berganti
 			const randomSelection = bsjpCandidates.sort(() => 0.5 - Math.random()).slice(0, 6);
-			// Urutkan 6 saham terpilih berdasarkan rasio volume tertinggi
 			const topCandidates = randomSelection.sort((a, b) => b.volRatio - a.volRatio);
 			renderBSJPItems(topCandidates);
 			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
@@ -4935,7 +4882,7 @@ async function startBSJPProcess() {
 	} finally {
 		isBSJPScanning = false;
 		
-		// Cooldown timer agar tombol tidak dispam dan memberi visualisasi proses siap kembali
+		// Cooldown timer
 		let cooldown = 5;
 		if (bsjpCooldownTimer) clearInterval(bsjpCooldownTimer);
 		
@@ -4959,24 +4906,21 @@ async function startBSJPProcess() {
 function renderBSJPItems(dataList) {
 	const container = document.getElementById('bsjpListContainer');
 	
-	// Urutkan berdasarkan momentum akumulasi volume paling besar
 	const sortedData = [...dataList].sort((a, b) => b.volRatio - a.volRatio);
 	let html = '';
 
 	sortedData.forEach((item, index) => {
 		const price = roundToBEITick(item.price);
 		
-		// Kalkulasi Fibonacci (Support, Resisten, Entry, SL, TP)
+		// 1. Dynamic Fibo
 		const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
 		const entryAman = fibo.entryLow;
 		const entryAgresif = fibo.entryHigh;
 		
-		// Penyesuaian TP naik 3% dan SL turun 2%
 		const stopLoss = roundToBEITick(fibo.sl * 0.99, 'floor'); //0.98
 		const tp1 = roundToBEITick(fibo.res1 * 1.03, 'ceil');
 		const tp2 = roundToBEITick(fibo.res2 * 1.03, 'ceil');
 		
-		// Hitung Rasio Risk & Reward
 		const riskPct = price > stopLoss ? (((price - stopLoss) / price) * 100).toFixed(2) : 0;
 		const rewardPct = tp1 > price ? (((tp1 - price) / price) * 100).toFixed(2) : 0;
 		
@@ -5060,26 +5004,21 @@ function renderBSJPItems(dataList) {
 // 30. GLOBAL GRADIENT BUTTON ENGINE
 // ==========================================
 function applyGlobalButtonGradients() {
-    // Memilih seluruh elemen tombol dan link bergaya tombol di seluruh aplikasi
     const buttons = document.querySelectorAll('button, a[class*="bg-"]');
     
     buttons.forEach(btn => {
-        // Lewati jika tombol sudah menggunakan gradiasi bawaan dari awal (seperti tombol Whale / BSJP)
         if (btn.classList.contains('bg-gradient-to-r') || btn.classList.contains('bg-gradient-to-tr') || btn.classList.contains('bg-gradient-to-l')) return;
         
-        // Deteksi warna dasar solid Tailwind (contoh: bg-emerald-500, bg-slate-800, bg-rose-500/20)
         const bgClassMatch = Array.from(btn.classList).find(c => /^bg-([a-z]+)-(\d+)(\/\d+)?$/.test(c));
         
         if (bgClassMatch) {
             const match = bgClassMatch.match(/^bg-([a-z]+)-(\d+)(\/\d+)?$/);
             const color = match[1];
             const shade = parseInt(match[2]);
-            const opacity = match[3] || ''; // Mengambil setting opacity seperti /20
+            const opacity = match[3] || '';
             
-            // Rumus gradiasi: Warna akhir (to) dibuat lebih terang (kurangi shade 100)
             let toShade = shade - 100;
             
-            // Cegah shade habis (<100) dan penyesuaian khusus untuk warna gelap slate
             if (toShade < 100) toShade = 200;
             if (color === 'slate' || color === 'black') {
                 toShade = shade >= 800 ? shade - 100 : shade + 100;
@@ -5088,12 +5027,9 @@ function applyGlobalButtonGradients() {
             const fromClass = `from-${color}-${shade}${opacity}`;
             const toClass = `to-${color}-${toShade}${opacity}`;
             
-            // Terapkan Gradiasi Modern
             btn.classList.remove(bgClassMatch);
             btn.classList.add('bg-gradient-to-r', fromClass, toClass);
             
-            // --- PROSES EFEK HOVER OTOMATIS ---
-            // Ekstrak hover warna solid bawaan (contoh: hover:bg-emerald-400) agar ikut menjadi gradiasi
             const hoverClassMatch = Array.from(btn.classList).find(c => /^hover:bg-([a-z]+)-(\d+)(\/\d+)?$/.test(c));
             if (hoverClassMatch) {
                 const hMatch = hoverClassMatch.match(/^hover:bg-([a-z]+)-(\d+)(\/\d+)?$/);
@@ -5114,12 +5050,10 @@ function applyGlobalButtonGradients() {
     });
 }
 
-// Inisialisasi: Terapkan saat web HTML selesai diload
+// Inisialisasi
 document.addEventListener("DOMContentLoaded", () => {
     applyGlobalButtonGradients();
     
-    // Gunakan MutationObserver agar tombol yang muncul belakangan (dari render AI/Radar/Custom Search)
-    // otomatis langsung disulap menjadi tombol gradiasi.
     const observer = new MutationObserver((mutations) => {
         let shouldUpdate = false;
         for (let m of mutations) {
@@ -5129,8 +5063,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         if (shouldUpdate) {
-            // Beri sedikit jeda (10ms) agar DOM selesai di-render oleh Javascript sebelum diproses
-            setTimeout(applyGlobalButtonGradients, 100);
+            setTimeout(applyGlobalButtonGradients, 1000);
         }
     });
     
