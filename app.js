@@ -201,7 +201,7 @@ function updateGlobalAudioVibrateUI() {
 		settingVibrateBtn.innerText = isVibrateMuted ? 'Mati' : 'Menyala';
 		settingVibrateBtn.className = isVibrateMuted 
 			? "px-4 py-2 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-[10px] font-bold transition" 
-			: "px-4 py-2 bg-cyan-500/20 text-cyan border border-cyan-500/30 rounded-lg text-[10px] font-bold transition";
+			: "px-4 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg text-[10px] font-bold transition";
 	}
 }
 
@@ -1288,7 +1288,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionDesc = "Tren masih terjaga di atas garis MA menengah. Pertimbangkan untuk menahan posisi atau amankan profit.";
 		} else if (stockData.price > stockData.ma10 && stockData.volRatio >= 1 && stockData.changePct >= -2) {
 			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='sparkles' class='w-2 h-2'></i> ACCUMULATE</span>";
-			actionColor = "text-cyan bg-cyan-500/10 border-cyan-500/30";
+			actionColor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30";
 			actionDesc = "Fase akumulasi atau koreksi wajar. Harga bertahan dekat area cicil MA10, cocok untuk cicil bertahap.";
 		} else if (stockData.price > stockData.ma5 && stockData.volRatio >= 0.5 && stockData.changePct >= -2) {
 			actionLabel = "<span class='inline-flex items-center gap-0.5'><i data-lucide='coffee' class='w-2 h-2'></i> WAIT & SEE</span>";
@@ -1654,7 +1654,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 						</span>
 					</td>
 					<td class="p-4 align-middle">
-						<span class="${data.volRatio >= 1.2 ? 'text-emerald-400 font-bold bg-emerald-500/10 border-emerald-500/30' : 'text-cyan bg-cyan-500/10 border-cyan-500/20'}px-2.5 py-1.5 rounded-lg text-xs border flex items-center w-max gap-1.5 whitespace-nowrap shadow-sm">
+						<span class="${data.volRatio >= 1.2 ? 'text-emerald-400 font-bold bg-emerald-500/10 border-emerald-500/30' : 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20'}px-2.5 py-1.5 rounded-lg text-xs border flex items-center w-max gap-1.5 whitespace-nowrap shadow-sm">
 							<i class="fa-solid fa-chart-simple"></i>
 							${data.volRatio}x Vol
 						</span>
@@ -2476,7 +2476,7 @@ async function runCustomScreener() {
 			let infoPrice = '';
 			if (rulePrice === 'GREEN') infoPrice = `<li class="flex gap-2"><i data-lucide="trending-up" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Positif:</strong> Ditutup hijau (+${item.changePct}%).</span></li>`;
 			else if (rulePrice === 'RED') infoPrice = `<li class="flex gap-2"><i data-lucide="trending-down" class="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0"></i> <span><strong class="text-rose-400">Koreksi:</strong> Mengalami penurunan (${item.changePct}%).</span></li>`;
-			else if (rulePrice === 'BREAKOUT') infoPrice = `<li class="flex gap-2"><i data-lucide="rocket" class="w-3.5 h-3.5 text-cyan mt-0.5 shrink-0"></i> <span><strong class="text-cyan">Breakout Kuat:</strong> Akselerasi (+${item.changePct}%).</span></li>`;
+			else if (rulePrice === 'BREAKOUT') infoPrice = `<li class="flex gap-2"><i data-lucide="rocket" class="w-3.5 h-3.5 text-cyan-400 mt-0.5 shrink-0"></i> <span><strong class="text-cyan">Breakout Kuat:</strong> Akselerasi (+${item.changePct}%).</span></li>`;
 			else infoPrice = `<li class="flex gap-2"><i data-lucide="hash" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Harian:</strong> Pergerakan ${item.changePct >= 0 ? '+' : ''}${item.changePct}%.</span></li>`;
 
 			// Konstruksi Filter Badge Berdasarkan Rule MA
@@ -3296,7 +3296,7 @@ function generateAIResponse(prompt) {
 
 	if (lower.includes('resist') || lower.includes('target') || lower.includes('profit') || lower.includes('jual')) {
 		return `
-			<strong class="text-cyan flex items-center gap-1.5"><i data-lucide="target" class="w-3.5 h-3.5"></i> Target Profit & Resistance $${targetTicker}:</strong>
+			<strong class="text-cyan-400 flex items-center gap-1.5"><i data-lucide="target" class="w-3.5 h-3.5"></i> Target Profit & Resistance $${targetTicker}:</strong>
 			Resistance terdekat untuk <i>take profit</i> ada di kisaran <strong class="text-cyan">${formatRp(res1)}- ${formatRp(res2)}</strong>.<br>
 			Jika berhasil <i>breakout</i> dengan volume tinggi, kamu bisa set TP1 di <strong class="text-emerald-400">${formatRp(tp1)}</strong> dan TP2 di <strong class="text-emerald-400">${formatRp(tp2)}</strong>. Jangan lupa gunakan <i>trailing stop</i>!
 		`;
@@ -3368,7 +3368,7 @@ function checkNotificationStatus() {
 	}
 	if (Notification.permission === "granted") {
 		btn.innerHTML = `<i data-lucide="bell-ring" class="w-3.5 h-3.5 text-cyan"></i> Notifikasi Push Aktif`;
-		btn.className = "text-[10px] lg:text-xs bg-emerald-500/10 text-cyan border border-emerald-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm cursor-default";
+		btn.className = "text-[10px] lg:text-xs bg-emerald-500/10 text-cyan-400 border border-emerald-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm cursor-default";
 	} else if (Notification.permission === "denied") {
 		btn.innerHTML = `<i data-lucide="bell-off" class="w-3.5 h-3.5 text-rose-400"></i> Izin Notifikasi Ditolak`;
 		btn.className = "text-[10px] lg:text-xs bg-rose-500/10 text-rose-400 border border-rose-500/30 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer";
@@ -3626,8 +3626,8 @@ function renderAllAlerts() {
 						<div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-slate-900 flex items-center justify-center border border-slate-700/60 font-bold text-white group-hover:border-emerald-500/40 transition text-xs md:text-sm shrink-0">$</div>
 						<div class="flex flex-col">
 							<div class="flex items-center gap-2">
-								<span class="font-bold text-cyan text-sm md:text-base tracking-wide">${ticker}</span>
-								${isCurrent ? '<span class="bg-emerald-500/20 text-cyan text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
+								<span class="font-bold text-cyan-400 text-sm md:text-base tracking-wide">${ticker}</span>
+								${isCurrent ? '<span class="bg-emerald-500/20 text-cyan-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
 							</div>
 							<span class="font-bold ${activeCount > 0 ? 'text-cyan' : 'text-slate-500'}text-[10px] md:text-xs mt-0.5">${activeCount}Alert Aktif</span>
 						</div>
@@ -3635,7 +3635,7 @@ function renderAllAlerts() {
 					<div class="flex items-center gap-3 md:gap-4 text-right">
 						<div class="flex flex-col items-end">
 							<span class="text-[9px] md:text-[10px] text-slate-400">Tgl Dibuat</span>
-							<span class="text-cyan text-[10px] md:text-xs font-bold">${alertDate}</span>
+							<span class="text-cyan-400 text-[10px] md:text-xs font-bold">${alertDate}</span>
 						</div>
 						<div class="bg-slate-900 p-1.5 rounded-md border border-slate-800 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/30 transition">
 							<i id="alert-icon-${ticker}" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300" style="${rotateStyle}"></i>
@@ -4243,7 +4243,7 @@ async function fetchCorporateAction(ticker) {
 					<div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
 						<div>
 							<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Rilis Laporan (Earnings)</span>
-							<span class="text-cyan font-bold text-xs lg:text-sm">${earnDate}</span>
+							<span class="text-cyan-400 font-bold text-xs lg:text-sm">${earnDate}</span>
 						</div>
 						<i data-lucide="file-bar-chart-2" class="w-6 h-6 text-cyan-500/30"></i>
 					</div>
@@ -4726,7 +4726,7 @@ async function loadLiveMacro() {
 	if (!container) return;
 
 	container.innerHTML = `
-		<div class="col-span-full flex justify-center items-center py-6 text-cyan text-xs animate-pulse">
+		<div class="col-span-full flex justify-center items-center py-6 text-cyan-400 text-xs animate-pulse">
 			<i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i> Menghubungkan ke Worker Live Macro...
 		</div>`;
 	if (window.lucide) lucide.createIcons();
