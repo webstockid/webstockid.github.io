@@ -34,7 +34,7 @@ function isMarketOpen() {
 function cleanExpiredCache() {
 	const FIVE_MINUTES = 5 * 60 * 1000;
 	const TEN_MINUTES = 10 * 60 * 1000;
-	for (let i = localStorage.length - 1;i >= 0;i--) {
+	for (let i = localStorage.length - 1; i >= 0; i--) {
 		const key = localStorage.key(i);
 		if (key) {
 			try {
@@ -173,19 +173,19 @@ const AudioFX = {
 		const randomClick = clicks[Math.floor(Math.random() * clicks.length)];
 		this.playAudioFile(randomClick);
 	},
-	playSuccess() { this.playAudioFile('sukses.mp3');},
-	playAlert() { this.playAudioFile('loss.mp3');},
-	playTokenExpired() { this.playAudioFile('hilang.mp3');},
-	playSearch() { this.playAudioFile('cari.mp3');},
-	playNotif() { this.playAudioFile('notif.mp3');},
+	playSuccess() { this.playAudioFile('sukses.mp3'); },
+	playAlert() { this.playAudioFile('loss.mp3'); },
+	playTokenExpired() { this.playAudioFile('hilang.mp3'); },
+	playSearch() { this.playAudioFile('cari.mp3'); },
+	playNotif() { this.playAudioFile('notif.mp3'); },
 	playDelete(withPopup = false) {
 		this.playAudioFile('hapus.mp3');
 		if (withPopup) {
-			setTimeout(() => { this.playAudioFile('hilang.mp3');}, 1800);
+			setTimeout(() => { this.playAudioFile('hilang.mp3'); }, 1800);
 		}
 	},
-	playWinJournal() { this.playAudioFile('win.mp3');},
-	playLossJournal() { this.playAudioFile('loss.mp3');}
+	playWinJournal() { this.playAudioFile('win.mp3'); },
+	playLossJournal() { this.playAudioFile('loss.mp3'); }
 };
 
 function updateGlobalAudioVibrateUI() {
@@ -239,7 +239,7 @@ document.addEventListener('click', function(e) {
 			textContent === 'X'
 		);
 		if (isPopupAction) {
-			AudioFX.playDelete(true);
+			AudioFX.playDelete(true); 
 		} else if (isNormalDelete) {
 			AudioFX.playDelete(false);
 		} else if (!onclickAttr.includes('toggleGlobalSound') && !onclickAttr.includes('toggleGlobalVibrate')) {
@@ -331,7 +331,7 @@ function applyNotifSnooze(val, isInit = false) {
 		const dateObj = new Date(currentTarget);
 		const timeStr = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 		const dateStr = dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-		if (resumeTimeEl) resumeTimeEl.innerText = `${timeStr}WIB (${dateStr})`;
+		if (resumeTimeEl) resumeTimeEl.innerText = `${timeStr} WIB (${dateStr})`;
 	}
 }
 
@@ -439,8 +439,8 @@ function getDynamicFiboLevels(high, low, currentPrice) {
 	];
 
 	// Filter Fibo adaptif: Pisahkan mana titik di bawah harga & di atas harga
-	const belowLevels = levels.filter(l => l < currentPrice).sort((a, b) => b - a);
-	const aboveLevels = levels.filter(l => l > currentPrice).sort((a, b) => a - b);
+	const belowLevels = levels.filter(l => l < currentPrice).sort((a, b) => b - a); 
+	const aboveLevels = levels.filter(l => l > currentPrice).sort((a, b) => a - b); 
 
 	// Penentuan Mutlak: Support / Entry & SL (Wajib di Bawah Harga)
 	let entryHighRaw = belowLevels.length > 0 ? belowLevels[0] : currentPrice * 0.96; //98
@@ -451,9 +451,9 @@ function getDynamicFiboLevels(high, low, currentPrice) {
 	let res1Raw = aboveLevels.length > 0 ? aboveLevels[0] : currentPrice * 1.04;
 	let res2Raw = aboveLevels.length > 1 ? aboveLevels[1] : res1Raw * 1.04;
 	
-	let tp1Raw = res1Raw;
+	let tp1Raw = res1Raw; 
 	// TP2 menggunakan ekstensi Fibo murni (di atas level res 2)
-	let tp2Raw = aboveLevels.length > 2 ? aboveLevels[2] : res2Raw * 1.04;
+	let tp2Raw = aboveLevels.length > 2 ? aboveLevels[2] : res2Raw * 1.04; 
 
 	return {
 		entryLow: roundToBEITick(entryLowRaw, 'floor'),
@@ -551,16 +551,16 @@ function showToast(message, type = 'success', duration = 5000) {
 	}
 	const toast = document.createElement('div');
 	toast.id = toastId;
-	toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3.5 rounded-xl ${bgColor}border ${borderColor}shadow-2xl backdrop-blur-xl text-slate-200 text-xs sm:text-sm font-bold transform translate-y-4 opacity-0 transition-all duration-300 max-w-sm`;
+	toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3.5 rounded-xl ${bgColor} border ${borderColor} shadow-2xl backdrop-blur-xl text-slate-200 text-xs sm:text-sm font-bold transform translate-y-4 opacity-0 transition-all duration-300 max-w-sm`;
 	toast.innerHTML = `
-		<i class="fa-solid ${iconClass}${iconColor}text-base shrink-0"></i>
+		<i class="fa-solid ${iconClass} ${iconColor} text-base shrink-0"></i>
 		<div class="flex-1 leading-relaxed">${message}</div>
 		<button onclick="document.getElementById('${toastId}').remove()" class="text-slate-400 hover:text-white transition p-1 shrink-0">
 			<i class="fa-solid fa-xmark text-xs"></i>
 		</button>
 	`;
 	container.appendChild(toast);
-	setTimeout(() => { toast.classList.remove('translate-y-4', 'opacity-0');}, 10);
+	setTimeout(() => { toast.classList.remove('translate-y-4', 'opacity-0'); }, 10);
 	setTimeout(() => {
 		if (document.getElementById(toastId)) {
 			toast.classList.add('translate-y-4', 'opacity-0');
@@ -651,7 +651,7 @@ function checkVIPAuth() {
 	if(dashboard) dashboard.classList.remove('hidden');
 	const name = getExtractName(savedToken);
 	document.getElementById('vipUserName').innerText = name;
-	document.getElementById('vipDaysLeft').innerText = `${daysLeft}Hari Lagi`;
+	document.getElementById('vipDaysLeft').innerText = `${daysLeft} Hari Lagi`;
 	document.getElementById('vipAccountStatus').innerText = `Status: VIP Aktif (${account.tanggalExpired})`;
 }
 
@@ -787,7 +787,7 @@ async function handleInsiderSearch() {
 		return;
 	}
 	
-	const institutionName = selectEl.options[selectEl.selectedIndex].text.replace(/\s\(.*?\)/, '');
+	const institutionName = selectEl.options[selectEl.selectedIndex].text.replace(/\s\(.*?\)/, ''); 
 	const resultContainer = document.getElementById('insiderResultContainer');
 	const statusMessage = document.getElementById('insiderStatusMessage');
 	const tableBody = document.getElementById('insiderTableBody');
@@ -804,12 +804,12 @@ async function handleInsiderSearch() {
 
 		try {
 			const res = await fetch(workerUrl, { signal: AbortSignal.timeout(10000) });
-			if (!res.ok) throw new Error(`Worker merespons dengan status error: ${res.status}`);
+			if (!res.ok) throw new Error(`Worker merespons dengan status error: ${res.status}`); 
 			
 			let data = await res.text();
 			
 			if (data.trim().toLowerCase().startsWith('<!doctype html>') || data.trim().toLowerCase().startsWith('<html')) {
-				throw new Error("Server SEC EDGAR menolak akses melalui Worker.");
+				throw new Error("Server SEC EDGAR menolak akses melalui Worker."); 
 			}
 			
 			return isXml ? data : JSON.parse(data);
@@ -827,7 +827,7 @@ async function handleInsiderSearch() {
 		const filings = submissionsData.filings.recent;
 		let filingIndex = -1;
 		
-		for (let i = 0;i < filings.form.length;i++) {
+		for (let i = 0; i < filings.form.length; i++) {
 			if (filings.form[i] === '13F-HR') {
 				filingIndex = i;
 				break;
@@ -841,13 +841,13 @@ async function handleInsiderSearch() {
 		
 		const accessionNumber = filings.accessionNumber[filingIndex];
 		const reportDate = filings.reportDate[filingIndex];
-		const cleanAccession = accessionNumber.replace(/-/g, '');
+		const cleanAccession = accessionNumber.replace(/-/g, ''); 
 		const cikTrimmed = parseInt(cikNumber, 10).toString();
 		
 		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Memindai dokumen Arsip 13F (${reportDate})...</div>`;
 		if (window.lucide) lucide.createIcons();
 		
-		const archiveIndexUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed} /${cleanAccession} /index.json`;
+		const archiveIndexUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/index.json`;
 		const indexData = await fetchSecData(archiveIndexUrl, false);
 		let infoTableFileName = null;
 		
@@ -866,7 +866,7 @@ async function handleInsiderSearch() {
 		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Mengekstrak struktur XML...</div>`;
 		if (window.lucide) lucide.createIcons();
 		
-		const xmlUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed} /${cleanAccession} /${infoTableFileName}`;
+		const xmlUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/${infoTableFileName}`;
 		const xmlText = await fetchSecData(xmlUrl, true);
 		
 		const parser = new DOMParser();
@@ -874,13 +874,13 @@ async function handleInsiderSearch() {
 		const infoTables = xmlDoc.getElementsByTagName('*');
 		let portfolioData = [];
 		
-		for (let i = 0;i < infoTables.length;i++) {
+		for (let i = 0; i < infoTables.length; i++) {
 			const node = infoTables[i];
 			
 			// FIX: Menggunakan toLowerCase() agar tahan terhadap variasi format XML institusi
 			if (node.localName && node.localName.toLowerCase() === 'infotable') {
 				let nameOfIssuer = '', cusip = '', value = 0, shares = 0;
-				for (let j = 0;j < node.childNodes.length;j++) {
+				for (let j = 0; j < node.childNodes.length; j++) {
 					const child = node.childNodes[j];
 					if (!child.localName) continue;
 					
@@ -894,7 +894,7 @@ async function handleInsiderSearch() {
 					}
 					
 					if (childName === 'shrsorprnamt') {
-						for (let k = 0;k < child.childNodes.length;k++) {
+						for (let k = 0; k < child.childNodes.length; k++) {
 							const shrsChild = child.childNodes[k];
 							if (shrsChild.localName && shrsChild.localName.toLowerCase() === 'sshprnamt') {
 								shares = parseFloat(shrsChild.textContent.replace(/,/g, ''));
@@ -1061,7 +1061,7 @@ function parseYahooDataGlobal(json, ticker) {
 	let totalValue20 = 0;
 	const len = prices.length;
 	const period = Math.min(20, len);
-	for(let i = len - period;i < len;i++) {
+	for(let i = len - period; i < len; i++) {
 		const h = highs[i] || prices[i];
 		const l = lows[i] || prices[i];
 		const c = prices[i];
@@ -1083,11 +1083,11 @@ function parseYahooDataGlobal(json, ticker) {
 function formatValuationIDR(val) {
     if (!val || val <= 0) return "Rp 0";
     if (val >= 1e12) {
-        return `Rp ${(val / 1e12).toFixed(2)}Triliun`;
+        return `Rp ${(val / 1e12).toFixed(2)} Triliun`;
     } else if (val >= 1e9) {
-        return `Rp ${(val / 1e9).toFixed(2)}Miliar`;
+        return `Rp ${(val / 1e9).toFixed(2)} Miliar`;
     } else if (val >= 1e6) {
-        return `Rp ${(val / 1e6).toFixed(2)}Juta`;
+        return `Rp ${(val / 1e6).toFixed(2)} Juta`;
     }
     return `Rp ${val.toLocaleString('id-ID')}`;
 }
@@ -1128,7 +1128,7 @@ async function generateAISignal(ticker, isManualSearch = false) {
 	const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
 	document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
-	document.getElementById('aiDateStamp').innerText = `Update: ${dateStr}${timeStr}WIB`;
+	document.getElementById('aiDateStamp').innerText = `Update: ${dateStr} ${timeStr} WIB`;
 
 	setTimeout(() => fetchStockNewsForAI(ticker), 10);
 
@@ -1229,7 +1229,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 		verdikEl.innerText = verdik;
 		verdikEl.className = verdikClass;
-		scoreEl.innerText = `${score} /5`;
+		scoreEl.innerText = `${score}/5`;
 		scoreEl.className = scoreClass;
 
 		const trendText = stockData.changePct >= 0 ? `menguat +${stockData.changePct}%` : `terkoreksi ${stockData.changePct}%`;
@@ -1246,7 +1246,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		descEl.innerHTML = `
 			<p class="leading-relaxed"><strong class="text-sky-400">Mengapa?</strong> Saham <strong class="text-emerald-400 font-bold">${ticker}</strong> saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-400">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
-			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-400">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker}bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')}<strong class="text-amber-400">(Support Kuat)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')}<strong class="text-amber-400">(Resistance Tertinggi)</strong>.</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-400">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-400">(Support Kuat)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-400">(Resistance Tertinggi)</strong>.</p>
 		`;
 
 		buktiEl.innerHTML = `
@@ -1256,7 +1256,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Volume Transaksi:</span>
-				<span class="text-violet-400 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')}Lot</span>
+				<span class="text-violet-400 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Valuasi Transaksi:</span>
@@ -1315,47 +1315,47 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Masif Akumulasi <i data-lucide='rabbit' class='w-3 h-3'></i></span>";
 			bandarColor = "text-green-400";
 			bandarBarColor = "from-green-600 via-green-400 to-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
-			bandarPct = 95;
+			bandarPct = 95; 
 		} else if (stockData.changePct > 2 && stockData.volRatio > 2) {
 			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Akumulasi <i data-lucide='radio' class='w-3 h-3'></i></span>";
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
-			bandarPct = 85;
+			bandarPct = 85; 
 		} else if (stockData.changePct > 1 && stockData.volRatio > 1.5) {
 			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Akumulasi <i data-lucide='radio' class='w-3 h-3'></i></span>";
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
-			bandarPct = 75;
+			bandarPct = 75; 
 		} else if (stockData.changePct >= -2 && stockData.volRatio > 1) {
 			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-3 h-3'></i></span>";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
-			bandarPct = 65;
+			bandarPct = 65; 
 		} else if (stockData.changePct >= -4 && stockData.volRatio > 0.5) {
 			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-3 h-3'></i></span>";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
-			bandarPct = 55;
+			bandarPct = 55; 
 		} else if (stockData.changePct >= -4 && stockData.volRatio > 1) {
 			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Support <i data-lucide='hand-fist' class='w-3 h-3'></i></span>";
 			bandarColor = "text-cyan-400";
 			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
-			bandarPct = 45;
+			bandarPct = 45; 
 		} else if (stockData.changePct >= -8 && stockData.volRatio > 0.5) {
 			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Support <i data-lucide='hand-fist' class='w-3 h-3'></i></span>";
 			bandarColor = "text-cyan-400";
 			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
-			bandarPct = 35;
+			bandarPct = 35; 
 		} else if (stockData.changePct < -4 && stockData.price < stockData.ma20) {
 			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Distribusi Kuat <i data-lucide='siren' class='w-3 h-3'></i></span>";
 			bandarColor = "text-rose-400";
 			bandarBarColor = "from-rose-600 via-rose-400 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)]";
-			bandarPct = 25;
+			bandarPct = 25; 
 		} else if (stockData.changePct < -8 && stockData.price < stockData.ma20) {
 			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Distribusi Kuat <i data-lucide='siren' class='w-3 h-3'></i></span>";
 			bandarColor = "text-rose-400";
 			bandarBarColor = "from-rose-600 via-rose-400 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)]";
-			bandarPct = 15;
+			bandarPct = 15; 
 		}
 
 		const actionBoardEl = document.getElementById('aiActionBoard');
@@ -1377,7 +1377,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 					
 					<!-- Perubahan Animasi Progress Bar -->
 					<div class="w-full bg-slate-950/10 rounded-full h-3 border border-slate-700/80 overflow-hidden relative p-0.5 shadow-inner">
-						<div id="bandarProgressBar" class="bg-gradient-to-r ${bandarBarColor}h-full rounded-full transition-all duration-1000 ease-out relative flex items-center justify-end" style="width: 0%">
+						<div id="bandarProgressBar" class="bg-gradient-to-r ${bandarBarColor} h-full rounded-full transition-all duration-1000 ease-out relative flex items-center justify-end" style="width: 0%">
 							<!-- Titik kelap-kelip di ujung -->
 							<div class="w-2 h-2 mr-0.5 bg-white rounded-full shadow-[0_0_10px_#ffffff] animate-ping"></div>
 						</div>
@@ -1403,7 +1403,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	} else {
 		verdikEl.innerText = "NETRAL-SELEKTIF?";
 		scoreEl.innerText = "-/-";
-		descEl.innerText = `Menganalisis pergerakan teknikal saham ${ticker}berbasis indikator grafik TradingView. Silakan evaluasi struktur pola harga harian sebelum melakukan transaksi....`;
+		descEl.innerText = `Menganalisis pergerakan teknikal saham ${ticker} berbasis indikator grafik TradingView. Silakan evaluasi struktur pola harga harian sebelum melakukan transaksi....`;
 	}
 
 	// 1. Tentukan Support & Resistance (Dynamic Fibo)
@@ -1411,11 +1411,11 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	let res1 = fibo.res1, res2 = fibo.res2;
 	let sup1 = fibo.entryLow, sup2 = fibo.entryHigh;
 	let sl = fibo.sl;
-	let tp1 = res1;
+	let tp1 = res1; 
 	let tp2 = roundToBEITick(res2 * 1.03, 'ceil'); // +3% di atas resistance kedua
 
-	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')}- ${sup2.toLocaleString('id-ID')}`;
-	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')}- ${res2.toLocaleString('id-ID')}`;
+	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
+	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
 	document.getElementById('mapTP').innerText = `Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}`;
 	document.getElementById('mapSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
 
@@ -1436,14 +1436,14 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	document.getElementById('tpProgressPercent').innerText = `Posisi: ${calculatedProgress}% dari Rentang SL - TP1`;
 
 	document.getElementById('aiSkenarioBox').innerHTML = `
-		<p><strong>(a) Konfirmasi Bullish:</strong> Jika harga bertahan di atas support Rp ${sup2.toLocaleString('id-ID')}dengan volume stabil, target uji resistance berada di Rp ${res1.toLocaleString('id-ID')}. Penembusan resistance dapat memicu akselerasi ke TP2 Rp ${tp2.toLocaleString('id-ID')}.</p>
-		<p><strong>(b) Consolidate / Retest:</strong> Apabila terjadi tekanan koreksi, perhatikan reaksi akumulasi pada rentang Rp ${sup1.toLocaleString('id-ID')}- Rp ${sup2.toLocaleString('id-ID')}.</p>
-		<p><strong>(c) Batas Invalidasi:</strong> Penembusan di bawah Stop Loss Rp ${sl.toLocaleString('id-ID')}membatalkan struktur bullish short-term dan berisiko melanjutkan penurunan.</p>
+		<p><strong>(a) Konfirmasi Bullish:</strong> Jika harga bertahan di atas support Rp ${sup2.toLocaleString('id-ID')} dengan volume stabil, target uji resistance berada di Rp ${res1.toLocaleString('id-ID')}. Penembusan resistance dapat memicu akselerasi ke TP2 Rp ${tp2.toLocaleString('id-ID')}.</p>
+		<p><strong>(b) Consolidate / Retest:</strong> Apabila terjadi tekanan koreksi, perhatikan reaksi akumulasi pada rentang Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}.</p>
+		<p><strong>(c) Batas Invalidasi:</strong> Penembusan di bawah Stop Loss Rp ${sl.toLocaleString('id-ID')} membatalkan struktur bullish short-term dan berisiko melanjutkan penurunan.</p>
 	`;
 
 	const rrrRatioVal = ((tp2 - price) / Math.max(1, (price - sl))).toFixed(2);
 	kesimpulanEl.innerHTML = `
-		<p>• Area akumulasi optimal disarankan pada rentang support <strong>Rp ${sup1.toLocaleString('id-ID')}- Rp ${sup2.toLocaleString('id-ID')}</strong>.</p>
+		<p>• Area akumulasi optimal disarankan pada rentang support <strong>Rp ${sup1.toLocaleString('id-ID')} - Rp ${sup2.toLocaleString('id-ID')}</strong>.</p>
 		<p>• Proyeksi Rasio Risk/Reward (RRR) pada harga saat ini adalah <strong>1 : ${rrrRatioVal}</strong>.</p>
 		<p>• Selalu pasang pembatas risiko di bawah <strong>Rp ${sl.toLocaleString('id-ID')}</strong> untuk menjaga keterpaparan modal dari kecenderungan volatilitas pasar.</p>
 	`;
@@ -1505,7 +1505,7 @@ function exportTradingCard() {
 	let res1 = fibo.res1, res2 = fibo.res2;
 	let sup1 = fibo.entryLow, sup2 = fibo.entryHigh;
 	let sl = fibo.sl;
-	let tp1 = res1;
+	let tp1 = res1; 
 	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 
 	const now = new Date();
@@ -1514,10 +1514,10 @@ function exportTradingCard() {
 	document.getElementById('cardDateStr').innerText = dateStr;
 	document.getElementById('cardTicker').innerText = `$${currentTicker}`;
 	document.getElementById('cardPrice').innerText = `Rp ${price.toLocaleString('id-ID')}`;
-	document.getElementById('cardEntry').innerText = `Rp ${sup1.toLocaleString('id-ID')}- ${sup2.toLocaleString('id-ID')}`;
+	document.getElementById('cardEntry').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('cardSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
-	document.getElementById('cardTP2').innerText = `Rp ${tp1.toLocaleString('id-ID')}- ${tp2.toLocaleString('id-ID')}`;
-	document.getElementById('cardRES1').innerText = `Rp ${res1.toLocaleString('id-ID')}- ${res2.toLocaleString('id-ID')}`;
+	document.getElementById('cardTP2').innerText = `Rp ${tp1.toLocaleString('id-ID')} - ${tp2.toLocaleString('id-ID')}`;
+	document.getElementById('cardRES1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
 	document.getElementById('cardVolRatio').innerText = `${globalStockData.volRatio || '1.0'}x`;
 	document.getElementById('cardMA5').innerText = `Rp ${(globalStockData.ma5 || price).toLocaleString('id-ID')}`;
 	document.getElementById('cardMA10').innerText = `Rp ${(globalStockData.ma10 || price).toLocaleString('id-ID')}`;
@@ -1597,7 +1597,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 				const sampleCandidates = uniqueRadarWatchlist.filter(t => t !== targetTicker).sort(() => 0.5 - Math.random());
 				
 				const BATCH_SIZE = 15; //8
-				for (let i = 0;i < sampleCandidates.length;i += BATCH_SIZE) {
+				for (let i = 0; i < sampleCandidates.length; i += BATCH_SIZE) {
 					const batch = sampleCandidates.slice(i, i + BATCH_SIZE);
 					const fetchedBatch = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
 					for (const item of fetchedBatch) {
@@ -1611,7 +1611,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 			}
 		}
 		
-		peerTickers = [...new Set([targetTicker, ...peerTickers])].slice(0, 8);
+		peerTickers = [...new Set([targetTicker, ...peerTickers])].slice(0, 8); 
 		const peerResults = await Promise.all(peerTickers.map(t => fetchRealtimeStockData(t)));
 
 		let rowsHTML = '';
@@ -1626,14 +1626,14 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 				: "hover:bg-slate-800/50 transition-colors duration-200 border-l-[3px] border-transparent";
 
 			rowsHTML += `
-				<tr class="${rowClass}group">
+				<tr class="${rowClass} group">
 					<td class="p-4 align-middle">
 						<div class="flex items-center gap-3">
-							<div class="w-8 h-8 rounded-lg ${isCurrent ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400' : 'bg-slate-800 border border-slate-700 text-slate-400'}flex items-center justify-center shrink-0 shadow-inner">
+							<div class="w-8 h-8 rounded-lg ${isCurrent ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400' : 'bg-slate-800 border border-slate-700 text-slate-400'} flex items-center justify-center shrink-0 shadow-inner">
 								<i class="fa-solid fa-building text-xs"></i>
 							</div>
 							<div class="flex flex-col">
-								<strong class="text-emerald-400 text-sm tracking-wide">&dollar; ${data.ticker}</strong>
+								<strong class="text-emerald-400 text-sm tracking-wide">&dollar;${data.ticker}</strong>
 								${isCurrent ? '<span class="text-[9px] text-emerald-400/80 font-medium tracking-wide">Sedang Dipantau</span>' : '<span class="text-[9px] text-slate-500 font-medium tracking-wide">Saham Serupa</span>'}
 							</div>
 						</div>
@@ -1644,25 +1644,25 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 						</span>
 					</td>
 					<td class="p-4 align-middle">
-						<span class="${isPlus ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'}font-bold px-2.5 py-1.5 rounded-lg border text-xs flex items-center w-max gap-1.5 whitespace-nowrap shadow-sm">
+						<span class="${isPlus ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'} font-bold px-2.5 py-1.5 rounded-lg border text-xs flex items-center w-max gap-1.5 whitespace-nowrap shadow-sm">
 							<i class="fa-solid ${isPlus ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down'}"></i>
 							${isPlus ? '+' : ''}${data.changePct}%
 						</span>
 					</td>
 					<td class="p-4 align-middle">
-						<span class="${data.price >= data.ma5 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'}font-medium px-2.5 py-1.5 rounded-lg text-xs border flex items-center w-max gap-1.5 whitespace-nowrap shadow-sm">
+						<span class="${data.price >= data.ma5 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'} font-medium px-2.5 py-1.5 rounded-lg text-xs border flex items-center w-max gap-1.5 whitespace-nowrap shadow-sm">
 							<span class="w-1.5 h-1.5 rounded-full ${data.price >= data.ma5 ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'}"></span>
 							${data.price >= data.ma5 ? 'Bullish (Above MA5)' : 'Bearish (Below MA5)'}
 						</span>
 					</td>
 					<td class="p-4 align-middle">
-						<span class="${data.volRatio >= 1.2 ? 'text-emerald-400 font-bold bg-emerald-500/10 border-emerald-500/30' : 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20'}px-2.5 py-1.5 rounded-lg text-xs border flex items-center w-max gap-1.5 whitespace-nowrap shadow-sm">
+						<span class="${data.volRatio >= 1.2 ? 'text-emerald-400 font-bold bg-emerald-500/10 border-emerald-500/30' : 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20'} px-2.5 py-1.5 rounded-lg text-xs border flex items-center w-max gap-1.5 whitespace-nowrap shadow-sm">
 							<i class="fa-solid fa-chart-simple"></i>
 							${data.volRatio}x Vol
 						</span>
 					</td>
 					<td class="p-4 align-middle text-center">
-						<button onclick="document.getElementById('stockSearch').value='${data.ticker}';searchStock(true);" class="text-[10px] bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white px-3 py-2 rounded-lg border border-slate-700 hover:border-emerald-500 transition-all duration-200 font-bold shadow-sm flex items-center justify-center gap-1.5 mx-auto group-hover:bg-emerald-500/20 group-hover:text-emerald-400 group-hover:border-emerald-500/40 whitespace-nowrap">
+						<button onclick="document.getElementById('stockSearch').value='${data.ticker}'; searchStock(true);" class="text-[10px] bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white px-3 py-2 rounded-lg border border-slate-700 hover:border-emerald-500 transition-all duration-200 font-bold shadow-sm flex items-center justify-center gap-1.5 mx-auto group-hover:bg-emerald-500/20 group-hover:text-emerald-400 group-hover:border-emerald-500/40 whitespace-nowrap">
 							Buka Chart <i class="fa-solid fa-chevron-right text-[9px] opacity-80"></i>
 						</button>
 					</td>
@@ -1723,7 +1723,7 @@ function saveTradingPlanToJournal() {
 
 	saveJournalData(journal);
 	AudioFX.playSuccess();
-	showToast(`Trading Plan untuk $${currentTicker}berhasil disimpan ke Journal Trading!`);
+	showToast(`Trading Plan untuk $${currentTicker} berhasil disimpan ke Journal Trading!`);
 }
 
 function updateJournalStatus(id, newStatus) {
@@ -1844,7 +1844,7 @@ function renderJournalTable() {
 		rows += `
 			<tr class="hover:bg-slate-800/40">
 				<td class="p-3.5 text-slate-400">${item.date}</td>
-				<td class="p-3.5 font-bold text-pink-400">&dollar; ${item.ticker}</td>
+				<td class="p-3.5 font-bold text-pink-400">&dollar;${item.ticker}</td>
 				<td class="p-3.5 text-amber-400">Rp ${item.entry.toLocaleString('id-ID')}</td>
 				<td class="p-3.5 text-rose-400">Rp ${item.sl.toLocaleString('id-ID')}</td>
 				<td class="p-3.5 text-emerald-400">Rp ${item.tp.toLocaleString('id-ID')}</td>
@@ -1861,8 +1861,8 @@ function renderJournalTable() {
 	body.innerHTML = rows;
 }
 
-function allowDrop(ev) { ev.preventDefault();}
-function dragJournalCard(ev, id) { ev.dataTransfer.setData("text/plain", id);}
+function allowDrop(ev) { ev.preventDefault(); }
+function dragJournalCard(ev, id) { ev.dataTransfer.setData("text/plain", id); }
 function dropJournalCard(ev, newStatus) {
 	ev.preventDefault();
 	const id = parseInt(ev.dataTransfer.getData("text/plain"));
@@ -1882,7 +1882,7 @@ function renderKanbanBoard() {
 		const cardHTML = `
 			<div draggable="true" ondragstart="dragJournalCard(event, ${item.id})" class="bg-slate-900 border border-slate-800 p-3 rounded-xl cursor-grab active:cursor-grabbing hover:border-slate-700 transition space-y-2 shadow-sm">
 				<div class="flex items-center justify-between">
-					<span class="font-bold text-pink-400 text-xs">&dollar; ${item.ticker}</span>
+					<span class="font-bold text-pink-400 text-xs">&dollar;${item.ticker}</span>
 					<span class="text-[9px] text-slate-400">${item.date}</span>
 				</div>
 				<div class="grid grid-cols-3 gap-1 text-[10px] text-slate-300 bg-slate-950/10 p-2 rounded border border-slate-900 text-center">
@@ -1902,9 +1902,9 @@ function renderKanbanBoard() {
 			</div>
 		`;
 
-		if (item.status === 'WIN') { htmlWin += cardHTML;countWin++;}
-		else if (item.status === 'LOSS') { htmlLoss += cardHTML;countLoss++;}
-		else { htmlOpen += cardHTML;countOpen++;}
+		if (item.status === 'WIN') { htmlWin += cardHTML; countWin++; } 
+		else if (item.status === 'LOSS') { htmlLoss += cardHTML; countLoss++; } 
+		else { htmlOpen += cardHTML; countOpen++; }
 	});
 
 	colOpen.innerHTML = htmlOpen || `<div class="text-center text-slate-500 text-[10px] py-16 italic">Tidak ada plan open.</div>`;
@@ -1978,7 +1978,7 @@ function calculateSmartRRR() {
 
 	resEl.innerText = `1 : ${rrr}`;
 	maxRiskAmountEl.innerText = `Rp ${Math.round(maxRiskAmount).toLocaleString('id-ID')}`;
-	maxLotsEl.innerText = `${maxLots.toLocaleString('id-ID')}Lot`;
+	maxLotsEl.innerText = `${maxLots.toLocaleString('id-ID')} Lot`; 
 	capitalNeededEl.innerText = `Rp ${Math.round(totalCapitalRequired).toLocaleString('id-ID')}`;
 	rewardEl.innerText = `Rp ${Math.round(totalRewardAmount).toLocaleString('id-ID')}`;
 
@@ -2148,7 +2148,7 @@ function startVoiceSearch() {
 	recognition.onend = function() {
 		voiceIcon.classList.remove('fa-microphone-lines', 'text-rose-500', 'animate-pulse');
 		voiceIcon.classList.add('fa-microphone', 'text-slate-400');
-		setTimeout(() => { input.placeholder = "Cari saham (MDIA...) atau klik Mic";}, 2000);
+		setTimeout(() => { input.placeholder = "Cari saham (MDIA...) atau klik Mic"; }, 2000);
 	};
 	recognition.start();
 }
@@ -2171,7 +2171,7 @@ async function startRadarProcess() {
 	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai saham secara otomatis berdasarkan seluruh indikator...</div>`;
 	
 	const shuffled = [...uniqueRadarWatchlist];
-	for (let i = shuffled.length - 1;i > 0;i--) {
+	for (let i = shuffled.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1));
 		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
 	}
@@ -2179,7 +2179,7 @@ async function startRadarProcess() {
 	const validData = [];
 	const BATCH_SIZE = 20; //10
 
-	for (let i = 0;i < shuffled.length;i += BATCH_SIZE) {
+	for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
 		const batch = shuffled.slice(i, i + BATCH_SIZE);
 		const results = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
 		for (const res of results) {
@@ -2259,7 +2259,7 @@ function renderRadarItems(dataList) {
 		htmlContent += `
 			<div class="bg-slate-950/30 p-4 lg:p-5 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-colors duration-300 relative shadow-sm flex flex-col justify-between">
 				<!-- Badge Status Signal -->
-				<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l ${statusClass}border-b border-l rounded-bl-xl rounded-tr-xl text-[10px] font-bold flex items-center gap-1.5 shadow-sm">
+				<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l ${statusClass} border-b border-l rounded-bl-xl rounded-tr-xl text-[10px] font-bold flex items-center gap-1.5 shadow-sm">
 					${statusSignal}
 				</div>
 				
@@ -2270,12 +2270,12 @@ function renderRadarItems(dataList) {
 					</div>
 					<div class="flex flex-col">
 						<div class="flex items-center gap-2">
-							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar; ${ticker}</span>
+							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${ticker}</span>
 							<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] bg-amber-500/20 hover:bg-amber-500 hover:text-black text-amber-400 border border-amber-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
 							Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
-							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'}font-bold px-1.5 py-0.5 rounded ml-1 border">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
+							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded ml-1 border">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 						</span>
 					</div>
 				</div>
@@ -2285,7 +2285,7 @@ function renderRadarItems(dataList) {
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50"></div>
 						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Ideal</span>
-						<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')}- ${entryHigh.toLocaleString('id-ID')}</span>
+						<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>
@@ -2364,15 +2364,15 @@ document.addEventListener('click', function(e) {
 function calculateRSI(prices, period = 14) {
 	if (!prices || prices.length < period + 1) return 50;
 	let gains = 0, losses = 0;
-	for (let i = 1;i <= period;i++) {
+	for (let i = 1; i <= period; i++) {
 		const diff = prices[i] - prices[i - 1];
-		if (diff >= 0) gains += diff;else losses -= diff;
+		if (diff >= 0) gains += diff; else losses -= diff;
 	}
 	let avgGain = gains / period, avgLoss = losses / period;
-	for (let i = period + 1;i < prices.length;i++) {
+	for (let i = period + 1; i < prices.length; i++) {
 		const diff = prices[i] - prices[i - 1];
 		let cGain = 0, cLoss = 0;
-		if (diff >= 0) cGain = diff;else cLoss = -diff;
+		if (diff >= 0) cGain = diff; else cLoss = -diff;
 		avgGain = ((avgGain * (period - 1)) + cGain) / period;
 		avgLoss = ((avgLoss * (period - 1)) + cLoss) / period;
 	}
@@ -2405,7 +2405,7 @@ async function runCustomScreener() {
 		let passedItems = [];
 		const BATCH_SIZE = 20;
 
-		for (let i = 0;i < shuffled.length;i += BATCH_SIZE) {
+		for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
 			const batch = shuffled.slice(i, i + BATCH_SIZE);
 			const results = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
 
@@ -2483,11 +2483,11 @@ async function runCustomScreener() {
 
 			// Konstruksi Filter Badge Berdasarkan Rule MA
 			let filterBadgeHtml = '';
-			if (ruleMA === 'ABOVE_MA5') { filterBadgeHtml = '<i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Uptrend MA5';}
-			else if (ruleMA === 'ABOVE_MA20') { filterBadgeHtml = '<i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Uptrend MA20';}
-			else if (ruleMA === 'GOLDEN_CROSS') { filterBadgeHtml = '<i data-lucide="git-merge" class="w-3.5 h-3.5"></i> Golden Cross';}
-			else if (ruleMA === 'BELOW_MA20') { filterBadgeHtml = '<i data-lucide="trending-down" class="w-3.5 h-3.5"></i> Downtrend MA20';}
-			else { filterBadgeHtml = '<i data-lucide="list-filter" class="w-3.5 h-3.5"></i> Filter Match';}
+			if (ruleMA === 'ABOVE_MA5') { filterBadgeHtml = '<i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Uptrend MA5'; }
+			else if (ruleMA === 'ABOVE_MA20') { filterBadgeHtml = '<i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Uptrend MA20'; }
+			else if (ruleMA === 'GOLDEN_CROSS') { filterBadgeHtml = '<i data-lucide="git-merge" class="w-3.5 h-3.5"></i> Golden Cross'; }
+			else if (ruleMA === 'BELOW_MA20') { filterBadgeHtml = '<i data-lucide="trending-down" class="w-3.5 h-3.5"></i> Downtrend MA20'; }
+			else { filterBadgeHtml = '<i data-lucide="list-filter" class="w-3.5 h-3.5"></i> Filter Match'; }
 
 			html += `
 				<div class="bg-slate-950/30 p-4 lg:p-5 rounded-xl border border-slate-700/60 hover:border-blue-500/50 transition-colors duration-300 relative shadow-sm flex flex-col justify-between">
@@ -2503,12 +2503,12 @@ async function runCustomScreener() {
 						</div>
 						<div class="flex flex-col">
 							<div class="flex items-center gap-2">
-								<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar; ${item.ticker}</span>
+								<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
 								<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[9px] bg-blue-600/20 hover:bg-blue-500 hover:text-white text-blue-400 border border-blue-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
 							</div>
 							<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
 								Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
-								<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'}font-bold px-1.5 py-0.5 rounded ml-1 border">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
+								<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded ml-1 border">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 							</span>
 						</div>
 					</div>
@@ -2518,7 +2518,7 @@ async function runCustomScreener() {
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 							<div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50"></div>
 							<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Ideal</span>
-							<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')}- ${entryHigh.toLocaleString('id-ID')}</span>
+							<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 						</div>
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 							<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>
@@ -2599,7 +2599,7 @@ function getPaperAccount() {
 	const defaultAccount = { cash: 100000000, portfolio: [], history: [] };
 	const saved = localStorage.getItem('stockid_paper_account');
 	if (!saved) return defaultAccount;
-	try { return JSON.parse(saved);} catch (e) { return defaultAccount;}
+	try { return JSON.parse(saved); } catch (e) { return defaultAccount; }
 }
 
 function savePaperAccount(acc) {
@@ -2616,7 +2616,7 @@ function ptSyncCurrentTicker() {
 	document.getElementById('ptTicker').value = globalStockData.ticker;
 	document.getElementById('ptPrice').value = roundToBEITick(globalStockData.price);
 	ptCalculateTotal();
-	showToast(`Berhasil sinkronisasi saham $${globalStockData.ticker}ke form Paper Trade.`);
+	showToast(`Berhasil sinkronisasi saham $${globalStockData.ticker} ke form Paper Trade.`);
 }
 
 function ptCalculateTotal() {
@@ -2679,7 +2679,7 @@ function ptExecuteBuy() {
 
 	savePaperAccount(acc);
 	AudioFX.playSuccess();
-	showToast(`Berhasil membeli ${lots}lot $${ticker}secara virtual!`);
+	showToast(`Berhasil membeli ${lots} lot $${ticker} secara virtual!`);
 }
 
 function ptExecuteSell(id) {
@@ -2723,7 +2723,7 @@ function ptExecuteSell(id) {
 		AudioFX.playLossJournal();
 		triggerLossCelebration();
 	}
-	showToast(`Penjualan $${item.ticker}selesai. P&L: Rp ${profitLoss.toLocaleString('id-ID')} (${profitLossPct}%)`);
+	showToast(`Penjualan $${item.ticker} selesai. P&L: Rp ${profitLoss.toLocaleString('id-ID')} (${profitLossPct}%)`);
 }
 
 function ptResetAccount() {
@@ -2751,8 +2751,8 @@ async function ptRefreshPortoPrices(isAuto = false) {
 		const data = await fetchRealtimeStockData(item.ticker, true);
 		if (data && data.price) {
 			hasUpdates = true;
-			if (item.tp > 0 && data.price >= item.tp) { ptExecuteSell(item.id);continue;}
-			if (item.sl > 0 && data.price <= item.sl) { ptExecuteSell(item.id);continue;}
+			if (item.tp > 0 && data.price >= item.tp) { ptExecuteSell(item.id); continue; }
+			if (item.sl > 0 && data.price <= item.sl) { ptExecuteSell(item.id); continue; }
 		}
 	}
 	if (hasUpdates) renderPaperTradingUI();
@@ -2762,7 +2762,7 @@ async function ptRefreshPortoPrices(isAuto = false) {
 function renderPaperTradingUI() {
 	const acc = getPaperAccount();
 	let stockAssetValue = 0;
-	let totalUnrealizedPnL = 0;
+	let totalUnrealizedPnL = 0; 
 	let totalModalAktif = 0;
 
 	acc.portfolio.forEach(item => {
@@ -2800,14 +2800,14 @@ function renderPaperTradingUI() {
 	
 	const elUnrealized = document.getElementById('ptUnrealizedPnL');
 	if (elUnrealized) {
-		elUnrealized.className = `px-3 py-1.5 rounded-t-lg text-[10px] lg:text-xs font-bold border-t border-l border-r border-slate-500/20 bg-slate-950/60 ${unrealizedColor}translate-y-[1px] relative z-10 shadow-inner`;
+		elUnrealized.className = `px-3 py-1.5 rounded-t-lg text-[10px] lg:text-xs font-bold border-t border-l border-r border-slate-500/20 bg-slate-950/60 ${unrealizedColor} translate-y-[1px] relative z-10 shadow-inner`;
 		elUnrealized.innerText = `Total Floating: ${unrealizedSign}Rp ${Math.round(totalUnrealizedPnL).toLocaleString('id-ID')} (${unrealizedSign}${unrealizedPct}%)`;
 	}
 
 	const totalClosed = acc.history.length;
 	const totalWin = acc.history.filter(h => h.status === 'WIN').length;
 	const winRate = totalClosed > 0 ? Math.round((totalWin / totalClosed) * 100) : 0;
-	document.getElementById('ptWinRate').innerHTML = `Win Rate: ${winRate}% (${totalWin} /${totalClosed})`;
+	document.getElementById('ptWinRate').innerHTML = `Win Rate: ${winRate}% (${totalWin}/${totalClosed})`;
 
 	let rankName = "NEWBIE TRADER 🥺";
 	let rankColor = "from-blue-400 to-amber-400";
@@ -2836,8 +2836,8 @@ function renderPaperTradingUI() {
 
 	const rankBadgeEl = document.getElementById('ptRankBadge');
 	if (rankBadgeEl) {
-		rankBadgeEl.innerHTML = `<span class="bg-gradient-to-r ${rankColor}bg-clip-text text-transparent drop-shadow-md">${rankName}</span>`;
-		rankBadgeEl.className = `text-xs lg:text-sm font-extrabold leading-none px-2.5 py-1.5 rounded-lg border inline-block mt-0.5 ${badgeClass}shadow-sm`;
+		rankBadgeEl.innerHTML = `<span class="bg-gradient-to-r ${rankColor} bg-clip-text text-transparent drop-shadow-md">${rankName}</span>`;
+		rankBadgeEl.className = `text-xs lg:text-sm font-extrabold leading-none px-2.5 py-1.5 rounded-lg border inline-block mt-0.5 ${badgeClass} shadow-sm`;
 	}
 
 	const portoBody = document.getElementById('ptPortoBody');
@@ -2861,11 +2861,11 @@ function renderPaperTradingUI() {
 
 			html += `
 				<tr class="hover:bg-slate-800/40">
-					<td class="p-3.5 font-bold text-blue-400">&dollar; ${item.ticker}</td>
-					<td class="p-3.5 text-blue-400">${item.lots.toLocaleString('id-ID')}Lot</td>
+					<td class="p-3.5 font-bold text-blue-400">&dollar;${item.ticker}</td>
+					<td class="p-3.5 text-blue-400">${item.lots.toLocaleString('id-ID')} Lot</td>
 					<td class="p-3.5 text-amber-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
 					<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
-					<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'}font-bold">
+					<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
 						${isPlus ? '+' : ''}Rp ${Math.round(pnl).toLocaleString('id-ID')} (${isPlus ? '+' : ''}${pnlPct}%)
 					</td>
 					<td class="p-3.5 text-center">
@@ -2889,8 +2889,8 @@ function renderPaperTradingUI() {
 			hHtml += `
 				<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1 shadow-sm hover:border-slate-500/30 transition-colors">
 					<div class="flex justify-between items-center">
-						<span class="font-bold text-blue-400">&dollar; ${h.ticker}<strong class='text-blue-400'>(${h.lots}Lot)</strong></span>
-						<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'}px-2 py-0.5 rounded font-bold">${h.status}</span>
+						<span class="font-bold text-blue-400">&dollar;${h.ticker} <strong class='text-blue-400'>(${h.lots} Lot)</strong></span>
+						<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
 					</div>
 					<div class="flex justify-between text-[11px] text-slate-300 pb-1">
 						<span class="font-bold text-sky-400">Beli: Rp ${h.buyPrice.toLocaleString('id-ID')}</span>
@@ -2901,7 +2901,7 @@ function renderPaperTradingUI() {
 							<span class="text-[11px] text-blue-400 uppercase font-bold">Modal Awal</span>
 							<span class="text-[11px] text-amber-400 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
 						</div>
-						<div class="text-right font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'}text-xs">
+						<div class="text-right font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'} text-xs">
 							${isWin ? '+' : ''}Rp ${Math.round(h.profitLoss).toLocaleString('id-ID')} (${isWin ? '+' : ''}${h.profitLossPct}%)
 						</div>
 					</div>
@@ -2983,10 +2983,10 @@ async function scanWhalesData() {
 				// Logika pencarian baru: Volume > 3x, Valuasi > 1 Miliar, Kenaikan 0% - 5%
 				if (vol > 3 && valuasi > 1000000000 && chg > 0 && chg < 5) {
 					if (price > ma5) {
-						tier = 3;tierName = "PAUS KUAT (STRONG WHALE)";
+						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
 					} else {
-						tier = 2;tierName = "PAUS AKUMULASI (ACC WHALE)";
+						tier = 2; tierName = "PAUS AKUMULASI (ACC WHALE)";
 						tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
 					}
 				}
@@ -3009,10 +3009,10 @@ async function scanWhalesData() {
 			const BATCH_SIZE = 20;
 			let maxBatchLimit = 0;
 
-			for (let i = 0;i < remainingWatchlist.length;i += BATCH_SIZE) {
+			for (let i = 0; i < remainingWatchlist.length; i += BATCH_SIZE) {
 				maxBatchLimit++;
 				// Maksimal 3 batch (~60 saham) untuk menjaga performa perangkat
-				if (maxBatchLimit > 3) break;
+				if (maxBatchLimit > 3) break; 
 
 				const batch = remainingWatchlist.slice(i, i + BATCH_SIZE);
 				const fetchedData = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
@@ -3029,10 +3029,10 @@ async function scanWhalesData() {
 					// Logika pencarian baru: Volume > 3x, Valuasi > 1 Miliar, Kenaikan 0% - 5%
 					if (vol > 3 && valuasi > 1000000000 && chg > 0 && chg < 5) {
 						if (price > ma5) {
-							tier = 3;tierName = "PAUS KUAT (STRONG WHALE)";
+							tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 							tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
 						} else {
-							tier = 2;tierName = "PAUS AKUMULASI (ACC WHALE)";
+							tier = 2; tierName = "PAUS AKUMULASI (ACC WHALE)";
 							tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
 						}
 					}
@@ -3077,7 +3077,7 @@ async function scanWhalesData() {
 						<div class="absolute -top-20 -right-20 w-40 h-40 bg-fuchsia-500/10 rounded-full blur-3xl group-hover:bg-fuchsia-500/20 transition-colors pointer-events-none"></div>
 						
 						<!-- Badge (Tier) -->
-						<div class="absolute top-0 right-0 px-3 py-1.5 border-b border-l border-slate-700/60 rounded-bl-xl rounded-tr-2xl text-[9px] lg:text-[10px] font-extrabold uppercase tracking-wider ${item.whaleTierClass}shadow-sm backdrop-blur-sm z-10">
+						<div class="absolute top-0 right-0 px-3 py-1.5 border-b border-l border-slate-700/60 rounded-bl-xl rounded-tr-2xl text-[9px] lg:text-[10px] font-extrabold uppercase tracking-wider ${item.whaleTierClass} shadow-sm backdrop-blur-sm z-10">
 							${item.whaleTierName}
 						</div>
 						
@@ -3090,7 +3090,7 @@ async function scanWhalesData() {
 								<div class="flex flex-col">
 									<div class="flex items-center gap-2.5">
 										<span class="font-black text-white text-lg lg:text-xl tracking-tight leading-none">${item.ticker}</span>
-										<span class="text-[10px] lg:text-[11px] ${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'}px-2 py-0.5 rounded-md border font-bold shadow-sm">
+										<span class="text-[10px] lg:text-[11px] ${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'} px-2 py-0.5 rounded-md border font-bold shadow-sm">
 											${item.changePct >= 0 ? '+' : ''}${item.changePct}%
 										</span>
 									</div>
@@ -3109,7 +3109,7 @@ async function scanWhalesData() {
 								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
 									<i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Agresif / Aman
 								</span>
-								<span class="font-bold text-amber-400 text-xs truncate">Rp ${entryAman.toLocaleString('id-ID')}- ${entryAgresif.toLocaleString('id-ID')}</span>
+								<span class="font-bold text-amber-400 text-xs truncate">Rp ${entryAman.toLocaleString('id-ID')} - ${entryAgresif.toLocaleString('id-ID')}</span>
 							</div>
 							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
 								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
@@ -3121,7 +3121,7 @@ async function scanWhalesData() {
 								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
 									<i data-lucide="activity" class="w-3 h-3 text-fuchsia-400"></i> Total Volume (Lot)
 								</span>
-								<span class="font-bold text-fuchsia-400 text-xs truncate">${(item.currentLot || 0).toLocaleString('id-ID')}Lot</span>
+								<span class="font-bold text-fuchsia-400 text-xs truncate">${(item.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 							</div>
 							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
 								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
@@ -3132,7 +3132,7 @@ async function scanWhalesData() {
 						</div>
 						
 						<!-- Action Button -->
-						<button onclick="selectTickerFromRadar('${item.ticker}');toggleWhaleModal();" class="mt-4 w-full bg-slate-800/80 hover:bg-fuchsia-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-3 rounded-xl border border-slate-700 hover:border-fuchsia-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
+						<button onclick="selectTickerFromRadar('${item.ticker}'); toggleWhaleModal();" class="mt-4 w-full bg-slate-800/80 hover:bg-fuchsia-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-3 rounded-xl border border-slate-700 hover:border-fuchsia-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
 							<span>Buka Chart & Detail AI</span>
 							<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
 						</button>
@@ -3146,7 +3146,7 @@ async function scanWhalesData() {
 	} finally {
 		// Menggunakan blok try-finally memastikan timer dan tombol selalu direset
 		isWhaleScanning = false;
-		let cooldown = foundWhales.length === 0 ? 60 : 30;
+		let cooldown = foundWhales.length === 0 ? 60 : 30; 
 		if (whaleScanCooldownTimer) clearInterval(whaleScanCooldownTimer);
 
 		whaleScanCooldownTimer = setInterval(() => {
@@ -3183,7 +3183,7 @@ function toggleAIChat() {
 	} else {
 		chatWindow.classList.remove('opacity-100', 'scale-100');
 		chatWindow.classList.add('opacity-0', 'scale-95');
-		setTimeout(() => { chatWindow.classList.add('hidden');}, 600);
+		setTimeout(() => { chatWindow.classList.add('hidden'); }, 600);
 	}
 	if (window.lucide) lucide.createIcons();
 }
@@ -3249,8 +3249,8 @@ function sendAIChatMessage() {
 }
 
 function escapeHtml(text) {
-	const map = { '&': '&amp;', '<': '&lt; ', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-	return text.replace(/[&<>"']/g, function(m) { return map[m];});
+	const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+	return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
 function generateAIResponse(prompt) {
@@ -3293,7 +3293,7 @@ function generateAIResponse(prompt) {
 		return `
 			<strong class="text-amber-400 flex items-center gap-1.5"><i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Area Entry & Support $${targetTicker}:</strong>
 			Harga saat ini berada di <span class="text-white">${formatRp(price)}</span>.<br>
-			Area akumulasi (entry ideal) yang disarankan berada di rentang support kuat <strong class="text-amber-400">${formatRp(sup1)}- ${formatRp(sup2)}</strong>.<br>
+			Area akumulasi (entry ideal) yang disarankan berada di rentang support kuat <strong class="text-amber-400">${formatRp(sup1)} - ${formatRp(sup2)}</strong>.<br>
 			<span class="text-[10px] text-slate-400 mt-1 block"><i>Tips: Cicil beli jika harga mantul (rebound) dari area ini.</i></span>
 		`;
 	}
@@ -3301,7 +3301,7 @@ function generateAIResponse(prompt) {
 	if (lower.includes('resist') || lower.includes('target') || lower.includes('profit') || lower.includes('jual')) {
 		return `
 			<strong class="text-cyan-400 flex items-center gap-1.5"><i data-lucide="target" class="w-3.5 h-3.5"></i> Target Profit & Resistance $${targetTicker}:</strong>
-			Resistance terdekat untuk <i>take profit</i> ada di kisaran <strong class="text-cyan-400">${formatRp(res1)}- ${formatRp(res2)}</strong>.<br>
+			Resistance terdekat untuk <i>take profit</i> ada di kisaran <strong class="text-cyan-400">${formatRp(res1)} - ${formatRp(res2)}</strong>.<br>
 			Jika berhasil <i>breakout</i> dengan volume tinggi, kamu bisa set TP1 di <strong class="text-emerald-400">${formatRp(tp1)}</strong> dan TP2 di <strong class="text-emerald-400">${formatRp(tp2)}</strong>. Jangan lupa gunakan <i>trailing stop</i>!
 		`;
 	}
@@ -3332,7 +3332,7 @@ function generateAIResponse(prompt) {
 		return `
 			<strong class="text-emerald-400 flex items-center gap-1.5"><i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> Analisis Volume $${targetTicker}:</strong>
 			<ul class="space-y-0.5 mt-1">
-				<li>• Total Lot: <span class="text-white">${(data.currentLot || 0).toLocaleString('id-ID')}Lot</span></li>
+				<li>• Total Lot: <span class="text-white">${(data.currentLot || 0).toLocaleString('id-ID')} Lot</span></li>
 				<li>• Valuasi: <span class="text-white">${formatRp(data.currentValuation)}</span></li>
 				<li>• Rasio Rerata: <span class="text-white">${data.volRatio}x</span> (${volStatus})</li>
 			</ul>
@@ -3393,7 +3393,7 @@ function toggleTelegramSnooze() {
 		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
 	} else {
 		// Aktifkan Snooze (1 Jam)
-		const snoozeTime = Date.now() + (60 * 60 * 1000);
+		const snoozeTime = Date.now() + (60 * 60 * 1000); 
 		localStorage.setItem('telegram_snooze_until', snoozeTime.toString());
 		showToast("Notifikasi Telegram ditunda selama 1 Jam.", "info");
 		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
@@ -3466,7 +3466,7 @@ async function saveTelegramConfig() {
 
 async function testTelegramConnection(token, chatId) {
 		try {
-			const response = await fetch(`https://api.telegram.org/bot${token} /sendMessage`, {
+			const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ 
@@ -3504,7 +3504,7 @@ async function sendTelegramAlert(message) {
 	if (!botToken || !chatId) return;
 
 	try {
-		const response = await fetch(`https://api.telegram.org/bot${botToken} /sendMessage`, {
+		const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML' })
@@ -3513,7 +3513,7 @@ async function sendTelegramAlert(message) {
 		const data = await response.json();
 		if (!data.ok) console.error("Telegram API Error:", data.description);
 	} catch (error) { 
-		console.error("Gagal mengirim Telegram Alert:", error);
+		console.error("Gagal mengirim Telegram Alert:", error); 
 	}
 }
 
@@ -3581,7 +3581,7 @@ function renderAllAlerts() {
 	if (!container) return;
 
 	let groupedAlerts = [];
-	for (let i = 0;i < localStorage.length;i++) {
+	for (let i = 0; i < localStorage.length; i++) {
 		const key = localStorage.key(i);
 		if (key && key.startsWith('alerts_')) {
 			const ticker = key.replace('alerts_', '');
@@ -3614,7 +3614,7 @@ function renderAllAlerts() {
 		if (!alertDate) {
 			const now = new Date();
 			const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-			alertDate = `${now.getDate()}${months[now.getMonth()]}${now.getFullYear().toString().slice(-2)}`;
+			alertDate = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear().toString().slice(-2)}`;
 		}
 
 		const isOpen = openAlertDropdowns.has(ticker);
@@ -3624,7 +3624,7 @@ function renderAllAlerts() {
 		const borderHighlight = isCurrent ? 'border-emerald-500/50 shadow-sm shadow-emerald-500/10' : 'border-slate-800';
 
 		htmlContent += `
-			<div class="bg-slate-950/10 rounded-xl border ${borderHighlight}overflow-hidden transition-all duration-200 col-span-1 md:col-span-2 lg:col-span-3">
+			<div class="bg-slate-950/10 rounded-xl border ${borderHighlight} overflow-hidden transition-all duration-200 col-span-1 md:col-span-2 lg:col-span-3">
 				<div onclick="toggleAlertAccordion('${ticker}')" class="p-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-900/80 transition select-none group">
 					<div class="flex items-center gap-3 md:gap-4">
 						<div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-slate-900 flex items-center justify-center border border-slate-700/60 font-bold text-white group-hover:border-emerald-500/40 transition text-xs md:text-sm shrink-0">$</div>
@@ -3633,7 +3633,7 @@ function renderAllAlerts() {
 								<span class="font-bold text-cyan-400 text-sm md:text-base tracking-wide">${ticker}</span>
 								${isCurrent ? '<span class="bg-emerald-500/20 text-cyan-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
 							</div>
-							<span class="font-bold ${activeCount > 0 ? 'text-cyan-400' : 'text-slate-500'}text-[10px] md:text-xs mt-0.5">${activeCount}Alert Aktif</span>
+							<span class="font-bold ${activeCount > 0 ? 'text-cyan-400' : 'text-slate-500'} text-[10px] md:text-xs mt-0.5">${activeCount} Alert Aktif</span>
 						</div>
 					</div>
 					<div class="flex items-center gap-3 md:gap-4 text-right">
@@ -3646,11 +3646,11 @@ function renderAllAlerts() {
 						</div>
 					</div>
 				</div>
-				<div id="alert-body-${ticker}" class="${hiddenClass}border-t border-slate-800/80 bg-slate-900/30 p-2 space-y-1.5">
+				<div id="alert-body-${ticker}" class="${hiddenClass} border-t border-slate-800/80 bg-slate-900/30 p-2 space-y-1.5">
 		`;
 
 		group.alerts.forEach((alertObj, index) => {
-			const targetPrice = alertObj.price || alertObj;
+			const targetPrice = alertObj.price || alertObj; 
 			const isActive = alertObj.active !== undefined ? alertObj.active : true;
 			const isTriggered = alertObj.triggered || false;
 			const labelText = alertObj.label || 'Target Price';
@@ -3676,10 +3676,10 @@ function renderAllAlerts() {
 			}
 
 			htmlContent += `
-				<div class="flex items-center justify-between bg-slate-900/60 p-2.5 rounded-r-lg ${rowBorder}hover:bg-slate-800 transition">
+				<div class="flex items-center justify-between bg-slate-900/60 p-2.5 rounded-r-lg ${rowBorder} hover:bg-slate-800 transition">
 					<div class="flex items-center gap-3">
 						<div>
-							<span class="text-[9px] ${badgeColor}block font-bold uppercase tracking-wider mb-0.5">${labelText}</span>
+							<span class="text-[9px] ${badgeColor} block font-bold uppercase tracking-wider mb-0.5">${labelText}</span>
 							<strong class="text-slate-200 text-xs md:text-sm">Rp ${targetPrice.toLocaleString('id-ID')}</strong>
 						</div>
 						${statusBadge}
@@ -3700,7 +3700,7 @@ async function clearAllAlerts() {
 	const isConfirmed = await showConfirm("Apakah Kamu yakin ingin menghapus seluruh riwayat Alert pada seluruh saham?");
 	if (isConfirmed) {
 		let keysToRemove = [];
-		for (let i = 0;i < localStorage.length;i++) {
+		for (let i = 0; i < localStorage.length; i++) {
 			const key = localStorage.key(i);
 			if (key && key.startsWith('alerts_')) keysToRemove.push(key);
 		}
@@ -3764,7 +3764,7 @@ function saveFinalEditedAlert() {
 
 	const now = new Date();
 	const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-	const dateStr = `${now.getDate()}${months[now.getMonth()]}${now.getFullYear().toString().slice(-2)}`;
+	const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear().toString().slice(-2)}`;
 
 	// Susun format data yang sesuai dengan sistem Alert utama
 	const newAlerts = [
@@ -3776,10 +3776,10 @@ function saveFinalEditedAlert() {
 
 	// Eksekusi fungsi simpan dari sistem utama
 	saveAlerts(tickerInput, newAlerts);
-	openAlertDropdowns.add(tickerInput);
+	openAlertDropdowns.add(tickerInput); 
 	renderAllAlerts();
 	
-	showToast(`Alert saham $${tickerInput}berhasil disesuaikan dan disimpan.`, 'success');
+	showToast(`Alert saham $${tickerInput} berhasil disesuaikan dan disimpan.`, 'success');
 	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 	
 	closeEditAlertModal();
@@ -3798,12 +3798,12 @@ function syncAlertsFromAI() {
 		sl = fibo.sl;
 		
 		// Tarik data resistance untuk kalkulasi TP custom
-		tp2 = roundToBEITick(res2 * 1.03, 'ceil');
+		tp2 = roundToBEITick(res2 * 1.03, 'ceil'); 
 	}
 
 	const now = new Date();
 	const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-	const dateStr = `${now.getDate()}${months[now.getMonth()]}${now.getFullYear().toString().slice(-2)}`;
+	const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear().toString().slice(-2)}`;
 
 	const syncTargets = [
 		{ price: sl, label: 'Stop Loss', active: true, triggered: false, date: dateStr },
@@ -3813,7 +3813,7 @@ function syncAlertsFromAI() {
 	];
 
 	saveAlerts(currentTicker, syncTargets);
-	openAlertDropdowns.add(currentTicker);
+	openAlertDropdowns.add(currentTicker); 
 	renderAllAlerts();
 	AudioFX.playSuccess();
 	showToast(`4 Target Harga AI ($${currentTicker}) berhasil disinkronkan ke Push Notification Alert!`);
@@ -3867,7 +3867,7 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 			const conditionMet = isSupportOrSL ? (currentPrice <= targetPrice) : (currentPrice >= targetPrice);
 
 			if (conditionMet) {
-				const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh area ${labelText}di Rp ${targetPrice.toLocaleString('id-ID')}`;
+				const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh area ${labelText} di Rp ${targetPrice.toLocaleString('id-ID')}`;
 				
 				// 1. Eksekusi Notifikasi Bawaan Aplikasi (Instant)
 				if (!muteNotifSound && typeof AudioFX !== 'undefined') {
@@ -3915,15 +3915,15 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 		const now = Date.now();
 		
 		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 10000) {
-			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker}meledak ${stockData.volRatio}x lipat! Harga baru naik ${stockData.changePct}%. Bandar indikasi kumpulin barang!`;
+			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} meledak ${stockData.volRatio}x lipat! Harga baru naik ${stockData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
 			// Eksekusi Notifikasi dengan logika mute
 			if (!muteNotifSound && typeof AudioFX !== 'undefined') {
-				AudioFX.playNotif();
+				AudioFX.playNotif(); 
 			}
 			
 			sendBrowserPushNotification(`STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
-			showToast(alertMsg, "info", 7000);
+			showToast(alertMsg, "info", 7000); 
 
 			// Tembak notifikasi paus langsung ke Telegram
 			const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume meledak <b>${stockData.volRatio}x lipat!</b>\nHarga naik <b>+${stockData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
@@ -3952,7 +3952,7 @@ async function fetchYahooTrending() {
 	];
 
 	let quotes = [];
-	for (let i = 0;i < proxies.length;i++) {
+	for (let i = 0; i < proxies.length; i++) {
 		try {
 			const response = await fetch(proxies[i], { signal: AbortSignal.timeout(3000) });
 			if (!response.ok) continue;
@@ -3966,7 +3966,7 @@ async function fetchYahooTrending() {
 	}
 
 	if (quotes.length === 0) {
-		quotes = [ { symbol: 'BBCA.JK' }, { symbol: 'BBRI.JK' }, { symbol: 'BMRI.JK' }, { symbol: 'AMMN.JK' }, { symbol: 'TLKM.JK' }];
+		quotes = [ { symbol: 'BBCA.JK' }, { symbol: 'BBRI.JK' }, { symbol: 'BMRI.JK' }, { symbol: 'AMMN.JK' }, { symbol: 'TLKM.JK' } ];
 	}
 
 	let html = `<div class="flex flex-wrap items-center gap-2 pt-1">
@@ -3976,8 +3976,8 @@ async function fetchYahooTrending() {
 	
 	quotes.forEach(q => {
 		const cleanTicker = q.symbol.replace('.JK', '');
-		html += `<button onclick="document.getElementById('stockSearch').value='${cleanTicker}';searchStock(true);" class="text-[9px] lg:text-[10px] bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-md transition font-bold cursor-pointer shadow-sm">
-			&dollar; ${cleanTicker}
+		html += `<button onclick="document.getElementById('stockSearch').value='${cleanTicker}'; searchStock(true);" class="text-[9px] lg:text-[10px] bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-md transition font-bold cursor-pointer shadow-sm">
+			&dollar;${cleanTicker}
 		</button>`;
 	});
 	html += `</div>`;
@@ -4021,7 +4021,7 @@ async function fetchRealtimeFundamentals(ticker) {
 		];
 
 		let result = null;
-		for (let i = 0;i < proxies.length;i++) {
+		for (let i = 0; i < proxies.length; i++) {
 			try {
 				const res = await fetch(proxies[i], { signal: AbortSignal.timeout(7000) });
 				if (!res.ok) continue;
@@ -4033,7 +4033,7 @@ async function fetchRealtimeFundamentals(ticker) {
 					break;
 				}
 			} catch (e) {
-				console.warn(`Proxy ${i}failed for fundamentals.`);
+				console.warn(`Proxy ${i} failed for fundamentals.`);
 			}
 		}
 
@@ -4158,7 +4158,7 @@ async function fetchStockNewsForAI(ticker) {
 			document.getElementById('aiBeritaList').innerHTML = beritaHTML;
 			localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), html: beritaHTML }));
 		} else {
-			document.getElementById('aiBeritaList').innerHTML = `<div>Belum ada rilis berita khusus untuk saham ${ticker}dalam 24 jam terakhir.</div>`;
+			document.getElementById('aiBeritaList').innerHTML = `<div>Belum ada rilis berita khusus untuk saham ${ticker} dalam 24 jam terakhir.</div>`;
 		}
 	} catch (e) {
 		document.getElementById('aiBeritaList').innerHTML = `<div>Gagal memuat berita terkini. Gunakan indikator teknikal pada chart.</div>`;
@@ -4216,7 +4216,7 @@ async function fetchStockNews(ticker) {
 	} catch (e) {}
 
 	if (hasNews) AudioFX.playSuccess();
-	else container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-4">Tidak ada berita khusus ditemukan untuk ${ticker}hari ini.</div>`;
+	else container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-4">Tidak ada berita khusus ditemukan untuk ${ticker} hari ini.</div>`;
 }
 
 async function fetchCorporateAction(ticker) {
@@ -4269,14 +4269,14 @@ async function fetchCorporateAction(ticker) {
 		}
 	} catch(e) {}
 
-	const query = encodeURIComponent(`${ticker}AND (dividen OR RUPS OR "right issue" OR "stock split" OR buyback OR tender OR IPO)`);
+	const query = encodeURIComponent(`${ticker} AND (dividen OR RUPS OR "right issue" OR "stock split" OR buyback OR tender OR IPO)`);
 	const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=id&gl=ID&ceid=ID:id`;
 	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 
 	try {
 		const response = await fetch(apiUrl);
 		const data = await response.json();
-		container.innerHTML = calendarUI;
+		container.innerHTML = calendarUI; 
 		
 		if (data.status === 'ok' && data.items && data.items.length > 0) {
 			data.items.slice(0, 9).forEach(item => {
@@ -4345,12 +4345,12 @@ function startBackgroundAutoCache() {
 		if (window.Worker) {
 			const bgWorker = new Worker('data-worker.js');
 			bgWorker.onmessage = function(e) {
-				const { status, ticker, rawData }= e.data;
+				const { status, ticker, rawData } = e.data;
 				if (status === 'success' && rawData) {
 					const parsedData = parseYahooDataGlobal(rawData, ticker);
 					if (parsedData) {
 						setCachedStockData(ticker, parsedData);
-						checkPriceAlertsRealtime(ticker, parsedData.price);
+						checkPriceAlertsRealtime(ticker, parsedData.price); 
 						checkWhaleAlertRealtime(ticker, parsedData);
 					}
 				} else if (status === 'done') {
@@ -4360,7 +4360,7 @@ function startBackgroundAutoCache() {
 
 			let activeTickers = new Set();
 			if (typeof currentTicker !== 'undefined') activeTickers.add(currentTicker);
-			for (let i = 0;i < localStorage.length;i++) {
+			for (let i = 0; i < localStorage.length; i++) {
 				const key = localStorage.key(i);
 				if (key && key.startsWith('alerts_')) {
 					const t = key.replace('alerts_', '');
@@ -4430,10 +4430,10 @@ function loadDeviceSystemInfo() {
 	// 5. Injeksi ke HTML (Batasi panjang karakter GPU jika terlalu panjang)
 	osEl.innerText = os;
 	browserEl.innerText = browser;
-	hwEl.innerText = `${cores}| RAM: ${ram}`;
+	hwEl.innerText = `${cores} | RAM: ${ram}`;
 	
 	// Membersihkan teks tipe GPU dari vendor yang berlebihan
-	gpu = gpu.replace(/ANGLE \(\vert{}\)|Direct3D.*|OpenGL.*/g, '').trim();
+	gpu = gpu.replace(/ANGLE \(\vert{}\)|Direct3D.*|OpenGL.*/g, '').trim(); 
 	gpuEl.innerText = gpu.length > 60 ? gpu.substring(0, 60) + "..." : gpu;
 	gpuEl.title = gpu; // Tooltip akan muncul jika tulisan terlalu panjang
 }
@@ -4483,7 +4483,7 @@ function triggerCuanCelebration() {
 		content.classList.remove('scale-50');
 		content.classList.add('scale-100');
 	}, 10);
-	setTimeout(() => { closeCuanCelebration();}, 2700);
+	setTimeout(() => { closeCuanCelebration(); }, 2700);
 }
 
 function closeCuanCelebration() {
@@ -4521,7 +4521,7 @@ function triggerLossCelebration() {
 		content.classList.remove('scale-50');
 		content.classList.add('scale-100');
 	}, 10);
-	setTimeout(() => { closeLossCelebration();}, 2700);
+	setTimeout(() => { closeLossCelebration(); }, 2700);
 }
 
 function closeLossCelebration() {
@@ -4546,7 +4546,7 @@ function checkUrlParamTicker() {
 }
 
 // ==========================================
-// 27. MULTI-TIMEFRAME AI ANALYSIS
+// 26. MULTI-TIMEFRAME AI ANALYSIS
 // ==========================================
 async function analyzeAITimeframe(tfLabel) {
 	const targetSymbol = `${currentTicker}.JK`;
@@ -4566,15 +4566,15 @@ async function analyzeAITimeframe(tfLabel) {
 
 	try {
 		// Konfigurasi Parameter (Yahoo Finance tidak mendukung native 3h dan 6h, maka kita agregasi dari data 60m/1h)
-		let apiInterval = '15m';
+		let apiInterval = '15m'; 
 		let apiRange = '5d';
 		let lookbackCandles = 2; // Default perbandingan 1 candle sebelumnya
 
-		if (tfLabel === '15m') { apiInterval = '15m';apiRange = '5d';}
-		else if (tfLabel === '30m') { apiInterval = '30m';apiRange = '5d';}
-		else if (tfLabel === '1h') { apiInterval = '60m';apiRange = '1mo';}
-		else if (tfLabel === '3h') { apiInterval = '60m';apiRange = '1mo';lookbackCandles = 3;} // Bandingkan harga sekarang dgn 3 jam (3 candle) lalu
-		else if (tfLabel === '6h') { apiInterval = '60m';apiRange = '1mo';lookbackCandles = 6;} // Bandingkan harga sekarang dgn 6 jam (6 candle) lalu
+		if (tfLabel === '15m') { apiInterval = '15m'; apiRange = '5d'; }
+		else if (tfLabel === '30m') { apiInterval = '30m'; apiRange = '5d'; }
+		else if (tfLabel === '1h') { apiInterval = '60m'; apiRange = '1mo'; }
+		else if (tfLabel === '3h') { apiInterval = '60m'; apiRange = '1mo'; lookbackCandles = 3; } // Bandingkan harga sekarang dgn 3 jam (3 candle) lalu
+		else if (tfLabel === '6h') { apiInterval = '60m'; apiRange = '1mo'; lookbackCandles = 6; } // Bandingkan harga sekarang dgn 6 jam (6 candle) lalu
 
 		const url = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=${apiInterval}&range=${apiRange}`;
 		const proxies = [
@@ -4588,8 +4588,8 @@ async function analyzeAITimeframe(tfLabel) {
 			try {
 				const res = await fetch(p, { signal: AbortSignal.timeout(6000) });
 				if (res.ok) { 
-					data = await res.json();
-					break;
+					data = await res.json(); 
+					break; 
 				}
 			} catch(e) {
 				console.warn(`Proxy gagal untuk timeframe: ${p}`);
@@ -4610,7 +4610,7 @@ async function analyzeAITimeframe(tfLabel) {
 
 		// Kalkulasi berdasarkan Lookback yang telah disesuaikan
 		const currentClose = closes[closes.length - 1];
-		const prevClose = closes[closes.length - lookbackCandles] || closes[0];
+		const prevClose = closes[closes.length - lookbackCandles] || closes[0]; 
 		
 		// Rerata volume sesuai jumlah rentang candle
 		const avgVol = volumes.slice(-lookbackCandles).reduce((a, b) => a + b, 0) / lookbackCandles;
@@ -4635,7 +4635,7 @@ async function analyzeAITimeframe(tfLabel) {
 				</div>
 				<div class="flex justify-between items-center mb-1.5">
 					<span class="text-slate-400">Trend Signal (${displayLabel}):</span>
-					<span class="font-bold ${signalColor}flex items-center gap-1"><i data-lucide="${iconTrend}" class="w-3.5 h-3.5"></i> ${trend}</span>
+					<span class="font-bold ${signalColor} flex items-center gap-1"><i data-lucide="${iconTrend}" class="w-3.5 h-3.5"></i> ${trend}</span>
 				</div>
 				<div class="flex justify-between items-center">
 					<span class="text-slate-400">Momentum Volume:</span>
@@ -4682,12 +4682,12 @@ function calculateAveraging() {
 	}
 
 	document.getElementById('avg-result-price').innerText = `Rp ${Math.round(newAvgPrice).toLocaleString('id-ID')}`;
-	document.getElementById('avg-result-lot').innerText = `${totalLot.toLocaleString('id-ID')}Lot`;
+	document.getElementById('avg-result-lot').innerText = `${totalLot.toLocaleString('id-ID')} Lot`;
 	document.getElementById('avg-result-fund').innerText = `Rp ${Math.round(newTotalValue).toLocaleString('id-ID')}`;
 }
 
 // ==========================================
-// 28.B KALKULATOR TRAILING STOP & PARSIAL PROFIT
+// 27. KALKULATOR TRAILING STOP & PARSIAL PROFIT
 // ==========================================
 function calculateTrailingStop() {
 	const avgPrice = parseFloat(document.getElementById('ts-avg-price').value) || 0;
@@ -4729,19 +4729,19 @@ function calculateTrailingStop() {
 	const totalProfit = profitTP1 + profitTP2;
 
 	resProfit1.innerText = `Rp ${Math.round(profitTP1).toLocaleString('id-ID')}`;
-	resLotHold.innerText = `${lotTP2.toLocaleString('id-ID')}Lot`;
+	resLotHold.innerText = `${lotTP2.toLocaleString('id-ID')} Lot`;
 	resNewSL.innerText = `Rp ${newTrailingStop.toLocaleString('id-ID')}`;
 	resTotalProfit.innerText = `Rp ${Math.round(totalProfit).toLocaleString('id-ID')}`;
 
 	descEl.innerHTML = `
-		<strong class="text-emerald-400">Skenario Risk-Free:</strong> Saat harga menyentuh TP1 (Rp ${tp1Price.toLocaleString('id-ID')}), jual <strong class="text-white">${lotTP1}Lot</strong> untuk mengamankan modal dan profit. 
-		Sisa <strong class="text-white">${lotTP2}Lot</strong> di-<i>hold</i> menuju TP2 (Rp ${tp2Price.toLocaleString('id-ID')}) dengan memindahkan Stop Loss menjadi Trailing Stop ke titik impas di <strong class="text-white">Rp ${newTrailingStop.toLocaleString('id-ID')}</strong>. 
+		<strong class="text-emerald-400">Skenario Risk-Free:</strong> Saat harga menyentuh TP1 (Rp ${tp1Price.toLocaleString('id-ID')}), jual <strong class="text-white">${lotTP1} Lot</strong> untuk mengamankan modal dan profit. 
+		Sisa <strong class="text-white">${lotTP2} Lot</strong> di-<i>hold</i> menuju TP2 (Rp ${tp2Price.toLocaleString('id-ID')}) dengan memindahkan Stop Loss menjadi Trailing Stop ke titik impas di <strong class="text-white">Rp ${newTrailingStop.toLocaleString('id-ID')}</strong>. 
 		Jika harga gagal naik dan berbalik menyentuh modal, sisa posisi tertutup tanpa ada risiko kerugian tambahan.
 	`;
 }
 
 // ==========================================
-// LIVE MACRO & KOMODITAS GLOBAL
+// 28. LIVE MACRO & KOMODITAS GLOBAL
 // ==========================================
 async function loadLiveMacro() {
 	const container = document.getElementById('macro-container');
@@ -4814,7 +4814,7 @@ async function loadLiveMacro() {
 			}
 
 			htmlContent += `
-				<div class="p-3 rounded-xl border ${bgClass}flex flex-col justify-between hover:bg-slate-800/80 transition-colors shadow-sm">
+				<div class="p-3 rounded-xl border ${bgClass} flex flex-col justify-between hover:bg-slate-800/80 transition-colors shadow-sm">
 					<div class="flex items-start justify-between mb-2">
 						<div class="flex items-center gap-2">
 							<div class="p-1.5 rounded-lg bg-slate-900 border border-slate-700/50 shadow-inner">
@@ -4901,9 +4901,9 @@ async function startBSJPProcess() {
 			const BATCH_SIZE = 20;
 			let maxBatchLimit = 0;
 
-			for (let i = 0;i < remainingWatchlist.length;i += BATCH_SIZE) {
+			for (let i = 0; i < remainingWatchlist.length; i += BATCH_SIZE) {
 				maxBatchLimit++;
-				if (maxBatchLimit > 3) break;
+				if (maxBatchLimit > 3) break; 
 
 				const batch = remainingWatchlist.slice(i, i + BATCH_SIZE);
 				// Gunakan force fetch = true agar memaksa update data baru dari API
@@ -4994,7 +4994,7 @@ function renderBSJPItems(dataList) {
 					</div>
 					<div class="flex flex-col">
 						<div class="flex items-center gap-2">
-							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar; ${item.ticker}</span>
+							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
 							<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[9px] bg-orange-600/20 hover:bg-orange-500 hover:text-white text-orange-400 border border-orange-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
@@ -5009,7 +5009,7 @@ function renderBSJPItems(dataList) {
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50"></div>
 						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Sore (Clossing)</span>
-						<span class="font-bold text-amber-400">Rp ${entryAman.toLocaleString('id-ID')}- ${entryAgresif.toLocaleString('id-ID')}</span>
+						<span class="font-bold text-amber-400">Rp ${entryAman.toLocaleString('id-ID')} - ${entryAgresif.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>
@@ -5171,9 +5171,6 @@ fetchYahooTrending();
 loadDeviceSystemInfo();
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Fungsi lain yang mungkin sudah ada...
-    
-    // Panggil makro otomatis saat halaman dimuat
     loadLiveMacro();
 });
 
