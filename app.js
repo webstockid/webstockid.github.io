@@ -1622,8 +1622,8 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 				<tr class="${rowClass} group">
 					<td class="p-4 align-middle">
 						<div class="flex items-center gap-3">
-							<div class="w-8 h-8 rounded-lg ${isCurrent ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400' : 'bg-slate-800 border border-slate-700 text-slate-400'} flex items-center justify-center shrink-0 shadow-inner">
-								<i class="fa-solid fa-building text-xs"></i>
+							<div class="w-8 h-8 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+								<img src="https://s3-symbol-logo.tradingview.com/idx/${data.ticker.toLowerCase()}.svg" alt="${data.ticker}" class="w-full h-full object-contain bg-slate-900" onerror="this.onerror=null; this.src='https://assets.tradingview.com/country/Indonesia/${data.ticker}.svg'; this.onerror=function(){this.parentElement.innerHTML='<span class=\\'text-[10px] font-bold text-emerald-400\\'>${data.ticker.substring(0,3)}</span>';};">
 							</div>
 							<div class="flex flex-col">
 								<strong class="text-emerald-400 text-sm tracking-wide">&dollar;${data.ticker}</strong>
@@ -2006,8 +2006,8 @@ function initSearchSuggestions() {
 		if (matches.length > 0) {
 			box.innerHTML = matches.map(ticker => `
 				<div onclick="selectSuggestion('${ticker}')" class="px-4 py-2.5 hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-200 text-xs font-bold cursor-pointer transition flex items-center justify-between group">
-					<span class="flex items-center gap-2">
-						<i class="fa-solid fa-circle-arrow-right text-[10px] text-emerald-400 opacity-60 group-hover:opacity-100"></i>
+					<span class="flex items-center gap-2.5">
+						<img src="https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg" alt="${ticker}" class="w-5 h-5 rounded-md object-contain bg-slate-900 border border-slate-700" onerror="this.style.display='none'">
 						${ticker}
 					</span>
 					<span class="text-[9px] text-slate-500 group-hover:text-emerald-400">IDX</span>
@@ -2255,8 +2255,8 @@ function renderRadarItems(dataList) {
 				
 				<!-- Header Card Saham -->
 				<div class="flex items-center gap-3 border-b border-slate-800/80 pb-3 mt-1">
-					<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center text-amber-500 font-bold shrink-0 text-sm shadow-inner">
-						#${index + 1}
+					<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+						<img src="https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg" alt="${ticker}" class="w-full h-full object-contain bg-slate-900" onerror="this.onerror=null; this.src='https://assets.tradingview.com/country/Indonesia/${ticker}.svg'; this.onerror=function(){this.parentElement.innerHTML='<span class=\\'text-xs font-bold text-amber-500\\'>${ticker.substring(0,3)}</span>';};">
 					</div>
 					<div class="flex flex-col w-full">
 						<div class="flex items-center gap-2">
@@ -2489,8 +2489,8 @@ async function runCustomScreener() {
 					
 					<!-- Header Card Saham -->
 					<div class="flex items-center gap-3 border-b border-slate-800/80 pb-3 mt-1">
-						<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center text-blue-500 font-bold shrink-0 text-sm shadow-inner">
-							#${index + 1}
+						<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+							<img src="https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg" alt="${item.ticker}" class="w-full h-full object-contain bg-slate-900" onerror="this.onerror=null; this.src='https://assets.tradingview.com/country/Indonesia/${item.ticker}.svg'; this.onerror=function(){this.parentElement.innerHTML='<span class=\\'text-xs font-bold text-blue-500\\'>${item.ticker.substring(0,3)}</span>';};">
 						</div>
 						<div class="flex flex-col w-full">
 							<div class="flex items-center gap-2">
@@ -3076,8 +3076,8 @@ async function scanWhalesData() {
 						<!-- Header Card Saham -->
 						<div class="flex items-start justify-between border-b border-slate-700/60 pb-4 mb-4 mt-1 relative z-10">
 							<div class="flex items-center gap-3.5">
-								<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center text-slate-200 font-black text-lg shadow-inner relative overflow-hidden shrink-0">
-									<span class="relative z-10">#${index + 1}</span>
+								<div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center overflow-hidden shadow-inner relative shrink-0">
+									<img src="https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg" alt="${item.ticker}" class="w-full h-full object-contain bg-slate-900" onerror="this.onerror=null; this.src='https://assets.tradingview.com/country/Indonesia/${item.ticker}.svg'; this.onerror=function(){this.parentElement.innerHTML='<span class=\\'text-xs font-bold text-fuchsia-400\\'>${item.ticker.substring(0,3)}</span>';};">
 								</div>
 								<div class="flex flex-col">
 									<div class="flex items-center gap-2.5">
@@ -3615,7 +3615,9 @@ function renderAllAlerts() {
 			<div class="bg-slate-950/10 rounded-xl border ${borderHighlight} overflow-hidden transition-all duration-200 col-span-1 md:col-span-2 lg:col-span-3">
 				<div onclick="toggleAlertAccordion('${ticker}')" class="p-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-900/80 transition select-none group">
 					<div class="flex items-center gap-3 md:gap-4">
-						<div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-slate-900 flex items-center justify-center border border-slate-700/60 font-bold text-white group-hover:border-emerald-500/40 transition text-xs md:text-sm shrink-0">$</div>
+						<div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center overflow-hidden border border-slate-700/60 group-hover:border-emerald-500/40 transition shrink-0">
+							<img src="https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg" alt="${ticker}" class="w-full h-full object-contain bg-slate-900" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\\'text-[10px] font-bold text-white\\'>$</span>';">
+						</div>
 						<div class="flex flex-col">
 							<div class="flex items-center gap-2">
 								<span class="font-bold text-cyan-400 text-sm md:text-base tracking-wide">${ticker}</span>
@@ -3623,7 +3625,7 @@ function renderAllAlerts() {
 							</div>
 							<span class="font-bold ${activeCount > 0 ? 'text-cyan-400' : 'text-slate-500'} text-[10px] md:text-xs mt-0.5">${activeCount} Alert Aktif</span>
 						</div>
-					</div>
+ 					</div>
 					<div class="flex items-center gap-3 md:gap-4 text-right">
 						<div class="flex flex-col items-end">
 							<span class="text-[9px] md:text-[10px] text-slate-400">Tgl Dibuat</span>
@@ -4943,8 +4945,8 @@ function renderBSJPItems(dataList) {
 				
 				<!-- Header Card Saham (Diberi pr-24 agar tidak bertabrakan dengan badge absolute) -->
 				<div class="flex items-center gap-3 border-b border-slate-800/80 pb-3 mt-1">
-					<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center text-orange-500 font-bold shrink-0 text-sm shadow-inner">
-						#${index + 1}
+					<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+						<img src="https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg" alt="${item.ticker}" class="w-full h-full object-contain bg-slate-900" onerror="this.onerror=null; this.src='https://assets.tradingview.com/country/Indonesia/${item.ticker}.svg'; this.onerror=function(){this.parentElement.innerHTML='<span class=\\'text-xs font-bold text-orange-500\\'>${item.ticker.substring(0,3)}</span>';};">
 					</div>
 					<div class="flex flex-col w-full pr-24">
 						<div class="flex items-center gap-2 flex-wrap">
