@@ -4911,45 +4911,44 @@ async function startBSJPProcess() {
 
 function renderBSJPItems(dataList) {
 	const container = document.getElementById('bsjpListContainer');
-	
-	const sortedData = [...dataList].sort((a, b) => b.volRatio - a.volRatio);
+	const sorted = [...dataList].sort((a, b) => b.volRatio - a.volRatio);
 	let html = '';
 
-	sortedData.forEach((item, index) => {
+	if (sorted.length === 0) {
+		container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10">Tidak ditemukan saham yang cocok untuk strategi BSJP hari ini.</div>`;
+		return;
+	}
+
+	sorted.forEach((item, index) => {
 		const price = roundToBEITick(item.price);
-		
-		// 1. Dynamic Fibo
 		const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
-		const entryAman = fibo.entryLow;
-		const entryAgresif = fibo.entryHigh;
-		
-		const stopLoss = roundToBEITick(fibo.sl * 0.99, 'floor'); //0.98
-		const tp1 = roundToBEITick(fibo.res1 * 1.03, 'ceil');
-		const tp2 = roundToBEITick(fibo.res2 * 1.03, 'ceil');
-		
-		const riskPct = price > stopLoss ? (((price - stopLoss) / price) * 100).toFixed(2) : 0;
-		const rewardPct = tp1 > price ? (((tp1 - price) / price) * 100).toFixed(2) : 0;
-		
+		let entryLow = fibo.entryLow;
+		let entryHigh = fibo.entryHigh;
+		let sl = fibo.sl;
+		let tp1 = fibo.res1;
+		let tp2 = roundToBEITick(fibo.res2 * 1.03, 'ceil');
+
+		let alasanBSJP = `Lonjakan volume mencapai <strong>${item.volRatio}x lipat</strong> dari rata-rata dengan kenaikan harga <strong>+${item.changePct}%</strong>. Sangat potensial untuk akumulasi sore dan dilepas saat pembukaan gap up pagi hari.`;
+
 		html += `
 			<div class="bg-slate-950/30 p-4 lg:p-5 rounded-xl border border-slate-700/60 hover:border-orange-500/50 transition-colors duration-300 relative shadow-sm flex flex-col justify-between">
-				<!-- Badge Potensi Profit -->
-				<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l from-orange-600/30 to-amber-500/10 border-b border-l border-orange-500/30 rounded-bl-xl rounded-tr-xl text-[10px] font-bold text-orange-400 flex items-center gap-1.5 shadow-sm">
-					<i data-lucide="trending-up" class="w-3 h-3"></i> Potensi TP Pagi: +${rewardPct}%
+				<!-- Badge Filter Match -->
+				<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l from-orange-600/30 to-orange-500/10 border-b border-l border-orange-500/30 rounded-bl-xl rounded-tr-xl text-[10px] font-bold text-orange-400 flex items-center gap-1.5 shadow-sm">
+					<i data-lucide="sunset" class="w-3.5 h-3.5"></i> BSJP Potential
 				</div>
 				
-				<!-- Header Card Saham -->
+				<!-- Header Card Saham (Persentase di Samping Kanan Ticker) -->
 				<div class="flex items-center gap-3 border-b border-slate-800/80 pb-3 mt-1">
 					<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center text-orange-500 font-bold shrink-0 text-sm shadow-inner">
 						#${index + 1}
 					</div>
-					<div class="flex flex-col">
-						<div class="flex items-center gap-2">
+					<div class="flex flex-col w-full">
+						<div class="flex items-center justify-between w-full pr-14">
 							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
-							<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[9px] bg-orange-600/20 hover:bg-orange-500 hover:text-white text-orange-400 border border-orange-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
+							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-2 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm shrink-0">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
 							Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
-							<span class="text-emerald-400 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded ml-1 border border-emerald-500/20">+${item.changePct}%</span>
 						</span>
 					</div>
 				</div>
@@ -4958,52 +4957,46 @@ function renderBSJPItems(dataList) {
 				<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs mt-3">
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50"></div>
-						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Sore (Clossing)</span>
-						<span class="font-bold text-amber-400">Rp ${entryAman.toLocaleString('id-ID')} - ${entryAgresif.toLocaleString('id-ID')}</span>
+						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Sore</span>
+						<span class="font-bold text-amber-400">Rp ${entryLow.toLocaleString('id-ID')} - ${entryHigh.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>
-						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Target Pagi (TP1-TP2)</span>
+						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Target Pagi (1-3%)</span>
 						<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50"></div>
-						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="coins" class="w-3 h-3 text-blue-400"></i> Valuasi (Transaksi)</span>
-						<span class="font-bold text-blue-400">${formatValuationIDR(item.currentValuation)}</span>
+						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="activity" class="w-3 h-3 text-blue-400"></i> Vol Spike</span>
+						<span class="font-bold text-blue-400">${item.volRatio}x Rerata</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-900/30 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
-						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss (Risk)</span>
-						<span class="font-bold text-rose-400">&lt; Rp ${stopLoss.toLocaleString('id-ID')} (-${riskPct}%)</span>
+						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss</span>
+						<span class="font-bold text-rose-400">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
 					</div>
 				</div>
-				
-				<!-- Keterangan Detail Indikator -->
+
+				<!-- Keterangan Detail Indikator (Dipertahankan) -->
 				<div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800 text-[10px] lg:text-[11px] text-slate-300 leading-relaxed space-y-2 mt-3">
-					<span class="text-amber-400 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
-						<i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> ANALISIS TEKNIKAL BSJP:
+					<span class="text-orange-400 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
+						<i data-lucide="sunset" class="w-3.5 h-3.5"></i> ANALISIS STRATEGI BSJP:
 					</span>
-					<ul class="space-y-1.5 mt-1 list-none">
-						<li class="flex gap-2">
-							<i data-lucide="zap" class="w-3.5 h-3.5 text-blue-400 mt-0.5 shrink-0"></i>
-							<span><strong class="text-blue-400">Lonjakan Volume:</strong> Terjadi akumulasi sebesar <strong>${item.volRatio}x</strong> dari rata-rata harian yang menjamin ketersediaan likuiditas paginya.</span>
-						</li>
-						<li class="flex gap-2">
-							<i data-lucide="trending-up" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i>
-							<span><strong class="text-emerald-400">Posisi Tren:</strong> Harga ditutup di atas garis Moving Average 5 (Rp ${item.ma5.toLocaleString('id-ID')}). Tren jangka pendek valid ke atas.</span>
-						</li>
-						<li class="flex gap-2">
-							<i data-lucide="crosshair" class="w-3.5 h-3.5 text-orange-400 mt-0.5 shrink-0"></i>
-							<span><strong class="text-orange-400">Skema Eksekusi:</strong> Antre Beli sore hari di dekat harga <i>last</i>. Jika besok pagi terjadi <i>Gap Up</i>, langsung pasang <i>Trailing Stop</i> untuk mengunci profit.</span>
-						</li>
-					</ul>
+					<p class="mt-1">${alasanBSJP}</p>
 				</div>
+
+				<!-- Tombol Buka Chart di Bawah Memanjang -->
+				<button onclick="selectTickerFromRadar('${item.ticker}')" class="mt-4 w-full bg-slate-800/80 hover:bg-orange-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-orange-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
+					<span>Buka Chart & Detail AI</span>
+					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+				</button>
 			</div>
 		`;
 	});
 
 	container.innerHTML = html;
 	if (window.lucide) lucide.createIcons();
+	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 }
 
 // ==========================================
