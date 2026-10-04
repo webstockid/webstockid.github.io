@@ -4915,6 +4915,11 @@ function renderBSJPItems(dataList) {
 	const sortedData = [...dataList].sort((a, b) => b.volRatio - a.volRatio);
 	let html = '';
 
+	if (sortedData.length === 0) {
+		container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10">Tidak ditemukan saham yang cocok untuk strategi BSJP hari ini.</div>`;
+		return;
+	}
+
 	sortedData.forEach((item, index) => {
 		const price = roundToBEITick(item.price);
 		
@@ -4923,7 +4928,7 @@ function renderBSJPItems(dataList) {
 		const entryAman = fibo.entryLow;
 		const entryAgresif = fibo.entryHigh;
 		
-		const stopLoss = roundToBEITick(fibo.sl * 0.99, 'floor'); //0.98
+		const stopLoss = roundToBEITick(fibo.sl * 0.99, 'floor');
 		const tp1 = roundToBEITick(fibo.res1 * 1.03, 'ceil');
 		const tp2 = roundToBEITick(fibo.res2 * 1.03, 'ceil');
 		
@@ -4942,14 +4947,13 @@ function renderBSJPItems(dataList) {
 					<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center text-orange-500 font-bold shrink-0 text-sm shadow-inner">
 						#${index + 1}
 					</div>
-					<div class="flex flex-col">
-						<div class="flex items-center gap-2">
+					<div class="flex flex-col w-full">
+						<div class="flex items-center justify-between w-full pr-12">
 							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
-							<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[9px] bg-orange-600/20 hover:bg-orange-500 hover:text-white text-orange-400 border border-orange-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
+							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-2 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm shrink-0">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
 							Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
-							<span class="text-emerald-400 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded ml-1 border border-emerald-500/20">+${item.changePct}%</span>
 						</span>
 					</div>
 				</div>
@@ -4978,7 +4982,7 @@ function renderBSJPItems(dataList) {
 					</div>
 				</div>
 				
-				<!-- Keterangan Detail Indikator -->
+				<!-- Keterangan Detail Indikator (ANALISIS TEKNIKAL BSJP) -->
 				<div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800 text-[10px] lg:text-[11px] text-slate-300 leading-relaxed space-y-2 mt-3">
 					<span class="text-amber-400 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
 						<i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> ANALISIS TEKNIKAL BSJP:
@@ -4998,6 +5002,12 @@ function renderBSJPItems(dataList) {
 						</li>
 					</ul>
 				</div>
+
+				<!-- Tombol Buka Chart di Bagian Bawah Memanjang -->
+				<button onclick="selectTickerFromCustom('${item.ticker}')" class="mt-4 w-full bg-slate-800/80 hover:bg-orange-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-orange-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
+					<span>Buka Chart & Detail AI</span>
+					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+				</button>
 			</div>
 		`;
 	});
