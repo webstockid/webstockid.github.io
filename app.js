@@ -295,10 +295,10 @@ function applyNotifSnooze(val, isInit = false) {
 	if (!isInit) {
 		let target = 0;
 		const now = Date.now();
-		if (value === 1) target = now + (1 * 60 * 60 * 1000);// 1 Jam
-		else if (value === 2) target = now + (3 * 60 * 60 * 1000);// 3 Jam
-		else if (value === 3) target = now + (8 * 60 * 60 * 1000);// 8 Jam
-		else if (value === 4) target = now + (24 * 60 * 60 * 1000);// 1 Hari
+		if (value === 1) target = now + (1 * 60 * 60 * 1000); // 1 Jam
+		else if (value === 2) target = now + (3 * 60 * 60 * 1000); // 3 Jam
+		else if (value === 3) target = now + (8 * 60 * 60 * 1000); // 8 Jam
+		else if (value === 4) target = now + (24 * 60 * 60 * 1000); // 1 Hari
 		
 		localStorage.setItem('stockid_notif_snooze_val', value);
 		localStorage.setItem('stockid_notif_snooze_target', target);
@@ -443,9 +443,9 @@ function getDynamicFiboLevels(high, low, currentPrice) {
 	const aboveLevels = levels.filter(l => l > currentPrice).sort((a, b) => a - b);
 
 	// Penentuan Mutlak: Support / Entry & SL (Wajib di Bawah Harga)
-	let entryHighRaw = belowLevels.length > 0 ? belowLevels[0] : currentPrice * 0.96;//98
-	let entryLowRaw = belowLevels.length > 1 ? belowLevels[1] : entryHighRaw * 0.95;//97
-	let slRaw = belowLevels.length > 2 ? belowLevels[2] : entryLowRaw * 0.93;//96
+	let entryHighRaw = belowLevels.length > 0 ? belowLevels[0] : currentPrice * 0.96; //98
+	let entryLowRaw = belowLevels.length > 1 ? belowLevels[1] : entryHighRaw * 0.95; //97
+	let slRaw = belowLevels.length > 2 ? belowLevels[2] : entryLowRaw * 0.93; //96
 
 	// Penentuan Mutlak: Target & Resistance (Wajib di Atas Harga)
 	let res1Raw = aboveLevels.length > 0 ? aboveLevels[0] : currentPrice * 1.04;
@@ -1304,53 +1304,53 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			actionDesc = "Pergerakan saham biasa saja, indikator harga dan volume berjalan normal. Disarankan pantau konfirmasi lanjutan.";
 		}
 
-		let bandarStatus = "<span class='inline-flex items-center gap-0.5'>NETRAL <i data-lucide='scale' class='w-4 h-4'></i></span>";
+		let bandarStatus = "<span class='inline-flex items-center gap-0.5'>NETRAL <i data-lucide='scale' class='w-3 h-3'></i></span>";
 		let bandarColor = "text-yellow-400";
 		let bandarBarColor = "from-yellow-600 via-yellow-400 to-amber-400 shadow-[0_0_15px_rgba(148,163,184,0.4)]";
 		let bandarPct = 50;
 
 		if (stockData.changePct > 2 && stockData.volRatio > 3) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Masif Akumulasi <i data-lucide='rabbit' class='w-4 h-4'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Masif Akumulasi <i data-lucide='rabbit' class='w-3 h-3'></i></span>";
 			bandarColor = "text-green-400";
 			bandarBarColor = "from-green-600 via-green-400 to-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 95;
 		} else if (stockData.changePct > 2 && stockData.volRatio > 2) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Akumulasi <i data-lucide='radio' class='w-4 h-4'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Akumulasi <i data-lucide='radio' class='w-3 h-3'></i></span>";
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 85;
 		} else if (stockData.changePct > 1 && stockData.volRatio > 1.5) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Akumulasi <i data-lucide='radio' class='w-4 h-4'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Akumulasi <i data-lucide='radio' class='w-3 h-3'></i></span>";
 			bandarColor = "text-emerald-400";
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 75;
 		} else if (stockData.changePct >= -2 && stockData.volRatio > 1) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-4 h-4'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-3 h-3'></i></span>";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 			bandarPct = 65;
 		} else if (stockData.changePct >= -4 && stockData.volRatio > 0.5) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-4 h-4'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-3 h-3'></i></span>";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 			bandarPct = 55;
 		} else if (stockData.changePct >= -4 && stockData.volRatio > 1) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Support <i data-lucide='hand-fist' class='w-4 h-4'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Support <i data-lucide='hand-fist' class='w-3 h-3'></i></span>";
 			bandarColor = "text-cyan-400";
 			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
 			bandarPct = 45;
 		} else if (stockData.changePct >= -8 && stockData.volRatio > 0.5) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Support <i data-lucide='hand-fist' class='w-4 h-4'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Support <i data-lucide='hand-fist' class='w-3 h-3'></i></span>";
 			bandarColor = "text-cyan-400";
 			bandarBarColor = "from-cyan-600 via-cyan-400 to-blue-400 shadow-[0_0_15px_rgba(56,189,248,0.4)]";
 			bandarPct = 35;
 		} else if (stockData.changePct < -4 && stockData.price < stockData.ma20) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Distribusi Kuat <i data-lucide='siren' class='w-4 h-4'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Distribusi Kuat <i data-lucide='siren' class='w-3 h-3'></i></span>";
 			bandarColor = "text-rose-400";
 			bandarBarColor = "from-rose-600 via-rose-400 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)]";
 			bandarPct = 25;
 		} else if (stockData.changePct < -8 && stockData.price < stockData.ma20) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Distribusi Kuat <i data-lucide='siren' class='w-4 h-4'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Distribusi Kuat <i data-lucide='siren' class='w-3 h-3'></i></span>";
 			bandarColor = "text-rose-400";
 			bandarBarColor = "from-rose-600 via-rose-400 to-red-400 shadow-[0_0_20px_rgba(244,63,94,0.5)]";
 			bandarPct = 15;
@@ -1410,7 +1410,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	let sup1 = fibo.entryLow, sup2 = fibo.entryHigh;
 	let sl = fibo.sl;
 	let tp1 = res1;
-	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');// +3% di atas resistance kedua
+	let tp2 = roundToBEITick(res2 * 1.03, 'ceil'); // +3% di atas resistance kedua
 
 	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')}- ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')}- ${res2.toLocaleString('id-ID')}`;
@@ -1594,7 +1594,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 				const maxPrice = basePrice * 1.25;
 				const sampleCandidates = uniqueRadarWatchlist.filter(t => t !== targetTicker).sort(() => 0.5 - Math.random());
 				
-				const BATCH_SIZE = 15;//8
+				const BATCH_SIZE = 15; //8
 				for (let i = 0;i < sampleCandidates.length;i += BATCH_SIZE) {
 					const batch = sampleCandidates.slice(i, i + BATCH_SIZE);
 					const fetchedBatch = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
@@ -1928,7 +1928,7 @@ function autoFillRRRFromAI() {
 
 		document.getElementById('rrrEntry').value = fibo.entryLow;
 		document.getElementById('rrrSL').value = fibo.sl;
-		document.getElementById('rrrTP').value = customTP2;// AI Setup memprioritaskan TP2 custom
+		document.getElementById('rrrTP').value = customTP2; // AI Setup memprioritaskan TP2 custom
 		
 		calculateSmartRRR();
 		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
@@ -2175,7 +2175,7 @@ async function startRadarProcess() {
 	}
 	
 	const validData = [];
-	const BATCH_SIZE = 20;//10
+	const BATCH_SIZE = 20; //10
 
 	for (let i = 0;i < shuffled.length;i += BATCH_SIZE) {
 		const batch = shuffled.slice(i, i + BATCH_SIZE);
@@ -3491,7 +3491,7 @@ async function testTelegramConnection(token, chatId) {
 async function sendTelegramAlert(message) {
 	const snoozeUntil = localStorage.getItem('telegram_snooze_until');
 	if (snoozeUntil && Date.now() < parseInt(snoozeUntil)) {
-		return;// Eksekusi berhenti, notifikasi ditunda
+		return; // Eksekusi berhenti, notifikasi ditunda
 	}
 
 	const botToken = localStorage.getItem('telegram_bot_token')?.trim();
@@ -4416,7 +4416,7 @@ function loadDeviceSystemInfo() {
 	
 	gpu = gpu.replace(/ANGLE \(\vert{}\)|Direct3D.*|OpenGL.*/g, '').trim();
 	gpuEl.innerText = gpu.length > 60 ? gpu.substring(0, 60) + "..." : gpu;
-	gpuEl.title = gpu;// Tooltip akan muncul jika tulisan terlalu panjang
+	gpuEl.title = gpu; // Tooltip akan muncul jika tulisan terlalu panjang
 }
 
 const cuanImages = [
@@ -4592,7 +4592,7 @@ async function analyzeAITimeframe(tfLabel) {
 		const prevClose = closes[closes.length - lookbackCandles] || closes[0];
 		
 		const avgVol = volumes.slice(-lookbackCandles).reduce((a, b) => a + b, 0) / lookbackCandles;
-		const currentVol = volumes.slice(-(Math.ceil(lookbackCandles / 2))).reduce((a, b) => a + b, 0) / Math.ceil(lookbackCandles / 2);// Volume terbaru relatif
+		const currentVol = volumes.slice(-(Math.ceil(lookbackCandles / 2))).reduce((a, b) => a + b, 0) / Math.ceil(lookbackCandles / 2); // Volume terbaru relatif
 
 		const changePct = (((currentClose - prevClose) / prevClose) * 100).toFixed(2);
 		let trend = currentClose > prevClose ? "BULLISH" : (currentClose < prevClose ? "BEARISH" : "SIDEWAYS");
@@ -4942,7 +4942,7 @@ function renderBSJPItems(dataList) {
 		const entryAgresif = fibo.entryHigh;
 		
 		// Penyesuaian TP naik 3% dan SL turun 2%
-		const stopLoss = roundToBEITick(fibo.sl * 0.99, 'floor');//0.98
+		const stopLoss = roundToBEITick(fibo.sl * 0.99, 'floor'); //0.98
 		const tp1 = roundToBEITick(fibo.res1 * 1.03, 'ceil');
 		const tp2 = roundToBEITick(fibo.res2 * 1.03, 'ceil');
 		
@@ -5091,7 +5091,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         if (shouldUpdate) {
-            setTimeout(applyGlobalButtonGradients, 1000);
+            setTimeout(applyGlobalButtonGradients, 100);
         }
     });
     
