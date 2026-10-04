@@ -2209,7 +2209,6 @@ function renderRadarItems(dataList) {
 		const price = roundToBEITick(item.price);
 		const changePct = item.changePct;
 		
-		// 1. Dynamic Fibo
 		const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
 		let entryLow = fibo.entryLow;
 		let entryHigh = fibo.entryHigh;
@@ -2259,14 +2258,13 @@ function renderRadarItems(dataList) {
 					<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center text-amber-500 font-bold shrink-0 text-sm shadow-inner">
 						#${index + 1}
 					</div>
-					<div class="flex flex-col">
+					<div class="flex flex-col w-full">
 						<div class="flex items-center gap-2">
 							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${ticker}</span>
-							<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] bg-amber-500/20 hover:bg-amber-500 hover:text-black text-amber-400 border border-amber-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
+							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
 							Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
-							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded ml-1 border">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 						</span>
 					</div>
 				</div>
@@ -2302,6 +2300,11 @@ function renderRadarItems(dataList) {
 					</span>
 					<p class="mt-1">${alasanTeknikal}</p>
 				</div>
+
+				<button onclick="selectTickerFromRadar('${ticker}')" class="mt-4 w-full bg-slate-800/80 hover:bg-amber-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-amber-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
+					<span>Buka Chart & Detail AI</span>
+					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+				</button>
 			</div>
 		`;
 	});
@@ -2440,7 +2443,6 @@ async function runCustomScreener() {
 		passedItems.forEach((item, index) => {
 			const price = roundToBEITick(item.price);
 			
-			// 1. Dynamic Fibo
 			const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
 			let entryLow = fibo.entryLow;
 			let entryHigh = fibo.entryHigh;
@@ -2490,14 +2492,13 @@ async function runCustomScreener() {
 						<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center text-blue-500 font-bold shrink-0 text-sm shadow-inner">
 							#${index + 1}
 						</div>
-						<div class="flex flex-col">
+						<div class="flex flex-col w-full">
 							<div class="flex items-center gap-2">
 								<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
-								<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[9px] bg-blue-600/20 hover:bg-blue-500 hover:text-white text-blue-400 border border-blue-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
+								<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 							</div>
 							<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
 								Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
-								<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded ml-1 border">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 							</span>
 						</div>
 					</div>
@@ -2535,6 +2536,11 @@ async function runCustomScreener() {
 							${infoMA}${infoVol}${infoPrice}
 						</ul>
 					</div>
+					
+					<button onclick="selectTickerFromCustom('${item.ticker}')" class="mt-4 w-full bg-slate-800/80 hover:bg-blue-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-blue-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
+						<span>Buka Chart & Detail AI</span>
+						<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+					</button>
 				</div>
 			`;
 		});
