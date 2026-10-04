@@ -4923,7 +4923,6 @@ function renderBSJPItems(dataList) {
 	sortedData.forEach((item, index) => {
 		const price = roundToBEITick(item.price);
 		
-		// 1. Dynamic Fibo
 		const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
 		const entryAman = fibo.entryLow;
 		const entryAgresif = fibo.entryHigh;
@@ -4936,21 +4935,21 @@ function renderBSJPItems(dataList) {
 		const rewardPct = tp1 > price ? (((tp1 - price) / price) * 100).toFixed(2) : 0;
 		
 		html += `
-			<div class="bg-slate-950/30 p-4 lg:p-5 rounded-xl border border-slate-700/60 hover:border-orange-500/50 transition-colors duration-300 relative shadow-sm flex flex-col justify-between">
-				<!-- Badge Potensi Profit -->
-				<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l from-orange-600/30 to-amber-500/10 border-b border-l border-orange-500/30 rounded-bl-xl rounded-tr-xl text-[10px] font-bold text-orange-400 flex items-center gap-1.5 shadow-sm">
+			<div class="bg-slate-950/30 p-4 lg:p-5 pt-9 rounded-xl border border-slate-700/60 hover:border-orange-500/50 transition-colors duration-300 relative shadow-sm flex flex-col justify-between">
+				<!-- Badge Potensi Profit (Absolute Top Right dengan z-index) -->
+				<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l from-orange-600/30 to-amber-500/10 border-b border-l border-orange-500/30 rounded-bl-xl rounded-tr-xl text-[10px] font-bold text-orange-400 flex items-center gap-1.5 shadow-sm z-10">
 					<i data-lucide="trending-up" class="w-3 h-3"></i> Potensi TP Pagi: +${rewardPct}%
 				</div>
 				
-				<!-- Header Card Saham -->
+				<!-- Header Card Saham (Diberi pr-24 agar tidak bertabrakan dengan badge absolute) -->
 				<div class="flex items-center gap-3 border-b border-slate-800/80 pb-3 mt-1">
 					<div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center text-orange-500 font-bold shrink-0 text-sm shadow-inner">
 						#${index + 1}
 					</div>
-					<div class="flex flex-col w-full">
-						<div class="flex items-center justify-between w-full pr-12">
+					<div class="flex flex-col w-full pr-24">
+						<div class="flex items-center gap-2 flex-wrap">
 							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
-							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-2 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm shrink-0">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
+							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-2 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
 							Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
@@ -4982,7 +4981,7 @@ function renderBSJPItems(dataList) {
 					</div>
 				</div>
 				
-				<!-- Keterangan Detail Indikator (ANALISIS TEKNIKAL BSJP) -->
+				<!-- Keterangan Detail Indikator -->
 				<div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800 text-[10px] lg:text-[11px] text-slate-300 leading-relaxed space-y-2 mt-3">
 					<span class="text-amber-400 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
 						<i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> ANALISIS TEKNIKAL BSJP:
@@ -5003,7 +5002,6 @@ function renderBSJPItems(dataList) {
 					</ul>
 				</div>
 
-				<!-- Tombol Buka Chart di Bagian Bawah Memanjang -->
 				<button onclick="selectTickerFromCustom('${item.ticker}')" class="mt-4 w-full bg-slate-800/80 hover:bg-orange-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-orange-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
 					<span>Buka Chart & Detail AI</span>
 					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
