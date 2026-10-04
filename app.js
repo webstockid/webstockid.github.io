@@ -1121,7 +1121,19 @@ async function generateAISignal(ticker, isManualSearch = false) {
 	const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 	const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-	document.getElementById('aiHeaderTicker').innerText = `[${ticker}] — KONDISI TEKNIKAL`;
+	document.getElementById('aiHeaderTicker').innerHTML = `
+		<div class="flex items-center gap-2">
+			<div class="w-5 h-5 lg:w-6 lg:h-6 rounded-md bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+				<img 
+					src="https://assets.stockbit.com/logos/companies/${ticker}.png" 
+					alt="${ticker}" 
+					class="w-full h-full object-contain drop-shadow-sm" 
+					onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] lg:text-[10px] font-black text-slate-400 tracking-wider\\'>${ticker.substring(0,3)}</span>';};"
+				>
+			</div>
+			<span>[${ticker}] — KONDISI TEKNIKAL</span>
+		</div>
+	`;
 	document.getElementById('aiDateStamp').innerText = `Update: ${dateStr} ${timeStr} WIB`;
 
 	setTimeout(() => fetchStockNewsForAI(ticker), 10);
@@ -1848,7 +1860,19 @@ function renderJournalTable() {
 		rows += `
 			<tr class="hover:bg-slate-800/40">
 				<td class="p-3.5 text-slate-400">${item.date}</td>
-				<td class="p-3.5 font-bold text-pink-400">&dollar;${item.ticker}</td>
+				<td class="p-3.5 font-bold text-pink-400">
+					<div class="flex items-center gap-2">
+						<div class="w-5 h-5 rounded-md bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+							<img 
+								src="https://assets.stockbit.com/logos/companies/${item.ticker}.png" 
+								alt="${item.ticker}" 
+								class="w-full h-full object-contain drop-shadow-sm" 
+								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};"
+							>
+						</div>
+						<span>&dollar;${item.ticker}</span>
+					</div>
+				</td>
 				<td class="p-3.5 text-amber-400">Rp ${item.entry.toLocaleString('id-ID')}</td>
 				<td class="p-3.5 text-rose-400">Rp ${item.sl.toLocaleString('id-ID')}</td>
 				<td class="p-3.5 text-emerald-400">Rp ${item.tp.toLocaleString('id-ID')}</td>
@@ -1886,7 +1910,17 @@ function renderKanbanBoard() {
 		const cardHTML = `
 			<div draggable="true" ondragstart="dragJournalCard(event, ${item.id})" class="bg-slate-900 border border-slate-800 p-3 rounded-xl cursor-grab active:cursor-grabbing hover:border-slate-700 transition space-y-2 shadow-sm">
 				<div class="flex items-center justify-between">
-					<span class="font-bold text-pink-400 text-xs">&dollar;${item.ticker}</span>
+					<div class="flex items-center gap-2">
+						<div class="w-5 h-5 rounded-md bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+							<img 
+								src="https://assets.stockbit.com/logos/companies/${item.ticker}.png" 
+								alt="${item.ticker}" 
+								class="w-full h-full object-contain drop-shadow-sm" 
+								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};"
+							>
+						</div>
+						<span class="font-bold text-pink-400 text-xs">&dollar;${item.ticker}</span>
+					</div>
 					<span class="text-[9px] text-slate-400">${item.date}</span>
 				</div>
 				<div class="grid grid-cols-3 gap-1 text-[10px] text-slate-300 bg-slate-950/10 p-2 rounded border border-slate-900 text-center">
@@ -2884,7 +2918,19 @@ function renderPaperTradingUI() {
 
 			html += `
 				<tr class="hover:bg-slate-800/40">
-					<td class="p-3.5 font-bold text-blue-400">&dollar;${item.ticker}</td>
+					<td class="p-3.5 font-bold text-blue-400">
+						<div class="flex items-center gap-2">
+							<div class="w-5 h-5 rounded-md bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+								<img 
+									src="https://assets.stockbit.com/logos/companies/${item.ticker}.png" 
+									alt="${item.ticker}" 
+									class="w-full h-full object-contain drop-shadow-sm" 
+									onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};"
+								>
+							</div>
+							<span>&dollar;${item.ticker}</span>
+						</div>
+					</td>
 					<td class="p-3.5 text-blue-400">${item.lots.toLocaleString('id-ID')} Lot</td>
 					<td class="p-3.5 text-amber-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
 					<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
@@ -2912,7 +2958,17 @@ function renderPaperTradingUI() {
 			hHtml += `
 				<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1 shadow-sm hover:border-slate-500/30 transition-colors">
 					<div class="flex justify-between items-center">
-						<span class="font-bold text-blue-400">&dollar;${h.ticker} <strong class='text-blue-400'>(${h.lots} Lot)</strong></span>
+						<div class="flex items-center gap-2">
+							<div class="w-5 h-5 rounded-md bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+								<img 
+									src="https://assets.stockbit.com/logos/companies/${h.ticker}.png" 
+									alt="${h.ticker}" 
+									class="w-full h-full object-contain drop-shadow-sm" 
+									onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${h.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] font-black text-slate-400 tracking-wider\\'>${h.ticker.substring(0,3)}</span>';};"
+								>
+							</div>
+							<span class="font-bold text-blue-400">&dollar;${h.ticker} <strong class='text-blue-400'>(${h.lots} Lot)</strong></span>
+						</div>
 						<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
 					</div>
 					<div class="flex justify-between text-[11px] text-slate-300 pb-1">
