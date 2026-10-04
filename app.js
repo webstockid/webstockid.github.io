@@ -1622,8 +1622,13 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 				<tr class="${rowClass} group">
 					<td class="p-4 align-middle">
 						<div class="flex items-center gap-3">
-							<div class="w-8 h-8 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
-								<img src="https://s3-symbol-logo.tradingview.com/idx/${data.ticker.toLowerCase()}.svg" alt="${data.ticker}" class="w-full h-full object-contain bg-slate-900" onerror="this.onerror=null; this.src='https://assets.tradingview.com/country/Indonesia/${data.ticker}.svg'; this.onerror=function(){this.parentElement.innerHTML='<span class=\\'text-[10px] font-bold text-emerald-400\\'>${data.ticker.substring(0,3)}</span>';};">
+							<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
+								<img 
+								src="https://assets.stockbit.com/logos/companies/${peer}.png" 
+								alt="${peer}" 
+								class="w-full h-full object-contain drop-shadow-sm" 
+								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${peer.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${peer.substring(0,3)}</span>';};"
+								>
 							</div>
 							<div class="flex flex-col">
 								<strong class="text-emerald-400 text-sm tracking-wide">&dollar;${data.ticker}</strong>
@@ -3086,8 +3091,13 @@ async function scanWhalesData() {
 						<!-- Header Card Saham -->
 						<div class="flex items-start justify-between border-b border-slate-700/60 pb-4 mb-4 mt-1 relative z-10">
 							<div class="flex items-center gap-3.5">
-								<div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center overflow-hidden shadow-inner relative shrink-0">
-									<img src="https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg" alt="${item.ticker}" class="w-full h-full object-contain bg-slate-900" onerror="this.onerror=null; this.src='https://assets.tradingview.com/country/Indonesia/${item.ticker}.svg'; this.onerror=function(){this.parentElement.innerHTML='<span class=\\'text-xs font-bold text-fuchsia-400\\'>${item.ticker.substring(0,3)}</span>';};">
+								<div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden shadow-inner relative shrink-0 p-1">
+									<img 
+										src="https://assets.stockbit.com/logos/companies/${item.ticker}.png" 
+										alt="${item.ticker}" 
+										class="w-full h-full object-contain drop-shadow-sm" 
+										onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[12px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};"
+									>
 								</div>
 								<div class="flex flex-col">
 									<div class="flex items-center gap-2.5">
