@@ -1244,7 +1244,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata, mengisyaratkan perebutan momentum antara kubu *bulls* dan *bears*.";
 
 		descEl.innerHTML = `
-			<p class="leading-relaxed"><strong class="text-sky-400">Mengapa?</strong> Saham <strong class="text-emerald-400 font-bold">${ticker}</strong> saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')}(${trendText}). ${maAlignText}</p>
+			<p class="leading-relaxed"><strong class="text-sky-400">Mengapa?</strong> Saham <strong class="text-emerald-400 font-bold">${ticker}</strong> saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-400">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-400">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker}bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')}<strong class="text-amber-400">(Support Kuat)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')}<strong class="text-amber-400">(Resistance Tertinggi)</strong>.</p>
 		`;
@@ -2300,7 +2300,7 @@ function renderRadarItems(dataList) {
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-900/30 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
 						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss</span>
-						<span class="font-bold text-rose-400">&lt;Rp ${sl.toLocaleString('id-ID')}</span>
+						<span class="font-bold text-rose-400">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
 					</div>
 				</div>
 				
@@ -2533,7 +2533,7 @@ async function runCustomScreener() {
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-900/30 text-left relative overflow-hidden">
 							<div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
 							<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss</span>
-							<span class="font-bold text-rose-400">&lt;Rp ${sl.toLocaleString('id-ID')}</span>
+							<span class="font-bold text-rose-400">&lt; Rp ${sl.toLocaleString('id-ID')}</span>
 						</div>
 					</div>
 					
@@ -2723,7 +2723,7 @@ function ptExecuteSell(id) {
 		AudioFX.playLossJournal();
 		triggerLossCelebration();
 	}
-	showToast(`Penjualan $${item.ticker}selesai. P&L: Rp ${profitLoss.toLocaleString('id-ID')}(${profitLossPct}%)`);
+	showToast(`Penjualan $${item.ticker}selesai. P&L: Rp ${profitLoss.toLocaleString('id-ID')} (${profitLossPct}%)`);
 }
 
 function ptResetAccount() {
@@ -2801,7 +2801,7 @@ function renderPaperTradingUI() {
 	const elUnrealized = document.getElementById('ptUnrealizedPnL');
 	if (elUnrealized) {
 		elUnrealized.className = `px-3 py-1.5 rounded-t-lg text-[10px] lg:text-xs font-bold border-t border-l border-r border-slate-500/20 bg-slate-950/60 ${unrealizedColor}translate-y-[1px] relative z-10 shadow-inner`;
-		elUnrealized.innerText = `Total Floating: ${unrealizedSign}Rp ${Math.round(totalUnrealizedPnL).toLocaleString('id-ID')}(${unrealizedSign}${unrealizedPct}%)`;
+		elUnrealized.innerText = `Total Floating: ${unrealizedSign}Rp ${Math.round(totalUnrealizedPnL).toLocaleString('id-ID')} (${unrealizedSign}${unrealizedPct}%)`;
 	}
 
 	const totalClosed = acc.history.length;
@@ -2866,7 +2866,7 @@ function renderPaperTradingUI() {
 					<td class="p-3.5 text-amber-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
 					<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
 					<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'}font-bold">
-						${isPlus ? '+' : ''}Rp ${Math.round(pnl).toLocaleString('id-ID')}(${isPlus ? '+' : ''}${pnlPct}%)
+						${isPlus ? '+' : ''}Rp ${Math.round(pnl).toLocaleString('id-ID')} (${isPlus ? '+' : ''}${pnlPct}%)
 					</td>
 					<td class="p-3.5 text-center">
 						<button onclick="ptExecuteSell(${item.id})" class="text-[10px] bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-400 font-bold px-3 py-1 rounded-lg border border-rose-500/30 transition">Jual</button>
@@ -2902,7 +2902,7 @@ function renderPaperTradingUI() {
 							<span class="text-[11px] text-amber-400 font-bold">Rp ${Math.round(modal).toLocaleString('id-ID')}</span>
 						</div>
 						<div class="text-right font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'}text-xs">
-							${isWin ? '+' : ''}Rp ${Math.round(h.profitLoss).toLocaleString('id-ID')}(${isWin ? '+' : ''}${h.profitLossPct}%)
+							${isWin ? '+' : ''}Rp ${Math.round(h.profitLoss).toLocaleString('id-ID')} (${isWin ? '+' : ''}${h.profitLossPct}%)
 						</div>
 					</div>
 				</div>
@@ -3249,7 +3249,7 @@ function sendAIChatMessage() {
 }
 
 function escapeHtml(text) {
-	const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+	const map = { '&': '&amp;', '<': '&lt; ', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
 	return text.replace(/[&<>"']/g, function(m) { return map[m];});
 }
 
@@ -4153,7 +4153,7 @@ async function fetchStockNewsForAI(ticker) {
 			data.items.slice(0, 4).forEach(item => {
 				const source = item.author || 'Media Nasional';
 				const pubDate = new Date(item.pubDate).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
-				beritaHTML += `<div class="bg-slate-900/50 p-2 rounded border border-slate-800/80">• <strong>${source}(${pubDate}):</strong> ${item.title}</div>`;
+				beritaHTML += `<div class="bg-slate-900/50 p-2 rounded border border-slate-800/80">• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
 			});
 			document.getElementById('aiBeritaList').innerHTML = beritaHTML;
 			localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), html: beritaHTML }));
@@ -4631,7 +4631,7 @@ async function analyzeAITimeframe(tfLabel) {
 				</div>
 				<div class="flex justify-between items-center mb-1.5">
 					<span class="text-slate-400">Status Harga Terakhir:</span>
-					<span class="font-bold text-white">Rp ${currentClose.toLocaleString('id-ID')}(<span class="${signalColor}">${changePct > 0 ? '+' : ''}${changePct}%</span>)</span>
+					<span class="font-bold text-white">Rp ${currentClose.toLocaleString('id-ID')} (<span class="${signalColor}">${changePct > 0 ? '+' : ''}${changePct}%</span>)</span>
 				</div>
 				<div class="flex justify-between items-center mb-1.5">
 					<span class="text-slate-400">Trend Signal (${displayLabel}):</span>
@@ -5024,7 +5024,7 @@ function renderBSJPItems(dataList) {
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-rose-900/30 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-rose-500/50"></div>
 						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss (Risk)</span>
-						<span class="font-bold text-rose-400">&lt;Rp ${stopLoss.toLocaleString('id-ID')}(-${riskPct}%)</span>
+						<span class="font-bold text-rose-400">&lt; Rp ${stopLoss.toLocaleString('id-ID')} (-${riskPct}%)</span>
 					</div>
 				</div>
 				
