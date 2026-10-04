@@ -847,7 +847,7 @@ async function handleInsiderSearch() {
 		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Memindai dokumen Arsip 13F (${reportDate})...</div>`;
 		if (window.lucide) lucide.createIcons();
 		
-		const archiveIndexUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/index.json`;
+		const archiveIndexUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed} /${cleanAccession} /index.json`;
 		const indexData = await fetchSecData(archiveIndexUrl, false);
 		let infoTableFileName = null;
 		
@@ -866,7 +866,7 @@ async function handleInsiderSearch() {
 		statusMessage.innerHTML = `<div class="flex flex-col items-center justify-center gap-2 animate-pulse"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-indigo-400"></i> Mengekstrak struktur XML...</div>`;
 		if (window.lucide) lucide.createIcons();
 		
-		const xmlUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/${infoTableFileName}`;
+		const xmlUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed} /${cleanAccession} /${infoTableFileName}`;
 		const xmlText = await fetchSecData(xmlUrl, true);
 		
 		const parser = new DOMParser();
@@ -1229,7 +1229,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 		verdikEl.innerText = verdik;
 		verdikEl.className = verdikClass;
-		scoreEl.innerText = `${score}/5`;
+		scoreEl.innerText = `${score} /5`;
 		scoreEl.className = scoreClass;
 
 		const trendText = stockData.changePct >= 0 ? `menguat +${stockData.changePct}%` : `terkoreksi ${stockData.changePct}%`;
@@ -1268,7 +1268,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Posisi Tren MA5 / MA10 / MA20:</span>
-				<span class="text-emerald-400 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')}/ ${stockData.ma10.toLocaleString('id-ID')}/ ${stockData.ma20.toLocaleString('id-ID')}</span>
+				<span class="text-emerald-400 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span>• Rasio Volume vs Rerata Harian:</span>
@@ -1416,7 +1416,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')}- ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')}- ${res2.toLocaleString('id-ID')}`;
-	document.getElementById('mapTP').innerText = `Rp ${tp1.toLocaleString('id-ID')}/ ${tp2.toLocaleString('id-ID')}`;
+	document.getElementById('mapTP').innerText = `Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}`;
 	document.getElementById('mapSL').innerText = `< Rp ${sl.toLocaleString('id-ID')}`;
 
 	document.getElementById('tpBarSL').innerText = `SL: Rp ${sl.toLocaleString('id-ID')}`;
@@ -1633,7 +1633,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 								<i class="fa-solid fa-building text-xs"></i>
 							</div>
 							<div class="flex flex-col">
-								<strong class="text-emerald-400 text-sm tracking-wide">&dollar;${data.ticker}</strong>
+								<strong class="text-emerald-400 text-sm tracking-wide">&dollar; ${data.ticker}</strong>
 								${isCurrent ? '<span class="text-[9px] text-emerald-400/80 font-medium tracking-wide">Sedang Dipantau</span>' : '<span class="text-[9px] text-slate-500 font-medium tracking-wide">Saham Serupa</span>'}
 							</div>
 						</div>
@@ -1844,7 +1844,7 @@ function renderJournalTable() {
 		rows += `
 			<tr class="hover:bg-slate-800/40">
 				<td class="p-3.5 text-slate-400">${item.date}</td>
-				<td class="p-3.5 font-bold text-pink-400">&dollar;${item.ticker}</td>
+				<td class="p-3.5 font-bold text-pink-400">&dollar; ${item.ticker}</td>
 				<td class="p-3.5 text-amber-400">Rp ${item.entry.toLocaleString('id-ID')}</td>
 				<td class="p-3.5 text-rose-400">Rp ${item.sl.toLocaleString('id-ID')}</td>
 				<td class="p-3.5 text-emerald-400">Rp ${item.tp.toLocaleString('id-ID')}</td>
@@ -1882,7 +1882,7 @@ function renderKanbanBoard() {
 		const cardHTML = `
 			<div draggable="true" ondragstart="dragJournalCard(event, ${item.id})" class="bg-slate-900 border border-slate-800 p-3 rounded-xl cursor-grab active:cursor-grabbing hover:border-slate-700 transition space-y-2 shadow-sm">
 				<div class="flex items-center justify-between">
-					<span class="font-bold text-pink-400 text-xs">&dollar;${item.ticker}</span>
+					<span class="font-bold text-pink-400 text-xs">&dollar; ${item.ticker}</span>
 					<span class="text-[9px] text-slate-400">${item.date}</span>
 				</div>
 				<div class="grid grid-cols-3 gap-1 text-[10px] text-slate-300 bg-slate-950/10 p-2 rounded border border-slate-900 text-center">
@@ -2270,7 +2270,7 @@ function renderRadarItems(dataList) {
 					</div>
 					<div class="flex flex-col">
 						<div class="flex items-center gap-2">
-							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${ticker}</span>
+							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar; ${ticker}</span>
 							<button onclick="selectTickerFromRadar('${ticker}')" class="text-[9px] bg-amber-500/20 hover:bg-amber-500 hover:text-black text-amber-400 border border-amber-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
@@ -2290,7 +2290,7 @@ function renderRadarItems(dataList) {
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>
 						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Target Profit</span>
-						<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')}/ ${tp2.toLocaleString('id-ID')}</span>
+						<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50"></div>
@@ -2503,7 +2503,7 @@ async function runCustomScreener() {
 						</div>
 						<div class="flex flex-col">
 							<div class="flex items-center gap-2">
-								<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
+								<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar; ${item.ticker}</span>
 								<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[9px] bg-blue-600/20 hover:bg-blue-500 hover:text-white text-blue-400 border border-blue-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
 							</div>
 							<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
@@ -2523,7 +2523,7 @@ async function runCustomScreener() {
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 							<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>
 							<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Target Profit</span>
-							<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')}/ ${tp2.toLocaleString('id-ID')}</span>
+							<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 						</div>
 						<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 							<div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50"></div>
@@ -2807,7 +2807,7 @@ function renderPaperTradingUI() {
 	const totalClosed = acc.history.length;
 	const totalWin = acc.history.filter(h => h.status === 'WIN').length;
 	const winRate = totalClosed > 0 ? Math.round((totalWin / totalClosed) * 100) : 0;
-	document.getElementById('ptWinRate').innerHTML = `Win Rate: ${winRate}% (${totalWin}/${totalClosed})`;
+	document.getElementById('ptWinRate').innerHTML = `Win Rate: ${winRate}% (${totalWin} /${totalClosed})`;
 
 	let rankName = "NEWBIE TRADER 🥺";
 	let rankColor = "from-blue-400 to-amber-400";
@@ -2861,7 +2861,7 @@ function renderPaperTradingUI() {
 
 			html += `
 				<tr class="hover:bg-slate-800/40">
-					<td class="p-3.5 font-bold text-blue-400">&dollar;${item.ticker}</td>
+					<td class="p-3.5 font-bold text-blue-400">&dollar; ${item.ticker}</td>
 					<td class="p-3.5 text-blue-400">${item.lots.toLocaleString('id-ID')}Lot</td>
 					<td class="p-3.5 text-amber-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
 					<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
@@ -2889,7 +2889,7 @@ function renderPaperTradingUI() {
 			hHtml += `
 				<div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1 shadow-sm hover:border-slate-500/30 transition-colors">
 					<div class="flex justify-between items-center">
-						<span class="font-bold text-blue-400">&dollar;${h.ticker}<strong class='text-blue-400'>(${h.lots}Lot)</strong></span>
+						<span class="font-bold text-blue-400">&dollar; ${h.ticker}<strong class='text-blue-400'>(${h.lots}Lot)</strong></span>
 						<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'}px-2 py-0.5 rounded font-bold">${h.status}</span>
 					</div>
 					<div class="flex justify-between text-[11px] text-slate-300 pb-1">
@@ -3466,7 +3466,7 @@ async function saveTelegramConfig() {
 
 async function testTelegramConnection(token, chatId) {
 		try {
-			const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+			const response = await fetch(`https://api.telegram.org/bot${token} /sendMessage`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ 
@@ -3504,7 +3504,7 @@ async function sendTelegramAlert(message) {
 	if (!botToken || !chatId) return;
 
 	try {
-		const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+		const response = await fetch(`https://api.telegram.org/bot${botToken} /sendMessage`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML' })
@@ -3977,7 +3977,7 @@ async function fetchYahooTrending() {
 	quotes.forEach(q => {
 		const cleanTicker = q.symbol.replace('.JK', '');
 		html += `<button onclick="document.getElementById('stockSearch').value='${cleanTicker}';searchStock(true);" class="text-[9px] lg:text-[10px] bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-md transition font-bold cursor-pointer shadow-sm">
-			&dollar;${cleanTicker}
+			&dollar; ${cleanTicker}
 		</button>`;
 	});
 	html += `</div>`;
@@ -4573,8 +4573,8 @@ async function analyzeAITimeframe(tfLabel) {
 		if (tfLabel === '15m') { apiInterval = '15m';apiRange = '5d';}
 		else if (tfLabel === '30m') { apiInterval = '30m';apiRange = '5d';}
 		else if (tfLabel === '1h') { apiInterval = '60m';apiRange = '1mo';}
-		else if (tfLabel === '3h') { apiInterval = '60m';apiRange = '1mo';lookbackCandles = 3;}// Bandingkan harga sekarang dgn 3 jam (3 candle) lalu
-		else if (tfLabel === '6h') { apiInterval = '60m';apiRange = '1mo';lookbackCandles = 6;}// Bandingkan harga sekarang dgn 6 jam (6 candle) lalu
+		else if (tfLabel === '3h') { apiInterval = '60m';apiRange = '1mo';lookbackCandles = 3;} // Bandingkan harga sekarang dgn 3 jam (3 candle) lalu
+		else if (tfLabel === '6h') { apiInterval = '60m';apiRange = '1mo';lookbackCandles = 6;} // Bandingkan harga sekarang dgn 6 jam (6 candle) lalu
 
 		const url = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=${apiInterval}&range=${apiRange}`;
 		const proxies = [
@@ -4994,7 +4994,7 @@ function renderBSJPItems(dataList) {
 					</div>
 					<div class="flex flex-col">
 						<div class="flex items-center gap-2">
-							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
+							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar; ${item.ticker}</span>
 							<button onclick="selectTickerFromCustom('${item.ticker}')" class="text-[9px] bg-orange-600/20 hover:bg-orange-500 hover:text-white text-orange-400 border border-orange-500/30 font-bold px-2 py-0.5 rounded transition shadow-sm">Buka Chart »</button>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
@@ -5014,7 +5014,7 @@ function renderBSJPItems(dataList) {
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500/50"></div>
 						<span class="text-slate-400 block mb-1 flex items-center gap-1.5 font-medium uppercase tracking-wider text-[9px]"><i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Target Pagi (TP1-TP2)</span>
-						<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')}/ ${tp2.toLocaleString('id-ID')}</span>
+						<span class="font-bold text-emerald-400">Rp ${tp1.toLocaleString('id-ID')} / ${tp2.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500/50"></div>
