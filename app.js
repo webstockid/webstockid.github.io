@@ -4944,7 +4944,7 @@ async function startBSJPProcess() {
 		for (const ticker of shuffledWatchlist) {
 			const cachedItem = getCachedStockData(ticker);
 			if (cachedItem && cachedItem.price) {
-				if (cachedItem.currentValuation > 3000000000 && cachedItem.price >= cachedItem.ma5 && cachedItem.volRatio >= 1.5 && cachedItem.changePct > 0) {
+				if (cachedItem.currentValuation > 2000000000 && cachedItem.price >= cachedItem.ma5 && cachedItem.volRatio >= 1.5 && cachedItem.changePct > 0) {
 					if (!bsjpCandidates.some(c => c.ticker === ticker)) {
 						bsjpCandidates.push(cachedItem);
 					}
@@ -4969,7 +4969,7 @@ async function startBSJPProcess() {
 
 				for (const item of fetchedData) {
 					if (!item || !item.price) continue;
-					if (item.currentValuation > 3000000000 && item.price >= item.ma5 && item.volRatio >= 1.5 && item.changePct > 0) {
+					if (item.currentValuation > 2000000000 && item.price >= item.ma5 && item.volRatio >= 1.5 && item.changePct > 0) {
 						if (!bsjpCandidates.some(c => c.ticker === item.ticker)) {
 							bsjpCandidates.push(item);
 						}
