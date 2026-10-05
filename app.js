@@ -3059,12 +3059,15 @@ async function scanWhalesData() {
 				const valuasi = cachedItem.currentValuation || 0;
 				let tier = 0, tierName = "", tierClass = "";
 				
-				if (vol > 3 && valuasi > 1000000000 && chg > 0 && chg < 5) {
+				if (vol > 2 && valuasi > 1000000000 && chg > 0 && chg < 5) {
 					if (price > ma5) {
 						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
+					} else if {
+						tier = 2; tierName = "PAUS AKUMULASI (MASSIV WHALE)";
+						tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
 					} else {
-						tier = 2; tierName = "PAUS AKUMULASI (ACC WHALE)";
+						tier = 1; tierName = "PAUS MASUK (ACC WHALE)"; //2
 						tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
 					}
 				}
@@ -3104,10 +3107,13 @@ async function scanWhalesData() {
 					const valuasi = item.currentValuation || 0;
 					let tier = 0, tierName = "", tierClass = "";
 					
-					if (vol > 3 && valuasi > 1000000000 && chg > 0 && chg < 5) {
+					if (vol > 2 && valuasi > 1000000000 && chg > 0 && chg < 5) {
 						if (price > ma5) {
 							tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 							tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
+						} else if {
+							tier = 2; tierName = "PAUS AKUMULASI (MASSIV WHALE)";
+							tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
 						} else {
 							tier = 2; tierName = "PAUS AKUMULASI (ACC WHALE)";
 							tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
