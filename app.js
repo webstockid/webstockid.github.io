@@ -2464,6 +2464,8 @@ async function runCustomScreener() {
 			if (maxBatchLimit > 3) break; // Membatasi max 60 saham agar UI tidak hang
             
 			const batch = shuffled.slice(i, i + BATCH_SIZE);
+            
+			const results = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
 
 			for (const item of results) {
 				if (!item || !item.price) continue;
