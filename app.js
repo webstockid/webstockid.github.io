@@ -3059,7 +3059,7 @@ async function scanWhalesData() {
 				const valuasi = cachedItem.currentValuation || 0;
 				let tier = 0, tierName = "", tierClass = "";
 				
-				if (vol > 2 && valuasi > 1000000000 && chg > 0 && chg < 5) {
+				if (vol > 2 && valuasi > 2000000000 && chg > 0 && chg < 5) {
 					if (price > ma5) {
 						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
@@ -3107,7 +3107,7 @@ async function scanWhalesData() {
 					const valuasi = item.currentValuation || 0;
 					let tier = 0, tierName = "", tierClass = "";
 					
-					if (vol > 2 && valuasi > 1000000000 && chg > 0 && chg < 5) {
+					if (vol > 2 && valuasi > 2000000000 && chg > 0 && chg < 5) {
 						if (price > ma5) {
 							tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 							tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
