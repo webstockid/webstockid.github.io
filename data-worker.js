@@ -2,8 +2,8 @@ self.addEventListener('message', async function(e) {
 	const { tickers } = e.data;
 	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 	
-	// Eksekusi 5 saham sekaligus dalam 1 gelombang (Batching)
-	const BATCH_SIZE = 5;
+	// Optimasi ukuran batch: 10 per siklus (lebih cepat tetapi tetap aman dari API rate limit)
+	const BATCH_SIZE = 10;
 
 	for (let i = 0; i < tickers.length; i += BATCH_SIZE) {
 		const batch = tickers.slice(i, i + BATCH_SIZE);
@@ -12,7 +12,8 @@ self.addEventListener('message', async function(e) {
 			try {
 				const targetSymbol = `${ticker}.JK`;
 				const controller = new AbortController();
-				// Auto-bunuh request jika lebih dari 4 detik (mencegah gantung)
+				
+				// Hentikan request otomatis jika melampaui 4 detik
 				const timeoutId = setTimeout(() => controller.abort(), 4000);
 
 				let res = await fetch(`${WORKER_URL}?symbol=${targetSymbol}`, { signal: controller.signal })
@@ -22,7 +23,7 @@ self.addEventListener('message', async function(e) {
 					const json = await res.json();
 					self.postMessage({ status: 'success', ticker: ticker, rawData: json });
 				} else {
-					// Fallback ke AllOrigins jika Worker utama tumbang
+					// Fallback Darurat: Jika Worker utama sedang down / timeout
 					const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
 					const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
 					
@@ -41,9 +42,9 @@ self.addEventListener('message', async function(e) {
 			}
 		}));
 		
-		// Jeda dinamis antar gelombang untuk mencegah serangan (DDoS) ke server sendiri
+		// Jeda 1 Detik antar siklus agar web tidak mengalami Freeze & menghindari IP Block
 		if (i + BATCH_SIZE < tickers.length) {
-			await new Promise(resolve => setTimeout(resolve, 800));
+			await new Promise(resolve => setTimeout(resolve, 1000));
 		}
 	}
 	

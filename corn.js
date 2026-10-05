@@ -110,6 +110,26 @@ async function fetchAndCalculateStock(ticker) {
 		const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
 		const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
 
+		// Kalkulasi Angka Tambahan (Lot, Valuasi, Avg Bandar) untuk dimasukkan ke Cache Worker
+		const realVolume = result.meta?.regularMarketVolume || currentVolume;
+		const currentLot = Math.floor(realVolume / 100);
+		const currentValuation = realVolume * currentPrice;
+
+		let totalVol20 = 0;
+		let totalValue20 = 0;
+		const len = prices.length;
+		const period = Math.min(20, len);
+		for(let i = len - period; i < len; i++) {
+			const h = highs[i] || prices[i];
+			const l = lows[i] || prices[i];
+			const c = prices[i];
+			const v = volumes[i] || 0;
+			const typicalPrice = (h + l + c) / 3;
+			totalVol20 += v;
+			totalValue20 += (typicalPrice * v);
+		}
+		const bandarAvgPrice = totalVol20 > 0 ? roundToBEITick(totalValue20 / totalVol20) : roundToBEITick(currentPrice);
+
 		return {
 			ticker,
 			price: currentPrice,
@@ -118,6 +138,7 @@ async function fetchAndCalculateStock(ticker) {
 			ma5, ma10, ma20,
 			currentVolume, volMA10, volRatio,
 			high20, low20,
+			currentLot, currentValuation, bandarAvgPrice,
 			updatedAt: new Date().toISOString()
 		};
 	} catch (e) {

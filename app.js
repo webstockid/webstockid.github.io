@@ -868,41 +868,29 @@ async function handleInsiderSearch() {
 		const xmlUrl = `https://www.sec.gov/Archives/edgar/data/${cikTrimmed}/${cleanAccession}/${infoTableFileName}`;
 		const xmlText = await fetchSecData(xmlUrl, true);
 		
-		const parser = new DOMParser();
-		const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-		const infoTables = xmlDoc.getElementsByTagName('*');
+		// REGEX PARSER OPTIMIZATION (ANTI-LAG & FIX NAMESPACE ERROR)
 		let portfolioData = [];
+		const infoTableRegex = /<([a-zA-Z0-9]*:)?infoTable[\s\S]*?<\/(\1)?infoTable>/gi;
+		const nameRegex = /<([a-zA-Z0-9]*:)?nameOfIssuer>([^<]+)<\/(\1)?nameOfIssuer>/i;
+		const cusipRegex = /<([a-zA-Z0-9]*:)?cusip>([^<]+)<\/(\1)?cusip>/i;
+		const valRegex = /<([a-zA-Z0-9]*:)?value>([^<]+)<\/(\1)?value>/i;
+		const sharesRegex = /<([a-zA-Z0-9]*:)?sshPrnamt>([^<]+)<\/(\1)?sshPrnamt>/i;
 		
-		for (let i = 0; i < infoTables.length; i++) {
-			const node = infoTables[i];
+		let match;
+		while ((match = infoTableRegex.exec(xmlText)) !== null) {
+			const block = match[0];
+			const nameMatch = block.match(nameRegex);
+			const cusipMatch = block.match(cusipRegex);
+			const valMatch = block.match(valRegex);
+			const sharesMatch = block.match(sharesRegex);
 			
-			if (node.localName && node.localName.toLowerCase() === 'infotable') {
-				let nameOfIssuer = '', cusip = '', value = 0, shares = 0;
-				for (let j = 0; j < node.childNodes.length; j++) {
-					const child = node.childNodes[j];
-					if (!child.localName) continue;
-					
-					const childName = child.localName.toLowerCase();
-					
-					if (childName === 'nameofissuer') nameOfIssuer = child.textContent.trim();
-					if (childName === 'cusip') cusip = child.textContent.trim();
-					
-					if (childName === 'value') {
-						value = parseFloat(child.textContent.replace(/,/g, '')) * 1000;
-					}
-					
-					if (childName === 'shrsorprnamt') {
-						for (let k = 0; k < child.childNodes.length; k++) {
-							const shrsChild = child.childNodes[k];
-							if (shrsChild.localName && shrsChild.localName.toLowerCase() === 'sshprnamt') {
-								shares = parseFloat(shrsChild.textContent.replace(/,/g, ''));
-							}
-						}
-					}
-				}
-				if (nameOfIssuer) {
-					portfolioData.push({ nameOfIssuer, tickcusip: cusip, shares, value });
-				}
+			if (nameMatch && valMatch && sharesMatch) {
+				const nameOfIssuer = nameMatch[2].trim();
+				const cusip = cusipMatch ? cusipMatch[2].trim() : '';
+				const value = parseFloat(valMatch[2].replace(/,/g, '')) * 1000;
+				const shares = parseFloat(sharesMatch[2].replace(/,/g, ''));
+				
+				portfolioData.push({ nameOfIssuer, tickcusip: cusip, shares, value });
 			}
 		}
 		
@@ -1600,21 +1588,31 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 				const basePrice = baseData.price;
 				const minPrice = basePrice * 0.75;
 				const maxPrice = basePrice * 1.25;
-				// Pastikan uniqueRadarWatchlist tersedia, jika tidak gunakan fallback
 				const watchlist = typeof uniqueRadarWatchlist !== 'undefined' ? uniqueRadarWatchlist : [targetTicker];
-				const sampleCandidates = watchlist.filter(t => t !== targetTicker).sort(() => 0.5 - Math.random());
+				const candidates = watchlist.filter(t => t !== targetTicker).sort(() => 0.5 - Math.random());
 				
-				const BATCH_SIZE = 15;
-				for (let i = 0; i < sampleCandidates.length; i += BATCH_SIZE) {
-					const batch = sampleCandidates.slice(i, i + BATCH_SIZE);
-					const fetchedBatch = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
+				// 1. Scan LocalStorage Cache First (Eksekusi Instan)
+				let uncachedCandidates = [];
+				for (const ticker of candidates) {
+					const cached = getCachedStockData(ticker);
+					if (cached && cached.price >= minPrice && cached.price <= maxPrice) {
+						peerTickers.push(ticker);
+					} else if (!cached) {
+						uncachedCandidates.push(ticker);
+					}
+					if (peerTickers.length >= 8) break;
+				}
+				
+				// 2. Fetch API Terbatas (Max 10 Candidates) jika cache tidak mencukupi
+				if (peerTickers.length < 8 && uncachedCandidates.length > 0) {
+					const fetchCandidates = uncachedCandidates.slice(0, 10);
+					const fetchedBatch = await Promise.all(fetchCandidates.map(t => fetchRealtimeStockData(t)));
 					for (const item of fetchedBatch) {
-						if (item && item.price >= minPrice && item.price <= maxPrice) {
+						if (item && item.price >= minPrice && item.price <= maxPrice && !peerTickers.includes(item.ticker)) {
 							peerTickers.push(item.ticker);
 						}
 						if (peerTickers.length >= 8) break;
 					}
-					if (peerTickers.length >= 8) break;
 				}
 			}
 		}
@@ -2221,9 +2219,13 @@ async function startRadarProcess() {
 	}
 	
 	const validData = [];
-	const BATCH_SIZE = 20; //10
+	const BATCH_SIZE = 20; 
+	let maxBatchLimit = 0; // Tambahan limiter anti-lag
 
 	for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
+		maxBatchLimit++;
+		if (maxBatchLimit > 3) break; // Membatasi max 60 saham agar UI tidak hang
+
 		const batch = shuffled.slice(i, i + BATCH_SIZE);
 		const results = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
 		for (const res of results) {
@@ -2455,10 +2457,13 @@ async function runCustomScreener() {
 		const shuffled = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
 		let passedItems = [];
 		const BATCH_SIZE = 20;
+		let maxBatchLimit = 0; // Tambahan limiter anti-lag
 
 		for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
+			maxBatchLimit++;
+			if (maxBatchLimit > 3) break; // Membatasi max 60 saham agar UI tidak hang
+            
 			const batch = shuffled.slice(i, i + BATCH_SIZE);
-			const results = await Promise.all(batch.map(t => fetchRealtimeStockData(t)));
 
 			for (const item of results) {
 				if (!item || !item.price) continue;
@@ -3975,7 +3980,9 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 }
 
 function checkWhaleAlertRealtime(ticker, stockData) {
-	if (!stockData || !stockData.price) return;
+	// Menggunakan data terbaru dari cache jika tersedia, atau fallback ke parameter
+	const latestData = getCachedStockData(ticker) || stockData;
+	if (!latestData || !latestData.price) return;
 	
 	const snoozeTarget = parseInt(localStorage.getItem('stockid_notif_snooze_target') || '0');
 	if (snoozeTarget > Date.now()) return;
@@ -3985,13 +3992,16 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 
 	const muteNotifSound = localStorage.getItem('stockid_notif_mute_sound') === 'true';
 	
-	if (stockData.volRatio >= 2.0 && stockData.changePct >= 0 && stockData.changePct <= 5.0) {
+	if (latestData.volRatio >= 2.0 && latestData.changePct >= 0 && latestData.changePct <= 5.0) {
 		const lastAlertKey = `whale_alert_${ticker}`;
 		const lastAlertTime = localStorage.getItem(lastAlertKey);
 		const now = Date.now();
 		
-		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > 10000) {
-			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} meledak ${stockData.volRatio}x lipat! Harga baru naik ${stockData.changePct}%. Bandar indikasi kumpulin barang!`;
+		// Jeda 1 jam (3.600.000 ms) agar notifikasi tidak spam untuk saham yang sama
+		const ONE_HOUR = 60 * 60 * 1000;
+		
+		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > ONE_HOUR) {
+			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} meledak ${latestData.volRatio}x lipat! Harga baru naik ${latestData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
 			if (!muteNotifSound && typeof AudioFX !== 'undefined') {
 				AudioFX.playNotif(); 
@@ -4000,7 +4010,7 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 			sendBrowserPushNotification(`STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
 			showToast(alertMsg, "info", 7000); 
 			
-			const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume meledak <b>${stockData.volRatio}x lipat!</b>\nHarga naik <b>+${stockData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
+			const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume meledak <b>${latestData.volRatio}x lipat!</b>\nHarga naik <b>+${latestData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
 			sendTelegramAlert(teleMsg);
 			
 			localStorage.setItem(lastAlertKey, now.toString());
@@ -4944,7 +4954,7 @@ async function startBSJPProcess() {
 		for (const ticker of shuffledWatchlist) {
 			const cachedItem = getCachedStockData(ticker);
 			if (cachedItem && cachedItem.price) {
-				if (cachedItem.currentValuation > 2000000000 && cachedItem.price >= cachedItem.ma5 && cachedItem.volRatio >= 1.5 && cachedItem.changePct > 0) {
+				if (cachedItem.currentValuation > 1000000000 && cachedItem.price >= cachedItem.ma5 && cachedItem.volRatio >= 1.5 && cachedItem.changePct > 0 && cachedItem.changePct < 10) {
 					if (!bsjpCandidates.some(c => c.ticker === ticker)) {
 						bsjpCandidates.push(cachedItem);
 					}
@@ -4969,7 +4979,7 @@ async function startBSJPProcess() {
 
 				for (const item of fetchedData) {
 					if (!item || !item.price) continue;
-					if (item.currentValuation > 2000000000 && item.price >= item.ma5 && item.volRatio >= 1.5 && item.changePct > 0) {
+					if (item.currentValuation > 1000000000 && item.price >= item.ma5 && item.volRatio >= 1.5 && item.changePct > 0 && item.changePct < 10) {
 						if (!bsjpCandidates.some(c => c.ticker === item.ticker)) {
 							bsjpCandidates.push(item);
 						}
