@@ -3059,15 +3059,15 @@ async function scanWhalesData() {
 				const valuasi = cachedItem.currentValuation || 0;
 				let tier = 0, tierName = "", tierClass = "";
 				
-				if (vol > 2 && valuasi > 1000000000 && chg > 0 && chg < 5) { //3
+				if (vol > 2 && valuasi > 1000000000 && chg > 0 && chg < 5) {
 					if (price > ma5) {
 						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-					} else if {
+					} else if (price === ma5) { // PERBAIKAN: Menambahkan kondisi parameter
 						tier = 2; tierName = "PAUS AKUMULASI (MASSIV WHALE)";
 						tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-					} else if {
-						tier = 1; tierName = "PAUS SIGN (ACC WHALE)"; //2
+					} else { // PERBAIKAN: Mengubah menjadi else untuk blok penutup
+						tier = 1; tierName = "PAUS SIGN (ACC WHALE)";
 						tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
 					}
 				}
@@ -3111,10 +3111,10 @@ async function scanWhalesData() {
 						if (price > ma5) {
 							tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 							tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-						} else if {
+						} else if (price === ma5) { // PERBAIKAN: Menambahkan kondisi parameter
 							tier = 2; tierName = "PAUS AKUMULASI (MASSIV WHALE)";
 							tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-						} else if {
+						} else { // PERBAIKAN: Mengubah menjadi else untuk blok penutup
 							tier = 1; tierName = "PAUS SIGN (ACC WHALE)";
 							tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
 						}
