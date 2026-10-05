@@ -3066,7 +3066,7 @@ async function scanWhalesData() {
 					} else if {
 						tier = 2; tierName = "PAUS AKUMULASI (MASSIV WHALE)";
 						tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-					} else {
+					} else if {
 						tier = 1; tierName = "PAUS SIGN (ACC WHALE)"; //2
 						tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
 					}
@@ -3114,7 +3114,7 @@ async function scanWhalesData() {
 						} else if {
 							tier = 2; tierName = "PAUS AKUMULASI (MASSIV WHALE)";
 							tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-						} else {
+						} else if {
 							tier = 1; tierName = "PAUS SIGN (ACC WHALE)";
 							tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
 						}
