@@ -887,8 +887,10 @@ async function handleInsiderSearch() {
 			if (nameMatch && valMatch && sharesMatch) {
 				const nameOfIssuer = nameMatch[2].trim();
 				const cusip = cusipMatch ? cusipMatch[2].trim() : '';
-				const value = parseFloat(valMatch[2].replace(/,/g, '')) * 1000;
-				const shares = parseFloat(sharesMatch[2].replace(/,/g, ''));
+				const value = (parseFloat(valMatch[2].replace(/,/g, '')) || 0) * 1000;
+				const shares = parseFloat(sharesMatch[2].replace(/,/g, '')) || 0;
+				//const value = parseFloat(valMatch[2].replace(/,/g, '')) * 1000;
+				//const shares = parseFloat(sharesMatch[2].replace(/,/g, ''));
 				
 				portfolioData.push({ nameOfIssuer, tickcusip: cusip, shares, value });
 			}
@@ -2774,20 +2776,23 @@ function ptExecuteBuy() {
 	showToast(`Berhasil membeli ${lots} lot $${ticker} secara virtual!`);
 }
 
-function ptExecuteSell(id) {
-	let acc = getPaperAccount();
-	const itemIndex = acc.portfolio.findIndex(p => p.id === id);
-	if (itemIndex < 0) return;
+async function ptExecuteSell(id) {
+    let acc = getPaperAccount();
+    const itemIndex = acc.portfolio.findIndex(p => p.id === id);
+    if (itemIndex < 0) return;
 
-	const item = acc.portfolio[itemIndex];
-	let sellPrice = item.avgPrice;
-	
-	const cached = getCachedStockData(item.ticker);
-	if (globalStockData && globalStockData.ticker === item.ticker) {
-		sellPrice = globalStockData.price;
-	} else if (cached && cached.price) {
-		sellPrice = cached.price;
-	}
+    const item = acc.portfolio[itemIndex];
+    let sellPrice = item.avgPrice;
+    
+    const cached = getCachedStockData(item.ticker);
+    if (globalStockData && globalStockData.ticker === item.ticker) {
+        sellPrice = globalStockData.price;
+    } else if (cached && cached.price) {
+        sellPrice = cached.price;
+    } else {
+        const freshData = await fetchRealtimeStockData(item.ticker);
+        if (freshData && freshData.price) sellPrice = freshData.price;
+    }
 
 	const revenue = sellPrice * item.lots * 100;
 	const modal = item.avgPrice * item.lots * 100;
@@ -5211,7 +5216,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ANTI LAG
-function processScreenerAntiLag(stockList, processFn, onComplete) {
+/*function processScreenerAntiLag(stockList, processFn, onComplete) {
     const BATCH_SIZE = 20; 
     const MAX_BATCH_LIMIT = 3; // Maksimal 60 saham diproses per loop
     let currentIndex = 0;
@@ -5236,7 +5241,7 @@ function processScreenerAntiLag(stockList, processFn, onComplete) {
     }
 
     processNextBatch();
-}
+}*/
 
 // ==========================================
 // INISIALISASI UTAMA
