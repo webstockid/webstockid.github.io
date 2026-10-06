@@ -1627,7 +1627,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 				const watchlist = typeof uniqueRadarWatchlist !== 'undefined' ? uniqueRadarWatchlist : [targetTicker];
 				const candidates = watchlist.filter(t => t !== targetTicker).sort(() => 0.5 - Math.random());
 				
-				// 1. Scan LocalStorage Cache First (Eksekusi Instan)
+				// 1. Pindai LocalStorage Cache First (Eksekusi Instan)
 				let uncachedCandidates = [];
 				for (const ticker of candidates) {
 					const cached = getCachedStockData(ticker);
@@ -3257,7 +3257,7 @@ async function scanWhalesData() {
 				clearInterval(whaleScanCooldownTimer);
 				btn.disabled = false;
 				btn.classList.remove('cursor-not-allowed', 'opacity-70');
-				btn.innerHTML = `<i data-lucide="radar" class="w-4 h-4"></i> Scan Ulang Whales`;
+				btn.innerHTML = `<i data-lucide="radar" class="w-4 h-4"></i> Pindai Ulang Whales`;
 				if (window.lucide) lucide.createIcons();
 			}
 		}, 1000);
@@ -5023,7 +5023,7 @@ async function startBSJPProcess() {
 				btn.disabled = false;
 				btn.classList.remove('cursor-not-allowed', 'opacity-70');
 				btn.className = "w-full sm:w-auto bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold px-6 py-2.5 rounded-lg border border-orange-500/50 transition shadow-lg shadow-orange-600/20 flex items-center justify-center gap-2 shrink-0";
-				btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Scan Ulang BSJP`;
+				btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Pindai Ulang BSJP`;
 				if (window.lucide) lucide.createIcons();
 			}
 		}, 1000);
