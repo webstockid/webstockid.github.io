@@ -2489,8 +2489,8 @@ async function runCustomScreener() {
 				let matchRSI = true;
 				if (item.historicalPrices && ruleRSI !== 'ALL') {
 					const rsiValue = calculateRSI(item.historicalPrices);
-					if (ruleRSI === 'OVERSOLD' && rsiValue >= 30) matchRSI = false;
-					if (ruleRSI === 'OVERBOUGHT' && rsiValue <= 70) matchRSI = false;
+					if (ruleRSI === 'OVERSOLD' && rsiValue >= 10) matchRSI = false; //30
+					if (ruleRSI === 'OVERBOUGHT' && rsiValue <= 100) matchRSI = false; //70
 				}
 				
 				if (matchMA && matchVol && matchPrice && matchRSI) passedItems.push(item);
@@ -3062,16 +3062,16 @@ async function scanWhalesData() {
 				const vol = cachedItem.volRatio || 0;
 				const chg = cachedItem.changePct || 0;
 				const price = cachedItem.price;
-				const ma5 = cachedItem.ma5 || price;
+				const ma10 = cachedItem.ma10 || price;
 				const valuasi = cachedItem.currentValuation || 0;
 				let tier = 0, tierName = "", tierClass = "";
 				
 				if (vol > 2 && valuasi > 2000000000 && chg > 0 && chg < 5) {
-					if (price > ma5) {
+					if (price > ma10) {
 						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-					} else if (price === ma5) { // PERBAIKAN: Menambahkan kondisi parameter
-						tier = 2; tierName = "PAUS AKUMULASI (MASSIV WHALE)";
+					} else if (price === ma10) { // PERBAIKAN: Menambahkan kondisi parameter
+						tier = 2; tierName = "PAUS AKUMULASI (MASSIVE WHALE)";
 						tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
 					} else { // PERBAIKAN: Mengubah menjadi else untuk blok penutup
 						tier = 1; tierName = "PAUS SIGN (ACC WHALE)";
@@ -3110,16 +3110,16 @@ async function scanWhalesData() {
 					const vol = item.volRatio || 0;
 					const chg = item.changePct || 0;
 					const price = item.price;
-					const ma5 = item.ma5 || price;
+					const ma10 = item.ma10 || price;
 					const valuasi = item.currentValuation || 0;
 					let tier = 0, tierName = "", tierClass = "";
 					
 					if (vol > 2 && valuasi > 2000000000 && chg > 0 && chg < 5) {
-						if (price > ma5) {
+						if (price > ma10) {
 							tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 							tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-						} else if (price === ma5) { // PERBAIKAN: Menambahkan kondisi parameter
-							tier = 2; tierName = "PAUS AKUMULASI (MASSIV WHALE)";
+						} else if (price === ma10) { // PERBAIKAN: Menambahkan kondisi parameter
+							tier = 2; tierName = "PAUS AKUMULASI (MASSIVE WHALE)";
 							tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
 						} else { // PERBAIKAN: Mengubah menjadi else untuk blok penutup
 							tier = 1; tierName = "PAUS SIGN (ACC WHALE)";
@@ -4956,7 +4956,7 @@ async function startBSJPProcess() {
 		for (const ticker of shuffledWatchlist) {
 			const cachedItem = getCachedStockData(ticker);
 			if (cachedItem && cachedItem.price) {
-				if (cachedItem.currentValuation > 1000000000 && cachedItem.price >= cachedItem.ma5 && cachedItem.volRatio >= 1.5 && cachedItem.changePct > 0 && cachedItem.changePct < 10) {
+				if (cachedItem.currentValuation > 1000000000 && cachedItem.price >= cachedItem.ma10 && cachedItem.volRatio >= 1.5 && cachedItem.changePct > 0 && cachedItem.changePct < 10) {
 					if (!bsjpCandidates.some(c => c.ticker === ticker)) {
 						bsjpCandidates.push(cachedItem);
 					}
@@ -4981,7 +4981,7 @@ async function startBSJPProcess() {
 
 				for (const item of fetchedData) {
 					if (!item || !item.price) continue;
-					if (item.currentValuation > 1000000000 && item.price >= item.ma5 && item.volRatio >= 1.5 && item.changePct > 0 && item.changePct < 10) {
+					if (item.currentValuation > 1000000000 && item.price >= item.ma10 && item.volRatio >= 1.5 && item.changePct > 0 && item.changePct < 10) {
 						if (!bsjpCandidates.some(c => c.ticker === item.ticker)) {
 							bsjpCandidates.push(item);
 						}
