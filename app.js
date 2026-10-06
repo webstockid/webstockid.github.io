@@ -1010,6 +1010,7 @@ function parseYahooDataGlobal(json, ticker) {
 	const result = json?.chart?.result?.[0] || json?.results?.[0];
 	if (!result) return null;
 
+	const timestamps = result.timestamp || [];
 	const quote = result.indicators?.quote?.[0] || result.quote;
 	const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
 	const volumes = quote?.volume?.filter(v => v !== null && v !== undefined) || [];
@@ -1027,36 +1028,71 @@ function parseYahooDataGlobal(json, ticker) {
 	const ma10 = getMA(10);
 	const ma20 = getMA(20);
 
-	const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
-	const realVolume = result.meta?.regularMarketVolume || currentVolume;
-	const currentLot = Math.floor(realVolume / 100);
-	const currentValuation = realVolume * currentPrice;
-
-	const volSlice10 = volumes.slice(-10);
-	const volMA10 = volSlice10.length > 0 ? Math.round(volSlice10.reduce((a, b) => a + b, 0) / volSlice10.length) : 1;
-	const volRatio = volMA10 > 0 ? parseFloat((currentVolume / volMA10).toFixed(2)) : 1.0;
-
 	const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
 	const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
 
+	let dailyData = {};
 	let totalVol20 = 0;
 	let totalValue20 = 0;
 	const len = prices.length;
 	const period = Math.min(20, len);
-	for(let i = len - period; i < len; i++) {
-		const h = highs[i] || prices[i];
-		const l = lows[i] || prices[i];
-		const c = prices[i];
-		const v = volumes[i] || 0;
-		const typicalPrice = (h + l + c) / 3;
-		totalVol20 += v;
-		totalValue20 += (typicalPrice * v);
+
+	for(let i = 0; i < len; i++) {
+		if(timestamps[i] && volumes[i] !== null && prices[i] !== null) {
+			let date = new Date(timestamps[i] * 1000);
+			let dayStr = date.toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' });
+			
+			if (!dailyData[dayStr]) {
+				dailyData[dayStr] = { volume: 0, valuasi: 0 };
+			}
+			
+			let p = prices[i];
+			let h = highs[i] || p;
+			let l = lows[i] || p;
+			let typicalPrice = (h + l + p) / 3;
+			
+			dailyData[dayStr].volume += volumes[i];
+			dailyData[dayStr].valuasi += (typicalPrice * volumes[i]);
+		}
+
+		if (i >= len - period) {
+			let p = prices[i];
+			let h = highs[i] || p;
+			let l = lows[i] || p;
+			let v = volumes[i] || 0;
+			let typicalPrice = (h + l + p) / 3;
+			
+			totalVol20 += v;
+			totalValue20 += (typicalPrice * v);
+		}
 	}
+
+	const dailyKeys = Object.keys(dailyData);
+	let volYesterday = 1;
+	let valYesterday = 1;
+
+	if (dailyKeys.length >= 2) {
+		volYesterday = dailyData[dailyKeys[dailyKeys.length - 2]].volume || 1;
+		valYesterday = dailyData[dailyKeys[dailyKeys.length - 2]].valuasi || 1;
+	} else if (dailyKeys.length === 1) {
+		volYesterday = dailyData[dailyKeys[0]].volume || 1;
+		valYesterday = dailyData[dailyKeys[0]].valuasi || 1;
+	}
+
+	const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
+	const realVolume = result.meta?.regularMarketVolume || (dailyKeys.length > 0 ? dailyData[dailyKeys[dailyKeys.length - 1]].volume : currentVolume);
+	
+	const currentLot = Math.floor(realVolume / 100);
+	const currentValuation = realVolume * currentPrice;
+
+	const volRatio = parseFloat((realVolume / volYesterday).toFixed(2));
+	const valRatio = parseFloat((currentValuation / valYesterday).toFixed(2));
+
 	const bandarAvgPrice = totalVol20 > 0 ? roundToBEITick(totalValue20 / totalVol20) : roundToBEITick(currentPrice);
 
 	return { 
 		ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), 
-		changePct, ma5, ma10, ma20, currentVolume, volMA10, volRatio, high20, low20, 
+		changePct, ma5, ma10, ma20, currentVolume, volYesterday, volRatio, valRatio, high20, low20, 
 		currentLot, currentValuation, bandarAvgPrice,
 		historicalPrices: prices
 	};
@@ -2267,10 +2303,8 @@ function renderRadarItems(dataList) {
 		let entryLow = fibo.entryLow;
 		let entryHigh = fibo.entryHigh;
 		let sl = fibo.sl;
-		
 		let res1 = fibo.res1;
 		let res2 = fibo.res2;
-		
 		let tp1 = res1;
 		let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 
@@ -2278,22 +2312,25 @@ function renderRadarItems(dataList) {
 		let statusClass = "from-emerald-600/30 to-teal-500/10 border-emerald-500/30 text-emerald-400";
 		let alasanTeknikal = `Perubahan <strong>${changePct}%</strong> dan bertahan kokoh di atas garis Moving Average MA5 (Rp ${item.ma5.toLocaleString('id-ID')}), menandakan tekanan beli harian masih mendominasi pasar.`;
 
-		if (item.volRatio >= 2 && changePct >= 0 && changePct <= 5) {
+		const currentHour = new Date().getHours();
+		let targetRasio = currentHour < 11 ? 0.5 : (currentHour < 14 ? 0.8 : 1.2);
+
+		if (item.volRatio >= targetRasio && changePct >= 0 && changePct <= 5) {
 			statusSignal = '<i data-lucide="activity" class="w-3.5 h-3.5 inline"></i> Curi Start (Whale Acc)';
 			statusClass = "from-fuchsia-600/30 to-fuchsia-500/10 border-fuchsia-500/30 text-fuchsia-400";
-			alasanTeknikal = `<strong>Anomali Volume Terdeteksi!</strong> Harga saham baru naik tipis (<strong>+${changePct}%</strong>), tapi volume meledak <strong>${item.volRatio}x lipat</strong> dari rata-rata. Bandar terindikasi sedang kumpulin barang diam-diam.`;
-		} else if (item.volRatio < 1 && changePct > 4) {
+			alasanTeknikal = `<strong>Anomali Volume Terdeteksi!</strong> Harga saham baru naik tipis (<strong>+${changePct}%</strong>), tapi volume hari ini sudah mencapai <strong>${(item.volRatio * 100).toFixed(0)}%</strong> dari total volume seharian kemarin. Bandar terindikasi sedang kumpulin barang.`;
+		} else if (item.volRatio < (targetRasio * 0.5) && changePct > 4) {
 			statusSignal = '<i data-lucide="alert-triangle" class="w-3.5 h-3.5 inline"></i> Jebakan Batman (Fake Breakout)';
 			statusClass = "from-rose-600/30 to-rose-500/10 border-rose-500/30 text-rose-400";
-			alasanTeknikal = `<strong>Waspada!</strong> Harga naik sangat tinggi (<strong>+${changePct}%</strong>) namun tidak didukung oleh volume yang kuat (Hanya <strong>${item.volRatio}x</strong>). Kenaikan ini rawan dibanting. Hati-hati FOMO!`;
+			alasanTeknikal = `<strong>Waspada!</strong> Harga naik sangat tinggi (<strong>+${changePct}%</strong>) namun tidak didukung oleh volume yang kuat (Hanya <strong>${(item.volRatio * 100).toFixed(0)}%</strong> dari kemarin). Kenaikan ini rawan dibanting. Hati-hati FOMO!`;
 		} else if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0 && changePct < 5) {
 			statusSignal = '<i data-lucide="rocket" class="w-3.5 h-3.5 inline"></i> Golden Cross Setup';
 			statusClass = "from-yellow-600/30 to-amber-500/10 border-yellow-500/30 text-yellow-400";
 			alasanTeknikal = `Sinyal perpotongan garis MA5 melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah berpotensi terbentuk.`;
-		} else if (item.volRatio >= 1.5 && item.volRatio <= 5 && changePct > 1) {
+		} else if (item.volRatio >= targetRasio && changePct > 1) {
 			statusSignal = '<i data-lucide="zap" class="w-3.5 h-3.5 inline"></i> Volume Accumulation';
 			statusClass = "from-blue-600/30 to-blue-500/10 border-blue-500/30 text-blue-400";
-			alasanTeknikal = `Terjadi lonjakan volume transaksi hingga <strong>${item.volRatio}x lipat dari rata-rata</strong>. Mengindikasikan partisipasi modal besar di pasar.`;
+			alasanTeknikal = `Terjadi akumulasi volume transaksi hingga <strong>${(item.volRatio * 100).toFixed(0)}% dari total volume kemarin</strong>. Mengindikasikan partisipasi modal besar di pasar.`;
 		} else if (changePct < 1 && item.price >= item.ma10) {
 			statusSignal = '<i data-lucide="shield" class="w-3.5 h-3.5 inline"></i> Support Retest';
 			statusClass = "from-pink-600/30 to-pink-500/10 border-pink-500/30 text-pink-400";
@@ -2302,20 +2339,13 @@ function renderRadarItems(dataList) {
 
 		htmlContent += `
 			<div class="bg-slate-950/30 p-4 lg:p-5 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-colors duration-300 relative shadow-sm flex flex-col justify-between">
-				<!-- Badge Status Signal -->
 				<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l ${statusClass} border-b border-l rounded-bl-xl rounded-tr-xl text-[10px] font-bold flex items-center gap-1.5 shadow-sm">
 					${statusSignal}
 				</div>
 				
-				<!-- Header Card Saham -->
 				<div class="flex items-center gap-3 border-b border-slate-800/80 pb-3 mt-1">
 					<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
-						<img 
-							src="https://assets.stockbit.com/logos/companies/${ticker}.png" 
-							alt="${ticker}" 
-							class="w-full h-full object-contain drop-shadow-sm" 
-							onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${ticker.substring(0,3)}</span>';};"
-						>
+						<img src="https://assets.stockbit.com/logos/companies/${ticker}.png" alt="${ticker}" class="w-full h-full object-contain drop-shadow-sm" onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${ticker.substring(0,3)}</span>';};">
 					</div>
 					<div class="flex flex-col w-full">
 						<div class="flex items-center gap-2">
@@ -2328,7 +2358,6 @@ function renderRadarItems(dataList) {
 					</div>
 				</div>
 				
-				<!-- Trading Plan Matrix (Fibo) -->
 				<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-xs mt-3">
 					<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800 text-left relative overflow-hidden">
 						<div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-500/50"></div>
@@ -2352,7 +2381,6 @@ function renderRadarItems(dataList) {
 					</div>
 				</div>
 				
-				<!-- Keterangan Detail Indikator -->
 				<div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800 text-[10px] lg:text-[11px] text-slate-300 leading-relaxed space-y-2 mt-3">
 					<span class="text-amber-400 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
 						<i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> ANALISIS TEKNIKAL OTOMATIS:
@@ -3054,8 +3082,10 @@ async function scanWhalesData() {
 	let foundWhales = [];
 	const scanList = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
 
+	const currentHour = new Date().getHours();
+	let targetRasio = currentHour < 11 ? 0.5 : (currentHour < 14 ? 0.8 : 1.2);
+
 	try {
-		// STRATEGI 1
 		for (const ticker of scanList) {
 			const cachedItem = getCachedStockData(ticker);
 			if (cachedItem && cachedItem.price) {
@@ -3066,14 +3096,14 @@ async function scanWhalesData() {
 				const valuasi = cachedItem.currentValuation || 0;
 				let tier = 0, tierName = "", tierClass = "";
 				
-				if (vol > 2 && valuasi > 2000000000 && chg > 0 && chg < 5) {
+				if (vol >= targetRasio && valuasi > 2000000000 && chg > 0 && chg < 5) {
 					if (price > ma10) {
 						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-					} else if (price === ma10) { // PERBAIKAN: Menambahkan kondisi parameter
+					} else if (price === ma10) { 
 						tier = 2; tierName = "PAUS AKUMULASI (MASSIVE WHALE)";
 						tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-					} else { // PERBAIKAN: Mengubah menjadi else untuk blok penutup
+					} else { 
 						tier = 1; tierName = "PAUS SIGN (ACC WHALE)";
 						tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
 					}
@@ -3090,7 +3120,6 @@ async function scanWhalesData() {
 			}
 		}
 
-		// STRATEGI 2
 		if (foundWhales.length < 10) {
 			const candidateTickers = foundWhales.map(c => c.ticker);
 			const remainingWatchlist = scanList.filter(t => !candidateTickers.includes(t));
@@ -3099,7 +3128,6 @@ async function scanWhalesData() {
 
 			for (let i = 0; i < remainingWatchlist.length; i += BATCH_SIZE) {
 				maxBatchLimit++;
-				
 				if (maxBatchLimit > 3) break; 
 
 				const batch = remainingWatchlist.slice(i, i + BATCH_SIZE);
@@ -3114,14 +3142,14 @@ async function scanWhalesData() {
 					const valuasi = item.currentValuation || 0;
 					let tier = 0, tierName = "", tierClass = "";
 					
-					if (vol > 2 && valuasi > 2000000000 && chg > 0 && chg < 5) {
+					if (vol >= targetRasio && valuasi > 2000000000 && chg > 0 && chg < 5) {
 						if (price > ma10) {
 							tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 							tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-						} else if (price === ma10) { // PERBAIKAN: Menambahkan kondisi parameter
+						} else if (price === ma10) { 
 							tier = 2; tierName = "PAUS AKUMULASI (MASSIVE WHALE)";
 							tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-						} else { // PERBAIKAN: Mengubah menjadi else untuk blok penutup
+						} else { 
 							tier = 1; tierName = "PAUS SIGN (ACC WHALE)";
 							tierClass = "bg-emerald-500/20 border-emerald-500/40 text-emerald-400";
 						}
@@ -3154,32 +3182,21 @@ async function scanWhalesData() {
 			let html = '';
 			foundWhales.forEach((item, index) => {
 				const price = roundToBEITick(item.price);
-				
-				// 1. Dynamic Fibo
 				const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
 				let entryAgresif = fibo.entryHigh;
 				let entryAman = fibo.entryLow;
 
 				html += `
 					<div class="bg-slate-950/40 p-5 rounded-2xl border border-slate-700/50 hover:border-fuchsia-500/50 transition-all duration-300 relative group shadow-lg flex flex-col justify-between overflow-hidden">
-						<!-- Glow Effect Background -->
 						<div class="absolute -top-20 -right-20 w-40 h-40 bg-fuchsia-500/10 rounded-full blur-3xl group-hover:bg-fuchsia-500/20 transition-colors pointer-events-none"></div>
-						
-						<!-- Badge (Tier) -->
 						<div class="absolute top-0 right-0 px-3 py-1.5 border-b border-l border-slate-700/60 rounded-bl-xl rounded-tr-2xl text-[9px] lg:text-[10px] font-extrabold uppercase tracking-wider ${item.whaleTierClass} shadow-sm backdrop-blur-sm z-10">
 							${item.whaleTierName}
 						</div>
 						
-						<!-- Header Card Saham -->
 						<div class="flex items-start justify-between border-b border-slate-700/60 pb-4 mb-4 mt-1 relative z-10">
 							<div class="flex items-center gap-3.5">
 								<div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden shadow-inner relative shrink-0 p-1">
-									<img 
-										src="https://assets.stockbit.com/logos/companies/${item.ticker}.png" 
-										alt="${item.ticker}" 
-										class="w-full h-full object-contain drop-shadow-sm" 
-										onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[12px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};"
-									>
+									<img src="https://assets.stockbit.com/logos/companies/${item.ticker}.png" alt="${item.ticker}" class="w-full h-full object-contain drop-shadow-sm" onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[12px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};">
 								</div>
 								<div class="flex flex-col">
 									<div class="flex items-center gap-2.5">
@@ -3197,35 +3214,25 @@ async function scanWhalesData() {
 							</div>
 						</div>
 						
-						<!-- Detail Info (Matrix) -->
 						<div class="grid grid-cols-2 gap-3 text-[10px] lg:text-xs relative z-10">
 							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
-								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
-									<i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Agresif / Aman
-								</span>
+								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Agresif / Aman</span>
 								<span class="font-bold text-amber-400 text-xs truncate">Rp ${entryAman.toLocaleString('id-ID')} - ${entryAgresif.toLocaleString('id-ID')}</span>
 							</div>
 							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
-								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
-									<i data-lucide="bar-chart-2" class="w-3 h-3 text-blue-400"></i> AVG Bandar
-								</span>
+								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5"><i data-lucide="bar-chart-2" class="w-3 h-3 text-blue-400"></i> AVG Bandar</span>
 								<span class="font-bold text-blue-400 text-xs truncate">Rp ${(item.bandarAvgPrice || item.ma20).toLocaleString('id-ID')}</span>
 							</div>
 							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
-								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
-									<i data-lucide="activity" class="w-3 h-3 text-fuchsia-400"></i> Total Volume (Lot)
-								</span>
+								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5"><i data-lucide="activity" class="w-3 h-3 text-fuchsia-400"></i> Total Volume (Lot)</span>
 								<span class="font-bold text-fuchsia-400 text-xs truncate">${(item.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 							</div>
 							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
-								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5">
-									<i data-lucide="coins" class="w-3 h-3 text-violet-400"></i> Total Valuasi
-								</span>
+								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5"><i data-lucide="coins" class="w-3 h-3 text-violet-400"></i> Total Valuasi</span>
 								<span class="font-bold text-violet-400 text-xs truncate">${formatValuationIDR(item.currentValuation)}</span>
 							</div>
 						</div>
 						
-						<!-- Action Button -->
 						<button onclick="selectTickerFromRadar('${item.ticker}'); toggleWhaleModal();" class="mt-4 w-full bg-slate-800/80 hover:bg-fuchsia-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-3 rounded-xl border border-slate-700 hover:border-fuchsia-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
 							<span>Buka Chart & Detail AI</span>
 							<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
@@ -3236,7 +3243,6 @@ async function scanWhalesData() {
 			container.innerHTML = html;
 			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 		}
-
 	} finally {
 		isWhaleScanning = false;
 		let cooldown = foundWhales.length === 0 ? 60 : 30; 
@@ -3982,7 +3988,6 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 }
 
 function checkWhaleAlertRealtime(ticker, stockData) {
-	// Menggunakan data terbaru dari cache jika tersedia, atau fallback ke parameter
 	const latestData = getCachedStockData(ticker) || stockData;
 	if (!latestData || !latestData.price) return;
 	
@@ -3994,16 +3999,18 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 
 	const muteNotifSound = localStorage.getItem('stockid_notif_mute_sound') === 'true';
 	
-	if (latestData.volRatio >= 2.0 && latestData.changePct >= 0 && latestData.changePct <= 5.0) {
+	const currentHour = new Date().getHours();
+	let strictRasio = currentHour < 11 ? 0.8 : (currentHour < 14 ? 1.2 : 1.5);
+	
+	if (latestData.volRatio >= strictRasio && latestData.changePct >= 0 && latestData.changePct <= 5.0) {
 		const lastAlertKey = `whale_alert_${ticker}`;
 		const lastAlertTime = localStorage.getItem(lastAlertKey);
 		const now = Date.now();
 		
-		// Jeda 1 jam (3.600.000 ms) agar notifikasi tidak spam untuk saham yang sama
 		const ONE_HOUR = 60 * 60 * 1000;
 		
 		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > ONE_HOUR) {
-			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} meledak ${latestData.volRatio}x lipat! Harga baru naik ${latestData.changePct}%. Bandar indikasi kumpulin barang!`;
+			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} mencapai ${(latestData.volRatio * 100).toFixed(0)}% total kemarin! Harga baru naik ${latestData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
 			if (!muteNotifSound && typeof AudioFX !== 'undefined') {
 				AudioFX.playNotif(); 
@@ -4012,7 +4019,7 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 			sendBrowserPushNotification(`STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
 			showToast(alertMsg, "info", 7000); 
 			
-			const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume meledak <b>${latestData.volRatio}x lipat!</b>\nHarga naik <b>+${latestData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
+			const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume Tembus <b>${(latestData.volRatio * 100).toFixed(0)}% dari kemarin!</b>\nHarga naik <b>+${latestData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
 			sendTelegramAlert(teleMsg);
 			
 			localStorage.setItem(lastAlertKey, now.toString());
@@ -4951,12 +4958,14 @@ async function startBSJPProcess() {
 	const shuffledWatchlist = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
 	let bsjpCandidates = [];
 
+	const currentHour = new Date().getHours();
+	let targetRasio = currentHour < 11 ? 0.5 : (currentHour < 14 ? 0.8 : 1.2);
+
 	try {
-		// STRATEGI 1
 		for (const ticker of shuffledWatchlist) {
 			const cachedItem = getCachedStockData(ticker);
 			if (cachedItem && cachedItem.price) {
-				if (cachedItem.currentValuation > 1000000000 && cachedItem.price >= cachedItem.ma10 && cachedItem.volRatio >= 1.5 && cachedItem.changePct > 0 && cachedItem.changePct < 10) {
+				if (cachedItem.currentValuation > 1000000000 && cachedItem.price >= cachedItem.ma10 && cachedItem.volRatio >= targetRasio && cachedItem.changePct > 0 && cachedItem.changePct < 10) {
 					if (!bsjpCandidates.some(c => c.ticker === ticker)) {
 						bsjpCandidates.push(cachedItem);
 					}
@@ -4965,7 +4974,6 @@ async function startBSJPProcess() {
 			if (bsjpCandidates.length >= 30) break;
 		}
 
-		// STRATEGI 2
 		if (bsjpCandidates.length < 6) {
 			const candidateTickers = bsjpCandidates.map(c => c.ticker);
 			const remainingWatchlist = shuffledWatchlist.filter(t => !candidateTickers.includes(t));
@@ -4981,7 +4989,7 @@ async function startBSJPProcess() {
 
 				for (const item of fetchedData) {
 					if (!item || !item.price) continue;
-					if (item.currentValuation > 1000000000 && item.price >= item.ma10 && item.volRatio >= 1.5 && item.changePct > 0 && item.changePct < 10) {
+					if (item.currentValuation > 1000000000 && item.price >= item.ma10 && item.volRatio >= targetRasio && item.changePct > 0 && item.changePct < 10) {
 						if (!bsjpCandidates.some(c => c.ticker === item.ticker)) {
 							bsjpCandidates.push(item);
 						}
@@ -5002,7 +5010,6 @@ async function startBSJPProcess() {
 	} finally {
 		isBSJPScanning = false;
 		
-		// Cooldown timer
 		let cooldown = 5;
 		if (bsjpCooldownTimer) clearInterval(bsjpCooldownTimer);
 		
