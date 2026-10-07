@@ -5140,7 +5140,7 @@ function renderBSJPItems(dataList) {
 						</li>
 						<li class="flex gap-2">
 							<i data-lucide="trending-up" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i>
-							<span><strong class="text-emerald-400">Posisi Tren:</strong> Harga ditutup di atas garis Moving Average 5 (Rp ${item.ma5.toLocaleString('id-ID')}). Tren jangka pendek valid ke atas.</span>
+							<span><strong class="text-emerald-400">Posisi Tren:</strong> Harga ditutup di atas garis Moving Average 10 (Rp ${item.ma5.toLocaleString('id-ID')}). Tren jangka menengah valid ke atas.</span>
 						</li>
 						<li class="flex gap-2">
 							<i data-lucide="crosshair" class="w-3.5 h-3.5 text-orange-400 mt-0.5 shrink-0"></i>
