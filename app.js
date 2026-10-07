@@ -3963,7 +3963,8 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 			const conditionMet = isSupportOrSL ? (currentPrice <= targetPrice) : (currentPrice >= targetPrice);
 
 			if (conditionMet) {
-				const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh area ${labelText} di Rp ${targetPrice.toLocaleString('id-ID')}`;
+				const alertMsg = `Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}), telah menyentuh area ${labelText} di Rp ${targetPrice.toLocaleString('id-ID')}`;
+				//const alertMsg = `🎯 Alert $${ticker}! Harga terkini (Rp ${currentPrice.toLocaleString('id-ID')}) telah menyentuh area ${labelText} di Rp ${targetPrice.toLocaleString('id-ID')}`;
 				
 				// 1. Eksekusi Notifikasi Bawaan Aplikasi
 				if (!muteNotifSound && typeof AudioFX !== 'undefined') {
@@ -3972,10 +3973,11 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 				showToast(alertMsg, "success");
 				
 				// 2. Eksekusi Browser Push Notification
-				sendBrowserPushNotification(`STOCK ID ALERT: $${ticker}`, alertMsg);
+				sendBrowserPushNotification(`🎯 STOCK ID ALERT: $${ticker}`, alertMsg);
 				
 				// 3. Eksekusi Telegram Webhook
-				const telegramMsg = `🚨 <b>SMART ALERT STOCK ID</b> 🚨\nSaham: <b>${ticker}</b>\nStatus: <b>Menyentuh ${labelText}</b>\nHarga Terkini: <b>Rp ${currentPrice.toLocaleString('id-ID')}</b>`;
+				const telegramMsg = `<b>🔔 SMART ALERT</b> \nSaham: <b>${ticker}</b>\nStatus: Menyentuh <b>${labelText}</b>\nHarga Terkini: <b>Rp ${currentPrice.toLocaleString('id-ID')}</b>`;
+				//const telegramMsg = `🚨 <b>SMART ALERT</b> 🚨\nSaham: <b>${ticker}</b>\nStatus: <b>Menyentuh ${labelText}</b>\nHarga Terkini: <b>Rp ${currentPrice.toLocaleString('id-ID')}</b>`;
 				sendTelegramAlert(telegramMsg);
 				
 				if (typeof alertObj === 'object') {
@@ -4015,7 +4017,8 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 		const ONE_HOUR = 60 * 60 * 1000;
 		
 		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > ONE_HOUR) {
-			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} mencapai ${(latestData.volRatio * 100).toFixed(0)}% dari total volume kemarin! Harga baru naik ${latestData.changePct}%. Bandar indikasi kumpulin barang!`;
+			const alertMsg = `<b>🐋 WHALE DETECTED</b> \nSaham: <b>${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga baru naik <b>${latestData.changePct}%</b>, Bandar indikasi kumpulin barang!`;
+			//const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} mencapai ${(latestData.volRatio * 100).toFixed(0)}% dari total volume kemarin! Harga baru naik ${latestData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
 			if (!muteNotifSound && typeof AudioFX !== 'undefined') {
 				AudioFX.playNotif(); 
@@ -4023,8 +4026,8 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 			
 			sendBrowserPushNotification(`WHALE RADAR: $${ticker}`, alertMsg);
 			showToast(alertMsg, "info", 3500); 
-			
-			const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume Tembus <b>${(latestData.volRatio * 100).toFixed(0)}% dari volume kemarin!</b>\nHarga naik <b>+${latestData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
+			const teleMsg = `<b>🐋 WHALE DETECTED</b>\nSaham: <b>${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga baru naik <b>${latestData.changePct}%, Bandar indikasi kumpulin barang!`;
+			//const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume Tembus <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga naik <b>+${latestData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
 			sendTelegramAlert(teleMsg);
 			
 			localStorage.setItem(lastAlertKey, now.toString());
