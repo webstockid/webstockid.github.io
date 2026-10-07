@@ -3087,9 +3087,6 @@ async function scanWhalesData() {
 	let foundWhales = [];
 	const scanList = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
 
-	const currentHour = new Date().getHours();
-	let targetRasio = currentHour < 11 ? 0.5 : (currentHour < 14 ? 0.8 : 1.2);
-
 	try {
 		for (const ticker of scanList) {
 			const cachedItem = getCachedStockData(ticker);
@@ -3101,7 +3098,8 @@ async function scanWhalesData() {
 				const valuasi = cachedItem.currentValuation || 0;
 				let tier = 0, tierName = "", tierClass = "";
 				
-				if (vol >= targetRasio && valuasi > 2000000000 && chg > 0 && chg < 5) {
+				// LOGIKA BARU WHALES (Digabung dengan 3 Tier)
+				if (vol > 2 && valuasi > 2000000000 && chg >= 0 && chg <= 5) {
 					if (price > ma10) {
 						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
@@ -3147,7 +3145,8 @@ async function scanWhalesData() {
 					const valuasi = item.currentValuation || 0;
 					let tier = 0, tierName = "", tierClass = "";
 					
-					if (vol >= targetRasio && valuasi > 2000000000 && chg > 0 && chg < 5) {
+					// LOGIKA BARU WHALES (Digabung dengan 3 Tier)
+					if (vol > 2 && valuasi > 2000000000 && chg >= 0 && chg <= 5) {
 						if (price > ma10) {
 							tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 							tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
@@ -4974,7 +4973,13 @@ async function startBSJPProcess() {
 		for (const ticker of shuffledWatchlist) {
 			const cachedItem = getCachedStockData(ticker);
 			if (cachedItem && cachedItem.price) {
-				if (cachedItem.currentValuation > 1000000000 && cachedItem.price >= cachedItem.ma10 && cachedItem.volRatio >= targetRasio && cachedItem.changePct > 0 && cachedItem.changePct < 10) {
+				// Strategi 1: Moderat (Original)
+				const isStrategi1 = cachedItem.currentValuation > 5000000000 && cachedItem.price >= cachedItem.ma5 && cachedItem.volRatio >= 2 && cachedItem.changePct > 0 && cachedItem.changePct < 10;
+				
+				// Strategi 2: Ketat (Baru)
+				const isStrategi2 = cachedItem.currentValuation > 5000000000 && cachedItem.price > cachedItem.ma5 && cachedItem.volRatio > 2 && cachedItem.changePct >= 0 && cachedItem.changePct <= 10;
+				
+				if (isStrategi1 || isStrategi2) {
 					if (!bsjpCandidates.some(c => c.ticker === ticker)) {
 						bsjpCandidates.push(cachedItem);
 					}
@@ -4998,7 +5003,14 @@ async function startBSJPProcess() {
 
 				for (const item of fetchedData) {
 					if (!item || !item.price) continue;
-					if (item.currentValuation > 1000000000 && item.price >= item.ma10 && item.volRatio >= targetRasio && item.changePct > 0 && item.changePct < 10) {
+					
+					// Strategi 1: Moderat (Original)
+					const isStrategi1 = item.volRatio >= 2 && item.currentValuation > 5000000000 && item.price >= item.ma5 && item.changePct > 0 && item.changePct < 10;
+					
+					// Strategi 2: Ketat (Baru)
+					const isStrategi2 = item.volRatio > 2 && item.currentValuation > 5000000000 && item.price > item.ma5 && item.changePct >= 0 && item.changePct <= 10;
+					
+					if (isStrategi1 || isStrategi2) {
 						if (!bsjpCandidates.some(c => c.ticker === item.ticker)) {
 							bsjpCandidates.push(item);
 						}
