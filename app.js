@@ -527,7 +527,7 @@ function showConfirm(message) {
 	});
 }
 
-function showToast(message, type = 'success', duration = 5000) {
+function showToast(message, type = 'success', duration = 3500) {
 	const container = document.getElementById('toastContainer');
 	if (!container) return;
 	const toastId = 'toast-' + Date.now();
@@ -2057,7 +2057,7 @@ function calculateSmartRRR() {
 
 	if (rrr >= 2.0) {
 		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
-		evalEl.innerHTML = `✓ <strong>Rencana Trading Sangat Layak Eksekusi (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Potensi profit jauh melebihi toleransi risiko batas modal Anda.</span>`;
+		evalEl.innerHTML = `✓ <strong>Rencana Trading Sangat Layak Eksekusi (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Potensi profit jauh melebihi toleransi risiko batas modal Kamu.</span>`;
 	} else if (rrr >= 1.5) {
 		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-amber-500/10 text-amber-400 border border-amber-500/30";
 		evalEl.innerHTML = `⚠ <strong>Rencana Trading Cukup Layak (RRR 1 : ${rrr})</strong><br><span class="text-[10px] lg:text-[11px] font-normal text-slate-300">Memenuhi standar minimal, namun disarankan memperketat entry dekat support.</span>`;
@@ -2324,7 +2324,7 @@ function renderRadarItems(dataList) {
 		} else if (item.volRatio < (targetRasio * 0.5) && changePct > 4) {
 			statusSignal = '<i data-lucide="alert-triangle" class="w-3.5 h-3.5 inline"></i> Jebakan Batman (Fake Breakout)';
 			statusClass = "from-rose-600/30 to-rose-500/10 border-rose-500/30 text-rose-400";
-			alasanTeknikal = `<strong>Waspada!</strong> Harga naik sangat tinggi (<strong>+${changePct}%</strong>) namun tidak didukung oleh volume yang kuat (Hanya <strong>${(item.volRatio * 100).toFixed(0)}%</strong> dari kemarin). Kenaikan ini rawan dibanting. Hati-hati FOMO!`;
+			alasanTeknikal = `<strong>Waspada!</strong> Harga naik sangat tinggi (<strong>+${changePct}%</strong>) namun tidak didukung oleh volume yang kuat (Hanya <strong>${(item.volRatio * 100).toFixed(0)}%</strong> dari volume kemarin). Kenaikan ini rawan dibanting. Hati-hati FOMO!`;
 		} else if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0 && changePct < 5) {
 			statusSignal = '<i data-lucide="rocket" class="w-3.5 h-3.5 inline"></i> Golden Cross Setup';
 			statusClass = "from-yellow-600/30 to-amber-500/10 border-yellow-500/30 text-yellow-400";
@@ -3559,7 +3559,7 @@ async function saveTelegramConfig() {
 	localStorage.setItem('telegram_bot_token', token);
 	localStorage.setItem('telegram_chat_id', chatId);
 	
-	showToast("Konfigurasi disimpan! Menguji koneksi Telegram...", "info", 4000);
+	showToast("Konfigurasi disimpan! Menguji koneksi Telegram...", "info", 3500);
 	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 	
 	await testTelegramConnection(token, chatId);
@@ -3579,16 +3579,16 @@ async function testTelegramConnection(token, chatId) {
 			
 			const data = await response.json();
 			if (data.ok) {
-				showToast("Sukses! Pesan tes berhasil dikirim ke Telegram Anda.", "success", 6000);
+				showToast("Sukses! Pesan tes berhasil dikirim ke Telegram Kamu.", "success", 3500);
 			} else {
 				let errorMsg = data.description || "Token/Chat ID salah";
 				if (errorMsg.toLowerCase().includes('chat not found')) {
 					errorMsg = "Chat not found! Pastikan Kamu sudah menekan tombol START / kirim pesan minimal 1x ke Bot Kamu di aplikasi Telegram terlebih dahulu.";
 				}
-				showToast(`Gagal terhubung: ${errorMsg}`, "error", 8000);
+				showToast(`Gagal terhubung: ${errorMsg}`, "error", 3500);
 			}
 		} catch (error) {
-			showToast("Gagal mengirim pesan tes. Periksa koneksi internet Anda.", "error", 6000);
+			showToast("Gagal mengirim pesan tes. Periksa koneksi internet Kamu.", "error", 3500);
 			console.error("Telegram Test Error:", error);
 		}
 	}
@@ -3619,7 +3619,7 @@ async function sendTelegramAlert(message) {
 }
 
 function requestNotificationPermission() {
-	if (!("Notification" in window)) return showToast("Browser Anda tidak mendukung Web Push Notification.");
+	if (!("Notification" in window)) return showToast("Browser Kamu tidak mendukung Web Push Notification.");
 	Notification.requestPermission().then(permission => {
 		checkNotificationStatus();
 		if (permission === "granted") {
@@ -3627,7 +3627,7 @@ function requestNotificationPermission() {
 			AudioFX.playSuccess();
 		} else if (permission === "denied") {
 			AudioFX.playAlert();
-			showToast("Izin notifikasi telah ditolak. Silakan izinkan melalui pengaturan browser Anda.");
+			showToast("Izin notifikasi telah ditolak. Silakan izinkan melalui pengaturan browser Kamu.");
 		}
 	});
 }
@@ -4015,16 +4015,16 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 		const ONE_HOUR = 60 * 60 * 1000;
 		
 		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > ONE_HOUR) {
-			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} mencapai ${(latestData.volRatio * 100).toFixed(0)}% total kemarin! Harga baru naik ${latestData.changePct}%. Bandar indikasi kumpulin barang!`;
+			const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} mencapai ${(latestData.volRatio * 100).toFixed(0)}% dari total volume kemarin! Harga baru naik ${latestData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
 			if (!muteNotifSound && typeof AudioFX !== 'undefined') {
 				AudioFX.playNotif(); 
 			}
 			
-			sendBrowserPushNotification(`STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
-			showToast(alertMsg, "info", 7000); 
+			sendBrowserPushNotification(`WHALE RADAR: $${ticker}`, alertMsg);
+			showToast(alertMsg, "info", 3500); 
 			
-			const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume Tembus <b>${(latestData.volRatio * 100).toFixed(0)}% dari kemarin!</b>\nHarga naik <b>+${latestData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
+			const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume Tembus <b>${(latestData.volRatio * 100).toFixed(0)}% dari volume kemarin!</b>\nHarga naik <b>+${latestData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
 			sendTelegramAlert(teleMsg);
 			
 			localStorage.setItem(lastAlertKey, now.toString());
