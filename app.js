@@ -4017,16 +4017,17 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 		const ONE_HOUR = 60 * 60 * 1000;
 		
 		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > ONE_HOUR) {
-			const alertMsg = `<b>🐋 WHALE DETECTED</b> \nSaham: <b>${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga baru naik <b>${latestData.changePct}%</b>, Bandar indikasi kumpulin barang!`;
-			//const alertMsg = `🐋 WHALE DETECTED: Volume $${ticker} mencapai ${(latestData.volRatio * 100).toFixed(0)}% dari total volume kemarin! Harga baru naik ${latestData.changePct}%. Bandar indikasi kumpulin barang!`;
+			const alertMsg = `🐳 WHALE DETECTED \nSaham: $${ticker}\nVolume: Mencapai ${(latestData.volRatio * 100).toFixed(0)}% dari volume kemarin!\nHarga baru naik ${latestData.changePct}%, Bandar indikasi kumpulin barang!`;
+			//const alertMsg = `🐳 WHALE DETECTED: Volume $${ticker} mencapai ${(latestData.volRatio * 100).toFixed(0)}% dari total volume kemarin! Harga baru naik ${latestData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
 			if (!muteNotifSound && typeof AudioFX !== 'undefined') {
 				AudioFX.playNotif(); 
 			}
 			
-			sendBrowserPushNotification(`WHALE RADAR: $${ticker}`, alertMsg);
+			sendBrowserPushNotification(`🐳 STOCK ID WHALE RADAR`, alertMsg);
+			//sendBrowserPushNotification(`WHALE RADAR: $${ticker}`, alertMsg);
 			showToast(alertMsg, "info", 3500); 
-			const teleMsg = `<b>🐋 WHALE DETECTED</b>\nSaham: <b>${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga baru naik <b>${latestData.changePct}%, Bandar indikasi kumpulin barang!`;
+			const teleMsg = `<b>🐳 WHALE DETECTED</b>\nSaham: <b>$${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga baru naik <b>${latestData.changePct}%</b>, Bandar indikasi kumpulin barang!`;
 			//const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume Tembus <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga naik <b>+${latestData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
 			sendTelegramAlert(teleMsg);
 			
