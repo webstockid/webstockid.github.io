@@ -527,7 +527,7 @@ function showConfirm(message) {
 	});
 }
 
-function showToast(message, type = 'success', duration = 3500) {
+function showToast(message, type = 'success', duration = 5000) {
 	const container = document.getElementById('toastContainer');
 	if (!container) return;
 	const toastId = 'toast-' + Date.now();
@@ -544,8 +544,8 @@ function showToast(message, type = 'success', duration = 3500) {
 		iconColor = 'text-amber-400';
 		iconClass = 'fa-triangle-exclamation';
 	} else if (type === 'info') {
-		borderColor = 'border-cyan-500/40';
-		iconColor = 'text-cyan-400';
+		borderColor = 'border-teal-500/40';
+		iconColor = 'text-teal-400';
 		iconClass = 'fa-circle-info';
 	}
 	const toast = document.createElement('div');
@@ -3094,16 +3094,16 @@ async function scanWhalesData() {
 				const vol = cachedItem.volRatio || 0;
 				const chg = cachedItem.changePct || 0;
 				const price = cachedItem.price;
-				const ma10 = cachedItem.ma10 || price;
+				const ma5 = cachedItem.ma5 || price;
 				const valuasi = cachedItem.currentValuation || 0;
 				let tier = 0, tierName = "", tierClass = "";
 				
 				// LOGIKA BARU WHALES (Digabung dengan 3 Tier)
 				if (vol > 2 && valuasi > 2000000000 && chg >= 0 && chg <= 5) {
-					if (price > ma10) {
+					if (price > ma5) {
 						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-					} else if (price === ma10) { 
+					} else if (price === ma5) { 
 						tier = 2; tierName = "PAUS AKUMULASI (MASSIVE WHALE)";
 						tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
 					} else { 
@@ -3141,16 +3141,16 @@ async function scanWhalesData() {
 					const vol = item.volRatio || 0;
 					const chg = item.changePct || 0;
 					const price = item.price;
-					const ma10 = item.ma10 || price;
+					const ma5 = item.ma5 || price;
 					const valuasi = item.currentValuation || 0;
 					let tier = 0, tierName = "", tierClass = "";
 					
 					// LOGIKA BARU WHALES (Digabung dengan 3 Tier)
 					if (vol > 2 && valuasi > 2000000000 && chg >= 0 && chg <= 5) {
-						if (price > ma10) {
+						if (price > ma5) {
 							tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 							tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-						} else if (price === ma10) { 
+						} else if (price === ma5) { 
 							tier = 2; tierName = "PAUS AKUMULASI (MASSIVE WHALE)";
 							tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
 						} else { 
@@ -3558,7 +3558,7 @@ async function saveTelegramConfig() {
 	localStorage.setItem('telegram_bot_token', token);
 	localStorage.setItem('telegram_chat_id', chatId);
 	
-	showToast("Konfigurasi disimpan! Menguji koneksi Telegram...", "info", 3500);
+	showToast("Konfigurasi disimpan! Menguji koneksi Telegram...", "info", 5000);
 	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 	
 	await testTelegramConnection(token, chatId);
@@ -3578,16 +3578,16 @@ async function testTelegramConnection(token, chatId) {
 			
 			const data = await response.json();
 			if (data.ok) {
-				showToast("Sukses! Pesan tes berhasil dikirim ke Telegram Kamu.", "success", 3500);
+				showToast("Sukses! Pesan tes berhasil dikirim ke Telegram Kamu.", "success", 5000);
 			} else {
 				let errorMsg = data.description || "Token/Chat ID salah";
 				if (errorMsg.toLowerCase().includes('chat not found')) {
 					errorMsg = "Chat not found! Pastikan Kamu sudah menekan tombol START / kirim pesan minimal 1x ke Bot Kamu di aplikasi Telegram terlebih dahulu.";
 				}
-				showToast(`Gagal terhubung: ${errorMsg}`, "error", 3500);
+				showToast(`Gagal terhubung: ${errorMsg}`, "error", 5000);
 			}
 		} catch (error) {
-			showToast("Gagal mengirim pesan tes. Periksa koneksi internet Kamu.", "error", 3500);
+			showToast("Gagal mengirim pesan tes. Periksa koneksi internet Kamu.", "error", 5000);
 			console.error("Telegram Test Error:", error);
 		}
 	}
@@ -4025,7 +4025,7 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 			
 			sendBrowserPushNotification(`🐳 STOCK ID WHALE RADAR`, alertMsg);
 			//sendBrowserPushNotification(`WHALE RADAR: $${ticker}`, alertMsg);
-			showToast(alertMsg, "info", 3500); 
+			showToast(alertMsg, "info", 5000); 
 			const teleMsg = `<b>🐳 WHALE DETECTED</b>\nSaham: <b>$${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga baru naik <b>${latestData.changePct}%</b>, Bandar indikasi kumpulin barang!`;
 			//const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume Tembus <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga naik <b>+${latestData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
 			sendTelegramAlert(teleMsg);
@@ -4974,10 +4974,10 @@ async function startBSJPProcess() {
 			const cachedItem = getCachedStockData(ticker);
 			if (cachedItem && cachedItem.price) {
 				// Strategi 1: Moderat (Original)
-				const isStrategi1 = cachedItem.currentValuation > 5000000000 && cachedItem.price >= cachedItem.ma5 && cachedItem.volRatio >= 2 && cachedItem.changePct > 0 && cachedItem.changePct < 10;
+				const isStrategi1 = cachedItem.currentValuation > 5000000000 && cachedItem.price >= cachedItem.ma10 && cachedItem.volRatio >= 2 && cachedItem.changePct > 0 && cachedItem.changePct < 10;
 				
 				// Strategi 2: Ketat (Baru)
-				const isStrategi2 = cachedItem.currentValuation > 5000000000 && cachedItem.price > cachedItem.ma5 && cachedItem.volRatio > 2 && cachedItem.changePct >= 0 && cachedItem.changePct <= 10;
+				const isStrategi2 = cachedItem.currentValuation > 5000000000 && cachedItem.price > cachedItem.ma10 && cachedItem.volRatio > 2 && cachedItem.changePct >= 0 && cachedItem.changePct <= 10;
 				
 				if (isStrategi1 || isStrategi2) {
 					if (!bsjpCandidates.some(c => c.ticker === ticker)) {
@@ -5005,10 +5005,10 @@ async function startBSJPProcess() {
 					if (!item || !item.price) continue;
 					
 					// Strategi 1: Moderat (Original)
-					const isStrategi1 = item.volRatio >= 2 && item.currentValuation > 5000000000 && item.price >= item.ma5 && item.changePct > 0 && item.changePct < 10;
+					const isStrategi1 = item.volRatio >= 2 && item.currentValuation > 5000000000 && item.price >= item.ma10 && item.changePct > 0 && item.changePct < 10;
 					
 					// Strategi 2: Ketat (Baru)
-					const isStrategi2 = item.volRatio > 2 && item.currentValuation > 5000000000 && item.price > item.ma5 && item.changePct >= 0 && item.changePct <= 10;
+					const isStrategi2 = item.volRatio > 2 && item.currentValuation > 5000000000 && item.price > item.ma10 && item.changePct >= 0 && item.changePct <= 10;
 					
 					if (isStrategi1 || isStrategi2) {
 						if (!bsjpCandidates.some(c => c.ticker === item.ticker)) {
