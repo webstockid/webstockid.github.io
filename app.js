@@ -4087,145 +4087,94 @@ async function fetchYahooTrending() {
 }
 
 async function fetchRealtimeFundamentals(ticker) {
-	const container = document.getElementById('yahooFundamentalContainer');
+	const customContainer = document.getElementById('yahooFundamentalContainer');
 	const tvContainer = document.getElementById('tv_fundamental_container');
 	
-	if (tvContainer) {
-		tvContainer.innerHTML = '';
-		tvContainer.classList.add('hidden');
+	// Sembunyikan UI custom lama karena kita beralih ke Widget TradingView
+	if (customContainer) {
+		customContainer.classList.add('hidden');
+		customContainer.innerHTML = '';
 	}
-
-	if (!container) return;
-
+	
+	if (!tvContainer) return;
+	
+	// Update label tab agar sesuai dengan sumber data
 	const labelMetrik = document.querySelector('#tabContent-fundamental .text-fuchsia-400.font-bold:not(#fundTickerLabel)');
 	if (labelMetrik) {
-		labelMetrik.innerHTML = '<i data-lucide="database" class="w-3.5 h-3.5 inline"></i> Global Financial Data API (Free)';
+		labelMetrik.innerHTML = '<i data-lucide="bar-chart-2" class="w-3.5 h-3.5 inline"></i> TradingView Financials';
 	}
-
-	container.classList.remove('hidden');
-	container.innerHTML = `
-		<div class="flex flex-col items-center justify-center py-12 space-y-3">
-			<i data-lucide="loader-2" class="w-8 h-8 animate-spin text-fuchsia-400"></i>
-			<span class="text-xs text-slate-400 animate-pulse">Mengekstrak data fundamental perusahaan secara real-time...</span>
-		</div>
-	`;
-	if (window.lucide) lucide.createIcons();
-
-	try {
-		const targetSymbol = `${ticker}.JK`;
-		const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${targetSymbol}?modules=summaryDetail,defaultKeyStatistics,financialData,assetProfile`;
-		
-		const proxies = [
-			`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-			`https://corsproxy.io/?${encodeURIComponent(url)}`
-		];
-
-		let result = null;
-		for (let i = 0; i < proxies.length; i++) {
-			try {
-				const res = await fetch(proxies[i], { signal: AbortSignal.timeout(7000) });
-				if (!res.ok) continue;
-				let data = await res.json();
-				if (proxies[i].includes('allorigins')) data = JSON.parse(data.contents);
-				
-				if (data && data.quoteSummary && data.quoteSummary.result) {
-					result = data.quoteSummary.result[0];
-					break;
-				}
-			} catch (e) {
-				console.warn(`Proxy ${i} failed for fundamentals.`);
-			}
-		}
-
-		if (!result) {
-			throw new Error("Data fundamental perusahaan tidak ditemukan di database global.");
-		}
-
-		// Ekstraksi Objek
-		const profile = result.assetProfile || {};
-		const summary = result.summaryDetail || {};
-		const stats = result.defaultKeyStatistics || {};
-		const finance = result.financialData || {};
-
-		// Formatting Data
-		const companyName = profile.longName || ticker;
-		const sector = profile.sector || 'Sektor N/A';
-		const industry = profile.industry || 'Industri N/A';
-		const website = profile.website || '#';
-		const description = profile.longBusinessSummary || 'Deskripsi perusahaan belum tersedia di database.';
-
-		const mktCap = summary.marketCap?.raw ? formatValuationIDR(summary.marketCap.raw) : 'N/A';
-		const peRatio = summary.trailingPE?.raw ? summary.trailingPE.raw.toFixed(2) + 'x' : 'N/A';
-		const pbRatio = stats.priceToBook?.raw ? stats.priceToBook.raw.toFixed(2) + 'x' : 'N/A';
-		const divYield = summary.dividendYield?.raw ? (summary.dividendYield.raw * 100).toFixed(2) + '%' : '0.00%';
-		const roe = finance.returnOnEquity?.raw ? (finance.returnOnEquity.raw * 100).toFixed(2) + '%' : 'N/A';
-		const debtToEquity = finance.debtToEquity?.raw ? (finance.debtToEquity.raw / 100).toFixed(2) + 'x' : 'N/A';
-		const beta = stats.beta?.raw ? stats.beta.raw.toFixed(2) : 'N/A';
-
-		container.innerHTML = `
-			<div class="space-y-4">
-				<div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 flex items-start gap-4 shadow-sm">
-					<div>
-						<h3 class="text-base lg:text-lg font-bold text-white mb-1">${companyName}</h3>
-						<div class="flex flex-wrap gap-2 text-[10px] lg:text-[11px] mb-2">
-							<span class="bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-500/30 px-2 py-0.5 rounded font-bold">${sector}</span>
-							<span class="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded font-bold">${industry}</span>
-							<span class="bg-slate-800 text-slate-300 border border-slate-700 px-2 py-0.5 rounded font-bold">IDX</span>
-						</div>
-						<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed line-clamp-3">${description}</p>
-					</div>
-				</div>
-
-				<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
-						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Market Cap</span>
-						<span class="text-sm lg:text-base font-bold text-emerald-400">${mktCap}</span>
-					</div>
-					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
-						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">P/E Ratio</span>
-						<span class="text-sm lg:text-base font-bold text-amber-400">${peRatio}</span>
-					</div>
-					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
-						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">P/B Ratio</span>
-						<span class="text-sm lg:text-base font-bold text-cyan-400">${pbRatio}</span>
-					</div>
-					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
-						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Dividend Yield</span>
-						<span class="text-sm lg:text-base font-bold text-fuchsia-400">${divYield}</span>
-					</div>
-					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
-						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Return on Equity (ROE)</span>
-						<span class="text-sm lg:text-base font-bold text-blue-400">${roe}</span>
-					</div>
-					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
-						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Debt to Equity</span>
-						<span class="text-sm lg:text-base font-bold text-rose-400">${debtToEquity}</span>
-					</div>
-					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center">
-						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Beta (Volatilitas)</span>
-						<span class="text-sm lg:text-base font-bold text-white">${beta}</span>
-					</div>
-					<div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 shadow-sm text-center flex flex-col justify-center">
-						<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Website Resmi</span>
-						${website !== '#' ? `<a href="${website}" target="_blank" class="text-[10px] lg:text-xs font-bold text-sky-400 hover:underline mt-1 truncate">Kunjungi <i data-lucide="external-link" class="w-3 h-3 inline"></i></a>` : '<span class="text-[10px] lg:text-xs font-bold text-slate-500 mt-1">Tidak Tersedia</span>'}
-					</div>
-				</div>
-			</div>
-		`;
-		
-		if (window.lucide) lucide.createIcons();
-		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
-
-	} catch (error) {
-		container.innerHTML = `
-			<div class="bg-rose-500/10 border border-rose-500/30 p-4 rounded-xl text-center space-y-2">
-				<i data-lucide="alert-triangle" class="w-6 h-6 text-rose-400 mx-auto"></i>
-				<h4 class="text-sm font-bold text-rose-400">Gagal Memuat Fundamental</h4>
-				<p class="text-xs text-slate-400">${error.message}</p>
-			</div>
-		`;
-		if (window.lucide) lucide.createIcons();
+	
+	// Tampilkan container utama TradingView dan bersihkan isi sebelumnya
+	tvContainer.classList.remove('hidden');
+	tvContainer.innerHTML = '';
+	
+	// Setup format simbol khusus untuk Bursa Efek Indonesia (contoh: IDX:BBCA)
+	const tvSymbol = `IDX:${ticker}`;
+	
+	// ==========================================
+	// WIDGET 1: PROFIL PERUSAHAAN (Sektor, Deskripsi)
+	// ==========================================
+	const profileWrapper = document.createElement('div');
+	profileWrapper.className = "tradingview-widget-container w-full mb-4 rounded-xl overflow-hidden border border-slate-800 shadow-sm bg-slate-900/60";
+	
+	const profileInner = document.createElement('div');
+	profileInner.className = "tradingview-widget-container__widget w-full";
+	profileWrapper.appendChild(profileInner);
+	tvContainer.appendChild(profileWrapper);
+	
+	const scriptProfile = document.createElement('script');
+	scriptProfile.type = 'text/javascript';
+	scriptProfile.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js';
+	scriptProfile.async = true;
+	
+	const configProfile = {
+		"width": "100%",
+		"height": "200",
+		"colorTheme": "dark",
+		"isTransparent": true,
+		"symbol": tvSymbol,
+		"locale": "id"
+	};
+	
+	scriptProfile.innerHTML = JSON.stringify(configProfile);
+	profileInner.appendChild(scriptProfile);
+	
+	// ==========================================
+	// WIDGET 2: DATA FINANSIAL (Market Cap, P/E, Laporan)
+	// ==========================================
+	const financialWrapper = document.createElement('div');
+	financialWrapper.className = "tradingview-widget-container h-[600px] w-full rounded-xl overflow-hidden border border-slate-800 shadow-sm bg-slate-900/60";
+	
+	const financialInner = document.createElement('div');
+	financialInner.className = "tradingview-widget-container__widget h-full w-full";
+	financialWrapper.appendChild(financialInner);
+	tvContainer.appendChild(financialWrapper);
+	
+	const scriptFinancials = document.createElement('script');
+	scriptFinancials.type = 'text/javascript';
+	scriptFinancials.src = 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js';
+	scriptFinancials.async = true;
+	
+	const configFinancials = {
+		"colorTheme": "dark",
+		"isTransparent": true,
+		"largeChartUrl": "",
+		"displayMode": "regular",
+		"width": "100%",
+		"height": "100%",
+		"symbol": tvSymbol,
+		"locale": "id"
+	};
+	
+	scriptFinancials.innerHTML = JSON.stringify(configFinancials);
+	financialInner.appendChild(scriptFinancials);
+	
+	// Render ikon dan jalankan audio jika fungsi tersedia di global
+	if (window.lucide) {
+		lucide.createIcons();
+	}
+	if (typeof AudioFX !== 'undefined') {
+		AudioFX.playSuccess();
 	}
 }
 
