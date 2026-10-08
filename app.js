@@ -579,7 +579,7 @@ function shareStockUrl() {
 // 7. SISTEM AUTENTIKASI VIP TOKEN
 // ==========================================
 const databaseVIP = {
-	"HARDIGANTENGG": { "tanggalExpired": "2026-10-09" },
+	"HARDIGANTENG": { "tanggalExpired": "2026-10-09" },
 	"DIMAS1928": { "tanggalExpired": "2040-08-01" },
 	"IRAM1827": { "tanggalExpired": "2040-01-01" },
 	"ZULIA1307": { "tanggalExpired": "2027-09-17" },
