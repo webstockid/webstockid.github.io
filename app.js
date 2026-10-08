@@ -4916,17 +4916,17 @@ async function startBSJPProcess() {
 	let bsjpCandidates = [];
 
 	const currentHour = new Date().getHours();
-	let targetRasio = currentHour < 11 ? 0.5 : (currentHour < 14 ? 0.8 : 1.2);
+	let targetRasio = currentHour < 11 ? 1.0 : (currentHour < 14 ? 1.0 : 3.0);
 
 	try {
 		for (const ticker of shuffledWatchlist) {
 			const cachedItem = getCachedStockData(ticker);
 			if (cachedItem && cachedItem.price) {
 				// Strategi 1: Moderat (Original)
-				const isStrategi1 = cachedItem.currentValuation > 5000000000 && cachedItem.price >= cachedItem.ma10 && cachedItem.volRatio >= 2 && cachedItem.changePct > 0 && cachedItem.changePct < 10;
+				const isStrategi1 = cachedItem.currentValuation > 4000000000 && cachedItem.price >= cachedItem.ma20 && cachedItem.volRatio >= 2 && cachedItem.changePct > 0 && cachedItem.changePct < 10;
 				
 				// Strategi 2: Ketat (Baru)
-				const isStrategi2 = cachedItem.currentValuation > 5000000000 && cachedItem.price > cachedItem.ma10 && cachedItem.volRatio > 2 && cachedItem.changePct >= 0 && cachedItem.changePct <= 10;
+				const isStrategi2 = cachedItem.currentValuation > 4000000000 && cachedItem.price > cachedItem.ma20 && cachedItem.volRatio > 2 && cachedItem.changePct >= 0 && cachedItem.changePct <= 10;
 				
 				if (isStrategi1 || isStrategi2) {
 					if (!bsjpCandidates.some(c => c.ticker === ticker)) {
@@ -4954,10 +4954,10 @@ async function startBSJPProcess() {
 					if (!item || !item.price) continue;
 					
 					// Strategi 1: Moderat (Original)
-					const isStrategi1 = item.volRatio >= 2 && item.currentValuation > 5000000000 && item.price >= item.ma10 && item.changePct > 0 && item.changePct < 10;
+					const isStrategi1 = item.volRatio >= 2 && item.currentValuation > 4000000000 && item.price >= item.ma20 && item.changePct > 0 && item.changePct < 10;
 					
 					// Strategi 2: Ketat (Baru)
-					const isStrategi2 = item.volRatio > 2 && item.currentValuation > 5000000000 && item.price > item.ma10 && item.changePct >= 0 && item.changePct <= 10;
+					const isStrategi2 = item.volRatio > 2 && item.currentValuation > 4000000000 && item.price > item.ma20 && item.changePct >= 0 && item.changePct <= 10;
 					
 					if (isStrategi1 || isStrategi2) {
 						if (!bsjpCandidates.some(c => c.ticker === item.ticker)) {
