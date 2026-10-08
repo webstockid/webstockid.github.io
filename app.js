@@ -2777,23 +2777,31 @@ function ptExecuteBuy() {
 }
 
 async function ptExecuteSell(id) {
-    let acc = getPaperAccount();
-    const itemIndex = acc.portfolio.findIndex(p => p.id === id);
-    if (itemIndex < 0) return;
+	// Ambil data sementara hanya untuk pengecekan ticker awal
+	let tempAcc = getPaperAccount();
+	const tempItem = tempAcc.portfolio.find(p => p.id === id);
+	if (!tempItem) return;
 
-    const item = acc.portfolio[itemIndex];
-    let sellPrice = item.avgPrice;
-    
-    const cached = getCachedStockData(item.ticker);
-    if (globalStockData && globalStockData.ticker === item.ticker) {
-        sellPrice = globalStockData.price;
-    } else if (cached && cached.price) {
-        sellPrice = cached.price;
-    } else {
-        const freshData = await fetchRealtimeStockData(item.ticker);
-        if (freshData && freshData.price) sellPrice = freshData.price;
-    }
+	let sellPrice = tempItem.avgPrice;
+	
+	const cached = getCachedStockData(tempItem.ticker);
+	if (globalStockData && globalStockData.ticker === tempItem.ticker) {
+		sellPrice = globalStockData.price;
+	} else if (cached && cached.price) {
+		sellPrice = cached.price;
+	} else {
+		// Await dilakukan SEBELUM kita mengunci state akun final
+		const freshData = await fetchRealtimeStockData(tempItem.ticker);
+		if (freshData && freshData.price) sellPrice = freshData.price;
+	}
 
+	// STATE LOCK FIX: Kunci ulang state akun secara sinkron setelah fetch 
+	// Ini mencegah Race Condition/Data Tertimpa jika banyak saham dijual bersamaan
+	let acc = getPaperAccount();
+	const itemIndex = acc.portfolio.findIndex(p => p.id === id);
+	if (itemIndex < 0) return;
+
+	const item = acc.portfolio[itemIndex];
 	const revenue = sellPrice * item.lots * 100;
 	const modal = item.avgPrice * item.lots * 100;
 	const profitLoss = revenue - modal;
@@ -2813,6 +2821,7 @@ async function ptExecuteSell(id) {
 	});
 
 	savePaperAccount(acc);
+	
 	if (profitLoss >= 0) {
 		AudioFX.playWinJournal();
 		triggerCuanCelebration();
@@ -2848,10 +2857,12 @@ async function ptRefreshPortoPrices(isAuto = false) {
 		const data = await fetchRealtimeStockData(item.ticker, true);
 		if (data && data.price) {
 			hasUpdates = true;
-			if (item.tp > 0 && data.price >= item.tp) { ptExecuteSell(item.id); continue; }
-			if (item.sl > 0 && data.price <= item.sl) { ptExecuteSell(item.id); continue; }
+			// ASYNC FIX: Tambahkan await agar sistem tidak melewatinya sebelum data matang
+			if (item.tp > 0 && data.price >= item.tp) { await ptExecuteSell(item.id); continue; }
+			if (item.sl > 0 && data.price <= item.sl) { await ptExecuteSell(item.id); continue; }
 		}
 	}
+	
 	if (hasUpdates) renderPaperTradingUI();
 	if (!isAuto) AudioFX.playSuccess();
 }
@@ -4923,10 +4934,10 @@ async function startBSJPProcess() {
 			const cachedItem = getCachedStockData(ticker);
 			if (cachedItem && cachedItem.price) {
 				// Strategi 1: Moderat (Original)
-				const isStrategi1 = cachedItem.currentValuation > 4000000000 && cachedItem.price >= cachedItem.ma20 && cachedItem.volRatio >= 2 && cachedItem.changePct > 0 && cachedItem.changePct < 10;
+				const isStrategi1 = cachedItem.currentValuation > 4000000000 && cachedItem.price >= cachedItem.ma5 && cachedItem.volRatio >= 2 && cachedItem.changePct > 0 && cachedItem.changePct < 10;
 				
 				// Strategi 2: Ketat (Baru)
-				const isStrategi2 = cachedItem.currentValuation > 4000000000 && cachedItem.price > cachedItem.ma20 && cachedItem.volRatio > 2 && cachedItem.changePct >= 0 && cachedItem.changePct <= 10;
+				const isStrategi2 = cachedItem.currentValuation > 4000000000 && cachedItem.price > cachedItem.ma5 && cachedItem.volRatio > 2 && cachedItem.changePct >= 0 && cachedItem.changePct <= 10;
 				
 				if (isStrategi1 || isStrategi2) {
 					if (!bsjpCandidates.some(c => c.ticker === ticker)) {
@@ -4954,10 +4965,10 @@ async function startBSJPProcess() {
 					if (!item || !item.price) continue;
 					
 					// Strategi 1: Moderat (Original)
-					const isStrategi1 = item.volRatio >= 2 && item.currentValuation > 4000000000 && item.price >= item.ma20 && item.changePct > 0 && item.changePct < 10;
+					const isStrategi1 = item.volRatio >= 2 && item.currentValuation > 4000000000 && item.price >= item.ma5 && item.changePct > 0 && item.changePct < 10;
 					
 					// Strategi 2: Ketat (Baru)
-					const isStrategi2 = item.volRatio > 2 && item.currentValuation > 4000000000 && item.price > item.ma20 && item.changePct >= 0 && item.changePct <= 10;
+					const isStrategi2 = item.volRatio > 2 && item.currentValuation > 4000000000 && item.price > item.ma5 && item.changePct >= 0 && item.changePct <= 10;
 					
 					if (isStrategi1 || isStrategi2) {
 						if (!bsjpCandidates.some(c => c.ticker === item.ticker)) {
