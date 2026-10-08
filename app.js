@@ -4006,7 +4006,7 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 	const muteNotifSound = localStorage.getItem('stockid_notif_mute_sound') === 'true';
 	
 	const currentHour = new Date().getHours();
-	let strictRasio = currentHour < 11 ? 0.8 : (currentHour < 14 ? 1.2 : 1.5);
+	let strictRasio = currentHour < 11 ? 0.8 : (currentHour < 14 ? 1.5 : 2.5);
 	
 	if (latestData.volRatio >= strictRasio && latestData.changePct >= 0 && latestData.changePct <= 5.0) {
 		const lastAlertKey = `whale_alert_${ticker}`;
