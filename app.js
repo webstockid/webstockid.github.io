@@ -260,7 +260,7 @@ function initSystemSettings() {
 	const themeRadio = document.querySelector(`input[name="settingTheme"][value="${savedTheme}"]`);
 	if (themeRadio) themeRadio.checked = true;
 
-	const savedFontSize = localStorage.getItem('stockid_font_size') || '16';
+	const savedFontSize = localStorage.getItem('stockid_font_size') || '13';
 	applyFontSize(savedFontSize);
 	const fontInput = document.getElementById('settingFontSize');
 	if (fontInput) fontInput.value = savedFontSize;
@@ -579,7 +579,7 @@ function shareStockUrl() {
 // 7. SISTEM AUTENTIKASI VIP TOKEN
 // ==========================================
 const databaseVIP = {
-	"HARDIGANTENG": { "tanggalExpired": "2090-01-01" },
+	"HARDIGANTENGG": { "tanggalExpired": "2026-10-09" },
 	"DIMAS1928": { "tanggalExpired": "2040-08-01" },
 	"IRAM1827": { "tanggalExpired": "2040-01-01" },
 	"ZULIA1307": { "tanggalExpired": "2027-09-17" },
