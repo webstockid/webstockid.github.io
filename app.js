@@ -2258,17 +2258,21 @@ async function startRadarProcess() {
 	
 	const validData = [];
 	const BATCH_SIZE = 20; 
-	let maxBatchLimit = 0; // Tambahan limiter anti-lag
+	let maxBatchLimit = 0; 
 
 	for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
 		maxBatchLimit++;
-		if (maxBatchLimit > 3) break; // Membatasi max 60 saham agar UI tidak hang
+		if (maxBatchLimit > 3) break; 
 
 		const batch = shuffled.slice(i, i + BATCH_SIZE);
 		const results = await Promise.all(batch.map(ticker => fetchRealtimeStockData(ticker)));
 		for (const res of results) {
 			if (res && res.price > 0) validData.push(res);
 		}
+		
+		// WORKAROUND ANTI-LAG: Beri napas pada UI Thread selama 50ms
+		await new Promise(resolve => setTimeout(resolve, 50));
+		
 		if (validData.length > 0) renderRadarItems(validData);
 		if (validData.length >= 10) break;
 	}
@@ -2525,6 +2529,7 @@ async function runCustomScreener() {
 				
 				if (matchMA && matchVol && matchPrice && matchRSI) passedItems.push(item);
 			}
+			await new Promise(resolve => setTimeout(resolve, 50));
 			if (passedItems.length >= 8) break;
 		}
 		
@@ -3179,6 +3184,7 @@ async function scanWhalesData() {
 						}
 					}
 				}
+				await new Promise(resolve => setTimeout(resolve, 50));
 				if (foundWhales.length >= 10) break;
 			}
 		}
@@ -4021,27 +4027,71 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 	
 	if (latestData.volRatio >= strictRasio && latestData.changePct >= 0 && latestData.changePct <= 5.0) {
 		const lastAlertKey = `whale_alert_${ticker}`;
-		const lastAlertTime = localStorage.getItem(lastAlertKey);
+		const lastAlertRaw = localStorage.getItem(lastAlertKey);
+		
+		// Inisialisasi default jika belum ada data
+		let lastAlert = { time: 0, volRatio: 0, sessionId: null };
+		
+		if (lastAlertRaw) {
+			try {
+				// Parse JSON (Mendukung fallback jika sebelumnya menyimpan timestamp string biasa)
+				lastAlert = JSON.parse(lastAlertRaw);
+				if (typeof lastAlert !== 'object') {
+					lastAlert = { time: parseInt(lastAlertRaw) || 0, volRatio: 0, sessionId: null };
+				}
+			} catch(e) {
+				lastAlert = { time: parseInt(lastAlertRaw) || 0, volRatio: 0, sessionId: null };
+			}
+		}
+
 		const now = Date.now();
+		const FOUR_HOURS = 4 * 60 * 60 * 1000;
+		const marketOpen = isMarketOpen();
+
+		let shouldAlert = false;
+		let currentSessionId = null;
+
+		if (!marketOpen) {
+			// Market tutup: 16.00 sore - 09.00 pagi.
+			// Kurangi 9 jam agar 08.59 pagi tetap dihitung sebagai sesi hari (tanggal) yang sama dengan 16.00 kemarin.
+			const d = new Date();
+			d.setHours(d.getHours() - 9);
+			currentSessionId = d.toISOString().split('T')[0] + "_closed";
+			
+			// Jika Session ID berbeda dengan yang terakhir kali disimpan, izinkan 1x notifikasi.
+			if (lastAlert.sessionId !== currentSessionId) {
+				shouldAlert = true;
+			}
+		} else {
+			// Market buka: 09.00 pagi - 16.00 sore
+			if (now - lastAlert.time >= FOUR_HOURS) {
+				// Hanya munculkan alert baru JIKA rasio volume naik dari yang sebelumnya
+				if (latestData.volRatio > lastAlert.volRatio || lastAlert.volRatio === 0) {
+					shouldAlert = true;
+				}
+			}
+		}
 		
-		const ONE_HOUR = 60 * 60 * 1000;
-		
-		if (!lastAlertTime || (now - parseInt(lastAlertTime)) > ONE_HOUR) {
+		if (shouldAlert) {
 			const alertMsg = `Saham: $${ticker}\nVolume: Mencapai ${(latestData.volRatio * 100).toFixed(0)}% dari volume kemarin!\nHarga baru naik ${latestData.changePct}%, Bandar indikasi kumpulin barang!`;
-			//const alertMsg = `🐳 WHALE DETECTED: Volume $${ticker} mencapai ${(latestData.volRatio * 100).toFixed(0)}% dari total volume kemarin! Harga baru naik ${latestData.changePct}%. Bandar indikasi kumpulin barang!`;
 			
 			if (!muteNotifSound && typeof AudioFX !== 'undefined') {
 				AudioFX.playNotif(); 
 			}
 			
 			sendBrowserPushNotification(`🐳 STOCK ID WHALE RADAR`, alertMsg);
-			//sendBrowserPushNotification(`WHALE RADAR: $${ticker}`, alertMsg);
 			showToast(alertMsg, "info", 5000); 
+			
 			const teleMsg = `<b>🐳 STOCK ID WHALE RADAR</b>\nSaham: <b>$${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga baru naik <b>${latestData.changePct}%</b>, Bandar indikasi kumpulin barang!`;
-			//const teleMsg = `🐋 <b>WHALE DETECTED: $${ticker}</b>\nVolume Tembus <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga naik <b>+${latestData.changePct}%</b>\n<i>Bandar terindikasi sedang kumpulin barang!</i>`;
 			sendTelegramAlert(teleMsg);
 			
-			localStorage.setItem(lastAlertKey, now.toString());
+			// Simpan data terbaru ke LocalStorage dalam format JSON
+			const newAlertData = {
+				time: now,
+				volRatio: latestData.volRatio,
+				sessionId: currentSessionId
+			};
+			localStorage.setItem(lastAlertKey, JSON.stringify(newAlertData));
 		}
 	}
 }
@@ -4976,6 +5026,7 @@ async function startBSJPProcess() {
 						}
 					}
 				}
+				await new Promise(resolve => setTimeout(resolve, 50));
 				if (bsjpCandidates.length >= 10) break;
 			}
 		}
