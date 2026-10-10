@@ -581,7 +581,7 @@ function shareStockUrl() {
 const UNLIMITED_TOKENS = ["VIPKING", "SULTANVIP"]; // 2 Token khusus tanpa limit
 
 const databaseVIP = {
-	"HARDIGANTENG": { "tanggalExpired": "2026-10-09" },
+	"HARDIGANTENG": { "tanggalExpired": "2026-10-15" },
 	"DIMAS1928": { "tanggalExpired": "2040-08-01" },
 	"IRAM1827": { "tanggalExpired": "2040-01-01" },
 	"ZULIA1307": { "tanggalExpired": "2027-09-17" },
@@ -666,7 +666,7 @@ function getDailyLimits(token) {
 	}
 }
 
-function checkAndUpdateLimit(feature) {
+function checkAndUpdateLimit(feature, deductNow = true) {
 	const token = localStorage.getItem('vip_token');
 	if (!token) return false;
 	
@@ -676,14 +676,32 @@ function checkAndUpdateLimit(feature) {
 	if (!limits) return false;
 
 	if (limits[feature] > 0) {
+		// Jika deductNow true, potong sekarang. Jika false, hanya verifikasi apakah limit tersedia
+		if (deductNow) {
+			limits[feature] -= 1;
+			const dateStr = new Date().toLocaleDateString('id-ID');
+			const key = `stockid_limits_${token}_${dateStr}`;
+			localStorage.setItem(key, JSON.stringify(limits));
+			updateDashboardLimitsUI();
+		}
+		return true;
+	} else {
+		return false;
+	}
+}
+
+// Fungsi baru untuk memotong token limit secara manual saat pencarian/scan berhasil
+function deductFeatureLimit(feature) {
+	const token = localStorage.getItem('vip_token');
+	if (!token || UNLIMITED_TOKENS.includes(token)) return;
+	
+	let limits = getDailyLimits(token);
+	if (limits && limits[feature] > 0) {
 		limits[feature] -= 1;
 		const dateStr = new Date().toLocaleDateString('id-ID');
 		const key = `stockid_limits_${token}_${dateStr}`;
 		localStorage.setItem(key, JSON.stringify(limits));
 		updateDashboardLimitsUI();
-		return true;
-	} else {
-		return false;
 	}
 }
 
@@ -2247,7 +2265,7 @@ function startSearchCooldown(seconds) {
 	}, 1000);
 }
 
-function searchStock(bypassCooldown = false) {
+async function searchStock(bypassCooldown = false) {
 	const btn = document.querySelector("button[onclick='searchStock()']");
 	if (!bypassCooldown && btn && btn.disabled) return;
 	const input = document.getElementById('stockSearch').value.trim().toUpperCase();
@@ -2255,11 +2273,23 @@ function searchStock(bypassCooldown = false) {
 	if (box) box.classList.add('hidden');
 
 	if (input) {
-		if (!checkAndUpdateLimit('search')) {
+		// Cek limit tanpa memotong token (deductNow = false)
+		if (!checkAndUpdateLimit('search', false)) {
 			showToast("Limit harian pencarian saham Kamu telah habis (50x/hari).", "error");
 			if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 			return;
 		}
+
+		// Validasi: Tarik data saham terlebih dahulu. Jika gagal/typo, jangan potong limit
+		const stockData = await fetchRealtimeStockData(input, false);
+		if (!stockData || !stockData.price) {
+			showToast(`Saham ${input} tidak ditemukan atau typo! Limit tidak dikurangi.`, "warning");
+			if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
+			return;
+		}
+
+		// Saham valid dan ditemukan, potong limit sekarang
+		deductFeatureLimit('search');
 
 		currentTicker = input;
 		document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
@@ -2585,7 +2615,7 @@ async function runCustomScreener() {
 	const btn = document.getElementById('btnRunCustomScreener');
 	if (btn && btn.disabled) return;
 
-	if (!checkAndUpdateLimit('customRadar')) {
+	if (!checkAndUpdateLimit('customRadar', false)) {
 		showToast("Limit harian Custom Radar Kamu telah habis (20x/hari).", "error");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
@@ -2654,9 +2684,12 @@ async function runCustomScreener() {
 		}
 		
 		if (passedItems.length === 0) {
-			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10">Tidak ada saham yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya.</div>`;
+			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10">Tidak ada saham yang cocok dengan kombinasi filter tersebut. Coba longgarkan kriterianya. (Limit aman, tidak dikurangi)</div>`;
 			return;
 		}
+
+		// Jika hasil screening ada, baru potong limit tokennya
+		deductFeatureLimit('customRadar');
 
 		let html = '';
 		passedItems.forEach((item, index) => {
@@ -3205,7 +3238,7 @@ async function scanWhalesData() {
 		return;
 	}
 
-	if (!checkAndUpdateLimit('whaleRadar')) {
+	if (!checkAndUpdateLimit('whaleRadar', false)) {
 		showToast("Limit harian Whale Detector Kamu telah habis (20x/hari).", "error");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
@@ -3320,10 +3353,13 @@ async function scanWhalesData() {
 			container.innerHTML = `
 				<div class="text-center text-slate-400 text-[11px] lg:text-xs py-10 col-span-full border border-slate-700 rounded-xl bg-slate-950/20">
 					<i data-lucide="waves" class="w-6 h-6 mx-auto mb-2 text-slate-500"></i>
-					Belum ada pergerakan Whale (Bandar) yang terdeteksi. Kondisi pasar saat ini cenderung sepi atau stabil.
+					Belum ada pergerakan Whale (Bandar) yang terdeteksi. Kondisi pasar saat ini cenderung sepi atau stabil. (Limit tidak dikurangi)
 				</div>
 			`;
 		} else {
+			// Potong token khusus ketika Paus / Whale berhasil dideteksi
+			deductFeatureLimit('whaleRadar');
+
 			let html = '';
 			foundWhales.forEach((item, index) => {
 				const price = roundToBEITick(item.price);
@@ -5088,7 +5124,7 @@ async function startBSJPProcess() {
 		return;
 	}
 	
-	if (!checkAndUpdateLimit('bsjpRadar')) {
+	if (!checkAndUpdateLimit('bsjpRadar', false)) {
 		showToast("Limit harian BSJP Radar Kamu telah habis (20x/hari).", "error");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
@@ -5156,8 +5192,11 @@ async function startBSJPProcess() {
 		}
 		
 		if (bsjpCandidates.length === 0) {
-			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30">Belum ada saham yang memenuhi syarat ketat BSJP pada sesi ini.</div>`;
+			container.innerHTML = `<div class="text-center text-slate-400 text-xs py-8 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30">Belum ada saham yang memenuhi syarat ketat BSJP pada sesi ini. (Limit tidak dikurangi)</div>`;
 		} else {
+			// Potong token jika hasilnya memang ditemukan
+			deductFeatureLimit('bsjpRadar');
+
 			const randomSelection = bsjpCandidates.sort(() => 0.5 - Math.random()).slice(0, 6);
 			const topCandidates = randomSelection.sort((a, b) => b.volRatio - a.volRatio);
 			renderBSJPItems(topCandidates);
