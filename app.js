@@ -576,8 +576,10 @@ function shareStockUrl() {
 }
 
 // ==========================================
-// 7. SISTEM AUTENTIKASI VIP TOKEN
+// 7. SISTEM AUTENTIKASI VIP TOKEN & LIMITASI
 // ==========================================
+const UNLIMITED_TOKENS = ["VIPKING", "SULTANVIP"]; // 2 Token khusus tanpa limit
+
 const databaseVIP = {
 	"HARDIGANTENG": { "tanggalExpired": "2026-10-09" },
 	"DIMAS1928": { "tanggalExpired": "2040-08-01" },
@@ -612,6 +614,9 @@ const databaseVIP = {
 	// Free
 	"RAFAEL": { "tanggalExpired": "2026-10-01" },
 	"FASYA7384": { "tanggalExpired": "2026-11-05" },
+	// Unlimited
+	"VIPKING": { "tanggalExpired": "2040-12-31" },
+	"SULTANVIP": { "tanggalExpired": "2040-12-31" }
 };
 
 function getExtractName(token) {
@@ -626,6 +631,95 @@ function calculateDaysLeft(expiredDateStr) {
 	expDate.setHours(0, 0, 0, 0);
 	const diffTime = expDate - today;
 	return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+function getDailyLimits(token) {
+	if (!token) return null;
+	const dateStr = new Date().toLocaleDateString('id-ID');
+	const key = `stockid_limits_${token}_${dateStr}`;
+	let limits = localStorage.getItem(key);
+	
+	const defaultLimits = {
+		search: 50,
+		radar: 20,
+		customRadar: 20,
+		bsjpRadar: 20,
+		whaleRadar: 20,
+		peer: 30
+	};
+
+	if (limits) {
+		try {
+			return JSON.parse(limits);
+		} catch (e) {
+			return defaultLimits;
+		}
+	} else {
+		for (let i = localStorage.length - 1; i >= 0; i--) {
+			const k = localStorage.key(i);
+			if (k && k.startsWith(`stockid_limits_${token}_`) && k !== key) {
+				localStorage.removeItem(k);
+			}
+		}
+		localStorage.setItem(key, JSON.stringify(defaultLimits));
+		return defaultLimits;
+	}
+}
+
+function checkAndUpdateLimit(feature) {
+	const token = localStorage.getItem('vip_token');
+	if (!token) return false;
+	
+	if (UNLIMITED_TOKENS.includes(token)) return true;
+
+	let limits = getDailyLimits(token);
+	if (!limits) return false;
+
+	if (limits[feature] > 0) {
+		limits[feature] -= 1;
+		const dateStr = new Date().toLocaleDateString('id-ID');
+		const key = `stockid_limits_${token}_${dateStr}`;
+		localStorage.setItem(key, JSON.stringify(limits));
+		updateDashboardLimitsUI();
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function updateDashboardLimitsUI() {
+	const token = localStorage.getItem('vip_token');
+	if (!token) return;
+
+	let limitUIContainer = document.getElementById('vipLimitsContainer');
+	
+	if (!limitUIContainer) {
+		limitUIContainer = document.createElement('div');
+		limitUIContainer.id = 'vipLimitsContainer';
+		limitUIContainer.className = 'flex flex-wrap items-center gap-1.5 w-full mt-2 lg:mt-0 lg:w-auto';
+		
+		const statusWrapper = document.getElementById('vipAccountStatus').closest('.flex.flex-wrap');
+		if (statusWrapper) {
+			statusWrapper.appendChild(limitUIContainer);
+		}
+	}
+
+	if (UNLIMITED_TOKENS.includes(token)) {
+		limitUIContainer.innerHTML = `
+			<span class="bg-fuchsia-500/10 text-fuchsia-400 border border-fuchsia-500/30 px-2.5 py-1 rounded-md text-[10px] font-bold flex items-center gap-1.5"><i data-lucide="infinity" class="w-3.5 h-3.5"></i> Akses Tanpa Batas</span>
+		`;
+	} else {
+		const limits = getDailyLimits(token);
+		limitUIContainer.innerHTML = `
+			<span class="${limits.search > 0 ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'} border px-2 py-1 rounded-md text-[10px] font-bold" title="Sisa Pencarian Saham">Cari: ${limits.search}</span>
+			<span class="${limits.radar > 0 ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'} border px-2 py-1 rounded-md text-[10px] font-bold" title="Sisa Radar Saham">Radar: ${limits.radar}</span>
+			<span class="${limits.customRadar > 0 ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'} border px-2 py-1 rounded-md text-[10px] font-bold" title="Sisa Custom Radar">Custom: ${limits.customRadar}</span>
+			<span class="${limits.bsjpRadar > 0 ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'} border px-2 py-1 rounded-md text-[10px] font-bold" title="Sisa BSJP Radar">BSJP: ${limits.bsjpRadar}</span>
+			<span class="${limits.whaleRadar > 0 ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'} border px-2 py-1 rounded-md text-[10px] font-bold" title="Sisa Whale Detector">Whale: ${limits.whaleRadar}</span>
+			<span class="${limits.peer > 0 ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'} border px-2 py-1 rounded-md text-[10px] font-bold" title="Sisa Peer Komparasi">Peer: ${limits.peer}</span>
+		`;
+	}
+	if (window.lucide) lucide.createIcons();
 }
 
 function checkVIPAuth() {
@@ -652,6 +746,8 @@ function checkVIPAuth() {
 	document.getElementById('vipUserName').innerText = name;
 	document.getElementById('vipDaysLeft').innerText = `${daysLeft} Hari Lagi`;
 	document.getElementById('vipAccountStatus').innerText = `Status: VIP Aktif (${account.tanggalExpired})`;
+	
+	updateDashboardLimitsUI();
 }
 
 function loginVIP() {
@@ -1580,6 +1676,13 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	
 	if (isManualRefresh && btn) {
 		if (btn.disabled) return;
+		
+		if (!checkAndUpdateLimit('peer')) {
+			showToast("Limit harian Peer Komparasi Kamu telah habis (30x/hari).", "error");
+			if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
+			return;
+		}
+
 		btn.disabled = true;
 		btn.className = "w-full sm:w-auto bg-slate-800 border border-slate-700 text-white font-bold px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
 		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-emerald-400"></i> Memuat Peer...`;
@@ -2152,6 +2255,12 @@ function searchStock(bypassCooldown = false) {
 	if (box) box.classList.add('hidden');
 
 	if (input) {
+		if (!checkAndUpdateLimit('search')) {
+			showToast("Limit harian pencarian saham Kamu telah habis (50x/hari).", "error");
+			if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
+			return;
+		}
+
 		currentTicker = input;
 		document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
 		document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
@@ -2164,7 +2273,6 @@ function searchStock(bypassCooldown = false) {
 		
 		renderChart(currentTicker);
 		renderTechnicalGauge(currentTicker);
-		// renderFundamentalWidget(currentTicker);
 		renderAllAlerts();
 		generateAISignal(currentTicker, false);
 		fetchRealtimeFundamentals(currentTicker);
@@ -2238,6 +2346,13 @@ function startVoiceSearch() {
 // ==========================================
 async function startRadarProcess() {
 	if (isRadarScanning) return;
+
+	if (!checkAndUpdateLimit('radar')) {
+		showToast("Limit harian Radar Saham Kamu telah habis (20x/hari).", "error");
+		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
+		return;
+	}
+
 	isRadarScanning = true;
 
 	const btn = document.getElementById('btnStartRadar');
@@ -2270,7 +2385,6 @@ async function startRadarProcess() {
 			if (res && res.price > 0) validData.push(res);
 		}
 		
-		// WORKAROUND ANTI-LAG: Beri napas pada UI Thread selama 50ms
 		await new Promise(resolve => setTimeout(resolve, 50));
 		
 		if (validData.length > 0) renderRadarItems(validData);
@@ -2471,6 +2585,12 @@ async function runCustomScreener() {
 	const btn = document.getElementById('btnRunCustomScreener');
 	if (btn && btn.disabled) return;
 
+	if (!checkAndUpdateLimit('customRadar')) {
+		showToast("Limit harian Custom Radar Kamu telah habis (20x/hari).", "error");
+		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
+		return;
+	}
+
 	if (btn) {
 		btn.disabled = true;
 		btn.className = "w-full sm:w-auto bg-slate-800 border border-slate-700 text-white font-bold px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
@@ -2491,11 +2611,11 @@ async function runCustomScreener() {
 		const shuffled = [...uniqueRadarWatchlist].sort(() => 0.5 - Math.random());
 		let passedItems = [];
 		const BATCH_SIZE = 20;
-		let maxBatchLimit = 0; // Tambahan limiter anti-lag
+		let maxBatchLimit = 0; 
 
 		for (let i = 0; i < shuffled.length; i += BATCH_SIZE) {
 			maxBatchLimit++;
-			if (maxBatchLimit > 3) break; // Membatasi max 60 saham agar UI tidak hang
+			if (maxBatchLimit > 3) break; 
             
 			const batch = shuffled.slice(i, i + BATCH_SIZE);
             
@@ -2523,8 +2643,8 @@ async function runCustomScreener() {
 				let matchRSI = true;
 				if (item.historicalPrices && ruleRSI !== 'ALL') {
 					const rsiValue = calculateRSI(item.historicalPrices);
-					if (ruleRSI === 'OVERSOLD' && rsiValue >= 10) matchRSI = false; //30
-					if (ruleRSI === 'OVERBOUGHT' && rsiValue <= 100) matchRSI = false; //70
+					if (ruleRSI === 'OVERSOLD' && rsiValue >= 10) matchRSI = false; 
+					if (ruleRSI === 'OVERBOUGHT' && rsiValue <= 100) matchRSI = false; 
 				}
 				
 				if (matchMA && matchVol && matchPrice && matchRSI) passedItems.push(item);
@@ -3077,15 +3197,21 @@ function toggleWhaleModal() {
 
 async function scanWhalesData() {
 	if (isWhaleScanning) return;
-	isWhaleScanning = true;
 
 	const btn = document.getElementById('btnScanWhales');
 	const container = document.getElementById('whaleResultsContainer');
 
 	if (btn.disabled && btn.innerHTML.includes('Pending')) {
-		isWhaleScanning = false;
 		return;
 	}
+
+	if (!checkAndUpdateLimit('whaleRadar')) {
+		showToast("Limit harian Whale Detector Kamu telah habis (20x/hari).", "error");
+		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
+		return;
+	}
+
+	isWhaleScanning = true;
 
 	btn.disabled = true;
 	btn.classList.add('cursor-not-allowed', 'opacity-70');
@@ -3114,7 +3240,6 @@ async function scanWhalesData() {
 				const valuasi = cachedItem.currentValuation || 0;
 				let tier = 0, tierName = "", tierClass = "";
 				
-				// LOGIKA BARU WHALES (Digabung dengan 3 Tier)
 				if (vol > 2 && valuasi > 2000000000 && chg >= 0 && chg <= 5) {
 					if (price > ma5) {
 						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
@@ -3161,7 +3286,6 @@ async function scanWhalesData() {
 					const valuasi = item.currentValuation || 0;
 					let tier = 0, tierName = "", tierClass = "";
 					
-					// LOGIKA BARU WHALES (Digabung dengan 3 Tier)
 					if (vol > 2 && valuasi > 2000000000 && chg >= 0 && chg <= 5) {
 						if (price > ma5) {
 							tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
@@ -4956,15 +5080,21 @@ let bsjpCooldownTimer = null;
 
 async function startBSJPProcess() {
 	if (isBSJPScanning) return;
-	isBSJPScanning = true;
 
 	const btn = document.getElementById('btnStartBSJP');
 	const container = document.getElementById('bsjpListContainer');
 	
 	if (btn.disabled && btn.innerHTML.includes('Pending')) {
-		isBSJPScanning = false;
 		return;
 	}
+	
+	if (!checkAndUpdateLimit('bsjpRadar')) {
+		showToast("Limit harian BSJP Radar Kamu telah habis (20x/hari).", "error");
+		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
+		return;
+	}
+
+	isBSJPScanning = true;
 	
 	btn.disabled = true;
 	btn.className = "w-full sm:w-auto bg-slate-800 text-white font-bold px-6 py-2.5 rounded-lg border border-slate-700 flex items-center justify-center gap-2 shrink-0 cursor-not-allowed opacity-70";
@@ -4983,10 +5113,7 @@ async function startBSJPProcess() {
 		for (const ticker of shuffledWatchlist) {
 			const cachedItem = getCachedStockData(ticker);
 			if (cachedItem && cachedItem.price) {
-				// Strategi 1: Moderat (Original)
 				const isStrategi1 = cachedItem.currentValuation > 4000000000 && cachedItem.price >= cachedItem.ma5 && cachedItem.volRatio >= 2 && cachedItem.changePct > 0 && cachedItem.changePct < 10;
-				
-				// Strategi 2: Ketat (Baru)
 				const isStrategi2 = cachedItem.currentValuation > 4000000000 && cachedItem.price > cachedItem.ma5 && cachedItem.volRatio > 2 && cachedItem.changePct >= 0 && cachedItem.changePct <= 10;
 				
 				if (isStrategi1 || isStrategi2) {
@@ -5014,10 +5141,7 @@ async function startBSJPProcess() {
 				for (const item of fetchedData) {
 					if (!item || !item.price) continue;
 					
-					// Strategi 1: Moderat (Original)
 					const isStrategi1 = item.volRatio >= 2 && item.currentValuation > 4000000000 && item.price >= item.ma5 && item.changePct > 0 && item.changePct < 10;
-					
-					// Strategi 2: Ketat (Baru)
 					const isStrategi2 = item.volRatio > 2 && item.currentValuation > 4000000000 && item.price > item.ma5 && item.changePct >= 0 && item.changePct <= 10;
 					
 					if (isStrategi1 || isStrategi2) {
