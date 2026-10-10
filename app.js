@@ -2291,7 +2291,7 @@ async function searchStock(bypassCooldown = false) {
 		// Validasi: Tarik data saham terlebih dahulu. Jika gagal/typo, jangan potong limit
 		const stockData = await fetchRealtimeStockData(input, false);
 		if (!stockData || !stockData.price) {
-			showToast(`Saham ${input} tidak ditemukan atau typo! Limit tidak dikurangi.`, "warning");
+			showToast(`Saham ${input} tidak ditemukan atau typo!`, "warning");
 			if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 			return;
 		}
