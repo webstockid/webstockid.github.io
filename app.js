@@ -1695,7 +1695,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	if (isManualRefresh && btn) {
 		if (btn.disabled) return;
 		
-		if (!checkAndUpdateLimit('peer')) {
+		if (!checkAndUpdateLimit('peer', false)) {
 			showToast("Limit harian Peer Komparasi Kamu telah habis (30x/hari).", "error");
 			if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 			return;
@@ -1840,6 +1840,14 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 		});
 
 		body.innerHTML = rowsHTML || `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tidak ditemukan saham peer yang aktif saat ini.</td></tr>`;
+		
+		if (rowsHTML) {
+			body.innerHTML = rowsHTML;
+			// Jika pakai tombol manual refresh dan hasil ditemukan, potong limit
+			if (isManualRefresh) deductFeatureLimit('peer');
+		} else {
+			body.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Tidak ditemukan saham peer yang aktif saat ini. (Limit tidak dikurangi)</td></tr>`;
+		}
 
 	} catch (error) {
 		console.error("Error loading peers:", error);
@@ -2377,7 +2385,7 @@ function startVoiceSearch() {
 async function startRadarProcess() {
 	if (isRadarScanning) return;
 
-	if (!checkAndUpdateLimit('radar')) {
+	if (!checkAndUpdateLimit('radar', false)) {
 		showToast("Limit harian Radar Saham Kamu telah habis (20x/hari).", "error");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
@@ -2428,8 +2436,10 @@ async function startRadarProcess() {
 	if (window.lucide) lucide.createIcons();
 
 	if (validData.length === 0) {
-		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada data bursa yang berhasil ditangkap. Silakan coba kembali.</div>`;
+		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada data bursa yang berhasil ditangkap. Silakan coba kembali. (Limit tidak dikurangi)</div>`;
 	} else {
+		// Potong token karena radar berhasil menemukan saham
+		deductFeatureLimit('radar');
 		AudioFX.playSuccess();
 	}
 }
