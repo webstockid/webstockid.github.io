@@ -640,12 +640,12 @@ function getDailyLimits(token) {
 	let limits = localStorage.getItem(key);
 	
 	const defaultLimits = {
-		search: 50,
-		radar: 20,
-		customRadar: 20,
-		bsjpRadar: 20,
-		whaleRadar: 20,
-		peer: 30
+		search: 1000,
+		radar: 1000,
+		customRadar: 1000,
+		bsjpRadar: 1000,
+		whaleRadar: 1000,
+		peer: 1000
 	};
 
 	if (limits) {
@@ -2291,7 +2291,7 @@ async function searchStock(bypassCooldown = false) {
 		// Validasi: Tarik data saham terlebih dahulu. Jika gagal/typo, jangan potong limit
 		const stockData = await fetchRealtimeStockData(input, false);
 		if (!stockData || !stockData.price) {
-			showToast(`Saham ${input} tidak ditemukan atau typo!`, "warning");
+			showToast(`Saham ${input} tidak ditemukan!`, "warning");
 			if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 			return;
 		}
