@@ -640,12 +640,12 @@ function getDailyLimits(token) {
 	let limits = localStorage.getItem(key);
 	
 	const defaultLimits = {
-		search: 1000,
-		radar: 1000,
-		customRadar: 1000,
-		bsjpRadar: 1000,
-		whaleRadar: 1000,
-		peer: 1000
+		search: 100,
+		radar: 75,
+		customRadar: 50,
+		bsjpRadar: 25,
+		whaleRadar: 25,
+		peer: 75
 	};
 
 	if (limits) {
