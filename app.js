@@ -1555,7 +1555,10 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	// 1. Dynamic Fibo
 	const fibo = getDynamicFiboLevels(stockData?.high20, stockData?.low20, price);
 	let res1 = fibo.res1, res2 = fibo.res2;
-	let sup1 = fibo.entryLow, sup2 = fibo.entryHigh;
+	
+	let sup1 = roundToBEITick(fibo.entryLow * 0.98, 'floor');
+	let sup2 = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
+	
 	let sl = fibo.sl;
 	let tp1 = res1; 
 	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
@@ -1649,7 +1652,10 @@ function exportTradingCard() {
 	// 1. Dynamic Fibo
 	const fibo = getDynamicFiboLevels(globalStockData?.high20, globalStockData?.low20, price);
 	let res1 = fibo.res1, res2 = fibo.res2;
-	let sup1 = fibo.entryLow, sup2 = fibo.entryHigh;
+	
+	let sup1 = roundToBEITick(fibo.entryLow * 0.98, 'floor'); 
+	let sup2 = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
+	
 	let sl = fibo.sl;
 	let tp1 = res1; 
 	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
@@ -2459,9 +2465,12 @@ function renderRadarItems(dataList) {
 		const price = roundToBEITick(item.price);
 		const changePct = item.changePct;
 		
+		// Dynamic Fibo
 		const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
-		let entryLow = fibo.entryLow;
-		let entryHigh = fibo.entryHigh;
+		
+		let entryLow = roundToBEITick(fibo.entryLow * 0.98, 'floor');
+		let entryHigh = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
+		
 		let sl = fibo.sl;
 		let res1 = fibo.res1;
 		let res2 = fibo.res2;
@@ -2705,14 +2714,15 @@ async function runCustomScreener() {
 		passedItems.forEach((item, index) => {
 			const price = roundToBEITick(item.price);
 			
+			// Dynamic Fibo
 			const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
-			let entryLow = fibo.entryLow;
-			let entryHigh = fibo.entryHigh;
-			let sl = fibo.sl;
 			
+			let entryLow = roundToBEITick(fibo.entryLow * 0.98, 'floor');
+			let entryHigh = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
+			
+			let sl = fibo.sl;
 			let res1 = fibo.res1;
 			let res2 = fibo.res2;
-			
 			let tp1 = res1;
 			let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 
