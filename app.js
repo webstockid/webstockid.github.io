@@ -1556,10 +1556,10 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	const fibo = getDynamicFiboLevels(stockData?.high20, stockData?.low20, price);
 	let res1 = fibo.res1, res2 = fibo.res2;
 	
-	let sup1 = roundToBEITick(fibo.entryLow * 0.98, 'floor');
+	let sup1 = roundToBEITick(fibo.entryLow * 0.97, 'floor');
 	let sup2 = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
 	
-	let sl = fibo.sl;
+	let sl = roundToBEITick(fibo.sl * 0.98, 'floor');
 	let tp1 = res1; 
 	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 
@@ -1649,14 +1649,14 @@ function exportTradingCard() {
 	startExportCardCooldown(15);
 	const price = roundToBEITick(globalStockData.price);
 	
-	// 1. Dynamic Fibo
+	// Dynamic Fibo
 	const fibo = getDynamicFiboLevels(globalStockData?.high20, globalStockData?.low20, price);
 	let res1 = fibo.res1, res2 = fibo.res2;
 	
-	let sup1 = roundToBEITick(fibo.entryLow * 0.98, 'floor'); 
+	let sup1 = roundToBEITick(fibo.entryLow * 0.97, 'floor'); 
 	let sup2 = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
 	
-	let sl = fibo.sl;
+	let sl = roundToBEITick(fibo.sl * 0.98, 'floor');
 	let tp1 = res1; 
 	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 
@@ -2468,10 +2468,10 @@ function renderRadarItems(dataList) {
 		// Dynamic Fibo
 		const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
 		
-		let entryLow = roundToBEITick(fibo.entryLow * 0.98, 'floor');
+		let entryLow = roundToBEITick(fibo.entryLow * 0.97, 'floor');
 		let entryHigh = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
 		
-		let sl = fibo.sl;
+		let sl = roundToBEITick(fibo.sl * 0.98, 'floor');
 		let res1 = fibo.res1;
 		let res2 = fibo.res2;
 		let tp1 = res1;
@@ -2717,10 +2717,10 @@ async function runCustomScreener() {
 			// Dynamic Fibo
 			const fibo = getDynamicFiboLevels(item.high20, item.low20, price);
 			
-			let entryLow = roundToBEITick(fibo.entryLow * 0.98, 'floor');
+			let entryLow = roundToBEITick(fibo.entryLow * 0.97, 'floor');
 			let entryHigh = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
 			
-			let sl = fibo.sl;
+			let sl = roundToBEITick(fibo.sl * 0.98, 'floor');
 			let res1 = fibo.res1;
 			let res2 = fibo.res2;
 			let tp1 = res1;
@@ -3581,7 +3581,7 @@ function generateAIResponse(prompt) {
 	let price = data ? roundToBEITick(data.price) : 100;
 	const fibo = getDynamicFiboLevels(data?.high20, data?.low20, price);
 	
-	let sl = fibo.sl;
+	let sl = roundToBEITick(fibo.sl * 0.98, 'floor');
 	let sup1 = fibo.entryLow;
 	let sup2 = fibo.entryHigh;
 	let res1 = fibo.res1;
