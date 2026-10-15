@@ -1397,27 +1397,27 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span><i data-lucide="circle-dollar-sign" class="w-3.5 h-3.5"></i> Harga: <strong class="text-sky-400 font-bold">Rp${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
+				<span><i data-lucide="circle-dollar-sign"></i> Harga: <strong class="text-sky-400 font-bold">Rp${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
 				<span class="text-[10px] lg:text-[11px] text-white">${isCached ? 'Cache Instant' : 'Live Data'}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span><i data-lucide="chart-candlestick" class="w-3.5 h-3.5"></i> Volume Transaksi:</span>
+				<span><i data-lucide="chart-candlestick"></i> Volume Transaksi:</span>
 				<span class="text-violet-400 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span><i data-lucide="chart-candlestick" class="w-3.5 h-3.5"></i> Valuasi Transaksi:</span>
+				<span><i data-lucide="chart-candlestick""></i> Valuasi Transaksi:</span>
 				<span class="text-violet-400 font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span><i data-lucide="venetian-mask" class="w-3.5 h-3.5"></i> Estimasi AVG Bandar:</span>
+				<span><i data-lucide="venetian-mask"></i> Estimasi AVG Bandar:</span>
 				<span class="text-amber-400 font-bold">Rp ${(stockData.bandarAvgPrice || price).toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span><i data-lucide="chart-no-axes-combined" class="w-3.5 h-3.5"></i> Posisi Tren MA5 / MA10 / MA20:</span>
+				<span><i data-lucide="chart-no-axes-combined"></i> Posisi Tren MA5 / MA10 / MA20:</span>
 				<span class="text-emerald-400 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span><i data-lucide="sliders-vertical" class="w-3.5 h-3.5"></i> Rasio Volume vs Rerata Harian:</span>
+				<span><i data-lucide="sliders-vertical"></i> Rasio Volume vs Rerata Harian:</span>
 				<span class="font-bold ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
 			</li>
 		`;
