@@ -3506,7 +3506,7 @@ async function scanWhalesData() {
 		}
 	} finally {
 		isWhaleScanning = false;
-		let cooldown = foundWhales.length === 0 ? 60 : 30; 
+		let cooldown = foundWhales.length === 0 ? 15 : 10; // 60 : 30
 		if (whaleScanCooldownTimer) clearInterval(whaleScanCooldownTimer);
 
 		whaleScanCooldownTimer = setInterval(() => {
