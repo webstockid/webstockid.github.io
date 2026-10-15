@@ -759,25 +759,25 @@ function updateDashboardLimitsUI() {
 	applyBadgeToElement(searchBtn, limits.search);
 
 	// B. Radar Saham
-	applyBadgeToElement(document.getElementById('tabBtn-bigmoney'), limits.radar);
+	//applyBadgeToElement(document.getElementById('tabBtn-bigmoney'), limits.radar);
 	applyBadgeToElement(document.getElementById('btnStartRadar'), limits.radar);
 
 	// C. Custom Radar
-	applyBadgeToElement(document.getElementById('tabBtn-custom'), limits.customRadar);
+	//applyBadgeToElement(document.getElementById('tabBtn-custom'), limits.customRadar);
 	applyBadgeToElement(document.getElementById('btnRunCustomScreener'), limits.customRadar);
 
 	// D. BSJP Radar
-	applyBadgeToElement(document.getElementById('tabBtn-bsjp'), limits.bsjpRadar);
+	//applyBadgeToElement(document.getElementById('tabBtn-bsjp'), limits.bsjpRadar);
 	applyBadgeToElement(document.getElementById('btnStartBSJP'), limits.bsjpRadar);
 
 	// E. Peer Komparasi
-	applyBadgeToElement(document.getElementById('tabBtn-peer'), limits.peer);
+	//applyBadgeToElement(document.getElementById('tabBtn-peer'), limits.peer);
 	applyBadgeToElement(document.getElementById('btnRefreshPeer'), limits.peer);
 
 	// F. Whale Detector Radar
 	applyBadgeToElement(document.getElementById('btnScanWhales'), limits.whaleRadar);
 	const whaleTriggers = document.querySelectorAll("[onclick*='toggleWhaleModal'], [onclick*='scanWhales']");
-	whaleTriggers.forEach(btn => applyBadgeToElement(limits.whaleRadar));
+	whaleTriggers.forEach(btn => applyBadgeToElement(toggleWhaleModal, limits.whaleRadar));
 
 	if (window.lucide) lucide.createIcons();
 }
