@@ -777,7 +777,7 @@ function updateDashboardLimitsUI() {
 	// F. Whale Detector Radar
 	applyBadgeToElement(document.getElementById('btnScanWhales'), limits.whaleRadar);
 	const whaleTriggers = document.querySelectorAll("[onclick*='toggleWhaleModal'], [onclick*='scanWhales']");
-	whaleTriggers.forEach(btn => applyBadgeToElement(limits.whaleRadar));
+	whaleTriggers.forEach(btn => applyBadgeToElement(btn, limits.whaleRadar));
 
 	if (window.lucide) lucide.createIcons();
 }
@@ -4585,13 +4585,16 @@ async function fetchCorporateAction(ticker) {
 		];
 		let calResult = null;
 		for (let p of proxies) {
-			const res = await fetch(p);
-			// const res = await fetch(p, { signal: AbortSignal.timeout(4000) });
-			if (res.ok) {
-				let data = await res.json();
-				if (p.includes('allorigins')) data = JSON.parse(data.contents);
-				calResult = data?.quoteSummary?.result?.[0]?.calendarEvents;
-				if (calResult) break;
+			try {
+				const res = await fetch(p);
+				if (res.ok) {
+					let data = await res.json();
+					if (p.includes('allorigins')) data = JSON.parse(data.contents);
+					calResult = data?.quoteSummary?.result?.[0]?.calendarEvents;
+					if (calResult) break;
+				}
+			} catch (e) {
+				console.warn(`Proxy ${p} gagal memuat data kalender.`);
 			}
 		}
 		
