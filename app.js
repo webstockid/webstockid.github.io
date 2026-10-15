@@ -127,13 +127,17 @@ function switchTab(tabName) {
 		const btn = document.getElementById(`tabBtn-${tab}`);
 		const content = document.getElementById(`tabContent-${tab}`);
 		if (tab === tabName) {
-			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition";
+			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition relative";
 			if (content) content.classList.remove('hidden');
 		} else {
-			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition";
+			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition relative";
 			if (content) content.classList.add('hidden');
 		}
 	});
+
+	// Re-apply badge setelah perpindahan tab
+	updateDashboardLimitsUI();
+
 	if (tabName === 'journal') renderJournalTable();
 	if (tabName === 'alert') renderAllAlerts();
 	if (tabName === 'paper') renderPaperTradingUI();
@@ -709,34 +713,72 @@ function updateDashboardLimitsUI() {
 	const token = localStorage.getItem('vip_token');
 	if (!token) return;
 
+	const isUnlimited = UNLIMITED_TOKENS.includes(token);
+	const limits = isUnlimited ? {} : (getDailyLimits(token) || {});
+
+	// 1. Bersihkan kontainer header lama agar area status tetap rapi
 	let limitUIContainer = document.getElementById('vipLimitsContainer');
-	
-	if (!limitUIContainer) {
-		limitUIContainer = document.createElement('div');
-		limitUIContainer.id = 'vipLimitsContainer';
-		limitUIContainer.className = 'flex flex-wrap items-center gap-1.5 w-full mt-2 lg:mt-0 lg:w-auto';
-		
-		const statusWrapper = document.getElementById('vipAccountStatus').closest('.flex.flex-wrap');
-		if (statusWrapper) {
-			statusWrapper.appendChild(limitUIContainer);
-		}
+	if (limitUIContainer) {
+		limitUIContainer.innerHTML = '';
 	}
 
-	if (UNLIMITED_TOKENS.includes(token)) {
-		limitUIContainer.innerHTML = `
-			<span class="bg-fuchsia-500/10 text-fuchsia-400 border border-fuchsia-500/30 px-2.5 py-1 rounded-md text-[10px] font-bold flex items-center gap-1.5"><i data-lucide="infinity" class="w-3.5 h-3.5"></i> Akses Tanpa Batas</span>
-		`;
-	} else {
-		const limits = getDailyLimits(token);
-		limitUIContainer.innerHTML = `
-			<span class="${limits.search > 0 ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'} border px-2 py-1 rounded-md text-[10px] font-bold" title="Sisa Pencarian Saham">Cari: ${limits.search}</span>
-			<span class="${limits.radar > 0 ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'} border px-2 py-1 rounded-md text-[10px] font-bold" title="Sisa Radar Saham">Radar: ${limits.radar}</span>
-			<span class="${limits.customRadar > 0 ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'} border px-2 py-1 rounded-md text-[10px] font-bold" title="Sisa Custom Radar">Custom: ${limits.customRadar}</span>
-			<span class="${limits.bsjpRadar > 0 ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'} border px-2 py-1 rounded-md text-[10px] font-bold" title="Sisa BSJP Radar">BSJP: ${limits.bsjpRadar}</span>
-			<span class="${limits.whaleRadar > 0 ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'} border px-2 py-1 rounded-md text-[10px] font-bold" title="Sisa Whale Detector">Whale: ${limits.whaleRadar}</span>
-			<span class="${limits.peer > 0 ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'} border px-2 py-1 rounded-md text-[10px] font-bold" title="Sisa Peer Komparasi">Peer: ${limits.peer}</span>
-		`;
-	}
+	// 2. Helper function untuk menyuntikkan badge lingkaran di pojok kanan atas elemen
+	const applyBadgeToElement = (element, count) => {
+		if (!element) return;
+
+		// Pastikan elemen memiliki positioning relative agar badge terikat di pojok kanan atas
+		if (!element.classList.contains('relative')) {
+			element.classList.add('relative');
+		}
+
+		let badge = element.querySelector('.limit-circle-badge');
+		if (!badge) {
+			badge = document.createElement('span');
+			element.appendChild(badge);
+		}
+
+		if (isUnlimited) {
+			badge.innerText = '∞';
+			badge.className = 'limit-circle-badge absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-extrabold flex items-center justify-center bg-fuchsia-500 text-white border border-slate-900 shadow-md z-20 pointer-events-none transition-all duration-300';
+			badge.title = 'Akses Tanpa Batas';
+		} else {
+			const val = count !== undefined && count !== null ? count : 0;
+			badge.innerText = val;
+			if (val > 0) {
+				badge.className = 'limit-circle-badge absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full text-[9px] font-extrabold flex items-center justify-center bg-emerald-500 text-slate-950 border border-slate-900 shadow-md z-20 pointer-events-none transition-all duration-300';
+			} else {
+				badge.className = 'limit-circle-badge absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full text-[9px] font-extrabold flex items-center justify-center bg-rose-500 text-white border border-slate-900 shadow-md z-20 pointer-events-none transition-all duration-300 animate-pulse';
+			}
+			badge.title = `Sisa Token / Limit: ${val}`;
+		}
+	};
+
+	// 3. Injeksi Badge ke Tombol & Tab Target
+	// A. Pencarian (Cari)
+	const searchBtn = document.querySelector("button[onclick='searchStock()']") || document.querySelector("button[onclick='searchStock(true)']");
+	applyBadgeToElement(searchBtn, limits.search);
+
+	// B. Radar Saham
+	applyBadgeToElement(document.getElementById('tabBtn-bigmoney'), limits.radar);
+	applyBadgeToElement(document.getElementById('btnStartRadar'), limits.radar);
+
+	// C. Custom Radar
+	applyBadgeToElement(document.getElementById('tabBtn-custom'), limits.customRadar);
+	applyBadgeToElement(document.getElementById('btnRunCustomScreener'), limits.customRadar);
+
+	// D. BSJP Radar
+	applyBadgeToElement(document.getElementById('tabBtn-bsjp'), limits.bsjpRadar);
+	applyBadgeToElement(document.getElementById('btnStartBSJP'), limits.bsjpRadar);
+
+	// E. Peer Komparasi
+	applyBadgeToElement(document.getElementById('tabBtn-peer'), limits.peer);
+	applyBadgeToElement(document.getElementById('btnRefreshPeer'), limits.peer);
+
+	// F. Whale Detector Radar
+	applyBadgeToElement(document.getElementById('btnScanWhales'), limits.whaleRadar);
+	const whaleTriggers = document.querySelectorAll("[onclick*='toggleWhaleModal'], [onclick*='scanWhales']");
+	whaleTriggers.forEach(btn => applyBadgeToElement(btn, limits.whaleRadar));
+
 	if (window.lucide) lucide.createIcons();
 }
 
@@ -2278,7 +2320,9 @@ function startSearchCooldown(seconds) {
 	btn.classList.add('opacity-50', 'cursor-not-allowed');
 	let remaining = seconds;
 	if (searchCooldownTimer) clearInterval(searchCooldownTimer);
-	btn.innerText = `Cari (${remaining}d)`;
+	
+	btn.childNodes[0].nodeValue = `Cari (${remaining}d) `;
+	updateDashboardLimitsUI();
 
 	searchCooldownTimer = setInterval(() => {
 		remaining--;
@@ -2286,9 +2330,11 @@ function startSearchCooldown(seconds) {
 			clearInterval(searchCooldownTimer);
 			btn.disabled = false;
 			btn.classList.remove('opacity-50', 'cursor-not-allowed');
-			btn.innerText = "Cari";
+			btn.childNodes[0].nodeValue = "Cari ";
+			updateDashboardLimitsUI();
 		} else {
-			btn.innerText = `Cari(${remaining}d)`;
+			btn.childNodes[0].nodeValue = `Cari (${remaining}d) `;
+			updateDashboardLimitsUI();
 		}
 	}, 1000);
 }
