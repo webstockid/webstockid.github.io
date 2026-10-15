@@ -776,7 +776,7 @@ function updateDashboardLimitsUI() {
 
 	// F. Whale Detector Radar
 	applyBadgeToElement(document.getElementById('btnScanWhales'), limits.whaleRadar);
-	const whaleTriggers = document.querySelectorAll("[onclick*='toggleWhaleModal'], [onclick*='scanWhales']");
+	const whaleTriggers = document.querySelectorAll("[onclick*='scanWhales']"); //[onclick*='toggleWhaleModal'], 
 	whaleTriggers.forEach(btn => applyBadgeToElement(btn, limits.whaleRadar));
 
 	if (window.lucide) lucide.createIcons();
