@@ -1397,27 +1397,27 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Harga: <strong class="text-sky-400 font-bold">Rp${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
+				<span><i data-lucide="circle-dollar-sign" class="w-3.5 h-3.5"></i> Harga: <strong class="text-sky-400 font-bold">Rp${price.toLocaleString('id-ID')}</strong> (${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)</span>
 				<span class="text-[10px] lg:text-[11px] text-white">${isCached ? 'Cache Instant' : 'Live Data'}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Volume Transaksi:</span>
+				<span><i data-lucide="chart-candlestick" class="w-3.5 h-3.5"></i> Volume Transaksi:</span>
 				<span class="text-violet-400 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Valuasi Transaksi:</span>
+				<span><i data-lucide="chart-candlestick" class="w-3.5 h-3.5"></i> Valuasi Transaksi:</span>
 				<span class="text-violet-400 font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Estimasi AVG Bandar:</span>
+				<span><i data-lucide="venetian-mask" class="w-3.5 h-3.5"></i> Estimasi AVG Bandar:</span>
 				<span class="text-amber-400 font-bold">Rp ${(stockData.bandarAvgPrice || price).toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Posisi Tren MA5 / MA10 / MA20:</span>
+				<span><i data-lucide="chart-no-axes-combined" class="w-3.5 h-3.5"></i> Posisi Tren MA5 / MA10 / MA20:</span>
 				<span class="text-emerald-400 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-				<span>• Rasio Volume vs Rerata Harian:</span>
+				<span><i data-lucide="sliders-vertical" class="w-3.5 h-3.5"></i> Rasio Volume vs Rerata Harian:</span>
 				<span class="font-bold ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
 			</li>
 		`;
@@ -1473,12 +1473,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 75; 
 		} else if (stockData.changePct >= -2 && stockData.volRatio > 1) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='plane-takeoff' class='w-3 h-3'></i></span>";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 			bandarPct = 65; 
 		} else if (stockData.changePct >= -4 && stockData.volRatio > 0.5) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='git-pull-request-arrow' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='plane-takeoff' class='w-3 h-3'></i></span>";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 			bandarPct = 55; 
@@ -1559,7 +1559,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	let sup1 = roundToBEITick(fibo.entryLow * 0.97, 'floor');
 	let sup2 = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
 	
-	let sl = roundToBEITick(fibo.sl * 0.97, 'floor');
+	let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
 	let tp1 = res1; 
 	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 
@@ -1656,7 +1656,7 @@ function exportTradingCard() {
 	let sup1 = roundToBEITick(fibo.entryLow * 0.97, 'floor'); 
 	let sup2 = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
 	
-	let sl = roundToBEITick(fibo.sl * 0.97, 'floor');
+	let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
 	let tp1 = res1; 
 	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
 
@@ -2471,7 +2471,7 @@ function renderRadarItems(dataList) {
 		let entryLow = roundToBEITick(fibo.entryLow * 0.97, 'floor');
 		let entryHigh = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
 		
-		let sl = roundToBEITick(fibo.sl * 0.97, 'floor');
+		let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
 		let res1 = fibo.res1;
 		let res2 = fibo.res2;
 		let tp1 = res1;
@@ -2720,7 +2720,7 @@ async function runCustomScreener() {
 			let entryLow = roundToBEITick(fibo.entryLow * 0.97, 'floor');
 			let entryHigh = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
 			
-			let sl = roundToBEITick(fibo.sl * 0.97, 'floor');
+			let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
 			let res1 = fibo.res1;
 			let res2 = fibo.res2;
 			let tp1 = res1;
@@ -3581,7 +3581,7 @@ function generateAIResponse(prompt) {
 	let price = data ? roundToBEITick(data.price) : 100;
 	const fibo = getDynamicFiboLevels(data?.high20, data?.low20, price);
 	
-	let sl = roundToBEITick(fibo.sl * 0.97, 'floor');
+	let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
 	let sup1 = fibo.entryLow;
 	let sup2 = fibo.entryHigh;
 	let res1 = fibo.res1;
