@@ -3477,7 +3477,7 @@ async function scanWhalesData() {
 						
 						<div class="grid grid-cols-2 gap-3 text-[10px] lg:text-xs relative z-10">
 							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
-								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Agresif / Aman</span>
+								<span class="text-slate-400 font-medium uppercase tracking-wider text-[9px] mb-1 flex items-center gap-1.5"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Entry Agresif</span>
 								<span class="font-bold text-amber-400 text-xs truncate">Rp ${entryAman.toLocaleString('id-ID')} - ${entryAgresif.toLocaleString('id-ID')}</span>
 							</div>
 							<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 flex flex-col justify-center">
