@@ -5226,14 +5226,14 @@ async function startBSJPProcess() {
 	let bsjpCandidates = [];
 
 	const currentHour = new Date().getHours();
-	let targetRasio = currentHour < 11 ? 1.0 : (currentHour < 14 ? 1.0 : 3.0);
+	let targetRasio = currentHour < 11 ? 1.0 : (currentHour < 14 ? 1.0 : 2.0);
 
 	try {
 		for (const ticker of shuffledWatchlist) {
 			const cachedItem = getCachedStockData(ticker);
 			if (cachedItem && cachedItem.price) {
-				const isStrategi1 = cachedItem.currentValuation > 4000000000 && cachedItem.price >= cachedItem.ma5 && cachedItem.volRatio >= 2 && cachedItem.changePct > 0 && cachedItem.changePct < 10;
-				const isStrategi2 = cachedItem.currentValuation > 4000000000 && cachedItem.price > cachedItem.ma5 && cachedItem.volRatio > 2 && cachedItem.changePct >= 0 && cachedItem.changePct <= 10;
+				const isStrategi1 = cachedItem.currentValuation > 4000000000 && cachedItem.price >= cachedItem.ma10 && cachedItem.volRatio >= 2 && cachedItem.changePct > 0 && cachedItem.changePct < 10;
+				const isStrategi2 = cachedItem.currentValuation > 4000000000 && cachedItem.price > cachedItem.ma10 && cachedItem.volRatio > 2 && cachedItem.changePct >= 0 && cachedItem.changePct <= 10;
 				
 				if (isStrategi1 || isStrategi2) {
 					if (!bsjpCandidates.some(c => c.ticker === ticker)) {
@@ -5260,8 +5260,8 @@ async function startBSJPProcess() {
 				for (const item of fetchedData) {
 					if (!item || !item.price) continue;
 					
-					const isStrategi1 = item.volRatio >= 2 && item.currentValuation > 4000000000 && item.price >= item.ma5 && item.changePct > 0 && item.changePct < 10;
-					const isStrategi2 = item.volRatio > 2 && item.currentValuation > 4000000000 && item.price > item.ma5 && item.changePct >= 0 && item.changePct <= 10;
+					const isStrategi1 = item.volRatio >= 2 && item.currentValuation > 4000000000 && item.price >= item.ma10 && item.changePct > 0 && item.changePct < 10;
+					const isStrategi2 = item.volRatio > 2 && item.currentValuation > 4000000000 && item.price > item.ma10 && item.changePct >= 0 && item.changePct <= 10;
 					
 					if (isStrategi1 || isStrategi2) {
 						if (!bsjpCandidates.some(c => c.ticker === item.ticker)) {
