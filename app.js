@@ -1758,7 +1758,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 		if (btn.disabled) return;
 		
 		if (!checkAndUpdateLimit('peer', false)) {
-			showToast("Limit harian Peer Komparasi Kamu telah habis (30x/hari).", "error");
+			showToast("Limit harian Peer Komparasi Kamu telah habis (75x/hari).", "error");
 			if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 			return;
 		}
@@ -2349,7 +2349,7 @@ async function searchStock(bypassCooldown = false) {
 	if (input) {
 		// Cek limit tanpa memotong token (deductNow = false)
 		if (!checkAndUpdateLimit('search', false)) {
-			showToast("Limit harian pencarian saham Kamu telah habis (50x/hari).", "error");
+			showToast("Limit harian pencarian saham Kamu telah habis (100x/hari).", "error");
 			if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 			return;
 		}
@@ -2452,7 +2452,7 @@ async function startRadarProcess() {
 	if (isRadarScanning) return;
 
 	if (!checkAndUpdateLimit('radar', false)) {
-		showToast("Limit harian Radar Saham Kamu telah habis (20x/hari).", "error");
+		showToast("Limit harian Radar Saham Kamu telah habis (75x/hari).", "error");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
 	}
@@ -2695,7 +2695,7 @@ async function runCustomScreener() {
 	if (btn && btn.disabled) return;
 
 	if (!checkAndUpdateLimit('customRadar', false)) {
-		showToast("Limit harian Custom Radar Kamu telah habis (20x/hari).", "error");
+		showToast("Limit harian Custom Radar Kamu telah habis (50x/hari).", "error");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
 	}
@@ -3319,7 +3319,7 @@ async function scanWhalesData() {
 	}
 
 	if (!checkAndUpdateLimit('whaleRadar', false)) {
-		showToast("Limit harian Whale Detector Kamu telah habis (20x/hari).", "error");
+		showToast("Limit harian Whale Detector Kamu telah habis (25x/hari).", "error");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
 	}
@@ -5208,7 +5208,7 @@ async function startBSJPProcess() {
 	}
 	
 	if (!checkAndUpdateLimit('bsjpRadar', false)) {
-		showToast("Limit harian BSJP Radar Kamu telah habis (20x/hari).", "error");
+		showToast("Limit harian BSJP Radar Kamu telah habis (25x/hari).", "error");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
 	}
