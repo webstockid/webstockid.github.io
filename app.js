@@ -392,23 +392,136 @@ function applyFontStyle(fontName) {
 // ==========================================
 // 6. UTILITAS & MODAL WELCOME
 // ==========================================
-function getBEITickSize(price) {
-	if (price < 200) return 1;
-	if (price < 500) return 2;
-	if (price < 2000) return 5;
-	if (price < 5000) return 10;
-	return 25;
+function roundToBEITick(price, mode = 'round') {
+	if (price < 50) return 50;
+	
+	let tick = 1;
+	if (price >= 50 && price <= 200) tick = 1;
+	else if (price > 200 && price <= 500) tick = 2;
+	else if (price > 500 && price <= 2000) tick = 5;
+	else if (price > 2000 && price <= 5000) tick = 10;
+	else tick = 25;
+	
+	if (mode === 'floor') return Math.floor(price / tick) * tick;
+	if (mode === 'ceil') return Math.ceil(price / tick) * tick;
+	return Math.round(price / tick) * tick;
 }
 
-function roundToBEITick(price, direction = 'round') {
-	if (!price || price <= 0) return 0;
-	const tick = getBEITickSize(price);
-	if (direction === 'floor') {
-		return Math.floor(price / tick) * tick;
-	} else if (direction === 'ceil') {
-		return Math.ceil(price / tick) * tick;
+function calculateARA_ARB(prevClose) {
+	if (!prevClose || prevClose <= 0) return null;
+	let limitPct = 0;
+	
+	if (prevClose >= 50 && prevClose <= 200) limitPct = 0.35;
+	else if (prevClose > 200 && prevClose <= 5000) limitPct = 0.25;
+	else if (prevClose > 5000) limitPct = 0.20;
+	else limitPct = 0.10;
+	
+	const araRaw = prevClose + (prevClose * limitPct);
+	const arbRaw = prevClose - (prevClose * limitPct);
+	
+	return {
+		ara: roundToBEITick(araRaw, 'floor'),
+		arb: roundToBEITick(arbRaw, 'ceil'),
+		percentage: limitPct * 100
+	};
+}
+
+function renderAraArbUI(prevClose) {
+	const container = document.getElementById('araArbContainer');
+	if (!container) return;
+	
+	const limits = calculateARA_ARB(prevClose);
+	if (!limits) {
+		container.innerHTML = "";
+		return;
 	}
-	return Math.round(price / tick) * tick;
+
+	container.innerHTML = `
+		<div class="flex justify-between items-center bg-slate-900/80 p-3 rounded-lg border border-slate-700 shadow-inner">
+			<div>
+				<span class="text-[10px] text-slate-400 block mb-1 flex items-center gap-1">
+					<i data-lucide="arrow-down-circle" class="w-3.5 h-3.5 text-rose-400"></i> Batas ARB (-${limits.percentage}%)
+				</span>
+				<span class="font-bold text-rose-400 text-sm">Rp ${limits.arb.toLocaleString('id-ID')}</span>
+			</div>
+			<div class="text-right">
+				<span class="text-[10px] text-slate-400 block mb-1 flex items-center gap-1 justify-end">
+					<i data-lucide="arrow-up-circle" class="w-3.5 h-3.5 text-emerald-400"></i> Batas ARA (+${limits.percentage}%)
+				</span>
+				<span class="font-bold text-emerald-400 text-sm">Rp ${limits.ara.toLocaleString('id-ID')}</span>
+			</div>
+		</div>
+	`;
+	
+	if (window.lucide) lucide.createIcons();
+}
+
+// ==========================================
+// 2. FUNGSI RENDER TRACKER IHSG KE HTML
+// ==========================================
+let cachedIHSGChange = null;
+let lastIHSGFetchTime = 0;
+
+async function renderIHSGStatus(stockChangePct) {
+	const container = document.getElementById('ihsgCorrelationBox');
+	if (!container) return;
+	
+	container.innerHTML = `<div class="text-[10px] text-slate-500 animate-pulse">Menghitung korelasi dengan IHSG...</div>`;
+
+	try {
+		let ihsgChange = cachedIHSGChange;
+		const now = Date.now();
+		
+		// Cache data IHSG selama 5 menit agar tidak kena rate limit
+		if (ihsgChange === null || now - lastIHSGFetchTime > 5 * 60 * 1000) {
+			const url = `https://query1.finance.yahoo.com/v8/finance/chart/^JKSE?interval=1d&range=2d`;
+			const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+			const data = await res.json();
+			const parsed = JSON.parse(data.contents);
+			
+			const quotes = parsed.chart.result[0].indicators.quote[0];
+			const closes = quotes.close.filter(c => c !== null);
+			
+			if (closes.length >= 2) {
+				const prevIHSG = closes[closes.length - 2];
+				const currIHSG = closes[closes.length - 1];
+				ihsgChange = parseFloat((((currIHSG - prevIHSG) / prevIHSG) * 100).toFixed(2));
+				
+				cachedIHSGChange = ihsgChange;
+				lastIHSGFetchTime = now;
+			}
+		}
+		
+		if (ihsgChange !== null) {
+			let status = "SEIRAMA IHSG";
+			let color = "text-amber-400";
+			let diff = stockChangePct - ihsgChange;
+			let icon = "activity";
+			
+			if (stockChangePct > ihsgChange && diff >= 1) {
+				status = "OUTPERFORMER";
+				color = "text-emerald-400";
+				icon = "trending-up";
+			} else if (stockChangePct < ihsgChange && diff <= -1) {
+				status = "LAGGARD";
+				color = "text-rose-400";
+				icon = "trending-down";
+			}
+			
+			container.innerHTML = `
+				<div class="text-[10px] lg:text-[11px] bg-slate-900 p-2 rounded-lg border border-slate-700 flex justify-between items-center shadow-inner">
+					<span class="text-slate-400 flex items-center gap-1.5">
+						<i data-lucide="${icon}" class="w-3.5 h-3.5 ${color}"></i> IHSG Hari Ini (${ihsgChange > 0 ? '+' : ''}${ihsgChange}%)
+					</span>
+					<span class="font-bold tracking-wide ${color}">${status}</span>
+				</div>
+			`;
+			
+			if (window.lucide) lucide.createIcons();
+		}
+	} catch (e) {
+		container.innerHTML = `<div class="text-[10px] text-rose-400 p-1">Gagal memuat data korelasi IHSG.</div>`;
+	}
 }
 
 function getDynamicFiboLevels(high, low, currentPrice) {
@@ -1367,6 +1480,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		const isAboveMA10 = stockData.price > stockData.ma10;
 		const isAboveMA20 = stockData.price > stockData.ma20;
 		const isVolSpike = stockData.volRatio >= 1.5;
+		if (stockData.prevClose !== undefined) {
+			renderAraArbUI(stockData.prevClose);
+		}
+		if (stockData.changePct !== undefined) {
+			renderIHSGStatus(stockData.changePct);
+		}
 
 		if (stockData.price > stockData.ma20 && stockData.changePct > 4 && stockData.volRatio >= 2) {
 			score = 5;
@@ -4322,7 +4441,7 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 			sendBrowserPushNotification(`🐳 STOCK ID WHALE RADAR`, alertMsg);
 			showToast(alertMsg, "info", 5000); 
 			
-			const teleMsg = `<b>🐳 STOCK ID WHALE RADAR</b>\nSaham: <b>$${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga baru naik <b>${latestData.changePct}%</b>, Bandar indikasi kumpulin barang!`;
+			const teleMsg = `<b>?? STOCK ID WHALE RADAR</b>\nSaham: <b>$${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga baru naik <b>${latestData.changePct}%</b>, Bandar indikasi kumpulin barang!`;
 			sendTelegramAlert(teleMsg);
 			
 			// Simpan data terbaru ke LocalStorage dalam format JSON
@@ -5419,102 +5538,6 @@ function renderBSJPItems(dataList) {
 }
 
 // ==========================================
-// 1. FUNGSI RENDER ARA & ARB KE HTML
-// ==========================================
-function calculateARA_ARB(prevClose) {
-    if (!prevClose || prevClose <= 0) return null;
-    let limitPct = 0;
-    if (prevClose >= 50 && prevClose <= 200) limitPct = 0.35;
-    else if (prevClose > 200 && prevClose <= 5000) limitPct = 0.25;
-    else if (prevClose > 5000) limitPct = 0.20;
-    else limitPct = 0.10;
-    
-    // Ganti roundToBEITick dengan Math.round biasa jika fungsi tersebut belum ada
-    return {
-        ara: Math.floor(prevClose + (prevClose * limitPct)),
-        arb: Math.ceil(prevClose - (prevClose * limitPct)),
-        percentage: limitPct * 100
-    };
-}
-
-// Panggil fungsi ini SETELAH harga saham berhasil didapatkan di JS kamu
-function renderAraArbUI(prevClose) {
-    const container = document.getElementById('araArbContainer');
-    if (!container) return;
-    
-    const limits = calculateARA_ARB(prevClose);
-    if (!limits) {
-        container.innerHTML = "";
-        return;
-    }
-
-    container.innerHTML = `
-        <div class="flex justify-between items-center bg-slate-900/80 p-3 rounded-lg border border-slate-700 shadow-inner">
-            <div>
-                <span class="text-[10px] text-slate-400 block mb-1 flex items-center gap-1"><i data-lucide="arrow-down-circle" class="w-3.5 h-3.5 text-rose-400"></i> Batas ARB (-${limits.percentage}%)</span>
-                <span class="font-bold text-rose-400 text-sm">Rp ${limits.arb.toLocaleString('id-ID')}</span>
-            </div>
-            <div class="text-right">
-                <span class="text-[10px] text-slate-400 block mb-1 flex items-center gap-1 justify-end"><i data-lucide="arrow-up-circle" class="w-3.5 h-3.5 text-emerald-400"></i> Batas ARA (+${limits.percentage}%)</span>
-                <span class="font-bold text-emerald-400 text-sm">Rp ${limits.ara.toLocaleString('id-ID')}</span>
-            </div>
-        </div>
-    `;
-    if (window.lucide) lucide.createIcons();
-}
-
-// ==========================================
-// 2. FUNGSI RENDER TRACKER IHSG KE HTML
-// ==========================================
-async function renderIHSGStatus(stockChangePct) {
-    const container = document.getElementById('ihsgCorrelationBox');
-    if (!container) return;
-    
-    container.innerHTML = `<div class="text-[10px] text-slate-500 animate-pulse">Menghitung korelasi dengan IHSG...</div>`;
-
-    try {
-        const url = `https://query1.finance.yahoo.com/v8/finance/chart/^JKSE?interval=1d&range=2d`;
-        const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-        const data = await res.json();
-        const parsed = JSON.parse(data.contents);
-        
-        const quotes = parsed.chart.result[0].indicators.quote[0];
-        const closes = quotes.close.filter(c => c !== null);
-        
-        if (closes.length >= 2) {
-            const prevIHSG = closes[closes.length - 2];
-            const currIHSG = closes[closes.length - 1];
-            const ihsgChange = parseFloat((((currIHSG - prevIHSG) / prevIHSG) * 100).toFixed(2));
-            
-            let status = "SEIRAMA IHSG";
-            let color = "text-amber-400";
-            let diff = (stockChangePct - ihsgChange).toFixed(2);
-            let icon = "activity";
-            
-            if (stockChangePct > ihsgChange && diff > 1) {
-                status = "OUTPERFORMER";
-                color = "text-emerald-400";
-                icon = "trending-up";
-            } else if (stockChangePct < ihsgChange && diff < -1) {
-                status = "LAGGARD";
-                color = "text-rose-400";
-                icon = "trending-down";
-            }
-            
-            container.innerHTML = `
-                <div class="text-[10px] lg:text-[11px] bg-slate-900 p-2 rounded-lg border border-slate-700 flex justify-between items-center">
-                    <span class="text-slate-400 flex items-center gap-1.5"><i data-lucide="${icon}" class="w-3.5 h-3.5 ${color}"></i> IHSG Hari Ini (${ihsgChange > 0 ? '+' : ''}${ihsgChange}%)</span>
-                    <span class="font-bold tracking-wide ${color}">${status}</span>
-                </div>
-            `;
-            if (window.lucide) lucide.createIcons();
-        }
-    } catch (e) {
-        container.innerHTML = "";
-    }
-}
-
-// ==========================================
 // 3. FUNGSI LOGIKA KALKULATOR DIVIDEN
 // ==========================================
 function calculateDividendYield() {
@@ -5690,8 +5713,6 @@ cleanExpiredCache();
 checkWelcomeModal();
 checkNotificationStatus();
 checkUrlParamTicker();
-renderAraArbUI(stockPrevClose); 
-renderIHSGStatus(stockChangePercent);
 
 document.addEventListener('DOMContentLoaded', () => {
     loadLiveMacro();
