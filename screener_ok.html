@@ -689,6 +689,15 @@
 								</div>
 							</div>
 						</div>
+						
+						<!-- KOTAK UNTUK TRACKER IHSG & ARA/ARB -->
+<div class="mt-4 mb-2 flex flex-col gap-2">
+    <!-- Container Tracker Korelasi IHSG -->
+    <div id="ihsgCorrelationBox" class="transition-all duration-300"></div>
+    
+    <!-- Container Kalkulator Batas ARA & ARB -->
+    <div id="araArbContainer" class="transition-all duration-300"></div>
+</div>
 
 						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-teal-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
@@ -1429,6 +1438,56 @@
 							</div>
 						</div>
 					</div>
+					
+					<!-- ========================================== -->
+<!-- UI KALKULATOR DIVIDEN & TRAP DETECTOR      -->
+<!-- ========================================== -->
+<div class="bg-slate-800 rounded-xl p-4 sm:p-5 border border-slate-700 shadow-xl mt-6">
+    <div class="flex items-center gap-2 mb-4">
+        <i data-lucide="calculator" class="w-5 h-5 text-emerald-400"></i>
+        <h3 class="font-bold text-white text-base">Kalkulator Dividen & Trap Detector</h3>
+    </div>
+    
+    <!-- Input Form -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+        <div>
+            <label class="block text-[11px] text-slate-400 mb-1">Dividen/Lembar (DPS)</label>
+            <input type="number" id="div-dps" oninput="calculateDividendYield()" placeholder="Contoh: 250" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none transition-colors">
+        </div>
+        <div>
+            <label class="block text-[11px] text-slate-400 mb-1">Harga Beli Rata-rata</label>
+            <input type="number" id="div-price" oninput="calculateDividendYield()" placeholder="Contoh: 3500" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none transition-colors">
+        </div>
+        <div>
+            <label class="block text-[11px] text-slate-400 mb-1">Jumlah Lot (Opsional)</label>
+            <input type="number" id="div-lot" oninput="calculateDividendYield()" placeholder="Contoh: 100" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none transition-colors">
+        </div>
+    </div>
+
+    <!-- Output Hasil Persentase -->
+    <div class="grid grid-cols-2 gap-3 mb-3">
+        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700 text-center">
+            <span class="block text-[10px] text-slate-400">Gross Yield (Kotor)</span>
+            <span id="div-result-gross-yield" class="block font-bold text-white text-lg mt-0.5">0%</span>
+        </div>
+        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700 text-center">
+            <span class="block text-[10px] text-slate-400">Net Yield (Potong Pajak 10%)</span>
+            <span id="div-result-net-yield" class="block font-bold text-emerald-400 text-lg mt-0.5">0%</span>
+        </div>
+    </div>
+
+    <!-- Output Hasil Rupiah -->
+    <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700 text-center mb-2">
+        <span class="block text-[10px] text-slate-400">Total Dividen Bersih Masuk RDN</span>
+        <span id="div-result-total-net" class="block font-bold text-sky-400 text-xl mt-0.5">Rp 0</span>
+    </div>
+
+    <!-- Container Peringatan Dividend Trap -->
+    <div id="div-trap-warning" class="text-slate-400 text-xs mt-3 text-center transition-all">
+        Masukkan nilai DPS dan harga rata-rata kamu.
+    </div>
+</div>
+
 				</div>
 
 				<!-- Tab 10: Journal Trading -->
