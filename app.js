@@ -409,20 +409,52 @@ function roundToBEITick(price, mode = 'round') {
 
 function calculateARA_ARB(prevClose) {
 	if (!prevClose || prevClose <= 0) return null;
-	let limitPct = 0;
 	
-	if (prevClose >= 50 && prevClose <= 200) limitPct = 0.35;
-	else if (prevClose > 200 && prevClose <= 5000) limitPct = 0.25;
-	else if (prevClose > 5000) limitPct = 0.20;
-	else limitPct = 0.10;
+	let araRaw = 0;
+	let arbRaw = 0;
+	let araLimitPct = 0;
+	let arbLimitPct = 0;
 	
-	const araRaw = prevClose + (prevClose * limitPct);
-	const arbRaw = prevClose - (prevClose * limitPct);
-	
+	let isAraNominal = false;
+	let isArbNominal = false;
+
+	// Peraturan BEI Terbaru (Oktober 2026)
+	if (prevClose >= 1 && prevClose <= 10) {
+		araRaw = prevClose + 1;
+		arbRaw = Math.max(1, prevClose - 1);
+		isAraNominal = true;
+		isArbNominal = true;
+	} else if (prevClose >= 11 && prevClose <= 14) {
+		araLimitPct = 0.35;
+		araRaw = prevClose + (prevClose * araLimitPct);
+		arbRaw = Math.max(1, prevClose - 1);
+		isArbNominal = true;
+	} else if (prevClose >= 15 && prevClose <= 200) {
+		araLimitPct = 0.35;
+		arbLimitPct = 0.07;
+		araRaw = prevClose + (prevClose * araLimitPct);
+		arbRaw = prevClose - (prevClose * arbLimitPct);
+	} else if (prevClose > 200 && prevClose <= 5000) {
+		araLimitPct = 0.25;
+		arbLimitPct = 0.07;
+		araRaw = prevClose + (prevClose * araLimitPct);
+		arbRaw = prevClose - (prevClose * arbLimitPct);
+	} else if (prevClose > 5000) {
+		araLimitPct = 0.20;
+		arbLimitPct = 0.07;
+		araRaw = prevClose + (prevClose * araLimitPct);
+		arbRaw = prevClose - (prevClose * arbLimitPct);
+	}
+
+	// Format teks presentase atau nominal untuk UI
+	const araText = isAraNominal ? "Rp 1" : `${(araLimitPct * 100).toFixed(0)}%`;
+	const arbText = isArbNominal ? "Rp 1" : `${(arbLimitPct * 100).toFixed(0)}%`;
+
 	return {
 		ara: roundToBEITick(araRaw, 'floor'),
-		arb: roundToBEITick(arbRaw, 'ceil'),
-		percentage: limitPct * 100
+		arb: Math.max(1, roundToBEITick(arbRaw, 'ceil')), // Memastikan harga tidak tembus ke angka 0
+		araText: araText,
+		arbText: arbText
 	};
 }
 
@@ -440,13 +472,13 @@ function renderAraArbUI(prevClose) {
 		<div class="flex justify-between items-center bg-slate-900/80 p-3 rounded-lg border border-slate-700 shadow-inner">
 			<div>
 				<span class="text-[10px] text-slate-400 block mb-1 flex items-center gap-1">
-					<i data-lucide="arrow-down-circle" class="w-3.5 h-3.5 text-rose-400"></i> Batas ARB (-${limits.percentage}%)
+					<i data-lucide="arrow-down-circle" class="w-3.5 h-3.5 text-rose-400"></i> Batas ARB (-${limits.arbText})
 				</span>
 				<span class="font-bold text-rose-400 text-sm">Rp ${limits.arb.toLocaleString('id-ID')}</span>
 			</div>
 			<div class="text-right">
 				<span class="text-[10px] text-slate-400 block mb-1 flex items-center gap-1 justify-end">
-					<i data-lucide="arrow-up-circle" class="w-3.5 h-3.5 text-emerald-400"></i> Batas ARA (+${limits.percentage}%)
+					<i data-lucide="arrow-up-circle" class="w-3.5 h-3.5 text-emerald-400"></i> Batas ARA (+${limits.araText})
 				</span>
 				<span class="font-bold text-emerald-400 text-sm">Rp ${limits.ara.toLocaleString('id-ID')}</span>
 			</div>
@@ -454,74 +486,6 @@ function renderAraArbUI(prevClose) {
 	`;
 	
 	if (window.lucide) lucide.createIcons();
-}
-
-// ==========================================
-// 2. FUNGSI RENDER TRACKER IHSG KE HTML
-// ==========================================
-let cachedIHSGChange = null;
-let lastIHSGFetchTime = 0;
-
-async function renderIHSGStatus(stockChangePct) {
-	const container = document.getElementById('ihsgCorrelationBox');
-	if (!container) return;
-	
-	container.innerHTML = `<div class="text-[10px] text-slate-500 animate-pulse">Menghitung korelasi dengan IHSG...</div>`;
-
-	try {
-		let ihsgChange = cachedIHSGChange;
-		const now = Date.now();
-		
-		// Cache data IHSG selama 5 menit agar tidak kena rate limit
-		if (ihsgChange === null || now - lastIHSGFetchTime > 5 * 60 * 1000) {
-			const url = `https://query1.finance.yahoo.com/v8/finance/chart/^JKSE?interval=1d&range=2d`;
-			const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-			const data = await res.json();
-			const parsed = JSON.parse(data.contents);
-			
-			const quotes = parsed.chart.result[0].indicators.quote[0];
-			const closes = quotes.close.filter(c => c !== null);
-			
-			if (closes.length >= 2) {
-				const prevIHSG = closes[closes.length - 2];
-				const currIHSG = closes[closes.length - 1];
-				ihsgChange = parseFloat((((currIHSG - prevIHSG) / prevIHSG) * 100).toFixed(2));
-				
-				cachedIHSGChange = ihsgChange;
-				lastIHSGFetchTime = now;
-			}
-		}
-		
-		if (ihsgChange !== null) {
-			let status = "SEIRAMA IHSG";
-			let color = "text-amber-400";
-			let diff = stockChangePct - ihsgChange;
-			let icon = "activity";
-			
-			if (stockChangePct > ihsgChange && diff >= 1) {
-				status = "OUTPERFORMER";
-				color = "text-emerald-400";
-				icon = "trending-up";
-			} else if (stockChangePct < ihsgChange && diff <= -1) {
-				status = "LAGGARD";
-				color = "text-rose-400";
-				icon = "trending-down";
-			}
-			
-			container.innerHTML = `
-				<div class="text-[10px] lg:text-[11px] bg-slate-900 p-2 rounded-lg border border-slate-700 flex justify-between items-center shadow-inner">
-					<span class="text-slate-400 flex items-center gap-1.5">
-						<i data-lucide="${icon}" class="w-3.5 h-3.5 ${color}"></i> IHSG Hari Ini (${ihsgChange > 0 ? '+' : ''}${ihsgChange}%)
-					</span>
-					<span class="font-bold tracking-wide ${color}">${status}</span>
-				</div>
-			`;
-			
-			if (window.lucide) lucide.createIcons();
-		}
-	} catch (e) {
-		container.innerHTML = `<div class="text-[10px] text-rose-400 p-1">Gagal memuat data korelasi IHSG.</div>`;
-	}
 }
 
 function getDynamicFiboLevels(high, low, currentPrice) {
@@ -1480,12 +1444,6 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		const isAboveMA10 = stockData.price > stockData.ma10;
 		const isAboveMA20 = stockData.price > stockData.ma20;
 		const isVolSpike = stockData.volRatio >= 1.5;
-		if (stockData.prevClose !== undefined) {
-			renderAraArbUI(stockData.prevClose);
-		}
-		if (stockData.changePct !== undefined) {
-			renderIHSGStatus(stockData.changePct);
-		}
 
 		if (stockData.price > stockData.ma20 && stockData.changePct > 4 && stockData.volRatio >= 2) {
 			score = 5;
@@ -4441,7 +4399,7 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 			sendBrowserPushNotification(`🐳 STOCK ID WHALE RADAR`, alertMsg);
 			showToast(alertMsg, "info", 5000); 
 			
-			const teleMsg = `<b>?? STOCK ID WHALE RADAR</b>\nSaham: <b>$${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga baru naik <b>${latestData.changePct}%</b>, Bandar indikasi kumpulin barang!`;
+			const teleMsg = `<b>🐳 STOCK ID WHALE RADAR</b>\nSaham: <b>$${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga baru naik <b>${latestData.changePct}%</b>, Bandar indikasi kumpulin barang!`;
 			sendTelegramAlert(teleMsg);
 			
 			// Simpan data terbaru ke LocalStorage dalam format JSON
@@ -5538,50 +5496,81 @@ function renderBSJPItems(dataList) {
 }
 
 // ==========================================
-// 3. FUNGSI LOGIKA KALKULATOR DIVIDEN
-// ==========================================
-function calculateDividendYield() {
-    const dps = parseFloat(document.getElementById('div-dps').value) || 0;
-    const price = parseFloat(document.getElementById('div-price').value) || 0;
-    const lot = parseFloat(document.getElementById('div-lot').value) || 0;
-    
-    const resGross = document.getElementById('div-result-gross-yield');
-    const resNet = document.getElementById('div-result-net-yield');
-    const resTotal = document.getElementById('div-result-total-net');
-    const warningEl = document.getElementById('div-trap-warning');
-    
-    if (dps <= 0 || price <= 0) {
-        resGross.innerText = "0%";
-        resNet.innerText = "0%";
-        resTotal.innerText = "Rp 0";
-        warningEl.innerHTML = "Masukkan nilai DPS dan harga rata-rata kamu.";
-        warningEl.className = "text-slate-400 text-xs mt-3 text-center";
-        return;
-    }
-    
-    const grossYield = (dps / price) * 100;
-    const taxRate = 0.10; 
-    const netDPS = dps - (dps * taxRate); 
-    const netYield = (netDPS / price) * 100;
-    const totalNetRp = netDPS * (lot * 100);
-    
-    resGross.innerText = `${grossYield.toFixed(2)}%`;
-    resNet.innerText = `${netYield.toFixed(2)}%`;
-    resTotal.innerText = `Rp ${Math.round(totalNetRp).toLocaleString('id-ID')}`;
-    
-    if (grossYield >= 15) {
-        warningEl.innerHTML = `<i data-lucide="siren" class="w-4 h-4 inline mb-0.5"></i> <strong>BAHAYA DIVIDEND TRAP!</strong> Yield sangat tinggi (${grossYield.toFixed(2)}%). Rawan dibanting ARB pasca Ex-Date.`;
-        warningEl.className = "text-rose-400 bg-rose-500/10 p-2.5 rounded-lg text-[11px] mt-3 border border-rose-500/30 text-center";
-    } else if (grossYield >= 7) {
-        warningEl.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 inline mb-0.5"></i> <strong>Waspada:</strong> Ada potensi saham terkoreksi senilai persentase dividen pada Ex-Date.`;
-        warningEl.className = "text-amber-400 bg-amber-500/10 p-2.5 rounded-lg text-[11px] mt-3 border border-amber-500/30 text-center";
-    } else {
-        warningEl.innerHTML = `<i data-lucide="shield-check" class="w-4 h-4 inline mb-0.5"></i> <strong>Yield Aman:</strong> Yield wajar, fluktuasi harga pasca dividen cenderung lebih stabil.`;
-        warningEl.className = "text-emerald-400 bg-emerald-500/10 p-2.5 rounded-lg text-[11px] mt-3 border border-emerald-500/30 text-center";
-    }
-    
-    if (window.lucide) lucide.createIcons();
-}
+	// FITUR KALKULATOR DIVIDEN & TRAP DETECTOR
+	// ==========================================
+	function initDividendCalculator() {
+		const inputPrice = document.getElementById('divInputPrice');
+		const inputDPS = document.getElementById('divInputDPS');
+		
+		if (!inputPrice || !inputDPS) return;
+
+		function calculateDividend() {
+			const price = parseFloat(inputPrice.value) || 0;
+			const dps = parseFloat(inputDPS.value) || 0;
+
+			const yieldGrossEl = document.getElementById('divYieldGross');
+			const taxNominalEl = document.getElementById('divTaxNominal');
+			const yieldNetEl = document.getElementById('divYieldNet');
+			const trapAlertEl = document.getElementById('divTrapAlert');
+			const trapTitleEl = document.getElementById('divTrapTitle');
+			const trapMessageEl = document.getElementById('divTrapMessage');
+			const trapIconEl = document.getElementById('divTrapIcon');
+
+			// Reset UI jika input kosong
+			if (price <= 0 || dps <= 0) {
+				yieldGrossEl.textContent = '0.00%';
+				taxNominalEl.textContent = 'Rp 0';
+				yieldNetEl.textContent = '0.00%';
+				trapAlertEl.classList.add('hidden');
+				return;
+			}
+
+			// Rumus Kalkulasi Dividen
+			const grossYield = (dps / price) * 100;
+			const tax = dps * 0.10; // Asumsi pajak final 10%
+			const netDPS = dps - tax;
+			const netYield = (netDPS / price) * 100;
+
+			// Render Hasil ke UI
+			yieldGrossEl.textContent = `${grossYield.toFixed(2)}%`;
+			taxNominalEl.textContent = `Rp ${tax.toLocaleString('id-ID')}`;
+			yieldNetEl.textContent = `${netYield.toFixed(2)}%`;
+
+			// Logika Trap Detector (Berdasarkan besaran Yield)
+			if (grossYield >= 10) {
+				trapAlertEl.classList.remove('hidden');
+				trapAlertEl.className = 'flex items-start gap-2 bg-rose-500/10 border border-rose-500/30 p-2.5 rounded-lg transition-all duration-300';
+				trapTitleEl.className = 'text-[11px] font-bold text-rose-400 block mb-0.5';
+				trapTitleEl.textContent = 'Awas, Ekstrem Dividend Trap!';
+				trapIconEl.className = 'w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5';
+				trapMessageEl.innerHTML = `Yield tembus <b>${grossYield.toFixed(1)}%</b>. Saham ini sangat rawan diguyur ARB berjilid-jilid pada saat Ex-Date.`;
+				if(window.lucide) { trapIconEl.setAttribute('data-lucide', 'alert-triangle'); lucide.createIcons(); }
+			
+			} else if (grossYield >= 5 && grossYield < 10) {
+				trapAlertEl.classList.remove('hidden');
+				trapAlertEl.className = 'flex items-start gap-2 bg-amber-500/10 border border-amber-500/30 p-2.5 rounded-lg transition-all duration-300';
+				trapTitleEl.className = 'text-[11px] font-bold text-amber-400 block mb-0.5';
+				trapTitleEl.textContent = 'Waspada Penurunan Ex-Date';
+				trapIconEl.className = 'w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5';
+				trapMessageEl.innerHTML = `Yield moderat <b>(${grossYield.toFixed(1)}%)</b>. Penurunan harga saat Ex-Date berpotensi setara dengan yield yang dibagikan.`;
+				if(window.lucide) { trapIconEl.setAttribute('data-lucide', 'info'); lucide.createIcons(); }
+			
+			} else {
+				// Aman / Yield Kecil
+				trapAlertEl.classList.add('hidden');
+			}
+		}
+
+		// Event listener: hitung otomatis setiap kali user mengetik
+		inputPrice.addEventListener('input', calculateDividend);
+		inputDPS.addEventListener('input', calculateDividend);
+		// if (window.lucide) lucide.createIcons();
+	}
+
+	// Panggil inisiasi kalkulator setelah halaman selesai di-render
+	document.addEventListener('DOMContentLoaded', () => {
+		initDividendCalculator();
+	});
 
 // ==========================================
 // 30. GLOBAL GRADIENT BUTTON ENGINE

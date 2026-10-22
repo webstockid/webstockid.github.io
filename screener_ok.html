@@ -674,31 +674,10 @@
 								Menghubungkan ke server bursa untuk mengambil data real-time...
 							</div>
 							<div id="aiActionBoard" class="hidden flex flex-col space-y-2 mt-3 pt-3 border-t border-slate-800/80"></div>
-							<!-- 1. MULTI-TIMEFRAME AI ANALYSIS -->
-							<div class="mt-4 pt-4 border-t border-slate-800/80">
-								<h4 class="text-[11px] lg:text-xs font-bold text-white mb-2 flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5 text-blue-400"></i> MULTI-TIMEFRAME ANALYSIS</h4>
-								<div class="flex space-x-2 mb-3 overflow-x-auto scrollbar-thin pb-1">
-									<button class="px-4 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap focus:bg-blue-600 focus:text-white" onclick="analyzeAITimeframe('15m')">15 Min</button>
-									<button class="px-4 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap focus:bg-blue-600 focus:text-white" onclick="analyzeAITimeframe('30m')">30 Min</button>
-									<button class="px-4 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap focus:bg-blue-600 focus:text-white" onclick="analyzeAITimeframe('1h')">1 Jam</button>
-									<button class="px-4 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap focus:bg-blue-600 focus:text-white" onclick="analyzeAITimeframe('3h')">3 Jam</button>
-									<button class="px-4 py-1.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 rounded-lg text-[10px] lg:text-[11px] font-bold transition-colors whitespace-nowrap focus:bg-blue-600 focus:text-white" onclick="analyzeAITimeframe('6h')">6 Jam</button>
-								</div>
-								<div id="ai-tf-result" class="text-[10px] lg:text-[11px] text-slate-400">
-									Pilih timeframe di atas untuk melihat analisis tren intraday hingga jangka panjang.
-								</div>
-							</div>
 						</div>
-						
-						<!-- KOTAK UNTUK TRACKER IHSG & ARA/ARB -->
-<div class="mt-4 mb-2 flex flex-col gap-2">
-    <!-- Container Tracker Korelasi IHSG -->
-    <div id="ihsgCorrelationBox" class="transition-all duration-300"></div>
-    
-    <!-- Container Kalkulator Batas ARA & ARB -->
-    <div id="araArbContainer" class="transition-all duration-300"></div>
-</div>
-
+						<div class="mt-4 mb-2 flex flex-col gap-2">
+							<div id="araArbContainer" class="transition-all duration-300"></div>
+						</div>
 						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-teal-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="check-circle-2" class="w-4 h-4"></i> BUKTI UTAMA & KATALIS TEKNIKAL
@@ -1439,55 +1418,68 @@
 						</div>
 					</div>
 					
-					<!-- ========================================== -->
-<!-- UI KALKULATOR DIVIDEN & TRAP DETECTOR      -->
-<!-- ========================================== -->
-<div class="bg-slate-800 rounded-xl p-4 sm:p-5 border border-slate-700 shadow-xl mt-6">
-    <div class="flex items-center gap-2 mb-4">
-        <i data-lucide="calculator" class="w-5 h-5 text-emerald-400"></i>
-        <h3 class="font-bold text-white text-base">Kalkulator Dividen & Trap Detector</h3>
-    </div>
-    
-    <!-- Input Form -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-        <div>
-            <label class="block text-[11px] text-slate-400 mb-1">Dividen/Lembar (DPS)</label>
-            <input type="number" id="div-dps" oninput="calculateDividendYield()" placeholder="Contoh: 250" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none transition-colors">
-        </div>
-        <div>
-            <label class="block text-[11px] text-slate-400 mb-1">Harga Beli Rata-rata</label>
-            <input type="number" id="div-price" oninput="calculateDividendYield()" placeholder="Contoh: 3500" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none transition-colors">
-        </div>
-        <div>
-            <label class="block text-[11px] text-slate-400 mb-1">Jumlah Lot (Opsional)</label>
-            <input type="number" id="div-lot" oninput="calculateDividendYield()" placeholder="Contoh: 100" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 focus:outline-none transition-colors">
-        </div>
-    </div>
+					<div class="mt-4 bg-slate-800/50 border border-slate-700 rounded-xl p-4 shadow-sm">
+						<!-- Header -->
+						<div class="flex items-center gap-2 mb-4 border-b border-slate-700/80 pb-2">
+							<i data-lucide="calculator" class="w-4 h-4 text-purple-400"></i>
+							<h3 class="text-xs lg:text-sm font-bold text-white uppercase tracking-wider">Kalkulator Dividen & Trap Detector</h3>
+						</div>
 
-    <!-- Output Hasil Persentase -->
-    <div class="grid grid-cols-2 gap-3 mb-3">
-        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700 text-center">
-            <span class="block text-[10px] text-slate-400">Gross Yield (Kotor)</span>
-            <span id="div-result-gross-yield" class="block font-bold text-white text-lg mt-0.5">0%</span>
-        </div>
-        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700 text-center">
-            <span class="block text-[10px] text-slate-400">Net Yield (Potong Pajak 10%)</span>
-            <span id="div-result-net-yield" class="block font-bold text-emerald-400 text-lg mt-0.5">0%</span>
-        </div>
-    </div>
+						<!-- Form Input Grid (Sama seperti Smart RRR) -->
+						<div class="grid grid-cols-2 gap-3 mb-4">
+							<!-- Input Harga Beli -->
+							<div>
+								<label class="block text-[10px] lg:text-[11px] font-medium text-slate-400 mb-1">Harga Beli / Average</label>
+								<div class="relative">
+									<div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+										<span class="text-slate-500 text-xs">Rp</span>
+									</div>
+									<input type="number" id="divInputPrice" class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-lg pl-8 pr-3 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600" placeholder="0" min="1">
+								</div>
+							</div>
 
-    <!-- Output Hasil Rupiah -->
-    <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700 text-center mb-2">
-        <span class="block text-[10px] text-slate-400">Total Dividen Bersih Masuk RDN</span>
-        <span id="div-result-total-net" class="block font-bold text-sky-400 text-xl mt-0.5">Rp 0</span>
-    </div>
+							<!-- Input DPS -->
+							<div>
+								<label class="block text-[10px] lg:text-[11px] font-medium text-slate-400 mb-1">Dividen (DPS)</label>
+								<div class="relative">
+									<div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+										<span class="text-slate-500 text-xs">Rp</span>
+									</div>
+									<input type="number" id="divInputDPS" class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-lg pl-8 pr-3 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600" placeholder="0" min="0">
+								</div>
+							</div>
+						</div>
 
-    <!-- Container Peringatan Dividend Trap -->
-    <div id="div-trap-warning" class="text-slate-400 text-xs mt-3 text-center transition-all">
-        Masukkan nilai DPS dan harga rata-rata kamu.
-    </div>
-</div>
+						<!-- Panel Hasil Kalkulasi (Mirip Panel ARA/ARB) -->
+						<div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700 shadow-inner grid grid-cols-3 gap-2 text-center mb-3 transition-all duration-300">
+							<!-- Gross Yield -->
+							<div class="border-r border-slate-700/50 pr-2">
+								<span class="text-[10px] text-slate-400 block mb-1">Yield (Bruto)</span>
+								<span id="divYieldGross" class="font-bold text-blue-400 text-sm">0.00%</span>
+							</div>
+							<!-- Pajak Final 10% -->
+							<div class="border-r border-slate-700/50 px-2">
+								<span class="text-[10px] text-slate-400 block mb-1">Pajak (10%)</span>
+								<span id="divTaxNominal" class="font-bold text-rose-400 text-[13px]">Rp 0</span>
+							</div>
+							<!-- Net Yield -->
+							<div class="pl-2">
+								<span class="text-[10px] text-slate-400 block mb-1">Yield (Netto)</span>
+								<span id="divYieldNet" class="font-bold text-emerald-400 text-sm">0.00%</span>
+							</div>
+						</div>
 
+						<!-- Dividend Trap Detector Panel -->
+						<div id="divTrapAlert" class="hidden flex items-start gap-2 bg-rose-500/10 border border-rose-500/30 p-2.5 rounded-lg transition-all duration-300">
+							<i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" id="divTrapIcon"></i>
+							<div>
+								<span id="divTrapTitle" class="text-[11px] font-bold text-rose-400 block mb-0.5">Potensi Dividend Trap!</span>
+								<p id="divTrapMessage" class="text-[10px] text-slate-300 leading-relaxed">
+									Yield terlalu tinggi (>10%). Waspada ARB saat Ex-Date.
+								</p>
+							</div>
+						</div>
+					</div>
 				</div>
 
 				<!-- Tab 10: Journal Trading -->
