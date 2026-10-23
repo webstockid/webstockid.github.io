@@ -1701,8 +1701,8 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	let sup2 = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
 	
 	let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
-	let tp1 = res1; 
-	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
+	let tp1 = roundToBEITick(res1 * 1.02, 'ceil'); 
+	let tp2 = roundToBEITick(res2 * 1.05, 'ceil');
 
 	document.getElementById('mapSupport1').innerText = `Rp ${sup1.toLocaleString('id-ID')} - ${sup2.toLocaleString('id-ID')}`;
 	document.getElementById('mapResist1').innerText = `Rp ${res1.toLocaleString('id-ID')} - ${res2.toLocaleString('id-ID')}`;
@@ -1798,8 +1798,8 @@ function exportTradingCard() {
 	let sup2 = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
 	
 	let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
-	let tp1 = res1; 
-	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
+	let tp1 = roundToBEITick(res1 * 1.02, 'ceil'); 
+	let tp2 = roundToBEITick(res2 * 1.05, 'ceil');
 
 	const now = new Date();
 	const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -2275,7 +2275,7 @@ function autoFillRRRFromAI() {
 		const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, basePrice);
 		
 		let res2 = fibo.res2;
-		let customTP2 = roundToBEITick(res2 * 1.03, 'ceil');
+		let customTP2 = roundToBEITick(res2 * 1.05, 'ceil');
 
 		document.getElementById('rrrEntry').value = fibo.entryLow;
 		document.getElementById('rrrSL').value = fibo.sl;
@@ -2619,8 +2619,8 @@ function renderRadarItems(dataList) {
 		let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
 		let res1 = fibo.res1;
 		let res2 = fibo.res2;
-		let tp1 = res1;
-		let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
+		let tp1 = roundToBEITick(res1 * 1.02, 'ceil');
+		let tp2 = roundToBEITick(res2 * 1.05, 'ceil');
 
 		let statusSignal = '<i data-lucide="flame" class="w-3.5 h-3.5 inline"></i> Momentum Breakout';
 		let statusClass = "from-emerald-600/30 to-teal-500/10 border-emerald-500/30 text-emerald-400";
@@ -2868,8 +2868,8 @@ async function runCustomScreener() {
 			let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
 			let res1 = fibo.res1;
 			let res2 = fibo.res2;
-			let tp1 = res1;
-			let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
+			let tp1 = roundToBEITick(res1 * 1.02, 'ceil');
+			let tp2 = roundToBEITick(res2 * 1.05, 'ceil');
 
 			let infoMA = '';
 			if (ruleMA === 'ABOVE_MA5') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Pendek:</strong> Bertahan mantap di atas MA5.</span></li>`;
@@ -3731,8 +3731,8 @@ function generateAIResponse(prompt) {
 	let sup2 = fibo.entryHigh;
 	let res1 = fibo.res1;
 	let res2 = fibo.res2;
-	let tp1 = res1;
-	let tp2 = roundToBEITick(res2 * 1.03, 'ceil');
+	let tp1 = roundToBEITick(res1 * 1.02, 'ceil');
+	let tp2 = roundToBEITick(res2 * 1.05, 'ceil');
 	
 	if (lower.includes('entry') || lower.includes('support') || lower.includes('masuk') || lower.includes('beli')) {
 		return `
@@ -4236,7 +4236,7 @@ function syncAlertsFromAI() {
 		res2 = fibo.res2;
 		sl = fibo.sl;
 		
-		tp2 = roundToBEITick(res2 * 1.03, 'ceil'); 
+		tp2 = roundToBEITick(res2 * 1.05, 'ceil'); 
 	}
 
 	const now = new Date();
