@@ -2173,7 +2173,7 @@ function renderJournalTable() {
 		rows += `
 			<tr class="hover:bg-slate-800/40">
 				<td class="p-3.5 text-slate-400">${item.date}</td>
-				<td class="p-3.5 font-bold text-pink-400">
+				<td class="p-3.5 font-bold">
 					<div class="flex items-center gap-2">
 						<div class="w-5 h-5 rounded-md bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
 							<img 
@@ -2183,7 +2183,7 @@ function renderJournalTable() {
 								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};"
 							>
 						</div>
-						<span>&dollar;${item.ticker}</span>
+						<span class="text-white">&dollar;${item.ticker}</span>
 					</div>
 				</td>
 				<td class="p-3.5 text-amber-400">Rp ${item.entry.toLocaleString('id-ID')}</td>
@@ -2237,9 +2237,9 @@ function renderKanbanBoard() {
 					<span class="text-[9px] text-slate-400">${item.date}</span>
 				</div>
 				<div class="grid grid-cols-3 gap-1 text-[10px] text-slate-300 bg-slate-950/10 p-2 rounded border border-slate-900 text-center">
-					<div><span class="text-[7px] text-amber-400 block">ENTRY</span>Rp ${item.entry.toLocaleString('id-ID')}</div>
-					<div><span class="text-[7px] text-rose-400 block">SL</span>Rp ${item.sl.toLocaleString('id-ID')}</div>
-					<div><span class="text-[7px] text-emerald-400 block">TP</span>Rp ${item.tp.toLocaleString('id-ID')}</div>
+					<div class="text-amber-400"><span class="text-[7px] text-amber-400 block">ENTRY</span>Rp ${item.entry.toLocaleString('id-ID')}</div>
+					<div class="text-rose-400"><span class="text-[7px] text-rose-400 block">SL</span>Rp ${item.sl.toLocaleString('id-ID')}</div>
+					<div class="text-emerald-400"><span class="text-[7px] text-emerald-400 block">TP</span>Rp ${item.tp.toLocaleString('id-ID')}</div>
 				</div>
 				<div class="flex items-center justify-between pt-1">
 					<span class="text-[9px] text-sky-400 font-bold">RRR: ${item.rrr}</span>
@@ -3346,7 +3346,7 @@ function renderPaperTradingUI() {
 							>
 						</div>
 						<div class="flex flex-col">
-							<span>&dollar;${item.ticker}</span>
+							<span class="text-white">&dollar;${item.ticker}</span>
 							${item.sl > 0 || item.tp > 0 ? `<span class="text-[9px] text-slate-500 font-normal mt-0.5">Auto SL/TP Aktif</span>` : ''}
 						</div>
 					</div>
@@ -4128,7 +4128,7 @@ function renderAllAlerts() {
 						</div>
 						<div class="flex flex-col">
 							<div class="flex items-center gap-2">
-								<span class="font-bold text-cyan-400 text-sm md:text-base tracking-wide">$${ticker}</span>
+								<span class="font-bold text-white text-sm md:text-base tracking-wide">$${ticker}</span>
 								${isCurrent ? '<span class="bg-emerald-500/20 text-cyan-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
 							</div>
 							<span class="font-bold ${activeCount > 0 ? 'text-cyan-400' : 'text-slate-500'} text-[10px] md:text-xs mt-0.5">${activeCount} Alert Aktif</span>
