@@ -2270,21 +2270,40 @@ function renderKanbanBoard() {
 // 15. SMART RRR CALCULATOR
 // ==========================================
 function autoFillRRRFromAI() {
-	if (globalStockData && globalStockData.price) {
-		const basePrice = globalStockData.price;
-		const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, basePrice);
-		
-		let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
-		let res1 = fibo.res1;
-		let tp1 = roundToBEITick(res1 * 1.02, 'ceil');
-
-		document.getElementById('rrrEntry').value = basePrice;
-		document.getElementById('rrrSL').value = sl;
-		document.getElementById('rrrTP').value = tp1;
-		
-		calculateSmartRRR();
-		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+	// 1. Validasi ketersediaan data saham (Mencegah error senyap)
+	if (!globalStockData || !globalStockData.price) {
+		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
+		showToast("Data saham belum tersedia. Silakan cari saham terlebih dahulu!", "warning");
+		return;
 	}
+
+	// 2. Ekstrak data harga dan hitung rasio Fibo
+	const basePrice = globalStockData.price;
+	const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, basePrice);
+	
+	let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
+	let res1 = fibo.res1;
+	let tp1 = roundToBEITick(res1 * 1.02, 'ceil');
+
+	// 3. Proteksi Logika (Mencegah bentrok dengan validasi calculateSmartRRR)
+	// Memastikan SL selalu di bawah harga Entry, dan TP selalu di atas harga Entry
+	if (sl >= basePrice) {
+		sl = roundToBEITick(basePrice * 0.95, 'floor'); // Default aman: SL -5%
+	}
+	if (tp1 <= basePrice) {
+		tp1 = roundToBEITick(basePrice * 1.05, 'ceil'); // Default aman: TP +5%
+	}
+
+	// 4. Injeksi nilai ke dalam form input RRR
+	document.getElementById('rrrEntry').value = basePrice;
+	document.getElementById('rrrSL').value = sl;
+	document.getElementById('rrrTP').value = tp1;
+	
+	// 5. Jalankan kalkulasi dan berikan feedback ke user
+	calculateSmartRRR();
+	
+	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+	showToast(`Berhasil menyinkronkan sinyal AI untuk saham $${globalStockData.ticker}!`, "success");
 }
 
 function calculateSmartRRR() {
