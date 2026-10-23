@@ -1711,7 +1711,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 	document.getElementById('tpBarSL').innerText = `SL: Rp ${sl.toLocaleString('id-ID')}`;
 	document.getElementById('tpBarCurrent').innerText = `Harga: Rp ${price.toLocaleString('id-ID')}`;
-	document.getElementById('tpBarTP').innerText = `TP1: Rp ${tp1.toLocaleString('id-ID')}`;
+	document.getElementById('tpBarTP').innerText = `TP2: Rp ${tp2.toLocaleString('id-ID')}`;
 
 	const totalSpan = tp1 - sl;
 	let calculatedProgress = totalSpan > 0 ? Math.round(((price - sl) / totalSpan) * 100) : 50;
