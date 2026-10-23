@@ -418,30 +418,34 @@ function calculateARA_ARB(prevClose) {
 	let isAraNominal = false;
 	let isArbNominal = false;
 
-	// Peraturan BEI Terbaru (Oktober 2026)
+	// Peraturan Baru BEI: Auto Rejection Simetris & Pemantauan Khusus (FCA)
 	if (prevClose >= 1 && prevClose <= 10) {
 		araRaw = prevClose + 1;
 		arbRaw = Math.max(1, prevClose - 1);
 		isAraNominal = true;
 		isArbNominal = true;
-	} else if (prevClose >= 11 && prevClose <= 14) {
-		araLimitPct = 0.35;
+	} else if (prevClose > 10 && prevClose < 50) {
+		// Papan Pemantauan Khusus (FCA)
+		araLimitPct = 0.10;
+		arbLimitPct = 0.10;
 		araRaw = prevClose + (prevClose * araLimitPct);
-		arbRaw = Math.max(1, prevClose - 1);
-		isArbNominal = true;
-	} else if (prevClose >= 15 && prevClose <= 200) {
+		arbRaw = prevClose - (prevClose * arbLimitPct);
+	} else if (prevClose >= 50 && prevClose <= 200) {
+		// Papan Reguler: Simetris 35%
 		araLimitPct = 0.35;
-		arbLimitPct = 0.07;
+		arbLimitPct = 0.35;
 		araRaw = prevClose + (prevClose * araLimitPct);
 		arbRaw = prevClose - (prevClose * arbLimitPct);
 	} else if (prevClose > 200 && prevClose <= 5000) {
+		// Papan Reguler: Simetris 25%
 		araLimitPct = 0.25;
-		arbLimitPct = 0.07;
+		arbLimitPct = 0.25;
 		araRaw = prevClose + (prevClose * araLimitPct);
 		arbRaw = prevClose - (prevClose * arbLimitPct);
 	} else if (prevClose > 5000) {
+		// Papan Reguler: Simetris 20%
 		araLimitPct = 0.20;
-		arbLimitPct = 0.07;
+		arbLimitPct = 0.20;
 		araRaw = prevClose + (prevClose * araLimitPct);
 		arbRaw = prevClose - (prevClose * arbLimitPct);
 	}
@@ -1255,8 +1259,6 @@ function parseYahooDataGlobal(json, ticker) {
 	if (prices.length < 5) return null;
 
 	const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
-	const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
-	const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
 
 	const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
 	const ma5 = getMA(5);
@@ -1278,7 +1280,7 @@ function parseYahooDataGlobal(json, ticker) {
 			let dayStr = date.toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' });
 			
 			if (!dailyData[dayStr]) {
-				dailyData[dayStr] = { volume: 0, valuasi: 0 };
+				dailyData[dayStr] = { volume: 0, valuasi: 0, close: prices[i] };
 			}
 			
 			let p = prices[i];
@@ -1288,6 +1290,7 @@ function parseYahooDataGlobal(json, ticker) {
 			
 			dailyData[dayStr].volume += volumes[i];
 			dailyData[dayStr].valuasi += (typicalPrice * volumes[i]);
+			dailyData[dayStr].close = p; // Mengunci harga penutupan terakhir di hari tersebut
 		}
 
 		if (i >= len - period) {
@@ -1305,14 +1308,25 @@ function parseYahooDataGlobal(json, ticker) {
 	const dailyKeys = Object.keys(dailyData);
 	let volYesterday = 1;
 	let valYesterday = 1;
+	let fallbackPrevClose = prices[0];
 
 	if (dailyKeys.length >= 2) {
 		volYesterday = dailyData[dailyKeys[dailyKeys.length - 2]].volume || 1;
 		valYesterday = dailyData[dailyKeys[dailyKeys.length - 2]].valuasi || 1;
+		fallbackPrevClose = dailyData[dailyKeys[dailyKeys.length - 2]].close;
 	} else if (dailyKeys.length === 1) {
 		volYesterday = dailyData[dailyKeys[0]].volume || 1;
 		valYesterday = dailyData[dailyKeys[0]].valuasi || 1;
+		fallbackPrevClose = dailyData[dailyKeys[0]].close;
 	}
+
+	// Mengunci patokan harga penutupan kemarin agar ARA/ARB tidak berubah-ubah saat intraday
+	let previousClose = result.meta?.chartPreviousClose;
+	if (!previousClose || previousClose <= 0) {
+		previousClose = fallbackPrevClose;
+	}
+
+	const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
 
 	const currentVolume = volumes.length > 0 ? volumes[volumes.length - 1] : 0;
 	const realVolume = result.meta?.regularMarketVolume || (dailyKeys.length > 0 ? dailyData[dailyKeys[dailyKeys.length - 1]].volume : currentVolume);
