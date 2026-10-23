@@ -1738,9 +1738,10 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		<p>• Selalu pasang pembatas risiko di bawah <strong>Rp ${sl.toLocaleString('id-ID')}</strong> untuk menjaga keterpaparan modal dari kecenderungan volatilitas pasar.</p>
 	`;
 
-	document.getElementById('rrrEntry').value = price;
-	document.getElementById('rrrSL').value = sl;
-	document.getElementById('rrrTP').value = tp1;
+	// Mengisi otomatis form Smart RRR saat AI Signal di-generate
+	document.getElementById('rrrEntry').value = sup2; // Mengikuti Entry tertinggi
+	document.getElementById('rrrSL').value = sl;      // Mengikuti Stop Loss AI
+	document.getElementById('rrrTP').value = tp1;     // Mengikuti Take Profit 1 AI
 	calculateSmartRRR();
 
 	if (window.lucide) lucide.createIcons();
@@ -2281,21 +2282,23 @@ function autoFillRRRFromAI() {
 	const basePrice = globalStockData.price;
 	const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, basePrice);
 	
+	// Sesuai dengan hasil AI Signal (Entry Tertinggi, Stop Loss, TP 1)
+	let entryHigh = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
 	let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
 	let res1 = fibo.res1;
 	let tp1 = roundToBEITick(res1 * 1.02, 'ceil');
 
 	// 3. Proteksi Logika (Mencegah bentrok dengan validasi calculateSmartRRR)
-	// Memastikan SL selalu di bawah harga Entry, dan TP selalu di atas harga Entry
-	if (sl >= basePrice) {
-		sl = roundToBEITick(basePrice * 0.95, 'floor'); // Default aman: SL -5%
+	// Memastikan SL selalu di bawah harga Entry Tertinggi, dan TP selalu di atasnya
+	if (sl >= entryHigh) {
+		sl = roundToBEITick(entryHigh * 0.95, 'floor'); // Default aman: SL -5%
 	}
-	if (tp1 <= basePrice) {
-		tp1 = roundToBEITick(basePrice * 1.05, 'ceil'); // Default aman: TP +5%
+	if (tp1 <= entryHigh) {
+		tp1 = roundToBEITick(entryHigh * 1.05, 'ceil'); // Default aman: TP +5%
 	}
 
 	// 4. Injeksi nilai ke dalam form input RRR
-	document.getElementById('rrrEntry').value = basePrice;
+	document.getElementById('rrrEntry').value = entryHigh;
 	document.getElementById('rrrSL').value = sl;
 	document.getElementById('rrrTP').value = tp1;
 	
