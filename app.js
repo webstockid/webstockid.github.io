@@ -1723,7 +1723,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		progressBar.style.width = `${calculatedProgress}%`;
 	}, 200);
 
-	document.getElementById('tpProgressPercent').innerText = `Posisi: ${calculatedProgress}% dari Rentang SL - TP1`;
+	document.getElementById('tpProgressPercent').innerText = `Posisi: ${calculatedProgress}% dari Rentang SL - TP2`;
 
 	document.getElementById('aiSkenarioBox').innerHTML = `
 		<p><strong>(a) Konfirmasi Bullish:</strong> Jika harga bertahan di atas support Rp ${sup2.toLocaleString('id-ID')} dengan volume stabil, target uji resistance berada di Rp ${res1.toLocaleString('id-ID')}. Penembusan resistance dapat memicu akselerasi ke TP2 Rp ${tp2.toLocaleString('id-ID')}.</p>
