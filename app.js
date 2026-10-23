@@ -2274,12 +2274,13 @@ function autoFillRRRFromAI() {
 		const basePrice = globalStockData.price;
 		const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, basePrice);
 		
-		let res2 = fibo.res2;
-		let customTP2 = roundToBEITick(res2 * 1.02, 'ceil');
+		let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
+		let res1 = fibo.res1;
+		let tp1 = roundToBEITick(res1 * 1.02, 'ceil');
 
-		document.getElementById('rrrEntry').value = fibo.entryLow;
-		document.getElementById('rrrSL').value = fibo.sl;
-		document.getElementById('rrrTP').value = customTP2;
+		document.getElementById('rrrEntry').value = basePrice;
+		document.getElementById('rrrSL').value = sl;
+		document.getElementById('rrrTP').value = tp1;
 		
 		calculateSmartRRR();
 		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
@@ -3030,10 +3031,20 @@ function ptSyncCurrentTicker() {
 		showToast("Pilih saham terlebih dahulu pada pencarian!", "warning");
 		return;
 	}
+	const price = roundToBEITick(globalStockData.price);
 	document.getElementById('ptTicker').value = globalStockData.ticker;
-	document.getElementById('ptPrice').value = roundToBEITick(globalStockData.price);
+	document.getElementById('ptPrice').value = price;
+	
+	// Sinkronisasi Fibo sesuai AI Signal
+	const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, price);
+	const sl = roundToBEITick(fibo.sl * 0.96, 'floor');
+	const tp1 = roundToBEITick(fibo.res1 * 1.02, 'ceil');
+	
+	document.getElementById('ptSL').value = sl;
+	document.getElementById('ptTP').value = tp1;
+	
 	ptCalculateTotal();
-	showToast(`Berhasil sinkronisasi saham $${globalStockData.ticker} ke form Paper Trade.`);
+	showToast(`Berhasil sinkronisasi saham $${globalStockData.ticker} ke form Paper Trade. (SL & TP terisi)`);
 }
 
 function ptCalculateTotal() {
@@ -3099,23 +3110,25 @@ function ptExecuteBuy() {
 	showToast(`Berhasil membeli ${lots} lot $${ticker} secara virtual!`);
 }
 
-async function ptExecuteSell(id) {
-	// Ambil data sementara hanya untuk pengecekan ticker awal
+async function ptExecuteSell(id, autoPrice = null) {
 	let tempAcc = getPaperAccount();
 	const tempItem = tempAcc.portfolio.find(p => p.id === id);
 	if (!tempItem) return;
 
 	let sellPrice = tempItem.avgPrice;
 	
-	const cached = getCachedStockData(tempItem.ticker);
-	if (globalStockData && globalStockData.ticker === tempItem.ticker) {
-		sellPrice = globalStockData.price;
-	} else if (cached && cached.price) {
-		sellPrice = cached.price;
+	if (autoPrice !== null) {
+		sellPrice = autoPrice;
 	} else {
-		// Await dilakukan SEBELUM kita mengunci state akun final
-		const freshData = await fetchRealtimeStockData(tempItem.ticker);
-		if (freshData && freshData.price) sellPrice = freshData.price;
+		const cached = getCachedStockData(tempItem.ticker);
+		if (globalStockData && globalStockData.ticker === tempItem.ticker) {
+			sellPrice = globalStockData.price;
+		} else if (cached && cached.price) {
+			sellPrice = cached.price;
+		} else {
+			const freshData = await fetchRealtimeStockData(tempItem.ticker);
+			if (freshData && freshData.price) sellPrice = freshData.price;
+		}
 	}
 
 	// STATE LOCK FIX: Kunci ulang state akun secara sinkron setelah fetch 
@@ -3180,9 +3193,17 @@ async function ptRefreshPortoPrices(isAuto = false) {
 		const data = await fetchRealtimeStockData(item.ticker, true);
 		if (data && data.price) {
 			hasUpdates = true;
-			// ASYNC FIX: Tambahkan await agar sistem tidak melewatinya sebelum data matang
-			if (item.tp > 0 && data.price >= item.tp) { await ptExecuteSell(item.id); continue; }
-			if (item.sl > 0 && data.price <= item.sl) { await ptExecuteSell(item.id); continue; }
+			// ASYNC FIX: Auto Jual jika kena SL atau TP
+			if (item.tp > 0 && data.price >= item.tp) { 
+				showToast(`Auto Sell TP Triggered: $${item.ticker} menyentuh target!`, "success");
+				await ptExecuteSell(item.id, data.price); 
+				continue; 
+			}
+			if (item.sl > 0 && data.price <= item.sl) { 
+				showToast(`Auto Sell SL Triggered: $${item.ticker} menyentuh batas risiko!`, "warning");
+				await ptExecuteSell(item.id, data.price); 
+				continue; 
+			}
 		}
 	}
 	
@@ -3291,23 +3312,29 @@ function renderPaperTradingUI() {
 			const isPlus = pnl >= 0;
 
 			html += `
-				<tr class="hover:bg-slate-800/40">
-					<td class="p-3.5 font-bold text-blue-400">
-						<div class="flex items-center gap-2">
-							<div class="w-5 h-5 rounded-md bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
-								<img 
-									src="https://assets.stockbit.com/logos/companies/${item.ticker}.png" 
-									alt="${item.ticker}" 
-									class="w-full h-full object-contain drop-shadow-sm" 
-									onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};"
-								>
-							</div>
-							<span>&dollar;${item.ticker}</span>
+			<tr class="hover:bg-slate-800/40">
+				<td class="p-3.5 font-bold text-blue-400">
+					<div class="flex items-center gap-2">
+						<div class="w-5 h-5 rounded-md bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+							<img 
+								src="https://assets.stockbit.com/logos/companies/${item.ticker}.png" 
+								alt="${item.ticker}" 
+								class="w-full h-full object-contain drop-shadow-sm" 
+								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};"
+							>
 						</div>
-					</td>
-					<td class="p-3.5 text-blue-400">${item.lots.toLocaleString('id-ID')} Lot</td>
-					<td class="p-3.5 text-amber-400">Rp ${item.avgPrice.toLocaleString('id-ID')}</td>
-					<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
+						<div class="flex flex-col">
+							<span>&dollar;${item.ticker}</span>
+							${item.sl > 0 || item.tp > 0 ? `<span class="text-[9px] text-slate-500 font-normal mt-0.5">Auto SL/TP Aktif</span>` : ''}
+						</div>
+					</div>
+				</td>
+				<td class="p-3.5 text-blue-400">${item.lots.toLocaleString('id-ID')} Lot</td>
+				<td class="p-3.5 text-amber-400">
+					Rp ${item.avgPrice.toLocaleString('id-ID')}
+					${item.sl > 0 || item.tp > 0 ? `<div class="text-[9px] text-slate-500 mt-0.5 font-medium">SL: ${item.sl > 0 ? item.sl : '-'} | TP: ${item.tp > 0 ? item.tp : '-'}</div>` : ''}
+				</td>
+				<td class="p-3.5 text-sky-400">Rp ${currentP.toLocaleString('id-ID')}</td>
 					<td class="p-3.5 ${isPlus ? 'text-emerald-400' : 'text-rose-400'} font-bold">
 						${isPlus ? '+' : ''}Rp ${Math.round(pnl).toLocaleString('id-ID')} (${isPlus ? '+' : ''}${pnlPct}%)
 					</td>
@@ -4169,10 +4196,10 @@ function openEditAlertModal() {
 		price = roundToBEITick(globalStockData.price);
 		const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, price);
 		
-		entry = fibo.entryLow;
+		entry = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
 		resist = fibo.res1;
-		sl = fibo.sl;
-		tp = roundToBEITick(fibo.res2 * 1.03, 'ceil');
+		sl = roundToBEITick(fibo.sl * 0.96, 'floor');
+		tp = roundToBEITick(fibo.res2 * 1.02, 'ceil');
 	}
 
 	document.getElementById('alertModalTicker').value = currentTicker || '';
@@ -4232,11 +4259,10 @@ function syncAlertsFromAI() {
 		price = roundToBEITick(globalStockData.price);
 		const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, price);
 		
-		sup2 = fibo.entryHigh;
+		sup2 = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
 		res2 = fibo.res2;
-		sl = fibo.sl;
-		
-		tp2 = roundToBEITick(res2 * 1.02, 'ceil'); 
+		sl = roundToBEITick(fibo.sl * 0.96, 'floor');
+		tp2 = roundToBEITick(res2 * 1.02, 'ceil');
 	}
 
 	const now = new Date();
@@ -4789,6 +4815,7 @@ function startBackgroundAutoCache() {
 						setCachedStockData(ticker, parsedData);
 						checkPriceAlertsRealtime(ticker, parsedData.price); 
 						checkWhaleAlertRealtime(ticker, parsedData);
+						checkPaperTradeAutoSellRealtime(ticker, parsedData.price);
 					}
 				} else if (status === 'done') {
 					bgWorker.terminate();
@@ -4815,6 +4842,27 @@ function startBackgroundAutoCache() {
 	};
 	runBackgroundFetch();
 	setInterval(runBackgroundFetch, FIVE_MINUTES);
+}
+
+async function checkPaperTradeAutoSellRealtime(ticker, currentPrice) {
+	let acc = getPaperAccount();
+	let hasUpdates = false;
+	
+	for (let item of acc.portfolio) {
+		if (item.ticker === ticker) {
+			if (item.tp > 0 && currentPrice >= item.tp) { 
+				showToast(`Auto Sell TP Triggered: $${item.ticker} menyentuh target!`, "success");
+				await ptExecuteSell(item.id, currentPrice); 
+				hasUpdates = true;
+			}
+			else if (item.sl > 0 && currentPrice <= item.sl) { 
+				showToast(`Auto Sell SL Triggered: $${item.ticker} menyentuh batas risiko!`, "warning");
+				await ptExecuteSell(item.id, currentPrice); 
+				hasUpdates = true;
+			}
+		}
+	}
+	if (hasUpdates) renderPaperTradingUI();
 }
 
 // ==========================================
