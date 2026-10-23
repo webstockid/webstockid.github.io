@@ -728,12 +728,12 @@ function getDailyLimits(token) {
 	let limits = localStorage.getItem(key);
 	
 	const defaultLimits = {
-		search: 100,
-		radar: 75,
-		customRadar: 50,
-		bsjpRadar: 25,
-		whaleRadar: 25,
-		peer: 75
+		search: 50,
+		radar: 20,
+		customRadar: 20,
+		bsjpRadar: 20,
+		whaleRadar: 20,
+		peer: 25
 	};
 
 	if (limits) {
@@ -1950,7 +1950,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 								>
 							</div>
 							<div class="flex flex-col">
-								<strong class="text-emerald-400 text-sm tracking-wide">&dollar;${data.ticker}</strong>
+								<strong class="text-white text-sm tracking-wide">&dollar;${data.ticker}</strong>
 								${isCurrent ? '<span class="text-[9px] text-emerald-400/80 font-medium tracking-wide">Sedang Dipantau</span>' : '<span class="text-[9px] text-slate-500 font-medium tracking-wide">Saham Serupa</span>'}
 							</div>
 						</div>
@@ -2232,7 +2232,7 @@ function renderKanbanBoard() {
 								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};"
 							>
 						</div>
-						<span class="font-bold text-pink-400 text-xs">&dollar;${item.ticker}</span>
+						<span class="font-bold text-white text-xs">&dollar;${item.ticker}</span>
 					</div>
 					<span class="text-[9px] text-slate-400">${item.date}</span>
 				</div>
@@ -3390,13 +3390,13 @@ function renderPaperTradingUI() {
 									onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${h.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] font-black text-slate-400 tracking-wider\\'>${h.ticker.substring(0,3)}</span>';};"
 								>
 							</div>
-							<span class="font-bold text-blue-400">&dollar;${h.ticker} <strong class='text-blue-400'>(${h.lots} Lot)</strong></span>
+							<span class="font-bold text-white">&dollar;${h.ticker} <strong class='text-blue-400'>(${h.lots} Lot)</strong></span>
 						</div>
 						<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
 					</div>
 					<div class="flex justify-between text-[11px] text-slate-300 pb-1">
-						<span class="font-bold text-sky-400">Beli: Rp ${h.buyPrice.toLocaleString('id-ID')}</span>
-						<span class="font-bold text-sky-400">Jual: Rp ${h.sellPrice.toLocaleString('id-ID')}</span>
+						<span class="font-bold text-cyan-400">Beli: Rp ${h.buyPrice.toLocaleString('id-ID')}</span>
+						<span class="font-bold text-cyan-400">Jual: Rp ${h.sellPrice.toLocaleString('id-ID')}</span>
 					</div>
 					<div class="flex justify-between items-center pt-1.5 border-t border-slate-800/80 mt-1">
 						<div class="flex flex-col">
@@ -4128,7 +4128,7 @@ function renderAllAlerts() {
 						</div>
 						<div class="flex flex-col">
 							<div class="flex items-center gap-2">
-								<span class="font-bold text-cyan-400 text-sm md:text-base tracking-wide">${ticker}</span>
+								<span class="font-bold text-cyan-400 text-sm md:text-base tracking-wide">$${ticker}</span>
 								${isCurrent ? '<span class="bg-emerald-500/20 text-cyan-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
 							</div>
 							<span class="font-bold ${activeCount > 0 ? 'text-cyan-400' : 'text-slate-500'} text-[10px] md:text-xs mt-0.5">${activeCount} Alert Aktif</span>
