@@ -393,10 +393,12 @@ function applyFontStyle(fontName) {
 // 6. UTILITAS & MODAL WELCOME
 // ==========================================
 function roundToBEITick(price, mode = 'round') {
-	if (price < 50) return 50;
+	// Batas minimum harga saham BEI saat ini adalah Rp 1 (Papan Pemantauan Khusus)
+	if (price < 1) return 1;
 	
 	let tick = 1;
-	if (price >= 50 && price <= 200) tick = 1;
+	// Fraksi harga BEI terbaru
+	if (price <= 200) tick = 1; // Mencakup rentang harga Rp 1 hingga Rp 200
 	else if (price > 200 && price <= 500) tick = 2;
 	else if (price > 500 && price <= 2000) tick = 5;
 	else if (price > 2000 && price <= 5000) tick = 10;
