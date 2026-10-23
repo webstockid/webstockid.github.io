@@ -1440,6 +1440,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	let scoreClass = "font-bold bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700";
 
 	if (stockData) {
+		renderAraArbUI(stockData.prevClose);
 		const isAboveMA5 = stockData.price > stockData.ma5;
 		const isAboveMA10 = stockData.price > stockData.ma10;
 		const isAboveMA20 = stockData.price > stockData.ma20;
