@@ -420,30 +420,35 @@ function calculateARA_ARB(prevClose) {
 	let isAraNominal = false;
 	let isArbNominal = false;
 
-	// Peraturan BEI Terbaru (Oktober 2026)
+	// Peraturan Auto Rejection Simetris BEI & Papan Pemantauan Khusus (FCA)
 	if (prevClose >= 1 && prevClose <= 10) {
+		// Khusus saham FCA harga Rp 1 - Rp 10 (Mutlak Rp 1)
 		araRaw = prevClose + 1;
 		arbRaw = Math.max(1, prevClose - 1);
 		isAraNominal = true;
 		isArbNominal = true;
-	} else if (prevClose >= 11 && prevClose <= 14) {
-		araLimitPct = 0.35;
+	} else if (prevClose > 10 && prevClose < 50) {
+		// Khusus saham FCA harga Rp 11 - Rp 49 (Limit 10%)
+		araLimitPct = 0.10;
+		arbLimitPct = 0.10;
 		araRaw = prevClose + (prevClose * araLimitPct);
-		arbRaw = Math.max(1, prevClose - 1);
-		isArbNominal = true;
-	} else if (prevClose >= 15 && prevClose <= 200) {
+		arbRaw = prevClose - (prevClose * arbLimitPct);
+	} else if (prevClose >= 50 && prevClose <= 200) {
+		// Papan Reguler/Pengembangan harga Rp 50 - Rp 200 (Simetris 35%)
 		araLimitPct = 0.35;
-		arbLimitPct = 0.07;
+		arbLimitPct = 0.35;
 		araRaw = prevClose + (prevClose * araLimitPct);
 		arbRaw = prevClose - (prevClose * arbLimitPct);
 	} else if (prevClose > 200 && prevClose <= 5000) {
+		// Papan Reguler/Pengembangan harga > Rp 200 - Rp 5.000 (Simetris 25%)
 		araLimitPct = 0.25;
-		arbLimitPct = 0.07;
+		arbLimitPct = 0.25;
 		araRaw = prevClose + (prevClose * araLimitPct);
 		arbRaw = prevClose - (prevClose * arbLimitPct);
 	} else if (prevClose > 5000) {
+		// Papan Reguler/Pengembangan harga > Rp 5.000 (Simetris 20%)
 		araLimitPct = 0.20;
-		arbLimitPct = 0.07;
+		arbLimitPct = 0.20;
 		araRaw = prevClose + (prevClose * araLimitPct);
 		arbRaw = prevClose - (prevClose * arbLimitPct);
 	}
