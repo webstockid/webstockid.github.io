@@ -1,0 +1,395 @@
+<!DOCTYPE HTML>
+<html lang="id" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8">
+		<title>Stock ID Study - Belajar Saham & Analisa Teknikal</title>
+		<meta name="keywords" content="stock id study, belajar saham, materi saham, stock id vip, stock id, saham indonesia, scalping saham">
+		<meta name="HandheldFriendly" content="True">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no">
+		<meta name="author" content="Hardiansyah & Gemini & Tailwind">
+		<meta property="og:image" content="stockid_gambar/stockidvip.jpeg">
+		<meta property="og:url" content="https://webstockid.github.io/stock_id_study.html">
+		<meta property="og:title" content="Stock ID Study #Andaimology">
+		<meta property="og:description" content="Materi eksklusif dan panduan lengkap belajar trading saham Stock ID VIP.">
+		<meta property="og:type" content="website">
+		
+		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+		
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit&display=swap">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		<link rel="icon" type="image/x-icon" href="stockid_gambar/stockidvip.jpeg">
+		<link rel="icon" type="image/png" sizes="60x60" href="stockid_gambar/stockidvip.jpeg">
+		<link rel="apple-touch-icon" sizes="180x180" href="stockid_gambar/stockidvip.jpeg">
+		
+		<style>
+			body {
+				font-family: "Outfit", sans-serif;
+				background-color: #0b0f19
+			}
+			.heading-font, a, p, b, button, nav, ul, li, strong, option, div, span, label {
+				font-family: "Outfit";
+				font-weight: bold !important;
+			}
+			.glassmorphism {
+				background: rgba(17, 24, 39, .7);
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+				border: 1px solid rgba(255, 255, 255, .06)
+			}
+			.glow-green {
+				box-shadow: 0 0 20px rgba(16, 185, 129, .2)
+			}
+			.glow-premium {
+				box-shadow: 0 0 30px rgba(245, 158, 11, .25)
+			}
+			/* Custom Scrollbar for the page */
+			::-webkit-scrollbar {
+				width: 8px;
+			}
+			::-webkit-scrollbar-track {
+				background: #0b0f19;
+			}
+			::-webkit-scrollbar-thumb {
+				background: #10b981;
+				border-radius: 4px;
+			}
+			::-webkit-scrollbar-thumb:hover {
+				background: #059669;
+			}
+		</style>
+	</head>
+	
+	<body class="text-slate-200 antialiased overflow-x-hidden pb-16">
+		<!-- NAVBAR (Sama persis dengan index.html) -->
+		<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
+				<!-- Brand / Logo -->
+				<div class="flex items-center gap-3">
+					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2 rounded-2xl shadow-lg shadow-emerald-500/20 transition-transform duration-300 hover:scale-110 hover:rotate-6 cursor-pointer">
+						<i class="fa-solid fa-book-open-reader text-slate-950 text-xl font-black"></i>
+					</div>
+					<div>
+						<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+							STOCK ID <span class="text-emerald-400 font-bold">STUDY</span>
+						</span>
+						<p class="text-[9px] tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
+					</div>
+				</div>
+
+				<!-- Navigasi Dropdown -->
+				<div class="relative inline-block text-left" id="navDropdownContainer">
+					<!-- Tombol Utama Menu Dropdown -->
+					<button id="menuDropdownBtn" onclick="toggleNavDropdown()" type="button" class="bg-slate-900/80 hover:bg-slate-800 active:scale-95 text-slate-200 px-4 py-2.5 rounded-xl border border-slate-700/70 hover:border-emerald-500/60 text-xs font-bold tracking-wide transition-all duration-200 flex items-center gap-2.5 shadow-md hover:shadow-emerald-500/10 cursor-pointer select-none">
+						<i class="fa-solid fa-bars text-emerald-400 transition-transform duration-300 group-hover:scale-110"></i>
+						<span>Navigasi</span>
+						<i id="dropdownChevron" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300 ease-out"></i>
+					</button>
+
+					<!-- Isi Dropdown Menu dengan Animasi Smooth Pop-Up -->
+					<div id="navDropdownMenu" class="hidden opacity-0 scale-95 duration-200 ease-out absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-2xl backdrop-blur-xl p-2 z-50 transform origin-top-right transition-all divide-y divide-slate-800/80">
+						<!-- Seksi 1: Platform / Layanan Utama Stock ID -->
+						<div class="pb-1.5 space-y-1">
+							<div class="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+								Aplikasi & Layanan
+							</div>
+							<a href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-200 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-crown text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<span>Stock ID VIP</span>
+								</div>
+							</a>
+							<a href="https://webstockid.github.io/screener" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-circle-user text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<span>Stock ID Screener</span>
+								</div>
+							</a>
+							<!-- Aktif Page Highlight -->
+							<a id="navLinkVIP" href="https://webstockid.github.io/stock_id_study.html" class="flex items-center justify-between px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs transition-all duration-200 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-book-open text-emerald-400 group-hover:scale-110 transition-transform w-4 text-center"></i>
+									<span>Stock ID Study</span>
+								</div>
+								<div class="nav-status-container flex items-center gap-1.5">
+									<span class="flex items-center gap-1.5 bg-emerald-500/20 text-emerald-400 text-[10px] font-extrabold px-2 py-0.5 rounded-md border border-emerald-500/30">
+										<span class="relative flex h-2 w-2">
+											<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+											<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+										</span>Aktif
+									</span>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<!-- Script Kontrol Dropdown Navbar -->
+		<script>
+			function toggleNavDropdown() {
+				const menu = document.getElementById("navDropdownMenu");
+				const chevron = document.getElementById("dropdownChevron");
+				const isHidden = menu.classList.contains("hidden");
+
+				if (isHidden) {
+					menu.classList.remove("hidden");
+					setTimeout(() => {
+						menu.classList.remove("opacity-0", "scale-95");
+						menu.classList.add("opacity-100", "scale-100");
+					}, 10);
+					chevron.classList.add("rotate-180");
+				} else {
+					closeNavDropdown();
+				}
+			}
+
+			function closeNavDropdown() {
+				const menu = document.getElementById("navDropdownMenu");
+				const chevron = document.getElementById("dropdownChevron");
+				if (menu && chevron) {
+					menu.classList.remove("opacity-100", "scale-100");
+					menu.classList.add("opacity-0", "scale-95");
+					chevron.classList.remove("rotate-180");
+					
+					setTimeout(() => {
+						menu.classList.add("hidden");
+					}, 200);
+				}
+			}
+
+			document.addEventListener("click", function(event) {
+				const container = document.getElementById("navDropdownContainer");
+				if (container && !container.contains(event.target)) {
+					closeNavDropdown();
+				}
+			});
+		</script>
+
+		<!-- HEADER STUDY -->
+		<header class="relative py-16 overflow-hidden border-b border-slate-900/60">
+			<div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.05),transparent_70%)]"></div>
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+				<span class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-xs font-semibold text-emerald-400 mb-6">
+					<i class="fa-solid fa-graduation-cap"></i> Modul Pembelajaran
+				</span>
+				<h1 class="heading-font text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
+					Pusat Materi <span class="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">Stock ID</span>
+				</h1>
+				<p class="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+					Tingkatkan skill analisa dan *trading* kamu dengan materi komprehensif langsung dari praktisi. Pelajari secara saksama setiap langkahnya.
+				</p>
+			</div>
+		</header>
+
+		<!-- MAIN CONTENT: MATERI -->
+		<main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10 space-y-10">
+			
+			<!-- MODULE CARD: CARA SCALPING TIPIS TIPIS -->
+			<article class="glassmorphism p-6 sm:p-10 rounded-3xl relative glow-green overflow-hidden">
+				<div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+				
+				<!-- Article Title -->
+				<h2 class="heading-font text-2xl sm:text-3xl font-extrabold text-white mb-2 border-l-4 border-emerald-500 pl-4">Cara Scalping Tipis Tipis</h2>
+				<div class="flex items-center gap-4 text-xs text-slate-500 mb-8 border-b border-slate-800/60 pb-6">
+					<span class="flex items-center gap-1.5"><i class="fa-regular fa-clock"></i> Market Open</span>
+					<span class="flex items-center gap-1.5"><i class="fa-solid fa-layer-group"></i> Analisa Transaksi & Orderbook</span>
+				</div>
+
+				<div class="prose prose-invert prose-emerald max-w-none text-slate-300 text-sm sm:text-base leading-relaxed space-y-6">
+					
+					<p>Cara ini bisa dilakukan di pagi hari pada saat market baru buka.</p>
+					
+					<!-- Langkah-langkah -->
+					<ol class="list-decimal list-inside space-y-8 my-8 text-white font-medium bg-slate-900/50 p-6 rounded-2xl border border-slate-800/50">
+						<!-- Step 1 -->
+						<li class="pl-2">
+							Ketuk titik 3 di pojok kanan atas.
+							<div class="mt-4 flex justify-center w-full">
+								<img src="stockid_gambar/materi/materi24okt1.jpeg" alt="Titik 3 pojok kanan atas" class="rounded-xl border border-slate-700/60 max-w-full sm:max-w-sm shadow-xl shadow-slate-950 object-contain mx-auto" onerror="this.src='https://placehold.co/400x800/0f172a/10b981?text=Gambar+1+Tidak+Ditemukan'">
+							</div>
+						</li>
+						
+						<!-- Step 2 -->
+						<li class="pl-2 pt-4 border-t border-slate-800/60">
+							Hidupkan <span class="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">"Complete View"</span>.
+							<div class="mt-4 flex justify-center w-full">
+								<img src="stockid_gambar/materi/materi24okt2.jpeg" alt="Hidupkan Complete View" class="rounded-xl border border-slate-700/60 max-w-full sm:max-w-sm shadow-xl shadow-slate-950 object-contain mx-auto" onerror="this.src='https://placehold.co/400x800/0f172a/10b981?text=Gambar+2+Tidak+Ditemukan'">
+							</div>
+						</li>
+						
+						<!-- Step 3 -->
+						<li class="pl-2 pt-4 border-t border-slate-800/60">
+							Lihat dan hafalkan angka <span class="text-amber-400 font-bold">"Lot"</span> (Volume) dan <span class="text-amber-400 font-bold">"Val"</span> (Valuasi).
+							<div class="mt-4 flex justify-center w-full">
+								<img src="stockid_gambar/materi/materi24okt3.jpeg" alt="Angka Lot dan Val" class="rounded-xl border border-slate-700/60 max-w-full sm:max-w-sm shadow-xl shadow-slate-950 object-contain mx-auto" onerror="this.src='https://placehold.co/400x800/0f172a/10b981?text=Gambar+3+Tidak+Ditemukan'">
+							</div>
+						</li>
+						
+						<!-- Step 4 -->
+						<li class="pl-2 pt-4 border-t border-slate-800/60">
+							Cek kembali secara berkala. 
+						</li>
+					</ol>
+
+					<!-- Penjelasan Contoh & Eksekusi -->
+					<div class="bg-slate-800/30 border-l-4 border-blue-500 p-5 rounded-r-xl space-y-4">
+						<p><strong class="text-blue-400">Contoh:</strong> Misalnya kita lihat saham WMUU di jam 9.15, Lotnya masih 100K dan Valnya masih 500M (Juta).</p>
+						<p>Lalu ketika kita cek kembali di jam 10.50, Lot dan Val nya tiba-tiba melonjak tinggi namun harga sahamnya masih ngestuck/baru naik secuil.</p>
+					</div>
+
+					<p>Oke, sekarang kita <i>crosscheck</i> apakah lonjakan Lot dan Volume itu terjadi karna ada yang <strong class="text-rose-400">Haki</strong> (Hajar Kiri) atau <strong class="text-emerald-400">Haka</strong> (Hajar Kanan), perhatikan Screenshoot dibawah ini.</p>
+					
+					<p>Buka <span class="bg-slate-800 px-2 py-1 rounded text-white text-xs">Orderbook</span> > <span class="bg-slate-800 px-2 py-1 rounded text-white text-xs">Trade Flow</span> > <span class="bg-slate-800 px-2 py-1 rounded text-white text-xs">Time (All Trades)</span>, terlihat pada jam 10.50 ada yang <strong>Haka</strong> lalu diikuti Haka'an setelahnya namun harga saham masih flat/tidak naik, ini adalah momen yang tepat untuk kita entry.</p>
+
+					<!-- Image 4: Trade Flow (Orderbook) -->
+					<div class="my-8 flex justify-center w-full">
+						<img src="stockid_gambar/materi/materi24okt4.jpeg" alt="Trade Flow All Trades" class="rounded-xl border border-slate-700/60 max-w-full sm:max-w-sm shadow-xl shadow-slate-950 object-contain mx-auto" onerror="this.src='https://placehold.co/400x800/0f172a/10b981?text=Gambar+4+Tidak+Ditemukan'">
+					</div>
+
+					<!-- Image 5: Chart 10:50 -->
+					<div class="my-8 flex justify-center w-full">
+						<img src="stockid_gambar/materi/materi24okt5.jpeg" alt="Chart menunjukkan momen entry di 10:50" class="rounded-xl border border-slate-700/60 max-w-full sm:max-w-sm shadow-xl shadow-slate-950 object-contain mx-auto" onerror="this.src='https://placehold.co/400x800/0f172a/10b981?text=Gambar+5+Tidak+Ditemukan'">
+					</div>
+
+					<!-- Manajemen Risiko & Kesimpulan -->
+					<div class="bg-amber-500/10 border border-amber-500/20 p-6 rounded-2xl space-y-4">
+						<h4 class="text-amber-400 font-bold flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> Manajemen Risiko (Wajib)</h4>
+						<p class="text-slate-300">Masuk secara bertahap jangan langsung masuk besar, jika sudah masuk jangan lupa pasang <strong class="text-rose-400">Stop Loss di -4%</strong> dan <strong class="text-emerald-400">Trailing Stop di 3%</strong> untuk mengamankan profit jika harga berbalik arah.</p>
+					</div>
+
+					<div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex gap-4 mt-6">
+						<div class="text-emerald-400 text-2xl"><i class="fa-solid fa-lightbulb"></i></div>
+						<div>
+							<strong class="text-white block mb-1">Pada hakikatnya:</strong>
+							<p class="text-slate-400 text-sm m-0">Fungsi "Complete View" membantu kita untuk memantau saham yang sudah kita masukan ke Watchlist jika ada lonjakan Volume (Lot) dan Valuasi.</p>
+						</div>
+					</div>
+
+				</div>
+			</article>
+
+			<!-- DUMMY SECTION: MATERI MULTIMEDIA -->
+			<section class="glassmorphism p-6 sm:p-10 rounded-3xl relative overflow-hidden mt-8">
+				<h3 class="heading-font text-xl sm:text-2xl font-bold text-white mb-6 border-b border-slate-800 pb-4">
+					<i class="fa-solid fa-photo-film text-emerald-400 mr-2"></i> Contoh Materi Multimedia
+				</h3>
+				
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+					<!-- Dummy Video -->
+					<div class="space-y-3">
+						<h4 class="text-sm font-bold text-slate-300 uppercase tracking-widest"><i class="fa-solid fa-video text-slate-500"></i> Video Penjelasan Materi</h4>
+						<div class="rounded-xl overflow-hidden border border-slate-800 bg-black shadow-lg shadow-black/50 aspect-video relative group">
+							<video controls class="w-full h-full object-cover" poster="https://placehold.co/1280x720/0b0f19/10b981?text=Play+Video+Materi+Saham">
+								<source src="stockid_gambar/materi/1.mp4" type="video/mp4">
+								Browser Anda tidak mendukung tag video.
+							</video>
+						</div>
+						<p class="text-[11px] text-slate-500 leading-relaxed">Tonton video interaktif di atas untuk melihat penerapan Scalping di Market yang sedang berjalan (Live Trading).</p>
+					</div>
+
+					<!-- Dummy Audio -->
+					<div class="space-y-3">
+						<h4 class="text-sm font-bold text-slate-300 uppercase tracking-widest"><i class="fa-solid fa-headphones text-slate-500"></i> Podcast / Audio Briefing</h4>
+						<div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col justify-center h-[calc(100%-2rem)]">
+							<div class="flex items-center gap-4 mb-4">
+								<div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl border border-emerald-500/30">
+									<i class="fa-solid fa-microphone-lines"></i>
+								</div>
+								<div>
+									<h5 class="text-white font-bold text-sm">Morning Briefing #Andaimology</h5>
+									<p class="text-[10px] text-slate-400">Oleh: Mentor Har (1 Detik)</p>
+								</div>
+							</div>
+							
+							<!-- Audio Player Kustom Sederhana Bawaan HTML -->
+							<audio controls class="w-full h-10 outline-none rounded-lg bg-slate-950">
+								<!-- Ganti src dengan link audio Anda jika ada -->
+								<source src="stockid_suara/jokowi.mp3" type="audio/mpeg">
+								Browser Anda tidak mendukung tag audio.
+							</audio>
+							<p class="text-[11px] text-slate-500 leading-relaxed mt-4">Dengarkan panduan ringkas sebelum market buka. Sangat cocok didengarkan sambil beraktivitas atau di perjalanan.</p>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<!-- Ticker TradingView Bottom (Sama persis dengan index.html) -->
+		<div class="fixed bottom-0 left-0 z-40 w-full bg-slate-950 border-t border-slate-900/80 overflow-hidden shadow-lg">
+			<div class="tradingview-widget-container">
+				<div class="tradingview-widget-container__widget"></div>
+				<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+					{
+						"symbols": [{
+							"description": "IHSG",
+							"proName": "IDX:COMPOSITE"
+						}, {
+							"description": "BMRI",
+							"proName": "IDX:BMRI"
+						}, {
+							"description": "BBCA",
+							"proName": "IDX:BBCA"
+						}, {
+							"description": "AMRT",
+							"proName": "IDX:AMRT"
+						}, {
+							"description": "ICBP",
+							"proName": "IDX:ICBP"
+						}, {
+							"description": "TLKM",
+							"proName": "IDX:TLKM"
+						}, {
+							"description": "ASII",
+							"proName": "IDX:ASII"
+						}, {
+							"description": "ANTM",
+							"proName": "IDX:ANTM"
+						}, {
+							"proName": "FX_IDC:IDRSGD",
+							"title": "USD / SGD"
+						}, {
+							"description": "Bursa AS",
+							"proName": "FOREXCOM:SPXUSD"
+						}, {
+							"description": "Bursa China",
+							"proName": "SSE:000001"
+						}, {
+							"description": "Bursa Hong Kong",
+							"proName": "HSI:HSI"
+						}, {
+							"description": "Bursa Jepang",
+							"proName": "INDEX:NKY"
+						}, {
+							"description": "Bitcoin",
+							"proName": "BINANCE:BTCUSDT"
+						}, {
+							"description": "Ethereum",
+							"proName": "BINANCE:ETHUSDT"
+						}, {
+							"description": "EMAS (Gold)",
+							"proName": "TVC:GOLD"
+						}, {
+							"description": "MINYAK (WTI)",
+							"proName": "TVC:USOIL"
+						}],
+						"showSymbolLogo": true,
+						"isAnimated": true,
+						"colorTheme": "dark",
+						"locale": "id",
+						"displayMode": "adaptive"
+					}
+				</script>
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<footer class="bg-slate-950 border-t border-slate-900 py-12 text-center text-xs text-slate-500 mb-8">
+			<p class="mb-2">&copy; 2026 Stock ID VIP #Andaimology. All Rights Reserved.</p>
+			<p class="max-w-xl mx-auto leading-relaxed px-4">Disclaimer: Perdagangan saham memiliki risiko kerugian finansial. Seluruh materi ini bersifat edukasi dan analisa mandiri ritel, keputusan beli/jual ada di tangan investor masing-masing.</p>
+		</footer>
+
+	</body>
+</html>
