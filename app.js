@@ -2283,7 +2283,7 @@ function autoFillRRRFromAI() {
 	const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, basePrice);
 	
 	// Sesuai dengan hasil AI Signal (Entry Tertinggi, Stop Loss, TP 1)
-	let entryHigh = roundToBEITick(fibo.entryHigh * 0.97, 'floor');
+	let entryLow = roundToBEITick(fibo.entryLow * 0.97, 'floor');
 	let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
 	let res1 = fibo.res1;
 	let tp1 = roundToBEITick(res1 * 1.02, 'ceil');
