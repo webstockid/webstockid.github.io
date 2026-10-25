@@ -4613,36 +4613,25 @@ async function fetchRealtimeFundamentals(ticker) {
 }
 
 async function fetchStockNewsForAI(ticker) {
-	const cacheKey = `news_cache_${ticker}`;
-	const cached = localStorage.getItem(cacheKey);
-
-	if (cached) {
-		try {
-			const parsed = JSON.parse(cached);
-			if (Date.now() - parsed.timestamp < 10 * 60 * 1000) {
-				document.getElementById('aiBeritaList').innerHTML = parsed.html;
-				return;
-			}
-		} catch(e){}
-	}
-
+	// Menghapus penggunaan localStorage cache agar AI mendapatkan sentimen real-time
+	const now = Date.now();
 	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
-	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}&_nocache=${now}`;
 
 	try {
-		const res = await fetch(apiUrl);
+		const res = await fetch(apiUrl, { cache: 'no-store' });
 		const data = await res.json();
+		
 		if (data.status === 'ok' && data.items && data.items.length > 0) {
 			let beritaHTML = '';
 			data.items.slice(0, 4).forEach(item => {
-				const source = item.author || 'Media Nasional';
+				const source = item.author || item.source?.title || 'Media Nasional';
 				const pubDate = new Date(item.pubDate).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
 				beritaHTML += `<div class="bg-slate-900/50 p-2 rounded border border-slate-800/80">• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
 			});
 			document.getElementById('aiBeritaList').innerHTML = beritaHTML;
-			localStorage.setItem(cacheKey, JSON.stringify({ timestamp: Date.now(), html: beritaHTML }));
 		} else {
-			document.getElementById('aiBeritaList').innerHTML = `<div>Belum ada rilis berita khusus untuk saham ${ticker} dalam 24 jam terakhir.</div>`;
+			document.getElementById('aiBeritaList').innerHTML = `<div>Belum ada rilis berita khusus untuk saham ${ticker} saat ini.</div>`;
 		}
 	} catch (e) {
 		document.getElementById('aiBeritaList').innerHTML = `<div>Gagal memuat berita terkini. Gunakan indikator teknikal pada chart.</div>`;
@@ -4651,22 +4640,43 @@ async function fetchStockNewsForAI(ticker) {
 
 async function fetchStockNews(ticker) {
 	const container = document.getElementById('newsContainer');
-	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-4"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i> Memuat variasi berita terkini (Yahoo & Google)...</div>`;
+	if (!container) return;
+	
+	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-4"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i> Memuat berita terkini secara real-time...</div>`;
 	if (window.lucide) lucide.createIcons();
+	
 	let hasNews = false;
-	container.innerHTML = '';
+	let newsHTML = '';
+	const now = Date.now();
 
+	// 1. Yahoo Finance News (Menerapkan Rotasi Proxy Anti-CORS)
 	try {
 		const yahooUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${ticker}.JK&newsCount=9`;
-		const response = await fetch(yahooUrl);
-		const data = await response.json();
-		if (data.news && data.news.length > 0) {
+		const proxies = [
+			`https://api.allorigins.win/get?disableCache=true&url=${encodeURIComponent(yahooUrl)}`,
+			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(yahooUrl)}`,
+			`https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`
+		];
+		
+		let data = null;
+		for (let p of proxies) {
+			try {
+				const response = await fetch(p, { cache: 'no-store', signal: AbortSignal.timeout(5000) });
+				if (response.ok) {
+					const proxyData = await response.json();
+					data = p.includes('allorigins') ? JSON.parse(proxyData.contents) : proxyData;
+					if (data && data.news) break;
+				}
+			} catch (err) {}
+		}
+		
+		if (data && data.news && data.news.length > 0) {
 			data.news.slice(0, 9).forEach(item => {
 				const date = item.providerPublishTime ? new Date(item.providerPublishTime * 1000).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Berita Realtime';
-				container.innerHTML += `
+				newsHTML += `
 					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 						<div class="flex items-center gap-1.5 mb-2">
-							<span class="text-[9px] lg:text-[10px] bg-blue-500/20 text-blue-500 font-bold px-2 py-0.5 rounded border border-blue-500/30">${item.publisher}</span>
+							<span class="text-[9px] lg:text-[10px] bg-blue-500/20 text-blue-500 font-bold px-2 py-0.5 rounded border border-blue-500/30">${item.publisher || 'Yahoo Finance'}</span>
 							<span class="text-[10px] lg:text-xs text-white">${date}</span>
 						</div>
 						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
@@ -4675,17 +4685,22 @@ async function fetchStockNews(ticker) {
 			});
 			hasNews = true;
 		}
-	} catch (e) {}
+	} catch (e) {
+		console.warn('Gagal memuat berita Yahoo Finance', e);
+	}
 
-	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+OR+bursa+indonesia+OR+ekonomi&hl=id&gl=ID&ceid=ID:id`;
-	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+	// 2. Google News RSS (Bypass cache server-side RSS2JSON)
 	try {
-		const response = await fetch(apiUrl);
+		const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+OR+bursa+indonesia+OR+ekonomi&hl=id&gl=ID&ceid=ID:id`;
+		const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}&_nocache=${now}`;
+		
+		const response = await fetch(apiUrl, { cache: 'no-store' });
 		const data = await response.json();
+		
 		if (data.status === 'ok' && data.items && data.items.length > 0) {
 			data.items.slice(0, 9).forEach(item => {
 				const date = new Date(item.pubDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-				container.innerHTML += `
+				newsHTML += `
 					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150">
 						<div class="flex items-center gap-1.5 mb-2">
 							<span class="text-[9px] lg:text-[10px] bg-sky-400/20 text-sky-400 font-bold px-2 py-0.5 rounded border border-sky-400/30">${item.source?.title || 'Google News'}</span>
@@ -4697,10 +4712,17 @@ async function fetchStockNews(ticker) {
 			});
 			hasNews = true;
 		}
-	} catch (e) {}
+	} catch (e) {
+		console.warn('Gagal memuat berita Google News', e);
+	}
 
-	if (hasNews) AudioFX.playSuccess();
-	else container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-4">Tidak ada berita khusus ditemukan untuk ${ticker} hari ini.</div>`;
+	// Menggabungkan dan merender hasil secara bersamaan
+	if (hasNews) {
+		container.innerHTML = newsHTML;
+		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+	} else {
+		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-4">Tidak ada berita khusus ditemukan untuk saham ${ticker} saat ini.</div>`;
+	}
 }
 
 async function fetchCorporateAction(ticker) {
