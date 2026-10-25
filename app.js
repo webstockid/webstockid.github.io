@@ -2298,7 +2298,7 @@ function autoFillRRRFromAI() {
 	}
 
 	// 4. Injeksi nilai ke dalam form input RRR
-	document.getElementById('rrrEntry').value = entryHigh;
+	document.getElementById('rrrEntry').value = entryLow;
 	document.getElementById('rrrSL').value = sl;
 	document.getElementById('rrrTP').value = tp1;
 	
