@@ -1739,7 +1739,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	`;
 
 	// Mengisi otomatis form Smart RRR saat AI Signal di-generate
-	document.getElementById('rrrEntry').value = sup2; // Mengikuti Entry tertinggi
+	document.getElementById('rrrEntry').value = sup1; // Mengikuti Entry tertinggi
 	document.getElementById('rrrSL').value = sl;      // Mengikuti Stop Loss AI
 	document.getElementById('rrrTP').value = tp1;     // Mengikuti Take Profit 1 AI
 	calculateSmartRRR();
