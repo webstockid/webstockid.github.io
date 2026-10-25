@@ -4218,7 +4218,7 @@ function openEditAlertModal() {
 		price = roundToBEITick(globalStockData.price);
 		const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, price);
 		
-		entry = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
+		entry = roundToBEITick(fibo.entryHigh * 0.97, 'floor');
 		resist = fibo.res1;
 		sl = roundToBEITick(fibo.sl * 0.96, 'floor');
 		tp = roundToBEITick(fibo.res2 * 1.02, 'ceil');
