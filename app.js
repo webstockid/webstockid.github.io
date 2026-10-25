@@ -4218,10 +4218,10 @@ function openEditAlertModal() {
 		price = roundToBEITick(globalStockData.price);
 		const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, price);
 		
-		entry = roundToBEITick(fibo.entryHigh * 0.97, 'floor');
+		entry = roundToBEITick(fibo.entryLow * 0.97, 'floor');
 		resist = fibo.res1;
 		sl = roundToBEITick(fibo.sl * 0.96, 'floor');
-		tp = roundToBEITick(fibo.res2 * 1.02, 'ceil');
+		tp = roundToBEITick(fibo.res1 * 1.02, 'ceil'); 
 	}
 
 	document.getElementById('alertModalTicker').value = currentTicker || '';
