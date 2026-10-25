@@ -1,0 +1,432 @@
+<!DOCTYPE HTML>
+<html lang="id" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8">
+		<title>Stock ID Study - Belajar Saham & Analisa Teknikal</title>
+		<meta name="keywords" content="stock id study, belajar saham, materi saham, stock id vip, stock id, saham indonesia, scalping saham">
+		<meta name="HandheldFriendly" content="True">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no">
+		<meta name="author" content="Hardiansyah & Gemini & Tailwind">
+		<meta property="og:image" content="stockid_gambar/stockidvip.jpeg">
+		<meta property="og:url" content="https://webstockid.github.io/stock_id_study.html">
+		<meta property="og:title" content="Stock ID Study #Andaimology">
+		<meta property="og:description" content="Materi eksklusif dan panduan lengkap belajar trading saham Stock ID VIP.">
+		<meta property="og:type" content="website">
+		
+		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+		
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit&display=swap">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		<link rel="icon" type="image/x-icon" href="stockid_gambar/stockidvip.jpeg">
+		<link rel="icon" type="image/png" sizes="60x60" href="stockid_gambar/stockidvip.jpeg">
+		<link rel="apple-touch-icon" sizes="180x180" href="stockid_gambar/stockidvip.jpeg">
+		
+		<style>
+			body {
+				font-family: "Outfit", sans-serif;
+				background-color: #0b0f19
+			}
+			.heading-font, a, p, b, button, nav, ul, li, strong, option, div, span, label {
+				font-family: "Outfit";
+				font-weight: bold !important;
+			}
+			.glassmorphism {
+				background: rgba(17, 24, 39, .7);
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+				border: 1px solid rgba(255, 255, 255, .06)
+			}
+			.glow-green {
+				box-shadow: 0 0 20px rgba(16, 185, 129, .2)
+			}
+			.glow-premium {
+				box-shadow: 0 0 30px rgba(245, 158, 11, .25)
+			}
+			/* Custom Scrollbar for the page */
+			::-webkit-scrollbar {
+				width: 8px;
+			}
+			::-webkit-scrollbar-track {
+				background: #0b0f19;
+			}
+			::-webkit-scrollbar-thumb {
+				background: #10b981;
+				border-radius: 4px;
+			}
+			::-webkit-scrollbar-thumb:hover {
+				background: #059669;
+			}
+		</style>
+	</head>
+	
+	<body class="text-slate-200 antialiased overflow-x-hidden pb-16">
+		<!-- NAVBAR (Sama persis dengan index.html) -->
+		<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
+				<!-- Brand / Logo -->
+				<div class="flex items-center gap-3">
+					<div class="bg-gradient-to-tr from-emerald-500 to-teal-400 p-2 rounded-2xl shadow-lg shadow-emerald-500/20 transition-transform duration-300 hover:scale-110 hover:rotate-6 cursor-pointer">
+						<i class="fa-solid fa-book-open-reader text-slate-950 text-xl font-black"></i>
+					</div>
+					<div>
+						<span class="heading-font text-xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+							STOCK ID <span class="text-emerald-400 font-bold">STUDY</span>
+						</span>
+						<p class="text-[9px] tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
+					</div>
+				</div>
+
+				<!-- Navigasi Dropdown -->
+				<div class="relative inline-block text-left" id="navDropdownContainer">
+					<!-- Tombol Utama Menu Dropdown -->
+					<button id="menuDropdownBtn" onclick="toggleNavDropdown()" type="button" class="bg-slate-900/80 hover:bg-slate-800 active:scale-95 text-slate-200 px-4 py-2.5 rounded-xl border border-slate-700/70 hover:border-emerald-500/60 text-xs font-bold tracking-wide transition-all duration-200 flex items-center gap-2.5 shadow-md hover:shadow-emerald-500/10 cursor-pointer select-none">
+						<i class="fa-solid fa-bars text-emerald-400 transition-transform duration-300 group-hover:scale-110"></i>
+						<span>Navigasi</span>
+						<i id="dropdownChevron" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300 ease-out"></i>
+					</button>
+
+					<!-- Isi Dropdown Menu dengan Animasi Smooth Pop-Up -->
+					<div id="navDropdownMenu" class="hidden opacity-0 scale-95 duration-200 ease-out absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-2xl backdrop-blur-xl p-2 z-50 transform origin-top-right transition-all divide-y divide-slate-800/80">
+						<!-- Seksi 1: Platform / Layanan Utama Stock ID -->
+						<div class="pb-1.5 space-y-1">
+							<div class="px-1 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+								Aplikasi & Layanan
+							</div>
+							<a href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-200 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-crown text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<span>Stock ID VIP</span>
+								</div>
+							</a>
+							<a href="https://webstockid.github.io/screener" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-circle-user text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
+									<span>Stock ID Screener</span>
+								</div>
+							</a>
+							<!-- Aktif Page Highlight -->
+							<a id="navLinkVIP" href="https://webstockid.github.io/stock_id_study.html" class="flex items-center justify-between px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs transition-all duration-200 group cursor-pointer">
+								<div class="flex items-center gap-2.5">
+									<i class="fa-solid fa-book-open text-emerald-400 group-hover:scale-110 transition-transform w-4 text-center"></i>
+									<span>Stock ID Study</span>
+								</div>
+								<div class="nav-status-container flex items-center gap-1.5">
+									<span class="flex items-center gap-1.5 bg-emerald-500/20 text-emerald-400 text-[10px] font-extrabold px-1 py-1 rounded-md border border-emerald-500/30">
+										<span class="relative flex h-2 w-2">
+											<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+											<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+										</span>Aktif
+									</span>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+        <!-- VIP Login Modal -->
+        <div id="studyLoginModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 hidden opacity-0">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl transform scale-95 transition-all duration-300 relative glow-premium">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-emerald-500/20">
+                        <i class="fa-solid fa-graduation-cap text-slate-950 text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-white tracking-tight">VIP Study Access</h2>
+                    <p class="text-slate-400 text-sm mt-2">Login untuk menyimpan progress belajar Anda</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Akses Token VIP</label>
+                        <input type="text" id="studyTokenInput" class="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-bold text-center uppercase tracking-widest" placeholder="MASUKKAN TOKEN">
+                        <p id="studyLoginError" class="text-rose-400 text-xs mt-2 font-medium text-center hidden"></p>
+                    </div>
+                    
+                    <button onclick="processStudyLogin()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black py-3.5 rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-right-to-bracket"></i> Login VIP
+                    </button>
+                    
+                    <div class="relative flex items-center py-2">
+                        <div class="flex-grow border-t border-slate-800"></div>
+                        <span class="flex-shrink-0 mx-4 text-slate-500 text-xs font-bold uppercase">Atau</span>
+                        <div class="flex-grow border-t border-slate-800"></div>
+                    </div>
+                    
+                    <button onclick="skipStudyLogin()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3.5 rounded-xl border border-slate-700 transition-all active:scale-95 flex items-center justify-center gap-2">
+                        Lanjutkan Sebagai Non-Member
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Account Info Dashboard -->
+        <div id="studyDashboardPanel" class="w-full bg-slate-900 border-b border-slate-800/80 shadow-md relative z-30 transition-all duration-300 hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 w-full md:w-auto">
+                        <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 text-emerald-400 shrink-0">
+                            <i class="fa-solid fa-user-graduate text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-white font-bold text-sm md:text-base">Halo, <span id="dashUserName" class="text-emerald-400">Member</span>!</h3>
+                            <p class="text-xs text-slate-400 mt-0.5" id="dashUserStatus">Sisa Waktu VIP: <strong class="text-amber-400" id="dashDaysLeft">-</strong></p>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full md:w-1/3 flex flex-col gap-1.5">
+                        <div class="flex justify-between text-xs font-bold">
+                            <span class="text-slate-300">Progress Belajar</span>
+                            <span class="text-emerald-400"><span id="dashProgressCount">0</span> / 2 Materi Paham</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2.5 border border-slate-800 overflow-hidden relative">
+                            <div id="dashProgressBar" class="bg-gradient-to-r from-emerald-600 to-teal-400 h-full rounded-full transition-all duration-1000 ease-out w-0 relative">
+                                <div class="absolute inset-0 bg-white/20 w-full h-full animate-[shimmer_2s_infinite]"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full md:w-auto flex justify-end">
+                        <button onclick="logoutStudyVIP()" id="dashLogoutBtn" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-power-off"></i> Logout
+                        </button>
+                        <button onclick="showStudyLoginModal()" id="dashLoginBtn" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-2 hidden">
+                            <i class="fa-solid fa-right-to-bracket"></i> Login VIP
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Material Search -->
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 relative z-20">
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-2 flex items-center relative backdrop-blur-sm">
+                <i class="fa-solid fa-magnifying-glass text-slate-400 ml-3 mr-2"></i>
+                <input type="text" id="searchMaterialInput" placeholder="Cari materi pembelajaran..." class="w-full bg-transparent text-white text-sm font-bold placeholder-slate-500 focus:outline-none py-2" oninput="handleSearchMaterial()">
+                
+                <!-- Search Results Dropdown -->
+                <div id="searchResultsBox" class="absolute top-full left-0 right-0 mt-2 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden hidden z-50 divide-y divide-slate-800/60 max-h-60 overflow-y-auto">
+                    <!-- Results will be injected here -->
+                </div>
+            </div>
+        </div>
+        
+
+		<!-- Script Kontrol Dropdown Navbar -->
+		<script>
+			function toggleNavDropdown() {
+				const menu = document.getElementById("navDropdownMenu");
+				const chevron = document.getElementById("dropdownChevron");
+				const isHidden = menu.classList.contains("hidden");
+
+				if (isHidden) {
+					menu.classList.remove("hidden");
+					setTimeout(() => {
+						menu.classList.remove("opacity-0", "scale-95");
+						menu.classList.add("opacity-100", "scale-100");
+					}, 10);
+					chevron.classList.add("rotate-180");
+				} else {
+					closeNavDropdown();
+				}
+			}
+
+			function closeNavDropdown() {
+				const menu = document.getElementById("navDropdownMenu");
+				const chevron = document.getElementById("dropdownChevron");
+				if (menu && chevron) {
+					menu.classList.remove("opacity-100", "scale-100");
+					menu.classList.add("opacity-0", "scale-95");
+					chevron.classList.remove("rotate-180");
+					
+					setTimeout(() => {
+						menu.classList.add("hidden");
+					}, 200);
+				}
+			}
+
+			document.addEventListener("click", function(event) {
+				const container = document.getElementById("navDropdownContainer");
+				if (container && !container.contains(event.target)) {
+					closeNavDropdown();
+				}
+			});
+		</script>
+
+		<!-- HEADER STUDY -->
+		<header class="relative py-16 overflow-hidden border-b border-slate-900/60">
+			<div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.05),transparent_70%)]"></div>
+			<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+				<span class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-xs font-semibold text-emerald-400 mb-6">
+					<i class="fa-solid fa-graduation-cap"></i> Modul Pembelajaran
+				</span>
+				<h1 class="heading-font text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
+					Pusat Materi <span class="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">Stock ID</span>
+				</h1>
+				<p class="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+					Tingkatkan skill analisa dan *trading* kamu dengan materi komprehensif langsung dari praktisi. Pelajari secara saksama setiap langkahnya.
+				</p>
+			</div>
+		</header>
+
+		<!-- MAIN CONTENT: MATERI -->
+		<main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10 space-y-10">
+			
+			<!-- MODULE CARD: CARA SCALPING TIPIS TIPIS -->
+			<article class="glassmorphism p-6 sm:p-10 rounded-3xl relative glow-green overflow-hidden">
+				<div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+				
+				<!-- Article Title -->
+				<h2 class="heading-font text-2xl sm:text-3xl font-extrabold text-white mb-2 border-l-4 border-emerald-500 pl-4">Cara Mencari Saham Berpotensi Bagger</h2>
+				<div class="flex items-center gap-4 text-xs text-slate-500 mb-8 border-b border-slate-800/60 pb-6">
+					<span class="flex items-center gap-1.5"><i class="fa-regular fa-clock"></i> Watchlist</span>
+					<span class="flex items-center gap-1.5"><i class="fa-solid fa-layer-group"></i> Analisa Transaksi & Fundamental</span>
+				</div>
+
+				<div class="prose prose-invert prose-emerald max-w-none text-slate-300 text-sm sm:text-base leading-relaxed space-y-6">
+					
+					<p>Cara ini bisa dilakukan disaham yang berstatus HSC (Opsional) diharga saham berapapun. <br>
+						Disarankan untuk mencari di saham-saham yang kering (Supplynya sedikit). <br>
+						Kita ambil contoh disaham <span class="text-emerald-400 bg-emerald-500/10 px-1 py-1 rounded">$KONI</span> </p>
+					
+					<!-- Langkah-langkah -->
+					<ol class="list-decimal list-inside space-y-8 my-8 text-white font-medium bg-slate-900/50 p-6 rounded-2xl border border-slate-800/50">
+						<!-- Step 1 -->
+						<li class="pl-2">
+							Jika dengan <span class="text-emerald-400 font-bold">Lot (Volume)</span> dan <span class="text-emerald-400 font-bold">Val (Valuasi)</span> sekecil itu sahamnya sudah naik kencang bahkan <span class="text-emerald-400 font-bold">ARA</span> bisa kita simpulkan dulu ini kering. 
+							<div class="mt-4 flex justify-center w-full">
+								<img src="stockid_gambar/materi/materi25okt1.jpeg" alt="Titik 3 pojok kanan atas" class="rounded-xl border border-slate-700/60 max-w-full sm:max-w-sm shadow-xl shadow-slate-950 object-contain mx-auto" onerror="this.src='https://placehold.co/400x800/0f172a/10b981?text=Gambar+1+Tidak+Ditemukan'">
+							</div>
+						</li>
+						
+						<!-- Step 2 -->
+						<li class="pl-2 pt-4 border-t border-slate-800/60">
+							Kita cek bagian <span class="text-emerald-400 bg-emerald-500/10 px-1 py-1 rounded">"Fundamental"</span>, pergi ke bagian <span class="text-emerald-400 bg-emerald-500/10 px-1 py-1 rounded">Keystats</span> lalu lihat <span class="text-emerald-400 bg-emerald-500/10 px-1 py-1 rounded">Market Cap</span> dan <span class="text-emerald-400 bg-emerald-500/10 px-1 py-1 rounded">Free Float</span>. <br>
+							Disini tertulis Market Cap <span class="text-blue-400 font-bold">524B (Miliar)</span> dan Free Float <span class="text-blue-400 font-bold">19%</span>. <br>
+							Sekarang kita hitung, <span class="text-blue-400 font-bold">19%</span> dari <span class="text-blue-400 font-bold">524 Miliar</span> = <span class="text-blue-400 font-bold">99,5 Miliar</span>, artinya sisa barang yang beredar hanya dibawah <span class="text-emerald-400 font-bold">100 Miliar</span>, berarti valid kalau saham ini kering. 
+							<div class="mt-4 flex justify-center w-full">
+								<img src="stockid_gambar/materi/materi25okt2.jpeg" alt="Hidupkan Complete View" class="rounded-xl border border-slate-700/60 max-w-full sm:max-w-sm shadow-xl shadow-slate-950 object-contain mx-auto" onerror="this.src='https://placehold.co/400x800/0f172a/10b981?text=Gambar+2+Tidak+Ditemukan'">
+							</div>
+						</li>
+						
+						<!-- Step 3 -->
+						<li class="pl-2 pt-4 border-t border-slate-800/60">
+							Kita cek bagian <span class="text-emerald-400 bg-emerald-500/10 px-1 py-1 rounded">"Profil"</span>, pergi ke bagian Jumlah <span class="text-emerald-400 bg-emerald-500/10 px-1 py-1 rounded">Pemegang Saham</span> lalu lihat berapa banyak jumlah pemegang sahamnya. <br>
+							Pada intinya, cari yang Jumlah Pemegang Sahamnya tidak lebih dari <span class="text-blue-400 font-bold">10,000</span> pemegang (Sepi). 
+							<div class="mt-4 flex justify-center w-full">
+								<img src="stockid_gambar/materi/materi25okt4.jpeg" alt="Angka Lot dan Val" class="rounded-xl border border-slate-700/60 max-w-full sm:max-w-sm shadow-xl shadow-slate-950 object-contain mx-auto" onerror="this.src='https://placehold.co/400x800/0f172a/10b981?text=Gambar+3+Tidak+Ditemukan'">
+							</div>
+						</li>
+						
+						<!-- Step 4 -->
+						<li class="pl-2 pt-4 border-t border-slate-800/60">
+							Kita lihat <span class="text-emerald-400 bg-emerald-500/10 px-1 py-1 rounded">"Grafik"</span> pergerakan harga sahamnya di 1-2 bulan kebelakang, jika hingga hari ini sudah mengalami koreksi dari ATH 1-2 bulannya, maka saat ini waktu yang cukup bagus untuk mengambil <span class="text-emerald-400 font-bold">Momentum</span> (eksekusi). 
+							<div class="mt-4 flex justify-center w-full">
+								<img src="stockid_gambar/materi/materi25okt3.jpeg" alt="Angka Lot dan Val" class="rounded-xl border border-slate-700/60 max-w-full sm:max-w-sm shadow-xl shadow-slate-950 object-contain mx-auto" onerror="this.src='https://placehold.co/400x800/0f172a/10b981?text=Gambar+3+Tidak+Ditemukan'">
+							</div>
+						</li>
+					</ol>
+
+					<!-- Penjelasan Contoh & Eksekusi -->
+					<div class="bg-slate-800/30 border-l-4 border-emerald-500 p-5 rounded-r-xl space-y-4">
+						<p><strong class="text-emerald-400">Contoh:</strong> Jika selama <span class="text-emerald-400 font-bold">3 hari</span> Volume dan Valuasinya tergolong kecil tapi kenaikan harian diatas <span class="text-emerald-400 font-bold">5%</span> dan positif hijau sampai closingan, ini sudah bisa kalian eksekusi di hari ke 4 nya. </p>
+					</div>
+
+					<!-- Manajemen Risiko & Kesimpulan -->
+					<div class="bg-amber-500/10 border border-amber-500/20 p-6 rounded-2xl space-y-4">
+						<h4 class="text-amber-400 font-bold flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> Manajemen Risiko (Wajib)</h4>
+						<p class="text-slate-300">Perlu di ingat, ke 4 cara diatas kalian wajib memantau dulu sahamnya selama tidak kurang dari 3 hari. <br>
+							Disarankan masuk bertahap, jika sudah masuk jangan lupa pasangkan Trailing Stop di angka <strong class="text-emerald-400">3-5%</strong> untuk mengantisipasi jika terjadi <strong class="text-rose-400">guyuran.</strong>
+						</p>
+					</div>
+
+				</div>
+			</article>
+
+			<!-- DUMMY SECTION: MATERI MULTIMEDIA -->
+			<section class="glassmorphism p-6 sm:p-10 rounded-3xl relative overflow-hidden mt-8">
+				<h3 class="heading-font text-xl sm:text-2xl font-bold text-white mb-6 border-b border-slate-800 pb-4">
+					<i class="fa-solid fa-photo-film text-emerald-400 mr-2"></i> Materi Multimedia
+				</h3>
+				
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+					<!-- Dummy Video -->
+					<div class="space-y-3">
+						<h4 class="text-sm font-bold text-slate-300 uppercase tracking-widest"><i class="fa-solid fa-video text-slate-500"></i> Video Penjelasan Materi</h4>
+						<div class="rounded-xl overflow-hidden border border-slate-800 bg-black shadow-lg shadow-black/50 aspect-video relative group">
+							<video controls class="w-full h-full object-cover" poster="https://placehold.co/1280x720/0b0f19/10b981?text=Play+Video+Materi+Saham">
+								<source src="stockid_gambar/materi/1.mp4" type="video/mp4">
+								Browser Anda tidak mendukung tag video.
+							</video>
+						</div>
+						<p class="text-[11px] text-slate-500 leading-relaxed">Tonton video interaktif di atas untuk melihat penerapan Scalping di Market yang sedang berjalan (Live Trading).</p>
+					</div>
+
+					<!-- Dummy Audio -->
+					<div class="space-y-3">
+						<h4 class="text-sm font-bold text-slate-300 uppercase tracking-widest"><i class="fa-solid fa-headphones text-slate-500"></i> Podcast / Audio Briefing</h4>
+						<div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col justify-center h-[calc(100%-2rem)]">
+							<div class="flex items-center gap-4 mb-4">
+								<div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl border border-emerald-500/30">
+									<i class="fa-solid fa-microphone-lines"></i>
+								</div>
+								<div>
+									<h5 class="text-white font-bold text-sm">Morning Briefing #Andaimology</h5>
+									<p class="text-[10px] text-slate-400">Oleh: Mentor Har (1 Detik)</p>
+								</div>
+							</div>
+							
+							<!-- Audio Player Kustom Sederhana Bawaan HTML -->
+							<audio controls class="w-full h-10 outline-none rounded-lg bg-slate-950">
+								<!-- Ganti src dengan link audio Anda jika ada -->
+								<source src="stockid_suara/jokowi.mp3" type="audio/mpeg">
+								Browser Anda tidak mendukung tag audio.
+							</audio>
+							<p class="text-[11px] text-slate-500 leading-relaxed mt-4">Dengarkan panduan ringkas sebelum market buka. Sangat cocok didengarkan sambil beraktivitas atau di perjalanan.</p>
+						</div>
+					</div>
+				</div>
+			</section>
+		
+        <!-- Learning Progress Form -->
+        <section class="glassmorphism p-6 sm:p-8 rounded-3xl relative mt-8 border border-emerald-500/20 text-center glow-premium">
+            <h3 class="text-lg font-bold text-white mb-2">Konfirmasi Pemahaman Materi</h3>
+            <p class="text-xs text-slate-400 mb-6">Apakah Anda sudah memahami materi ini? Catat progress Anda (Khusus VIP).</p>
+            
+            <div class="flex flex-wrap justify-center gap-3 md:gap-4">
+                <button onclick="setMaterialProgress('materi_2', 'belum')" id="btn-prog-belum" class="flex-1 min-w-[120px] bg-slate-800 border border-slate-700 text-slate-300 hover:bg-rose-500/20 hover:text-rose-400 hover:border-rose-500/30 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 flex flex-col items-center gap-1.5 group">
+                    <i class="fa-regular fa-circle-xmark text-lg group-hover:scale-110 transition-transform"></i>
+                    Belum Paham
+                </button>
+                <button onclick="setMaterialProgress('materi_2', 'separuh')" id="btn-prog-separuh" class="flex-1 min-w-[120px] bg-slate-800 border border-slate-700 text-slate-300 hover:bg-amber-500/20 hover:text-amber-400 hover:border-amber-500/30 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 flex flex-col items-center gap-1.5 group">
+                    <i class="fa-regular fa-circle-half-stroke text-lg group-hover:scale-110 transition-transform"></i>
+                    Separuh Paham
+                </button>
+                <button onclick="setMaterialProgress('materi_2', 'sudah')" id="btn-prog-sudah" class="flex-1 min-w-[120px] bg-slate-800 border border-slate-700 text-slate-300 hover:bg-emerald-500/20 hover:text-emerald-400 hover:border-emerald-500/30 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 flex flex-col items-center gap-1.5 group">
+                    <i class="fa-regular fa-circle-check text-lg group-hover:scale-110 transition-transform"></i>
+                    Sudah Paham
+                </button>
+            </div>
+        </section>
+
+        <!-- Back to top -->
+        <div class="mt-8 flex justify-center">
+            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="bg-slate-900 hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400 border border-slate-800 hover:border-emerald-500/40 px-6 py-2.5 rounded-full text-xs font-bold transition-all flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-arrow-up"></i> Kembali ke Atas
+            </button>
+        </div>
+        
+		</main>
+
+		<!-- Footer -->
+		<footer class="bg-slate-950 border-t border-slate-900 py-12 text-center text-xs text-slate-500 mb-8">
+			<p class="mb-2">&copy; 2026 Stock ID VIP #Andaimology. All Rights Reserved.</p>
+			<p class="max-w-xl mx-auto leading-relaxed px-4">Disclaimer: Perdagangan saham memiliki risiko kerugian finansial. Seluruh materi ini bersifat edukasi dan analisa mandiri ritel, keputusan beli/jual ada di tangan investor masing-masing.</p>
+		</footer>
+
+		<script src="study.js"></script>
+	</body>
+</html>

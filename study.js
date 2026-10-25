@@ -36,8 +36,8 @@ const databaseVIP = {
 };
 
 const materialsData = [
-    { id: 'materi_1', title: 'Cara Scalping Tipis Tipis', category: 'Analisa Transaksi & Orderbook', url: 'study.html' },
-    { id: 'materi_2', title: 'Cara Mencari Saham Berpotensi Bagger', category: 'Analisa Transaksi & Fundamental', url: 'studyy.html' }
+    { id: 'materi_1', title: 'Cara Scalping Tipis Tipis', category: 'Analisa Transaksi & Orderbook', url: 'study001.html' },
+    { id: 'materi_2', title: 'Cara Mencari Saham Berpotensi Bagger', category: 'Analisa Transaksi & Fundamental', url: 'study002.html' }
 ];
 
 function getExtractName(token) {
