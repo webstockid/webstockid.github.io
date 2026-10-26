@@ -4446,7 +4446,7 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 		}
 		
 		if (shouldAlert) {
-			const alertMsg = `Saham: $${ticker}\nVolume: Mencapai ${(latestData.volRatio * 100).toFixed(0)}% dari volume kemarin!\nHarga baru naik ${latestData.changePct}%, Bandar indikasi kumpulin barang!`;
+			const alertMsg = `Saham: $${ticker}\nVolume: Mencapai ${(latestData.volRatio * 100).toFixed(0)}% dari volume kemarin!\nKet: Harga baru naik ${latestData.changePct}%, Bandar indikasi kumpulin barang!`;
 			
 			if (!muteNotifSound && typeof AudioFX !== 'undefined') {
 				AudioFX.playNotif(); 
@@ -4455,7 +4455,7 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 			sendBrowserPushNotification(`🐳 STOCK ID WHALE RADAR`, alertMsg);
 			showToast(alertMsg, "info", 5000); 
 			
-			const teleMsg = `<b>🐳 STOCK ID WHALE RADAR</b>\nSaham: <b>$${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nHarga baru naik <b>${latestData.changePct}%</b>, Bandar indikasi kumpulin barang!`;
+			const teleMsg = `<b>🐳 STOCK ID WHALE RADAR</b>\nSaham: <b>$${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nKet: Harga baru naik <b>${latestData.changePct}%</b>, Bandar indikasi kumpulin barang!`;
 			sendTelegramAlert(teleMsg);
 			
 			// Simpan data terbaru ke LocalStorage dalam format JSON
