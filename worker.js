@@ -1,39 +1,71 @@
-// Global In-Memory Cache: Menahan gempuran request massal dari fitur Radar (Sangat Cepat)
+// Global In-Memory Cache & Rate Limiting
 const memoryCache = new Map();
-const CACHE_TTL = 3 * 60 * 1000; // Cache bertahan 3 Menit (180.000 ms)
+const rateLimitMap = new Map();
+const CACHE_TTL = 3 * 60 * 1000; 		// Cache bertahan 3 Menit
+const RATE_LIMIT_WINDOW = 60 * 1000;	// Jendela waktu 1 menit
+const MAX_REQUESTS = 30;				// Maksimal 30 request per menit per IP
 
 export default {
 	async fetch(request, env, ctx) {
-		// 1. Konfigurasi Keamanan (Proteksi Domain)
+		// 1. Konfigurasi Keamanan Latar Belakang (Proteksi Domain)
 		const allowedOrigin = 'https://webstockid.github.io';
 		const origin = request.headers.get('Origin') || request.headers.get('Referer') || '';
+		const clientIP = request.headers.get('CF-Connecting-IP') || 'unknown';
 		
 		const corsHeaders = {
 			'Access-Control-Allow-Origin': allowedOrigin,
 			'Access-Control-Allow-Methods': 'GET, OPTIONS',
-			'Access-Control-Allow-Headers': 'Content-Type, X-Requested-With',
+			'Access-Control-Allow-Headers': 'Content-Type, X-Requested-With, Authorization',
 			'Access-Control-Max-Age': '86400',
 		};
 
-		// Tangani Preflight Request (OPTIONS) dari Browser
+		// Tangani Preflight Request dari Browser
 		if (request.method === 'OPTIONS') {
 			return new Response(null, { status: 204, headers: corsHeaders });
 		}
 
-		// Validasi Domain (Blokir jika bukan dari webstockid.github.io)
+		// 2. LAYER KEAMANAN 1: Validasi Domain Strict
 		if (origin && !origin.includes('webstockid.github.io')) {
 			return new Response(JSON.stringify({ 
-				error: 'Akses Ditolak: API ini hanya dapat diakses dari domain Stock ID Screener.' 
-			}), {
-				status: 403,
-				headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-			});
+				error: 'Akses Ditolak: Invalid Origin.' 
+			}), { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 		}
+
+		/* 3. LAYER KEAMANAN 2: Autentikasi Token API (Opsional tapi disarankan)
+		Kamu bisa mengirim header "Authorization: Bearer RAHASIA123" dari frontend
+		const authHeader = request.headers.get('Authorization');
+		const validToken = 'Bearer RAHASIA_STOCKID_123';
+		if (authHeader && authHeader !== validToken) {
+			return new Response(JSON.stringify({ 
+				error: 'Akses Ditolak: Token Keamanan Tidak Valid.' 
+			}), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+		}*/
+
+		// 4. LAYER KEAMANAN 3: Rate Limiting (Anti Spam/DDoS)
+		const now = Date.now();
+		if (rateLimitMap.has(clientIP)) {
+			const clientData = rateLimitMap.get(clientIP);
+			if (now - clientData.startTime < RATE_LIMIT_WINDOW) {
+				if (clientData.count >= MAX_REQUESTS) {
+					return new Response(JSON.stringify({ 
+						error: 'Terlalu banyak permintaan. Silakan coba lagi sebentar.' 
+					}), { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+				}
+				clientData.count++;
+			} else {
+				rateLimitMap.set(clientIP, { count: 1, startTime: now });
+			}
+		} else {
+			rateLimitMap.set(clientIP, { count: 1, startTime: now });
+		}
+
+		// Bersihkan Rate Limit Map agar memori tidak penuh
+		if (rateLimitMap.size > 10000) rateLimitMap.clear();
 
 		const url = new URL(request.url);
 		const symbol = url.searchParams.get('symbol') || 'MDIA.JK';
 
-		// 2. LAYER 1: CEK IN-MEMORY CACHE (Sangat krusial untuk fitur Radar BSJP/Whales)
+		// 5. LAYER PERFORMA 1: In-Memory Cache
 		if (memoryCache.has(symbol)) {
 			const cached = memoryCache.get(symbol);
 			if (Date.now() - cached.timestamp < CACHE_TTL) {
@@ -46,19 +78,17 @@ export default {
 					}
 				});
 			} else {
-				// Hapus cache jika sudah kedaluwarsa (> 3 menit)
 				memoryCache.delete(symbol);
 			}
 		}
 
-		// 3. LAYER 2: CEK CLOUDFLARE EDGE CACHE (Sebagai fallback sekunder)
+		// 6. LAYER PERFORMA 2: Edge Cache & Fetch Data
 		const cache = caches.default;
 		const cacheKey = new Request(url.toString(), request);
 		let response = await cache.match(cacheKey);
 
 		if (response) {
 			try {
-				// Kloning respons untuk disimpan ulang ke In-Memory Cache agar request selanjutnya lebih cepat
 				const clonedRes = response.clone();
 				const data = await clonedRes.json();
 				memoryCache.set(symbol, { timestamp: Date.now(), data: data });
@@ -69,53 +99,38 @@ export default {
 			return new Response(response.body, { status: response.status, headers: newHeaders });
 		}
 
-		// 4. LAYER 3: FETCH LANGSUNG KE YAHOO FINANCE (Jika semua cache kosong)
 		const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=15m&range=5d`;
-		
-		// Rotasi User-Agent untuk menghindari rate-limit
 		const userAgents = [
 			"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-			"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3 Safari/605.1.15",
-			"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
-			"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0"
+			"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3 Safari/605.1.15"
 		];
 		const randomUA = userAgents[Math.floor(Math.random() * userAgents.length)];
 
 		try {
 			const yahooResponse = await fetch(targetUrl, {
-				headers: { 
-					"User-Agent": randomUA, 
-					"Accept": "application/json" 
-				}
+				headers: { "User-Agent": randomUA, "Accept": "application/json" }
 			});
 
 			if (yahooResponse.ok) {
 				const data = await yahooResponse.json();
 				
-				// Simpan ke In-Memory Cache (Untuk menahan request Radar selanjutnya)
-				memoryCache.set(symbol, {
-					timestamp: Date.now(),
-					data: data
-				});
+				memoryCache.set(symbol, { timestamp: Date.now(), data: data });
 				
-				// Buat respons akhir dan set header instruksi cache
 				const finalResponse = new Response(JSON.stringify(data), {
 					status: 200,
 					headers: { 
 						...corsHeaders, 
 						"Content-Type": "application/json", 
-						"Cache-Control": "public, max-age=180, s-maxage=180", // 180 detik = 3 Menit
+						"Cache-Control": "public, max-age=180, s-maxage=180",
 						"X-Cache-Status": "MISS"
 					}
 				});
 				
-				// Simpan ke Cloudflare Edge Cache tanpa memblokir proses
 				ctx.waitUntil(cache.put(cacheKey, finalResponse.clone()));
-				
 				return finalResponse;
 			} else {
 				return new Response(JSON.stringify({
-					error: `Yahoo Finance mengembalikan status ${yahooResponse.status}`
+					error: `Sumber data mengembalikan status ${yahooResponse.status}`
 				}), { status: yahooResponse.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 			}
 		} catch (error) {
