@@ -2652,7 +2652,7 @@ function renderRadarItems(dataList) {
 		const currentHour = new Date().getHours();
 		let targetRasio = currentHour < 11 ? 0.5 : (currentHour < 14 ? 0.8 : 1.2);
 
-		if (item.volRatio >= targetRasio && changePct >= 0 && changePct <= 5) {
+		if (item.price >= item.ma5 && item.volRatio >= targetRasio && changePct >= 0 && changePct <= 5) {
 			statusSignal = '<i data-lucide="activity" class="w-3.5 h-3.5 inline"></i> Curi Start (Whale Acc)';
 			statusClass = "from-fuchsia-600/30 to-fuchsia-500/10 border-fuchsia-500/30 text-fuchsia-400";
 			alasanTeknikal = `<strong>Anomali Volume Terdeteksi!</strong> Harga saham baru naik tipis (<strong>+${changePct}%</strong>), tapi volume hari ini sudah mencapai <strong>${(item.volRatio * 100).toFixed(0)}%</strong> dari total volume seharian kemarin. Bandar terindikasi sedang kumpulin barang.`;
@@ -2664,7 +2664,7 @@ function renderRadarItems(dataList) {
 			statusSignal = '<i data-lucide="rocket" class="w-3.5 h-3.5 inline"></i> Golden Cross Setup';
 			statusClass = "from-yellow-600/30 to-amber-500/10 border-yellow-500/30 text-yellow-400";
 			alasanTeknikal = `Sinyal perpotongan garis MA5 melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah berpotensi terbentuk.`;
-		} else if (item.volRatio >= targetRasio && changePct > 1) {
+		} else if (item.volRatio >= (targetRasio * 1.5) && changePct > 1) {
 			statusSignal = '<i data-lucide="zap" class="w-3.5 h-3.5 inline"></i> Volume Accumulation';
 			statusClass = "from-blue-600/30 to-blue-500/10 border-blue-500/30 text-blue-400";
 			alasanTeknikal = `Terjadi akumulasi volume transaksi hingga <strong>${(item.volRatio * 100).toFixed(0)}% dari total volume kemarin</strong>. Mengindikasikan partisipasi modal besar di pasar.`;
