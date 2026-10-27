@@ -584,21 +584,12 @@
 				}
 			}
 
-			// --- FUNGSI LOGOUT AKUN ---
-			function logout() {
-				localStorage.removeItem("reminderMember");
-				localStorage.removeItem("loggedInPhone");
-				document.getElementById("userDashboard").classList.add("hidden");
-				bukaLoginModal();
-			}
-
 			// --- UPDATE DASHBOARD DENGAN INFORMASI LENGKAP PADA POJOK KIRI & KANAN ---
 			function updateDashboard() {
 				const index = localStorage.getItem("reminderMember");
 				const dash = document.getElementById("userDashboard");
 				if (index === null || !members[index]) {
 					dash.classList.add("hidden");
-					bukaLoginModal();
 					return;
 				}
 				const m = members[index];
@@ -614,6 +605,25 @@
 				const ms = target(m.expired) - Date.now();
 				document.getElementById("dashCountdown").textContent = sisa(ms);
 			}
+
+			// --- FUNGSI LOGOUT AKUN ---
+			function logout() {
+				localStorage.removeItem("reminderMember");
+				localStorage.removeItem("loggedInPhone");
+				document.getElementById("userDashboard").classList.add("hidden");
+				bukaLoginModal();
+			}
+
+			// --- EVENT LOAD HALAMAN: VERIFIKASI MANDATORI LOGIN ---
+			window.addEventListener("load", () => {
+				const savedIndex = localStorage.getItem("reminderMember");
+				if (savedIndex === null || !members[savedIndex]) {
+					bukaLoginModal();
+				} else {
+					updateDashboard();
+					cekReminder();
+				}
+			});
 
 			// --- FUNGSI DISPATCH NOTIFIKASI ---
 			async function pushNotif(title, body) {
@@ -912,7 +922,7 @@
 			}
 
 			// --- EVENT LOAD HALAMAN: VERIFIKASI MANDATORI LOGIN ---
-			window.addEventListener("load", () => {
+			/*window.addEventListener("load", () => {
 				const savedIndex = localStorage.getItem("reminderMember");
 				if (savedIndex === null || !members[savedIndex]) {
 					bukaLoginModal();
@@ -920,7 +930,7 @@
 					updateDashboard();
 					cekReminder();
 				}
-			});
+			});*/
 
 			search.oninput = render;
 			filter.onchange = render;
