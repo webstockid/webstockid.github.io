@@ -109,8 +109,7 @@ async function fetchAndCalculateStock(ticker) {
 
 		const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
 		const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
-
-		// Kalkulasi Angka Tambahan (Lot, Valuasi, Avg Bandar) untuk dimasukkan ke Cache Worker
+		
 		const realVolume = result.meta?.regularMarketVolume || currentVolume;
 		const currentLot = Math.floor(realVolume / 100);
 		const currentValuation = realVolume * currentPrice;

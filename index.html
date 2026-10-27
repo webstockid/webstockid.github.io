@@ -1127,20 +1127,17 @@
 						<span class="text-base font-bold text-orange-300 block mt-0.5" id="mdPackageName">Kelas 999 Tahun</span>
 						<span class="text-base font-bold text-orange-300 block mt-1" id="mdPackagePrice">Rp 999,999,999</span>
 					</div>
-					<p class="text-xs text-slate-400 leading-relaxed">Silakan lakukan transfer sesuai harga paket di atas ke salah satu rekening atau e-wallet resmi Admin berikut:</p>
-					<div class="grid grid-cols-1 gap-2 text-xs">
-						<div class="bg-slate-950/60 p-3 rounded-lg border border-slate-800 flex justify-between items-center">
-							<span>
-								<b class="text-green-400">BANK Jago : </b>103948214921 </span>
-							<button onclick='copyText("103948214921")' class="text-slate-500 hover:text-emerald-400 text-[11px]">
-								<i class="fa-regular fa-copy"></i>Salin </button>
+					<!-- Area Gambar QRIS Dinamis -->
+					<div id="qrisContainer" class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center hidden">
+						<span class="text-[11px] text-slate-400 uppercase tracking-widest font-bold block mb-3">Scan QRIS Untuk Membayar</span>
+						<!-- Background putih agar QRIS mudah di-scan walau tema web gelap -->
+						<div class="bg-white p-2 rounded-xl inline-block border-2 border-emerald-500/30 shadow-lg shadow-emerald-500/10">
+							<img id="qrisImage" src="" alt="Kode QRIS" class="w-48 h-48 object-cover rounded-lg">
 						</div>
-						<div class="bg-slate-950/60 p-3 rounded-lg border border-slate-800 flex justify-between items-center">
-							<span>
-								<b class="text-green-400">DANA / GOPAY : </b>089529305947 </span>
-							<button onclick='copyText("089529305947")' class="text-slate-500 hover:text-emerald-400 text-[11px]">
-								<i class="fa-regular fa-copy"></i>Salin </button>
-						</div>
+						<p class="text-[10px] text-slate-500 mt-3 leading-relaxed">
+							Sistem otomatis memunculkan QRIS senilai <b class="text-emerald-400" id="qrisNominalText">Rp 0</b>. <br>
+							Pastikan nominal di aplikasi pembayaran sama persis sebelum konfirmasi.
+						</p>
 					</div>
 					<div class="border-t border-slate-800/80 pt-4 space-y-3">
 						<label class="block text-xs text-slate-400">Unggah/Siapkan Bukti Bayar (Screenshot):</label>
@@ -1505,8 +1502,30 @@
 			function openCheckoutModal(pkg, price) {
 				currentPackage = pkg;
 				currentPrice = price;
+				
 				document.getElementById('mdPackageName').innerText = pkg;
 				document.getElementById('mdPackagePrice').innerText = price === '0' ? 'Rp 0' : 'Rp ' + price;
+				
+				// --- LOGIKA QRIS DINAMIS ---
+				const qrisContainer = document.getElementById('qrisContainer');
+				const qrisImage = document.getElementById('qrisImage');
+				const qrisNominalText = document.getElementById('qrisNominalText');
+				
+				// Mengubah string harga "380,000" menjadi angka murni 380000
+				const rawPrice = parseInt(price.replace(/,/g, '')) || 0;
+				
+				// Jika harganya lebih dari 0 (Bukan Paket Free), tampilkan QRIS
+				if (rawPrice > 0) {
+					qrisContainer.style.display = 'block';
+					// Memanggil file gambar berdasarkan angka total harga
+					qrisImage.src = `stockid_gambar/qris/qris_${rawPrice}.png`;
+					qrisNominalText.innerText = 'Rp ' + price;
+				} else {
+					// Sembunyikan QRIS jika ambil Stock ID Free
+					qrisContainer.style.display = 'none';
+				}
+				// ---------------------------
+				
 				const modal = document.getElementById('checkoutModal');
 				const card = document.getElementById('modalCard');
 				modal.style.setProperty('display', 'flex', 'important');
