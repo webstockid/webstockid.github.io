@@ -94,6 +94,7 @@
 	</script>
 
 	<body class="text-slate-200 antialiased min-h-screen pb-32" data-theme="dark">
+		<!-- NAVIGASI NAVBAR -->
 		<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
 				<!-- Brand / Logo -->
@@ -131,7 +132,7 @@
 									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-600 group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
-							<a id="navLinkTools" href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
+							<a id="navLinkVIPIndex" href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-crown text-slate-500 group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
 									<span>Stock ID VIP</span>
@@ -240,7 +241,7 @@
 		</script>
 		
 		<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-5">
-			<!-- DASHBOARD COMPACT & MODERN (NON-FIXED) -->
+			<!-- DASHBOARD COMPACT & MODERN (PENGGUNA AKTIF LOGGED IN) -->
 			<section id="userDashboard" class="hidden relative overflow-hidden bg-slate-900/90 border border-emerald-500/30 rounded-2xl px-4 py-3 shadow-xl shadow-emerald-500/5 backdrop-blur-md transition-all">
 				<div class="flex flex-wrap md:flex-nowrap justify-between items-center gap-3">
 					
@@ -281,17 +282,17 @@
 							</div>
 						</div>
 
-						<!-- Tombol Ganti User -->
-						<button onclick="bukaReminderModal()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 border border-slate-700 hover:border-emerald-500/50 text-[11px] font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-							<i class="fa-solid fa-arrows-rotate text-emerald-400 text-[10px]"></i>
-							<span class="hidden sm:inline">Ganti</span>
+						<!-- Tombol Ganti Akun Login -->
+						<button onclick="bukaLoginModal()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 border border-slate-700 hover:border-emerald-500/50 text-[11px] font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+							<i class="fa-solid fa-right-from-bracket text-emerald-400 text-[10px]"></i>
+							<span class="hidden sm:inline">Ganti Akun</span>
 						</button>
 					</div>
 
 				</div>
 			</section>
 
-			<!-- SECTION FILTER & SEARCH MEMBER (DENGAN CUSTOM DROPDOWN TAILWIND) -->
+			<!-- SECTION FILTER & SEARCH MEMBER -->
 			<section class="bg-slate-900/30 p-4 rounded-2xl border border-slate-800/80 flex flex-col md:flex-row items-center gap-3">
 				<div class="relative w-full md:flex-1">
 					<span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 text-xs">
@@ -431,27 +432,39 @@
 			</section>
 		</div>
 
-		<!-- MODAL REMINDER DENGAN FITUR PENCARIAN PROFIL -->
-		<div id="reminderModal" style="z-index:99999;display:none" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm justify-center items-center p-4">
+		<!-- MODAL POP-UP LOGIN MEMBER BERDASARKAN NOMOR TELEPON -->
+		<div id="loginModal" style="z-index:99999;display:none" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm justify-center items-center p-4">
 			<div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 relative shadow-2xl">
-				<h3 class="heading-font text-base font-bold text-white mb-2 flex items-center gap-2">
-					<i class="fa-solid fa-circle-exclamation text-amber-400"></i>Setup Device Reminder
-				</h3>
-				<p class="text-xs text-slate-400 leading-relaxed mb-4">Cari & pilih profil nama Anda untuk mengaktifkan notifikasi pengingat secara otomatis walau tidak membuka halaman ini lagi.</p>
-				
-				<div class="relative mb-3">
-					<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 text-xs">
-						<i class="fa-solid fa-magnifying-glass"></i>
-					</span>
-					<input id="modalSearchMember" oninput="filterModalMembers()" type="text" placeholder="Ketik nama kamu disini..." class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-9 pr-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-medium">
+				<div class="text-center mb-5">
+					<div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto mb-3 text-xl shadow-lg shadow-emerald-500/10">
+						<i class="fa-solid fa-user-lock"></i>
+					</div>
+					<h3 class="heading-font text-base font-bold text-white mb-1">Login Member Stock ID</h3>
+					<p class="text-xs text-slate-400 leading-relaxed">Masukkan nomor WhatsApp terdaftar Anda untuk melihat status akun dan mengaktifkan pengingat otomatis.</p>
 				</div>
+				
+				<form onsubmit="prosesLoginWA(event)" class="space-y-4">
+					<div class="relative">
+						<span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 text-xs">
+							<i class="fa-brands fa-whatsapp text-emerald-500 text-sm"></i>
+						</span>
+						<input id="loginPhoneInput" type="tel" autocomplete="tel" required placeholder="Contoh: 081234567890" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-medium transition-all">
+					</div>
 
-				<select id="memberSelect" size="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-emerald-500 mb-4 font-medium overflow-y-auto"></select>
-				
-				<div class="flex justify-end gap-2 text-xs font-bold">
-					<button onclick='document.getElementById("reminderModal").style.display="none"' class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-4 py-2 rounded-lg transition cursor-pointer">Batal</button>
-					<button onclick="simpanReminder()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2 rounded-lg transition shadow-md shadow-emerald-500/10 cursor-pointer">Simpan & Aktifkan</button>
-				</div>
+					<!-- Pesan Eror Jika Nomor Tidak Ditemukan -->
+					<div id="loginErrorMsg" class="hidden bg-rose-500/10 border border-rose-500/30 rounded-xl p-3 text-[11px] text-rose-400 font-semibold flex items-center gap-2">
+						<i class="fa-solid fa-circle-exclamation shrink-0"></i>
+						<span id="loginErrorText">Nomor WhatsApp tidak terdaftar dalam sistem.</span>
+					</div>
+
+					<div class="flex justify-end gap-2 text-xs font-bold pt-2">
+						<button type="button" onclick="tutupLoginModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-4 py-2.5 rounded-xl transition cursor-pointer">Nanti</button>
+						<button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl transition shadow-md shadow-emerald-500/10 cursor-pointer flex items-center gap-2">
+							<i class="fa-solid fa-right-to-bracket text-xs"></i>
+							<span>Masuk Dashboard</span>
+						</button>
+					</div>
+				</form>
 			</div>
 		</div>
 
@@ -466,6 +479,31 @@
 			const DAY = 86400000, HOUR = 3600000, MIN = 60000, SEC = 1000;
 			const lastMonth = m => m.history.at(-1) || 0;
 			const target = d => new Date(d + "T00:00:00").getTime();
+
+			// --- FUNGSI SENSOR 5 ANGKA DI TENGAH NOMOR HP ---
+			function censorPhone(phone) {
+				if (!phone || phone === "0" || phone === 0) return "-";
+				let str = String(phone).trim();
+				if (str.length <= 6) return str;
+				
+				const starCount = 5;
+				const remain = str.length - starCount;
+				if (remain <= 0) return "*****";
+				
+				const startLen = Math.ceil(remain / 2);
+				const endLen = Math.floor(remain / 2);
+				
+				return str.substring(0, startLen) + "*****" + str.substring(str.length - endLen);
+			}
+
+			// --- FUNGSI NORMALISASI NOMOR HP UNTUK PENCOCOKAN LOGIN ---
+			function formatPhoneKey(phone) {
+				if (!phone) return "";
+				let str = String(phone).replace(/\D/g, "");
+				if (str.startsWith("62")) str = "0" + str.slice(2);
+				if (!str.startsWith("0") && str.length > 0) str = "0" + str;
+				return str;
+			}
 
 			function sisa(ms) {
 				if (ms <= 0) return "Expired";
@@ -490,45 +528,46 @@
 				return rekap;
 			}
 
-			function filterModalMembers() {
-				const query = document.getElementById("modalSearchMember").value.toLowerCase();
-				const select = document.getElementById("memberSelect");
-				select.innerHTML = "";
-				
-				members.forEach((m, index) => {
-					if (m.nama.toLowerCase().includes(query)) {
-						const opt = document.createElement("option");
-						opt.value = index;
-						opt.className = "p-2 hover:bg-slate-800 rounded cursor-pointer";
-						opt.textContent = `${m.nama} (${m.expired})`;
-						select.appendChild(opt);
-					}
-				});
+			// --- FUNGSI POP-UP LOGIN MEMBER ---
+			function bukaLoginModal() {
+				document.getElementById("loginPhoneInput").value = "";
+				document.getElementById("loginErrorMsg").classList.add("hidden");
+				document.getElementById("loginModal").style.display = "flex";
 			}
 
-			function bukaReminderModal() {
-				document.getElementById("modalSearchMember").value = "";
-				filterModalMembers();
-				const savedIndex = localStorage.getItem("reminderMember");
-				if (savedIndex !== null) {
-					document.getElementById("memberSelect").value = savedIndex;
-				}
-				document.getElementById("reminderModal").style.display = "flex";
+			function tutupLoginModal() {
+				document.getElementById("loginModal").style.display = "none";
 			}
 
-			function simpanReminder() {
-				const select = document.getElementById("memberSelect");
-				const index = select.value;
-				if (index === "" || index === null) {
-					alert("Silakan pilih nama profil Anda terlebih dahulu.");
+			function prosesLoginWA(e) {
+				e.preventDefault();
+				const inputVal = document.getElementById("loginPhoneInput").value;
+				const formattedInput = formatPhoneKey(inputVal);
+				const errorMsg = document.getElementById("loginErrorMsg");
+
+				if (!formattedInput) {
+					document.getElementById("loginErrorText").textContent = "Masukkan nomor WhatsApp yang valid.";
+					errorMsg.classList.remove("hidden");
 					return;
 				}
-				localStorage.setItem("reminderMember", index);
-				document.getElementById("reminderModal").style.display = "none";
-				
-				enableNotif();
-				updateDashboard();
-				cekReminder();
+
+				// Cari member berdasarkan nomor WhatsApp yang cocok
+				const foundIndex = members.findIndex(m => formatPhoneKey(m.whatsapp) === formattedInput);
+
+				if (foundIndex !== -1) {
+					errorMsg.classList.add("hidden");
+					localStorage.setItem("reminderMember", foundIndex);
+					localStorage.setItem("loggedInPhone", formattedInput);
+					
+					tutupLoginModal();
+					enableNotif();
+					updateDashboard();
+					cekReminder();
+					render();
+				} else {
+					document.getElementById("loginErrorText").textContent = "Nomor WhatsApp tidak terdaftar. Pastikan nomor sesuai dengan akun Anda.";
+					errorMsg.classList.remove("hidden");
+				}
 			}
 
 			function updateDashboard() {
@@ -547,32 +586,62 @@
 				document.getElementById("dashCountdown").textContent = sisa(ms);
 			}
 
-			function pushNotif(title, body) {
-				if (Notification.permission !== "granted") return;
-				new Notification(title, {
+			// --- FUNGSI DISPATCH NOTIFIKASI HANDAL (SERVICE WORKER & WINDOW NOTIFICATION) ---
+			async function pushNotif(title, body) {
+				const options = {
 					body: body,
-					icon: "stockid_gambar/stockicon.jpg",
-					vibrate: [200, 100, 200]
-				});
+					icon: "stockid_gambar/stockidmember.jpeg",
+					badge: "stockid_gambar/stockidmember.jpeg",
+					vibrate: [200, 100, 200, 100, 200],
+					tag: "stockid-reminder",
+					renotify: true,
+					data: { url: window.location.href }
+				};
+
 				const sound = document.getElementById("notifSound");
 				if (sound) sound.play().catch(() => {});
+
+				// Utamakan Service Worker showNotification untuk Android & PWA
+				if ("serviceWorker" in navigator) {
+					try {
+						const reg = await navigator.serviceWorker.ready;
+						if (reg && reg.showNotification) {
+							await reg.showNotification(title, options);
+							return;
+						}
+					} catch (err) {
+						console.log("Pengiriman via SW gagal, fallback ke window Notification:", err);
+					}
+				}
+
+				// Fallback ke browser Notification API biasa
+				if ("Notification" in window && Notification.permission === "granted") {
+					try {
+						new Notification(title, options);
+					} catch (err) {
+						console.log("Window Notification Eror:", err);
+					}
+				}
 			}
 
 			function enableNotif() {
 				if (!("Notification" in window)) {
-					alert("Browser tidak mendukung notifikasi");
+					console.log("Browser tidak mendukung notifikasi");
 					return;
 				}
-				if (Notification.permission !== "granted") {
+				if (Notification.permission !== "granted" && Notification.permission !== "denied") {
 					Notification.requestPermission().then(p => {
-						if (p === "granted") alert("Sistem reminder notifikasi berhasil diaktifkan! 🐿️");
+						if (p === "granted") {
+							console.log("Notifikasi berhasil diizinkan!");
+						}
 					});
 				}
 			}
 
+			// --- FUNGSI CEK MASA AKTIF & AUTOMATIC REMINDER ---
 			function cekReminder() {
 				const index = localStorage.getItem("reminderMember");
-				if (index === null) return;
+				if (index === null || !members[index]) return;
 				const m = members[index];
 				if (!m || !m.expired) return;
 
@@ -581,16 +650,28 @@
 				const diffTime = expMs - now;
 				const sisaHari = Math.ceil(diffTime / DAY);
 
-				if (sisaHari === 10 || sisaHari === 5 || sisaHari === 1) {
+				// Kirim notifikasi otomatis jika sisa hari <= 10 hari atau sudah habis
+				if (sisaHari <= 10) {
 					const todayKey = new Date().toISOString().split('T')[0];
 					const notifLog = JSON.parse(localStorage.getItem("notifSentHistory") || "{}");
-					const logKey = `${todayKey}_${sisaHari}`;
+					const logKey = `${m.whatsapp}_${todayKey}_${sisaHari <= 0 ? 'expired' : sisaHari}`;
 
 					if (!notifLog[logKey]) {
+						let msgTitle = `Reminder Stock ID VIP: ${m.nama}`;
+						let msgBody = "";
+						
+						if (sisaHari <= 0) {
+							msgBody = `Masa aktif Stock ID VIP Anda telah habis (${m.expired}). Segera perpanjang paket Anda agar akses VIP tetap aktif! ⚠️`;
+						} else {
+							msgBody = `Masa aktif Stock ID VIP Anda tersisa ${sisaHari} hari lagi (Expired: ${m.expired}). Perpanjang sekarang agar tidak terputus! ⏳`;
+						}
+
 						if (Notification.permission === "granted") {
-							pushNotif(`Reminder VIP: ${m.nama}`, `Masa aktif Stock ID VIP Anda tersisa ${sisaHari} hari lagi. Segera perpanjang agar tidak terputus!`);
+							pushNotif(msgTitle, msgBody);
 							notifLog[logKey] = true;
 							localStorage.setItem("notifSentHistory", JSON.stringify(notifLog));
+						} else if (Notification.permission !== "denied") {
+							enableNotif();
 						}
 					}
 				}
@@ -676,8 +757,7 @@
 
 					if (!m.nama.toLowerCase().includes(key)) return;
 
-					// --- RUMUS BARU: Hitung persentase progres dari total durasi masa aktif sejak join ---
-					// Total durasi bulan langganan (asumsi 1 bulan = 30 hari sebagai estimasi berbasis history paket)
+					// --- Hitung persentase progres dari total durasi masa aktif sejak join ---
 					const totalBulanJoin = m.history.reduce((acc, curr) => acc + Number(curr), 0) || 1;
 					const totalTotalHari = totalBulanJoin * 30;
 					
@@ -690,7 +770,6 @@
 					}
 
 					// --- PENENTUAN WARNA BERDASARKAN RENTANG PERSENTASE ---
-					// 0-20% rose, 21-40% amber, 41-65% sky, 66-85% emerald, 86-100% fuchsia
 					let barColorClass = "bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]";
 					let percentRounded = Math.round(progressPercent);
 
@@ -764,7 +843,7 @@
 									<div class="flex items-center gap-2 text-slate-300">
 										<i class="fa-brands fa-whatsapp text-[15px] text-emerald-500 w-4"></i>
 										<span>Kontak: 
-											<span class="font-black text-emerald-500">${m.whatsapp}</span>
+											<span class="font-black text-emerald-500">${censorPhone(m.whatsapp)}</span>
 										</span>
 									</div>
 									<div class="flex items-center gap-2 text-slate-300">
@@ -811,13 +890,15 @@
 				renderStat(sorted);
 			}
 
+			// --- EVENT LOAD HALAMAN: CEK LOGIN CACHE / LOCALSTORAGE ---
 			window.addEventListener("load", () => {
-				if (!localStorage.getItem("reminderMember")) {
-					bukaReminderModal();
+				const savedIndex = localStorage.getItem("reminderMember");
+				if (savedIndex === null || !members[savedIndex]) {
+					bukaLoginModal();
 				} else {
 					updateDashboard();
+					cekReminder();
 				}
-				cekReminder();
 			});
 
 			search.oninput = render;
