@@ -241,51 +241,69 @@
 		</script>
 		
 		<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-5">
-			<!-- DASHBOARD COMPACT & MODERN (PENGGUNA AKTIF LOGGED IN) -->
-			<section id="userDashboard" class="hidden relative overflow-hidden bg-slate-900/90 border border-emerald-500/30 rounded-2xl px-4 py-3 shadow-xl shadow-emerald-500/5 backdrop-blur-md transition-all">
-				<div class="flex flex-wrap md:flex-nowrap justify-between items-center gap-3">
+			<!-- DASHBOARD PENGGUNA AKTIF (MODERN & INFORMATIF 2-KOLOM) -->
+			<section id="userDashboard" class="hidden relative overflow-hidden bg-slate-900/90 border border-emerald-500/30 rounded-2xl p-5 shadow-2xl shadow-emerald-500/5 backdrop-blur-md transition-all">
+				<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
 					
-					<!-- Profil Pengguna -->
-					<div class="flex items-center gap-3">
-						<div class="relative flex-shrink-0">
-							<div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-sm font-bold">
-								<i class="fa-solid fa-user-check"></i>
+					<!-- POJOK KIRI: INFORMASI PROFIL PENGGUNA -->
+					<div class="space-y-3 flex-1">
+						<div class="flex items-center gap-3">
+							<div class="relative shrink-0">
+								<div class="w-11 h-11 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg font-bold">
+									<i class="fa-solid fa-user-check"></i>
+								</div>
+								<span class="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+									<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+									<span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+								</span>
 							</div>
-							<span class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-								<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-								<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-							</span>
+							<div>
+								<span class="text-[9px] font-extrabold uppercase tracking-widest text-emerald-400 block leading-tight">Pengguna Aktif</span>
+								<h2 id="dashNama" class="heading-font text-base sm:text-lg font-black text-white tracking-wide leading-snug">-</h2>
+							</div>
 						</div>
-						<div>
-							<span class="text-[9px] font-bold uppercase tracking-wider text-emerald-400 block leading-tight">Pengguna Aktif</span>
-							<h2 id="dashNama" class="heading-font text-xs sm:text-sm font-black text-white tracking-wide leading-snug">-</h2>
+
+						<div class="flex flex-wrap items-center gap-2 pt-1">
+							<!-- Nomor Telepon Tidak Disensor -->
+							<div class="flex items-center gap-2 bg-slate-950/80 border border-slate-800/80 rounded-xl px-3 py-1.5 text-xs">
+								<i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i>
+								<span class="text-[10px] text-slate-500 font-bold uppercase">No. HP:</span>
+								<span id="dashPhone" class="font-extrabold text-slate-200 tracking-wide">-</span>
+							</div>
+
+							<!-- Histori Join -->
+							<div class="flex items-center gap-2 bg-slate-950/80 border border-slate-800/80 rounded-xl px-3 py-1.5 text-xs">
+								<i class="fa-solid fa-layer-group text-blue-400 text-xs"></i>
+								<span class="text-[10px] text-slate-500 font-bold uppercase">Histori Join:</span>
+								<span id="dashHistory" class="font-bold text-blue-400">-</span>
+							</div>
 						</div>
 					</div>
 
-					<!-- Detail Ringkas Expired & Sisa Waktu -->
-					<div class="flex items-center gap-2 sm:gap-4 ml-auto md:ml-0 text-xs">
-						<!-- Tanggal Expired -->
-						<div class="flex items-center gap-2 bg-slate-950/60 border border-slate-800/80 rounded-xl px-3 py-1.5">
-							<i class="fa-solid fa-calendar-days text-orange-400 text-[11px]"></i>
+					<!-- POJOK KANAN: STATUS EXPIRED, COUNTDOWN & TOMBOL LOGOUT -->
+					<div class="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-slate-800/80 pt-4 md:pt-0">
+						<!-- Tanggal Berakhir -->
+						<div class="flex items-center gap-2.5 bg-slate-950/80 border border-slate-800/80 rounded-xl px-3.5 py-2">
+							<i class="fa-solid fa-calendar-days text-orange-400 text-sm"></i>
 							<div>
-								<span class="text-[8px] uppercase font-bold text-slate-500 block leading-none">Expired</span>
-								<span id="dashExpired" class="text-[11px] font-bold text-orange-400 leading-tight">-</span>
+								<span class="text-[8px] uppercase font-bold text-slate-500 block leading-none mb-0.5">Tanggal Berakhir</span>
+								<span id="dashExpired" class="text-xs font-black text-orange-400 leading-tight block">-</span>
 							</div>
 						</div>
 
-						<!-- Sisa Masa Aktif (Countdown) -->
-						<div class="flex items-center gap-2 bg-slate-950/60 border border-slate-800/80 rounded-xl px-3 py-1.5">
-							<i class="fa-solid fa-hourglass-half text-yellow-400 text-[11px]"></i>
+						<!-- Sisa Waktu (Countdown) -->
+						<div class="flex items-center gap-2.5 bg-slate-950/80 border border-slate-800/80 rounded-xl px-3.5 py-2">
+							<i class="fa-solid fa-hourglass-half text-yellow-400 text-sm"></i>
 							<div>
-								<span class="text-[8px] uppercase font-bold text-slate-500 block leading-none">Sisa Waktu</span>
-								<span id="dashCountdown" class="text-[11px] font-bold text-yellow-400 leading-tight">-</span>
+								<span class="text-[8px] uppercase font-bold text-slate-500 block leading-none mb-0.5">Sisa Waktu</span>
+								<span id="dashCountdown" class="text-xs font-black text-yellow-400 leading-tight block">-</span>
 							</div>
 						</div>
 
-						<!-- Tombol Ganti Akun Login -->
-						<button onclick="bukaLoginModal()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 border border-slate-700 hover:border-emerald-500/50 text-[11px] font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-							<i class="fa-solid fa-right-from-bracket text-emerald-400 text-[10px]"></i>
-							<span class="hidden sm:inline">Ganti Akun</span>
+						<!-- Tombol Logout -->
+						<button onclick="logout()" class="bg-rose-500/10 hover:bg-rose-500/20 active:scale-95 text-rose-400 border border-rose-500/30 hover:border-rose-500/60 text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 cursor-pointer shadow-sm">
+							<i class="fa-solid fa-right-from-bracket text-xs"></i>
+							<span>Logout</span>
 						</button>
 					</div>
 
@@ -432,15 +450,15 @@
 			</section>
 		</div>
 
-		<!-- MODAL POP-UP LOGIN MEMBER BERDASARKAN NOMOR TELEPON -->
-		<div id="loginModal" style="z-index:99999;display:none" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm justify-center items-center p-4">
+		<!-- MODAL POP-UP LOGIN MANDATORI (WAJIB LOGIN, TIDAK BISA DITUTUP JIKA BELUM LOGGED IN) -->
+		<div id="loginModal" style="z-index:99999;display:none" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md justify-center items-center p-4">
 			<div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 relative shadow-2xl">
 				<div class="text-center mb-5">
 					<div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto mb-3 text-xl shadow-lg shadow-emerald-500/10">
 						<i class="fa-solid fa-user-lock"></i>
 					</div>
 					<h3 class="heading-font text-base font-bold text-white mb-1">Login Member Stock ID</h3>
-					<p class="text-xs text-slate-400 leading-relaxed">Masukkan nomor WhatsApp terdaftar Anda untuk melihat status akun dan mengaktifkan pengingat otomatis.</p>
+					<p class="text-xs text-slate-400 leading-relaxed">Silakan masukkan nomor WhatsApp terdaftar Anda untuk masuk ke sistem dashboard.</p>
 				</div>
 				
 				<form onsubmit="prosesLoginWA(event)" class="space-y-4">
@@ -457,9 +475,8 @@
 						<span id="loginErrorText">Nomor WhatsApp tidak terdaftar dalam sistem.</span>
 					</div>
 
-					<div class="flex justify-end gap-2 text-xs font-bold pt-2">
-						<button type="button" onclick="tutupLoginModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-400 px-4 py-2.5 rounded-xl transition cursor-pointer">Nanti</button>
-						<button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-5 py-2.5 rounded-xl transition shadow-md shadow-emerald-500/10 cursor-pointer flex items-center gap-2">
+					<div class="pt-2">
+						<button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-extrabold text-xs py-3 rounded-xl transition shadow-lg shadow-emerald-500/10 cursor-pointer flex items-center justify-center gap-2">
 							<i class="fa-solid fa-right-to-bracket text-xs"></i>
 							<span>Masuk Dashboard</span>
 						</button>
@@ -515,6 +532,7 @@
 			}
 
 			function join(arr) {
+				if (!arr || !arr.length) return "-";
 				return arr.map(b => `${b} Bulan`).join(" + ");
 			}
 
@@ -528,15 +546,11 @@
 				return rekap;
 			}
 
-			// --- FUNGSI POP-UP LOGIN MEMBER ---
+			// --- FUNGSI POP-UP LOGIN MANDATORI ---
 			function bukaLoginModal() {
 				document.getElementById("loginPhoneInput").value = "";
 				document.getElementById("loginErrorMsg").classList.add("hidden");
 				document.getElementById("loginModal").style.display = "flex";
-			}
-
-			function tutupLoginModal() {
-				document.getElementById("loginModal").style.display = "none";
 			}
 
 			function prosesLoginWA(e) {
@@ -559,34 +573,49 @@
 					localStorage.setItem("reminderMember", foundIndex);
 					localStorage.setItem("loggedInPhone", formattedInput);
 					
-					tutupLoginModal();
+					document.getElementById("loginModal").style.display = "none";
 					enableNotif();
 					updateDashboard();
 					cekReminder();
 					render();
 				} else {
-					document.getElementById("loginErrorText").textContent = "Nomor WhatsApp tidak terdaftar. Pastikan nomor sesuai dengan akun Anda.";
+					document.getElementById("loginErrorText").textContent = "Nomor WhatsApp tidak terdaftar. Akses ditolak.";
 					errorMsg.classList.remove("hidden");
 				}
 			}
 
+			// --- FUNGSI LOGOUT AKUN ---
+			function logout() {
+				localStorage.removeItem("reminderMember");
+				localStorage.removeItem("loggedInPhone");
+				document.getElementById("userDashboard").classList.add("hidden");
+				bukaLoginModal();
+			}
+
+			// --- UPDATE DASHBOARD DENGAN INFORMASI LENGKAP PADA POJOK KIRI & KANAN ---
 			function updateDashboard() {
 				const index = localStorage.getItem("reminderMember");
 				const dash = document.getElementById("userDashboard");
 				if (index === null || !members[index]) {
 					dash.classList.add("hidden");
+					bukaLoginModal();
 					return;
 				}
 				const m = members[index];
 				dash.classList.remove("hidden");
-				document.getElementById("dashNama").textContent = m.nama;
-				document.getElementById("dashExpired").textContent = m.expired;
 				
+				// Pojok Kiri
+				document.getElementById("dashNama").textContent = m.nama;
+				document.getElementById("dashPhone").textContent = m.whatsapp || "-";
+				document.getElementById("dashHistory").textContent = join(m.history);
+				
+				// Pojok Kanan
+				document.getElementById("dashExpired").textContent = m.expired;
 				const ms = target(m.expired) - Date.now();
 				document.getElementById("dashCountdown").textContent = sisa(ms);
 			}
 
-			// --- FUNGSI DISPATCH NOTIFIKASI HANDAL (SERVICE WORKER & WINDOW NOTIFICATION) ---
+			// --- FUNGSI DISPATCH NOTIFIKASI ---
 			async function pushNotif(title, body) {
 				const options = {
 					body: body,
@@ -601,7 +630,6 @@
 				const sound = document.getElementById("notifSound");
 				if (sound) sound.play().catch(() => {});
 
-				// Utamakan Service Worker showNotification untuk Android & PWA
 				if ("serviceWorker" in navigator) {
 					try {
 						const reg = await navigator.serviceWorker.ready;
@@ -614,7 +642,6 @@
 					}
 				}
 
-				// Fallback ke browser Notification API biasa
 				if ("Notification" in window && Notification.permission === "granted") {
 					try {
 						new Notification(title, options);
@@ -625,20 +652,15 @@
 			}
 
 			function enableNotif() {
-				if (!("Notification" in window)) {
-					console.log("Browser tidak mendukung notifikasi");
-					return;
-				}
+				if (!("Notification" in window)) return;
 				if (Notification.permission !== "granted" && Notification.permission !== "denied") {
 					Notification.requestPermission().then(p => {
-						if (p === "granted") {
-							console.log("Notifikasi berhasil diizinkan!");
-						}
+						if (p === "granted") console.log("Notifikasi berhasil diizinkan!");
 					});
 				}
 			}
 
-			// --- FUNGSI CEK MASA AKTIF & AUTOMATIC REMINDER ---
+			// --- FUNGSI CEK MASA AKTIF & REMINDER OTOMATIS ---
 			function cekReminder() {
 				const index = localStorage.getItem("reminderMember");
 				if (index === null || !members[index]) return;
@@ -650,7 +672,6 @@
 				const diffTime = expMs - now;
 				const sisaHari = Math.ceil(diffTime / DAY);
 
-				// Kirim notifikasi otomatis jika sisa hari <= 10 hari atau sudah habis
 				if (sisaHari <= 10) {
 					const todayKey = new Date().toISOString().split('T')[0];
 					const notifLog = JSON.parse(localStorage.getItem("notifSentHistory") || "{}");
@@ -890,7 +911,7 @@
 				renderStat(sorted);
 			}
 
-			// --- EVENT LOAD HALAMAN: CEK LOGIN CACHE / LOCALSTORAGE ---
+			// --- EVENT LOAD HALAMAN: VERIFIKASI MANDATORI LOGIN ---
 			window.addEventListener("load", () => {
 				const savedIndex = localStorage.getItem("reminderMember");
 				if (savedIndex === null || !members[savedIndex]) {
