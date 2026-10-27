@@ -122,7 +122,7 @@
 							<div class="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
 								Aplikasi & Layanan
 							</div>
-							<a id="navLinkVIP" href="https://webstockid.github.io/exp" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-200 group cursor-pointer">
+							<a id="navLinkVIP" href="https://webstockid.github.io/member" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-emerald-400 font-semibold text-xs transition-all duration-200 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-circle-user text-amber-400 group-hover:scale-110 transition-transform w-4 text-center"></i>
 									<span>Stock ID Member</span>
@@ -218,7 +218,7 @@
 
 			document.addEventListener("DOMContentLoaded", function() {
 				const path = window.location.pathname;
-				if (path.includes("exp.html") || path.endsWith("/exp")) {
+				if (path.includes("member.html") || path.endsWith("/member")) {
 					const linkVIP = document.getElementById("navLinkVIP");
 					if (linkVIP) {
 						linkVIP.className = "flex items-center justify-between px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-xs transition-all duration-200 group cursor-pointer";
