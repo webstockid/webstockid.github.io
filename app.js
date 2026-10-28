@@ -3487,7 +3487,7 @@ async function scanWhalesData() {
 				const valuasi = cachedItem.currentValuation || 0;
 				let tier = 0, tierName = "", tierClass = "";
 				
-				if (vol > 2 && valuasi > 2000000000 && chg >= 0 && chg <= 5) {
+				if (vol > 2.0 && valuasi > 2000000000 && chg >= 0 && chg <= 5.0) {
 					if (price > ma5) {
 						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
@@ -3533,7 +3533,7 @@ async function scanWhalesData() {
 					const valuasi = item.currentValuation || 0;
 					let tier = 0, tierName = "", tierClass = "";
 					
-					if (vol > 2 && valuasi > 2000000000 && chg >= 0 && chg <= 5) {
+					if (vol > 2.0 && valuasi > 2000000000 && chg >= 0 && chg <= 5.0) {
 						if (price > ma5) {
 							tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 							tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
@@ -4396,7 +4396,7 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 	const muteNotifSound = localStorage.getItem('stockid_notif_mute_sound') === 'true';
 	
 	const currentHour = new Date().getHours();
-	let strictRasio = currentHour < 11 ? 0.8 : (currentHour < 14 ? 1.5 : 2.5);
+	let strictRasio = currentHour < 11 ? 1.5 : (currentHour < 14 ? 1.5 : 2.5);
 	
 	if (latestData.volRatio >= strictRasio && latestData.changePct >= 0 && latestData.changePct <= 5.0) {
 		const lastAlertKey = `whale_alert_${ticker}`;
