@@ -211,7 +211,7 @@ function setMaterialProgress(materialId, status) {
 function loadCurrentMaterialProgress() {
     const path = window.location.pathname;
     let materialId = 'materi_1';
-    if (path.includes('studyy.html')) {
+    if (path.includes('study001.html')) {
         materialId = 'materi_2';
     }
     

@@ -903,49 +903,49 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata, mengisyaratkan perebutan momentum antara kubu *bulls* dan *bears*.";
 
 		descEl.innerHTML = `
-			<p class="leading-relaxed"><strong class="text-sky-400">Mengapa?</strong> Saham <strong class="text-emerald-400 font-bold">${ticker}</strong> saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
-			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-400">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
-			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-sky-400">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-400">(Support Kuat)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-400">(Resistance Tertinggi)</strong>.</p>
+			<p class="leading-relaxed"><strong class="text-teal-400">Mengapa?</strong> Saham <strong class="text-emerald-400 font-bold">${ticker}</strong> saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-teal-400">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-teal-400">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-400">(Support Kuat)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-amber-400">(Resistance Tertinggi)</strong>.</p>
 		`;
 
 		buktiEl.innerHTML = `
 	<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 		<span class="flex items-center gap-1.5">
 			<i data-lucide="circle-dollar-sign" class="w-4 h-4"></i> Harga: 
-			<strong class="text-sky-400 font-bold">Rp${price.toLocaleString('id-ID')}</strong> 
+			<strong class="text-teal-400 font-bold">Rp${price.toLocaleString('id-ID')}</strong> 
 			(${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)
 		</span>
-		<span class="text-[10px] lg:text-[11px] text-sky-400">${isCached ? 'Cache Instant' : 'Live Data'}</span>
+		<span class="text-[10px] lg:text-[11px] text-teal-400">${isCached ? 'Cache Instant' : 'Live Data'}</span>
 	</li>
 	<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 		<span class="flex items-center gap-1.5">
 			<i data-lucide="chart-candlestick" class="w-4 h-4"></i> Volume Transaksi:
 		</span>
-		<span class="text-violet-400 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
+		<span class="text-teal-400 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 	</li>
 	<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 		<span class="flex items-center gap-1.5">
 			<i data-lucide="chart-candlestick" class="w-4 h-4"></i> Valuasi Transaksi:
 		</span>
-		<span class="text-violet-400 font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
+		<span class="text-teal-400 font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
 	</li>
 	<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 		<span class="flex items-center gap-1.5">
 			<i data-lucide="venetian-mask" class="w-4 h-4"></i> Estimasi AVG Bandar:
 		</span>
-		<span class="text-amber-400 font-bold">Rp ${(stockData.bandarAvgPrice || price).toLocaleString('id-ID')}</span>
+		<span class="text-teal-400 font-bold">Rp ${(stockData.bandarAvgPrice || price).toLocaleString('id-ID')}</span>
 	</li>
 	<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 		<span class="flex items-center gap-1.5">
 			<i data-lucide="chart-no-axes-combined" class="w-4 h-4"></i> Posisi Tren MA5 / MA10 / MA20:
 		</span>
-		<span class="text-emerald-400 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
+		<span class="text-teal-400 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 	</li>
 	<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 		<span class="flex items-center gap-1.5">
 			<i data-lucide="sliders-vertical" class="w-4 h-4"></i> Rasio Volume vs Rerata Harian:
 		</span>
-		<span class="font-bold ${isVolSpike ? 'text-emerald-400' : 'text-amber-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
+		<span class="font-bold ${isVolSpike ? 'text-emerald-400' : 'text-blue-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
 	</li>
 `;
 
@@ -1234,26 +1234,26 @@ function renderRadarItems(dataList) {
 		const currentHour = new Date().getHours();
 		let targetRasio = currentHour < 11 ? 0.5 : (currentHour < 14 ? 0.8 : 1.2);
 
-		if (item.price >= item.ma5 && item.volRatio >= targetRasio && changePct >= 0 && changePct <= 5) {
+		if (changePct > 0 && changePct < 5 && item.volRatio >= (targetRasio * 2.0) && item.price >= item.ma5) {
 			statusSignal = '<i data-lucide="activity" class="w-3.5 h-3.5 inline"></i> Curi Start (Whale Acc)';
 			statusClass = "from-fuchsia-600/30 to-fuchsia-500/10 border-fuchsia-500/30 text-fuchsia-400";
-			alasanTeknikal = `<strong>Anomali Volume Terdeteksi!</strong> Harga saham baru naik tipis (<strong>+${changePct}%</strong>), tapi volume hari ini sudah mencapai <strong>${(item.volRatio * 100).toFixed(0)}%</strong> dari total volume seharian kemarin. Bandar terindikasi sedang kumpulin barang.`;
-		} else if (item.volRatio < (targetRasio * 0.5) && changePct > 4) {
-			statusSignal = '<i data-lucide="alert-triangle" class="w-3.5 h-3.5 inline"></i> Jebakan Batman (Fake Breakout)';
-			statusClass = "from-rose-600/30 to-rose-500/10 border-rose-500/30 text-rose-400";
-			alasanTeknikal = `<strong>Waspada!</strong> Harga naik sangat tinggi (<strong>+${changePct}%</strong>) namun tidak didukung oleh volume yang kuat (Hanya <strong>${(item.volRatio * 100).toFixed(0)}%</strong> dari volume kemarin). Kenaikan ini rawan dibanting. Hati-hati FOMO!`;
-		} else if (item.ma5 > item.ma10 && item.price >= item.ma5 && changePct > 0 && changePct < 5) {
+			alasanTeknikal = `<strong>Anomali Volume Terdeteksi!</strong> Harga berada diatas MA5 dan saham baru naik tipis (<strong>+${changePct}%</strong>), tapi volume hari ini sudah mencapai <strong>${(item.volRatio * 100).toFixed(0)}%</strong> dari total volume seharian kemarin. Bandar terindikasi sedang kumpulin barang.`;
+		} else if (changePct > 0 && changePct < 10 && item.ma5 > item.ma10 && item.price >= item.ma5) {
 			statusSignal = '<i data-lucide="rocket" class="w-3.5 h-3.5 inline"></i> Golden Cross Setup';
 			statusClass = "from-yellow-600/30 to-amber-500/10 border-yellow-500/30 text-yellow-400";
 			alasanTeknikal = `Sinyal perpotongan garis MA5 melintasi naik MA10/MA20 (*Golden Cross*). Pola pembalikan arah berpotensi terbentuk.`;
-		} else if (item.volRatio >= (targetRasio * 1.5) && changePct > 1) {
+		} else if (changePct > 4 && item.volRatio < (targetRasio * 0.5)) {
+			statusSignal = '<i data-lucide="alert-triangle" class="w-3.5 h-3.5 inline"></i> Jebakan Batman (Fake Breakout)';
+			statusClass = "from-rose-600/30 to-rose-500/10 border-rose-500/30 text-rose-400";
+			alasanTeknikal = `<strong>Waspada!</strong> Harga naik sangat tinggi (<strong>+${changePct}%</strong>) namun tidak didukung oleh volume yang kuat (Hanya <strong>${(item.volRatio * 100).toFixed(0)}%</strong> dari volume kemarin). Kenaikan ini rawan dibanting. Hati-hati FOMO!`;
+		} else if (changePct > 1 && item.volRatio >= (targetRasio * 1.5)) {
 			statusSignal = '<i data-lucide="zap" class="w-3.5 h-3.5 inline"></i> Volume Accumulation';
 			statusClass = "from-blue-600/30 to-blue-500/10 border-blue-500/30 text-blue-400";
 			alasanTeknikal = `Terjadi akumulasi volume transaksi hingga <strong>${(item.volRatio * 100).toFixed(0)}% dari total volume kemarin</strong>. Mengindikasikan partisipasi modal besar di pasar.`;
 		} else if (changePct < 1 && item.price >= item.ma10) {
 			statusSignal = '<i data-lucide="shield" class="w-3.5 h-3.5 inline"></i> Support Retest';
 			statusClass = "from-pink-600/30 to-pink-500/10 border-pink-500/30 text-pink-400";
-			alasanTeknikal = `Harga sedang mengalami koreksi sehat dan menguji area pertahanan MA20 (Rp ${item.ma20.toLocaleString('id-ID')}).`;
+			alasanTeknikal = `Harga sedang mengalami koreksi sehat dan menguji area pertahanan MA10 (Rp ${item.ma20.toLocaleString('id-ID')}).`;
 		}
 
 		htmlContent += `
