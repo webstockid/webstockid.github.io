@@ -4191,161 +4191,99 @@ async function fetchStockNewsForAI(ticker) {
 	}
 }
 
-// Komentar: Mengambil seluruh rilis berita pasar modal dan emiten menggunakan Widget Timeline TradingView.
+// Komentar: Mengambil berita emiten menggunakan Google News RSS API via RSS2JSON
 async function fetchStockNews(ticker) {
 	const container = document.getElementById('newsContainer');
 	if (!container) return;
 	
-	// Mengubah class bawaan agar layout grid sebelumnya tidak membentrok ukuran widget
-	container.className = 'w-full h-[500px] overflow-hidden rounded-xl border border-slate-800 bg-slate-900/60 mt-2';
-	container.innerHTML = `<div class="flex items-center justify-center h-full"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-emerald-400"></i></div>`;
+	// Sesuaikan kontainer untuk tampilan grid berita
+	container.className = 'w-full rounded-xl border border-slate-800 bg-slate-900/60 mt-2 p-4';
+	container.innerHTML = `<div class="flex items-center justify-center h-32"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-emerald-400"></i></div>`;
 	if (window.lucide) lucide.createIcons();
 	
-	const tvSymbol = `IDX:${ticker}`;
-	container.innerHTML = ''; 
+	// Endpoint Google News RSS
+	const now = Date.now();
+	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+OR+bursa+indonesia&hl=id&gl=ID&ceid=ID:id&_t=${now}`;
+	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 	
-	const wrapper = document.createElement('div');
-	wrapper.className = "tradingview-widget-container h-full w-full";
-	
-	const inner = document.createElement('div');
-	inner.className = "tradingview-widget-container__widget h-full w-full";
-	wrapper.appendChild(inner);
-	container.appendChild(wrapper);
-	
-	const script = document.createElement('script');
-	script.type = 'text/javascript';
-	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-timeline.js';
-	script.async = true;
-	
-	const config = {
-		"feedMode": "symbol",
-		"symbol": tvSymbol,
-		"colorTheme": "dark",
-		"isTransparent": true,
-		"displayMode": "regular",
-		"width": "100%",
-		"height": "100%",
-		"locale": "id"
-	};
-	
-	script.innerHTML = JSON.stringify(config);
-	inner.appendChild(script);
-	
-	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
-}
-
-// Komentar: Menarik informasi peristiwa bisnis perusahaan menggunakan Yahoo Finance dengan Multi-Proxy.
-async function fetchCorporateAction(ticker) {
-	const container = document.getElementById('corporateContainer');
-	if (!container) return;
-
-	// Mengembalikan layout grid untuk format kartu aksi korporasi
-	container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3';
-	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-400"></i> Memuat Kalender & Aksi Korporasi...</div>`;
-	if (window.lucide) lucide.createIcons();
-
-	let calendarUI = '';
-	
-	// 1. Ambil Kalender Event (Dividen/Earnings)
 	try {
-		const calUrl = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}.JK?modules=calendarEvents`;
-		const proxies = [
-			`https://api.allorigins.win/raw?url=${encodeURIComponent(calUrl)}`,
-			`https://corsproxy.io/?url=${encodeURIComponent(calUrl)}`,
-			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(calUrl)}`
-		];
+		const res = await fetch(apiUrl, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
+		const data = await res.json();
 		
-		let calResult = null;
-		for (let p of proxies) {
-			try {
-				const res = await fetch(p, { signal: AbortSignal.timeout(5000) });
-				if (res.ok) {
-					let data = await res.json();
-					calResult = data?.quoteSummary?.result?.[0]?.calendarEvents;
-					if (calResult) break;
-				}
-			} catch (e) {}
-		}
-		
-		if (calResult) {
-			const divDate = calResult.exDividendDate?.fmt || 'Belum Terjadwal';
-			const earnDate = calResult.earnings?.earningsDate?.[0]?.fmt || 'Belum Terjadwal';
-			
-			calendarUI = `
-				<div class="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-2 gap-3 mb-3">
-					<div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex items-center justify-between shadow-sm">
+		if (data.status === 'ok' && data.items && data.items.length > 0) {
+			let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+			data.items.slice(0, 6).forEach(item => {
+				const date = new Date(item.pubDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+				const source = item.author || item.source?.title || 'Berita Nasional';
+				
+				html += `
+					<a href="${item.link}" target="_blank" class="block p-4 bg-slate-950/30 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-200 shadow-sm flex flex-col justify-between group">
 						<div>
-							<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Ex-Date Dividen</span>
-							<span class="text-emerald-400 font-bold text-xs lg:text-sm">${divDate}</span>
-						</div>
-						<i data-lucide="coins" class="w-6 h-6 text-emerald-500/30"></i>
-					</div>
-					<div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex items-center justify-between shadow-sm">
-						<div>
-							<span class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Rilis Laporan (Earnings)</span>
-							<span class="text-cyan-400 font-bold text-xs lg:text-sm">${earnDate}</span>
-						</div>
-						<i data-lucide="file-bar-chart-2" class="w-6 h-6 text-cyan-500/30"></i>
-					</div>
-				</div>
-			`;
-		}
-	} catch(e) {
-		console.warn("Gagal merender kalender korporasi", e);
-	}
-
-	const defaultCalendarUI = `<div class="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-2 gap-3 mb-3"><div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-slate-400 text-[10px] text-center col-span-2 shadow-sm">Jadwal Kalender Bursa Belum Tersedia</div></div>`;
-	calendarUI = calendarUI || defaultCalendarUI;
-
-	// 2. Ambil Berita Emiten Spesifik via Yahoo Finance API
-	try {
-		const searchUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${ticker}.JK&newsCount=6`;
-		const proxies = [
-			`https://api.allorigins.win/raw?url=${encodeURIComponent(searchUrl)}`,
-			`https://corsproxy.io/?url=${encodeURIComponent(searchUrl)}`,
-			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(searchUrl)}`
-		];
-
-		let newsResult = null;
-		for (let p of proxies) {
-			try {
-				const res = await fetch(p, { signal: AbortSignal.timeout(5000) });
-				if (res.ok) {
-					let data = await res.json();
-					if (data && data.news && data.news.length > 0) {
-						newsResult = data.news;
-						break;
-					}
-				}
-			} catch (e) {}
-		}
-
-		let newsUI = '';
-		if (newsResult && newsResult.length > 0) {
-			newsResult.forEach(item => {
-				const date = item.providerPublishTime ? new Date(item.providerPublishTime * 1000).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Berita';
-				newsUI += `
-					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150 shadow-sm col-span-1 flex flex-col justify-between">
-						<div>
-							<div class="flex items-center gap-1.5 mb-2">
-								<span class="text-[9px] lg:text-[10px] bg-fuchsia-500/20 text-fuchsia-400 font-bold px-2 py-0.5 rounded border border-fuchsia-500/30">${item.publisher || 'Korporasi'}</span>
+							<div class="flex items-center justify-between mb-2">
+								<span class="text-[10px] lg:text-xs bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded border border-emerald-500/30">${source}</span>
 								<span class="text-[10px] lg:text-xs text-slate-400">${date}</span>
 							</div>
-							<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
+							<h4 class="text-xs lg:text-sm font-bold text-slate-200 group-hover:text-emerald-400 transition-colors line-clamp-3">${item.title}</h4>
 						</div>
 					</a>
 				`;
 			});
-			
-			container.innerHTML = calendarUI + newsUI;
-			if (window.lucide) lucide.createIcons();
+			html += '</div>';
+			container.innerHTML = html;
 			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 		} else {
-			container.innerHTML = calendarUI + `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-3">Belum ada kabar aksi korporasi / berita terbaru untuk ${ticker}.</div>`;
+			container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8">Belum ada berita terbaru untuk ${ticker} di Google News.</div>`;
 		}
 	} catch (e) {
-		console.warn("Gagal memuat Berita Korporasi", e);
-		container.innerHTML = calendarUI + `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-3">Gagal terhubung ke sumber berita aksi korporasi.</div>`;
+		console.warn("Gagal memuat Berita Google RSS", e);
+		container.innerHTML = `<div class="text-center text-rose-400 text-xs lg:text-sm py-8">Gagal mengambil data berita dari Google RSS. Silakan periksa koneksi.</div>`;
+	}
+}
+
+// Komentar: Mengambil data aksi korporasi (Dividen, Laba, RUPS) menggunakan Google News RSS API
+async function fetchCorporateAction(ticker) {
+	const container = document.getElementById('corporateContainer');
+	if (!container) return;
+
+	container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3';
+	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-400"></i> Memuat Aksi Korporasi dari Google...</div>`;
+	if (window.lucide) lucide.createIcons();
+
+	// Endpoint Google News RSS dengan query spesifik aksi korporasi
+	const now = Date.now();
+	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+dividen+OR+RUPS+OR+laba+OR+"laporan+keuangan"+OR+"aksi+korporasi"&hl=id&gl=ID&ceid=ID:id&_t=${now}`;
+	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+	try {
+		const res = await fetch(apiUrl, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
+		const data = await res.json();
+		
+		if (data.status === 'ok' && data.items && data.items.length > 0) {
+			let html = '';
+			data.items.slice(0, 6).forEach(item => {
+				const date = new Date(item.pubDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+				const source = item.author || item.source?.title || 'Aksi Korporasi';
+				
+				html += `
+					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150 shadow-sm col-span-1 flex flex-col justify-between group">
+						<div>
+							<div class="flex items-center justify-between gap-1.5 mb-2">
+								<span class="text-[9px] lg:text-[10px] bg-fuchsia-500/20 text-fuchsia-400 font-bold px-2 py-0.5 rounded border border-fuchsia-500/30 line-clamp-1">${source}</span>
+								<span class="text-[10px] lg:text-xs text-slate-400 shrink-0">${date}</span>
+							</div>
+							<h4 class="text-xs lg:text-sm font-bold text-slate-200 group-hover:text-fuchsia-400 transition-colors line-clamp-3">${item.title}</h4>
+						</div>
+					</a>
+				`;
+			});
+			container.innerHTML = html;
+			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+		} else {
+			container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-3">Belum ada kabar aksi korporasi / dividen terbaru untuk ${ticker} di Google.</div>`;
+		}
+	} catch (e) {
+		console.warn("Gagal memuat Korporasi Google RSS", e);
+		container.innerHTML = `<div class="text-center text-rose-400 text-xs lg:text-sm py-8 lg:col-span-3">Gagal terhubung ke sumber berita aksi korporasi. Silakan coba lagi.</div>`;
 	}
 }
 
