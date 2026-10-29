@@ -4191,98 +4191,57 @@ async function fetchStockNewsForAI(ticker) {
 	}
 }
 
-// Komentar: Mengambil seluruh rilis berita pasar modal dan emiten dari Google News dan Yahoo.
+// Komentar: Mengambil seluruh rilis berita pasar modal dan emiten menggunakan Widget Timeline TradingView.
 async function fetchStockNews(ticker) {
 	const container = document.getElementById('newsContainer');
 	if (!container) return;
 	
-	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-4"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i> Memuat berita terkini secara real-time...</div>`;
+	// Mengubah class bawaan agar layout grid sebelumnya tidak membentrok ukuran widget
+	container.className = 'w-full h-[500px] overflow-hidden rounded-xl border border-slate-800 bg-slate-900/60 mt-2';
+	container.innerHTML = `<div class="flex items-center justify-center h-full"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-emerald-400"></i></div>`;
 	if (window.lucide) lucide.createIcons();
 	
-	let hasNews = false;
-	let newsHTML = '';
-	const now = Date.now();
-
-	// 1. Google News RSS (Sumber utama untuk pasar lokal)
-	try {
-		const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+OR+bursa+indonesia+OR+ekonomi&hl=id&gl=ID&ceid=ID:id&_t=${now}`;
-		const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
-		
-		const response = await fetch(apiUrl, { cache: 'no-store', signal: AbortSignal.timeout(5000) });
-		const data = await response.json();
-		
-		if (data.status === 'ok' && data.items && data.items.length > 0) {
-			data.items.slice(0, 6).forEach(item => {
-				const date = new Date(item.pubDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-				newsHTML += `
-					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150 shadow-sm">
-						<div class="flex items-center gap-1.5 mb-2">
-							<span class="text-[9px] lg:text-[10px] bg-sky-400/20 text-sky-400 font-bold px-2 py-0.5 rounded border border-sky-400/30">${item.source?.title || 'Google News'}</span>
-							<span class="text-[10px] lg:text-xs text-white">${date}</span>
-						</div>
-						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
-					</a>
-				`;
-			});
-			hasNews = true;
-		}
-	} catch (e) {
-		console.warn('Gagal memuat berita Google News', e);
-	}
-
-	// 2. Yahoo Finance News sebagai Fallback/Tambahan 
-	try {
-		const yahooUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${ticker}.JK&newsCount=6`;
-		const proxies = [
-			`https://api.allorigins.win/get?disableCache=true&url=${encodeURIComponent(yahooUrl)}`,
-			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(yahooUrl)}`
-		];
-		
-		let data = null;
-		for (let p of proxies) {
-			try {
-				const response = await fetch(p, { cache: 'no-store', signal: AbortSignal.timeout(4000) });
-				if (response.ok) {
-					const proxyData = await response.json();
-					data = p.includes('allorigins') ? JSON.parse(proxyData.contents) : proxyData;
-					if (data && data.news && data.news.length > 0) break;
-				}
-			} catch (err) {}
-		}
-		
-		if (data && data.news && data.news.length > 0) {
-			data.news.slice(0, 6).forEach(item => {
-				const date = item.providerPublishTime ? new Date(item.providerPublishTime * 1000).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Berita Realtime';
-				newsHTML += `
-					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150 shadow-sm">
-						<div class="flex items-center gap-1.5 mb-2">
-							<span class="text-[9px] lg:text-[10px] bg-blue-500/20 text-blue-500 font-bold px-2 py-0.5 rounded border border-blue-500/30">${item.publisher || 'Yahoo Finance'}</span>
-							<span class="text-[10px] lg:text-xs text-white">${date}</span>
-						</div>
-						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
-					</a>
-				`;
-			});
-			hasNews = true;
-		}
-	} catch (e) {
-		console.warn('Gagal memuat berita Yahoo Finance', e);
-	}
-
-	if (hasNews) {
-		container.innerHTML = newsHTML;
-		if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
-	} else {
-		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-4">Tidak ada berita khusus ditemukan untuk saham ${ticker} saat ini.</div>`;
-	}
+	const tvSymbol = `IDX:${ticker}`;
+	container.innerHTML = ''; 
+	
+	const wrapper = document.createElement('div');
+	wrapper.className = "tradingview-widget-container h-full w-full";
+	
+	const inner = document.createElement('div');
+	inner.className = "tradingview-widget-container__widget h-full w-full";
+	wrapper.appendChild(inner);
+	container.appendChild(wrapper);
+	
+	const script = document.createElement('script');
+	script.type = 'text/javascript';
+	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-timeline.js';
+	script.async = true;
+	
+	const config = {
+		"feedMode": "symbol",
+		"symbol": tvSymbol,
+		"colorTheme": "dark",
+		"isTransparent": true,
+		"displayMode": "regular",
+		"width": "100%",
+		"height": "100%",
+		"locale": "id"
+	};
+	
+	script.innerHTML = JSON.stringify(config);
+	inner.appendChild(script);
+	
+	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 }
 
-// Komentar: Menarik informasi peristiwa bisnis perusahaan seperti RUPS, dividen, dan rilis pendapatan.
+// Komentar: Menarik informasi peristiwa bisnis perusahaan menggunakan Yahoo Finance dengan Multi-Proxy.
 async function fetchCorporateAction(ticker) {
 	const container = document.getElementById('corporateContainer');
 	if (!container) return;
 
-	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-400"></i> Memuat Kalender & Aksi Korporasi...</div>`;
+	// Mengembalikan layout grid untuk format kartu aksi korporasi
+	container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3';
+	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-400"></i> Memuat Kalender & Aksi Korporasi...</div>`;
 	if (window.lucide) lucide.createIcons();
 
 	let calendarUI = '';
@@ -4291,17 +4250,17 @@ async function fetchCorporateAction(ticker) {
 	try {
 		const calUrl = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}.JK?modules=calendarEvents`;
 		const proxies = [
-			`https://api.allorigins.win/get?disableCache=true&url=${encodeURIComponent(calUrl)}`,
+			`https://api.allorigins.win/raw?url=${encodeURIComponent(calUrl)}`,
+			`https://corsproxy.io/?url=${encodeURIComponent(calUrl)}`,
 			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(calUrl)}`
 		];
 		
 		let calResult = null;
 		for (let p of proxies) {
 			try {
-				const res = await fetch(p, { signal: AbortSignal.timeout(4000) });
+				const res = await fetch(p, { signal: AbortSignal.timeout(5000) });
 				if (res.ok) {
 					let data = await res.json();
-					if (p.includes('allorigins')) data = JSON.parse(data.contents);
 					calResult = data?.quoteSummary?.result?.[0]?.calendarEvents;
 					if (calResult) break;
 				}
@@ -4335,42 +4294,57 @@ async function fetchCorporateAction(ticker) {
 		console.warn("Gagal merender kalender korporasi", e);
 	}
 
-	// Tampilkan calendar UI lebih dulu agar terhindar dari delay RSS
-	container.innerHTML = calendarUI || `<div class="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-2 gap-3 mb-3"><div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-slate-400 text-[10px] text-center col-span-2 shadow-sm">Jadwal Kalender Bursa Belum Tersedia</div></div>`;
-	if (window.lucide) lucide.createIcons();
+	const defaultCalendarUI = `<div class="col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-2 gap-3 mb-3"><div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-slate-400 text-[10px] text-center col-span-2 shadow-sm">Jadwal Kalender Bursa Belum Tersedia</div></div>`;
+	calendarUI = calendarUI || defaultCalendarUI;
 
-	// 2. Ambil Berita Aksi Korporasi Khusus
+	// 2. Ambil Berita Emiten Spesifik via Yahoo Finance API
 	try {
-		const query = encodeURIComponent(`${ticker} AND (dividen OR RUPS OR "right issue" OR "stock split" OR buyback OR tender OR IPO)`);
-		const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=id&gl=ID&ceid=ID:id&_t=${Date.now()}`;
-		const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+		const searchUrl = `https://query2.finance.yahoo.com/v1/finance/search?q=${ticker}.JK&newsCount=6`;
+		const proxies = [
+			`https://api.allorigins.win/raw?url=${encodeURIComponent(searchUrl)}`,
+			`https://corsproxy.io/?url=${encodeURIComponent(searchUrl)}`,
+			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(searchUrl)}`
+		];
 
-		const response = await fetch(apiUrl, { signal: AbortSignal.timeout(5000) });
-		const data = await response.json();
-		
+		let newsResult = null;
+		for (let p of proxies) {
+			try {
+				const res = await fetch(p, { signal: AbortSignal.timeout(5000) });
+				if (res.ok) {
+					let data = await res.json();
+					if (data && data.news && data.news.length > 0) {
+						newsResult = data.news;
+						break;
+					}
+				}
+			} catch (e) {}
+		}
+
 		let newsUI = '';
-		if (data.status === 'ok' && data.items && data.items.length > 0) {
-			data.items.slice(0, 9).forEach(item => {
-				const date = new Date(item.pubDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+		if (newsResult && newsResult.length > 0) {
+			newsResult.forEach(item => {
+				const date = item.providerPublishTime ? new Date(item.providerPublishTime * 1000).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Berita';
 				newsUI += `
-					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150 shadow-sm">
-						<div class="flex items-center gap-1.5 mb-1">
-							<span class="text-[9px] lg:text-[10px] bg-fuchsia-500/20 text-fuchsia-400 font-bold px-2 py-0.5 rounded border border-fuchsia-500/30">Aksi Korporasi</span>
-							<span class="text-[10px] lg:text-xs text-white">${date}</span>
+					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150 shadow-sm col-span-1 flex flex-col justify-between">
+						<div>
+							<div class="flex items-center gap-1.5 mb-2">
+								<span class="text-[9px] lg:text-[10px] bg-fuchsia-500/20 text-fuchsia-400 font-bold px-2 py-0.5 rounded border border-fuchsia-500/30">${item.publisher || 'Korporasi'}</span>
+								<span class="text-[10px] lg:text-xs text-slate-400">${date}</span>
+							</div>
+							<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
 						</div>
-						<h4 class="text-xs lg:text-sm font-bold text-slate-200 line-clamp-2">${item.title}</h4>
 					</a>
 				`;
 			});
+			
 			container.innerHTML = calendarUI + newsUI;
 			if (window.lucide) lucide.createIcons();
 			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 		} else {
-			container.innerHTML = calendarUI + `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-3">Belum ada kabar aksi korporasi / kalender terbaru untuk ${ticker}.</div>`;
+			container.innerHTML = calendarUI + `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-3">Belum ada kabar aksi korporasi / berita terbaru untuk ${ticker}.</div>`;
 		}
 	} catch (e) {
-		console.warn("Gagal memuat RSS Korporasi", e);
-		// Jangan timpa calendarUI jika RSS gagal (Bug Fix)
+		console.warn("Gagal memuat Berita Korporasi", e);
 		container.innerHTML = calendarUI + `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-3">Gagal terhubung ke sumber berita aksi korporasi.</div>`;
 	}
 }
