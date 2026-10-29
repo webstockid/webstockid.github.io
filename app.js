@@ -1624,15 +1624,15 @@ async function scanWhalesData() {
 				const vol = cachedItem.volRatio || 0;
 				const chg = cachedItem.changePct || 0;
 				const price = cachedItem.price;
-				const ma5 = cachedItem.ma5 || price;
+				const ma20 = cachedItem.ma20 || price;
 				const valuasi = cachedItem.currentValuation || 0;
 				let tier = 0, tierName = "", tierClass = "";
 				
-				if (vol > 2.0 && valuasi > 2000000000 && chg >= 0 && chg <= 5.0) {
-					if (price > ma5) {
+				if (vol > 2.0 && valuasi > 2000000000 && chg >= 0 && chg <= 5) {
+					if (price > ma20) {
 						tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 						tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-					} else if (price === ma5) { 
+					} else if (price === ma20) { 
 						tier = 2; tierName = "PAUS AKUMULASI (MASSIVE WHALE)";
 						tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
 					} else { 
@@ -1670,15 +1670,15 @@ async function scanWhalesData() {
 					const vol = item.volRatio || 0;
 					const chg = item.changePct || 0;
 					const price = item.price;
-					const ma5 = item.ma5 || price;
+					const ma20 = item.ma20 || price;
 					const valuasi = item.currentValuation || 0;
 					let tier = 0, tierName = "", tierClass = "";
 					
-					if (vol > 2.0 && valuasi > 2000000000 && chg >= 0 && chg <= 5.0) {
-						if (price > ma5) {
+					if (vol > 2.0 && valuasi > 2000000000 && chg >= 0 && chg <= 5) {
+						if (price > ma20) {
 							tier = 3; tierName = "PAUS KUAT (STRONG WHALE)";
 							tierClass = "bg-fuchsia-500/20 border-fuchsia-500/40 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
-						} else if (price === ma5) { 
+						} else if (price === ma20) { 
 							tier = 2; tierName = "PAUS AKUMULASI (MASSIVE WHALE)";
 							tierClass = "bg-purple-500/20 border-purple-500/40 text-purple-400 shadow-[0_0_10px_rgba(217,70,239,0.2)]";
 						} else { 
