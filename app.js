@@ -3404,6 +3404,78 @@ function checkPriceAlertsRealtime(ticker, currentPrice) {
 	if (updated) saveAlerts(ticker, alerts);
 }
 
+
+// ==========================================
+// 21. TRADINGVIEW SCREENER MODAL (POPUP)
+// ==========================================
+function toggleTVScreenerModal() {
+	const modal = document.getElementById('tvScreenerModal');
+	const content = document.getElementById('tvScreenerModalContent');
+	const isHidden = modal.classList.contains('hidden');
+
+	if (isHidden) {
+		modal.classList.remove('hidden');
+		setTimeout(() => {
+			modal.classList.remove('opacity-0');
+			content.classList.remove('scale-95');
+			content.classList.add('scale-100');
+		}, 10);
+		
+		// Muat widget secara dinamis jika kontainer masih kosong (hemat resource di awal)
+		const container = document.getElementById('tvScreenerContainer');
+		if (container && container.innerHTML.trim() === '') {
+			refreshTVScreener();
+		}
+		
+		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	} else {
+		modal.classList.add('opacity-0');
+		content.classList.remove('scale-100');
+		content.classList.add('scale-95');
+		setTimeout(() => {
+			modal.classList.add('hidden');
+		}, 300);
+		
+		if (typeof AudioFX !== 'undefined') AudioFX.playDelete();
+	}
+}
+
+function refreshTVScreener() {
+	const container = document.getElementById('tvScreenerContainer');
+	const iconBtn = document.getElementById('iconRefreshTVScreener');
+	
+	if (!container) return;
+	
+	if (iconBtn) iconBtn.classList.add('animate-spin');
+	container.innerHTML = "";
+	
+	const script = document.createElement('script');
+	script.type = 'text/javascript';
+	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-screener.js';
+	script.async = true;
+	
+	// Konfigurasi parameter widget persis seperti pada versi file watchlist
+	script.text = JSON.stringify({
+		"width": "100%",
+		"height": "100%",
+		"defaultColumn": "overview",
+		"defaultScreen": "most_volatile",
+		"market": "indonesia",
+		"showToolbar": true,
+		"colorTheme": "dark",
+		"locale": "id",
+		"isTransparent": true
+	});
+	
+	container.appendChild(script);
+	
+	// Matikan animasi loading ikon setelah widget berhasil diinjeksi
+	setTimeout(() => {
+		if (iconBtn) iconBtn.classList.remove('animate-spin');
+	}, 1000);
+}
+
+
 // Komentar: Menganalisa lompatan akumulasi dan memberikan notifikasi Whale (Paus) saat pasar berjalan.
 function checkWhaleAlertRealtime(ticker, stockData) {
 	const latestData = getCachedStockData(ticker) || stockData;
