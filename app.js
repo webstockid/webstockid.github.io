@@ -4166,21 +4166,42 @@ async function fetchStockNewsForAI(ticker) {
 	const aiNewsList = document.getElementById('aiBeritaList');
 	if (!aiNewsList) return;
 	
-	const now = Date.now();
-	// Bypass sistem cache rss2json dengan parameter _t yang selalu berubah
-	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id&_t=${now}`;
-	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+indonesia&hl=id&gl=ID&ceid=ID:id`;
+	const proxies = [
+		`https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`,
+		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`
+	];
 
 	try {
-		const res = await fetch(apiUrl, { cache: 'no-store', signal: AbortSignal.timeout(5000) });
-		const data = await res.json();
+		let xmlText = null;
+		for (let p of proxies) {
+			try {
+				const res = await fetch(p, { cache: 'no-store', signal: AbortSignal.timeout(6000) });
+				if (res.ok) {
+					let data = await res.text();
+					if (p.includes('allorigins')) data = JSON.parse(data).contents;
+					if (data && data.includes('<rss')) {
+						xmlText = data;
+						break;
+					}
+				}
+			} catch(e) {}
+		}
 		
-		if (data.status === 'ok' && data.items && data.items.length > 0) {
+		if (!xmlText) throw new Error("Gagal mengambil RSS AI");
+
+		const parser = new DOMParser();
+		const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+		const items = Array.from(xmlDoc.querySelectorAll("item"));
+		
+		if (items.length > 0) {
 			let beritaHTML = '';
-			data.items.slice(0, 4).forEach(item => {
-				const source = item.author || item.source?.title || 'Media Nasional';
-				const pubDate = new Date(item.pubDate).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' });
-				beritaHTML += `<div class="bg-slate-900/50 p-2 rounded border border-slate-800/80">• <strong>${source} (${pubDate}):</strong> ${item.title}</div>`;
+			items.slice(0, 4).forEach(item => {
+				const title = item.querySelector("title")?.textContent || '';
+				const pubDateRaw = item.querySelector("pubDate")?.textContent;
+				const source = item.querySelector("source")?.textContent || 'Media Nasional';
+				const pubDate = pubDateRaw ? new Date(pubDateRaw).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: '2-digit' }) : '-';
+				beritaHTML += `<div class="bg-slate-900/50 p-2 rounded border border-slate-800/80">• <strong>${source} (${pubDate}):</strong> ${title}</div>`;
 			});
 			aiNewsList.innerHTML = beritaHTML;
 		} else {
@@ -4191,39 +4212,60 @@ async function fetchStockNewsForAI(ticker) {
 	}
 }
 
-// Komentar: Mengambil berita emiten menggunakan Google News RSS API via RSS2JSON
+// Komentar: Mengambil berita emiten menggunakan Google News RSS API dengan XML Parser
 async function fetchStockNews(ticker) {
 	const container = document.getElementById('newsContainer');
 	if (!container) return;
 	
-	// Sesuaikan kontainer untuk tampilan grid berita
 	container.className = 'w-full rounded-xl border border-slate-800 bg-slate-900/60 mt-2 p-4';
 	container.innerHTML = `<div class="flex items-center justify-center h-32"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-emerald-400"></i></div>`;
 	if (window.lucide) lucide.createIcons();
 	
-	// Endpoint Google News RSS
-	const now = Date.now();
-	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+OR+bursa+indonesia&hl=id&gl=ID&ceid=ID:id&_t=${now}`;
-	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+OR+bursa+indonesia&hl=id&gl=ID&ceid=ID:id`;
+	const proxies = [
+		`https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`,
+		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`
+	];
 	
 	try {
-		const res = await fetch(apiUrl, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
-		const data = await res.json();
+		let xmlText = null;
+		for (let p of proxies) {
+			try {
+				const res = await fetch(p, { cache: 'no-store', signal: AbortSignal.timeout(7000) });
+				if (res.ok) {
+					let data = await res.text();
+					if (p.includes('allorigins')) data = JSON.parse(data).contents;
+					if (data && data.includes('<rss')) {
+						xmlText = data;
+						break;
+					}
+				}
+			} catch(e) {}
+		}
 		
-		if (data.status === 'ok' && data.items && data.items.length > 0) {
+		if (!xmlText) throw new Error("Gagal mengambil RSS Berita");
+
+		const parser = new DOMParser();
+		const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+		const items = Array.from(xmlDoc.querySelectorAll("item"));
+		
+		if (items.length > 0) {
 			let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
-			data.items.slice(0, 6).forEach(item => {
-				const date = new Date(item.pubDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-				const source = item.author || item.source?.title || 'Berita Nasional';
+			items.slice(0, 6).forEach(item => {
+				const title = item.querySelector("title")?.textContent || '';
+				const link = item.querySelector("link")?.textContent || '#';
+				const pubDateRaw = item.querySelector("pubDate")?.textContent;
+				const source = item.querySelector("source")?.textContent || 'Berita Nasional';
+				const date = pubDateRaw ? new Date(pubDateRaw).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
 				
 				html += `
-					<a href="${item.link}" target="_blank" class="block p-4 bg-slate-950/30 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-200 shadow-sm flex flex-col justify-between group">
+					<a href="${link}" target="_blank" class="block p-4 bg-slate-950/30 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-200 shadow-sm flex flex-col justify-between group">
 						<div>
 							<div class="flex items-center justify-between mb-2">
 								<span class="text-[10px] lg:text-xs bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded border border-emerald-500/30">${source}</span>
 								<span class="text-[10px] lg:text-xs text-slate-400">${date}</span>
 							</div>
-							<h4 class="text-xs lg:text-sm font-bold text-slate-200 group-hover:text-emerald-400 transition-colors line-clamp-3">${item.title}</h4>
+							<h4 class="text-xs lg:text-sm font-bold text-slate-200 group-hover:text-emerald-400 transition-colors line-clamp-3">${title}</h4>
 						</div>
 					</a>
 				`;
@@ -4240,7 +4282,7 @@ async function fetchStockNews(ticker) {
 	}
 }
 
-// Komentar: Mengambil data aksi korporasi (Dividen, Laba, RUPS) menggunakan Google News RSS API
+// Komentar: Mengambil data aksi korporasi (Dividen, Laba, RUPS) menggunakan Google News RSS API dengan XML Parser
 async function fetchCorporateAction(ticker) {
 	const container = document.getElementById('corporateContainer');
 	if (!container) return;
@@ -4249,29 +4291,51 @@ async function fetchCorporateAction(ticker) {
 	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-400"></i> Memuat Aksi Korporasi dari Google...</div>`;
 	if (window.lucide) lucide.createIcons();
 
-	// Endpoint Google News RSS dengan query spesifik aksi korporasi
-	const now = Date.now();
-	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+dividen+OR+RUPS+OR+laba+OR+"laporan+keuangan"+OR+"aksi+korporasi"&hl=id&gl=ID&ceid=ID:id&_t=${now}`;
-	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+dividen+OR+RUPS+OR+laba+OR+"laporan+keuangan"+OR+"aksi+korporasi"&hl=id&gl=ID&ceid=ID:id`;
+	const proxies = [
+		`https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`,
+		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`
+	];
 
 	try {
-		const res = await fetch(apiUrl, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
-		const data = await res.json();
+		let xmlText = null;
+		for (let p of proxies) {
+			try {
+				const res = await fetch(p, { cache: 'no-store', signal: AbortSignal.timeout(7000) });
+				if (res.ok) {
+					let data = await res.text();
+					if (p.includes('allorigins')) data = JSON.parse(data).contents;
+					if (data && data.includes('<rss')) {
+						xmlText = data;
+						break;
+					}
+				}
+			} catch(e) {}
+		}
 		
-		if (data.status === 'ok' && data.items && data.items.length > 0) {
+		if (!xmlText) throw new Error("Gagal mengambil RSS Korporasi");
+
+		const parser = new DOMParser();
+		const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+		const items = Array.from(xmlDoc.querySelectorAll("item"));
+		
+		if (items.length > 0) {
 			let html = '';
-			data.items.slice(0, 6).forEach(item => {
-				const date = new Date(item.pubDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-				const source = item.author || item.source?.title || 'Aksi Korporasi';
+			items.slice(0, 6).forEach(item => {
+				const title = item.querySelector("title")?.textContent || '';
+				const link = item.querySelector("link")?.textContent || '#';
+				const pubDateRaw = item.querySelector("pubDate")?.textContent;
+				const source = item.querySelector("source")?.textContent || 'Aksi Korporasi';
+				const date = pubDateRaw ? new Date(pubDateRaw).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
 				
 				html += `
-					<a href="${item.link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150 shadow-sm col-span-1 flex flex-col justify-between group">
+					<a href="${link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150 shadow-sm col-span-1 flex flex-col justify-between group">
 						<div>
 							<div class="flex items-center justify-between gap-1.5 mb-2">
 								<span class="text-[9px] lg:text-[10px] bg-fuchsia-500/20 text-fuchsia-400 font-bold px-2 py-0.5 rounded border border-fuchsia-500/30 line-clamp-1">${source}</span>
 								<span class="text-[10px] lg:text-xs text-slate-400 shrink-0">${date}</span>
 							</div>
-							<h4 class="text-xs lg:text-sm font-bold text-slate-200 group-hover:text-fuchsia-400 transition-colors line-clamp-3">${item.title}</h4>
+							<h4 class="text-xs lg:text-sm font-bold text-slate-200 group-hover:text-fuchsia-400 transition-colors line-clamp-3">${title}</h4>
 						</div>
 					</a>
 				`;
