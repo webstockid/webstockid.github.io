@@ -1000,12 +1000,12 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			bandarBarColor = "from-emerald-600 via-emerald-400 to-teal-400 shadow-[0_0_20px_rgba(52,211,153,0.5)]";
 			bandarPct = 75; 
 		} else if (stockData.changePct >= -2 && stockData.volRatio > 1) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='plane-takeoff' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistance <i data-lucide='plane-takeoff' class='w-3 h-3'></i></span>";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 			bandarPct = 65; 
 		} else if (stockData.changePct >= -4 && stockData.volRatio > 0.5) {
-			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistent <i data-lucide='plane-takeoff' class='w-3 h-3'></i></span>";
+			bandarStatus = "<span class='inline-flex items-center gap-0.5'>Uji Resistance <i data-lucide='plane-takeoff' class='w-3 h-3'></i></span>";
 			bandarColor = "text-amber-400";
 			bandarBarColor = "from-amber-600 via-amber-400 to-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.4)]";
 			bandarPct = 55; 
