@@ -5007,7 +5007,7 @@ const AudioFX = {
 		} catch(e) {}
 	},
 	playClick() {
-		const clicks = ['klik1.mp3'];
+		const clicks = ['klik1.mp3', 'klik2.mp3'];
 		const randomClick = clicks[Math.floor(Math.random() * clicks.length)];
 		this.playAudioFile(randomClick);
 	},
@@ -5019,7 +5019,7 @@ const AudioFX = {
 	playDelete(withPopup = false) {
 		this.playAudioFile('hapus.mp3');
 		if (withPopup) {
-			setTimeout(() => { this.playAudioFile('hilang.mp3'); }, 1800);
+			setTimeout(() => { this.playAudioFile('hilang.mp3'); }, 2000);
 		}
 	},
 	playWinJournal() { this.playAudioFile('win.mp3'); },
