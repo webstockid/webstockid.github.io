@@ -4212,143 +4212,170 @@ async function fetchStockNewsForAI(ticker) {
 	}
 }
 
-// Komentar: Mengambil berita emiten menggunakan Google News RSS API dengan XML Parser
-async function fetchStockNews(ticker) {
-	const container = document.getElementById('newsContainer');
-	if (!container) return;
-	
-	container.className = 'w-full rounded-xl border border-slate-800 bg-slate-900/60 mt-2 p-4';
-	container.innerHTML = `<div class="flex items-center justify-center h-32"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-emerald-400"></i></div>`;
-	if (window.lucide) lucide.createIcons();
-	
-	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+saham+OR+bursa+indonesia&hl=id&gl=ID&ceid=ID:id`;
-	const proxies = [
-		`https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`,
-		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`
-	];
-	
-	try {
-		let xmlText = null;
-		for (let p of proxies) {
-			try {
-				const res = await fetch(p, { cache: 'no-store', signal: AbortSignal.timeout(7000) });
-				if (res.ok) {
-					let data = await res.text();
-					if (p.includes('allorigins')) data = JSON.parse(data).contents;
-					if (data && data.includes('<rss')) {
-						xmlText = data;
-						break;
-					}
-				}
-			} catch(e) {}
-		}
-		
-		if (!xmlText) throw new Error("Gagal mengambil RSS Berita");
+// Helper Proxy & Parsing RSS Google News Real-time
+async function fetchGoogleNewsRSS(query) {
+    const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=id&gl=ID&ceid=ID:id`;
+    
+    // Kombinasi Proxy Publik & Direct Fallback
+    const proxies = [
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`,
+        `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`
+    ];
 
-		const parser = new DOMParser();
-		const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-		const items = Array.from(xmlDoc.querySelectorAll("item"));
-		
-		if (items.length > 0) {
-			let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
-			items.slice(0, 6).forEach(item => {
-				const title = item.querySelector("title")?.textContent || '';
-				const link = item.querySelector("link")?.textContent || '#';
-				const pubDateRaw = item.querySelector("pubDate")?.textContent;
-				const source = item.querySelector("source")?.textContent || 'Berita Nasional';
-				const date = pubDateRaw ? new Date(pubDateRaw).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
-				
-				html += `
-					<a href="${link}" target="_blank" class="block p-4 bg-slate-950/30 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-200 shadow-sm flex flex-col justify-between group">
-						<div>
-							<div class="flex items-center justify-between mb-2">
-								<span class="text-[10px] lg:text-xs bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded border border-emerald-500/30">${source}</span>
-								<span class="text-[10px] lg:text-xs text-slate-400">${date}</span>
-							</div>
-							<h4 class="text-xs lg:text-sm font-bold text-slate-200 group-hover:text-emerald-400 transition-colors line-clamp-3">${title}</h4>
-						</div>
-					</a>
-				`;
-			});
-			html += '</div>';
-			container.innerHTML = html;
-			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
-		} else {
-			container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8">Belum ada berita terbaru untuk ${ticker} di Google News.</div>`;
-		}
-	} catch (e) {
-		console.warn("Gagal memuat Berita Google RSS", e);
-		container.innerHTML = `<div class="text-center text-rose-400 text-xs lg:text-sm py-8">Gagal mengambil data berita dari Google RSS. Silakan periksa koneksi.</div>`;
-	}
+    let xmlText = null;
+
+    for (let p of proxies) {
+        try {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 5000);
+            
+            const res = await fetch(p, { 
+                cache: 'no-store', 
+                signal: controller.signal 
+            });
+            clearTimeout(timer);
+
+            if (res.ok) {
+                let text = await res.text();
+                if (text && text.includes('<rss')) {
+                    xmlText = text;
+                    break;
+                }
+            }
+        } catch(e) {
+            console.warn(`Proxy RSS gagal (${p}):`, e.message);
+        }
+    }
+
+    if (!xmlText) {
+        throw new Error("Koneksi proxy RSS terputus/dibatasi. Silakan coba lagi.");
+    }
+
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+    const items = Array.from(xmlDoc.querySelectorAll("item"));
+
+    return items.map(item => {
+        let title = item.querySelector("title")?.textContent || '';
+        let link = item.querySelector("link")?.textContent || '#';
+        let pubDateRaw = item.querySelector("pubDate")?.textContent;
+        let source = item.querySelector("source")?.textContent || 'Bursa & Finansial';
+
+        // Membersihkan judul dari akhiran nama sumber jika ganda (misal: "Judul Berita - CNBC Indonesia")
+        if (title.includes(' - ')) {
+            const parts = title.split(' - ');
+            if (parts.length > 1) {
+                source = parts.pop();
+                title = parts.join(' - ');
+            }
+        }
+
+        const date = pubDateRaw ? new Date(pubDateRaw).toLocaleDateString('id-ID', { 
+            day: 'numeric', 
+            month: 'short', 
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }) : '-';
+
+        return { title, link, source, date };
+    });
 }
 
-// Komentar: Mengambil data aksi korporasi (Dividen, Laba, RUPS) menggunakan Google News RSS API dengan XML Parser
+// 1. Fungsi Berita Saham Real-time
+async function fetchStockNews(ticker) {
+    const container = document.getElementById('newsContainer');
+    if (!container) return;
+    
+    container.className = 'w-full rounded-xl border border-slate-800 bg-slate-900/60 mt-2 p-4';
+    container.innerHTML = `<div class="flex flex-col items-center justify-center h-32 gap-2"><i data-lucide="loader-2" class="w-6 h-6 animate-spin text-emerald-400"></i><span class="text-xs text-slate-400">Menghubungkan Berita Realtime ${ticker}...</span></div>`;
+    if (window.lucide) lucide.createIcons();
+    
+    try {
+        const query = `"${ticker}" OR "${ticker}.JK" saham OR "PT ${ticker}"`;
+        const newsItems = await fetchGoogleNewsRSS(query);
+        
+        if (newsItems.length > 0) {
+            let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+            newsItems.slice(0, 8).forEach(item => {
+                html += `
+                    <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="block p-4 bg-slate-950/40 hover:bg-slate-800/80 border border-slate-800/80 hover:border-emerald-500/40 rounded-xl transition duration-200 shadow-sm flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[10px] lg:text-xs bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded border border-emerald-500/20">${item.source}</span>
+                                <span class="text-[10px] lg:text-xs text-slate-400 font-medium">${item.date}</span>
+                            </div>
+                            <h4 class="text-xs lg:text-sm font-bold text-slate-200 group-hover:text-emerald-400 transition-colors line-clamp-2 leading-relaxed">${item.title}</h4>
+                        </div>
+                    </a>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+            if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+        } else {
+            container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8">Belum ada rilis berita terkini untuk emiten $${ticker}.</div>`;
+        }
+    } catch (e) {
+        console.warn("Gagal memuat Berita Google RSS:", e);
+        container.innerHTML = `
+            <div class="text-center py-8 space-y-3">
+                <p class="text-rose-400 text-xs lg:text-sm font-semibold">${e.message}</p>
+                <button onclick="fetchStockNews('${ticker}')" class="text-xs bg-slate-800 hover:bg-slate-700 text-emerald-400 px-3 py-1.5 rounded-lg border border-slate-700 transition font-bold">
+                    <i data-lucide="rotate-cw" class="w-3.5 h-3.5 inline mr-1"></i> Coba Lagi
+                </button>
+            </div>
+        `;
+        if (window.lucide) lucide.createIcons();
+    }
+}
+
+// 2. Fungsi Aksi Korporasi Real-time
 async function fetchCorporateAction(ticker) {
-	const container = document.getElementById('corporateContainer');
-	if (!container) return;
+    const container = document.getElementById('corporateContainer');
+    if (!container) return;
 
-	container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3';
-	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3 flex flex-col items-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-fuchsia-400"></i> Memuat Aksi Korporasi dari Google...</div>`;
-	if (window.lucide) lucide.createIcons();
+    container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3';
+    container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3 flex flex-col items-center gap-2"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto text-fuchsia-400"></i><span class="text-xs text-slate-400">Menyisir Aksi Korporasi $${ticker}...</span></div>`;
+    if (window.lucide) lucide.createIcons();
 
-	const rssUrl = `https://news.google.com/rss/search?q=${ticker}+dividen+OR+RUPS+OR+laba+OR+"laporan+keuangan"+OR+"aksi+korporasi"&hl=id&gl=ID&ceid=ID:id`;
-	const proxies = [
-		`https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`,
-		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`
-	];
-
-	try {
-		let xmlText = null;
-		for (let p of proxies) {
-			try {
-				const res = await fetch(p, { cache: 'no-store', signal: AbortSignal.timeout(7000) });
-				if (res.ok) {
-					let data = await res.text();
-					if (p.includes('allorigins')) data = JSON.parse(data).contents;
-					if (data && data.includes('<rss')) {
-						xmlText = data;
-						break;
-					}
-				}
-			} catch(e) {}
-		}
-		
-		if (!xmlText) throw new Error("Gagal mengambil RSS Korporasi");
-
-		const parser = new DOMParser();
-		const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-		const items = Array.from(xmlDoc.querySelectorAll("item"));
-		
-		if (items.length > 0) {
-			let html = '';
-			items.slice(0, 6).forEach(item => {
-				const title = item.querySelector("title")?.textContent || '';
-				const link = item.querySelector("link")?.textContent || '#';
-				const pubDateRaw = item.querySelector("pubDate")?.textContent;
-				const source = item.querySelector("source")?.textContent || 'Aksi Korporasi';
-				const date = pubDateRaw ? new Date(pubDateRaw).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
-				
-				html += `
-					<a href="${link}" target="_blank" class="block p-3.5 bg-slate-950/10 hover:bg-slate-800 border border-slate-800 rounded-lg transition duration-150 shadow-sm col-span-1 flex flex-col justify-between group">
-						<div>
-							<div class="flex items-center justify-between gap-1.5 mb-2">
-								<span class="text-[9px] lg:text-[10px] bg-fuchsia-500/20 text-fuchsia-400 font-bold px-2 py-0.5 rounded border border-fuchsia-500/30 line-clamp-1">${source}</span>
-								<span class="text-[10px] lg:text-xs text-slate-400 shrink-0">${date}</span>
-							</div>
-							<h4 class="text-xs lg:text-sm font-bold text-slate-200 group-hover:text-fuchsia-400 transition-colors line-clamp-3">${title}</h4>
-						</div>
-					</a>
-				`;
-			});
-			container.innerHTML = html;
-			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
-		} else {
-			container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-3">Belum ada kabar aksi korporasi / dividen terbaru untuk ${ticker} di Google.</div>`;
-		}
-	} catch (e) {
-		console.warn("Gagal memuat Korporasi Google RSS", e);
-		container.innerHTML = `<div class="text-center text-rose-400 text-xs lg:text-sm py-8 lg:col-span-3">Gagal terhubung ke sumber berita aksi korporasi. Silakan coba lagi.</div>`;
-	}
+    try {
+        const query = `"${ticker}" (dividen OR RUPS OR "laporan keuangan" OR "rights issue" OR buyback OR "stock split")`;
+        const corpItems = await fetchGoogleNewsRSS(query);
+        
+        if (corpItems.length > 0) {
+            let html = '';
+            corpItems.slice(0, 6).forEach(item => {
+                html += `
+                    <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="block p-3.5 bg-slate-950/40 hover:bg-slate-800/80 border border-slate-800 hover:border-fuchsia-500/40 rounded-xl transition duration-150 shadow-sm col-span-1 flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between gap-1.5 mb-2">
+                                <span class="text-[9px] lg:text-[10px] bg-fuchsia-500/10 text-fuchsia-400 font-bold px-2 py-0.5 rounded border border-fuchsia-500/20 truncate max-w-[150px]">${item.source}</span>
+                                <span class="text-[10px] lg:text-xs text-slate-400 shrink-0 font-medium">${item.date}</span>
+                            </div>
+                            <h4 class="text-xs lg:text-sm font-bold text-slate-200 group-hover:text-fuchsia-400 transition-colors line-clamp-3 leading-relaxed">${item.title}</h4>
+                        </div>
+                    </a>
+                `;
+            });
+            container.innerHTML = html;
+            if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+        } else {
+            container.innerHTML = `<div class="text-center text-slate-400 text-xs lg:text-sm py-8 lg:col-span-3">Belum ada agenda aksi korporasi / dividen tercatat untuk $${ticker}.</div>`;
+        }
+    } catch (e) {
+        console.warn("Gagal memuat Aksi Korporasi Google RSS:", e);
+        container.innerHTML = `
+            <div class="text-center py-8 lg:col-span-3 space-y-3">
+                <p class="text-rose-400 text-xs lg:text-sm font-semibold">${e.message}</p>
+                <button onclick="fetchCorporateAction('${ticker}')" class="text-xs bg-slate-800 hover:bg-slate-700 text-fuchsia-400 px-3 py-1.5 rounded-lg border border-slate-700 transition font-bold">
+                    <i data-lucide="rotate-cw" class="w-3.5 h-3.5 inline mr-1"></i> Coba Cek Ulang
+                </button>
+            </div>
+        `;
+        if (window.lucide) lucide.createIcons();
+    }
 }
 
 // Komentar: Memuat widget visual pemetaan rotasi sektor industri (Heatmap) secara interaktif.
