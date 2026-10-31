@@ -5007,12 +5007,13 @@ const AudioFX = {
 		} catch(e) {}
 	},
 	playClick() {
-		const clicks = ['klik1.mp3', 'klik2.mp3'];
+		const clicks = ['klik1.mp3'];
 		const randomClick = clicks[Math.floor(Math.random() * clicks.length)];
 		this.playAudioFile(randomClick);
 	},
+	playHover() { this.playAudioFile('hover.mp3'); },
 	playSuccess() { this.playAudioFile('sukses.mp3'); },
-	playAlert() { this.playAudioFile('loss.mp3'); },
+	playAlert() { this.playAudioFile('alert.mp3'); },
 	playTokenExpired() { this.playAudioFile('hilang.mp3'); },
 	playSearch() { this.playAudioFile('cari.mp3'); },
 	playNotif() { this.playAudioFile('notif.mp3'); },
@@ -5088,6 +5089,15 @@ document.addEventListener('click', function(e) {
 		}
 		if (!isVibrateMuted && 'vibrate' in navigator) {
 			navigator.vibrate(100);
+		}
+	}
+});
+
+document.addEventListener('mouseover', function(e) {
+	const target = e.target.closest('button, a, [onclick]');
+	if (target && (!e.relatedTarget || !target.contains(e.relatedTarget))) {
+		if (typeof AudioFX !== 'undefined' && !isSoundMuted) {
+			AudioFX.playHover();
 		}
 	}
 });
