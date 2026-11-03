@@ -1362,7 +1362,7 @@ async function startBSJPProcess() {
 	let bsjpCandidates = [];
 
 	const currentHour = new Date().getHours();
-	let targetRasio = currentHour < 11 ? 1.0 : (currentHour < 14 ? 1.0 : 2.0);
+	let targetRasio = currentHour < 11 ? 1.0 : (currentHour < 14 ? 0.5 : 1.0); //1.0 2.0
 
 	try {
 		for (const ticker of shuffledWatchlist) {
