@@ -761,6 +761,10 @@
 						<button onclick="confirmResetData()" class="w-full py-2 px-3 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 text-xs font-semibold rounded-xl border border-rose-500/20 transition flex items-center justify-center gap-2">
 							<i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-rose-400"></i> Reset Ke Data Sampel Rupiah
 						</button>
+
+						<button onclick="confirmClearAllData()" class="w-full py-2 px-3 bg-rose-600/20 hover:bg-rose-600/30 text-rose-200 text-xs font-bold rounded-xl border border-rose-500/40 transition flex items-center justify-center gap-2">
+							<i data-lucide="trash-2" class="w-3.5 h-3.5 text-rose-400"></i> Reset / Hapus Semua Data
+						</button>
 					</div>
 				</section>
 
@@ -2672,7 +2676,7 @@
 		}
 
 		function confirmResetData() {
-			openConfirmModal('Reset Data', 'Apakah Anda yakin ingin mengembalikan data ke sampel awal Rupiah?', (confirmed) => {
+			openConfirmModal('Reset Ke Data Sampel', 'Apakah Anda yakin ingin mengembalikan data ke sampel awal Rupiah?', (confirmed) => {
 				if (confirmed) {
 					transactions = INITIAL_DUMMY_DATA;
 					budgetLimit = 7000000;
@@ -2686,6 +2690,32 @@
 					renderTransactions();
 					renderPockets();
 					showToast('Data di-reset ke sampel awal', 'info');
+				}
+			});
+		}
+
+		function confirmClearAllData() {
+			openConfirmModal('Reset / Hapus Semua Data', 'Apakah Anda yakin ingin menghapus SELURUH data (transaksi, kantong, anggaran, & profil)? Tindakan ini akan mengosongkan aplikasi secara total.', (confirmed) => {
+				if (confirmed) {
+					transactions = [];
+					budgetLimit = 0;
+					pockets = [];
+					userCategories = DEFAULT_CATEGORIES;
+					userProfile = { name: 'Pengguna ArthaPulse', phone: '', photo: '' };
+					
+					localStorage.removeItem(STORAGE_KEY);
+					localStorage.removeItem(BUDGET_KEY);
+					localStorage.removeItem(POCKETS_KEY);
+					localStorage.removeItem(PROFILE_KEY);
+					localStorage.removeItem(CATEGORIES_KEY);
+					
+					saveAppState();
+					updateProfileHeaderUI();
+					populateCategoryDropdowns();
+					updateDashboard();
+					renderTransactions();
+					renderPockets();
+					showToast('Seluruh data berhasil dihapus & dikosongkan', 'danger');
 				}
 			});
 		}

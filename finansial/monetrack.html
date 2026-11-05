@@ -14,7 +14,7 @@
 	<!-- Font lembut & bulat (fallback: font sistem) -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link id="font-Comfortaa:wght@300;400;500;600;700" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap">
+	<link id="font-Quicksand:wght@300;400;500;600;700" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap">
 
 	<!-- Tailwind CSS (CDN, versi dikunci) -->
 	<script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -25,7 +25,7 @@
 			darkMode: 'class',
 			theme: {
 				extend: {
-					fontFamily: { sans: ['Comfortaa', 'ui-rounded', 'Segoe UI', 'system-ui', 'sans-serif'] },
+					fontFamily: { sans: ['Quicksand', 'ui-rounded', 'Segoe UI', 'system-ui', 'sans-serif'] },
 					colors: {
 						// stone = latar & teks mode terang (krem hangat)
 						stone: { 50: '#faf8f4', 100: '#f3f0e9', 200: '#e7e2d8', 300: '#d3ccbf', 400: '#aea697', 500: '#898173', 600: '#6a6358', 700: '#524c43', 800: '#3b372f', 900: '#27241f' },
@@ -66,7 +66,7 @@
 			box-sizing: border-box;
 			--c-income: #6dbf9d;   /* warna pemasukan di grafik */
 			--c-expense: #ec9a8f;  /* warna pengeluaran di grafik */
-			--app-font: "Comfortaa", ui-rounded, "Segoe UI", system-ui, sans-serif;
+			--app-font: "Quicksand", ui-rounded, "Segoe UI", system-ui, sans-serif;
 			--r-card: 1.5rem;
 			--ac-50: 243 247 246;
 			--ac-100: 227 237 234;
@@ -166,6 +166,7 @@
 			<!-- Aksi cepat -->
 			<div class="order-2 ml-auto flex items-center gap-1.5 lg:order-4 lg:ml-0">
 				<button data-add class="btn-main mr-1 hidden items-center gap-1 lg:inline-flex">+ Tambah</button>
+				<button id="profileBtn" class="relative grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full ring-2 ring-stone-200 transition active:scale-95 dark:ring-slate-700" title="Profil" aria-label="Profil"></button>
 				<button id="notifBtn" class="icon-btn relative" title="Notifikasi" aria-label="Notifikasi">
 					<svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"/></svg>
 					<span id="notifBadge" class="absolute -right-1 -top-1 hidden min-w-[1.1rem] rounded-full bg-rose-500 px-1 text-[10px] font-bold leading-[1.1rem] text-white">0</span>
@@ -194,6 +195,7 @@
 
 		<!-- LAYAR 1: BERANDA -->
 		<section data-screen="home" class="space-y-4">
+			<div id="greeting" class="hidden items-center gap-3 px-1"></div>
 			<div id="summary" class="grid grid-cols-2 gap-3 md:grid-cols-3"></div>
 			<div id="limitBanner" class="hidden"></div>
 
@@ -435,6 +437,20 @@
 			'Cicilan & Utang', 'Pajak', 'Tabungan', 'Investasi', 'Dividen & Bunga', 'Gaji', 'Bonus', 'Freelance',
 			'Usaha', 'Refund', 'Lainnya'
 		];
+		// Ikon bawaan tiap kategori (bisa diganti pengguna lewat Pengaturan > Kategori)
+		const CATEGORY_ICONS = {
+			'Makanan': '🍜', 'Minuman & Kopi': '☕', 'Belanja': '🛍️', 'Transport': '🚌', 'Perawatan Kendaraan': '🔧', 'Tempat Tinggal': '🏠',
+			'Sewa': '🔑', 'Tagihan': '🧾', 'Komunikasi': '📱', 'Langganan': '📺', 'Kesehatan': '💊', 'Asuransi': '🛡️', 'Pendidikan': '🎓',
+			'Anak': '🧸', 'Keluarga': '👨‍👩‍👧', 'Hewan Peliharaan': '🐾', 'Pakaian': '👕', 'Perawatan Diri': '💈', 'Hiburan': '🎬', 'Hobi': '🎨',
+			'Liburan': '🏖️', 'Hadiah & Donasi': '🎁', 'Cicilan & Utang': '💳', 'Pajak': '🏛️', 'Tabungan': '🐷', 'Investasi': '📈',
+			'Dividen & Bunga': '💹', 'Gaji': '💼', 'Bonus': '🎉', 'Freelance': '💻', 'Usaha': '🏪', 'Refund': '↩️', 'Lainnya': '📦'
+		};
+		// Ikon yang tersedia untuk dipilih
+		const ICON_SET = [
+			'🍜', '🍔', '🍕', '🍱', '☕', '🧋', '🛒', '🛍️', '🚌', '🚗', '🏍️', '⛽', '🔧', '🏠', '🔑', '🧾', '💡', '💧', '📱', '📶',
+			'📺', '🎮', '🎬', '🎵', '💊', '🏥', '🛡️', '🎓', '📚', '🧸', '👨‍👩‍👧', '🐾', '👕', '👗', '👟', '💈', '💄', '🎨', '🏖️', '✈️',
+			'🎁', '❤️', '💳', '🏛️', '🐷', '💰', '📈', '💹', '💼', '🎉', '💻', '🏪', '↩️', '📦', '🏷️', '🧹', '🔨', '🌱', '🏋️', '🎂'
+		];
 		const CATEGORIES = CATEGORY_NAMES.map((name, i) => ({ name, color: name === 'Lainnya' ? '#b9bec7' : hslHex((i * 137.508) % 360, 48, 70) }));
 
 		const CONFIG = {
@@ -447,12 +463,12 @@
 				fontSize: { min: 12, max: 22, step: 1, default: 16 },
 				legacySizes: { sm: 14, md: 16, lg: 18, xl: 20 },   // nilai lama sebelum memakai slider
 				fonts: {
-					comfortaa: { label: 'Comfortaa (bawaan)', stack: '"Comfortaa", ui-rounded, system-ui, sans-serif', google: 'Comfortaa:wght@300;400;500;600;700' },
+					quicksand: { label: 'Quicksand (bawaan)', stack: '"Quicksand", ui-rounded, system-ui, sans-serif', google: 'Quicksand:wght@300;400;500;600;700' },
+					comfortaa: { label: 'Comfortaa', stack: '"Comfortaa", ui-rounded, system-ui, sans-serif', google: 'Comfortaa:wght@300;400;500;600;700' },
 					rubik: { label: 'Rubik', stack: '"Rubik", system-ui, sans-serif', google: 'Rubik:wght@300;400;500;600;700;800' },
 					barlow: { label: 'Barlow', stack: '"Barlow", system-ui, sans-serif', google: 'Barlow:wght@300;400;500;600;700;800' },
 					comic: { label: 'Comic Relief', stack: '"Comic Relief", "Comic Sans MS", cursive, sans-serif', google: 'Comic+Relief:wght@400;700' },
-					fredoka: { label: 'Fredoka', stack: '"Fredoka", ui-rounded, system-ui, sans-serif', google: 'Fredoka:wght@300;400;500;600;700' },
-					quicksand: { label: 'Quicksand', stack: '"Quicksand", ui-rounded, system-ui, sans-serif', google: 'Quicksand:wght@300;400;500;600;700' }
+					fredoka: { label: 'Fredoka', stack: '"Fredoka", ui-rounded, system-ui, sans-serif', google: 'Fredoka:wght@300;400;500;600;700' }
 				},
 				accents: [   // h = hue (0-360), s = saturasi (%)
 					{ id: 'sage', label: 'Sage', h: 162, s: 25 },
@@ -501,9 +517,10 @@
 		const state = {
 			tx: [], budget: 0, theme: null,
 			notifs: [], alertLog: {}, range: 6, screen: 'home', view: 'month', rangeDay: 7, rangeWeek: 5, rangeYear: 3, pockets: [], pocketTx: [],
+			profile: null, profileSkipped: false, categoryIcons: {},
 			settings: {
-				alertsOn: true, warnAt: 80, device: false, sound: true,
-				fontSize: 16, fontFamily: 'comfortaa', fontWeight: 'normal', accent: 'sage', accentHue: null, accentSat: null, radius: 'xl', animations: true, weekStart: 1
+				alertsOn: true, warnAt: 80, device: false, sound: true, goalSave: 20, goalEmergency: 6,
+				fontSize: 16, fontFamily: 'quicksand', fontWeight: 'normal', accent: 'sage', accentHue: null, accentSat: null, radius: 'xl', animations: true, weekStart: 1
 			},
 			month: ymd(new Date()).slice(0, 7),
 			type: 'expense', editId: null,
@@ -511,7 +528,7 @@
 		};
 
 		const Store = {
-			fields: ['tx', 'budget', 'theme', 'notifs', 'alertLog', 'range', 'rangeDay', 'rangeWeek', 'rangeYear', 'view', 'pockets', 'pocketTx', 'settings'],
+			fields: ['tx', 'budget', 'theme', 'notifs', 'alertLog', 'range', 'rangeDay', 'rangeWeek', 'rangeYear', 'view', 'pockets', 'pocketTx', 'profile', 'profileSkipped', 'categoryIcons', 'settings'],
 			load() {
 				try {
 					const d = JSON.parse(localStorage.getItem(CONFIG.storageKey) || '{}');
@@ -523,16 +540,34 @@
 					state.notifs = Array.isArray(d.notifs) ? d.notifs : [];
 					state.alertLog = d.alertLog || {};
 					Object.assign(state, Pockets.sanitize(d.pockets, d.pocketTx));
+					state.profile = Profile.sanitize(d.profile);
+					state.profileSkipped = Boolean(d.profileSkipped);
+					state.categoryIcons = CategoryIcons.sanitize(d.categoryIcons);
 					state.range = [1, 3, 6, 9, 12].includes(d.range) ? d.range : 6;
 					state.rangeWeek = [1, 3, 5, 7, 9].includes(d.rangeWeek) ? d.rangeWeek : 5;
 					state.rangeDay = [3, 7, 14, 28, 30].includes(d.rangeDay) ? d.rangeDay : 7;
 					state.rangeYear = [1, 2, 3, 4, 5].includes(d.rangeYear) ? d.rangeYear : 3;
 					state.view = ['day', 'week', 'month', 'year'].includes(d.view) ? d.view : 'month';
 					state.settings = { ...state.settings, ...(d.settings || {}) };
+					const S = state.settings;
+					S.goalSave = Math.max(1, Math.min(100, Number(S.goalSave) || 20));
+					S.goalEmergency = Math.max(1, Math.min(60, Number(S.goalEmergency) || 6));
+					// Migrasi: pengguna yang masih memakai font bawaan lama (Comfortaa) dipindah ke Quicksand
+					if (S.fontV !== 2) { if (S.fontFamily === 'comfortaa') S.fontFamily = 'quicksand'; S.fontV = 2; }
 				} catch (e) { /* storage kosong / diblokir */ }
 			},
 			save() {
-				try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(Object.fromEntries(this.fields.map((k) => [k, state[k]])))); } catch (e) { /* abaikan */ }
+				try {
+					localStorage.setItem(CONFIG.storageKey, JSON.stringify(Object.fromEntries(this.fields.map((k) => [k, state[k]]))));
+					return true;
+				} catch (e) {
+					// Biasanya penyimpanan penuh (mis. karena banyak gambar) atau diblokir browser
+					if (!this.warned) {
+						this.warned = true;
+						Toast.show({ type: 'error', title: 'Penyimpanan penuh', message: 'Data terbaru tidak bisa disimpan. Kecilkan gambar atau hapus data lama.', duration: 7000 });
+					}
+					return false;
+				}
 			}
 		};
 
@@ -598,7 +633,7 @@
 				});
 			},
 			health() {
-				const H = CONFIG.health, W = H.weights;
+				const H = CONFIG.health, W = H.weights, goalSave = state.settings.goalSave / 100, goalEmg = state.settings.goalEmergency;
 				const cur = this.totals(this.inMonth(state.month));
 				const rate = cur.income > 0 ? (cur.income - cur.expense) / cur.income : (cur.expense > 0 ? -1 : 0);
 				const used = state.budget > 0 ? cur.expense / state.budget : 0;
@@ -606,19 +641,19 @@
 				const avg = past.length ? past.reduce((a, b) => a + b, 0) / past.length : 0;
 				const months = avg > 0 ? Math.max(0, this.totals(state.tx).net) / avg : 0;
 
-				const pSave = Math.max(0, Math.min(rate / H.savingsTarget, 1));
+				const pSave = Math.max(0, Math.min(rate / goalSave, 1));
 				const pBudget = state.budget > 0 ? Math.max(0, Math.min(1, (1.5 - used) / 0.5)) : 0.5;
-				const pEmg = Math.min(months / H.emergencyMonths, 1);
+				const pEmg = Math.min(months / goalEmg, 1);
 				const score = state.tx.length ? Math.round(pSave * W.savings + pBudget * W.budget + pEmg * W.emergency) : 0;
 
 				const tips = [];
 				if (!state.tx.length) tips.push('Catat transaksi pertama kamu agar skor bisa dihitung.');
 				else {
-					tips.push(rate >= H.savingsTarget ? 'Rasio tabung sudah mencapai target. Pertahankan!' : `Rasio tabung ${Math.round(rate * 100)}%. Usahakan minimal ${H.savingsTarget * 100}% dari pemasukan.`);
+					tips.push(rate >= goalSave ? 'Rasio tabung sudah mencapai target. Pertahankan!' : `Rasio tabung ${Math.round(rate * 100)}%. Usahakan minimal ${Math.round(goalSave * 100)}% dari pemasukan.`);
 					tips.push(state.budget <= 0 ? 'Atur batas pengeluaran bulanan untuk mendapat peringatan otomatis.' : used > 1 ? 'Pengeluaran sudah melewati batas bulan ini.' : 'Pengeluaran masih dalam batas.');
-					tips.push(months >= H.emergencyMonths ? 'Dana darurat sudah aman.' : `Dana darurat baru ${months.toFixed(1)} bulan. Targetkan ${H.emergencyMonths} bulan pengeluaran.`);
+					tips.push(months >= goalEmg ? 'Dana darurat sudah aman.' : `Dana darurat baru ${months.toFixed(1)} bulan. Targetkan ${goalEmg} bulan pengeluaran.`);
 				}
-				return { score, level: H.levels.find((l) => score >= l[0]), rate, used, months, pSave, pEmg, pBudget, tips };
+				return { score, level: H.levels.find((l) => score >= l[0]), rate, used, months, pSave, pEmg, pBudget, goalSave, goalEmg, tips };
 			}
 		};
 
@@ -630,7 +665,7 @@
 			lastId: null,
 			renderAll() {
 				$('#monthPick').value = state.month;
-				this.summary(); this.limit(); this.health(); this.charts(); this.list(); NotifPanel.render(); Pockets.render();
+				this.summary(); this.limit(); this.health(); this.charts(); this.list(); NotifPanel.render(); Pockets.render(); Profile.render();
 			},
 			summary() {
 				const t = Calc.totals(Calc.inMonth(state.month));
@@ -659,7 +694,7 @@
 				});
 			},
 			health() {
-				const h = Calc.health(), H = CONFIG.health;
+				const h = Calc.health();
 				const ring = $('#hRing');
 				ring.setAttribute('stroke', h.level[2]);
 				ring.style.strokeDasharray = `${h.score} ${100 - h.score}`;
@@ -668,13 +703,19 @@
 				$('#hLabel').textContent = state.tx.length ? h.level[1] : 'Belum ada data';
 				$('#hLabel').style.color = h.level[2];
 				const bars = [
-					['Rasio tabung', `${Math.round(h.rate * 100)}% (target ${H.savingsTarget * 100}%)`, h.pSave * 100, '#6dbf9d'],
-					['Pemakaian batas', state.budget ? `${Math.round(h.used * 100)}%` : 'Belum diatur', Math.min(h.used * 100, 100), h.used > 1 ? '#e07f76' : '#7fb8e0'],
-					['Dana darurat', `${h.months.toFixed(1)} bln (target ${H.emergencyMonths})`, h.pEmg * 100, '#a99be0']
+					['save', 'Rasio tabung', `${Math.round(h.rate * 100)}% (target ${Math.round(h.goalSave * 100)}%)`, h.pSave * 100, '#6dbf9d'],
+					['limit', 'Pemakaian batas', state.budget ? `${Math.round(h.used * 100)}% dari ${fmt.format(state.budget)}` : 'Belum diatur', Math.min(h.used * 100, 100), h.used > 1 ? '#e07f76' : '#7fb8e0'],
+					['emergency', 'Dana darurat', `${h.months.toFixed(1)} bln (target ${h.goalEmg})`, h.pEmg * 100, '#a99be0']
 				];
-				$('#hMetrics').innerHTML = bars.map(([label, text, pct, color]) => `
+				$('#hMetrics').innerHTML = bars.map(([kind, label, text, pct, color]) => `
 					<div>
-						<div class="mb-1 flex justify-between text-xs"><span>${label}</span><span class="text-stone-400">${text}</span></div>
+						<div class="mb-1 flex items-center justify-between gap-2 text-xs">
+							<span class="font-semibold">${label}</span>
+							<span class="flex min-w-0 items-center gap-1.5">
+								<span class="truncate text-stone-400">${text}</span>
+								<button type="button" data-goal="${kind}" class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-stone-200/60 text-[11px] text-stone-500 transition hover:bg-stone-200 active:scale-95 dark:bg-slate-700/60 dark:text-slate-300" title="Atur ${label.toLowerCase()}" aria-label="Atur ${label}">✎</button>
+							</span>
+						</div>
 						<div class="h-2 overflow-hidden rounded-full bg-stone-200/70 dark:bg-slate-700"><div class="bar-x h-full rounded-full" style="width:${Math.max(0, pct)}%;background:${color}"></div></div>
 					</div>`).join('');
 				$('#hTips').innerHTML = h.tips.map((t) => `<li>${esc(t)}</li>`).join('');
@@ -721,7 +762,7 @@
 				Charts.donut($('#donut'), cats.map(([name, v]) => ({ name, value: v, color: catColor(name) })), 'pengeluaran');
 				$('#catList').innerHTML = cats.length ? cats.map(([name, v]) => `
 					<li class="flex items-center gap-2">
-						<i class="h-3 w-3 shrink-0 rounded-full" style="background:${catColor(name)}"></i>
+						${catIcon(name, 'h-7 w-7 rounded-xl text-sm')}
 						<span class="flex-1 truncate">${esc(name)}</span>
 						<span class="text-xs text-stone-400">${Math.round((v / total) * 100)}%</span>
 						<span class="font-semibold">${fmt.format(v)}</span>
@@ -735,7 +776,7 @@
 				$('#listTitle').textContent = `Transaksi · ${monthLabel(state.month)} (${rows.length})`;
 				$('#txList').innerHTML = rows.length ? rows.map((t) => `
 					<li class="flex items-center gap-3 px-1 py-2.5 ${t.id === this.lastId ? 'anim-rise' : ''}">
-						<span class="grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-sm font-bold text-stone-700 dark:text-slate-100" style="background:${catColor(t.category)}66">${esc(t.category.charAt(0))}</span>
+						${catIcon(t.category)}
 						<div class="min-w-0 flex-1">
 							<p class="truncate text-sm font-semibold">${esc(t.category)}<span class="font-normal text-stone-400"> ${esc(t.note)}</span></p>
 							<p class="text-xs text-stone-400">${t.date}</p>
@@ -761,7 +802,7 @@
 			},
 						fillCategories() {
 				const cur = $('#fCat').value;
-				const opts = CONFIG.categories[state.type].map((c) => `<option>${esc(c.name)}</option>`).join('');
+				const opts = CONFIG.categories[state.type].map((c) => `<option data-cat="${esc(c.name)}">${esc(c.name)}</option>`).join('');
 				$('#fCat').innerHTML = opts;
 				if ([...$('#fCat').options].some((o) => o.value === cur)) $('#fCat').value = cur;
 				Dropdown.refresh($('#fCat'));
@@ -1007,7 +1048,8 @@
 			},
 			sync(select) {
 				const o = select.options[select.selectedIndex];
-				select._dd.btn.innerHTML = `<span class="truncate">${esc(o ? o.text : '')}</span>
+				const ico = o && o.dataset.cat ? catIcon(o.dataset.cat, 'h-6 w-6 rounded-lg text-sm') : '';
+				select._dd.btn.innerHTML = `<span class="flex min-w-0 items-center gap-2">${ico}<span class="truncate">${esc(o ? o.text : '')}</span></span>
 					<svg class="h-4 w-4 shrink-0 text-stone-400 transition-transform duration-200 group-data-[open=true]:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.3 7.3a1 1 0 011.4 0L10 10.6l3.3-3.3a1 1 0 111.4 1.4l-4 4a1 1 0 01-1.4 0l-4-4a1 1 0 010-1.4z"/></svg>`;
 			},
 			refresh(select) { if (select && select._dd) this.sync(select); },
@@ -1018,7 +1060,7 @@
 				const { wrap, menu } = select._dd;
 				menu.innerHTML = [...select.options].map((o) => `
 					<li role="option" data-v="${esc(o.value)}" aria-selected="${o.selected}" class="flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 transition hover:bg-stone-100 dark:hover:bg-slate-700 ${o.selected ? 'font-semibold text-teal-600 dark:text-teal-300' : ''}">
-						<span class="truncate">${esc(o.text)}</span>${o.selected ? '<span>✓</span>' : ''}
+						<span class="flex min-w-0 items-center gap-2">${o.dataset.cat ? catIcon(o.dataset.cat, 'h-6 w-6 rounded-lg text-sm') : ''}<span class="truncate">${esc(o.text)}</span></span>${o.selected ? '<span>✓</span>' : ''}
 					</li>`).join('');
 				menu.classList.remove('hidden');
 				menu.classList.add('anim-pop');
@@ -1201,7 +1243,7 @@
 		const Appearance = {
 			// Lightness tiap tingkat warna aksen (50 = terang, 900 = gelap)
 			shades: { 50: 96, 100: 91, 200: 83, 300: 72, 400: 57, 500: 42, 600: 35, 700: 29, 800: 24, 900: 19 },
-			defaults: { fontSize: 16, fontFamily: 'comfortaa', fontWeight: 'normal', accent: 'sage', accentHue: null, accentSat: null, radius: 'xl', animations: true, weekStart: 1 },
+			defaults: { fontSize: 16, fontFamily: 'quicksand', fontWeight: 'normal', accent: 'sage', accentHue: null, accentSat: null, radius: 'xl', animations: true, weekStart: 1 },
 			// Ukuran font aktif (px), tetap valid walau data lama berupa teks (sm/md/lg/xl)
 			size() {
 				const s = state.settings, F = CONFIG.appearance.fontSize, legacy = CONFIG.appearance.legacySizes[s.fontSize];
@@ -1217,8 +1259,8 @@
 				Object.entries(this.shades).forEach(([k, l]) => root.style.setProperty(`--ac-${k}`, hslRgb(ac.h, ac.s * (l > 90 ? 0.9 : 1), l).join(' ')));
 				root.style.fontSize = `${this.size()}px`;
 				root.dataset.fw = s.fontWeight || 'normal';
-				if (!A.fonts[s.fontFamily]) s.fontFamily = 'comfortaa';
-				const font = A.fonts[s.fontFamily] || A.fonts.comfortaa;
+				if (!A.fonts[s.fontFamily]) s.fontFamily = 'quicksand';
+				const font = A.fonts[s.fontFamily] || A.fonts.quicksand;
 				this.loadFont(font);
 				root.style.setProperty('--app-font', font.stack);
 				root.style.setProperty('--r-card', (A.radii.find((r) => r[0] === s.radius) || A.radii[0])[1]);
@@ -1269,7 +1311,7 @@
 				Modal.open({
 					title: 'Pengaturan',
 					body: `<div class="space-y-4">
-						${seg('setTab', [['look', 'Tampilan'], ['notif', 'Notifikasi']], 'look', 'grid-cols-2')}
+						${seg('setTab', [['look', 'Tampilan'], ['cats', 'Kategori'], ['notif', 'Notifikasi']], 'look', 'grid-cols-3')}
 
 						<div data-panel="look" class="space-y-4">
 							<div class="rounded-2xl bg-stone-100 p-3 text-sm dark:bg-slate-900/60">Contoh teks: <b>Rp 1.250.000</b> · Monetrack</div>
@@ -1293,6 +1335,12 @@
 							<div><p class="label">Awal minggu (rekap mingguan)</p>${seg('setWeek', [[1, 'Senin'], [0, 'Minggu']], S.weekStart, 'grid-cols-2')}</div>
 							${sw('setAnim', 'Animasi', 'Efek gerak pada grafik, popup, dan transisi.', S.animations)}
 							<button type="button" data-reset-look class="btn-soft w-full">Kembalikan Tampilan Bawaan</button>
+						</div>
+
+						<div data-panel="cats" class="hidden space-y-3">
+							<p class="text-xs text-stone-500 dark:text-slate-400">Atur ikon tiap kategori: pilih dari ikon yang tersedia atau unggah gambar sendiri.</p>
+							<ul id="setCatList" class="divide-y divide-stone-200/60 dark:divide-slate-700/50"></ul>
+							<button type="button" data-cat-reset class="btn-soft w-full">Kembalikan Semua Ikon Bawaan</button>
 						</div>
 
 						<div data-panel="notif" class="hidden space-y-4">
@@ -1358,6 +1406,27 @@
 						};
 						el.querySelector('[data-test]').onclick = () => Notify.push({ type: 'info', title: 'Notifikasi uji', message: 'Jika kamu melihat ini, notifikasi berfungsi.', device: true, tag: 'test' });
 						el.querySelector('[data-ok]').onclick = close;
+						const drawCats = () => {
+							el.querySelector('#setCatList').innerHTML = CATEGORY_NAMES.map((n) => `
+								<li class="flex items-center gap-3 py-2">
+									${catIcon(n)}
+									<span class="min-w-0 flex-1 truncate text-sm font-semibold">${esc(n)}</span>
+									<button type="button" data-cat-edit="${esc(n)}" class="btn-soft !px-3 !py-1.5 text-xs">Ubah</button>
+								</li>`).join('');
+						};
+						el.addEventListener('click', (e) => {
+							const b = e.target.closest('[data-cat-edit]');
+							if (b) CategoryIcons.open(b.dataset.catEdit, drawCats);
+						});
+						el.querySelector('[data-cat-reset]').onclick = async () => {
+							if (!Object.keys(state.categoryIcons).length) return Toast.show({ type: 'info', title: 'Semua ikon sudah bawaan' });
+							const ok = await Modal.confirm({ title: 'Kembalikan ikon bawaan?', message: 'Semua ikon kategori yang kamu atur sendiri akan dikembalikan ke ikon bawaan.', confirmText: 'Kembalikan' });
+							if (!ok) return;
+							state.categoryIcons = {};
+							Store.save(); UI.renderAll(); Dropdown.refreshAll(); drawCats();
+							Toast.show({ type: 'success', title: 'Ikon dikembalikan ke bawaan' });
+						};
+						drawCats();
 						show('look');
 					}
 				});
@@ -1631,7 +1700,7 @@
 				Toast.show({ type: 'success', title: 'Ekspor CSV dibuat', message: `${state.tx.length} transaksi diekspor.` });
 			},
 			json() {
-				this.download(`backup-keuangan-${ymd(new Date())}.json`, JSON.stringify({ tx: state.tx, budget: state.budget, pockets: state.pockets, pocketTx: state.pocketTx }, null, '\t'), 'application/json');
+				this.download(`backup-keuangan-${ymd(new Date())}.json`, JSON.stringify({ tx: state.tx, budget: state.budget, pockets: state.pockets, pocketTx: state.pocketTx, categoryIcons: state.categoryIcons, profile: state.profile }, null, '\t'), 'application/json');
 				Toast.show({ type: 'success', title: 'Backup JSON dibuat' });
 			},
 			import(file) {
@@ -1649,6 +1718,8 @@
 						const newPockets = pk.pockets.filter((p) => !pIds.has(p.id)), newEntries = pk.pocketTx.filter((e) => !eIds.has(e.id));
 						state.pockets = [...state.pockets, ...newPockets];
 						state.pocketTx = [...state.pocketTx, ...newEntries.filter((e) => state.pockets.some((p) => p.id === e.pocketId))];
+						state.categoryIcons = { ...CategoryIcons.sanitize(d.categoryIcons), ...state.categoryIcons };   // ikon di perangkat ini diprioritaskan
+						if (!state.profile) state.profile = Profile.sanitize(d.profile);
 						if (d.budget && !state.budget) {
 							state.budget = Number(d.budget) || 0;
 							$('#budgetInput').value = state.budget ? num.format(state.budget) : '';
@@ -2038,6 +2109,249 @@
 		};
 
 		/* =====================================================
+		 * 9D. PROFIL (login opsional), IKON KATEGORI & TARGET BERANDA
+		 * ===================================================== */
+		const Img = {
+			// Mengecilkan gambar menjadi persegi (crop tengah) agar hemat penyimpanan
+			toDataURL(file, size = 128, mime = 'image/webp') {
+				return new Promise((resolve, reject) => {
+					if (!file || !/^image\//.test(file.type)) return reject(new Error('File harus berupa gambar.'));
+					if (file.size > 8 * 1024 * 1024) return reject(new Error('Ukuran gambar maksimal 8 MB.'));
+					const url = URL.createObjectURL(file), img = new Image();
+					img.onload = () => {
+						const s = Math.min(img.width, img.height) || 1, cv = document.createElement('canvas');
+						cv.width = cv.height = size;
+						cv.getContext('2d').drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, size, size);
+						URL.revokeObjectURL(url);
+						let out = cv.toDataURL(mime, 0.85);
+						if (!out.startsWith(`data:${mime}`)) out = cv.toDataURL('image/png');
+						resolve(out);
+					};
+					img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Gambar tidak bisa dibaca.')); };
+					img.src = url;
+				});
+			},
+			// Membuka dialog pilih file (harus dipanggil langsung dari klik pengguna)
+			pick() {
+				return new Promise((resolve) => {
+					const input = document.createElement('input');
+					input.type = 'file';
+					input.accept = 'image/*';
+					input.onchange = () => resolve(input.files[0] || null);
+					input.click();
+				});
+			}
+		};
+
+		const Profile = {
+			sanitize(pf) {
+				if (!pf || !(pf.name || pf.phone || pf.photo)) return null;
+				return { name: String(pf.name || '').slice(0, 40), phone: String(pf.phone || '').slice(0, 20), photo: /^data:image\//.test(pf.photo || '') ? pf.photo : '' };
+			},
+			phoneOk(v) {
+				const digitsOnly = v.replace(/\D/g, '');
+				return !v || (/^\+?[\d\s().-]+$/.test(v) && digitsOnly.length >= 8 && digitsOnly.length <= 15);
+			},
+			avatar(p, size = 'h-9 w-9', text = 'text-sm') {
+				if (p && p.photo) return `<img src="${p.photo}" alt="Foto profil" class="${size} rounded-full object-cover">`;
+				const ch = p && p.name ? esc([...p.name.trim()][0] || '').toUpperCase() : '';
+				const user = '<svg class="h-1/2 w-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>';
+				return `<span class="grid ${size} place-items-center rounded-full bg-teal-100 ${text} font-extrabold text-teal-700 dark:bg-teal-500/20 dark:text-teal-300">${ch || user}</span>`;
+			},
+			render() {
+				const p = state.profile, g = $('#greeting'), btn = $('#profileBtn');
+				btn.innerHTML = this.avatar(p);
+				btn.title = p && p.name ? `Profil: ${p.name}` : 'Masuk / Profil';
+				const show = Boolean(p && p.name.trim());
+				g.classList.toggle('hidden', !show);
+				g.classList.toggle('flex', show);
+				if (!show) return;
+				const hour = new Date().getHours(), hello = hour < 11 ? 'Selamat pagi' : hour < 15 ? 'Selamat siang' : hour < 18 ? 'Selamat sore' : 'Selamat malam';
+				g.innerHTML = `${this.avatar(p, 'h-11 w-11', 'text-base')}
+					<div class="min-w-0"><p class="text-xs text-stone-500 dark:text-slate-400">${hello}</p><p class="truncate text-lg font-extrabold">${esc(p.name.trim().split(/\s+/)[0])}</p></div>`;
+			},
+			// welcome = true: tampil sebagai layar masuk saat pertama kali membuka aplikasi
+			open({ welcome = false } = {}) {
+				const p = state.profile, draft = { photo: p ? p.photo : '' };
+				let done = false;
+				Modal.open({
+					title: welcome ? 'Selamat datang di Monetrack' : 'Profil Saya',
+					body: `<div class="space-y-4">
+						<p class="text-xs text-stone-500 dark:text-slate-400">${welcome ? 'Isi data diri kamu atau lewati dulu. ' : ''}Semua kolom opsional dan bisa diubah kapan saja.</p>
+						<div class="flex items-center gap-4">
+							<div id="pf_avatar" class="shrink-0"></div>
+							<div class="flex flex-col gap-2">
+								<button type="button" data-photo class="btn-soft text-xs">Unggah Foto</button>
+								<button type="button" data-photo-del class="btn-soft hidden text-xs !text-rose-500">Hapus Foto</button>
+							</div>
+						</div>
+						<div><label class="label" for="pf_name">Nama (opsional)</label><input id="pf_name" class="input" maxlength="40" placeholder="Nama kamu" value="${p ? esc(p.name) : ''}"></div>
+						<div><label class="label" for="pf_phone">Nomor telepon (opsional)</label><input id="pf_phone" class="input" inputmode="tel" maxlength="20" placeholder="08xx xxxx xxxx" value="${p ? esc(p.phone) : ''}"></div>
+						<p class="text-[11px] text-stone-400">Data profil hanya tersimpan di perangkat ini dan tidak dikirim ke server mana pun.</p>
+					</div>`,
+					actions: welcome
+						? '<button data-skip class="btn-soft">Lewati</button><button data-save autofocus class="btn-main">Masuk</button>'
+						: `${p ? '<button data-logout class="btn-soft !text-rose-500">Keluar</button>' : ''}<button data-cancel class="btn-soft">Batal</button><button data-save autofocus class="btn-main">Simpan</button>`,
+					onClose: () => { if (welcome && !done) { state.profileSkipped = true; Store.save(); } },
+					onOpen: (el, close) => {
+						const name = el.querySelector('#pf_name'), phone = el.querySelector('#pf_phone');
+						const draw = () => {
+							el.querySelector('#pf_avatar').innerHTML = this.avatar({ name: name.value, photo: draft.photo }, 'h-20 w-20', 'text-3xl');
+							el.querySelector('[data-photo-del]').classList.toggle('hidden', !draft.photo);
+						};
+						name.addEventListener('input', draw);
+						el.querySelector('[data-photo]').onclick = async () => {
+							const file = await Img.pick();
+							if (!file) return;
+							try { draft.photo = await Img.toDataURL(file, 160, 'image/webp'); draw(); } catch (err) { Toast.show({ type: 'error', title: 'Foto tidak bisa dipakai', message: err.message }); }
+						};
+						el.querySelector('[data-photo-del]').onclick = () => { draft.photo = ''; draw(); };
+						const skip = el.querySelector('[data-skip]');
+						if (skip) skip.onclick = () => { done = true; state.profileSkipped = true; Store.save(); close(); };
+						const cancel = el.querySelector('[data-cancel]');
+						if (cancel) cancel.onclick = close;
+						el.querySelector('[data-save]').onclick = () => {
+							const next = { name: name.value.trim(), phone: phone.value.trim(), photo: draft.photo };
+							if (!this.phoneOk(next.phone)) {
+								Anim.shake(phone);
+								Toast.show({ type: 'error', title: 'Nomor telepon tidak valid', message: 'Gunakan 8 sampai 15 digit, boleh diawali tanda +.' });
+								return;
+							}
+							done = true;
+							state.profile = this.sanitize(next);
+							state.profileSkipped = !state.profile;
+							Store.save(); this.render(); close();
+							Toast.show(state.profile
+								? { type: 'success', title: welcome ? `Selamat datang${next.name ? ', ' + next.name.split(/\s+/)[0] : ''}!` : 'Profil diperbarui' }
+								: { type: 'info', title: 'Profil dikosongkan' });
+						};
+						const out = el.querySelector('[data-logout]');
+						if (out) out.onclick = async () => {
+							const ok = await Modal.confirm({ title: 'Keluar dari profil?', message: 'Nama, nomor telepon, dan foto profil akan dihapus dari perangkat ini. Data keuanganmu tidak ikut terhapus.', confirmText: 'Keluar', danger: true });
+							if (!ok) return;
+							done = true;
+							state.profile = null;
+							state.profileSkipped = false;
+							Store.save(); this.render(); close();
+							Toast.show({ type: 'info', title: 'Kamu sudah keluar', message: 'Isi profil lagi kapan saja lewat ikon di pojok kanan atas.' });
+						};
+						draw();
+					}
+				});
+			}
+		};
+
+		// Ikon kategori: ikon bawaan, ikon pilihan, atau gambar unggahan sendiri
+		const iconBubble = (ic, color, cls) => `<span class="grid ${cls} shrink-0 place-items-center overflow-hidden" style="background:${color}66">${ic.type === 'image' ? `<img src="${ic.value}" alt="" class="h-full w-full object-cover">` : esc(ic.value)}</span>`;
+		const catIcon = (name, cls = 'h-10 w-10 rounded-2xl text-lg') => iconBubble(CategoryIcons.get(name), catColor(name), cls);
+
+		const CategoryIcons = {
+			sanitize(obj) {
+				const out = {};
+				Object.entries(obj && typeof obj === 'object' ? obj : {}).forEach(([k, v]) => {
+					if (v && ((v.type === 'emoji' && typeof v.value === 'string' && v.value.length <= 16) || (v.type === 'image' && /^data:image\//.test(v.value)))) out[k] = { type: v.type, value: v.value };
+				});
+				return out;
+			},
+			base(name) { return { type: 'emoji', value: CATEGORY_ICONS[name] || '🏷️' }; },
+			get(name) { return state.categoryIcons[name] || this.base(name); },
+			open(name, onDone) {
+				let sel = { ...this.get(name) };
+				const same = (a, b) => a.type === b.type && a.value === b.value;
+				Modal.open({
+					title: 'Ikon Kategori',
+					body: `<div class="space-y-4">
+						<div class="flex items-center gap-4"><div id="ci_preview" class="shrink-0"></div>
+							<div class="min-w-0"><p class="truncate font-bold">${esc(name)}</p><p class="text-xs text-stone-400">Pilih ikon di bawah atau unggah gambar sendiri.</p></div></div>
+						<div id="ci_grid" class="grid grid-cols-6 gap-2 sm:grid-cols-8"></div>
+						<div class="flex flex-wrap gap-2">
+							<button type="button" data-upload class="btn-soft text-xs">Unggah Gambar</button>
+							<button type="button" data-default class="btn-soft text-xs">Kembalikan Bawaan</button>
+						</div>
+					</div>`,
+					actions: '<button data-cancel class="btn-soft">Batal</button><button data-save autofocus class="btn-main">Simpan</button>',
+					onOpen: (el, close) => {
+						const draw = () => {
+							el.querySelector('#ci_preview').innerHTML = iconBubble(sel, catColor(name), 'h-16 w-16 rounded-3xl text-3xl');
+							el.querySelector('#ci_grid').innerHTML = ICON_SET.map((ic) => `
+								<button type="button" data-ic="${ic}" class="grid h-10 w-10 place-items-center rounded-xl text-xl ring-1 transition hover:bg-stone-100 dark:hover:bg-slate-700 ${sel.type === 'emoji' && sel.value === ic ? 'bg-teal-100/70 ring-2 ring-teal-500 dark:bg-teal-500/20' : 'ring-stone-200 dark:ring-slate-700'}">${ic}</button>`).join('');
+						};
+						el.querySelector('#ci_grid').addEventListener('click', (e) => {
+							const b = e.target.closest('[data-ic]');
+							if (b) { sel = { type: 'emoji', value: b.dataset.ic }; draw(); }
+						});
+						el.querySelector('[data-upload]').onclick = async () => {
+							const file = await Img.pick();
+							if (!file) return;
+							try { sel = { type: 'image', value: await Img.toDataURL(file, 96, 'image/png') }; draw(); } catch (err) { Toast.show({ type: 'error', title: 'Gambar tidak bisa dipakai', message: err.message }); }
+						};
+						el.querySelector('[data-default]').onclick = () => { sel = this.base(name); draw(); };
+						el.querySelector('[data-cancel]').onclick = close;
+						el.querySelector('[data-save]').onclick = () => {
+							if (same(sel, this.base(name))) delete state.categoryIcons[name]; else state.categoryIcons[name] = sel;
+							Store.save(); UI.renderAll(); Dropdown.refreshAll(); close();
+							if (onDone) onDone();
+							Toast.show({ type: 'success', title: 'Ikon kategori disimpan', message: name });
+						};
+						draw();
+					}
+				});
+			}
+		};
+
+		// Target di Beranda: rasio tabung, batas pengeluaran, dan dana darurat bisa diatur sendiri
+		const Goals = {
+			open(kind) {
+				const S = state.settings;
+				const defs = {
+					save: { title: 'Target Rasio Tabung', desc: 'Persentase pemasukan yang ingin kamu sisihkan setiap bulan.', unit: '%', value: S.goalSave, quick: [10, 20, 30, 40], min: 1, max: 100, reset: 20 },
+					limit: { title: 'Batas Pengeluaran Bulanan', desc: 'Peringatan akan muncul saat pengeluaran mendekati atau melewati batas ini. Kosongkan untuk menonaktifkan.', unit: 'Rp', value: state.budget, quick: [2000000, 3000000, 5000000, 10000000], money: true, reset: 0 },
+					emergency: { title: 'Target Dana Darurat', desc: 'Berapa bulan pengeluaran yang ingin kamu siapkan sebagai dana darurat.', unit: 'bulan', value: S.goalEmergency, quick: [3, 6, 9, 12], min: 1, max: 60, reset: 6 }
+				};
+				const d = defs[kind];
+				if (!d) return;
+				Modal.open({
+					title: d.title,
+					body: `<p class="mb-3 text-xs text-stone-500 dark:text-slate-400">${d.desc}</p>
+						<div class="relative">
+							<input id="gl_val" class="input !pr-16 !text-lg !font-bold" inputmode="${d.money ? 'numeric' : 'decimal'}" placeholder="${d.money ? '0' : ''}" value="${d.value ? (d.money ? num.format(d.value) : d.value) : ''}">
+							<span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-stone-400">${d.unit}</span>
+						</div>
+						<div class="mt-3 flex flex-wrap gap-2">${d.quick.map((q) => `<button type="button" data-q="${q}" class="btn-soft !px-3 !py-1.5 text-xs">${d.money ? Charts.compact.format(q) : q + (d.unit === '%' ? '%' : ' bln')}</button>`).join('')}</div>`,
+					actions: `<button data-reset class="btn-soft">${kind === 'limit' ? 'Nonaktifkan' : 'Bawaan'}</button><button data-cancel class="btn-soft">Batal</button><button data-save autofocus class="btn-main">Simpan</button>`,
+					onOpen: (el, close) => {
+						const input = el.querySelector('#gl_val');
+						const apply = (v) => {
+							if (kind === 'save') S.goalSave = Math.round(v);
+							if (kind === 'emergency') S.goalEmergency = Math.round(v);
+							if (kind === 'limit') {
+								state.budget = v;
+								$('#budgetInput').value = v ? num.format(v) : '';
+							}
+							Store.save(); UI.health(); UI.limit(); close();
+							if (kind === 'limit') Alerts.check(state.month);
+							Toast.show({ type: 'success', title: 'Target disimpan', message: kind === 'limit' && !v ? 'Batas pengeluaran dinonaktifkan.' : d.title });
+						};
+						input.addEventListener('input', () => { if (d.money) formatInput(input); });
+						el.querySelectorAll('[data-q]').forEach((b) => { b.onclick = () => { input.value = d.money ? num.format(Number(b.dataset.q)) : b.dataset.q; }; });
+						el.querySelector('[data-cancel]').onclick = close;
+						el.querySelector('[data-reset]').onclick = () => apply(d.reset);
+						el.querySelector('[data-save]').onclick = () => {
+							const v = d.money ? digits(input.value) : parseFloat(String(input.value).replace(',', '.'));
+							if (!d.money && !(v >= d.min && v <= d.max)) {
+								Anim.shake(input);
+								Toast.show({ type: 'error', title: 'Nilai tidak valid', message: `Isi angka ${d.min} sampai ${d.max} (${d.unit}).` });
+								return;
+							}
+							apply(v);
+						};
+						input.focus();
+					}
+				});
+			}
+		};
+
+		/* =====================================================
 		 * 9B. NAVIGASI & SHEET (tampilan ala aplikasi mobile)
 		 * ===================================================== */
 		const Nav = {
@@ -2107,7 +2421,7 @@
 
 			UI.setType('expense'); Tx.resetForm(); Calculator.init();
 			$('#fCatFilter').innerHTML = '<option value="all">Semua kategori</option>' +
-				[...new Set([...CONFIG.categories.income, ...CONFIG.categories.expense].map((c) => c.name))].map((n) => `<option>${esc(n)}</option>`).join('');
+				[...new Set([...CONFIG.categories.income, ...CONFIG.categories.expense].map((c) => c.name))].map((n) => `<option data-cat="${esc(n)}">${esc(n)}</option>`).join('');
 			document.querySelectorAll('select').forEach((s) => Dropdown.init(s));
 			UI.recapControls();
 
@@ -2189,6 +2503,8 @@
 			// Data
 			$('#finHub').addEventListener('click', (e) => { const b = e.target.closest('[data-fin]'); if (b) Finance.open(b.dataset.fin); });
 			// Kantong
+			$('#profileBtn').addEventListener('click', () => Profile.open());
+			$('#hMetrics').addEventListener('click', (e) => { const b = e.target.closest('[data-goal]'); if (b) Goals.open(b.dataset.goal); });
 			$('#btnPocketAdd').addEventListener('click', () => Pockets.openPocket());
 			$('#btnPocketCsv').addEventListener('click', () => Pockets.csv());
 			$('#pocketGrid').addEventListener('click', (e) => {
@@ -2235,6 +2551,8 @@
 			UI.renderAll();
 
 			Nav.go(location.hash.slice(1), { push: false });
+
+			if (!state.profile && !state.profileSkipped) setTimeout(() => Profile.open({ welcome: true }), 500);
 
 			const stale = state.tx.filter((t) => t.date < Calc.cutoff()).length;
 			if (stale) Toast.show({ type: 'info', title: `Histori lebih dari ${CONFIG.retentionYears} tahun`, message: `${stale} transaksi bisa dibersihkan lewat menu Data.`, duration: 6000 });
