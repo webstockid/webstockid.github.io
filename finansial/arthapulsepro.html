@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>ArthaPulse Pro - Mobile Financial Hub & Pocket Manager</title>
 	<meta property="og:title" content="ArthaPulse Pro">
-	<meta property="og:description" content="Kelola pencatatan, anggaran, kantong simpanan, dan kesehatan finansial secara realtime.">
+	<meta property="og:description" content="Kelola pencatatan, anggaran, kantong simpanan, rekap analitik, dan kalkulator keuangan secara realtime.">
 
 	<!-- Tailwind CSS CDN -->
 	<script src="https://cdn.tailwindcss.com"></script>
@@ -57,7 +57,7 @@
 			transition: background-color 0.25s ease, color 0.25s ease;
 		}
 
-		/* Professional Clean Surface Styling (No AI Slop Glow) */
+		/* Professional Surface Styling */
 		.glass-card {
 			background: rgba(15, 23, 42, 0.85);
 			backdrop-filter: blur(12px);
@@ -127,7 +127,7 @@
 					<div id="header-avatar-container" class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0 group-hover:border-cyan-500 transition">
 						<i data-lucide="user" class="w-4 h-4 text-slate-400"></i>
 					</div>
-					<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-slate-950"></span>
+					<span id="header-status-dot" class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-slate-950"></span>
 				</div>
 				<div class="truncate">
 					<div class="flex items-center gap-1.5">
@@ -140,8 +140,8 @@
 
 			<!-- Top Header Quick Actions -->
 			<div class="flex items-center gap-1.5">
-				<button onclick="requestNotificationPermission()" id="btn-notif-top" title="Notifikasi" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-400 transition">
-					<i data-lucide="bell" class="w-4 h-4"></i>
+				<button onclick="toggleNotificationState()" id="btn-notif-top" title="Status Notifikasi" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-amber-400 transition">
+					<i data-lucide="bell" id="header-bell-icon" class="w-4 h-4"></i>
 				</button>
 				<button onclick="openTxModal()" title="Tambah Transaksi Baru" class="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-sm transition hover:scale-95">
 					<i data-lucide="plus" class="w-4 h-4 stroke-[3]"></i>
@@ -366,7 +366,7 @@
 
 			</div>
 
-			<!-- TAB 4: MENU REKAP PRESISI LENGKAP (HARIAN, MINGGUAN, BULANAN, TAHUNAN) -->
+			<!-- TAB 4: MENU REKAP PRESISI LENGKAP -->
 			<div id="tab-content-recap" class="space-y-4 hidden">
 
 				<!-- Precision Time Period Filters -->
@@ -387,7 +387,6 @@
 					<div class="flex items-center justify-between gap-2 pt-1">
 						<label class="text-[11px] font-medium text-slate-300">Opsi Rentang Waktu:</label>
 						<select id="recap-subperiod-select" onchange="renderRecapAnalytics()" class="custom-select input-glow bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-1.5 font-bold cursor-pointer">
-							<!-- Populated dynamically by JS (3, 7, 14, 28, 30 hari dst) -->
 						</select>
 					</div>
 				</section>
@@ -435,97 +434,140 @@
 
 			</div>
 
-			<!-- TAB 5: ALAT KEUANGAN (KALKULATOR) -->
+			<!-- TAB 5: ALAT KEUANGAN (PROFESSIONAL SUITE CALCULATOR) -->
 			<div id="tab-content-tools" class="space-y-4 hidden">
 
 				<section class="glass-card p-4 rounded-2xl border border-slate-800 space-y-4">
-					<!-- 6 Calculator Sub-Tabs Switcher -->
-					<div class="grid grid-cols-3 gap-1 p-1 bg-slate-900 rounded-xl border border-slate-800 text-[10px]">
-						<button id="calc-tab-1" onclick="switchCalcSubTab(1)" class="py-1.5 font-bold rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Ringkas</button>
-						<button id="calc-tab-2" onclick="switchCalcSubTab(2)" class="py-1.5 font-bold rounded-lg text-slate-400 hover:text-slate-200">Impian</button>
-						<button id="calc-tab-3" onclick="switchCalcSubTab(3)" class="py-1.5 font-bold rounded-lg text-slate-400 hover:text-slate-200">Jajan Harian</button>
-						<button id="calc-tab-4" onclick="switchCalcSubTab(4)" class="py-1.5 font-bold rounded-lg text-slate-400 hover:text-slate-200">Dana Darurat</button>
-						<button id="calc-tab-5" onclick="switchCalcSubTab(5)" class="py-1.5 font-bold rounded-lg text-slate-400 hover:text-slate-200">Investasi</button>
-						<button id="calc-tab-6" onclick="switchCalcSubTab(6)" class="py-1.5 font-bold rounded-lg text-slate-400 hover:text-slate-200">Rule 50/30/20</button>
-					</div>
-
-					<!-- SUB-TAB 1: BASIC CALCULATOR -->
-					<div id="calc-subcontent-1" class="space-y-3">
-						<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-right">
-							<div id="calc-history" class="text-[10px] text-slate-500 h-4 overflow-hidden font-mono"></div>
-							<div id="calc-screen" class="text-2xl font-mono font-bold text-cyan-400 truncate">0</div>
+					<!-- Header Section for Tools -->
+					<div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+						<div class="flex items-center gap-2">
+							<i data-lucide="calculator" class="w-4 h-4 text-cyan-400"></i>
+							<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Suite Kalkulator Keuangan</h3>
 						</div>
-
-						<div class="grid grid-cols-4 gap-2 text-xs font-bold">
-							<button onclick="calcClear()" class="col-span-2 p-2.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 rounded-xl transition">AC</button>
-							<button onclick="calcDel()" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition">DEL</button>
-							<button onclick="calcOp('/')" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl transition">÷</button>
-
-							<button onclick="calcNum('7')" class="p-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">7</button>
-							<button onclick="calcNum('8')" class="p-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">8</button>
-							<button onclick="calcNum('9')" class="p-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">9</button>
-							<button onclick="calcOp('*')" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl transition">×</button>
-
-							<button onclick="calcNum('4')" class="p-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">4</button>
-							<button onclick="calcNum('5')" class="p-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">5</button>
-							<button onclick="calcNum('6')" class="p-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">6</button>
-							<button onclick="calcOp('-')" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl transition">-</button>
-
-							<button onclick="calcNum('1')" class="p-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">1</button>
-							<button onclick="calcNum('2')" class="p-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">2</button>
-							<button onclick="calcNum('3')" class="p-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">3</button>
-							<button onclick="calcOp('+')" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl transition">+</button>
-
-							<button onclick="calcNum('0')" class="col-span-2 p-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">0</button>
-							<button onclick="calcNum('.')" class="p-2.5 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">.</button>
-							<button onclick="calcEquals()" class="p-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl transition">=</button>
-						</div>
-
-						<button onclick="applyCalcToForm()" class="w-full py-2.5 px-3 bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 text-xs font-semibold rounded-xl transition flex items-center justify-center gap-1.5">
-							<i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Nominal Ke Form Catat
+						<button onclick="saveToolsStateManual()" class="px-2.5 py-1 text-[10px] font-bold bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 border border-cyan-500/30 rounded-lg flex items-center gap-1 transition">
+							<i data-lucide="save" class="w-3 h-3"></i> Simpan Hasil
 						</button>
 					</div>
 
-					<!-- SUB-TAB 2: SAVINGS GOAL PLANNER -->
+					<!-- 6 Calculator Sub-Tabs Switcher -->
+					<div class="grid grid-cols-3 gap-1 p-1 bg-slate-900 rounded-xl border border-slate-800 text-[10px]">
+						<button id="calc-tab-1" onclick="switchCalcSubTab(1)" class="py-1.5 font-bold rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Averaging Saham</button>
+						<button id="calc-tab-2" onclick="switchCalcSubTab(2)" class="py-1.5 font-bold rounded-lg text-slate-400 hover:text-slate-200">Rule 50/30/20</button>
+						<button id="calc-tab-3" onclick="switchCalcSubTab(3)" class="py-1.5 font-bold rounded-lg text-slate-400 hover:text-slate-200">Dana Darurat</button>
+						<button id="calc-tab-4" onclick="switchCalcSubTab(4)" class="py-1.5 font-bold rounded-lg text-slate-400 hover:text-slate-200">Bunga Majemuk</button>
+						<button id="calc-tab-5" onclick="switchCalcSubTab(5)" class="py-1.5 font-bold rounded-lg text-slate-400 hover:text-slate-200">Target Impian</button>
+						<button id="calc-tab-6" onclick="switchCalcSubTab(6)" class="py-1.5 font-bold rounded-lg text-slate-400 hover:text-slate-200">Basic & Jajan</button>
+					</div>
+
+					<!-- SUB-TAB 1: STOCK / INVESTMENT AVERAGING CALCULATOR -->
+					<div id="calc-subcontent-1" class="space-y-3.5">
+						<div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800/80">
+							<p class="text-xs text-slate-300 font-semibold mb-1">Kalkulator Average Down / Up Saham & Reksadana</p>
+							<p class="text-[10px] text-slate-400">Hitung kombinasi modal awal & pembelian baru untuk mengetahui harga rata-rata (Average Price) serta proyeksi untung/rugi pada target harga.</p>
+						</div>
+
+						<div class="grid grid-cols-2 gap-2 text-xs">
+							<!-- Initial Investment -->
+							<div class="col-span-2 bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 space-y-2">
+								<span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block">1. Kepemilikan Posisi Awal</span>
+								<div class="grid grid-cols-2 gap-2">
+									<div>
+										<label class="block text-[10px] text-slate-400 mb-1">Total Lot Awal</label>
+										<input type="number" id="avg-lot1" placeholder="Contoh: 100" class="input-glow w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl px-2.5 py-1.5">
+									</div>
+									<div>
+										<label class="block text-[10px] text-slate-400 mb-1">Harga Rata-rata Awal (Rp)</label>
+										<input type="text" id="avg-price1" placeholder="1.500" class="input-glow format-dot-input w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl px-2.5 py-1.5">
+									</div>
+								</div>
+							</div>
+
+							<!-- New Purchase -->
+							<div class="col-span-2 bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 space-y-2">
+								<span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">2. Rencana Pembelian Baru</span>
+								<div class="grid grid-cols-2 gap-2">
+									<div>
+										<label class="block text-[10px] text-slate-400 mb-1">Lot Pembelian Baru</label>
+										<input type="number" id="avg-lot2" placeholder="Contoh: 50" class="input-glow w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl px-2.5 py-1.5">
+									</div>
+									<div>
+										<label class="block text-[10px] text-slate-400 mb-1">Harga Beli Baru (Rp)</label>
+										<input type="text" id="avg-price2" placeholder="1.200" class="input-glow format-dot-input w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl px-2.5 py-1.5">
+									</div>
+								</div>
+							</div>
+
+							<!-- Target Selling Price -->
+							<div class="col-span-2">
+								<label class="block text-[10px] text-slate-400 mb-1">Target Harga Jual Realisasi (Rp) - Opsional</label>
+								<input type="text" id="avg-target-price" placeholder="Contoh: 1.800" class="input-glow format-dot-input w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
+							</div>
+						</div>
+
+						<button onclick="calculateStockAveraging()" class="w-full py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs rounded-xl transition">Kalkulasi Average Baru</button>
+
+						<!-- Output Results -->
+						<div id="avg-result-box" class="hidden p-3.5 bg-slate-900 border border-slate-800 rounded-xl space-y-2 text-xs">
+							<div class="grid grid-cols-2 gap-2 text-center pb-2 border-b border-slate-800">
+								<div>
+									<p class="text-[9px] text-slate-400">Total Lot Gabungan</p>
+									<p id="avg-res-total-lots" class="text-sm font-bold text-slate-200">0 Lot</p>
+								</div>
+								<div>
+									<p class="text-[9px] text-slate-400">Total Modal Investasi</p>
+									<p id="avg-res-total-capital" class="text-sm font-bold text-slate-200">Rp 0</p>
+								</div>
+							</div>
+							<div class="p-2 bg-slate-950/80 rounded-lg text-center border border-slate-800">
+								<p class="text-[10px] text-slate-400 uppercase tracking-wider">Average Price Baru (Harga Rata-rata)</p>
+								<p id="avg-res-new-avg" class="text-lg font-black text-cyan-400 mt-0.5">Rp 0 / Lembar</p>
+							</div>
+							<div id="avg-res-target-container" class="p-2 bg-slate-950/80 rounded-lg text-center border border-slate-800 space-y-0.5">
+								<p class="text-[10px] text-slate-400">Estimasi Potensi Profit/Loss Pada Target:</p>
+								<p id="avg-res-profit-val" class="text-sm font-bold text-emerald-400">Rp 0 (+0%)</p>
+							</div>
+						</div>
+					</div>
+
+					<!-- SUB-TAB 2: 50/30/20 BUDGET ALLOCATOR -->
 					<div id="calc-subcontent-2" class="space-y-3 hidden">
-						<p class="text-xs text-slate-400">Hitung alokasi tabungan bulanan/mingguan untuk target impian Anda.</p>
+						<p class="text-xs text-slate-400">Alokasikan total pemasukan bulanan berdasarkan aturan finansial populer 50/30/20.</p>
 						<div>
-							<label class="block text-[11px] font-medium text-slate-300 mb-1">Target Nominal (Rp)</label>
-							<input type="text" id="plan-target-amount" placeholder="Contoh: 15.000.000" class="input-glow format-dot-input w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
+							<label class="block text-[11px] font-medium text-slate-300 mb-1">Total Pemasukan Bulanan (Rp)</label>
+							<input type="text" id="split-income-input" placeholder="Contoh: 10.000.000" class="input-glow format-dot-input w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
 						</div>
-						<div>
-							<label class="block text-[11px] font-medium text-slate-300 mb-1">Target Waktu (Bulan)</label>
-							<input type="number" id="plan-target-months" placeholder="Contoh: 12" class="input-glow w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
-						</div>
-						<button onclick="calculateSavingsPlan()" class="w-full py-2.5 bg-indigo-500 hover:bg-indigo-400 text-slate-950 text-xs font-extrabold rounded-xl transition">Hitung Setoran Tabungan</button>
-						<div id="plan-result-box" class="hidden p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1 text-center">
-							<p class="text-[10px] text-slate-400">Wajib Menabung per Bulan:</p>
-							<p id="plan-result-val" class="text-base font-bold text-indigo-400">Rp 0</p>
-							<p class="text-[9px] text-slate-500">Atau sekitar <span id="plan-result-weekly" class="text-slate-300 font-semibold">Rp 0</span> / minggu</p>
+						<button onclick="calculate503020Split()" class="w-full py-2.5 bg-violet-500 hover:bg-violet-400 text-slate-950 text-xs font-extrabold rounded-xl transition">Hitung Pembagian Anggaran</button>
+						
+						<div id="split-result-box" class="hidden space-y-2 pt-1">
+							<div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center">
+								<div>
+									<p class="text-[11px] font-bold text-slate-200">50% Kebutuhan Pokok</p>
+									<p class="text-[9px] text-slate-400">Makan, Tagihan, Sewa, Bensin</p>
+								</div>
+								<p id="split-needs-val" class="text-xs font-bold text-rose-400">Rp 0</p>
+							</div>
+							<div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center">
+								<div>
+									<p class="text-[11px] font-bold text-slate-200">30% Keinginan & Gaya Hidup</p>
+									<p class="text-[9px] text-slate-400">Hiburan, Belanja, Hobi</p>
+								</div>
+								<p id="split-wants-val" class="text-xs font-bold text-amber-400">Rp 0</p>
+							</div>
+							<div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center">
+								<div>
+									<p class="text-[11px] font-bold text-slate-200">20% Tabungan & Investasi</p>
+									<p class="text-[9px] text-slate-400">Dana Darurat, Reksadana, Utang</p>
+								</div>
+								<p id="split-savings-val" class="text-xs font-bold text-emerald-400">Rp 0</p>
+							</div>
+							<button onclick="applySplitToBudgetLimit()" class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-slate-800 text-xs font-semibold rounded-xl transition">
+								Terapkan (50% Pokok) Sebagai Batas Anggaran Bulanan
+							</button>
 						</div>
 					</div>
 
-					<!-- SUB-TAB 3: SAFE DAILY SPENDING LIMIT -->
+					<!-- SUB-TAB 3: EMERGENCY FUND CALCULATOR -->
 					<div id="calc-subcontent-3" class="space-y-3 hidden">
-						<p class="text-xs text-slate-400">Batas jajan harian agar tidak jebol dari sisa budget bulan ini.</p>
-						<div class="p-3 bg-slate-900 rounded-xl border border-slate-800 text-center space-y-2">
-							<div>
-								<p class="text-[10px] text-slate-400">Sisa Anggaran Tersedia:</p>
-								<p id="daily-safe-budget-val" class="text-sm font-bold text-slate-200">Rp 0</p>
-							</div>
-							<div>
-								<p class="text-[10px] text-slate-400">Sisa Hari Dalam Bulan Ini:</p>
-								<p id="daily-safe-days-val" class="text-sm font-bold text-amber-400">0 Hari</p>
-							</div>
-						</div>
-						<div class="p-3 bg-slate-900 border border-slate-800 rounded-xl text-center">
-							<p class="text-[10px] text-slate-300">Batas Jajan Maksimal Per Hari:</p>
-							<p id="daily-safe-result-val" class="text-base font-bold text-emerald-400 mt-0.5">Rp 0 / Hari</p>
-						</div>
-					</div>
-
-					<!-- SUB-TAB 4: EMERGENCY FUND CALCULATOR -->
-					<div id="calc-subcontent-4" class="space-y-3 hidden">
 						<p class="text-xs text-slate-400">Kalkulasi dana darurat ideal berdasarkan status & tanggungan Anda.</p>
 						<div>
 							<label class="block text-[11px] font-medium text-slate-300 mb-1">Pengeluaran Rutin Per Bulan (Rp)</label>
@@ -547,8 +589,8 @@
 						</div>
 					</div>
 
-					<!-- SUB-TAB 5: COMPOUND INTEREST INVESTOR -->
-					<div id="calc-subcontent-5" class="space-y-3 hidden">
+					<!-- SUB-TAB 4: COMPOUND INTEREST INVESTOR -->
+					<div id="calc-subcontent-4" class="space-y-3 hidden">
 						<p class="text-xs text-slate-400">Simulasi pertumbuhan modal investasi bunga majemuk.</p>
 						<div class="grid grid-cols-2 gap-2">
 							<div class="col-span-2">
@@ -576,35 +618,81 @@
 						</div>
 					</div>
 
-					<!-- SUB-TAB 6: 50/30/20 BUDGET ALLOCATOR -->
-					<div id="calc-subcontent-6" class="space-y-3 hidden">
-						<p class="text-xs text-slate-400">Alokasikan total pemasukan bulanan berdasarkan aturan finansial 50/30/20.</p>
+					<!-- SUB-TAB 5: SAVINGS GOAL PLANNER -->
+					<div id="calc-subcontent-5" class="space-y-3 hidden">
+						<p class="text-xs text-slate-400">Hitung alokasi tabungan bulanan/mingguan untuk target impian Anda.</p>
 						<div>
-							<label class="block text-[11px] font-medium text-slate-300 mb-1">Total Pemasukan Bulanan (Rp)</label>
-							<input type="text" id="split-income-input" placeholder="Contoh: 10.000.000" class="input-glow format-dot-input w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
+							<label class="block text-[11px] font-medium text-slate-300 mb-1">Target Nominal (Rp)</label>
+							<input type="text" id="plan-target-amount" placeholder="Contoh: 15.000.000" class="input-glow format-dot-input w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
 						</div>
-						<button onclick="calculate503020Split()" class="w-full py-2.5 bg-violet-500 hover:bg-violet-400 text-slate-950 text-xs font-extrabold rounded-xl transition">Hitung Pembagian Anggaran</button>
-						<div id="split-result-box" class="hidden space-y-2 pt-1">
-							<div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center">
-								<div>
-									<p class="text-[11px] font-bold text-slate-200">50% Kebutuhan Pokok</p>
-									<p class="text-[9px] text-slate-400">Makan, Tagihan, Sewa, Bensin</p>
-								</div>
-								<p id="split-needs-val" class="text-xs font-bold text-rose-400">Rp 0</p>
+						<div>
+							<label class="block text-[11px] font-medium text-slate-300 mb-1">Target Waktu (Bulan)</label>
+							<input type="number" id="plan-target-months" placeholder="Contoh: 12" class="input-glow w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
+						</div>
+						<button onclick="calculateSavingsPlan()" class="w-full py-2.5 bg-indigo-500 hover:bg-indigo-400 text-slate-950 text-xs font-extrabold rounded-xl transition">Hitung Setoran Tabungan</button>
+						<div id="plan-result-box" class="hidden p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1 text-center">
+							<p class="text-[10px] text-slate-400">Wajib Menabung per Bulan:</p>
+							<p id="plan-result-val" class="text-base font-bold text-indigo-400">Rp 0</p>
+							<p class="text-[9px] text-slate-500">Atau sekitar <span id="plan-result-weekly" class="text-slate-300 font-semibold">Rp 0</span> / minggu</p>
+						</div>
+					</div>
+
+					<!-- SUB-TAB 6: BASIC CALCULATOR & SAFE DAILY SPENDING -->
+					<div id="calc-subcontent-6" class="space-y-4 hidden">
+						<!-- Basic Screen Calculator -->
+						<div class="space-y-2">
+							<span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Kalkulator Ringkas</span>
+							<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-right">
+								<div id="calc-history" class="text-[10px] text-slate-500 h-4 overflow-hidden font-mono"></div>
+								<div id="calc-screen" class="text-2xl font-mono font-bold text-cyan-400 truncate">0</div>
 							</div>
-							<div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center">
-								<div>
-									<p class="text-[11px] font-bold text-slate-200">30% Keinginan & Gaya Hidup</p>
-									<p class="text-[9px] text-slate-400">Hiburan, Belanja, Hobi</p>
-								</div>
-								<p id="split-wants-val" class="text-xs font-bold text-amber-400">Rp 0</p>
+
+							<div class="grid grid-cols-4 gap-2 text-xs font-bold">
+								<button onclick="calcClear()" class="col-span-2 p-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 rounded-xl transition">AC</button>
+								<button onclick="calcDel()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition">DEL</button>
+								<button onclick="calcOp('/')" class="p-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl transition">÷</button>
+
+								<button onclick="calcNum('7')" class="p-2 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">7</button>
+								<button onclick="calcNum('8')" class="p-2 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">8</button>
+								<button onclick="calcNum('9')" class="p-2 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">9</button>
+								<button onclick="calcOp('*')" class="p-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl transition">×</button>
+
+								<button onclick="calcNum('4')" class="p-2 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">4</button>
+								<button onclick="calcNum('5')" class="p-2 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">5</button>
+								<button onclick="calcNum('6')" class="p-2 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">6</button>
+								<button onclick="calcOp('-')" class="p-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl transition">-</button>
+
+								<button onclick="calcNum('1')" class="p-2 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">1</button>
+								<button onclick="calcNum('2')" class="p-2 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">2</button>
+								<button onclick="calcNum('3')" class="p-2 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">3</button>
+								<button onclick="calcOp('+')" class="p-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 rounded-xl transition">+</button>
+
+								<button onclick="calcNum('0')" class="col-span-2 p-2 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">0</button>
+								<button onclick="calcNum('.')" class="p-2 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl transition">.</button>
+								<button onclick="calcEquals()" class="p-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl transition">=</button>
 							</div>
-							<div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center">
+
+							<button onclick="applyCalcToForm()" class="w-full py-2 px-3 bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 text-xs font-semibold rounded-xl transition flex items-center justify-center gap-1.5">
+								<i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Nominal Ke Form Catat
+							</button>
+						</div>
+
+						<!-- Safe Daily Spending Limit -->
+						<div class="space-y-2 pt-2 border-t border-slate-800">
+							<span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Batas Jajan Harian Aman</span>
+							<div class="p-3 bg-slate-900 rounded-xl border border-slate-800 text-center space-y-2">
 								<div>
-									<p class="text-[11px] font-bold text-slate-200">20% Tabungan & Investasi</p>
-									<p class="text-[9px] text-slate-400">Dana Darurat, Reksadana, Utang</p>
+									<p class="text-[10px] text-slate-400">Sisa Anggaran Tersedia:</p>
+									<p id="daily-safe-budget-val" class="text-sm font-bold text-slate-200">Rp 0</p>
 								</div>
-								<p id="split-savings-val" class="text-xs font-bold text-emerald-400">Rp 0</p>
+								<div>
+									<p class="text-[10px] text-slate-400">Sisa Hari Dalam Bulan Ini:</p>
+									<p id="daily-safe-days-val" class="text-sm font-bold text-amber-400">0 Hari</p>
+								</div>
+							</div>
+							<div class="p-3 bg-slate-900 border border-slate-800 rounded-xl text-center">
+								<p class="text-[10px] text-slate-300">Batas Jajan Maksimal Per Hari:</p>
+								<p id="daily-safe-result-val" class="text-base font-bold text-emerald-400 mt-0.5">Rp 0 / Hari</p>
 							</div>
 						</div>
 					</div>
@@ -667,7 +755,7 @@
 							</select>
 						</div>
 
-						<!-- Font Family Select: Quicksand (Default), Comfortaa, Rubik, Barlow, Comic Neue, Fredoka -->
+						<!-- Font Family Select -->
 						<div>
 							<label class="block text-[10px] font-medium text-slate-400 mb-1">Jenis Font APLIKASI</label>
 							<select id="setting-font-family" onchange="applyCustomTheme()" class="custom-select input-glow w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
@@ -680,7 +768,7 @@
 							</select>
 						</div>
 
-						<!-- Font Size Input Range (12px to 22px) -->
+						<!-- Font Size Input Range -->
 						<div>
 							<div class="flex justify-between items-center mb-1">
 								<label class="text-[10px] font-medium text-slate-400">Ukuran Font Base</label>
@@ -689,7 +777,7 @@
 							<input type="range" id="setting-font-size" min="12" max="22" value="15" oninput="applyCustomTheme()" class="w-full accent-cyan-400 bg-slate-900 h-2 rounded-lg cursor-pointer">
 						</div>
 
-						<!-- Font Weight Radio Option: Light, Normal, Bold -->
+						<!-- Font Weight Radio Option -->
 						<div>
 							<label class="block text-[10px] font-medium text-slate-400 mb-1.5">Ketebalan Font (Font Weight)</label>
 							<div class="grid grid-cols-3 gap-1.5 p-1 bg-slate-900 rounded-xl border border-slate-800">
@@ -727,19 +815,36 @@
 					</form>
 				</section>
 
-				<!-- Push Notification Settings -->
+				<!-- Push Notification & Sound FX Settings -->
 				<section class="glass-card p-4 rounded-2xl border border-slate-800 space-y-3">
 					<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-800 pb-2">
-						<i data-lucide="bell" class="w-3.5 h-3.5 text-cyan-400"></i> Notifikasi Perangkat Browser
+						<i data-lucide="bell" class="w-3.5 h-3.5 text-cyan-400"></i> Notifikasi & Umpan Balik Suara
 					</h3>
-					<div class="flex items-center justify-between">
-						<div>
-							<p class="text-xs font-medium text-slate-200">Izin Push Notification</p>
-							<p id="settings-notif-status" class="text-[10px] text-slate-400">Belum diaktifkan</p>
+					<div class="space-y-3">
+						<div class="flex items-center justify-between">
+							<div>
+								<p class="text-xs font-medium text-slate-200">Push Notification Perangkat</p>
+								<p id="settings-notif-status" class="text-[10px] text-slate-400">Status: Belum diaktifkan</p>
+							</div>
+							<div class="flex items-center gap-1.5">
+								<button onclick="testPushNotification()" class="px-2 py-1 text-[10px] font-bold bg-slate-900 hover:bg-slate-800 text-amber-400 rounded-lg border border-slate-800 transition">
+									Tes Push
+								</button>
+								<button id="btn-toggle-notif" onclick="toggleNotificationState()" class="px-3 py-1.5 text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl transition shadow-sm">
+									Aktifkan
+								</button>
+							</div>
 						</div>
-						<button onclick="requestNotificationPermission()" class="px-3 py-1.5 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-cyan-400 rounded-xl border border-slate-800 transition">
-							Aktifkan
-						</button>
+
+						<div class="flex items-center justify-between pt-2 border-t border-slate-800/60">
+							<div>
+								<p class="text-xs font-medium text-slate-200">Efek Suara (Audio FX)</p>
+								<p id="settings-sound-status" class="text-[10px] text-slate-400">Suara tombol & aksi</p>
+							</div>
+							<button id="btn-toggle-sound" onclick="toggleSoundFxState()" class="px-3 py-1.5 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 rounded-xl transition">
+								Suara: Aktif
+							</button>
+						</div>
 					</div>
 				</section>
 
@@ -802,7 +907,7 @@
 
 	</div>
 
-	<!-- MODAL: EDIT USER PROFILE / LOGIN INFO -->
+	<!-- MODAL: EDIT USER PROFILE -->
 	<div id="profile-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden animate-backdrop">
 		<div class="glass-card w-full max-w-xs rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal">
 			<div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
@@ -816,7 +921,6 @@
 			</div>
 
 			<form onsubmit="handleSaveProfile(event)" class="space-y-3.5">
-				<!-- Photo Preview & Upload -->
 				<div class="text-center">
 					<div class="relative w-16 h-16 mx-auto mb-2">
 						<div id="modal-avatar-preview" class="w-full h-full rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center overflow-hidden">
@@ -827,12 +931,12 @@
 						</button>
 					</div>
 					<input type="file" id="profile-photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
-					<p class="text-[9px] text-slate-400">Klik tombol kamera untuk mengganti foto profil (Opsional)</p>
+					<p class="text-[9px] text-slate-400">Klik tombol kamera untuk mengganti foto profil</p>
 				</div>
 
 				<div>
 					<label class="block text-[11px] font-medium text-slate-300 mb-1">Nama Pengguna</label>
-					<input type="text" id="profile-name-input" placeholder="Masukkan Nama Lengkap / Panggilan" class="input-glow w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
+					<input type="text" id="profile-name-input" placeholder="Masukkan Nama Lengkap" class="input-glow w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
 				</div>
 
 				<div>
@@ -872,14 +976,13 @@
 				<div>
 					<label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Pilih Ikon Standar ATAU Unggah Gambar</label>
 					<div class="grid grid-cols-6 gap-1.5 p-2 bg-slate-950 rounded-xl border border-slate-800 mb-2 max-h-32 overflow-y-auto" id="category-icon-picker-grid">
-						<!-- Icon options loaded dynamically -->
 					</div>
 					<input type="hidden" id="cat-selected-icon" value="box">
 					
 					<div class="flex items-center gap-2 pt-1">
 						<input type="file" id="cat-image-upload" accept="image/*" class="hidden" onchange="handleCatImageUpload(event)">
 						<button type="button" onclick="document.getElementById('cat-image-upload').click()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-semibold rounded-lg border border-slate-700 transition flex items-center gap-1">
-							<i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-cyan-400"></i> Upload Gambar/Logo sendiri
+							<i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-cyan-400"></i> Upload Logo Sendiri
 						</button>
 						<span id="cat-image-status" class="text-[9px] text-slate-400 truncate"></span>
 					</div>
@@ -977,8 +1080,8 @@
 				<input type="hidden" id="pocket-id">
 
 				<div>
-					<label class="block text-[11px] font-medium text-slate-300 mb-1">Nama Kantong</label>
-					<input type="text" id="pocket-name" required placeholder="Contoh: Tabungan Umroh, Dana Darurat..." class="input-glow w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3.5 py-2.5">
+					<label class="block text-[11px] font-medium text-slate-300 mb-1">Nama Kantong / Rekening</label>
+					<input type="text" id="pocket-name" required placeholder="Contoh: Tabungan Umroh, RDN Ajaib, Dana..." class="input-glow w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3.5 py-2.5">
 				</div>
 
 				<div>
@@ -1005,11 +1108,11 @@
 		</div>
 	</div>
 
-	<!-- MODAL: POCKET MUTATION (DEPOSIT / WITHDRAW) -->
+	<!-- MODAL: POCKET MUTATION (DEPOSIT / WITHDRAW / TRANSFER) -->
 	<div id="pocket-mutation-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden animate-backdrop">
 		<div class="glass-card w-full max-w-xs rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal">
 			<div class="flex items-center justify-between pb-2 border-b border-slate-800 mb-3">
-				<h3 id="mutation-modal-title" class="text-xs font-bold text-slate-200 uppercase">Setor / Tarik Dana</h3>
+				<h3 id="mutation-modal-title" class="text-xs font-bold text-slate-200 uppercase">Setor / Tarik / Transfer</h3>
 				<button onclick="closePocketMutationModal()" class="text-slate-400 hover:text-slate-200">
 					<i data-lucide="x" class="w-4 h-4"></i>
 				</button>
@@ -1019,9 +1122,16 @@
 				<input type="hidden" id="mutation-pocket-id">
 				<input type="hidden" id="mutation-type" value="DEPOSIT">
 
-				<div class="grid grid-cols-2 gap-1 p-1 bg-slate-900 rounded-xl border border-slate-800 text-xs font-bold">
-					<button type="button" id="btn-mut-dep" onclick="setMutationType('DEPOSIT')" class="py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Setor Simpanan</button>
-					<button type="button" id="btn-mut-wd" onclick="setMutationType('WITHDRAW')" class="py-1.5 rounded-lg text-slate-400 hover:text-slate-200">Tarik Dana</button>
+				<div class="grid grid-cols-3 gap-1 p-1 bg-slate-900 rounded-xl border border-slate-800 text-[10px] font-bold">
+					<button type="button" id="btn-mut-dep" onclick="setMutationType('DEPOSIT')" class="py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Setor</button>
+					<button type="button" id="btn-mut-wd" onclick="setMutationType('WITHDRAW')" class="py-1.5 rounded-lg text-slate-400 hover:text-slate-200">Tarik</button>
+					<button type="button" id="btn-mut-trf" onclick="setMutationType('TRANSFER')" class="py-1.5 rounded-lg text-slate-400 hover:text-slate-200">Transfer</button>
+				</div>
+
+				<div id="mutation-target-pocket-container" class="hidden">
+					<label class="block text-[11px] font-medium text-slate-300 mb-1">Kantong Tujuan Transfer</label>
+					<select id="mutation-target-pocket-id" class="custom-select input-glow w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
+					</select>
 				</div>
 
 				<div>
@@ -1061,7 +1171,7 @@
 	<!-- APPLICATION LOGIC & JAVASCRIPT CODE -->
 	<script>
 		// ==========================================
-		// 1. CONSTANTS, DATA STORE & LOCAL STORAGE
+		// 1. CONSTANTS & LOCAL STORAGE KEYS
 		// ==========================================
 		const STORAGE_KEY = 'arthapulse_pro_tx_v6';
 		const BUDGET_KEY = 'arthapulse_pro_budget_v6';
@@ -1069,12 +1179,15 @@
 		const POCKETS_KEY = 'arthapulse_pro_pockets_v6';
 		const PROFILE_KEY = 'arthapulse_pro_profile_v6';
 		const CATEGORIES_KEY = 'arthapulse_pro_categories_v6';
+		const SETTINGS_KEY = 'arthapulse_pro_settings_v6';
+		const RECAP_STATE_KEY = 'arthapulse_pro_recap_v6';
+		const TOOLS_STATE_KEY = 'arthapulse_pro_tools_v6';
 
 		const STANDARD_ICON_LIST = [
 			"utensils", "bus", "shopping-bag", "home", "film", "heart-pulse",
 			"graduation-cap", "briefcase", "rocket", "trending-up", "gift", "piggy-bank",
 			"shield-check", "heart-handshake", "box", "car", "coffee", "smartphone",
-			"wifi", "zap", "plane", "dollar-sign font-mono"
+			"wifi", "zap", "plane", "dollar-sign"
 		];
 
 		const DEFAULT_CATEGORIES = [
@@ -1120,11 +1233,7 @@
 		let budgetLimit = 0;
 		let pockets = [];
 		let userCategories = [];
-		let userProfile = {
-			name: 'Pengguna ArthaPulse',
-			phone: '0812-3456-7890',
-			photo: ''
-		};
+		let userProfile = { name: 'Pengguna ArthaPulse', phone: '0812-3456-7890', photo: '' };
 
 		let themeSettings = {
 			themeMode: 'dark-slate',
@@ -1133,11 +1242,16 @@
 			fontWeight: '400'
 		};
 
+		let appSettings = {
+			notificationEnabled: false,
+			soundFxEnabled: true
+		};
+
 		let currentRecapType = 'DAILY';
 		let confirmCallback = null;
 		let customCatImageTemp = '';
 
-		// Chart Instance Handlers
+		// Chart Instances
 		let recapExpenseChartInstance = null;
 		let recapTrendChartInstance = null;
 
@@ -1147,8 +1261,37 @@
 		let calcNewInput = true;
 
 		// ==========================================
-		// 2. HELPER FUNCTIONS & FORMATTING
+		// 2. SOUND & HELPER FUNCTIONS
 		// ==========================================
+		function playSoundFX(type = 'click') {
+			if (!appSettings.soundFxEnabled) return;
+			try {
+				const AudioCtx = window.AudioContext || window.webkitAudioContext;
+				if (!AudioCtx) return;
+				const ctx = new AudioCtx();
+				const osc = ctx.createOscillator();
+				const gain = ctx.createGain();
+				osc.connect(gain);
+				gain.connect(ctx.destination);
+				
+				if (type === 'click') {
+					osc.frequency.setValueAtTime(600, ctx.currentTime);
+					osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.05);
+					gain.gain.setValueAtTime(0.1, ctx.currentTime);
+					gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+					osc.start();
+					osc.stop(ctx.currentTime + 0.05);
+				} else if (type === 'success') {
+					osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+					osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.08);
+					gain.gain.setValueAtTime(0.12, ctx.currentTime);
+					gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+					osc.start();
+					osc.stop(ctx.currentTime + 0.2);
+				}
+			} catch (e) {}
+		}
+
 		function formatIDR(num) {
 			const n = Number(num) || 0;
 			return 'Rp ' + Math.abs(n).toLocaleString('id-ID');
@@ -1169,6 +1312,7 @@
 		}
 
 		function showToast(message, type = 'info') {
+			playSoundFX('click');
 			const container = document.getElementById('toast-container');
 			const toast = document.createElement('div');
 
@@ -1202,22 +1346,23 @@
 			}, 3200);
 		}
 
-		// Helper to render Category Icon (Custom image vs Lucide icon)
 		function renderCategoryIconHTML(catName, extraClasses = "w-4 h-4 text-cyan-400") {
-			const cat = userCategories.find(c => c.name.toLowerCase() === catName.toLowerCase());
+			const safeCatName = (catName || '').toLowerCase().trim();
+			const cat = userCategories.find(c => c && c.name && c.name.toLowerCase().trim() === safeCatName);
 			if (cat) {
 				if (cat.image) {
 					return `<img src="${cat.image}" class="w-4 h-4 object-cover rounded-full shrink-0" alt="${cat.name}">`;
 				}
 				if (cat.icon) {
-					return `<i data-lucide="${cat.icon}" class="${extraClasses} shrink-0"></i>`;
+					const cleanIcon = cat.icon.split(' ')[0];
+					return `<i data-lucide="${cleanIcon}" class="${extraClasses} shrink-0"></i>`;
 				}
 			}
 			return `<i data-lucide="box" class="${extraClasses} shrink-0"></i>`;
 		}
 
 		// ==========================================
-		// 3. STORAGE & INITIALIZATION
+		// 3. STORAGE & STATE PERSISTENCE ENGINE
 		// ==========================================
 		function loadAppState() {
 			try {
@@ -1238,6 +1383,15 @@
 
 				const ctData = localStorage.getItem(CATEGORIES_KEY);
 				userCategories = ctData ? JSON.parse(ctData) : DEFAULT_CATEGORIES;
+
+				const stData = localStorage.getItem(SETTINGS_KEY);
+				if (stData) appSettings = JSON.parse(stData);
+
+				const rcData = localStorage.getItem(RECAP_STATE_KEY);
+				if (rcData) {
+					const rc = JSON.parse(rcData);
+					if (rc.recapType) currentRecapType = rc.recapType;
+				}
 			} catch (e) {
 				transactions = INITIAL_DUMMY_DATA;
 				budgetLimit = 7000000;
@@ -1253,6 +1407,8 @@
 			localStorage.setItem(POCKETS_KEY, JSON.stringify(pockets));
 			localStorage.setItem(PROFILE_KEY, JSON.stringify(userProfile));
 			localStorage.setItem(CATEGORIES_KEY, JSON.stringify(userCategories));
+			localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+			localStorage.setItem(RECAP_STATE_KEY, JSON.stringify({ recapType: currentRecapType }));
 		}
 
 		// Live Thousands Pemisah Titik Input Event Listeners
@@ -1283,7 +1439,92 @@
 		}
 
 		// ==========================================
-		// 4. PROFILE & LOGIN SYSTEM ENGINE
+		// 4. NOTIFICATION & SOUND FX STATE ENGINE
+		// ==========================================
+		function toggleNotificationState() {
+			if (!appSettings.notificationEnabled) {
+				if ("Notification" in window) {
+					Notification.requestPermission().then(perm => {
+						if (perm === 'granted') {
+							appSettings.notificationEnabled = true;
+							saveAppState();
+							updateNotificationUI();
+							showToast('Notifikasi peranti diaktifkan & tersimpan', 'success');
+							sendBrowserNotification('ArthaPulse Pro', 'Notifikasi berhasil diaktifkan secara permanen!');
+						} else {
+							showToast('Izin notifikasi ditolak oleh browser', 'warning');
+						}
+					});
+				} else {
+					showToast('Browser ini tidak mendukung fitur Notification', 'warning');
+				}
+			} else {
+				appSettings.notificationEnabled = false;
+				saveAppState();
+				updateNotificationUI();
+				showToast('Notifikasi peranti dinonaktifkan', 'info');
+			}
+		}
+
+		function testPushNotification() {
+			if (appSettings.notificationEnabled) {
+				sendBrowserNotification('Tes Notifikasi ArthaPulse', 'Sistem notifikasi berjalan lancar!');
+			} else {
+				showToast('Aktifkan notifikasi terlebih dahulu', 'warning');
+			}
+		}
+
+		function toggleSoundFxState() {
+			appSettings.soundFxEnabled = !appSettings.soundFxEnabled;
+			saveAppState();
+			updateNotificationUI();
+			showToast(`Efek Suara Audio FX: ${appSettings.soundFxEnabled ? 'Aktif' : 'Nonaktif'}`, 'info');
+		}
+
+		function updateNotificationUI() {
+			const statusNotifElem = document.getElementById('settings-notif-status');
+			const btnToggleNotif = document.getElementById('btn-toggle-notif');
+			const btnNotifTop = document.getElementById('btn-notif-top');
+			const bellIcon = document.getElementById('header-bell-icon');
+			const statusDot = document.getElementById('header-status-dot');
+
+			if (appSettings.notificationEnabled) {
+				statusNotifElem.textContent = 'Status: Aktif (Tersimpan)';
+				statusNotifElem.className = 'text-[10px] text-emerald-400 font-bold';
+				btnToggleNotif.textContent = 'Nonaktifkan';
+				btnToggleNotif.className = 'px-3 py-1.5 text-xs font-bold bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 rounded-xl transition shadow-sm';
+				btnNotifTop.className = 'p-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 text-emerald-400 transition';
+				if (statusDot) statusDot.className = 'absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-slate-950 animate-pulse';
+			} else {
+				statusNotifElem.textContent = 'Status: Belum diaktifkan';
+				statusNotifElem.className = 'text-[10px] text-slate-400';
+				btnToggleNotif.textContent = 'Aktifkan';
+				btnToggleNotif.className = 'px-3 py-1.5 text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl transition shadow-sm';
+				btnNotifTop.className = 'p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-400 transition';
+				if (statusDot) statusDot.className = 'absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-slate-500 border-2 border-slate-950';
+			}
+
+			const btnSound = document.getElementById('btn-toggle-sound');
+			if (btnSound) {
+				btnSound.textContent = `Suara: ${appSettings.soundFxEnabled ? 'Aktif' : 'Nonaktif'}`;
+				btnSound.className = appSettings.soundFxEnabled 
+					? 'px-3 py-1.5 text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl transition'
+					: 'px-3 py-1.5 text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 rounded-xl transition';
+			}
+
+			if (window.lucide) lucide.createIcons();
+		}
+
+		function sendBrowserNotification(title, body) {
+			if ("Notification" in window && Notification.permission === "granted") {
+				try {
+					new Notification(title, { body, icon: 'https://cdn-icons-png.flaticon.com/512/2953/2953361.png' });
+				} catch(e) {}
+			}
+		}
+
+		// ==========================================
+		// 5. PROFILE ENGINE
 		// ==========================================
 		function updateProfileHeaderUI() {
 			const nameElem = document.getElementById('header-user-name');
@@ -1293,7 +1534,6 @@
 
 			nameElem.textContent = userProfile.name || 'Pengguna ArthaPulse';
 
-			// Time-based greeting
 			const hour = new Date().getHours();
 			let timeGreet = 'Selamat Pagi';
 			if (hour >= 11 && hour < 15) timeGreet = 'Selamat Siang';
@@ -1301,7 +1541,6 @@
 			else if (hour >= 18 || hour < 4) timeGreet = 'Selamat Malam';
 			greetElem.textContent = timeGreet;
 
-			// Avatar image vs fallback
 			const avatarContent = userProfile.photo
 				? `<img src="${userProfile.photo}" class="w-full h-full object-cover">`
 				: `<i data-lucide="user" class="w-4 h-4 text-slate-400"></i>`;
@@ -1314,7 +1553,7 @@
 			document.getElementById('settings-user-name').textContent = userProfile.name || 'Pengguna ArthaPulse';
 			document.getElementById('settings-user-phone').textContent = userProfile.phone || 'Belum diisi';
 
-			if (window.lucide) lucide.createIcons();
+			updateNotificationUI();
 		}
 
 		function openProfileModal() {
@@ -1361,7 +1600,7 @@
 		}
 
 		// ==========================================
-		// 5. CUSTOM CATEGORIES MANAGER
+		// 6. CATEGORIES MANAGER ENGINE
 		// ==========================================
 		function openCategoryManagerModal() {
 			renderCategoryIconPickerGrid();
@@ -1451,7 +1690,7 @@
 			container.innerHTML = userCategories.map(c => `
 				<div class="p-2 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
 					<div class="flex items-center gap-2">
-						${c.image ? `<img src="${c.image}" class="w-4 h-4 rounded-full object-cover">` : `<i data-lucide="${c.icon || 'box'}" class="w-4 h-4 text-cyan-400"></i>`}
+						${c.image ? `<img src="${c.image}" class="w-4 h-4 rounded-full object-cover">` : `<i data-lucide="${(c.icon || 'box').split(' ')[0]}" class="w-4 h-4 text-cyan-400"></i>`}
 						<span class="font-bold text-slate-200">${c.name}</span>
 					</div>
 					<button onclick="deleteCategory('${c.id}')" class="p-1 text-slate-500 hover:text-rose-400 transition">
@@ -1476,7 +1715,7 @@
 		}
 
 		// ==========================================
-		// 6. THEME & FONT CUSTOMIZATION ENGINE
+		// 7. THEME & FONT CUSTOMIZATION ENGINE
 		// ==========================================
 		function applyCustomTheme() {
 			const mode = document.getElementById('setting-theme-mode').value;
@@ -1491,18 +1730,15 @@
 			themeSettings = { themeMode: mode, fontFamily: font, fontSize: size, fontWeight: weight };
 			saveAppState();
 
-			// Apply Font Family & Size
 			document.body.style.fontFamily = `'${font}', sans-serif`;
 			document.body.style.fontSize = `${size}px`;
 			document.body.style.fontWeight = weight;
 			document.getElementById('setting-font-size-label').textContent = `${size}px`;
 
-			// Update Font Weight Radios UI labels
 			document.getElementById('fw-lbl-light').className = weight === '300' ? 'text-cyan-400 font-bold' : 'text-slate-400 font-light';
 			document.getElementById('fw-lbl-normal').className = weight === '400' ? 'text-cyan-400 font-bold' : 'text-slate-200 font-normal';
 			document.getElementById('fw-lbl-bold').className = weight === '700' ? 'text-cyan-400 font-bold' : 'text-slate-400 font-bold';
 
-			// Apply Theme Background Colors
 			const appShell = document.getElementById('app-shell');
 			const appBody = document.getElementById('app-body');
 
@@ -1515,7 +1751,7 @@
 			} else if (mode === 'soft-light') {
 				appBody.className = "bg-slate-200 text-slate-900 min-h-screen antialiased flex justify-center items-center sm:py-4";
 				appShell.className = "w-full max-w-lg min-h-screen sm:min-h-[94vh] sm:max-h-[94vh] sm:rounded-3xl bg-slate-100 border border-slate-300 shadow-2xl flex flex-col relative overflow-hidden transition-all duration-300";
-			} else { // default dark-slate
+			} else {
 				appBody.className = "bg-slate-950 text-slate-100 min-h-screen antialiased flex justify-center items-center sm:py-4";
 				appShell.className = "w-full max-w-lg min-h-screen sm:min-h-[94vh] sm:max-h-[94vh] sm:rounded-3xl bg-slate-950 border border-slate-800 shadow-2xl flex flex-col relative overflow-hidden transition-all duration-300";
 			}
@@ -1535,9 +1771,10 @@
 		}
 
 		// ==========================================
-		// 7. NAVIGATION & TAB SWITCHER
+		// 8. NAVIGATION & TAB SWITCHER ENGINE
 		// ==========================================
 		function switchTab(tabId) {
+			playSoundFX('click');
 			const tabs = ['dashboard', 'transactions', 'pockets', 'recap', 'tools', 'settings'];
 			
 			tabs.forEach(t => {
@@ -1560,12 +1797,15 @@
 				populateRecapSubPeriodOptions();
 				renderRecapAnalytics();
 			}
+			if (tabId === 'tools') {
+				restoreToolsCalculatorState();
+			}
 
 			if (window.lucide) lucide.createIcons();
 		}
 
 		// ==========================================
-		// 8. DASHBOARD & FINANCIAL HEALTH ENGINE
+		// 9. DASHBOARD ENGINE
 		// ==========================================
 		function updateDashboard() {
 			let totalInc = 0;
@@ -1597,7 +1837,6 @@
 			document.getElementById('stat-savings-rate-badge').textContent = `${savingsRate}%`;
 			document.getElementById('stat-savings-rate').textContent = `${savingsRate}%`;
 
-			// Monthly Budget Progress Widget
 			const currentMonthStr = new Date().toISOString().slice(0, 7);
 			const monthlyExp = transactions
 				.filter(t => t.type === 'expense' && t.date.startsWith(currentMonthStr))
@@ -1638,10 +1877,7 @@
 				document.getElementById('budget-progress-bar').style.width = '0%';
 			}
 
-			// Financial Health Calculation
 			calculateHealthScore(balance, totalInc, totalExp, savingsRate);
-
-			// Render Recent Transactions
 			renderRecentTransactions();
 		}
 
@@ -1734,7 +1970,7 @@
 		}
 
 		// ==========================================
-		// 9. TRANSACTION TRANSACTIONS FILTER & LIST
+		// 10. TRANSACTIONS ENGINE
 		// ==========================================
 		function toggleCustomDateFilter() {
 			const period = document.getElementById('filter-period').value;
@@ -1758,7 +1994,6 @@
 			const todayStr = getFormattedDate(0);
 
 			let filtered = transactions.filter(t => {
-				// Search filter
 				if (search) {
 					const matchNote = (t.notes || '').toLowerCase().includes(search);
 					const matchCat = (t.category || '').toLowerCase().includes(search);
@@ -1766,13 +2001,9 @@
 					if (!matchNote && !matchCat && !matchAmt) return false;
 				}
 
-				// Type filter
 				if (type !== 'ALL' && t.type !== type) return false;
-
-				// Category filter
 				if (category !== 'ALL' && t.category !== category) return false;
 
-				// Period filter
 				if (period === 'TODAY' && t.date !== todayStr) return false;
 				if (period === 'THIS_WEEK') {
 					const txDate = new Date(t.date);
@@ -1843,7 +2074,7 @@
 		}
 
 		// ==========================================
-		// 10. TRANSACTION MODAL HANDLERS
+		// 11. TRANSACTION MODAL HANDLERS
 		// ==========================================
 		function openTxModal() {
 			document.getElementById('tx-id').value = '';
@@ -1906,6 +2137,7 @@
 				};
 				transactions.unshift(newTx);
 				showToast('Catatan transaksi baru disimpan', 'success');
+				playSoundFX('success');
 			}
 
 			saveAppState();
@@ -1913,14 +2145,13 @@
 			updateDashboard();
 			renderTransactions();
 
-			// Budget Warning Notification Check
 			if (type === 'expense' && budgetLimit > 0) {
 				const currentMonthStr = new Date().toISOString().slice(0, 7);
 				const monthlyExp = transactions
 					.filter(t => t.type === 'expense' && t.date.startsWith(currentMonthStr))
 					.reduce((acc, t) => acc + Number(t.amount), 0);
 
-				if (monthlyExp > budgetLimit) {
+				if (monthlyExp > budgetLimit && appSettings.notificationEnabled) {
 					sendBrowserNotification('🚨 Peringatan Anggaran!', `Pengeluaran bulan ini (${formatIDR(monthlyExp)}) telah melebihi batas ${formatIDR(budgetLimit)}.`);
 				}
 			}
@@ -1955,7 +2186,7 @@
 		}
 
 		// ==========================================
-		// 11. KANTONG (POCKETS) MANAGEMENT ENGINE
+		// 12. KANTONG (POCKETS) ENGINE WITH TRANSFER
 		// ==========================================
 		function renderPockets() {
 			const container = document.getElementById('pockets-grid-container');
@@ -1993,7 +2224,7 @@
 							</div>
 							<div class="flex items-center gap-1">
 								<button onclick="openPocketMutationModal('${p.id}')" class="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-indigo-400 border border-slate-800 text-[10px] font-bold rounded-lg transition">
-									Setor / Tarik
+									Setor / Tarik / Transfer
 								</button>
 								<button onclick="editPocket('${p.id}')" class="p-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-cyan-400 transition">
 									<i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
@@ -2099,6 +2330,13 @@
 			document.getElementById('mutation-modal-title').textContent = `Mutasi: ${p.name}`;
 			document.getElementById('mutation-amount').value = '';
 			document.getElementById('mutation-note').value = '';
+
+			const targetSelect = document.getElementById('mutation-target-pocket-id');
+			targetSelect.innerHTML = '';
+			pockets.filter(other => other.id !== p.id).forEach(other => {
+				targetSelect.innerHTML += `<option value="${other.id}">${other.name} (Saldo: ${formatIDR(other.balance)})</option>`;
+			});
+
 			setMutationType('DEPOSIT');
 			document.getElementById('pocket-mutation-modal').classList.remove('hidden');
 		}
@@ -2111,13 +2349,17 @@
 			document.getElementById('mutation-type').value = type;
 			const btnDep = document.getElementById('btn-mut-dep');
 			const btnWd = document.getElementById('btn-mut-wd');
+			const btnTrf = document.getElementById('btn-mut-trf');
+			const targetContainer = document.getElementById('mutation-target-pocket-container');
 
-			if (type === 'DEPOSIT') {
-				btnDep.className = "py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
-				btnWd.className = "py-1.5 rounded-lg text-slate-400 hover:text-slate-200";
+			btnDep.className = type === 'DEPOSIT' ? "py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "py-1.5 rounded-lg text-slate-400 hover:text-slate-200";
+			btnWd.className = type === 'WITHDRAW' ? "py-1.5 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30" : "py-1.5 rounded-lg text-slate-400 hover:text-slate-200";
+			btnTrf.className = type === 'TRANSFER' ? "py-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30" : "py-1.5 rounded-lg text-slate-400 hover:text-slate-200";
+
+			if (type === 'TRANSFER') {
+				targetContainer.classList.remove('hidden');
 			} else {
-				btnWd.className = "py-1.5 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30";
-				btnDep.className = "py-1.5 rounded-lg text-slate-400 hover:text-slate-200";
+				targetContainer.classList.add('hidden');
 			}
 		}
 
@@ -2137,35 +2379,45 @@
 			if (idx !== -1) {
 				if (type === 'DEPOSIT') {
 					pockets[idx].balance += amount;
-				} else {
+				} else if (type === 'WITHDRAW') {
 					if (pockets[idx].balance < amount) {
 						showToast('Saldo kantong tidak mencukupi untuk penarikan ini', 'warning');
 						return;
 					}
 					pockets[idx].balance -= amount;
-				}
+				} else if (type === 'TRANSFER') {
+					const targetId = document.getElementById('mutation-target-pocket-id').value;
+					if (!targetId) {
+						showToast('Pilih kantong tujuan transfer', 'warning');
+						return;
+					}
+					const targetIdx = pockets.findIndex(p => p.id === targetId);
+					if (targetIdx === -1) return;
 
-				if (!pockets[idx].history) pockets[idx].history = [];
-				pockets[idx].history.push({
-					date: getFormattedDate(0),
-					type,
-					amount,
-					note
-				});
+					if (pockets[idx].balance < amount) {
+						showToast('Saldo kantong asal tidak mencukupi', 'warning');
+						return;
+					}
+
+					pockets[idx].balance -= amount;
+					pockets[targetIdx].balance += amount;
+				}
 
 				saveAppState();
 				closePocketMutationModal();
 				renderPockets();
 				updateDashboard();
-				showToast(`Mutasi ${type === 'DEPOSIT' ? 'Setor' : 'Tarik'} berhasil dilakukan`, 'success');
+				showToast('Eksekusi mutasi berhasil disimpan', 'success');
 			}
 		}
 
 		// ==========================================
-		// 12. REKAP & PRECISION ANALYTICS ENGINE
+		// 13. REKAP & PRECISION ANALYTICS ENGINE
 		// ==========================================
 		function setRecapType(type) {
 			currentRecapType = type;
+			saveAppState();
+
 			['daily', 'weekly', 'monthly', 'yearly'].forEach(t => {
 				const btn = document.getElementById(`recap-type-${t}`);
 				if (t === type.toLowerCase()) {
@@ -2202,7 +2454,6 @@
 			const subValue = Number(document.getElementById('recap-subperiod-select').value) || 7;
 			const now = new Date();
 			
-			// Calculate cutoff days based on selected option
 			let cutoffDays = subValue;
 			if (currentRecapType === 'WEEKLY') cutoffDays = subValue * 7;
 			if (currentRecapType === 'MONTHLY') cutoffDays = subValue * 30;
@@ -2235,10 +2486,7 @@
 			document.getElementById('recap-stat-net').textContent = formatIDR(net);
 			document.getElementById('recap-stat-avg').textContent = formatIDR(dailyAvg);
 
-			// Render Doughnut Chart & Category Breakdown Bars
 			renderExpenseCategoryDoughnut(categoryMap, expTotal);
-
-			// Render Trend Bar Chart
 			renderRecapTrendChart(cutoffDays, currentRecapType);
 		}
 
@@ -2289,7 +2537,6 @@
 				}
 			});
 
-			// Render Progress Bars Breakdown
 			barsContainer.innerHTML = labels.map((cat, idx) => {
 				const val = catMap[cat];
 				const pct = totalExp > 0 ? Math.round((val / totalExp) * 100) : 0;
@@ -2325,7 +2572,7 @@
 				d.setDate(d.getDate() - (i * step));
 				const dateStr = d.toISOString().split('T')[0];
 
-				buckets.push(dateStr.slice(5)); // MM-DD format
+				buckets.push(dateStr.slice(5));
 
 				const periodTx = transactions.filter(t => {
 					const txD = new Date(t.date);
@@ -2393,9 +2640,10 @@
 		}
 
 		// ==========================================
-		// 13. FINANCIAL CALCULATORS ENGINE
+		// 14. FINANCIAL TOOLS & CALCULATORS ENGINE
 		// ==========================================
 		function switchCalcSubTab(tabNum) {
+			playSoundFX('click');
 			for (let i = 1; i <= 6; i++) {
 				const btn = document.getElementById(`calc-tab-${i}`);
 				const content = document.getElementById(`calc-subcontent-${i}`);
@@ -2409,11 +2657,229 @@
 				}
 			}
 
-			if (tabNum === 3) updateSafeDailySpending();
+			if (tabNum === 6) updateSafeDailySpending();
 		}
 
-		// Sub-Tab 1: Basic Calculator
+		// Save Tools Inputs automatically to LocalStorage
+		function bindToolsAutoSave() {
+			const inputIds = [
+				'avg-lot1', 'avg-price1', 'avg-lot2', 'avg-price2', 'avg-target-price',
+				'split-income-input', 'ef-monthly-exp', 'ef-profile',
+				'inv-initial', 'inv-monthly', 'inv-rate', 'inv-years',
+				'plan-target-amount', 'plan-target-months'
+			];
+
+			inputIds.forEach(id => {
+				const elem = document.getElementById(id);
+				if (elem) {
+					elem.addEventListener('input', saveToolsStateAuto);
+					elem.addEventListener('change', saveToolsStateAuto);
+				}
+			});
+		}
+
+		function saveToolsStateAuto() {
+			const toolsData = {
+				avgLot1: document.getElementById('avg-lot1')?.value || '',
+				avgPrice1: document.getElementById('avg-price1')?.value || '',
+				avgLot2: document.getElementById('avg-lot2')?.value || '',
+				avgPrice2: document.getElementById('avg-price2')?.value || '',
+				avgTargetPrice: document.getElementById('avg-target-price')?.value || '',
+				splitIncome: document.getElementById('split-income-input')?.value || '',
+				efMonthly: document.getElementById('ef-monthly-exp')?.value || '',
+				efProfile: document.getElementById('ef-profile')?.value || '6',
+				invInitial: document.getElementById('inv-initial')?.value || '',
+				invMonthly: document.getElementById('inv-monthly')?.value || '',
+				invRate: document.getElementById('inv-rate')?.value || '',
+				invYears: document.getElementById('inv-years')?.value || '',
+				planTargetAmount: document.getElementById('plan-target-amount')?.value || '',
+				planTargetMonths: document.getElementById('plan-target-months')?.value || ''
+			};
+			localStorage.setItem(TOOLS_STATE_KEY, JSON.stringify(toolsData));
+		}
+
+		function saveToolsStateManual() {
+			saveToolsStateAuto();
+			showToast('Hasil & masukan kalkulator berhasil disimpan', 'success');
+		}
+
+		function restoreToolsCalculatorState() {
+			try {
+				const raw = localStorage.getItem(TOOLS_STATE_KEY);
+				if (!raw) return;
+				const d = JSON.parse(raw);
+
+				if (d.avgLot1 !== undefined) document.getElementById('avg-lot1').value = d.avgLot1;
+				if (d.avgPrice1 !== undefined) document.getElementById('avg-price1').value = d.avgPrice1;
+				if (d.avgLot2 !== undefined) document.getElementById('avg-lot2').value = d.avgLot2;
+				if (d.avgPrice2 !== undefined) document.getElementById('avg-price2').value = d.avgPrice2;
+				if (d.avgTargetPrice !== undefined) document.getElementById('avg-target-price').value = d.avgTargetPrice;
+
+				if (d.splitIncome !== undefined) document.getElementById('split-income-input').value = d.splitIncome;
+				if (d.efMonthly !== undefined) document.getElementById('ef-monthly-exp').value = d.efMonthly;
+				if (d.efProfile !== undefined) document.getElementById('ef-profile').value = d.efProfile;
+
+				if (d.invInitial !== undefined) document.getElementById('inv-initial').value = d.invInitial;
+				if (d.invMonthly !== undefined) document.getElementById('inv-monthly').value = d.invMonthly;
+				if (d.invRate !== undefined) document.getElementById('inv-rate').value = d.invRate;
+				if (d.invYears !== undefined) document.getElementById('inv-years').value = d.invYears;
+
+				if (d.planTargetAmount !== undefined) document.getElementById('plan-target-amount').value = d.planTargetAmount;
+				if (d.planTargetMonths !== undefined) document.getElementById('plan-target-months').value = d.planTargetMonths;
+
+				// Auto recalculate if inputs exist
+				if (d.avgLot1 && d.avgPrice1) calculateStockAveraging();
+				if (d.splitIncome) calculate503020Split();
+				if (d.efMonthly) calculateEmergencyFund();
+				if (d.invYears) calculateInvestmentGrowth();
+				if (d.planTargetAmount) calculateSavingsPlan();
+			} catch (e) {}
+		}
+
+		// Tool 1: Stock Averaging
+		function calculateStockAveraging() {
+			const lot1 = Number(document.getElementById('avg-lot1').value) || 0;
+			const price1 = parseDotNumber(document.getElementById('avg-price1').value);
+			const lot2 = Number(document.getElementById('avg-lot2').value) || 0;
+			const price2 = parseDotNumber(document.getElementById('avg-price2').value);
+			const targetPrice = parseDotNumber(document.getElementById('avg-target-price').value);
+
+			if (lot1 <= 0 || price1 <= 0) {
+				showToast('Masukkan lot & harga awal secara valid', 'warning');
+				return;
+			}
+
+			const shares1 = lot1 * 100;
+			const capital1 = shares1 * price1;
+
+			const shares2 = lot2 * 100;
+			const capital2 = shares2 * price2;
+
+			const totalLots = lot1 + lot2;
+			const totalShares = shares1 + shares2;
+			const totalCapital = capital1 + capital2;
+
+			const newAvg = Math.round(totalCapital / totalShares);
+
+			document.getElementById('avg-res-total-lots').textContent = `${totalLots} Lot (${totalShares.toLocaleString('id-ID')} Lembar)`;
+			document.getElementById('avg-res-total-capital').textContent = formatIDR(totalCapital);
+			document.getElementById('avg-res-new-avg').textContent = `${formatIDR(newAvg)} / Lembar`;
+
+			const targetContainer = document.getElementById('avg-res-target-container');
+			if (targetPrice > 0) {
+				const totalSellValue = totalShares * targetPrice;
+				const profitLossRp = totalSellValue - totalCapital;
+				const profitLossPct = ((profitLossRp / totalCapital) * 100).toFixed(2);
+
+				const valElem = document.getElementById('avg-res-profit-val');
+				if (profitLossRp >= 0) {
+					valElem.className = 'text-sm font-bold text-emerald-400';
+					valElem.textContent = `+${formatIDR(profitLossRp)} (+${profitLossPct}%)`;
+				} else {
+					valElem.className = 'text-sm font-bold text-rose-400';
+					valElem.textContent = `-${formatIDR(profitLossRp)} (${profitLossPct}%)`;
+				}
+				targetContainer.classList.remove('hidden');
+			} else {
+				targetContainer.classList.add('hidden');
+			}
+
+			document.getElementById('avg-result-box').classList.remove('hidden');
+			saveToolsStateAuto();
+		}
+
+		// Tool 2: 50/30/20 Budget Allocator
+		function calculate503020Split() {
+			const income = parseDotNumber(document.getElementById('split-income-input').value);
+			if (income <= 0) {
+				showToast('Masukkan total pemasukan bulanan', 'warning');
+				return;
+			}
+
+			const needs = income * 0.5;
+			const wants = income * 0.3;
+			const savings = income * 0.2;
+
+			document.getElementById('split-needs-val').textContent = formatIDR(needs);
+			document.getElementById('split-wants-val').textContent = formatIDR(wants);
+			document.getElementById('split-savings-val').textContent = formatIDR(savings);
+			document.getElementById('split-result-box').classList.remove('hidden');
+			saveToolsStateAuto();
+		}
+
+		function applySplitToBudgetLimit() {
+			const income = parseDotNumber(document.getElementById('split-income-input').value);
+			if (income > 0) {
+				budgetLimit = Math.round(income * 0.5);
+				saveAppState();
+				updateDashboard();
+				showToast(`Batas anggaran diset ke ${formatIDR(budgetLimit)} (50% Pokok)`, 'success');
+			}
+		}
+
+		// Tool 3: Emergency Fund Calculator
+		function calculateEmergencyFund() {
+			const exp = parseDotNumber(document.getElementById('ef-monthly-exp').value);
+			const mult = Number(document.getElementById('ef-profile').value);
+
+			if (exp <= 0) {
+				showToast('Masukkan pengeluaran rutin bulanan', 'warning');
+				return;
+			}
+
+			const target = exp * mult;
+			document.getElementById('ef-result-val').textContent = formatIDR(target);
+			document.getElementById('ef-result-box').classList.remove('hidden');
+			saveToolsStateAuto();
+		}
+
+		// Tool 4: Compound Interest Investor
+		function calculateInvestmentGrowth() {
+			const P = parseDotNumber(document.getElementById('inv-initial').value);
+			const PMT = parseDotNumber(document.getElementById('inv-monthly').value);
+			const rate = Number(document.getElementById('inv-rate').value) / 100 / 12;
+			const years = Number(document.getElementById('inv-years').value);
+			const n = years * 12;
+
+			if (years <= 0) return;
+
+			let total = P;
+			let totalInvested = P + (PMT * n);
+
+			for (let i = 0; i < n; i++) {
+				total = (total + PMT) * (1 + rate);
+			}
+
+			const interest = Math.max(0, total - totalInvested);
+
+			document.getElementById('inv-result-total').textContent = formatIDR(total);
+			document.getElementById('inv-result-interest').textContent = formatIDR(interest);
+			document.getElementById('inv-result-box').classList.remove('hidden');
+			saveToolsStateAuto();
+		}
+
+		// Tool 5: Savings Goal Planner
+		function calculateSavingsPlan() {
+			const target = parseDotNumber(document.getElementById('plan-target-amount').value);
+			const months = Number(document.getElementById('plan-target-months').value);
+
+			if (target <= 0 || months <= 0) {
+				showToast('Masukkan target nominal & bulan secara valid', 'warning');
+				return;
+			}
+
+			const perMonth = Math.ceil(target / months);
+			const perWeek = Math.ceil(perMonth / 4);
+
+			document.getElementById('plan-result-val').textContent = formatIDR(perMonth);
+			document.getElementById('plan-result-weekly').textContent = formatIDR(perWeek);
+			document.getElementById('plan-result-box').classList.remove('hidden');
+			saveToolsStateAuto();
+		}
+
+		// Tool 6: Basic Calculator & Safe Daily Spending
 		function calcNum(num) {
+			playSoundFX('click');
 			if (calcNewInput) {
 				calcScreenVal = num;
 				calcNewInput = false;
@@ -2425,12 +2891,14 @@
 		}
 
 		function calcOp(op) {
+			playSoundFX('click');
 			calcHistoryVal += ` ${calcScreenVal} ${op}`;
 			document.getElementById('calc-history').textContent = calcHistoryVal;
 			calcNewInput = true;
 		}
 
 		function calcClear() {
+			playSoundFX('click');
 			calcScreenVal = '0';
 			calcHistoryVal = '';
 			calcNewInput = true;
@@ -2439,6 +2907,7 @@
 		}
 
 		function calcDel() {
+			playSoundFX('click');
 			if (calcScreenVal.length > 1) {
 				calcScreenVal = calcScreenVal.slice(0, -1);
 			} else {
@@ -2449,6 +2918,7 @@
 		}
 
 		function calcEquals() {
+			playSoundFX('click');
 			try {
 				const expr = calcHistoryVal + ' ' + calcScreenVal;
 				const res = eval(expr.replace(/×/g, '*').replace(/÷/g, '/'));
@@ -2473,25 +2943,6 @@
 			}
 		}
 
-		// Sub-Tab 2: Savings Goal Planner
-		function calculateSavingsPlan() {
-			const target = parseDotNumber(document.getElementById('plan-target-amount').value);
-			const months = Number(document.getElementById('plan-target-months').value);
-
-			if (target <= 0 || months <= 0) {
-				showToast('Masukkan target nominal & bulan secara valid', 'warning');
-				return;
-			}
-
-			const perMonth = Math.ceil(target / months);
-			const perWeek = Math.ceil(perMonth / 4);
-
-			document.getElementById('plan-result-val').textContent = formatIDR(perMonth);
-			document.getElementById('plan-result-weekly').textContent = formatIDR(perWeek);
-			document.getElementById('plan-result-box').classList.remove('hidden');
-		}
-
-		// Sub-Tab 3: Safe Daily Spending Limit
 		function updateSafeDailySpending() {
 			const now = new Date();
 			const totalDaysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -2510,91 +2961,9 @@
 			document.getElementById('daily-safe-result-val').textContent = `${formatIDR(safeDaily)} / Hari`;
 		}
 
-		// Sub-Tab 4: Emergency Fund Calculator
-		function calculateEmergencyFund() {
-			const exp = parseDotNumber(document.getElementById('ef-monthly-exp').value);
-			const mult = Number(document.getElementById('ef-profile').value);
-
-			if (exp <= 0) {
-				showToast('Masukkan pengeluaran rutin bulanan', 'warning');
-				return;
-			}
-
-			const target = exp * mult;
-			document.getElementById('ef-result-val').textContent = formatIDR(target);
-			document.getElementById('ef-result-box').classList.remove('hidden');
-		}
-
-		// Sub-Tab 5: Compound Interest Investor
-		function calculateInvestmentGrowth() {
-			const P = parseDotNumber(document.getElementById('inv-initial').value);
-			const PMT = parseDotNumber(document.getElementById('inv-monthly').value);
-			const rate = Number(document.getElementById('inv-rate').value) / 100 / 12;
-			const years = Number(document.getElementById('inv-years').value);
-			const n = years * 12;
-
-			if (years <= 0) return;
-
-			let total = P;
-			let totalInvested = P + (PMT * n);
-
-			for (let i = 0; i < n; i++) {
-				total = (total + PMT) * (1 + rate);
-			}
-
-			const interest = Math.max(0, total - totalInvested);
-
-			document.getElementById('inv-result-total').textContent = formatIDR(total);
-			document.getElementById('inv-result-interest').textContent = formatIDR(interest);
-			document.getElementById('inv-result-box').classList.remove('hidden');
-		}
-
-		// Sub-Tab 6: 50/30/20 Budget Allocator
-		function calculate503020Split() {
-			const income = parseDotNumber(document.getElementById('split-income-input').value);
-			if (income <= 0) {
-				showToast('Masukkan total pemasukan bulanan', 'warning');
-				return;
-			}
-
-			const needs = income * 0.5;
-			const wants = income * 0.3;
-			const savings = income * 0.2;
-
-			document.getElementById('split-needs-val').textContent = formatIDR(needs);
-			document.getElementById('split-wants-val').textContent = formatIDR(wants);
-			document.getElementById('split-savings-val').textContent = formatIDR(savings);
-			document.getElementById('split-result-box').classList.remove('hidden');
-		}
-
 		// ==========================================
-		// 14. NOTIFICATION & SETTINGS HANDLERS
+		// 15. BACKUP & RESET HANDLERS
 		// ==========================================
-		function requestNotificationPermission() {
-			if (!("Notification" in window)) {
-				showToast("Browser tidak mendukung Web Notification API", "warning");
-				return;
-			}
-
-			Notification.requestPermission().then(permission => {
-				if (permission === 'granted') {
-					document.getElementById('settings-notif-status').textContent = 'Aktif (Izin Diberikan)';
-					showToast('Notifikasi peranti berhasil diaktifkan', 'success');
-					sendBrowserNotification('ArthaPulse Pro', 'Notifikasi berhasil terhubung ke perangkat Anda.');
-				} else {
-					document.getElementById('settings-notif-status').textContent = 'Ditolak oleh pengguna';
-					showToast('Izin notifikasi ditolak', 'warning');
-				}
-			});
-		}
-
-		function sendBrowserNotification(title, body) {
-			if ("Notification" in window && Notification.permission === "granted") {
-				new Notification(title, { body, icon: 'https://cdn-icons-png.flaticon.com/512/2953/2953361.png' });
-			}
-			showToast(`${title}: ${body}`, 'warning');
-		}
-
 		function handleSaveBudget(e) {
 			e.preventDefault();
 			const val = parseDotNumber(document.getElementById('settings-budget-input').value);
@@ -2604,7 +2973,6 @@
 			showToast('Batas anggaran bulanan disimpan', 'success');
 		}
 
-		// Export CSV
 		function exportToCSV() {
 			let csv = 'ID,Jenis,Nominal,Kategori,Tanggal,Catatan\n';
 			transactions.forEach(t => {
@@ -2620,7 +2988,6 @@
 			showToast('Berhasil mengunduh berkas CSV', 'success');
 		}
 
-		// Export JSON Backup
 		function exportToJSON() {
 			const data = {
 				transactions,
@@ -2629,6 +2996,7 @@
 				themeSettings,
 				userProfile,
 				userCategories,
+				appSettings,
 				version: '6.0'
 			};
 			const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -2640,7 +3008,6 @@
 			showToast('Berhasil mengunduh berkas cadangan JSON', 'success');
 		}
 
-		// Import JSON Backup
 		function handleImportJSON(e) {
 			const file = e.target.files[0];
 			if (!file) return;
@@ -2656,6 +3023,7 @@
 						if (parsed.themeSettings) themeSettings = parsed.themeSettings;
 						if (parsed.userProfile) userProfile = parsed.userProfile;
 						if (parsed.userCategories) userCategories = parsed.userCategories;
+						if (parsed.appSettings) appSettings = parsed.appSettings;
 
 						saveAppState();
 						syncSettingsUI();
@@ -2695,20 +3063,24 @@
 		}
 
 		function confirmClearAllData() {
-			openConfirmModal('Reset / Hapus Semua Data', 'Apakah Anda yakin ingin menghapus SELURUH data (transaksi, kantong, anggaran, & profil)? Tindakan ini akan mengosongkan aplikasi secara total.', (confirmed) => {
+			openConfirmModal('Reset / Hapus Semua Data', 'Apakah Anda yakin ingin menghapus SELURUH data? Tindakan ini akan mengosongkan aplikasi secara total.', (confirmed) => {
 				if (confirmed) {
 					transactions = [];
 					budgetLimit = 0;
 					pockets = [];
 					userCategories = DEFAULT_CATEGORIES;
 					userProfile = { name: 'Pengguna ArthaPulse', phone: '', photo: '' };
-					
+					appSettings = { notificationEnabled: false, soundFxEnabled: true };
+
 					localStorage.removeItem(STORAGE_KEY);
 					localStorage.removeItem(BUDGET_KEY);
 					localStorage.removeItem(POCKETS_KEY);
 					localStorage.removeItem(PROFILE_KEY);
 					localStorage.removeItem(CATEGORIES_KEY);
-					
+					localStorage.removeItem(SETTINGS_KEY);
+					localStorage.removeItem(RECAP_STATE_KEY);
+					localStorage.removeItem(TOOLS_STATE_KEY);
+
 					saveAppState();
 					updateProfileHeaderUI();
 					populateCategoryDropdowns();
@@ -2720,7 +3092,6 @@
 			});
 		}
 
-		// Confirm Dialog Helper
 		function openConfirmModal(title, msg, callback) {
 			document.getElementById('confirm-title').textContent = title;
 			document.getElementById('confirm-message').textContent = msg;
@@ -2735,9 +3106,20 @@
 		}
 
 		// ==========================================
-		// 15. ONLOAD INITIALIZATION
+		// 16. WINDOW STORAGE SYNC & INITIALIZATION
 		// ==========================================
-		window.onload = function() {
+		window.addEventListener('storage', function(e) {
+			loadAppState();
+			updateProfileHeaderUI();
+			updateDashboard();
+			renderTransactions();
+			renderPockets();
+			renderRecapAnalytics();
+			restoreToolsCalculatorState();
+			syncSettingsUI();
+		});
+
+		document.addEventListener('DOMContentLoaded', function() {
 			loadAppState();
 			populateCategoryDropdowns();
 			initLiveDotInputs();
@@ -2746,9 +3128,11 @@
 			updateDashboard();
 			renderTransactions();
 			renderPockets();
+			restoreToolsCalculatorState();
+			bindToolsAutoSave();
 
 			if (window.lucide) lucide.createIcons();
-		};
+		});
 	</script>
 </body>
 </html>
