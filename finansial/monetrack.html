@@ -8,6 +8,7 @@
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<link id="appIcon" rel="icon" href="data:,">
 	<meta property="og:title" content="Monetrack (Money & Track)">
 	<meta property="og:description" content="Simpan, catat dan lihat perkembangan finansialmu. ">
 
@@ -108,18 +109,21 @@
 		.toast-bar { transform-origin: left; animation: toastBar linear forwards; }
 		#hRing { transition: stroke-dasharray .8s ease, stroke .5s ease; }
 		.card { border-radius: var(--r-card, 1.5rem) !important; }
-		/* Ketebalan font (menu Pengaturan): light / normal / bold */
-		html[data-fw="light"] body { font-weight: 300; }
-		html[data-fw="light"] .font-medium { font-weight: 400 !important; }
-		html[data-fw="light"] .font-semibold { font-weight: 500 !important; }
-		html[data-fw="light"] .font-bold { font-weight: 600 !important; }
-		html[data-fw="light"] .font-extrabold { font-weight: 700 !important; }
-		html[data-fw="bold"] body { font-weight: 600; }
-		html[data-fw="bold"] .font-medium { font-weight: 600 !important; }
-		html[data-fw="bold"] .font-semibold { font-weight: 700 !important; }
-		html[data-fw="bold"] .font-bold, html[data-fw="bold"] .font-extrabold { font-weight: 800 !important; }
+		/* Ketebalan font (menu Pengaturan): berlaku untuk huruf DAN angka, termasuk angka di kolom input, grafik, dan teks <b> */
+		html { --fw-base: 400; --fw-medium: 500; --fw-semi: 600; --fw-bold: 700; --fw-xbold: 800; }
+		html[data-fw="light"] { --fw-base: 300; --fw-medium: 300; --fw-semi: 400; --fw-bold: 500; --fw-xbold: 500; }
+		html[data-fw="bold"] { --fw-base: 600; --fw-medium: 600; --fw-semi: 700; --fw-bold: 800; --fw-xbold: 900; }
+		body { font-weight: var(--fw-base); }
+		.font-normal, .\!font-normal { font-weight: var(--fw-base) !important; }
+		.font-medium, .\!font-medium { font-weight: var(--fw-medium) !important; }
+		.font-semibold, .\!font-semibold { font-weight: var(--fw-semi) !important; }
+		.font-bold, .\!font-bold, b, strong { font-weight: var(--fw-bold) !important; }
+		.font-extrabold, .\!font-extrabold { font-weight: var(--fw-xbold) !important; }
+		/* Font yang tebal maksimalnya 700 dibantu goresan tipis agar mode Bold tetap terlihat berbeda */
+		html[data-fw="bold"] :is(.font-bold, .font-extrabold, .\!font-bold, b, strong) { -webkit-text-stroke: .35px currentColor; }
 		/* Grafik */
-		.ch-ax { font-size: 9px; fill: currentColor; fill-opacity: .55; }
+		.ch-ax { font-size: 9px; font-weight: var(--fw-base); fill: currentColor; fill-opacity: .55; }
+		.ch-num { font-weight: var(--fw-bold); }
 		.ch-hit { fill: currentColor; fill-opacity: 0; transition: fill-opacity .15s; }
 		.ch-hit:hover, .ch-hit.on { fill-opacity: .06; }
 		html.no-anim *, html.no-anim ::before, html.no-anim ::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
@@ -140,7 +144,7 @@
 		<div class="relative mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2.5 sm:px-6 lg:flex-nowrap">
 
 			<div class="order-1 flex min-w-0 items-center gap-2.5">
-				<span class="grid h-9 w-9 shrink-0 place-items-center rounded-2xl bg-teal-500 text-sm font-extrabold text-white">D</span>
+				<span id="appLogo" class="shrink-0"></span>
 				<div class="min-w-0">
 					<h1 class="truncate text-base font-extrabold leading-tight text-teal-700 dark:text-teal-300">Monetrack</h1>
 					<p id="clock" class="truncate text-[11px] leading-tight text-stone-400"></p>
@@ -179,13 +183,20 @@
 				</button>
 			</div>
 
-			<!-- Panel notifikasi -->
-			<div id="notifPanel" class="absolute right-3 top-full z-40 mt-2 hidden w-[min(22rem,calc(100vw-1.5rem))] overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-stone-200 dark:bg-slate-800 dark:ring-slate-700 sm:right-6">
-				<div class="flex items-center justify-between px-4 py-3">
-					<h2 class="text-sm font-bold">Notifikasi</h2>
-					<button id="notifClear" class="text-xs font-semibold text-stone-400 hover:text-rose-500">Hapus semua</button>
+			<!-- Panel Kotak Masuk -->
+			<div id="notifPanel" class="absolute right-3 top-full z-40 mt-2 hidden w-[min(26rem,calc(100vw-1.5rem))] overflow-hidden rounded-3xl bg-stone-50 shadow-xl ring-1 ring-stone-200 dark:bg-slate-800 dark:ring-slate-700 sm:right-6">
+				<div class="flex items-center justify-between gap-2 px-4 pb-2 pt-3">
+					<div class="min-w-0">
+						<h2 class="text-sm font-extrabold">Kotak Masuk</h2>
+						<p id="notifSub" class="truncate text-[11px] text-stone-400"></p>
+					</div>
+					<div class="flex shrink-0 items-center gap-1">
+						<button id="notifReadAll" class="rounded-full px-2.5 py-1 text-[11px] font-bold text-teal-600 hover:bg-teal-100/60 dark:text-teal-300 dark:hover:bg-teal-500/15">Tandai dibaca</button>
+						<button id="notifClear" class="rounded-full px-2.5 py-1 text-[11px] font-bold text-stone-400 hover:bg-rose-100/60 hover:text-rose-500">Hapus semua</button>
+					</div>
 				</div>
-				<ul id="notifList" class="max-h-80 divide-y divide-stone-200/60 overflow-y-auto border-t border-stone-200/60 dark:divide-slate-700/50 dark:border-slate-700/50"></ul>
+				<div id="notifTabs" class="flex gap-1.5 overflow-x-auto px-4 pb-2" role="tablist" aria-label="Filter kotak masuk"></div>
+				<ul id="notifList" class="max-h-[min(60vh,26rem)] overflow-y-auto border-t border-stone-200/60 dark:border-slate-700/50"></ul>
 			</div>
 		</div>
 	</header>
@@ -275,25 +286,41 @@
 		<!-- LAYAR 4: ALAT (kalkulator & data) -->
 		<!-- LAYAR: KANTONG (simpan, catat, rekap uang yang disimpan) -->
 		<section data-screen="pockets" class="hidden space-y-4">
-			<div id="pocketSummary" class="grid grid-cols-2 gap-3 md:grid-cols-4"></div>
-			<div class="flex flex-wrap items-center justify-between gap-2">
-				<h2 class="text-base font-extrabold">Kantong Saya</h2>
-				<div class="flex gap-2">
+			<div id="pocketSummary" class="grid gap-3 lg:grid-cols-3"></div>
+
+			<div class="flex flex-wrap items-end justify-between gap-3">
+				<div>
+					<h2 class="text-base font-extrabold">Kantong Saya</h2>
+					<p id="pocketSub" class="text-xs text-stone-400"></p>
+				</div>
+				<div class="flex flex-wrap items-center gap-2">
+					<div class="w-40">
+						<select id="pocketSort" class="input !py-2 text-xs">
+							<option value="created">Urutan dibuat</option>
+							<option value="balance">Saldo terbesar</option>
+							<option value="progress">Progres target</option>
+							<option value="recent">Aktivitas terbaru</option>
+							<option value="name">Nama A–Z</option>
+						</select>
+					</div>
 					<button id="btnPocketCsv" class="btn-soft text-xs">Ekspor CSV</button>
 					<button id="btnPocketAdd" class="btn-main text-xs">+ Kantong Baru</button>
 				</div>
 			</div>
-			<div id="pocketGrid" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
+
+			<div id="pocketGrid" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3"></div>
+
 			<div class="grid gap-4 lg:grid-cols-2">
 				<section class="card">
-					<h2 class="mb-3 font-bold">Sebaran Saldo</h2>
+					<h2 class="font-bold">Sebaran Saldo</h2>
+					<p class="mb-3 text-xs text-stone-400">Pembagian saldo di tiap kantong</p>
 					<div class="flex flex-wrap items-center gap-5">
 						<svg id="pocketDonut" viewBox="0 0 36 36" class="h-32 w-32 shrink-0 -rotate-90"></svg>
-						<ul id="pocketLegend" class="min-w-[180px] flex-1 space-y-1.5 text-sm"></ul>
+						<ul id="pocketLegend" class="min-w-[200px] flex-1 space-y-2.5 text-sm"></ul>
 					</div>
 				</section>
 				<section class="card">
-					<h2 class="mb-1 font-bold">Rekap Setoran &amp; Penarikan</h2>
+					<h2 class="font-bold">Rekap Setoran &amp; Penarikan</h2>
 					<p class="mb-2 text-xs text-stone-400">6 bulan terakhir</p>
 					<div id="pocketTrend"></div>
 					<div class="mt-2 flex gap-4 text-xs">
@@ -302,12 +329,20 @@
 					</div>
 				</section>
 			</div>
+
 			<section class="card">
+				<h2 class="font-bold">Rekap per Kantong</h2>
+				<p class="mb-3 text-xs text-stone-400">Total setoran, penarikan, dan saldo sepanjang waktu</p>
+				<div class="overflow-x-auto"><table id="pocketRecap" class="w-full min-w-[460px] text-xs"></table></div>
+			</section>
+
+			<section id="pocketHistCard" class="card scroll-mt-28">
 				<div class="mb-3 flex flex-wrap items-center justify-between gap-2">
 					<h2 id="pocketHistTitle" class="font-bold">Riwayat Kantong</h2>
 					<div class="w-full sm:w-56"><select id="pocketFilter" class="input"></select></div>
 				</div>
-				<ul id="pocketHist" class="divide-y divide-stone-200/60 dark:divide-slate-700/50"></ul>
+				<div id="pocketTypes" class="mb-2 flex gap-1.5 overflow-x-auto" role="tablist" aria-label="Filter jenis catatan"></div>
+				<ul id="pocketHist"></ul>
 			</section>
 		</section>
 
@@ -334,15 +369,16 @@
 				<section class="card">
 					<h2 class="mb-3 font-bold">Data</h2>
 					<div class="grid grid-cols-2 gap-2 text-xs">
-						<button id="btnCsv" class="btn-soft">Ekspor CSV</button>
-						<button id="btnJson" class="btn-soft">Backup JSON</button>
-						<button id="btnImport" class="btn-soft">Impor JSON</button>
+						<button id="btnJson" class="btn-main col-span-2">Cadangan Lengkap (JSON)</button>
+						<button id="btnImport" class="btn-soft col-span-2">Impor / Pulihkan Cadangan</button>
+						<button id="btnCsv" class="btn-soft">Ekspor Transaksi CSV</button>
+						<button id="btnRecapCsv" class="btn-soft">Ekspor Rekap CSV</button>
 						<button id="btnSample" class="btn-soft">Contoh Data</button>
 						<button id="btnPrune" class="btn-soft col-span-2">Bersihkan Histori Lama</button>
 						<button id="btnReset" class="btn-soft col-span-2 !text-rose-500">Hapus Semua Data</button>
 					</div>
 					<input id="fileImport" type="file" accept="application/json" class="hidden">
-					<p class="mt-3 text-xs text-stone-400">Data tersimpan otomatis di perangkat ini (localStorage).</p>
+					<p class="mt-3 text-xs text-stone-400">Data tersimpan otomatis di perangkat ini (localStorage). Cadangan lengkap berisi nama, nomor, foto, logo, pengaturan, transaksi, kotak masuk, kantong, riwayat, dan rekap.</p>
 				</section>
 			</div>
 		</section>
@@ -458,7 +494,7 @@
 			locale: 'id-ID',
 			currency: 'IDR',
 			retentionYears: 5,           // lama histori yang disimpan & ditampilkan (rekap tahunan maksimal 5 tahun)
-			notifLimit: 100,             // maksimal riwayat notifikasi yang disimpan
+			notifLimit: 200,            // maksimal notifikasi yang disimpan di Kotak Masuk
 			appearance: {
 				fontSize: { min: 12, max: 22, step: 1, default: 16 },
 				legacySizes: { sm: 14, md: 16, lg: 18, xl: 20 },   // nilai lama sebelum memakai slider
@@ -517,9 +553,9 @@
 		const state = {
 			tx: [], budget: 0, theme: null,
 			notifs: [], alertLog: {}, range: 6, screen: 'home', view: 'month', rangeDay: 7, rangeWeek: 5, rangeYear: 3, pockets: [], pocketTx: [],
-			profile: null, profileSkipped: false, categoryIcons: {},
+			profile: null, profileSkipped: false, categoryIcons: {}, logo: null,
 			settings: {
-				alertsOn: true, warnAt: 80, device: false, sound: true, goalSave: 20, goalEmergency: 6,
+				alertsOn: true, warnAt: 80, device: false, sound: true, goalSave: 20, goalEmergency: 6, clickSound: true, haptics: true, logInbox: true, pocketSort: 'created',
 				fontSize: 16, fontFamily: 'quicksand', fontWeight: 'normal', accent: 'sage', accentHue: null, accentSat: null, radius: 'xl', animations: true, weekStart: 1
 			},
 			month: ymd(new Date()).slice(0, 7),
@@ -528,33 +564,37 @@
 		};
 
 		const Store = {
-			fields: ['tx', 'budget', 'theme', 'notifs', 'alertLog', 'range', 'rangeDay', 'rangeWeek', 'rangeYear', 'view', 'pockets', 'pocketTx', 'profile', 'profileSkipped', 'categoryIcons', 'settings'],
+			fields: ['tx', 'budget', 'theme', 'notifs', 'alertLog', 'range', 'rangeDay', 'rangeWeek', 'rangeYear', 'view', 'pockets', 'pocketTx', 'profile', 'profileSkipped', 'categoryIcons', 'logo', 'settings'],
 			load() {
-				try {
-					const d = JSON.parse(localStorage.getItem(CONFIG.storageKey) || '{}');
-					state.tx = (Array.isArray(d.tx) ? d.tx : [])
-						.filter((t) => t && ['income', 'expense'].includes(t.type) && t.amount > 0 && /^\d{4}-\d{2}-\d{2}$/.test(t.date))
-						.map((t) => ({ ...t, category: String(t.category || 'Lainnya'), note: String(t.note || '') }));
-					state.budget = Number(d.budget) || 0;
-					state.theme = d.theme || null;
-					state.notifs = Array.isArray(d.notifs) ? d.notifs : [];
-					state.alertLog = d.alertLog || {};
-					Object.assign(state, Pockets.sanitize(d.pockets, d.pocketTx));
-					state.profile = Profile.sanitize(d.profile);
-					state.profileSkipped = Boolean(d.profileSkipped);
-					state.categoryIcons = CategoryIcons.sanitize(d.categoryIcons);
-					state.range = [1, 3, 6, 9, 12].includes(d.range) ? d.range : 6;
-					state.rangeWeek = [1, 3, 5, 7, 9].includes(d.rangeWeek) ? d.rangeWeek : 5;
-					state.rangeDay = [3, 7, 14, 28, 30].includes(d.rangeDay) ? d.rangeDay : 7;
-					state.rangeYear = [1, 2, 3, 4, 5].includes(d.rangeYear) ? d.rangeYear : 3;
-					state.view = ['day', 'week', 'month', 'year'].includes(d.view) ? d.view : 'month';
-					state.settings = { ...state.settings, ...(d.settings || {}) };
-					const S = state.settings;
-					S.goalSave = Math.max(1, Math.min(100, Number(S.goalSave) || 20));
-					S.goalEmergency = Math.max(1, Math.min(60, Number(S.goalEmergency) || 6));
-					// Migrasi: pengguna yang masih memakai font bawaan lama (Comfortaa) dipindah ke Quicksand
-					if (S.fontV !== 2) { if (S.fontFamily === 'comfortaa') S.fontFamily = 'quicksand'; S.fontV = 2; }
-				} catch (e) { /* storage kosong / diblokir */ }
+				try { this.apply(JSON.parse(localStorage.getItem(CONFIG.storageKey) || '{}')); } catch (e) { /* storage kosong / diblokir */ }
+			},
+			// Menerapkan data (dari storage atau file cadangan) ke state, lengkap dengan pembersihan
+			apply(d) {
+				state.tx = (Array.isArray(d.tx) ? d.tx : [])
+					.filter((t) => t && ['income', 'expense'].includes(t.type) && t.amount > 0 && /^\d{4}-\d{2}-\d{2}$/.test(t.date))
+					.map((t) => ({ ...t, category: String(t.category || 'Lainnya'), note: String(t.note || '') }));
+				state.budget = Number(d.budget) || 0;
+				state.theme = ['light', 'dark'].includes(d.theme) ? d.theme : null;
+				state.notifs = Notify.sanitize(d.notifs);
+				state.alertLog = d.alertLog && typeof d.alertLog === 'object' ? d.alertLog : {};
+				Object.assign(state, Pockets.sanitize(d.pockets, d.pocketTx));
+				state.profile = Profile.sanitize(d.profile);
+				state.profileSkipped = Boolean(d.profileSkipped);
+				state.logo = Logo.sanitize(d.logo);
+				state.categoryIcons = CategoryIcons.sanitize(d.categoryIcons);
+				state.range = [1, 3, 6, 9, 12].includes(d.range) ? d.range : 6;
+				state.rangeWeek = [1, 3, 5, 7, 9].includes(d.rangeWeek) ? d.rangeWeek : 5;
+				state.rangeDay = [3, 7, 14, 28, 30].includes(d.rangeDay) ? d.rangeDay : 7;
+				state.rangeYear = [1, 2, 3, 4, 5].includes(d.rangeYear) ? d.rangeYear : 3;
+				state.view = ['day', 'week', 'month', 'year'].includes(d.view) ? d.view : 'month';
+				state.settings = { ...state.settings, ...(d.settings && typeof d.settings === 'object' ? d.settings : {}) };
+				const S = state.settings;
+				S.goalSave = Math.max(1, Math.min(100, Number(S.goalSave) || 20));
+				S.goalEmergency = Math.max(1, Math.min(60, Number(S.goalEmergency) || 6));
+				['clickSound', 'haptics', 'logInbox'].forEach((k) => { S[k] = S[k] !== false; });
+				if (!['created', 'balance', 'progress', 'recent', 'name'].includes(S.pocketSort)) S.pocketSort = 'created';
+				// Migrasi: pengguna yang masih memakai font bawaan lama (Comfortaa) dipindah ke Quicksand
+				if (S.fontV !== 2) { if (S.fontFamily === 'comfortaa') S.fontFamily = 'quicksand'; S.fontV = 2; }
 			},
 			save() {
 				try {
@@ -947,6 +987,7 @@
 
 		const Toast = {
 			show({ type = 'info', title = '', message = '', duration = 4500 }) {
+				Feedback.toast(type);
 				const T = TYPES[type] || TYPES.info, box = $('#toasts');
 				const live = [...box.children].filter((c) => !c.dataset.out);
 				if (live.length >= 4) this.hide(live[0]);
@@ -1118,18 +1159,31 @@
 
 		const Notify = {
 			supported: () => 'Notification' in window,
-			push({ type = 'info', title, message = '', device = false, tag }) {
-				state.notifs.unshift({ id: Date.now() + Math.random(), type, title, message, at: Date.now(), read: false });
+			// silent = true: hanya dicatat di Kotak Masuk (tanpa toast, suara, dan getar)
+			push({ type = 'info', title, message = '', device = false, tag, source = 'system', screen = null, silent = false }) {
+				state.notifs.unshift({ id: uid(), type, title, message, at: Date.now(), read: false, source, screen });
 				state.notifs.length = Math.min(state.notifs.length, CONFIG.notifLimit);
 				Store.save();
-				Toast.show({ type, title, message, duration: type === 'error' ? 7000 : 4500 });
-				if (type !== 'success') Sound.play(type);
-				if (device) this.device(title, message, tag);
+				if (!silent) {
+					Toast.show({ type, title, message, duration: type === 'error' ? 7000 : 4500 });
+					if (type !== 'success') Sound.play(type);
+					if (device) this.device(title, message, tag);
+				}
 				NotifPanel.render();
+			},
+			// Mencatat aktivitas penting (cadangan, impor, target tercapai, dll.); bisa dimatikan di Pengaturan
+			log(title, message = '', { type = 'info', source = 'data', screen = null } = {}) {
+				if (state.settings.logInbox) this.push({ type, title, message, source, screen, silent: true });
+			},
+			sanitize(list) {
+				const types = ['info', 'success', 'warning', 'error'], screens = ['home', 'transactions', 'recap', 'pockets', 'tools'];
+				return (Array.isArray(list) ? list : []).filter((n) => n && n.title).map((n) => ({
+					id: n.id || uid(), type: types.includes(n.type) ? n.type : 'info', title: String(n.title).slice(0, 120), message: String(n.message || '').slice(0, 400),
+					at: Number(n.at) || Date.now(), read: Boolean(n.read), source: String(n.source || 'system'), screen: screens.includes(n.screen) ? n.screen : null
+				})).slice(0, CONFIG.notifLimit);
 			},
 			async device(title, body, tag) {
 				if (!state.settings.device || !this.supported() || Notification.permission !== 'granted') return;
-				if (state.settings.sound && navigator.vibrate) navigator.vibrate([120, 60, 120]);
 				const opts = { body, tag, renotify: Boolean(tag), vibrate: [120, 60, 120] };
 				try {
 					const reg = await navigator.serviceWorker?.getRegistration();
@@ -1153,42 +1207,105 @@
 		};
 
 		const NotifPanel = {
+			tab: 'all',
+			open: new Set(),   // ID notifikasi yang sedang diperluas
+			sources: { limit: 'Batas Pengeluaran', pocket: 'Kantong', data: 'Data & Cadangan', system: 'Sistem' },
 			ago(ts) {
 				const s = Math.round((Date.now() - ts) / 1000);
 				if (s < 60) return 'baru saja';
 				if (s < 3600) return `${Math.floor(s / 60)} mnt lalu`;
 				if (s < 86400) return `${Math.floor(s / 3600)} jam lalu`;
-				return new Date(ts).toLocaleDateString(CONFIG.locale, { day: 'numeric', month: 'short' });
+				return new Date(ts).toLocaleTimeString(CONFIG.locale, { hour: '2-digit', minute: '2-digit' });
+			},
+			// Label kelompok tanggal: Hari ini, Kemarin, atau tanggal lengkap
+			dayLabel(ts) {
+				const d = new Date(ts), t = new Date(), y = new Date(t.getFullYear(), t.getMonth(), t.getDate() - 1);
+				if (ymd(d) === ymd(t)) return 'Hari ini';
+				if (ymd(d) === ymd(y)) return 'Kemarin';
+				return d.toLocaleDateString(CONFIG.locale, { day: 'numeric', month: 'long', year: 'numeric' });
+			},
+			isAlert: (n) => n.type === 'warning' || n.type === 'error',
+			filtered() {
+				const f = { all: () => true, unread: (n) => !n.read, alert: (n) => this.isAlert(n), activity: (n) => !this.isAlert(n) }[this.tab];
+				return state.notifs.filter(f);
 			},
 			render() {
-				const unread = state.notifs.filter((n) => !n.read).length, badge = $('#notifBadge');
+				const all = state.notifs, unread = all.filter((n) => !n.read).length, badge = $('#notifBadge');
 				badge.textContent = unread > 9 ? '9+' : unread;
 				badge.classList.toggle('hidden', !unread);
-				$('#notifList').innerHTML = state.notifs.length ? state.notifs.map((n) => {
-					const T = TYPES[n.type] || TYPES.info;
-					return `<li class="flex gap-3 px-4 py-3 ${n.read ? '' : 'bg-teal-50/70 dark:bg-teal-500/10'}">
-						<span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${T.cls}">${T.icon}</span>
-						<div class="min-w-0 flex-1">
-							<p class="text-sm font-semibold">${esc(n.title)}</p>
-							<p class="text-xs text-stone-500 dark:text-slate-400">${esc(n.message)}</p>
-							<p class="mt-1 text-[11px] text-stone-400">${this.ago(n.at)}</p>
-						</div>
+				$('#notifSub').textContent = all.length ? `${unread} belum dibaca · ${all.length} tersimpan` : 'Belum ada notifikasi';
+				const alerts = all.filter((n) => this.isAlert(n)).length;
+				const counts = { all: all.length, unread, alert: alerts, activity: all.length - alerts };
+				$('#notifTabs').innerHTML = [['all', 'Semua'], ['unread', 'Belum dibaca'], ['alert', 'Peringatan'], ['activity', 'Aktivitas']].map(([k, label]) => `
+					<button type="button" data-ntab="${k}" role="tab" aria-selected="${this.tab === k}" class="shrink-0 rounded-full px-3 py-1 text-[11px] font-bold transition ${this.tab === k ? 'bg-teal-500 text-white' : 'bg-stone-200/60 text-stone-500 hover:bg-stone-200 dark:bg-slate-700/60 dark:text-slate-300'}">${label} <span class="opacity-70">${counts[k]}</span></button>`).join('');
+				const rows = this.filtered();
+				let lastDay = '';
+				$('#notifList').innerHTML = rows.length ? rows.map((n) => {
+					const T = TYPES[n.type] || TYPES.info, day = this.dayLabel(n.at), expanded = this.open.has(String(n.id));
+					const head = day !== lastDay ? `<li class="sticky top-0 z-10 bg-stone-50/95 px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-wide text-stone-400 backdrop-blur dark:bg-slate-800/95">${day}</li>` : '';
+					lastDay = day;
+					return `${head}
+						<li data-nid="${n.id}" class="relative flex cursor-pointer gap-3 px-4 py-3 transition hover:bg-stone-100/70 dark:hover:bg-slate-700/30 ${n.read ? '' : 'bg-teal-50/60 dark:bg-teal-500/10'}">
+							${n.read ? '' : '<i class="absolute left-1.5 top-5 h-1.5 w-1.5 rounded-full bg-teal-500"></i>'}
+							<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold ${T.cls}">${T.icon}</span>
+							<div class="min-w-0 flex-1">
+								<div class="flex items-start justify-between gap-2">
+									<p class="text-sm ${n.read ? 'font-semibold' : 'font-extrabold'}">${esc(n.title)}</p>
+									<span class="shrink-0 text-[10px] text-stone-400" title="${esc(new Date(n.at).toLocaleString(CONFIG.locale))}">${this.ago(n.at)}</span>
+								</div>
+								<p class="mt-0.5 text-xs text-stone-500 dark:text-slate-400 ${expanded ? '' : 'line-clamp-2'}">${esc(n.message)}</p>
+								<div class="mt-2 flex flex-wrap items-center gap-1.5">
+									<span class="rounded-full bg-stone-200/60 px-2 py-0.5 text-[10px] font-bold text-stone-500 dark:bg-slate-700/60 dark:text-slate-300">${this.sources[n.source] || 'Sistem'}</span>
+									${n.screen ? '<button type="button" data-n-go class="rounded-full px-2 py-0.5 text-[10px] font-bold text-teal-600 hover:bg-teal-100/60 dark:text-teal-300 dark:hover:bg-teal-500/15">Lihat</button>' : ''}
+									<button type="button" data-n-read class="rounded-full px-2 py-0.5 text-[10px] font-bold text-stone-400 hover:bg-stone-200/60 dark:hover:bg-slate-700/60">${n.read ? 'Tandai belum dibaca' : 'Tandai dibaca'}</button>
+									<button type="button" data-n-del class="rounded-full px-2 py-0.5 text-[10px] font-bold text-stone-400 hover:bg-rose-100/60 hover:text-rose-500">Hapus</button>
+								</div>
+							</div>
+						</li>`;
+				}).join('') : `
+					<li class="px-4 py-10 text-center">
+						<p class="text-2xl">📭</p>
+						<p class="mt-1 text-sm font-bold">${this.tab === 'all' ? 'Kotak masuk kosong' : 'Tidak ada notifikasi di sini'}</p>
+						<p class="text-xs text-stone-400">Peringatan batas pengeluaran dan aktivitas penting akan tercatat di sini.</p>
 					</li>`;
-				}).join('') : '<li class="py-8 text-center text-xs text-stone-400">Belum ada notifikasi.</li>';
 			},
 			toggle(force) {
 				const p = $('#notifPanel'), open = force === undefined ? p.classList.contains('hidden') : force;
 				p.classList.toggle('hidden', !open);
-				if (open) {
-					this.render();
-					p.classList.remove('anim-pop');
-					void p.offsetWidth;
-					p.classList.add('anim-pop');
-				} else {
+				if (!open) return;
+				this.render();
+				p.classList.remove('anim-pop');
+				void p.offsetWidth;
+				p.classList.add('anim-pop');
+			},
+			bind() {
+				$('#notifTabs').addEventListener('click', (e) => {
+					const b = e.target.closest('[data-ntab]');
+					if (b) { this.tab = b.dataset.ntab; this.render(); }
+				});
+				$('#notifReadAll').addEventListener('click', () => {
 					state.notifs.forEach((n) => { n.read = true; });
-					Store.save();
-					this.render();
-				}
+					Store.save(); this.render();
+				});
+				$('#notifClear').addEventListener('click', async () => {
+					if (!state.notifs.length) return;
+					const ok = await Modal.confirm({ title: 'Hapus semua notifikasi?', message: `${state.notifs.length} notifikasi di kotak masuk akan dihapus permanen.`, confirmText: 'Hapus Semua', danger: true });
+					if (!ok) return;
+					state.notifs = [];
+					this.open.clear();
+					Store.save(); this.render();
+				});
+				$('#notifList').addEventListener('click', (e) => {
+					const li = e.target.closest('[data-nid]');
+					const n = li && state.notifs.find((x) => String(x.id) === li.dataset.nid);
+					if (!n) return;
+					const id = String(n.id);
+					if (e.target.closest('[data-n-del]')) { state.notifs = state.notifs.filter((x) => x !== n); this.open.delete(id); }
+					else if (e.target.closest('[data-n-read]')) n.read = !n.read;
+					else if (e.target.closest('[data-n-go]')) { n.read = true; this.toggle(false); Nav.go(n.screen); }
+					else { n.read = true; if (this.open.has(id)) this.open.delete(id); else this.open.add(id); }
+					Store.save(); this.render();
+				});
 			}
 		};
 
@@ -1210,9 +1327,9 @@
 				if (!state.settings.alertsOn || this.rank[r.level] <= this.rank[prev]) return;
 				const label = monthLabel(month), tag = `limit-${month}`;
 				if (r.level === 'over') {
-					Notify.push({ type: 'error', title: 'Batas pengeluaran terlampaui', message: `${label}: ${fmt.format(r.spent)} dari batas ${fmt.format(r.limit)} (lebih ${fmt.format(-r.left)}).`, device: true, tag });
+					Notify.push({ type: 'error', title: 'Batas pengeluaran terlampaui', message: `${label}: ${fmt.format(r.spent)} dari batas ${fmt.format(r.limit)} (lebih ${fmt.format(-r.left)}).`, device: true, tag, source: 'limit', screen: 'home' });
 				} else {
-					Notify.push({ type: 'warning', title: `Pengeluaran sudah ${Math.round(r.pct)}% dari batas`, message: `${label}: sisa ${fmt.format(r.left)} dari batas ${fmt.format(r.limit)}.`, device: true, tag });
+					Notify.push({ type: 'warning', title: `Pengeluaran sudah ${Math.round(r.pct)}% dari batas`, message: `${label}: sisa ${fmt.format(r.left)} dari batas ${fmt.format(r.limit)}.`, device: true, tag, source: 'limit', screen: 'home' });
 				}
 			}
 		};
@@ -1266,6 +1383,7 @@
 				root.style.setProperty('--r-card', (A.radii.find((r) => r[0] === s.radius) || A.radii[0])[1]);
 				root.classList.toggle('no-anim', !s.animations);
 				reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches || !s.animations;
+				if (typeof Logo !== 'undefined') Logo.apply();   // logo bawaan mengikuti warna aksen
 			},
 			loadFont(font) {
 				if (!font.google || document.getElementById(`font-${font.google}`)) return;
@@ -1331,9 +1449,15 @@
 									</label>
 								</div>
 							</div>
+							<div><p class="label">Logo aplikasi</p><div class="flex items-center gap-3"><div id="setLogoPrev"></div><button type="button" data-logo class="btn-soft text-xs">Ganti Logo</button></div></div>
 							<div><p class="label">Sudut kartu</p>${seg('setRadius', A.radii.map(([id, , label]) => [id, label]), S.radius, 'grid-cols-3')}</div>
 							<div><p class="label">Awal minggu (rekap mingguan)</p>${seg('setWeek', [[1, 'Senin'], [0, 'Minggu']], S.weekStart, 'grid-cols-2')}</div>
 							${sw('setAnim', 'Animasi', 'Efek gerak pada grafik, popup, dan transisi.', S.animations)}
+							<div class="space-y-3 rounded-2xl bg-stone-100/70 p-3 dark:bg-slate-900/40">
+								<p class="label !mb-0">Efek interaksi</p>
+								${sw('setClick', 'Efek klik', 'Bunyi klik lembut saat menekan tombol.', S.clickSound)}
+								${sw('setHaptic', 'Getar', 'Getaran halus saat menekan tombol dan saat ada peringatan (di HP yang mendukung).', S.haptics)}
+							</div>
 							<button type="button" data-reset-look class="btn-soft w-full">Kembalikan Tampilan Bawaan</button>
 						</div>
 
@@ -1347,7 +1471,8 @@
 							${sw('sAlerts', 'Peringatan batas pengeluaran', 'Beri tahu saat pengeluaran mendekati atau melewati batas.', S.alertsOn)}
 							<div><p class="label">Peringatkan saat terpakai</p>${seg('warnAt', [[70, '70%'], [80, '80%'], [90, '90%']], S.warnAt, 'grid-cols-3')}</div>
 							${sw('sDevice', 'Notifikasi ke perangkat', perm, S.device)}
-							${sw('sSound', 'Suara & getar', 'Nada lembut dan getar saat ada peringatan.', S.sound)}
+							${sw('sSound', 'Suara notifikasi', 'Nada lembut saat ada peringatan.', S.sound)}
+							${sw('sLog', 'Catat aktivitas di Kotak Masuk', 'Simpan riwayat cadangan, impor, dan target kantong tercapai di Kotak Masuk.', S.logInbox)}
 							<p class="text-xs text-stone-400">Batas pengeluaran diatur di kartu Kesehatan Keuangan (menu Beranda).</p>
 						</div>
 					</div>`,
@@ -1372,6 +1497,9 @@
 								case 'sAlerts': S.alertsOn = t.checked; UI.limit(); break;
 								case 'warnAt': S.warnAt = Number(v); UI.limit(); break;
 								case 'sSound': S.sound = t.checked; if (t.checked) Sound.play('warning'); break;
+								case 'sLog': S.logInbox = t.checked; break;
+								case 'setClick': S.clickSound = t.checked; if (t.checked) Feedback.tap('primary'); break;
+								case 'setHaptic': S.haptics = t.checked; if (t.checked) Feedback.haptic([20, 40, 20]); break;
 								case 'sDevice': {
 									const ok = t.checked ? await Notify.enableDevice() : false;
 									t.checked = ok;
@@ -1427,6 +1555,9 @@
 							Toast.show({ type: 'success', title: 'Ikon dikembalikan ke bawaan' });
 						};
 						drawCats();
+						const drawLogo = () => { el.querySelector('#setLogoPrev').innerHTML = Logo.html(state.logo, 'h-12 w-12 rounded-2xl text-xl'); };
+						el.querySelector('[data-logo]').onclick = () => Logo.open(drawLogo);
+						drawLogo();
 						show('look');
 					}
 				});
@@ -1698,40 +1829,148 @@
 						.map((t) => [t.date, t.type === 'income' ? 'Pemasukan' : 'Pengeluaran', t.category, t.amount, t.note])];
 				this.download(`keuangan-${ymd(new Date())}.csv`, '\ufeff' + rows.map((r) => r.map(q).join(',')).join('\n'), 'text/csv');
 				Toast.show({ type: 'success', title: 'Ekspor CSV dibuat', message: `${state.tx.length} transaksi diekspor.` });
+				Notify.log('Ekspor transaksi dibuat', `${state.tx.length} transaksi diekspor ke file CSV.`);
+			},
+			// Rekap ringkas (bulanan, tahunan, kantong) yang ikut disimpan di file cadangan
+			recap() {
+				const months = {}, years = {};
+				state.tx.forEach((t) => {
+					[[months, t.date.slice(0, 7)], [years, t.date.slice(0, 4)]].forEach(([bag, key]) => {
+						const r = bag[key] || (bag[key] = { income: 0, expense: 0, count: 0 });
+						r[t.type] += t.amount;
+						r.count++;
+					});
+				});
+				const list = (bag, name) => Object.keys(bag).sort().map((k) => ({ [name]: k, ...bag[k], net: bag[k].income - bag[k].expense }));
+				return {
+					monthly: list(months, 'month'),
+					yearly: list(years, 'year'),
+					pockets: state.pockets.map((p) => {
+						const es = Pockets.entries(p.id);
+						return { id: p.id, name: p.name, balance: Pockets.balance(p.id), deposited: Pockets.sum(es, 'in'), withdrawn: Pockets.sum(es, 'out'), entries: es.length };
+					})
+				};
+			},
+			// Cadangan lengkap: profil (nama, nomor, foto), logo, pengaturan, transaksi, kotak masuk, kantong, riwayat, dan rekap
+			backup() {
+				const data = {
+					app: 'Monetrack', version: 2, exportedAt: new Date().toISOString(),
+					profile: state.profile, profileSkipped: state.profileSkipped, logo: state.logo, settings: state.settings,
+					preferences: { theme: state.theme, view: state.view, range: state.range, rangeDay: state.rangeDay, rangeWeek: state.rangeWeek, rangeYear: state.rangeYear },
+					budget: state.budget, tx: state.tx, pockets: state.pockets, pocketTx: state.pocketTx,
+					notifs: state.notifs, alertLog: state.alertLog, categoryIcons: state.categoryIcons,
+					recap: this.recap()
+				};
+				return JSON.parse(JSON.stringify(data));   // salinan mandiri, tidak terhubung ke state
 			},
 			json() {
-				this.download(`backup-keuangan-${ymd(new Date())}.json`, JSON.stringify({ tx: state.tx, budget: state.budget, pockets: state.pockets, pocketTx: state.pocketTx, categoryIcons: state.categoryIcons, profile: state.profile }, null, '\t'), 'application/json');
-				Toast.show({ type: 'success', title: 'Backup JSON dibuat' });
+				const summary = `${state.tx.length} transaksi, ${state.pockets.length} kantong, ${state.pocketTx.length} catatan kantong, dan ${state.notifs.length} notifikasi.`;
+				this.download(`monetrack-backup-${ymd(new Date())}.json`, JSON.stringify(this.backup(), null, '\t'), 'application/json');
+				Toast.show({ type: 'success', title: 'Cadangan lengkap dibuat', message: summary });
+				Notify.log('Cadangan lengkap dibuat', `${summary} Termasuk profil, pengaturan, dan rekap.`, { type: 'success' });
+			},
+			recapCsv() {
+				const r = this.recap(), q = (v) => `"${String(v).replace(/"/g, '""')}"`;
+				const rows = [['Jenis', 'Periode', 'Pemasukan', 'Pengeluaran', 'Selisih', 'Jumlah Transaksi'],
+					...r.monthly.map((m) => ['Bulanan', m.month, m.income, m.expense, m.net, m.count]),
+					...r.yearly.map((y) => ['Tahunan', y.year, y.income, y.expense, y.net, y.count]),
+					[],
+					['Kantong', 'Nama', 'Saldo', 'Total Setoran', 'Total Penarikan', 'Jumlah Catatan'],
+					...r.pockets.map((p) => ['Kantong', p.name, p.balance, p.deposited, p.withdrawn, p.entries])];
+				this.download(`monetrack-rekap-${ymd(new Date())}.csv`, '\ufeff' + rows.map((x) => x.map(q).join(',')).join('\n'), 'text/csv');
+				Toast.show({ type: 'success', title: 'Ekspor rekap dibuat', message: `${r.monthly.length} bulan, ${r.yearly.length} tahun, ${r.pockets.length} kantong.` });
+				Notify.log('Ekspor rekap dibuat', `${r.monthly.length} bulan dan ${r.yearly.length} tahun rekap transaksi, serta ${r.pockets.length} kantong.`);
 			},
 			import(file) {
 				const reader = new FileReader();
 				reader.onload = () => {
-					try {
-						const d = JSON.parse(reader.result), cutoff = Calc.cutoff();
-						const all = (d.tx || [])
-							.filter((t) => ['income', 'expense'].includes(t.type) && t.amount > 0 && /^\d{4}-\d{2}-\d{2}$/.test(t.date) && !isNaN(new Date(t.date)))
-							.map((t) => ({ id: Number(t.id) || Date.now() + Math.random(), type: t.type, amount: Number(t.amount), category: String(t.category || 'Lainnya'), date: t.date, note: String(t.note || '') }));
-						const valid = all.filter((t) => t.date >= cutoff), ids = new Set(state.tx.map((t) => t.id));
-						const fresh = valid.filter((t) => !ids.has(t.id));
-						state.tx = [...state.tx, ...fresh];
-						const pk = Pockets.sanitize(d.pockets, d.pocketTx), pIds = new Set(state.pockets.map((p) => p.id)), eIds = new Set(state.pocketTx.map((e) => e.id));
-						const newPockets = pk.pockets.filter((p) => !pIds.has(p.id)), newEntries = pk.pocketTx.filter((e) => !eIds.has(e.id));
-						state.pockets = [...state.pockets, ...newPockets];
-						state.pocketTx = [...state.pocketTx, ...newEntries.filter((e) => state.pockets.some((p) => p.id === e.pocketId))];
-						state.categoryIcons = { ...CategoryIcons.sanitize(d.categoryIcons), ...state.categoryIcons };   // ikon di perangkat ini diprioritaskan
-						if (!state.profile) state.profile = Profile.sanitize(d.profile);
-						if (d.budget && !state.budget) {
-							state.budget = Number(d.budget) || 0;
-							$('#budgetInput').value = state.budget ? num.format(state.budget) : '';
-						}
-						Store.save(); UI.renderAll();
-						Toast.show({ type: 'success', title: 'Impor selesai', message: `${fresh.length} ditambahkan, ${all.length - valid.length} dilewati (lebih dari ${CONFIG.retentionYears} tahun)${newPockets.length ? `, ${newPockets.length} kantong ditambahkan` : ''}.` });
-						Alerts.check(ymd(new Date()).slice(0, 7));
-					} catch (err) {
-						Toast.show({ type: 'error', title: 'File tidak valid', message: 'Pastikan file adalah backup JSON dari aplikasi ini.' });
-					}
+					let d = null;
+					try { d = JSON.parse(reader.result); } catch (err) { /* file bukan JSON */ }
+					const known = d && typeof d === 'object' && ['tx', 'pockets', 'pocketTx', 'notifs', 'profile'].some((k) => k in d);
+					if (!known) return Toast.show({ type: 'error', title: 'File tidak valid', message: 'Pastikan file adalah cadangan JSON dari Monetrack.' });
+					this.importPreview(d);
 				};
 				reader.readAsText(file);
+			},
+			// Pratinjau isi cadangan, lalu pilih: gabungkan atau ganti semua
+			importPreview(d) {
+				const cutoff = Calc.cutoff(), arr = (k) => (Array.isArray(d[k]) ? d[k] : []);
+				const old = arr('tx').filter((t) => t && t.date < cutoff).length;
+				const seg = (v, label, on) => `<label><input type="radio" name="imMode" value="${v}" class="peer sr-only" ${on ? 'checked' : ''}><span class="seg peer-checked:bg-teal-500 peer-checked:text-white peer-checked:ring-teal-500">${label}</span></label>`;
+				const row = (label, val) => `<div class="flex justify-between gap-3 text-sm"><span class="text-stone-500 dark:text-slate-400">${label}</span><b class="text-right">${val}</b></div>`;
+				Modal.open({
+					title: 'Impor Cadangan',
+					body: `<div class="space-y-4">
+						<div class="space-y-1.5 rounded-2xl bg-stone-100 p-3 dark:bg-slate-900/60">
+							${d.exportedAt ? row('Dibuat', esc(new Date(d.exportedAt).toLocaleString(CONFIG.locale))) : ''}
+							${row('Profil', d.profile ? esc(d.profile.name || 'Tanpa nama') : '–')}
+							${row('Transaksi', `${arr('tx').length}${old ? ` (${old} lebih dari ${CONFIG.retentionYears} tahun, dilewati)` : ''}`)}
+							${row('Kantong', `${arr('pockets').length} · ${arr('pocketTx').length} catatan`)}
+							${row('Kotak masuk', `${arr('notifs').length} notifikasi`)}
+							${row('Pengaturan · logo', `${d.settings ? 'Ada' : '–'} · ${d.logo ? 'Ada' : '–'}`)}
+						</div>
+						<div>
+							<p class="label">Cara impor</p>
+							<div class="grid grid-cols-2 gap-2" role="radiogroup">${seg('merge', 'Gabungkan', true)}${seg('replace', 'Ganti semua', false)}</div>
+							<p id="imHint" class="mt-2 text-xs text-stone-400"></p>
+						</div>
+					</div>`,
+					actions: '<button data-cancel class="btn-soft">Batal</button><button data-ok autofocus class="btn-main">Impor</button>',
+					onOpen: (el, close) => {
+						const mode = () => el.querySelector('[name="imMode"]:checked').value;
+						const say = () => {
+							el.querySelector('#imHint').textContent = mode() === 'merge'
+								? 'Data baru ditambahkan ke data yang sudah ada. Data yang sama tidak digandakan.'
+								: 'Seluruh data di perangkat ini diganti dengan isi cadangan, termasuk profil, pengaturan, dan kotak masuk.';
+						};
+						el.addEventListener('change', say);
+						el.querySelector('[data-cancel]').onclick = close;
+						el.querySelector('[data-ok]').onclick = async () => {
+							if (mode() === 'replace') {
+								const ok = await Modal.confirm({ title: 'Ganti semua data?', message: 'Data saat ini akan ditimpa. Pastikan kamu sudah membuat cadangan terlebih dahulu.', confirmText: 'Ganti Semua', danger: true });
+								if (!ok) return;
+							}
+							this.applyImport(d, mode());
+							close();
+						};
+						say();
+					}
+				});
+			},
+			applyImport(d, mode) {
+				const cutoff = Calc.cutoff();
+				const clean = (Array.isArray(d.tx) ? d.tx : [])
+					.filter((t) => t && ['income', 'expense'].includes(t.type) && t.amount > 0 && /^\d{4}-\d{2}-\d{2}$/.test(t.date) && !isNaN(new Date(t.date)))
+					.map((t) => ({ id: Number(t.id) || uid(), type: t.type, amount: Number(t.amount), category: String(t.category || 'Lainnya'), date: t.date, note: String(t.note || '') }));
+				const kept = clean.filter((t) => t.date >= cutoff), skipped = clean.length - kept.length;
+				let summary;
+				if (mode === 'replace') {
+					// Bagian yang tidak ada di file cadangan (cadangan lama) dibiarkan seperti sekarang
+					const incoming = { tx: kept, pockets: d.pockets, pocketTx: d.pocketTx, notifs: d.notifs, categoryIcons: d.categoryIcons, profile: d.profile, profileSkipped: d.profileSkipped, logo: d.logo, settings: d.settings, budget: d.budget, alertLog: d.alertLog, ...(d.preferences || {}) };
+					const current = Object.fromEntries(Store.fields.map((k) => [k, state[k]]));
+					Store.apply({ ...current, ...Object.fromEntries(Object.entries(incoming).filter(([, v]) => v !== undefined)) });
+					summary = `Data diganti: ${state.tx.length} transaksi, ${state.pockets.length} kantong, ${state.notifs.length} notifikasi.`;
+				} else {
+					const ids = new Set(state.tx.map((t) => t.id)), fresh = kept.filter((t) => !ids.has(t.id));
+					state.tx = [...state.tx, ...fresh];
+					const pk = Pockets.sanitize(d.pockets, d.pocketTx), pIds = new Set(state.pockets.map((p) => p.id)), eIds = new Set(state.pocketTx.map((e) => e.id));
+					const newPockets = pk.pockets.filter((p) => !pIds.has(p.id));
+					state.pockets = [...state.pockets, ...newPockets];
+					state.pocketTx = [...state.pocketTx, ...pk.pocketTx.filter((e) => !eIds.has(e.id) && state.pockets.some((p) => p.id === e.pocketId))];
+					const nIds = new Set(state.notifs.map((n) => String(n.id))), newNotifs = Notify.sanitize(d.notifs).filter((n) => !nIds.has(String(n.id)));
+					state.notifs = [...state.notifs, ...newNotifs].sort((a, b) => b.at - a.at).slice(0, CONFIG.notifLimit);
+					state.categoryIcons = { ...CategoryIcons.sanitize(d.categoryIcons), ...state.categoryIcons };   // yang sudah diatur di perangkat ini diprioritaskan
+					if (!state.profile) state.profile = Profile.sanitize(d.profile);
+					if (!state.logo) state.logo = Logo.sanitize(d.logo);
+					if (d.budget && !state.budget) state.budget = Number(d.budget) || 0;
+					summary = `${fresh.length} transaksi, ${newPockets.length} kantong, dan ${newNotifs.length} notifikasi ditambahkan.`;
+				}
+				$('#budgetInput').value = state.budget ? num.format(state.budget) : '';
+				Store.save(); Appearance.apply(); UI.applyTheme(); UI.recapControls(); UI.renderAll(); Dropdown.refreshAll();
+				const note = skipped ? ` ${skipped} transaksi dilewati (lebih dari ${CONFIG.retentionYears} tahun).` : '';
+				Toast.show({ type: 'success', title: 'Impor selesai', message: summary + note });
+				Notify.log('Impor cadangan selesai', summary + note, { type: 'success' });
+				Alerts.check(ymd(new Date()).slice(0, 7));
 			},
 			async sample() {
 				if ((state.tx.length || state.pockets.length) && !(await Modal.confirm({ title: 'Tambah contoh data?', message: 'Contoh data akan ditambahkan ke data yang sudah ada.', confirmText: 'Tambahkan' }))) return;
@@ -1767,6 +2006,7 @@
 				state.tx = state.tx.filter((t) => t.date >= cutoff);
 				Store.save(); UI.renderAll();
 				Toast.show({ type: 'success', title: 'Histori dibersihkan', message: `${old.length} transaksi dihapus.` });
+				Notify.log('Histori lama dibersihkan', `${old.length} transaksi lebih dari ${CONFIG.retentionYears} tahun dihapus.`, { type: 'warning' });
 			},
 			async reset() {
 				const ok = await Modal.confirm({ title: 'Hapus semua data?', message: 'Semua transaksi, kantong, dan batas pengeluaran akan dihapus permanen. Disarankan membuat backup JSON dulu.', confirmText: 'Hapus Semua', danger: true });
@@ -1775,6 +2015,7 @@
 				$('#budgetInput').value = '';
 				Store.save(); UI.renderAll();
 				Toast.show({ type: 'info', title: 'Semua data dihapus' });
+				Notify.log('Semua data dihapus', 'Transaksi, kantong, dan batas pengeluaran telah dikosongkan.', { type: 'warning' });
 			}
 		};
 
@@ -1861,7 +2102,7 @@
 						return el;
 					}).join('') +
 					`<g transform="rotate(90 18 18)" text-anchor="middle" fill="currentColor">
-						<text x="18" y="17.6" font-size="3.6" font-weight="700">${this.compact.format(total || 0)}</text>
+						<text x="18" y="17.6" font-size="3.6" class="ch-num">${this.compact.format(total || 0)}</text>
 						<text x="18" y="21.8" font-size="2.2" opacity=".55">${centerLabel}</text>
 					</g>`;
 			}
@@ -1893,66 +2134,131 @@
 			balance(id, skipId = null) { return this.entries(id).filter((e) => e.id !== skipId).reduce((t, e) => t + (e.type === 'in' ? e.amount : -e.amount), 0); },
 
 			// ---------- Tampilan ----------
+			typeFilter: 'all',
+			chip(text, tone = '') {
+				const cls = tone === 'ok' ? 'bg-emerald-100/80 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300' : 'bg-stone-200/60 text-stone-500 dark:bg-slate-700/60 dark:text-slate-300';
+				return `<span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold ${cls}">${text}</span>`;
+			},
+			pct(p) { return p.target ? Math.min(100, (this.balance(p.id) / p.target) * 100) : 0; },
+			last(id) { return this.entries(id).reduce((a, e) => (!a || e.date > a.date || (e.date === a.date && e.id > a.id) ? e : a), null); },
+			// Perkiraan waktu mencapai target dari rata-rata saldo bersih 3 bulan terakhir
+			eta(p, bal) {
+				if (!p.target || bal >= p.target) return null;
+				const from = `${Calc.shiftMonth(ymd(new Date()).slice(0, 7), -2)}-01`, es = this.entries(p.id).filter((e) => e.date >= from);
+				const avg = (this.sum(es, 'in') - this.sum(es, 'out')) / 3;
+				return avg > 0 ? Math.ceil((p.target - bal) / avg) : null;
+			},
+			ring(pct, color, size = 'h-14 w-14', text = 'text-[11px]') {
+				return `<div class="relative ${size} shrink-0">
+					<svg viewBox="0 0 36 36" class="h-full w-full -rotate-90"><circle cx="18" cy="18" r="15.9155" fill="none" stroke="currentColor" stroke-opacity=".1" stroke-width="3.4"/><circle class="seg-draw" cx="18" cy="18" r="15.9155" fill="none" stroke="${color}" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="${pct} ${100 - pct}"/></svg>
+					<span class="absolute inset-0 grid place-items-center ${text} font-extrabold">${Math.round(pct)}%</span>
+				</div>`;
+			},
+			sorted() {
+				const by = {
+					balance: (a, b) => this.balance(b.id) - this.balance(a.id),
+					progress: (a, b) => this.pct(b) - this.pct(a),
+					recent: (a, b) => (this.last(b.id)?.date || '').localeCompare(this.last(a.id)?.date || ''),
+					name: (a, b) => a.name.localeCompare(b.name, CONFIG.locale)
+				};
+				return [...state.pockets].sort(by[state.settings.pocketSort] || (() => 0));
+			},
 			render() {
-				const m = state.month, cur = state.pocketTx.filter((e) => e.date.startsWith(m));
+				const m = state.month, cur = state.pocketTx.filter((e) => e.date.startsWith(m)), n = state.pockets.length;
 				const total = state.pockets.reduce((t, p) => t + this.balance(p.id), 0);
-				const cards = [
-					['Total Saldo Kantong', fmt.format(total), 'from-teal-100/80 dark:from-teal-500/15', 'col-span-2 md:col-span-1'],
-					['Setoran Bulan Ini', fmt.format(this.sum(cur, 'in')), 'from-emerald-100/70 dark:from-emerald-400/10', ''],
-					['Penarikan Bulan Ini', fmt.format(this.sum(cur, 'out')), 'from-rose-100/70 dark:from-rose-400/10', ''],
-					['Jumlah Kantong', String(state.pockets.length), 'from-sky-100/70 dark:from-sky-400/10', 'col-span-2 md:col-span-1']
-				];
-				$('#pocketSummary').innerHTML = cards.map(([label, val, tint, span]) => `
-					<div class="card !p-4 bg-gradient-to-br ${tint} to-stone-50/30 dark:to-slate-800/30 ${span}">
-						<p class="text-xs font-semibold text-stone-500 dark:text-slate-400">${label}</p>
-						<p class="mt-1 truncate text-lg font-extrabold sm:text-xl">${val}</p>
-					</div>`).join('');
+				const inn = this.sum(cur, 'in'), out = this.sum(cur, 'out'), net = inn - out;
+				const targets = state.pockets.filter((p) => p.target > 0);
+				const tSum = targets.reduce((t, p) => t + p.target, 0), tHave = targets.reduce((t, p) => t + Math.min(this.balance(p.id), p.target), 0);
+				const reached = targets.filter((p) => this.balance(p.id) >= p.target).length, overall = tSum ? (tHave / tSum) * 100 : 0;
 
-				$('#pocketGrid').innerHTML = state.pockets.length ? state.pockets.map((p) => {
-					const es = this.entries(p.id), bal = this.balance(p.id), pct = p.target ? Math.min(100, (bal / p.target) * 100) : 0;
+				// -- Ringkasan: saldo total + progres target keseluruhan
+				const tile = (label, val, tone) => `<div class="rounded-2xl bg-white/60 p-2.5 dark:bg-slate-900/30"><p class="text-[10px] font-semibold text-stone-500 dark:text-slate-400">${label}</p><p class="truncate text-sm font-extrabold ${tone}">${val}</p></div>`;
+				$('#pocketSummary').innerHTML = `
+					<div class="card relative overflow-hidden lg:col-span-2" style="background-image:linear-gradient(135deg, rgb(var(--ac-200) / .55), transparent 70%)">
+						<p class="text-xs font-semibold text-stone-500 dark:text-slate-400">Total Saldo Kantong</p>
+						<p class="mt-1 truncate text-3xl font-extrabold sm:text-4xl">${fmt.format(total)}</p>
+						<p class="text-xs text-stone-500 dark:text-slate-400">dari ${n} kantong</p>
+						<div class="mt-4 grid grid-cols-3 gap-2">
+							${tile(`Setoran ${monthLabel(m, 'short', true)}`, fmt.format(inn), 'text-emerald-600 dark:text-emerald-300')}
+							${tile(`Penarikan ${monthLabel(m, 'short', true)}`, fmt.format(out), 'text-rose-500 dark:text-rose-300')}
+							${tile('Bersih', `${net >= 0 ? '+' : '−'}${fmt.format(Math.abs(net))}`, net >= 0 ? 'text-sky-600 dark:text-sky-300' : 'text-rose-500 dark:text-rose-300')}
+						</div>
+					</div>
+					<div class="card flex items-center gap-4">
+						${this.ring(overall, 'var(--c-income)', 'h-20 w-20', 'text-base')}
+						<div class="min-w-0">
+							<p class="text-xs font-semibold text-stone-500 dark:text-slate-400">Progres Target</p>
+							<p class="text-lg font-extrabold">${reached}/${targets.length} tercapai</p>
+							<p class="text-xs text-stone-400">${targets.length ? `Terkumpul ${Charts.compact.format(tHave)} dari ${Charts.compact.format(tSum)}` : 'Belum ada kantong bertarget'}</p>
+						</div>
+					</div>`;
+				$('#pocketSub').textContent = `${n} kantong · ${state.pocketTx.length} catatan`;
+
+				// -- Urutan kantong
+				const ps = $('#pocketSort');
+				if (!['created', 'balance', 'progress', 'recent', 'name'].includes(state.settings.pocketSort)) state.settings.pocketSort = 'created';
+				ps.value = state.settings.pocketSort;
+				Dropdown.refresh(ps);
+
+				// -- Kartu kantong
+				$('#pocketGrid').innerHTML = n ? this.sorted().map((p) => {
+					const es = this.entries(p.id), bal = this.balance(p.id), last = this.last(p.id), eta = this.eta(p, bal), done = p.target && bal >= p.target;
+					const tl = (label, val, tone) => `<div class="rounded-2xl bg-white/60 px-3 py-2 dark:bg-slate-900/30"><p class="text-[10px] font-semibold text-stone-500 dark:text-slate-400">${label}</p><p class="truncate text-sm font-extrabold ${tone}">${val}</p></div>`;
 					return `
-						<article class="card relative overflow-hidden !p-4" style="background-image:linear-gradient(135deg, ${p.color}55, transparent 65%)">
-							<div class="flex items-center gap-3">
-								<span class="grid h-11 w-11 shrink-0 place-items-center rounded-2xl text-xl" style="background:${p.color}">${esc(p.icon)}</span>
+						<article class="card relative overflow-hidden !p-4" style="background-image:linear-gradient(135deg, ${p.color}44, transparent 60%)">
+							<div class="flex items-start gap-3">
+								<span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-2xl shadow-sm" style="background:${p.color}">${esc(p.icon)}</span>
 								<div class="min-w-0 flex-1">
-									<p class="truncate font-bold">${esc(p.name)}</p>
-									<p class="text-[11px] text-stone-500 dark:text-slate-400">${es.length} catatan</p>
+									<p class="truncate font-extrabold leading-tight">${esc(p.name)}</p>
+									<p class="truncate text-[11px] text-stone-500 dark:text-slate-400">${last ? `Terakhir ${last.date} · ${last.type === 'in' ? '+' : '−'}${fmt.format(last.amount)}` : 'Belum ada catatan'}</p>
 								</div>
 								<button data-pk-edit="${p.id}" class="icon-btn !h-8 !w-8 text-sm" title="Ubah kantong" aria-label="Ubah kantong">✎</button>
 							</div>
-							<p class="mt-3 text-2xl font-extrabold">${fmt.format(bal)}</p>
-							${p.target ? `
-								<div class="mt-2">
-									<div class="mb-1 flex justify-between text-[11px]"><span>${Math.round(pct)}% dari target</span><span class="text-stone-500 dark:text-slate-400">${fmt.format(p.target)}</span></div>
-									<div class="h-2 overflow-hidden rounded-full bg-stone-200/70 dark:bg-slate-700"><div class="bar-x h-full rounded-full" style="width:${pct}%;background:${p.color}"></div></div>
-								</div>` : '<p class="mt-2 text-[11px] text-stone-400">Tanpa target</p>'}
-							<div class="mt-3 flex gap-4 text-[11px] text-stone-500 dark:text-slate-400">
-								<span>Total setor <b class="text-emerald-600 dark:text-emerald-300">${fmt.format(this.sum(es, 'in'))}</b></span>
-								<span>Total tarik <b class="text-rose-500 dark:text-rose-300">${fmt.format(this.sum(es, 'out'))}</b></span>
+							<div class="mt-4 flex items-end justify-between gap-3">
+								<div class="min-w-0">
+									<p class="text-[10px] font-semibold uppercase tracking-wide text-stone-500 dark:text-slate-400">Saldo</p>
+									<p class="truncate text-2xl font-extrabold">${fmt.format(bal)}</p>
+								</div>
+								${p.target ? this.ring(this.pct(p), p.color) : ''}
 							</div>
+							<div class="mt-2 flex flex-wrap items-center gap-1.5">
+								${!p.target ? this.chip('Tanpa target') : done ? this.chip('✓ Target tercapai', 'ok') : this.chip(`Sisa ${fmt.format(p.target - bal)}`)}
+								${p.target ? this.chip(`Target ${fmt.format(p.target)}`) : ''}
+							</div>
+							${eta ? `<p class="mt-2 text-[11px] text-stone-500 dark:text-slate-400">Perkiraan tercapai ± ${Finance.span(eta)} lagi (laju 3 bulan terakhir).</p>` : ''}
 							<div class="mt-3 grid grid-cols-2 gap-2">
-								<button data-pk-in="${p.id}" class="btn-main text-xs">+ Setor</button>
-								<button data-pk-out="${p.id}" class="btn-soft text-xs">− Tarik</button>
+								${tl('Total setor', fmt.format(this.sum(es, 'in')), 'text-emerald-600 dark:text-emerald-300')}
+								${tl('Total tarik', fmt.format(this.sum(es, 'out')), 'text-rose-500 dark:text-rose-300')}
+							</div>
+							<div class="mt-3 grid grid-cols-3 gap-2">
+								<button data-pk-in="${p.id}" class="btn-main !px-2 text-xs">+ Setor</button>
+								<button data-pk-out="${p.id}" class="btn-soft !px-2 text-xs">− Tarik</button>
+								<button data-pk-hist="${p.id}" class="btn-soft !px-2 text-xs">Riwayat</button>
 							</div>
 						</article>`;
 				}).join('') : `
-					<div class="card col-span-full py-10 text-center">
-						<p class="text-3xl">👛</p>
-						<p class="mt-2 font-bold">Belum ada kantong</p>
-						<p class="text-xs text-stone-400">Buat kantong untuk menyimpan uang sesuai tujuannya, misalnya dana darurat atau liburan.</p>
+					<div class="card col-span-full py-12 text-center">
+						<p class="text-4xl">👛</p>
+						<p class="mt-2 text-base font-extrabold">Belum ada kantong</p>
+						<p class="mx-auto mt-1 max-w-sm text-xs text-stone-400">Buat kantong untuk menyimpan uang sesuai tujuannya, misalnya dana darurat, liburan, atau kendaraan.</p>
+						<button data-pk-new class="btn-main mt-4 text-xs">+ Buat Kantong Pertama</button>
 					</div>`;
 
-				const items = state.pockets.map((p) => ({ name: p.name, value: this.balance(p.id), color: p.color })).filter((i) => i.value > 0);
+				// -- Sebaran saldo
+				const items = state.pockets.map((p) => ({ name: p.name, icon: p.icon, value: this.balance(p.id), color: p.color })).filter((i) => i.value > 0);
 				const sumItems = items.reduce((t, i) => t + i.value, 0);
 				Charts.donut($('#pocketDonut'), items, 'total saldo');
-				$('#pocketLegend').innerHTML = items.length ? items.map((i) => `
-					<li class="flex items-center gap-2">
-						<i class="h-3 w-3 shrink-0 rounded-full" style="background:${i.color}"></i>
-						<span class="flex-1 truncate">${esc(i.name)}</span>
-						<span class="text-xs text-stone-400">${Math.round((i.value / sumItems) * 100)}%</span>
-						<span class="font-semibold">${fmt.format(i.value)}</span>
+				$('#pocketLegend').innerHTML = items.length ? items.sort((a, b) => b.value - a.value).map((i) => `
+					<li class="flex items-center gap-2.5">
+						<span class="grid h-8 w-8 shrink-0 place-items-center rounded-xl text-base" style="background:${i.color}">${esc(i.icon)}</span>
+						<div class="min-w-0 flex-1">
+							<div class="flex items-baseline justify-between gap-2 text-sm"><span class="truncate font-semibold">${esc(i.name)}</span><b>${fmt.format(i.value)}</b></div>
+							<div class="mt-1 h-1.5 overflow-hidden rounded-full bg-stone-200/70 dark:bg-slate-700"><div class="bar-x h-full rounded-full" style="width:${(i.value / sumItems) * 100}%;background:${i.color}"></div></div>
+						</div>
+						<span class="w-9 text-right text-xs text-stone-400">${Math.round((i.value / sumItems) * 100)}%</span>
 					</li>`).join('') : '<li class="text-sm text-stone-400">Belum ada saldo di kantong.</li>';
 
+				// -- Grafik setoran & penarikan 6 bulan
 				const rows = Array.from({ length: 6 }, (_, i) => {
 					const mm = Calc.shiftMonth(m, i - 5), es = state.pocketTx.filter((e) => e.date.startsWith(mm)), a = this.sum(es, 'in'), b = this.sum(es, 'out');
 					return { label: monthLabel(mm), short: monthLabel(mm, 'short'), in: a, out: b, net: a - b };
@@ -1962,6 +2268,21 @@
 					{ key: 'out', label: 'Penarikan', color: 'var(--c-expense)' }
 				], { extra: (d) => [['Bersih', d.net, d.net >= 0 ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-500 dark:text-rose-300']] });
 
+				// -- Rekap per kantong
+				const recap = state.pockets.map((p) => { const es = this.entries(p.id); return { p, inn: this.sum(es, 'in'), out: this.sum(es, 'out'), bal: this.balance(p.id), n: es.length }; });
+				const cell = 'text-right tabular-nums';
+				$('#pocketRecap').innerHTML = recap.length ? `
+					<thead><tr class="text-left text-stone-400"><th class="py-1.5">Kantong</th><th class="${cell}">Setoran</th><th class="${cell}">Penarikan</th><th class="${cell}">Saldo</th><th class="${cell}">Catatan</th></tr></thead>
+					<tbody>${recap.map((r) => `
+						<tr class="border-t border-stone-200/60 dark:border-slate-700/50">
+							<td class="py-2"><span class="flex items-center gap-2"><span class="grid h-6 w-6 place-items-center rounded-lg text-sm" style="background:${r.p.color}">${esc(r.p.icon)}</span><span class="font-semibold">${esc(r.p.name)}</span></span></td>
+							<td class="${cell}">${fmt.format(r.inn)}</td><td class="${cell}">${fmt.format(r.out)}</td><td class="${cell} font-bold">${fmt.format(r.bal)}</td><td class="${cell}">${r.n}</td>
+						</tr>`).join('')}</tbody>
+					<tfoot><tr class="border-t-2 border-stone-200 font-extrabold dark:border-slate-600"><td class="py-2">Total</td>
+						<td class="${cell}">${fmt.format(recap.reduce((t, r) => t + r.inn, 0))}</td><td class="${cell}">${fmt.format(recap.reduce((t, r) => t + r.out, 0))}</td>
+						<td class="${cell}">${fmt.format(total)}</td><td class="${cell}">${recap.reduce((t, r) => t + r.n, 0)}</td></tr></tfoot>` : '<tbody><tr><td class="py-6 text-center text-stone-400">Belum ada kantong.</td></tr></tbody>';
+
+				// -- Filter & riwayat
 				const sel = $('#pocketFilter');
 				sel.innerHTML = '<option value="all">Semua kantong</option>' + state.pockets.map((p) => `<option value="${p.id}">${esc(p.name)}</option>`).join('');
 				if (![...sel.options].some((o) => o.value === this.filter)) this.filter = 'all';
@@ -1970,24 +2291,36 @@
 				this.history();
 			},
 			history() {
-				const f = this.filter;
-				const rows = state.pocketTx.filter((e) => f === 'all' || String(e.pocketId) === f)
+				const f = this.filter, base = state.pocketTx.filter((e) => f === 'all' || String(e.pocketId) === f);
+				const counts = { all: base.length, in: base.filter((e) => e.type === 'in').length, out: base.filter((e) => e.type === 'out').length };
+				$('#pocketTypes').innerHTML = [['all', 'Semua'], ['in', 'Setoran'], ['out', 'Penarikan']].map(([k, label]) => `
+					<button type="button" data-ptype="${k}" class="shrink-0 rounded-full px-3 py-1 text-[11px] font-bold transition ${this.typeFilter === k ? 'bg-teal-500 text-white' : 'bg-stone-200/60 text-stone-500 hover:bg-stone-200 dark:bg-slate-700/60 dark:text-slate-300'}">${label} <span class="opacity-70">${counts[k]}</span></button>`).join('');
+				const rows = base.filter((e) => this.typeFilter === 'all' || e.type === this.typeFilter)
 					.sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id).slice(0, 200);
 				$('#pocketHistTitle').textContent = `Riwayat Kantong (${rows.length})`;
+				let lastDay = '';
 				$('#pocketHist').innerHTML = rows.length ? rows.map((e) => {
-					const p = this.get(e.pocketId), inn = e.type === 'in';
-					return `
+					const p = this.get(e.pocketId), inn = e.type === 'in', day = NotifPanel.dayLabel(new Date(`${e.date}T00:00:00`).getTime());
+					const head = day !== lastDay ? `<li class="px-1 pb-1 pt-3 text-[10px] font-extrabold uppercase tracking-wide text-stone-400 first:pt-0">${day}</li>` : '';
+					lastDay = day;
+					return `${head}
 						<li class="flex items-center gap-3 px-1 py-2.5">
 							<span class="grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-lg" style="background:${p.color}88">${esc(p.icon)}</span>
 							<div class="min-w-0 flex-1">
 								<p class="truncate text-sm font-semibold">${esc(p.name)}<span class="font-normal text-stone-400"> ${esc(e.note)}</span></p>
-								<p class="text-xs text-stone-400">${e.date} · ${inn ? 'Setoran' : 'Penarikan'}</p>
+								<p class="text-xs text-stone-400">${inn ? 'Setoran' : 'Penarikan'} · ${e.date}</p>
 							</div>
-							<span class="text-sm font-bold ${inn ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-500 dark:text-rose-300'}">${inn ? '+' : '−'}${fmt.format(e.amount)}</span>
+							<span class="text-sm font-bold tabular-nums ${inn ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-500 dark:text-rose-300'}">${inn ? '+' : '−'}${fmt.format(e.amount)}</span>
 							<button data-pe-edit="${e.id}" class="px-1 text-stone-400 hover:text-teal-500" title="Ubah">✎</button>
 							<button data-pe-del="${e.id}" class="px-1 text-stone-400 hover:text-rose-500" title="Hapus">✕</button>
 						</li>`;
 				}).join('') : '<li class="py-8 text-center text-sm text-stone-400">Belum ada catatan setoran atau penarikan.</li>';
+			},
+			showHistory(id) {
+				this.filter = String(id);
+				this.typeFilter = 'all';
+				this.render();
+				$('#pocketHistCard').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
 			},
 
 			// ---------- Tambah / ubah kantong ----------
@@ -2076,10 +2409,14 @@
 								Toast.show({ type: 'error', title: 'Saldo kantong tidak cukup', message: `Saldo tersedia ${fmt.format(avail)}.` });
 								return;
 							}
+							const before = this.balance(p.id);
 							const item = { id: entry ? entry.id : uid(), pocketId: p.id, type: t, amount, date, note: el.querySelector('#pk_note').value.trim() };
 							state.pocketTx = entry ? state.pocketTx.map((x) => (x.id === item.id ? item : x)) : [...state.pocketTx, item];
 							Store.save(); this.render(); close();
 							Toast.show({ type: 'success', title: t === 'in' ? 'Setoran dicatat' : 'Penarikan dicatat', message: `${p.name} · ${fmt.format(amount)}` });
+							if (p.target && before < p.target && this.balance(p.id) >= p.target) {
+								Notify.push({ type: 'success', title: 'Target kantong tercapai', message: `Kantong "${p.name}" sudah mencapai target ${fmt.format(p.target)}.`, source: 'pocket', screen: 'pockets' });
+							}
 						};
 					}
 				});
@@ -2352,6 +2689,124 @@
 		};
 
 		/* =====================================================
+		 * 9E. EFEK KLIK & GETAR (bisa dinonaktifkan) + LOGO APLIKASI
+		 * ===================================================== */
+		const Feedback = {
+			last: 0,
+			// Bunyi klik lembut (disintesis, tanpa file audio)
+			click(kind = 'tap') {
+				if (!state.settings.clickSound) return;
+				try {
+					const ctx = Sound.ctx = Sound.ctx || new (window.AudioContext || window.webkitAudioContext)();
+					if (ctx.state === 'suspended') ctx.resume();
+					const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain(), main = kind === 'primary';
+					o.type = 'sine';
+					o.frequency.setValueAtTime(main ? 880 : 1200, t);
+					o.frequency.exponentialRampToValueAtTime(main ? 520 : 700, t + 0.04);
+					g.gain.setValueAtTime(0.0001, t);
+					g.gain.exponentialRampToValueAtTime(main ? 0.09 : 0.05, t + 0.004);
+					g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+					o.connect(g).connect(ctx.destination);
+					o.start(t);
+					o.stop(t + 0.07);
+				} catch (e) { /* audio tidak tersedia */ }
+			},
+			haptic(pattern) {
+				if (pattern && state.settings.haptics && navigator.vibrate) navigator.vibrate(pattern);
+			},
+			tap(kind = 'tap') {
+				this.click(kind);
+				this.haptic(kind === 'primary' ? 16 : 8);
+			},
+			// Getar mengikuti jenis notifikasi
+			toast(type) { this.haptic({ error: [120, 60, 120], warning: [70], success: [14] }[type]); },
+			bind() {
+				document.addEventListener('click', (e) => {
+					const el = e.target.closest('button, a, summary, [data-nav], [data-add], label, [role="option"], select, input[type="range"]');
+					if (!el || el.disabled || (el.matches('label') && !el.querySelector('input'))) return;
+					const now = performance.now();
+					if (now - this.last < 70) return;   // label memicu klik ganda; cukup satu efek
+					this.last = now;
+					this.tap(el.matches('.btn-main, #fab, [data-add]') ? 'primary' : 'tap');
+				}, true);
+			}
+		};
+
+		const Logo = {
+			icons: ['💰', '🪙', '💳', '🏦', '📊', '📈', '💵', '👛', '🧾', '💎', '🌿', '⭐', '🚀', '🦉', '🐷', '🛡️', '🎯', '🔒', '🌈', '🍀'],
+			sanitize(l) {
+				if (l && l.type === 'emoji' && typeof l.value === 'string' && l.value.length <= 16) return { type: 'emoji', value: l.value };
+				if (l && l.type === 'image' && /^data:image\//.test(l.value)) return { type: 'image', value: l.value };
+				return null;
+			},
+			// l = null berarti logo bawaan (huruf M)
+			html(l, cls = 'h-9 w-9 rounded-2xl text-lg') {
+				if (l && l.type === 'image') return `<span class="grid ${cls} shrink-0 place-items-center overflow-hidden"><img src="${l.value}" alt="Logo" class="h-full w-full object-contain"></span>`;
+				if (l && l.type === 'emoji') return `<span class="grid ${cls} shrink-0 place-items-center bg-teal-100 dark:bg-teal-500/20">${esc(l.value)}</span>`;
+				return `<span class="grid ${cls} shrink-0 place-items-center bg-teal-500 font-extrabold text-white">M</span>`;
+			},
+			favicon() {
+				const l = state.logo;
+				if (l && l.type === 'image') return l.value;
+				let bg = '#4f8576';
+				if (typeof getComputedStyle === 'function') {
+					const v = getComputedStyle(document.documentElement).getPropertyValue('--ac-500').trim();
+					if (v) bg = `rgb(${v.split(/\s+/).join(',')})`;
+				}
+				const inner = l && l.type === 'emoji'
+					? `<text x='32' y='46' font-size='40' text-anchor='middle'>${esc(l.value)}</text>`
+					: `<rect width='64' height='64' rx='16' fill='${bg}'/><text x='32' y='45' font-size='36' font-weight='800' text-anchor='middle' fill='white' font-family='sans-serif'>M</text>`;
+				return 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>${inner}</svg>`);
+			},
+			apply() {
+				$('#appLogo').innerHTML = this.html(state.logo);
+				const link = document.getElementById('appIcon');
+				if (link) link.href = this.favicon();
+			},
+			open(onDone) {
+				let sel = state.logo ? { ...state.logo } : null;
+				Modal.open({
+					title: 'Logo Aplikasi',
+					body: `<div class="space-y-4">
+						<div class="flex items-center gap-4"><div id="lg_preview" class="shrink-0"></div>
+							<div class="min-w-0"><p class="font-bold">Monetrack</p><p class="text-xs text-stone-400">Pilih ikon di bawah atau unggah gambar sendiri. Logo juga dipakai sebagai ikon tab browser.</p></div></div>
+						<div id="lg_grid" class="grid grid-cols-5 gap-2 sm:grid-cols-7"></div>
+						<div class="flex flex-wrap gap-2">
+							<button type="button" data-upload class="btn-soft text-xs">Unggah Gambar</button>
+							<button type="button" data-default class="btn-soft text-xs">Kembalikan Bawaan</button>
+						</div>
+					</div>`,
+					actions: '<button data-cancel class="btn-soft">Batal</button><button data-save autofocus class="btn-main">Simpan</button>',
+					onOpen: (el, close) => {
+						const draw = () => {
+							el.querySelector('#lg_preview').innerHTML = this.html(sel, 'h-16 w-16 rounded-3xl text-3xl');
+							el.querySelector('#lg_grid').innerHTML = this.icons.map((ic) => `
+								<button type="button" data-ic="${ic}" class="grid h-11 w-11 place-items-center rounded-xl text-xl ring-1 transition hover:bg-stone-100 dark:hover:bg-slate-700 ${sel && sel.type === 'emoji' && sel.value === ic ? 'bg-teal-100/70 ring-2 ring-teal-500 dark:bg-teal-500/20' : 'ring-stone-200 dark:ring-slate-700'}">${ic}</button>`).join('');
+						};
+						el.querySelector('#lg_grid').addEventListener('click', (e) => {
+							const b = e.target.closest('[data-ic]');
+							if (b) { sel = { type: 'emoji', value: b.dataset.ic }; draw(); }
+						});
+						el.querySelector('[data-upload]').onclick = async () => {
+							const file = await Img.pick();
+							if (!file) return;
+							try { sel = { type: 'image', value: await Img.toDataURL(file, 128, 'image/png') }; draw(); } catch (err) { Toast.show({ type: 'error', title: 'Gambar tidak bisa dipakai', message: err.message }); }
+						};
+						el.querySelector('[data-default]').onclick = () => { sel = null; draw(); };
+						el.querySelector('[data-cancel]').onclick = close;
+						el.querySelector('[data-save]').onclick = () => {
+							state.logo = sel;
+							Store.save(); this.apply(); close();
+							if (onDone) onDone();
+							Toast.show({ type: 'success', title: 'Logo disimpan' });
+						};
+						draw();
+					}
+				});
+			}
+		};
+
+		/* =====================================================
 		 * 9B. NAVIGASI & SHEET (tampilan ala aplikasi mobile)
 		 * ===================================================== */
 		const Nav = {
@@ -2487,12 +2942,14 @@
 
 			// Notifikasi & pengaturan
 			$('#notifBtn').addEventListener('click', () => NotifPanel.toggle());
-			$('#notifClear').addEventListener('click', () => { state.notifs = []; Store.save(); NotifPanel.render(); });
+			NotifPanel.bind();
+			Feedback.bind();
 			$('#settingsBtn').addEventListener('click', () => Settings.open());
 			document.addEventListener('click', (e) => {
 				if (Dropdown.current && !Dropdown.current._dd.wrap.contains(e.target)) Dropdown.close();
 				const p = $('#notifPanel');
-				if (!p.classList.contains('hidden') && !p.contains(e.target) && !$('#notifBtn').contains(e.target)) NotifPanel.toggle(false);
+				const path = e.composedPath();
+				if (!p.classList.contains('hidden') && !path.includes(p) && !path.includes($('#notifBtn'))) NotifPanel.toggle(false);
 			});
 			document.addEventListener('keydown', (e) => {
 				if (e.key !== 'Escape') return;
@@ -2513,6 +2970,8 @@
 				if (b.dataset.pkIn) Pockets.openEntry(b.dataset.pkIn, 'in');
 				if (b.dataset.pkOut) Pockets.openEntry(b.dataset.pkOut, 'out');
 				if (b.dataset.pkEdit) Pockets.openPocket(b.dataset.pkEdit);
+				if (b.dataset.pkHist) Pockets.showHistory(b.dataset.pkHist);
+				if (b.dataset.pkNew !== undefined) Pockets.openPocket();
 			});
 			$('#pocketHist').addEventListener('click', (e) => {
 				const b = e.target.closest('button');
@@ -2524,9 +2983,15 @@
 				if (b.dataset.peDel) Pockets.removeEntry(b.dataset.peDel);
 			});
 			$('#pocketFilter').addEventListener('change', (e) => { Pockets.filter = e.target.value; Pockets.history(); });
+			$('#pocketTypes').addEventListener('click', (e) => {
+				const b = e.target.closest('[data-ptype]');
+				if (b) { Pockets.typeFilter = b.dataset.ptype; Pockets.history(); }
+			});
+			$('#pocketSort').addEventListener('change', (e) => { state.settings.pocketSort = e.target.value; Store.save(); Pockets.render(); });
 			$('#btnPrune').textContent = `Bersihkan Histori > ${CONFIG.retentionYears} Tahun`;
 			Finance.renderHub();
 			matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => { if (!state.theme) UI.applyTheme(); });
+			$('#btnRecapCsv').addEventListener('click', () => Data.recapCsv());
 			$('#btnCsv').addEventListener('click', () => Data.csv());
 			$('#btnJson').addEventListener('click', () => Data.json());
 			$('#btnImport').addEventListener('click', () => $('#fileImport').click());
