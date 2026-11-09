@@ -14,7 +14,7 @@
 		   1. TOKEN TEMA (diubah lewat Pengaturan, lihat Theme.apply)
 		   ========================================================== */
 		:root {
-			--accent: #6366f1;
+			--accent: #5f6ea6;
 			--font: 'Inter', sans-serif;
 			--fs: 16px;
 			--fw: 400;
@@ -47,7 +47,9 @@
 			font-weight: var(--fw);
 			background: var(--bg);
 			color: var(--text);
-			padding-bottom: env(safe-area-inset-bottom, 0px);
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
 		}
 		input[type="checkbox"], input[type="range"] { accent-color: var(--accent); }
 		:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -81,6 +83,7 @@
 		.btn:active { transform: scale(.97); }
 		.btn-accent { background: var(--accent); color: #fff; }
 		.btn-accent:hover { filter: brightness(1.1); }
+		.btn.is-liked { color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
 		.icon-btn { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 9999px; transition: background .15s; }
 		.icon-btn:hover { background: var(--chip); }
 		.chip { display: inline-block; padding: .25rem .7rem; border-radius: 9999px; background: var(--chip); font-size: .75rem; font-weight: 600; }
@@ -109,7 +112,7 @@
 	     ========================================================== -->
 	<header id="stack" class="glass fixed inset-x-0 top-0 z-40" style="padding-top: env(safe-area-inset-top, 0px);">
 		<nav class="mx-auto flex h-16 max-w-5xl items-center gap-2 px-3">
-			<a href="./" class="flex items-center gap-2 text-lg font-bold tracking-tight" aria-label="Tonton">
+			<a id="logo" href="./" class="flex items-center gap-2 text-lg font-bold tracking-tight" aria-label="Tonton, ke beranda">
 				<span class="grid h-9 w-9 place-items-center rounded-xl text-white" style="background: var(--accent)">
 					<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
 				</span>
@@ -142,13 +145,59 @@
 	<!-- ==========================================================
 	     KONTEN UTAMA: info video + kategori + daftar video
 	     ========================================================== -->
-	<main id="main" class="mx-auto max-w-5xl px-3 pb-12">
+	<main id="main" class="mx-auto w-full max-w-5xl flex-1 px-3 pb-12">
 		<section id="info" class="mb-6 hidden"></section>
+		<button id="nowPlaying" class="surface mb-4 hidden w-full items-center gap-2 rounded-2xl px-3 py-2 text-left text-sm" data-resume>
+			<span class="chip">Sedang diputar</span>
+			<span id="nowTitle" class="min-w-0 flex-1 truncate font-semibold"></span>
+			<span class="muted text-xs">Lihat info</span>
+		</button>
 		<div id="chips" class="no-scrollbar -mx-3 mb-4 flex gap-2 overflow-x-auto px-3"></div>
 		<h2 id="feedTitle" class="mb-3 text-lg font-bold tracking-tight"></h2>
 		<div id="feed" class="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-3"></div>
 		<p id="status" class="muted py-8 text-center text-sm"></p>
 	</main>
+
+	<!-- ==========================================================
+	     FOOTER: tentang, tips, aktivitas, dan sumber data
+	     ========================================================== -->
+	<footer class="mt-4 border-t" style="background: var(--surface); border-color: var(--line); padding-bottom: env(safe-area-inset-bottom, 0px);">
+		<div class="mx-auto grid max-w-5xl gap-8 px-4 py-10 sm:grid-cols-3">
+			<section>
+				<div class="flex items-center gap-2 font-bold">
+					<span class="grid h-8 w-8 place-items-center rounded-xl text-white" style="background: var(--accent)">
+						<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+					</span>
+					Tonton
+				</div>
+				<p class="muted mt-3 text-sm">Pemutar video dengan antarmuka sendiri. Video, pencarian, dan statistik diambil langsung dari YouTube.</p>
+			</section>
+
+			<section>
+				<h3 class="text-sm font-semibold">Tips cepat</h3>
+				<ul class="muted mt-3 space-y-2 text-sm">
+					<li>Ketuk logo untuk kembali ke beranda, video tetap berjalan.</li>
+					<li>Pilih kategori di atas untuk menjelajah dengan cepat.</li>
+					<li>Tekan Suka untuk menyimpan video ke akunmu.</li>
+					<li>Ekspor data secara berkala sebagai cadangan.</li>
+				</ul>
+			</section>
+
+			<section>
+				<h3 class="text-sm font-semibold">Aktivitasmu</h3>
+				<div id="footStats" class="mt-3 flex flex-wrap gap-2"></div>
+				<p class="muted mt-3 text-xs">Semua data tersimpan di perangkat ini saja.</p>
+			</section>
+		</div>
+
+		<div class="border-t" style="border-color: var(--line)">
+			<div class="muted mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-4 text-xs">
+				<p id="footYear"></p>
+				<p>Data dari YouTube Data API v3. <a class="underline" href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">Ketentuan YouTube</a></p>
+				<button id="toTop" class="font-semibold" style="color: var(--accent)">Kembali ke atas</button>
+			</div>
+		</div>
+	</footer>
 
 	<!-- ==========================================================
 	     PANEL SAMPING (Akun / Pengaturan), TOAST, INPUT FILE
@@ -182,7 +231,8 @@
 
 	const FONTS = ['Inter', 'Poppins', 'Nunito', 'Lora', 'Space Grotesk', 'JetBrains Mono'];
 	const WEIGHTS = { 400: 'Normal', 500: 'Sedang', 600: 'Tebal', 700: 'Sangat tebal' };
-	const ACCENTS = ['#6366f1', '#0ea5e9', '#10b981', '#f43f5e', '#f59e0b'];
+	const ACCENTS = ['#5f6ea6', '#5b8a77', '#a8707f', '#a97f5f', '#527f90'];
+	const OLD_ACCENTS = ['#6366f1', '#0ea5e9', '#10b981', '#f43f5e', '#f59e0b', '#0e8f8c']; // warna lama, dimigrasi otomatis
 
 	/* ==============================================================
 	   1. HELPER
@@ -225,6 +275,7 @@
 		defaults: () => ({
 			profile: { name: 'Tamu', createdAt: Date.now() },
 			history: [],
+			likes: [],
 			downloads: [],
 			settings: { mode: 'system', fontSize: 16, fontFamily: 'Inter', fontWeight: '400', accent: ACCENTS[0], animation: true, sound: true, vibrate: true },
 		}),
@@ -234,6 +285,7 @@
 			try {
 				const saved = JSON.parse(localStorage.getItem(this.KEY)) || {};
 				this.data = { ...base, ...saved, settings: { ...base.settings, ...saved.settings } };
+				if (OLD_ACCENTS.includes(this.data.settings.accent)) this.data.settings.accent = ACCENTS[0];
 			} catch {
 				this.data = base;
 			}
@@ -241,6 +293,7 @@
 
 		save() {
 			try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch { /* penyimpanan penuh / diblokir */ }
+			UI.renderFooter();
 		},
 
 		addHistory(v) {
@@ -252,6 +305,20 @@
 		addDownload(v, format) {
 			this.data.downloads.unshift({ id: v.id, title: v.title, channel: v.channel, format, at: Date.now() });
 			this.save();
+		},
+
+		isLiked(id) {
+			return this.data.likes.some((l) => l.id === id);
+		},
+
+		// Mengembalikan status terbaru: true = disukai, false = batal suka
+		toggleLike(v) {
+			const liked = this.isLiked(v.id);
+			this.data.likes = liked
+				? this.data.likes.filter((l) => l.id !== v.id)
+				: [{ id: v.id, title: v.title, channel: v.channel, at: Date.now() }, ...this.data.likes];
+			this.save();
+			return !liked;
 		},
 
 		export() {
@@ -272,6 +339,7 @@
 					this.save();
 					Theme.apply();
 					Panel.refresh();
+					UI.syncLike(App.current);
 					UI.toast('Data berhasil diimpor');
 				} catch {
 					UI.toast('File tidak valid');
@@ -433,6 +501,7 @@
 					</div>
 
 					<div class="mt-4 flex flex-wrap gap-2">
+						${this.likeBtn(v)}
 						<button class="btn btn-accent" data-download="mp4">Unduh MP4</button>
 						<button class="btn" data-download="mp3">Konversi ke MP3</button>
 					</div>
@@ -443,6 +512,27 @@
 						${v.tags.length ? `<div class="mt-3 flex flex-wrap gap-1.5">${v.tags.map((t) => `<span class="chip">#${Fmt.esc(t)}</span>`).join('')}</div>` : ''}
 					</details>
 				</div>`;
+		},
+
+		likeBtn(v) {
+			const liked = Store.isLiked(v.id);
+			return `
+				<button class="btn inline-flex items-center gap-1.5 ${liked ? 'is-liked' : ''}" data-like aria-pressed="${liked}">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="${liked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-8-4.9-8-11A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5c0 6.1-8 11-8 11z"/></svg>
+					${liked ? 'Disukai' : 'Suka'}
+				</button>`;
+		},
+
+		syncLike(v) {
+			const btn = $('[data-like]');
+			if (btn && v) btn.outerHTML = this.likeBtn(v);
+		},
+
+		renderFooter() {
+			const { history, likes, downloads } = Store.data;
+			const stats = [[history.length, 'ditonton'], [likes.length, 'disukai'], [downloads.length, 'diunduh']];
+			$('#footStats').innerHTML = stats.map(([n, label]) => `<span class="chip">${n} ${label}</span>`).join('');
+			$('#footYear').textContent = `© ${new Date().getFullYear()} Tonton. Tidak berafiliasi dengan YouTube.`;
 		},
 
 		fail(e) {
@@ -496,7 +586,7 @@
 		},
 
 		account() {
-			const { profile, history, downloads } = Store.data;
+			const { profile, history, likes, downloads } = Store.data;
 			return `
 				<div class="py-4 border-b" style="border-color: var(--line)">
 					<label class="muted text-xs" for="profileName">Nama</label>
@@ -504,6 +594,7 @@
 					<div class="mt-3 flex flex-wrap gap-2">
 						<span class="chip">Umur akun ${Fmt.age(profile.createdAt)}</span>
 						<span class="chip">${history.length} ditonton</span>
+						<span class="chip">${likes.length} disukai</span>
 						<span class="chip">${downloads.length} diunduh</span>
 					</div>
 				</div>
@@ -513,6 +604,12 @@
 					<button class="muted text-sm" data-action="clear-history">Hapus</button>
 				</div>
 				${this.list(history, 'Belum ada video yang ditonton.')}
+
+				<div class="flex items-center justify-between pt-5">
+					<h3 class="font-semibold">Video yang disukai</h3>
+					<button class="muted text-sm" data-action="clear-likes">Hapus</button>
+				</div>
+				${this.list(likes, 'Belum ada video yang disukai.')}
 
 				<div class="flex items-center justify-between pt-5">
 					<h3 class="font-semibold">Riwayat unduhan</h3>
@@ -572,6 +669,7 @@
 			this.bindLayout();
 			this.bindEvents();
 			this.renderChips();
+			UI.renderFooter();
 			this.loadFeed('Sedang populer', () => Api.popular());
 		},
 
@@ -596,6 +694,38 @@
 			} catch (e) {
 				if (token === this.feedToken) UI.fail(e);
 			}
+		},
+
+		// Kembali ke beranda tanpa menghentikan video yang sedang diputar
+		home() {
+			$('#searchInput').value = '';
+			$('#info').classList.add('hidden');
+			this.showNowPlaying(Boolean(this.current));
+			this.loadFeed('Sedang populer', () => Api.popular());
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		},
+
+		showNowPlaying(show) {
+			$('#nowPlaying').classList.toggle('hidden', !show);
+			if (show) $('#nowTitle').textContent = this.current.title;
+		},
+
+		// Tampilkan lagi info + saran untuk video yang sedang diputar
+		resume() {
+			const v = this.current;
+			if (!v) return;
+			UI.renderInfo(v);
+			this.showNowPlaying(false);
+			this.loadFeed('Video lainnya', () => Api.suggestions(v));
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		},
+
+		like() {
+			const v = this.current;
+			if (!v) return;
+			const liked = Store.toggleLike(v);
+			UI.syncLike(v);
+			UI.toast(liked ? 'Ditambahkan ke video yang disukai' : 'Dihapus dari video yang disukai');
 		},
 
 		renderChips() {
@@ -634,6 +764,7 @@
 			this.current = video;
 			Store.addHistory(video);
 			UI.renderInfo(video);
+			this.showNowPlaying(false);
 			this.loadFeed('Video lainnya', () => Api.suggestions(video));
 		},
 
@@ -653,6 +784,12 @@
 				this.search($('#searchInput').value);
 				$('#searchInput').blur();
 			});
+			$('#logo').addEventListener('click', (e) => {
+				if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+				e.preventDefault();
+				this.home();
+			});
+			$('#toTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 			$('#btnAccount').addEventListener('click', () => Panel.open('account'));
 			$('#btnSettings').addEventListener('click', () => Panel.open('settings'));
 			$('#panelClose').addEventListener('click', () => Panel.close());
@@ -672,6 +809,9 @@
 				const dl = e.target.closest('[data-download]');
 				if (dl) this.download(dl.dataset.download);
 
+				if (e.target.closest('[data-like]')) this.like();
+				if (e.target.closest('[data-resume]')) this.resume();
+
 				const chip = e.target.closest('[data-search]');
 				if (chip) this.browse(chip.dataset.search);
 
@@ -683,6 +823,7 @@
 				if (action === 'import') $('#importFile').click();
 				if (action === 'clear-history') { Store.data.history = []; Store.save(); Panel.refresh(); }
 				if (action === 'clear-downloads') { Store.data.downloads = []; Store.save(); Panel.refresh(); }
+				if (action === 'clear-likes') { Store.data.likes = []; Store.save(); Panel.refresh(); UI.syncLike(this.current); }
 			});
 
 			// Perubahan pengaturan & nama profil
