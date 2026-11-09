@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#111827">
+	<meta name="description" content="YT Stream — pemutar dan pengelola playlist YouTube pribadi.">
+	<title>YT Stream V1.1.1 — Your video space</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			darkMode: "class",
+			theme: {
+				extend: {
+					fontFamily: {
+						inter: ["Inter", "system-ui", "sans-serif"],
+						roboto: ["Roboto", "Arial", "sans-serif"],
+						poppins: ["Poppins", "sans-serif"],
+						nunito: ["Nunito", "sans-serif"],
+						open: ["Open Sans", "sans-serif"],
+						lato: ["Lato", "sans-serif"]
+					}
+				}
+			}
+		};
+	</script>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700;800&family=Open+Sans:wght@300;400;600;700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+	<style>
+		:root { --accent: #ef4444; --font-size: 15px; }
+		* { box-sizing: border-box; }
+		html { scroll-behavior: smooth; }
+		body { font-size: var(--font-size); }
+		.accent-bg { background: var(--accent); }
+		.accent-text { color: var(--accent); }
+		.accent-ring:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+		.video-frame { aspect-ratio: 16 / 9; background: #050505; }
+		.video-frame iframe { width: 100%; height: 100%; border: 0; }
+		.toast { animation: toast-in .22s ease-out; }
+		@keyframes toast-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+		.modal-backdrop { background: rgba(0,0,0,.55); backdrop-filter: blur(5px); }
+		.card-hover { transition: transform .18s ease, border-color .18s ease; }
+		.card-hover:hover { transform: translateY(-2px); }
+		.no-scrollbar::-webkit-scrollbar { display: none; }
+		.no-scrollbar { scrollbar-width: none; }
+		@media (prefers-reduced-motion: reduce) {
+			*, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+		}
+	</style>
+</head>
+<body class="bg-slate-100 text-slate-900 dark:bg-[#0c1018] dark:text-slate-100 font-inter min-h-screen">
+	<div id="app" class="min-h-screen">
+		<header class="fixed top-0 inset-x-0 z-40 border-b border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-[#111722]/90 backdrop-blur-xl">
+			<div class="max-w-7xl mx-auto px-3 sm:px-5">
+				<div class="h-16 flex items-center gap-3">
+					<button id="menuBtn" class="lg:hidden p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/10" aria-label="Buka menu">☰</button>
+					<a href="#" class="flex items-center gap-2 shrink-0" aria-label="YT Stream beranda">
+						<span class="w-9 h-9 rounded-xl accent-bg text-white grid place-items-center font-black">▶</span>
+						<span class="font-extrabold tracking-tight text-lg hidden sm:block">YT <span class="accent-text">Stream</span></span>
+					</a>
+					<form id="searchForm" class="flex-1 max-w-2xl mx-auto relative">
+						<div class="flex items-center rounded-2xl bg-slate-100 dark:bg-[#202938] border border-transparent focus-within:border-slate-300 dark:focus-within:border-white/20">
+							<span class="pl-4 text-slate-400">⌕</span>
+							<input id="searchInput" aria-label="Cari video di YouTube" class="w-full bg-transparent px-3 py-2.5 outline-none text-sm accent-ring rounded-2xl" placeholder="Cari video di YouTube..." autocomplete="off">
+							<button class="px-4 py-2.5 text-sm font-semibold accent-text" type="submit">Cari</button>
+						</div>
+					</form>
+					<button id="accountBtn" aria-label="Buka akun" class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 font-bold overflow-hidden shrink-0" title="Akun">U</button>
+					<button id="settingsBtn" aria-label="Buka pengaturan" class="w-10 h-10 rounded-xl hover:bg-slate-100 dark:hover:bg-white/10 shrink-0" title="Pengaturan">⚙</button>
+				</div>
+			</div>
+			<nav class="border-t border-slate-200/70 dark:border-white/5">
+				<div class="max-w-7xl mx-auto px-3 sm:px-5 h-10 flex items-center gap-2 overflow-x-auto no-scrollbar text-xs font-semibold">
+					<button class="nav-chip px-3 py-1.5 rounded-full accent-bg text-white" data-filter="all">Beranda</button>
+					<button class="nav-chip px-3 py-1.5 rounded-full bg-slate-100 dark:bg-white/5" data-filter="history">Terakhir ditonton</button>
+					<button class="nav-chip px-3 py-1.5 rounded-full bg-slate-100 dark:bg-white/5" data-filter="saved">Playlist saya</button>
+					<button id="openYoutube" class="ml-auto text-slate-500 hover:accent-text whitespace-nowrap">Buka YouTube ↗</button>
+				</div>
+			</nav>
+		</header>
+
+		<div id="mainContent" class="pt-32 max-w-7xl mx-auto px-3 sm:px-5 pb-16">
+			<main class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_330px] gap-6">
+				<section class="min-w-0">
+					<div class="flex items-center justify-between mb-3">
+						<div>
+							<p class="text-xs uppercase tracking-[.18em] text-slate-500 font-bold">Now playing</p>
+							<h1 class="text-xl sm:text-2xl font-extrabold mt-1">Ruang tontonanmu</h1>
+						</div>
+						<span class="text-[11px] px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300">YouTube Embed</span>
+					</div>
+					<div class="rounded-2xl overflow-hidden bg-black shadow-xl shadow-slate-900/10 dark:shadow-black/30">
+						<div class="video-frame" id="playerWrap">
+							<div id="playerPlaceholder" class="w-full h-full flex flex-col items-center justify-center text-center text-white p-6 bg-gradient-to-br from-slate-900 to-slate-800">
+								<div class="w-16 h-16 rounded-2xl bg-white/10 grid place-items-center text-3xl mb-4">▶</div>
+								<p class="font-bold text-lg">Pilih video untuk mulai menonton</p>
+								<p class="text-sm text-slate-300 mt-2 max-w-sm">Tempel tautan YouTube atau cari video melalui tombol Cari.</p>
+								<button id="addVideoHero" class="mt-5 px-5 py-2.5 rounded-xl accent-bg text-white text-sm font-bold">+ Tambahkan video</button>
+							</div>
+							<div id="player"></div>
+						</div>
+					</div>
+					<div id="embedNotice" class="hidden mt-3 rounded-xl border border-amber-300/60 bg-amber-50 dark:bg-amber-400/10 dark:border-amber-300/20 p-3 text-sm text-amber-900 dark:text-amber-200" role="status" aria-live="polite">
+						<p class="font-bold">Pemutar YouTube membutuhkan alamat web (HTTPS)</p>
+						<p class="mt-1 text-xs leading-relaxed">File ini sedang dibuka langsung dari penyimpanan perangkat. Android memberi alamat <code>content://</code>, sehingga YouTube tidak menerima HTTP Referer dan dapat menampilkan Error 153. Jalankan YT Stream melalui hosting HTTPS atau server lokal, lalu buka kembali halaman ini.</p>
+						<a id="openOnYoutube" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" class="inline-flex mt-2 rounded-lg bg-amber-600 text-white px-3 py-2 text-xs font-bold">Buka video di YouTube</a>
+					</div>
+
+					<div class="py-4 border-b border-slate-200 dark:border-white/10">
+						<div class="flex flex-wrap items-start justify-between gap-3">
+							<div class="min-w-0 flex-1">
+								<h2 id="videoTitle" class="font-bold text-lg leading-snug">Belum ada video dipilih</h2>
+								<p id="videoMeta" class="text-xs text-slate-500 mt-1">Informasi video akan ditampilkan di sini jika tersedia.</p>
+							</div>
+							<div class="flex gap-2">
+								<button id="saveVideoBtn" class="px-3 py-2 rounded-xl bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 text-xs font-semibold">＋ Simpan</button>
+								<button id="shareBtn" class="px-3 py-2 rounded-xl bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 text-xs font-semibold">↗ Bagikan</button>
+							</div>
+						</div>
+						<div class="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 text-xs text-slate-500">
+							<span>▶ <b id="viewCount" class="text-slate-700 dark:text-slate-200">—</b> views</span>
+							<span>♥ <b id="likeCount" class="text-slate-700 dark:text-slate-200">—</b> likes</span>
+							<span>◷ <b id="uploadDate" class="text-slate-700 dark:text-slate-200">—</b></span>
+						</div>
+						<p class="text-[11px] text-slate-400 mt-3">Statistik views, likes, dan tanggal upload tidak dapat dibaca dari Embed saja. Buka YouTube untuk detail dan interaksi lengkap.</p>
+					</div>
+
+					<div class="mt-5 flex items-center justify-between gap-3">
+						<div>
+							<h3 class="font-extrabold text-lg">Video pilihan</h3>
+							<p class="text-xs text-slate-500 mt-1">Tambahkan video dari YouTube ke ruang tontonanmu.</p>
+						</div>
+						<button id="addVideoBtn" class="px-3 py-2 rounded-xl accent-bg text-white text-xs font-bold">＋ Tambah URL</button>
+					</div>
+					<div id="videoGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4"></div>
+					<div id="emptyState" class="hidden text-center py-10 text-slate-500">
+						<div class="text-3xl mb-2">▧</div>
+						<p class="font-semibold text-sm">Belum ada video di daftar ini</p>
+						<p class="text-xs mt-1">Tambahkan video YouTube untuk mulai membangun playlist.</p>
+					</div>
+				</section>
+
+				<aside class="space-y-4">
+					<div class="rounded-2xl bg-white dark:bg-[#151d29] border border-slate-200 dark:border-white/10 p-4">
+						<div class="flex items-center justify-between">
+							<h3 class="font-bold">Mulai menonton</h3>
+							<span class="text-xs text-slate-400">01</span>
+						</div>
+						<p class="text-xs text-slate-500 mt-1">Masukkan URL atau ID video YouTube.</p>
+						<form id="quickAddForm" class="mt-3 space-y-2">
+							<input id="quickUrl" class="w-full px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-[#202938] text-sm outline-none border border-transparent focus:border-slate-300 dark:focus:border-white/20" placeholder="https://youtu.be/..." required>
+							<button class="w-full accent-bg text-white rounded-xl py-2.5 text-sm font-bold">Putar video</button>
+						</form>
+					</div>
+					<div class="rounded-2xl bg-white dark:bg-[#151d29] border border-slate-200 dark:border-white/10 p-4">
+						<div class="flex items-center justify-between">
+							<h3 class="font-bold">Riwayat tontonan</h3>
+							<button id="seeHistory" class="text-xs accent-text font-semibold">Lihat semua</button>
+						</div>
+						<div id="historyList" class="mt-3 space-y-3"></div>
+					</div>
+					<div class="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-700 text-white p-4">
+						<p class="text-xs text-white/60 uppercase tracking-widest font-bold">Catatan V1</p>
+						<h3 class="font-bold mt-2">Tetap sederhana.</h3>
+						<p class="text-xs text-white/70 mt-1 leading-relaxed">Pemutaran memakai YouTube resmi. Aplikasi ini menyimpan daftar dan riwayat secara lokal di perangkatmu.</p>
+					</div>
+				</aside>
+			</main>
+			<footer class="mt-10 pt-5 border-t border-slate-200 dark:border-white/10 text-center text-[11px] text-slate-400">YT Stream V1.1.1 · YouTube Embed · Data playlist dan riwayat tersimpan di perangkat ini</footer>
+		</div>
+	</div>
+
+	<div id="modalRoot"></div>
+	<div id="toastRoot" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[100] space-y-2 w-[min(92vw,380px)] pointer-events-none"></div>
+
+	<script>
+		"use strict";
+
+		/* =========================================================
+		 * YT STREAM V1 — CONFIG & STORAGE
+		 * ======================================================= */
+		const CONFIG = {
+			storageKey: "ytstream_v1",
+			googleClientId: "",
+			defaultVideo: "",
+			fonts: ["inter", "roboto", "poppins", "nunito", "open", "lato"],
+			accents: ["#ef4444", "#3b82f6", "#8b5cf6", "#10b981", "#f59e0b", "#ec4899"]
+		};
+
+		const DEFAULT_STATE = {
+			profile: { name: "Pengguna", email: "", createdAt: new Date().toISOString(), provider: "local" },
+			settings: { mode: "system", font: "inter", fontSize: 15, weight: "400", accent: "#ef4444", animation: true, sound: false, vibration: false },
+			videos: [],
+			history: [],
+			activeVideoId: "",
+			googleCredential: ""
+		};
+
+		function loadState() {
+			try {
+				const saved = JSON.parse(localStorage.getItem(CONFIG.storageKey) || "null");
+				return saved ? { ...structuredClone(DEFAULT_STATE), ...saved, profile: { ...DEFAULT_STATE.profile, ...saved.profile }, settings: { ...DEFAULT_STATE.settings, ...saved.settings } } : structuredClone(DEFAULT_STATE);
+			} catch (error) {
+				console.warn("Gagal membaca penyimpanan:", error);
+				return structuredClone(DEFAULT_STATE);
+			}
+		}
+
+		let state = loadState();
+		let activeFilter = "all";
+
+		function saveState() {
+			try {
+				localStorage.setItem(CONFIG.storageKey, JSON.stringify(state));
+			} catch (error) {
+				console.error("Penyimpanan lokal gagal:", error);
+				toast("Penyimpanan browser penuh atau diblokir. Ekspor backup terlebih dahulu.", "error");
+			}
+		}
+
+		/* =========================================================
+		 * HELPERS
+		 * ======================================================= */
+		const $ = (selector, root = document) => root.querySelector(selector);
+		const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+		function escapeHTML(value = "") {
+			return String(value).replace(/[&<>"']/g, char => ({
+				"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+			}[char]));
+		}
+
+		function toast(message, type = "info") {
+			const colors = { info: "bg-slate-900", success: "bg-emerald-600", error: "bg-rose-600" };
+			const item = document.createElement("div");
+			item.className = `toast ${colors[type] || colors.info} text-white text-sm px-4 py-3 rounded-xl shadow-xl`;
+			item.textContent = message;
+			$("#toastRoot").append(item);
+			if (state.settings.sound) playTone();
+			if (state.settings.vibration && navigator.vibrate) navigator.vibrate(25);
+			setTimeout(() => item.remove(), 2800);
+		}
+
+		function playTone() {
+			try {
+				const context = new (window.AudioContext || window.webkitAudioContext)();
+				const oscillator = context.createOscillator();
+				const gain = context.createGain();
+				oscillator.connect(gain);
+				gain.connect(context.destination);
+				oscillator.frequency.value = 660;
+				gain.gain.value = 0.035;
+				oscillator.start();
+				oscillator.stop(context.currentTime + 0.07);
+				oscillator.onended = () => context.close();
+			} catch (_) {}
+		}
+
+		function formatDate(value) {
+			if (!value) return "—";
+			return new Date(value).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
+		}
+
+		function getVideoId(input) {
+			const value = String(input || "").trim();
+			if (/^[a-zA-Z0-9_-]{11}$/.test(value)) return value;
+			try {
+				const url = new URL(value);
+				if (url.hostname.includes("youtu.be")) return url.pathname.split("/").filter(Boolean)[0] || "";
+				if (url.hostname.includes("youtube.com") || url.hostname.includes("youtube-nocookie.com")) {
+					if (url.searchParams.get("v")) return url.searchParams.get("v");
+					const parts = url.pathname.split("/").filter(Boolean);
+					const marker = parts.findIndex(part => ["embed", "shorts", "live"].includes(part));
+					if (marker >= 0) return parts[marker + 1] || "";
+				}
+			} catch (_) {}
+			return "";
+		}
+
+		function youtubeSearch(query) {
+			const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+			window.open(url, "_blank", "noopener,noreferrer");
+		}
+
+		function getVideo(id) {
+			return state.videos.find(video => video.id === id) || state.history.find(video => video.id === id) || { id, title: `Video YouTube (${id})`, addedAt: new Date().toISOString() };
+		}
+
+		/* =========================================================
+		 * THEME & TYPOGRAPHY
+		 * ======================================================= */
+		function applySettings() {
+			const settings = state.settings;
+			const dark = settings.mode === "dark" || (settings.mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+			document.documentElement.classList.toggle("dark", dark);
+			document.documentElement.style.setProperty("--accent", settings.accent);
+			document.documentElement.style.setProperty("--font-size", `${settings.fontSize}px`);
+			document.body.style.fontFamily = `var(--tw-font-family, ${settings.font === "open" ? "'Open Sans'" : settings.font})`;
+			document.body.style.fontWeight = settings.weight;
+			document.body.classList.remove("font-inter", "font-roboto", "font-poppins", "font-nunito", "font-open", "font-lato");
+			document.body.classList.add(`font-${settings.font}`);
+			document.body.style.transition = settings.animation ? "background-color .2s ease, color .2s ease" : "none";
+		}
+
+		/* =========================================================
+		 * PLAYER & VIDEO COLLECTION
+		 * ======================================================= */
+		function playVideo(id) {
+			if (!id) return;
+			state.activeVideoId = id;
+			const video = getVideo(id);
+			if (!state.videos.some(item => item.id === id)) {
+				state.videos.unshift({ ...video, id, addedAt: new Date().toISOString() });
+			}
+			state.history = [{ ...video, id, watchedAt: new Date().toISOString() }, ...state.history.filter(item => item.id !== id)].slice(0, 100);
+			saveState();
+			renderPlayer();
+			renderVideos();
+			renderHistory();
+			window.scrollTo({ top: 0, behavior: state.settings.animation ? "smooth" : "auto" });
+		}
+
+		function renderPlayer() {
+			const id = state.activeVideoId;
+			const player = $("#player");
+			const placeholder = $("#playerPlaceholder");
+			if (!id) {
+				player.innerHTML = "";
+				placeholder.classList.remove("hidden");
+				$("#embedNotice")?.classList.add("hidden");
+				return;
+			}
+			placeholder.classList.add("hidden");
+			const notice = $("#embedNotice");
+			const isWebOrigin = window.location.protocol === "https:" || window.location.protocol === "http:";
+			const embedOrigin = isWebOrigin ? `&origin=${encodeURIComponent(window.location.origin)}` : "";
+			const embedHost = "https://www.youtube.com";
+			player.innerHTML = `<iframe src="${embedHost}/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&playsinline=1${embedOrigin}" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="origin" allowfullscreen></iframe>`;
+			if (notice) {
+				notice.classList.toggle("hidden", isWebOrigin);
+				const link = $("#openOnYoutube");
+				if (link) link.href = `https://www.youtube.com/watch?v=${encodeURIComponent(id)}`;
+			}
+			const video = getVideo(id);
+			$("#videoTitle").textContent = video.title || `Video YouTube (${id})`;
+			$("#videoMeta").textContent = video.channel || "Video diputar melalui YouTube";
+			$("#viewCount").textContent = "—";
+			$("#likeCount").textContent = "—";
+			$("#uploadDate").textContent = "—";
+		}
+
+		function addVideo(input, title = "") {
+			const id = getVideoId(input);
+			if (!id) {
+				toast("URL atau ID video YouTube tidak valid.", "error");
+				return;
+			}
+			const existing = state.videos.find(video => video.id === id);
+			if (!existing) {
+				state.videos.unshift({ id, title: title || `Video YouTube (${id})`, addedAt: new Date().toISOString() });
+			}
+			saveState();
+			playVideo(id);
+			toast("Video berhasil ditambahkan.", "success");
+		}
+
+		function renderVideos() {
+			const grid = $("#videoGrid");
+			let videos = [...state.videos];
+			if (activeFilter === "history") videos = state.history;
+			if (activeFilter === "saved") videos = state.videos;
+			grid.innerHTML = videos.map(video => `
+				<article class="card-hover rounded-xl overflow-hidden bg-white dark:bg-[#151d29] border border-slate-200 dark:border-white/10 cursor-pointer" data-play="${escapeHTML(video.id)}">
+					<div class="relative aspect-video bg-slate-200 dark:bg-slate-800">
+						<img src="https://i.ytimg.com/vi/${encodeURIComponent(video.id)}/mqdefault.jpg" alt="" class="w-full h-full object-cover" loading="lazy" onerror="this.style.opacity='.2'">
+						<span class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-1.5 py-1 rounded">▶ PLAY</span>
+					</div>
+					<div class="p-3">
+						<p class="font-bold text-sm leading-snug line-clamp-2">${escapeHTML(video.title || `Video YouTube (${video.id})`)}</p>
+						<p class="text-[11px] text-slate-500 mt-1">${activeFilter === "history" ? "Ditonton " + formatDate(video.watchedAt) : "Ditambahkan " + formatDate(video.addedAt)}</p>
+						<div class="mt-2 flex items-center justify-between gap-2">
+							<button data-rename="${escapeHTML(video.id)}" class="text-[11px] accent-text font-semibold">Ubah judul</button>
+							<button data-remove="${escapeHTML(video.id)}" class="text-[11px] text-rose-500 font-semibold">Hapus</button>
+						</div>
+					</div>
+				</article>
+			`).join("");
+			$("#emptyState").classList.toggle("hidden", videos.length > 0);
+		}
+
+		function renderHistory() {
+			$("#historyList").innerHTML = state.history.slice(0, 5).map(video => `
+				<button data-play="${escapeHTML(video.id)}" class="w-full flex gap-3 text-left items-center group">
+					<img src="https://i.ytimg.com/vi/${encodeURIComponent(video.id)}/default.jpg" class="w-20 aspect-video object-cover rounded-lg bg-slate-200" alt="">
+					<span class="min-w-0"><span class="block text-xs font-semibold line-clamp-2 group-hover:accent-text">${escapeHTML(video.title || video.id)}</span><span class="block text-[10px] text-slate-500 mt-1">${formatDate(video.watchedAt)}</span></span>
+				</button>
+			`).join("") || `<p class="text-xs text-slate-500 py-3">Belum ada riwayat tontonan.</p>`;
+		}
+
+		/* =========================================================
+		 * MODALS
+		 * ======================================================= */
+		function openModal(content) {
+			$("#modalRoot").innerHTML = `
+				<div class="modal-backdrop fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" data-close-modal>
+					<section class="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#151d29] border border-slate-200 dark:border-white/10 shadow-2xl p-5" role="dialog" aria-modal="true">
+						${content}
+					</section>
+				</div>`;
+		}
+
+		function closeModal() {
+			$("#modalRoot").innerHTML = "";
+		}
+
+		function openAddModal() {
+			openModal(`
+				<div class="flex items-center justify-between mb-4"><h2 class="font-extrabold text-xl">Tambah video</h2><button data-close class="text-slate-400 text-xl">×</button></div>
+				<p class="text-sm text-slate-500 mb-4">Tempel URL YouTube atau masukkan ID video (11 karakter).</p>
+				<form id="addModalForm" class="space-y-3">
+					<input id="modalVideoUrl" required class="w-full px-3 py-3 rounded-xl bg-slate-100 dark:bg-[#202938] outline-none text-sm" placeholder="https://www.youtube.com/watch?v=...">
+					<input id="modalVideoTitle" class="w-full px-3 py-3 rounded-xl bg-slate-100 dark:bg-[#202938] outline-none text-sm" placeholder="Judul video (opsional)">
+					<button class="w-full accent-bg text-white rounded-xl py-3 font-bold text-sm">Tambahkan & putar</button>
+				</form>
+				<p class="text-[11px] text-slate-400 mt-3">Pencarian video dilakukan di situs YouTube, bukan di dalam aplikasi, pada mode Embed.</p>
+			`);
+		}
+
+		function openAccountModal() {
+			const profile = state.profile;
+			const ageDays = Math.max(0, Math.floor((Date.now() - new Date(profile.createdAt).getTime()) / 86400000));
+			openModal(`
+				<div class="flex items-center justify-between mb-4"><h2 class="font-extrabold text-xl">Akun saya</h2><button data-close class="text-slate-400 text-xl">×</button></div>
+				<div class="flex items-center gap-3 p-3 rounded-xl bg-slate-100 dark:bg-[#202938] mb-4">
+					<div class="w-12 h-12 rounded-full accent-bg text-white grid place-items-center text-xl font-bold">${escapeHTML((profile.name || "U").slice(0,1).toUpperCase())}</div>
+					<div><p class="font-bold">${escapeHTML(profile.name)}</p><p class="text-xs text-slate-500">${escapeHTML(profile.email || "Profil lokal")}</p><p class="text-[10px] text-slate-400 mt-1">Metode: ${escapeHTML(profile.provider)}</p></div>
+				</div>
+				<form id="profileForm" class="space-y-3">
+					<label class="block text-xs font-semibold">Nama<input id="profileName" value="${escapeHTML(profile.name)}" class="mt-1 w-full px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-[#202938] text-sm"></label>
+					<label class="block text-xs font-semibold">Email (opsional)<input id="profileEmail" type="email" value="${escapeHTML(profile.email)}" class="mt-1 w-full px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-[#202938] text-sm"></label>
+					<button class="w-full accent-bg text-white rounded-xl py-2.5 text-sm font-bold">Simpan profil</button>
+				</form>
+				<div class="grid grid-cols-3 gap-2 my-4 text-center">
+					<div class="rounded-xl bg-slate-100 dark:bg-[#202938] p-3"><b>${state.history.length}</b><p class="text-[10px] text-slate-500">Ditonton</p></div>
+					<div class="rounded-xl bg-slate-100 dark:bg-[#202938] p-3"><b>0</b><p class="text-[10px] text-slate-500">Unduhan</p></div>
+					<div class="rounded-xl bg-slate-100 dark:bg-[#202938] p-3"><b>${ageDays}</b><p class="text-[10px] text-slate-500">Umur akun (hari)</p></div>
+				</div>
+				<div class="grid grid-cols-2 gap-2">
+					<button id="exportBtn" class="rounded-xl border border-slate-200 dark:border-white/10 py-2.5 text-xs font-bold">Ekspor riwayat</button>
+					<button id="importBtn" class="rounded-xl border border-slate-200 dark:border-white/10 py-2.5 text-xs font-bold">Impor riwayat</button>
+				</div>
+				<input id="importFile" type="file" accept="application/json,.json" class="hidden">
+				<div class="grid grid-cols-2 gap-2 mt-2">
+					<button id="clearHistoryBtn" class="rounded-xl border border-rose-200 dark:border-rose-400/20 text-rose-600 py-2.5 text-xs font-bold">Hapus riwayat</button>
+					<button id="clearPlaylistBtn" class="rounded-xl border border-rose-200 dark:border-rose-400/20 text-rose-600 py-2.5 text-xs font-bold">Kosongkan playlist</button>
+				</div>
+				<div class="mt-4 pt-4 border-t border-slate-200 dark:border-white/10">
+					<button id="googleSignIn" class="w-full rounded-xl border border-slate-200 dark:border-white/10 py-2.5 text-sm font-semibold">Lanjutkan dengan Google</button>
+					<p class="text-[10px] text-slate-400 mt-2">Google Identity hanya dapat mengisi nama/email profil pada mode statis. Verifikasi token dan sesi login yang aman tetap memerlukan backend; jangan gunakan ini sebagai autentikasi akun produksi.</p>
+				</div>
+			`);
+		}
+
+		function openSettingsModal() {
+			const s = state.settings;
+			openModal(`
+				<div class="flex items-center justify-between mb-4"><h2 class="font-extrabold text-xl">Pengaturan</h2><button data-close class="text-slate-400 text-xl">×</button></div>
+				<div class="space-y-4">
+					<label class="block text-xs font-semibold">Mode tampilan
+						<select id="settingMode" class="mt-1 w-full rounded-xl bg-slate-100 dark:bg-[#202938] p-3 text-sm"><option value="system" ${s.mode==="system"?"selected":""}>Ikuti sistem</option><option value="light" ${s.mode==="light"?"selected":""}>Terang</option><option value="dark" ${s.mode==="dark"?"selected":""}>Gelap</option></select>
+					</label>
+					<div><div class="flex justify-between text-xs font-semibold"><label for="settingFontSize">Ukuran font</label><span id="fontSizeValue">${s.fontSize}px</span></div><input id="settingFontSize" type="range" min="12" max="22" value="${s.fontSize}" class="w-full mt-2 accent-red-500"></div>
+					<label class="block text-xs font-semibold">Jenis font
+						<select id="settingFont" class="mt-1 w-full rounded-xl bg-slate-100 dark:bg-[#202938] p-3 text-sm">${CONFIG.fonts.map(font => `<option value="${font}" ${s.font===font?"selected":""}>${font==="open"?"Open Sans":font[0].toUpperCase()+font.slice(1)}</option>`).join("")}</select>
+					</label>
+					<label class="block text-xs font-semibold">Ketebalan font
+						<select id="settingWeight" class="mt-1 w-full rounded-xl bg-slate-100 dark:bg-[#202938] p-3 text-sm"><option value="300" ${s.weight==="300"?"selected":""}>Light</option><option value="400" ${s.weight==="400"?"selected":""}>Regular</option><option value="500" ${s.weight==="500"?"selected":""}>Medium</option><option value="600" ${s.weight==="600"?"selected":""}>Semi Bold</option><option value="700" ${s.weight==="700"?"selected":""}>Bold</option></select>
+					</label>
+					<div><p class="text-xs font-semibold mb-2">Warna aksen</p><div class="flex gap-3 flex-wrap">${CONFIG.accents.map(color => `<button data-accent="${color}" class="w-8 h-8 rounded-full border-2 ${s.accent===color?"border-slate-900 dark:border-white":"border-transparent"}" style="background:${color}" aria-label="Pilih warna ${color}"></button>`).join("")}</div></div>
+					<div class="space-y-3 pt-2 border-t border-slate-200 dark:border-white/10">
+						<label class="flex justify-between items-center text-sm"><span>Animasi interface</span><input id="settingAnimation" type="checkbox" ${s.animation?"checked":""} class="w-4 h-4 accent-red-500"></label>
+						<label class="flex justify-between items-center text-sm"><span>Efek suara</span><input id="settingSound" type="checkbox" ${s.sound?"checked":""} class="w-4 h-4 accent-red-500"></label>
+						<label class="flex justify-between items-center text-sm"><span>Getaran (perangkat didukung)</span><input id="settingVibration" type="checkbox" ${s.vibration?"checked":""} class="w-4 h-4 accent-red-500"></label>
+					</div>
+					<div class="grid grid-cols-2 gap-2 pt-2"><button id="settingsExport" class="rounded-xl border border-slate-200 dark:border-white/10 py-2.5 text-xs font-bold">Ekspor data</button><button id="settingsImport" class="rounded-xl border border-slate-200 dark:border-white/10 py-2.5 text-xs font-bold">Impor data</button></div>
+					<input id="settingsImportFile" type="file" accept="application/json,.json" class="hidden">
+				</div>
+			`);
+		}
+
+		/* =========================================================
+		 * IMPORT / EXPORT
+		 * ======================================================= */
+		function exportData() {
+			const blob = new Blob([JSON.stringify(state, null, "\t")], { type: "application/json" });
+			const url = URL.createObjectURL(blob);
+			const anchor = document.createElement("a");
+			anchor.href = url;
+			anchor.download = `yt-stream-backup-${new Date().toISOString().slice(0,10)}.json`;
+			anchor.click();
+			URL.revokeObjectURL(url);
+			toast("Backup berhasil diekspor.", "success");
+		}
+
+		function importData(file) {
+			if (!file) return;
+			const reader = new FileReader();
+			reader.onload = () => {
+				try {
+					const imported = JSON.parse(reader.result);
+					if (!imported || typeof imported !== "object") throw new Error("Format tidak sesuai");
+					state = { ...structuredClone(DEFAULT_STATE), ...imported, profile: { ...DEFAULT_STATE.profile, ...(imported.profile || {}) }, settings: { ...DEFAULT_STATE.settings, ...(imported.settings || {}) } };
+					saveState();
+					applySettings();
+					renderPlayer();
+					renderVideos();
+					renderHistory();
+					closeModal();
+					toast("Data berhasil diimpor.", "success");
+				} catch (error) {
+					toast("File backup tidak valid.", "error");
+				}
+			};
+			reader.readAsText(file);
+		}
+
+		/* =========================================================
+		 * GOOGLE SIGN-IN — OPTIONAL CONFIGURATION
+		 * ======================================================= */
+		function startGoogleSignIn() {
+			if (!CONFIG.googleClientId) {
+				toast("Google OAuth belum dikonfigurasi. Tambahkan Client ID di CONFIG.", "error");
+				return;
+			}
+			if (!window.google?.accounts?.id) {
+				toast("Layanan Google Identity belum termuat. Periksa koneksi internet.", "error");
+				return;
+			}
+			window.google.accounts.id.initialize({
+				client_id: CONFIG.googleClientId,
+				callback: response => {
+					try {
+						const payload = JSON.parse(atob(response.credential.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+						state.profile = { name: payload.name || "Pengguna Google", email: payload.email || "", createdAt: state.profile.createdAt, provider: "google" };
+						saveState();
+						closeModal();
+						updateAvatar();
+						toast("Login Google berhasil.", "success");
+					} catch (_) {
+						toast("Tidak dapat membaca profil Google.", "error");
+					}
+				}
+			});
+			window.google.accounts.id.prompt();
+		}
+
+		function updateAvatar() {
+			$("#accountBtn").textContent = (state.profile.name || "U").slice(0,1).toUpperCase();
+		}
+
+		/* =========================================================
+		 * EVENTS
+		 * ======================================================= */
+		$("#searchForm").addEventListener("submit", event => {
+			event.preventDefault();
+			const query = $("#searchInput").value.trim();
+			if (!query) return toast("Masukkan kata kunci pencarian.", "error");
+			youtubeSearch(query);
+			toast("Hasil pencarian dibuka di YouTube.");
+		});
+
+		$("#quickAddForm").addEventListener("submit", event => {
+			event.preventDefault();
+			addVideo($("#quickUrl").value);
+			$("#quickUrl").value = "";
+		});
+
+		$("#addVideoBtn").addEventListener("click", openAddModal);
+		$("#addVideoHero").addEventListener("click", openAddModal);
+		$("#accountBtn").addEventListener("click", openAccountModal);
+		$("#settingsBtn").addEventListener("click", openSettingsModal);
+		$("#seeHistory").addEventListener("click", () => {
+			activeFilter = "history";
+			$$(".nav-chip").forEach(button => button.className = "nav-chip px-3 py-1.5 rounded-full bg-slate-100 dark:bg-white/5");
+			$('[data-filter="history"]').className = "nav-chip px-3 py-1.5 rounded-full accent-bg text-white";
+			renderVideos();
+			$("#videoGrid").scrollIntoView({ behavior: "smooth", block: "start" });
+		});
+		$("#openYoutube").addEventListener("click", () => window.open("https://www.youtube.com", "_blank", "noopener,noreferrer"));
+		$("#shareBtn").addEventListener("click", async () => {
+			if (!state.activeVideoId) return toast("Belum ada video untuk dibagikan.", "error");
+			const url = `https://youtu.be/${state.activeVideoId}`;
+			try {
+				if (navigator.share) await navigator.share({ title: $("#videoTitle").textContent, url });
+				else { await navigator.clipboard.writeText(url); toast("Link video disalin.", "success"); }
+			} catch (_) {}
+		});
+		$("#saveVideoBtn").addEventListener("click", () => {
+			if (!state.activeVideoId) return toast("Pilih video terlebih dahulu.", "error");
+			if (!state.videos.some(video => video.id === state.activeVideoId)) state.videos.unshift({ id: state.activeVideoId, title: $("#videoTitle").textContent, addedAt: new Date().toISOString() });
+			saveState(); renderVideos(); toast("Video disimpan ke playlist.", "success");
+		});
+		$("#menuBtn").addEventListener("click", () => {
+			const nav = $("header nav");
+			const isHidden = nav.classList.toggle("hidden");
+			$("#menuBtn").setAttribute("aria-expanded", String(!isHidden));
+		});
+		$$(".nav-chip").forEach(button => button.addEventListener("click", () => {
+			activeFilter = button.dataset.filter;
+			$$(".nav-chip").forEach(item => item.className = "nav-chip px-3 py-1.5 rounded-full bg-slate-100 dark:bg-white/5");
+			button.className = "nav-chip px-3 py-1.5 rounded-full accent-bg text-white";
+			renderVideos();
+			if (window.innerWidth < 1024) $("header nav").classList.add("hidden");
+		}));
+
+		document.addEventListener("click", event => {
+			const play = event.target.closest("[data-play]");
+			const remove = event.target.closest("[data-remove]");
+			const rename = event.target.closest("[data-rename]");
+			if (play) playVideo(play.dataset.play);
+			if (rename) {
+				const video = state.videos.find(item => item.id === rename.dataset.rename);
+				if (video) {
+					const title = prompt("Masukkan judul tampilan untuk video ini:", video.title || "");
+					if (title !== null && title.trim()) {
+						video.title = title.trim();
+						state.history = state.history.map(item => item.id === video.id ? { ...item, title: video.title } : item);
+						saveState(); renderVideos(); renderHistory();
+						if (state.activeVideoId === video.id) $("#videoTitle").textContent = video.title;
+						toast("Judul video diperbarui.", "success");
+					}
+				}
+			}
+			if (remove) {
+				state.videos = state.videos.filter(video => video.id !== remove.dataset.remove);
+				saveState(); renderVideos(); toast("Video dihapus dari daftar.");
+			}
+			if (event.target.closest("[data-close]") || (event.target.matches("[data-close-modal]"))) closeModal();
+		});
+
+		document.addEventListener("submit", event => {
+			if (event.target.id === "addModalForm") {
+				event.preventDefault();
+				addVideo($("#modalVideoUrl").value, $("#modalVideoTitle").value.trim());
+				closeModal();
+			}
+			if (event.target.id === "profileForm") {
+				event.preventDefault();
+				state.profile.name = $("#profileName").value.trim() || "Pengguna";
+				state.profile.email = $("#profileEmail").value.trim();
+				saveState(); updateAvatar(); closeModal(); toast("Profil diperbarui.", "success");
+			}
+		});
+
+		document.addEventListener("input", event => {
+			if (event.target.id === "settingFontSize") {
+				state.settings.fontSize = Number(event.target.value);
+				$("#fontSizeValue").textContent = `${event.target.value}px`;
+				applySettings(); saveState();
+			}
+		});
+
+		document.addEventListener("change", event => {
+			const target = event.target;
+			const settingMap = {
+				settingMode: "mode", settingFont: "font", settingWeight: "weight",
+				settingAnimation: "animation", settingSound: "sound", settingVibration: "vibration"
+			};
+			if (settingMap[target.id]) {
+				state.settings[settingMap[target.id]] = target.type === "checkbox" ? target.checked : target.value;
+				applySettings(); saveState();
+			}
+			if (target.id === "importFile" || target.id === "settingsImportFile") importData(target.files[0]);
+		});
+
+		document.addEventListener("click", event => {
+			const accent = event.target.closest("[data-accent]");
+			if (accent) {
+				state.settings.accent = accent.dataset.accent;
+				saveState(); applySettings();
+				$$("[data-accent]").forEach(button => button.classList.toggle("border-slate-900", button.dataset.accent === state.settings.accent));
+			}
+			if (event.target.id === "exportBtn" || event.target.id === "settingsExport") exportData();
+			if (event.target.id === "importBtn") $("#importFile").click();
+			if (event.target.id === "settingsImport") $("#settingsImportFile").click();
+			if (event.target.id === "googleSignIn") startGoogleSignIn();
+			if (event.target.id === "clearHistoryBtn") {
+				if (confirm("Hapus seluruh riwayat tontonan?")) {
+					state.history = [];
+					saveState(); renderHistory(); renderVideos();
+					openAccountModal();
+					toast("Riwayat tontonan dihapus.", "success");
+				}
+			}
+			if (event.target.id === "clearPlaylistBtn") {
+				if (confirm("Kosongkan seluruh playlist tersimpan?")) {
+					state.videos = [];
+					saveState(); renderVideos();
+					openAccountModal();
+					toast("Playlist dikosongkan.", "success");
+				}
+			}
+		});
+
+		/* =========================================================
+		 * INITIALIZATION
+		 * ======================================================= */
+		function init() {
+			if (window.innerWidth < 1024) $("header nav").classList.add("hidden");
+			window.addEventListener("resize", () => {
+				if (window.innerWidth >= 1024) $("header nav").classList.remove("hidden");
+			});
+			applySettings();
+			updateAvatar();
+			renderPlayer();
+			renderVideos();
+			renderHistory();
+			if (state.activeVideoId) renderPlayer();
+		}
+		init();
+	</script>
+	<script src="https://accounts.google.com/gsi/client" async defer></script>
+</body>
+</html>
