@@ -102,20 +102,22 @@
 			animation: backdropFade 0.2s ease-out forwards;
 		}
 
-		/* Collapsible Meta Section on Scroll */
-		#videoMeta {
-			transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease;
-			max-height: 220px;
+		/* Collapsible Meta & Category Section on Scroll */
+		#videoMeta, #categoryMeta {
+			transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease, transform 0.3s ease;
+			max-height: 300px;
 			opacity: 1;
 			overflow: hidden;
+			transform: translateY(0);
 		}
-		#videoMeta.hidden-scroll {
+		#videoMeta.hidden-scroll, #categoryMeta.hidden-scroll {
 			max-height: 0px !important;
 			opacity: 0 !important;
 			margin-top: 0 !important;
 			margin-bottom: 0 !important;
 			padding-top: 0 !important;
 			padding-bottom: 0 !important;
+			transform: translateY(-8px);
 			pointer-events: none;
 		}
 
@@ -206,24 +208,27 @@
 		</header>
 
 		<!-- Main Page Layout -->
-		<main class="pt-16 max-w-6xl mx-auto px-2 sm:px-4 pb-12">
+		<main class="pt-16 max-w-6xl mx-auto px-0 sm:px-4 pb-12">
 
 			<!-- ==========================================
 			     2. FIXED VIDEO PLAYER & METADATA SECTION
 			     ========================================== -->
-			<section id="playerSection" class="sticky top-14 z-30 ui-sub-bg pt-2 pb-3 border-b border-slate-800/50 shadow-2xl transition-all duration-300">
+			<section id="playerSection" class="sticky top-14 z-30 ui-sub-bg pt-0 pb-3 border-b border-slate-800/50 shadow-2xl transition-all duration-300">
 				
-				<!-- Video Container Wrapper (Supports Theater Mode Expansion) -->
-				<div id="playerWrapper" class="w-full max-w-4xl mx-auto transition-all duration-300">
-					<div class="w-full rounded-2xl overflow-hidden bg-black shadow-2xl border border-slate-800/80 aspect-video-container relative">
+				<!-- Full Width Video Container Wrapper (Edge to Edge) -->
+				<div id="playerWrapper" class="w-full mx-auto transition-all duration-300">
+					<div class="w-full bg-black shadow-2xl border-b border-slate-800/80 aspect-video-container relative sm:rounded-2xl sm:overflow-hidden sm:border">
 						
-						<!-- Hero Placeholder Screen (Active before video click) -->
-						<div id="heroPlaceholder" class="hero-placeholder flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-900 via-slate-950 to-black text-slate-200">
-							<div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full btn-accent flex items-center justify-center shadow-xl mb-4 group cursor-pointer hover:scale-110 transition-transform" onclick="app.playFirstAvailable()">
-								<i data-lucide="play" class="w-8 h-8 sm:w-10 sm:h-10 fill-current ml-1"></i>
+						<!-- Hero / Last Watched Placeholder Screen -->
+						<div id="heroPlaceholder" class="hero-placeholder flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-900 via-slate-950 to-black text-slate-200 relative overflow-hidden">
+							<img id="heroBgThumb" src="" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20 blur-sm">
+							<div class="relative z-10 flex flex-col items-center">
+								<div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full btn-accent flex items-center justify-center shadow-xl mb-4 group cursor-pointer hover:scale-110 transition-transform" onclick="app.playFirstAvailable()">
+									<i data-lucide="play" class="w-8 h-8 sm:w-10 sm:h-10 fill-current ml-1"></i>
+								</div>
+								<h3 id="heroTitle" class="text-base sm:text-xl font-bold tracking-tight mb-1 max-w-lg">Selamat Datang di StreamTube</h3>
+								<p id="heroSub" class="text-xs sm:text-sm text-slate-400 max-w-md">Pilih salah satu video dari daftar di bawah atau klik untuk memutar video.</p>
 							</div>
-							<h3 class="text-base sm:text-xl font-bold tracking-tight mb-1">Selamat Datang di StreamTube</h3>
-							<p class="text-xs sm:text-sm text-slate-400 max-w-md">Pilih salah satu video dari daftar di bawah untuk mulai menonton streaming YouTube.</p>
 						</div>
 
 						<!-- YouTube Iframe Video Player -->
@@ -239,7 +244,7 @@
 					</div>
 
 					<!-- Video Info & Controls Metadata (Collapses on Scroll) -->
-					<div id="videoMeta" class="w-full mt-3 px-1">
+					<div id="videoMeta" class="w-full mt-3 px-4 sm:px-2">
 						<div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
 							<div class="flex-1">
 								<h1 id="videoTitle" class="font-semibold text-base sm:text-lg leading-snug">
@@ -296,9 +301,9 @@
 				</div>
 
 				<!-- ==========================================
-				     3. CATEGORY PILL SELECTOR MENU
+				     3. CATEGORY PILL SELECTOR MENU (Collapses on Scroll)
 				     ========================================== -->
-				<div class="w-full max-w-4xl mx-auto mt-3 px-1">
+				<div id="categoryMeta" class="w-full max-w-6xl mx-auto mt-3 px-4 sm:px-2">
 					<div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 text-xs" id="categoryContainer">
 						<!-- Dynamic category buttons initialized via JS -->
 					</div>
@@ -308,7 +313,7 @@
 			<!-- ==========================================
 			     4. VIDEO SUGGESTIONS & SEARCH GRID
 			     ========================================== -->
-			<section class="mt-6">
+			<section class="mt-6 px-3 sm:px-0">
 				<div class="flex items-center justify-between mb-4 px-1">
 					<h2 id="sectionTitle" class="text-base sm:text-lg font-semibold flex items-center gap-2">
 						<i data-lucide="sparkles" class="w-5 h-5 text-accent"></i> Rekomendasi Video
@@ -595,16 +600,25 @@
 			// YouTube API Key
 			apiKey: "AIzaSyCtksa1GE6rBpnuAI4IonvzLYDvPI_5b_E",
 
-			// Preset Categories
+			// Expanded Preset Categories
 			categories: [
 				{ name: "🔥 Populer", query: "indonesia viral trending" },
 				{ name: "🎵 Musik", query: "indonesia musik populer" },
-				{ name: "🎮 Game", query: "gameplay indonesia trending" },
+				{ name: "🎮 Gaming", query: "gameplay indonesia trending" },
 				{ name: "💻 Teknologi", query: "teknologi gadget indonesia" },
 				{ name: "📰 Berita", query: "berita indonesia terkini" },
 				{ name: "⚽ Olahraga", query: "olahraga sepakbola indonesia" },
 				{ name: "🎬 Hiburan", query: "film hiburan indonesia" },
-				{ name: "📚 Edukasi", query: "edukasi sains teknologi" }
+				{ name: "📚 Edukasi", query: "edukasi sains teknologi" },
+				{ name: "🍳 Kuliner & Resep", query: "kuliner resep makanan indonesia" },
+				{ name: "🚗 Otomotif", query: "otomotif mobil motor indonesia" },
+				{ name: "🎨 Anime & Animasi", query: "anime animasi indonesia" },
+				{ name: "😂 Komedi", query: "sketsa komedi lucu indonesia" },
+				{ name: "🌿 Lifestyle", query: "lifestyle vlog indonesia" },
+				{ name: "🛠️ DIY & Kerajinan", query: "diy kerajinan tangan tutorial" },
+				{ name: "✈️ Travel & Wisata", query: "travel wisata indonesia vlog" },
+				{ name: "🎙️ Podcast", query: "podcast indonesia populer" },
+				{ name: "📈 Bisnis & Keuangan", query: "bisnis investasi keuangan indonesia" }
 			],
 
 			activeCategoryIndex: 0,
@@ -615,6 +629,7 @@
 			// Application State
 			state: {
 				currentVideo: null,
+				lastWatched: null,
 				user: {
 					name: "Pengguna StreamTube",
 					avatar: null,
@@ -642,25 +657,54 @@
 				this.renderCategories();
 				this.setupScrollListener();
 
+				// Restore last watched video metadata without autoplay if exists
+				if (this.state.lastWatched) {
+					this.restoreLastWatched(this.state.lastWatched);
+				}
+
 				// Search YouTube grid on load WITHOUT starting iframe playback automatically
 				this.searchYouTube(this.categories[0].query, false);
 
 				lucide.createIcons();
 			},
 
+			// Restore last watched video metadata on initial load without autoplay
+			restoreLastWatched(videoObj) {
+				this.state.currentVideo = videoObj;
+				document.getElementById('videoTitle').innerText = videoObj.title;
+				document.getElementById('channelName').innerHTML = `<i data-lucide="tv" class="w-3.5 h-3.5 text-accent"></i> ${videoObj.channel}`;
+				document.getElementById('viewCount').innerHTML = `<i data-lucide="eye" class="w-3.5 h-3.5"></i> ${this.formatNumber(videoObj.views)}x dilihat`;
+				document.getElementById('uploadDate').innerHTML = `<i data-lucide="calendar" class="w-3.5 h-3.5"></i> ${videoObj.date}`;
+
+				const heroTitle = document.getElementById('heroTitle');
+				const heroSub = document.getElementById('heroSub');
+				const heroBgThumb = document.getElementById('heroBgThumb');
+
+				if (heroTitle) heroTitle.innerText = `Terakhir Ditonton: ${videoObj.title}`;
+				if (heroSub) heroSub.innerText = `Klik tombol putar untuk melanjutkan menonton`;
+				if (heroBgThumb && videoObj.thumb) {
+					heroBgThumb.src = videoObj.thumb;
+					heroBgThumb.classList.remove('hidden');
+				}
+
+				this.updateLikeButtonUI();
+			},
+
 			// ------------------------------------------
-			// Auto-Hide Info Section on Scroll Listener
+			// Auto-Hide Info Section & Category Pill Bar on Scroll Listener
 			// ------------------------------------------
 			setupScrollListener() {
 				window.addEventListener('scroll', () => {
 					const videoMeta = document.getElementById('videoMeta');
-					if (!videoMeta) return;
+					const categoryMeta = document.getElementById('categoryMeta');
 
-					// If scrolled down past 100px, collapse meta info
-					if (window.scrollY > 100) {
-						videoMeta.classList.add('hidden-scroll');
+					// If scrolled down past 80px, collapse both meta info and categories
+					if (window.scrollY > 80) {
+						if (videoMeta) videoMeta.classList.add('hidden-scroll');
+						if (categoryMeta) categoryMeta.classList.add('hidden-scroll');
 					} else {
-						videoMeta.classList.remove('hidden-scroll');
+						if (videoMeta) videoMeta.classList.remove('hidden-scroll');
+						if (categoryMeta) categoryMeta.classList.remove('hidden-scroll');
 					}
 				});
 			},
@@ -787,7 +831,9 @@
 
 			// Play the first video if placeholder clicked
 			playFirstAvailable() {
-				if (this.fetchedVideos && this.fetchedVideos.length > 0) {
+				if (this.state.currentVideo) {
+					this.playVideo(this.state.currentVideo);
+				} else if (this.fetchedVideos && this.fetchedVideos.length > 0) {
 					this.playVideo(this.fetchedVideos[0]);
 				}
 			},
@@ -800,6 +846,7 @@
 				this.triggerHaptic();
 
 				this.state.currentVideo = videoObj;
+				this.state.lastWatched = videoObj;
 
 				// Hide Placeholder Hero & Show Iframe
 				document.getElementById('heroPlaceholder').classList.add('hidden');
@@ -824,9 +871,9 @@
 						...videoObj,
 						watchedAt: new Date().toLocaleString('id-ID')
 					});
-
-					this.saveState();
 				}
+
+				this.saveState();
 
 				lucide.createIcons();
 				window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -909,6 +956,9 @@
 
 				const savedLikesMap = localStorage.getItem('st_likesMap');
 				if (savedLikesMap) this.state.likesMap = JSON.parse(savedLikesMap);
+
+				const savedLastWatched = localStorage.getItem('st_lastWatched');
+				if (savedLastWatched) this.state.lastWatched = JSON.parse(savedLastWatched);
 			},
 
 			saveState() {
@@ -918,49 +968,8 @@
 				localStorage.setItem('st_downloads', JSON.stringify(this.state.downloads));
 				localStorage.setItem('st_settings', JSON.stringify(this.state.settings));
 				localStorage.setItem('st_likesMap', JSON.stringify(this.state.likesMap));
-			},
-
-			// ------------------------------------------
-			// Like & Download Handlers
-			// ------------------------------------------
-			toggleLike() {
-				if (!this.state.currentVideo) return;
-				const ytId = this.state.currentVideo.ytId;
-
-				if (this.state.likesMap[ytId]) {
-					delete this.state.likesMap[ytId];
-					this.state.likedList = this.state.likedList.filter(item => item.ytId !== ytId);
-					this.showToast('Batal menyukai video');
-				} else {
-					this.state.likesMap[ytId] = true;
-					this.state.likedList.unshift({
-						...this.state.currentVideo,
-						likedAt: new Date().toLocaleString('id-ID')
-					});
-					this.showToast('Ditambahkan ke daftar video disukai');
-				}
-
-				this.saveState();
-				this.updateLikeButtonUI();
-				this.playSound();
-				this.triggerHaptic();
-			},
-
-			updateLikeButtonUI() {
-				if (!this.state.currentVideo) return;
-				const ytId = this.state.currentVideo.ytId;
-				const isLiked = !!this.state.likesMap[ytId];
-				const baseLikes = this.state.currentVideo.likes || 0;
-
-				const likeBtn = document.getElementById('likeBtn');
-				const likeCountEl = document.getElementById('likeCount');
-
-				likeCountEl.innerText = this.formatNumber(baseLikes + (isLiked ? 1 : 0));
-
-				if (isLiked) {
-					likeBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-xl btn-accent text-xs font-medium shadow-md transition-all";
-				} else {
-					likeBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-xl ui-card border text-xs font-medium hover:border-accent transition-all";
+				if (this.state.lastWatched) {
+					localStorage.setItem('st_lastWatched', JSON.stringify(this.state.lastWatched));
 				}
 			},
 
@@ -974,11 +983,13 @@
 
 				const ytId = this.state.currentVideo.ytId;
 				const title = this.state.currentVideo.title;
+				const thumb = this.state.currentVideo.thumb;
 
 				this.state.downloads.unshift({
 					title: title,
 					type: type.toUpperCase(),
 					ytId: ytId,
+					thumb: thumb,
 					downloadedAt: new Date().toLocaleString('id-ID')
 				});
 				this.saveState();
@@ -1094,12 +1105,14 @@
 
 				list.forEach(item => {
 					const el = document.createElement('div');
-					el.className = "p-2.5 ui-sub-bg rounded-xl border border-slate-700/40 flex justify-between items-center text-xs";
+					el.className = "p-2 ui-sub-bg rounded-xl border border-slate-700/40 flex items-center gap-3 text-xs";
+					const thumbUrl = item.thumb || `https://placehold.co/120x68/0f172a/94a3b8?text=Video`;
 
 					if (this.state.activeAccTab === 'watch' || this.state.activeAccTab === 'like') {
 						const dateStr = item.watchedAt || item.likedAt || '-';
 						el.innerHTML = `
-							<div class="truncate flex-1 pr-2">
+							<img src="${thumbUrl}" alt="" class="w-16 h-10 object-cover rounded-lg shrink-0 border border-slate-700/50">
+							<div class="truncate flex-1">
 								<div class="font-medium truncate">${item.title}</div>
 								<div class="text-[10px] ui-text-subtle">${item.channel || 'YouTube'} • ${dateStr}</div>
 							</div>
@@ -1107,7 +1120,8 @@
 						`;
 					} else {
 						el.innerHTML = `
-							<div class="truncate flex-1 pr-2">
+							<img src="${thumbUrl}" alt="" class="w-16 h-10 object-cover rounded-lg shrink-0 border border-slate-700/50">
+							<div class="truncate flex-1">
 								<div class="font-medium truncate">${item.title}</div>
 								<div class="text-[10px] ui-text-subtle">${item.type} • ${item.downloadedAt}</div>
 							</div>
