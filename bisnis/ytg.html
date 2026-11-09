@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>StreamTube - Custom YouTube Player & Streamer</title>
+	<!-- Tailwind CSS CDN -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<!-- Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<!-- Lucide Icons -->
+	<script src="https://unpkg.com/lucide@latest"></script>
+	<style>
+		/* Dynamic Theme Variables */
+		:root {
+			--accent-color: #3b82f6;
+			--accent-hover: #2563eb;
+			--base-font-size: 14px;
+			--app-font-family: 'Inter', sans-serif;
+			--app-font-weight: 400;
+		}
+
+		body {
+			font-family: var(--app-font-family);
+			font-size: var(--base-font-size);
+			font-weight: var(--app-font-weight);
+			transition: background-color 0.3s, color 0.3s;
+		}
+
+		.btn-accent {
+			background-color: var(--accent-color);
+			color: #ffffff;
+		}
+
+		.btn-accent:hover {
+			background-color: var(--accent-hover);
+		}
+
+		.text-accent {
+			color: var(--accent-color);
+		}
+
+		.border-accent {
+			border-color: var(--accent-color);
+		}
+
+		/* Smooth Custom Scrollbar */
+		::-webkit-scrollbar {
+			width: 6px;
+			height: 6px;
+		}
+		::-webkit-scrollbar-track {
+			background: transparent;
+		}
+		::-webkit-scrollbar-thumb {
+			background: rgba(148, 163, 184, 0.3);
+			border-radius: 9999px;
+		}
+		::-webkit-scrollbar-thumb:hover {
+			background: rgba(148, 163, 184, 0.5);
+		}
+
+		/* 16:9 Aspect Ratio Container */
+		.aspect-video-container {
+			position: relative;
+			padding-bottom: 56.25%;
+			height: 0;
+			overflow: hidden;
+		}
+		.aspect-video-container iframe {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-12">
+
+	<!-- ==========================================
+	     1. FLOATING FIXED TOP NAVBAR
+	     ========================================== -->
+	<header id="navbar" class="fixed top-0 left-0 right-0 z-40 bg-slate-950/85 backdrop-blur-lg border-b border-slate-800/80 px-4 py-2.5 transition-all">
+		<div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+			
+			<!-- App Logo -->
+			<div class="flex items-center gap-2 cursor-pointer shrink-0" onclick="app.resetHome()">
+				<div class="w-9 h-9 rounded-xl btn-accent flex items-center justify-center shadow-lg shadow-blue-500/20">
+					<i data-lucide="play" class="w-5 h-5 fill-current"></i>
+				</div>
+				<span class="font-bold text-lg hidden sm:inline tracking-tight">Stream<span class="text-accent">Tube</span></span>
+			</div>
+
+			<!-- Search Bar -->
+			<div class="flex-1 max-w-lg">
+				<form onsubmit="app.handleSearch(event)" class="relative flex items-center">
+					<input 
+						type="text" 
+						id="searchInput" 
+						placeholder="Cari video di YouTube..." 
+						class="w-full bg-slate-900/90 text-slate-100 placeholder-slate-400 text-xs sm:text-sm rounded-full pl-10 pr-10 py-2 border border-slate-800 focus:outline-none focus:border-accent transition-all shadow-inner"
+					/>
+					<i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none"></i>
+					<button type="submit" aria-label="Search" class="absolute right-1.5 p-1.5 rounded-full btn-accent text-white hover:scale-105 transition-transform">
+						<i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+					</button>
+				</form>
+			</div>
+
+			<!-- User Menu Triggers -->
+			<div class="flex items-center gap-2 shrink-0">
+				<!-- Account Button -->
+				<button onclick="app.openModal('accountModal')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 text-xs sm:text-sm font-medium transition-colors">
+					<i data-lucide="user" class="w-4 h-4 text-accent"></i>
+					<span class="hidden md:inline" id="navAccountName">Akun</span>
+				</button>
+
+				<!-- Settings Button -->
+				<button onclick="app.openModal('settingsModal')" class="p-2 rounded-full bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 transition-colors" title="Pengaturan">
+					<i data-lucide="settings" class="w-4 h-4"></i>
+				</button>
+			</div>
+		</div>
+	</header>
+
+	<!-- Main Container -->
+	<main class="pt-16 max-w-6xl mx-auto px-2 sm:px-4">
+
+		<!-- ==========================================
+		     2. FIXED VIDEO PLAYER & METADATA SECTION
+		     ========================================== -->
+		<section id="playerSection" class="sticky top-14 z-30 bg-slate-950 pt-2 pb-4 border-b border-slate-800/80 shadow-2xl">
+			<!-- Video Player Canvas -->
+			<div class="w-full max-w-4xl mx-auto rounded-2xl overflow-hidden bg-black shadow-2xl border border-slate-800/80 aspect-video-container">
+				<iframe 
+					id="ytPlayer" 
+					src="https://www.youtube-nocookie.com/embed/g6f6A_5aL08?autoplay=1&enablejsapi=1" 
+					title="YouTube Video Streamer" 
+					frameborder="0" 
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+					allowfullscreen>
+				</iframe>
+			</div>
+
+			<!-- Video Info & Controls -->
+			<div id="videoMeta" class="w-full max-w-4xl mx-auto mt-3 px-1">
+				<div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+					<div class="flex-1">
+						<h1 id="videoTitle" class="font-bold text-base sm:text-lg text-slate-100 line-clamp-2 leading-snug">
+							Memuat video YouTube...
+						</h1>
+						<div class="flex items-center gap-3 text-xs text-slate-400 mt-1 flex-wrap">
+							<span id="channelName" class="font-medium text-slate-300 flex items-center gap-1.5">
+								<i data-lucide="tv" class="w-3.5 h-3.5 text-accent"></i> Channel
+							</span>
+							<span>•</span>
+							<span id="viewCount" class="flex items-center gap-1">
+								<i data-lucide="eye" class="w-3.5 h-3.5"></i> 0x dilihat
+							</span>
+							<span>•</span>
+							<span id="uploadDate" class="flex items-center gap-1">
+								<i data-lucide="calendar" class="w-3.5 h-3.5"></i> -
+							</span>
+						</div>
+					</div>
+
+					<!-- Interactive Buttons -->
+					<div class="flex items-center gap-2 shrink-0 flex-wrap">
+						<!-- Like Button -->
+						<button id="likeBtn" onclick="app.toggleLike()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-medium border border-slate-800 text-slate-300 transition-all">
+							<i data-lucide="thumbs-up" class="w-4 h-4"></i>
+							<span id="likeCount">0</span>
+						</button>
+
+						<!-- Download MP4 -->
+						<button onclick="app.downloadAction('mp4')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl btn-accent text-xs font-medium shadow-lg shadow-blue-500/10">
+							<i data-lucide="download" class="w-4 h-4"></i>
+							<span>Unduh MP4</span>
+						</button>
+
+						<!-- Convert MP3 -->
+						<button onclick="app.downloadAction('mp3')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium shadow-lg shadow-emerald-500/10">
+							<i data-lucide="music" class="w-4 h-4"></i>
+							<span>Convert MP3</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- ==========================================
+		     3. VIDEO GRID & SUGGESTIONS SECTION
+		     ========================================== -->
+		<section class="mt-6">
+			<div class="flex items-center justify-between mb-4 px-1">
+				<h2 id="sectionTitle" class="text-base sm:text-lg font-bold text-slate-200 flex items-center gap-2">
+					<i data-lucide="sparkles" class="w-5 h-5 text-accent"></i> Video Terkait & Rekomendasi
+				</h2>
+				<span id="resultCount" class="text-xs text-slate-400"></span>
+			</div>
+
+			<!-- Dynamic YouTube Search Grid -->
+			<div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+				<!-- Cards rendered via JavaScript -->
+			</div>
+		</section>
+	</main>
+
+	<!-- ==========================================
+	     4. ACCOUNT MODAL
+	     ========================================== -->
+	<div id="accountModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm hidden">
+		<div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+			<div class="flex items-center justify-between p-4 border-b border-slate-800">
+				<h3 class="font-bold text-slate-100 flex items-center gap-2">
+					<i data-lucide="user-circle" class="w-5 h-5 text-accent"></i> Profil & Riwayat Akun
+				</h3>
+				<button onclick="app.closeModal('accountModal')" class="p-1 rounded-lg text-slate-400 hover:bg-slate-800">
+					<i data-lucide="x" class="w-5 h-5"></i>
+				</button>
+			</div>
+
+			<div class="p-4 overflow-y-auto space-y-4 text-xs sm:text-sm">
+				<!-- User Info -->
+				<div class="p-3 bg-slate-950/80 border border-slate-800 rounded-xl flex items-center justify-between">
+					<div>
+						<div class="text-slate-400 text-xs">Nama Pengguna</div>
+						<div id="accName" class="font-semibold text-slate-100 text-base">User Streamer</div>
+						<div id="accAge" class="text-xs text-slate-400 mt-0.5">Umur Akun: 0 Hari</div>
+					</div>
+					<button onclick="app.editName()" class="px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700">Edit Nama</button>
+				</div>
+
+				<!-- History Tabs -->
+				<div class="flex border-b border-slate-800 text-xs">
+					<button onclick="app.switchAccTab('watch')" id="tabWatch" class="py-2 px-4 border-b-2 border-accent text-accent font-medium">
+						Riwayat Tontonan (<span id="countWatch">0</span>)
+					</button>
+					<button onclick="app.switchAccTab('download')" id="tabDownload" class="py-2 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-medium">
+						Riwayat Unduhan (<span id="countDownload">0</span>)
+					</button>
+				</div>
+
+				<!-- List Items -->
+				<div id="accList" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+					<!-- Data rendered via JS -->
+				</div>
+			</div>
+
+			<div class="p-4 border-t border-slate-800 bg-slate-950 flex justify-between gap-2">
+				<button onclick="app.exportHistory()" class="px-3 py-2 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1.5 border border-slate-700">
+					<i data-lucide="download-cloud" class="w-4 h-4"></i> Ekspor JSON
+				</button>
+				<button onclick="app.triggerImport()" class="px-3 py-2 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1.5 border border-slate-700">
+					<i data-lucide="upload-cloud" class="w-4 h-4"></i> Impor JSON
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- ==========================================
+	     5. SETTINGS MODAL
+	     ========================================== -->
+	<div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm hidden">
+		<div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+			<div class="flex items-center justify-between p-4 border-b border-slate-800">
+				<h3 class="font-bold text-slate-100 flex items-center gap-2">
+					<i data-lucide="sliders" class="w-5 h-5 text-accent"></i> Pengaturan Tampilan & Efek
+				</h3>
+				<button onclick="app.closeModal('settingsModal')" class="p-1 rounded-lg text-slate-400 hover:bg-slate-800">
+					<i data-lucide="x" class="w-5 h-5"></i>
+				</button>
+			</div>
+
+			<div class="p-4 overflow-y-auto space-y-4 text-xs sm:text-sm">
+				<!-- Theme Selection -->
+				<div>
+					<label class="block font-medium text-slate-300 mb-1.5">Mode Tema</label>
+					<div class="grid grid-cols-3 gap-2">
+						<button onclick="app.setTheme('dark')" id="btnThemeDark" class="p-2 border rounded-xl text-center text-xs border-slate-700 bg-slate-800 text-slate-200">Dark</button>
+						<button onclick="app.setTheme('light')" id="btnThemeLight" class="p-2 border rounded-xl text-center text-xs border-slate-700 bg-slate-800 text-slate-200">Light</button>
+						<button onclick="app.setTheme('slate')" id="btnThemeSlate" class="p-2 border rounded-xl text-center text-xs border-slate-700 bg-slate-800 text-slate-200">Slate</button>
+					</div>
+				</div>
+
+				<!-- Font Size Slider -->
+				<div>
+					<div class="flex justify-between mb-1.5">
+						<label class="font-medium text-slate-300">Ukuran Font</label>
+						<span id="fontSizeVal" class="text-accent font-bold">14px</span>
+					</div>
+					<input type="range" id="fontSizeSlider" min="12" max="18" value="14" step="1" oninput="app.updateFontSize(this.value)" class="w-full accent-blue-500 cursor-pointer">
+				</div>
+
+				<!-- Font Family -->
+				<div>
+					<label class="block font-medium text-slate-300 mb-1.5">Jenis Font</label>
+					<select id="fontFamilySelect" onchange="app.updateFontFamily(this.value)" class="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded-xl p-2.5 text-xs focus:outline-none focus:border-accent">
+						<option value="Inter">Inter</option>
+						<option value="Roboto">Roboto</option>
+						<option value="Poppins">Poppins</option>
+						<option value="Open Sans">Open Sans</option>
+						<option value="Montserrat">Montserrat</option>
+						<option value="system-ui">System UI</option>
+					</select>
+				</div>
+
+				<!-- Font Weight -->
+				<div>
+					<label class="block font-medium text-slate-300 mb-1.5">Ketebalan Font</label>
+					<select id="fontWeightSelect" onchange="app.updateFontWeight(this.value)" class="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded-xl p-2.5 text-xs focus:outline-none focus:border-accent">
+						<option value="400">Normal (400)</option>
+						<option value="500">Medium (500)</option>
+						<option value="600">Semi-Bold (600)</option>
+						<option value="700">Bold (700)</option>
+					</select>
+				</div>
+
+				<!-- Accent Color -->
+				<div>
+					<label class="block font-medium text-slate-300 mb-1.5">Warna Aksen</label>
+					<div class="flex items-center gap-3">
+						<input type="color" id="accentColorInput" value="#3b82f6" onchange="app.updateAccentColor(this.value)" class="w-9 h-9 rounded-lg cursor-pointer bg-transparent border-0">
+						<span id="accentHexCode" class="text-xs font-mono text-slate-400">#3b82f6</span>
+					</div>
+				</div>
+
+				<!-- Toggles -->
+				<div class="border-t border-slate-800 pt-3 space-y-2">
+					<div class="flex items-center justify-between">
+						<span class="font-medium text-slate-300">Efek Suara (Audio FX)</span>
+						<input type="checkbox" id="soundToggle" onchange="app.toggleSound(this.checked)" class="w-4 h-4 accent-blue-500 rounded cursor-pointer">
+					</div>
+					<div class="flex items-center justify-between">
+						<span class="font-medium text-slate-300">Getar (Haptic Feedback)</span>
+						<input type="checkbox" id="hapticToggle" onchange="app.toggleHaptic(this.checked)" class="w-4 h-4 accent-blue-500 rounded cursor-pointer">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Hidden Import File Input -->
+	<input type="file" id="importFileInput" class="hidden" accept=".json" onchange="app.handleImportFile(event)">
+
+	<!-- Toast Message -->
+	<div id="toast" class="fixed bottom-4 right-4 z-50 bg-slate-900 text-slate-100 border border-slate-700 px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-xs transition-opacity duration-300 opacity-0 pointer-events-none">
+		<i data-lucide="info" class="w-4 h-4 text-accent" id="toastIcon"></i>
+		<span id="toastMsg">Notification</span>
+	</div>
+
+	<!-- ==========================================
+	     JAVASCRIPT LOGIC & YOUTUBE DATA API V3
+	     ========================================== -->
+	<script>
+		const app = {
+			// YouTube API Key
+			apiKey: "AIzaSyCtksa1GE6rBpnuAI4IonvzLYDvPI_5b_E",
+
+			// Active App State
+			state: {
+				currentVideo: null,
+				user: {
+					name: "Pengguna StreamTube",
+					createdAt: Date.now()
+				},
+				history: [],
+				downloads: [],
+				likes: {},
+				settings: {
+					theme: "dark",
+					fontSize: 14,
+					fontFamily: "Inter",
+					fontWeight: "400",
+					accentColor: "#3b82f6",
+					soundEnabled: true,
+					hapticEnabled: true
+				},
+				activeAccTab: 'watch'
+			},
+
+			audioCtx: null,
+
+			init() {
+				this.loadLocalStorage();
+				this.applySettingsUI();
+
+				// Initial default search query on application launch
+				this.searchYouTube("indonesia music video trending");
+				
+				lucide.createIcons();
+			},
+
+			// ------------------------------------------
+			// YouTube Data API Integration
+			// ------------------------------------------
+			async searchYouTube(query) {
+				const grid = document.getElementById('videoGrid');
+				grid.innerHTML = `
+					<div class="col-span-full py-12 text-center text-slate-400 text-xs">
+						<div class="inline-block animate-spin rounded-full h-6 w-6 border-2 border-accent border-t-transparent mb-2"></div>
+						<p>Mencari video dari YouTube...</p>
+					</div>
+				`;
+
+				try {
+					// 1. Fetch search list
+					const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&type=video&q=${encodeURIComponent(query)}&key=${this.apiKey}`;
+					const res = await fetch(searchUrl);
+					const data = await res.json();
+
+					if (!data.items || data.items.length === 0) {
+						grid.innerHTML = `<div class="col-span-full text-center text-slate-500 py-12">Tidak ada video ditemukan untuk "${query}".</div>`;
+						return;
+					}
+
+					// Extract Video IDs for Detailed Stats Call
+					const videoIds = data.items.map(item => item.id.videoId).filter(Boolean).join(',');
+
+					// 2. Fetch Detailed Video Statistics (Views, Likes)
+					const statsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoIds}&key=${this.apiKey}`;
+					const statsRes = await fetch(statsUrl);
+					const statsData = await statsRes.json();
+
+					const videos = statsData.items.map(item => ({
+						id: item.id,
+						ytId: item.id,
+						title: item.snippet.title,
+						channel: item.snippet.channelTitle,
+						views: parseInt(item.statistics?.viewCount || '0'),
+						likes: parseInt(item.statistics?.likeCount || '0'),
+						date: item.snippet.publishedAt ? item.snippet.publishedAt.split('T')[0] : '-',
+						thumb: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.medium?.url
+					}));
+
+					// Render video grid
+					this.renderGrid(videos);
+
+					// Play the first video automatically if no video is currently selected
+					if (videos.length > 0 && !this.state.currentVideo) {
+						this.playVideo(videos[0], false);
+					}
+
+				} catch (error) {
+					console.error("YouTube API Error:", error);
+					grid.innerHTML = `<div class="col-span-full text-center text-rose-400 py-8 text-xs">Gagal memuat data dari YouTube. Pastikan koneksi internet aktif atau kuota API masih tersedia.</div>`;
+				}
+			},
+
+			playVideo(videoObj, addToHistory = true) {
+				this.playSound();
+				this.triggerHaptic();
+
+				this.state.currentVideo = videoObj;
+
+				// Update YouTube Embed Player
+				const iframe = document.getElementById('ytPlayer');
+				iframe.src = `https://www.youtube-nocookie.com/embed/${videoObj.ytId}?autoplay=1&enablejsapi=1`;
+
+				// Update Meta UI
+				document.getElementById('videoTitle').innerText = videoObj.title;
+				document.getElementById('channelName').innerHTML = `<i data-lucide="tv" class="w-3.5 h-3.5 text-accent"></i> ${videoObj.channel}`;
+				document.getElementById('viewCount').innerHTML = `<i data-lucide="eye" class="w-3.5 h-3.5"></i> ${this.formatNumber(videoObj.views)}x dilihat`;
+				document.getElementById('uploadDate').innerHTML = `<i data-lucide="calendar" class="w-3.5 h-3.5"></i> ${videoObj.date}`;
+
+				this.updateLikeButtonUI();
+
+				// Save into Watch History
+				if (addToHistory) {
+					const existingIndex = this.state.history.findIndex(item => item.ytId === videoObj.ytId);
+					if (existingIndex > -1) this.state.history.splice(existingIndex, 1);
+					
+					this.state.history.unshift({
+						...videoObj,
+						watchedAt: new Date().toLocaleString('id-ID')
+					});
+
+					this.saveState();
+				}
+
+				lucide.createIcons();
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+			},
+
+			renderGrid(videos) {
+				const grid = document.getElementById('videoGrid');
+				grid.innerHTML = '';
+
+				videos.forEach(v => {
+					const card = document.createElement('div');
+					card.className = "bg-slate-900/80 hover:bg-slate-900 border border-slate-800 rounded-xl overflow-hidden cursor-pointer transition-all hover:scale-[1.02] shadow-md flex flex-col group";
+					
+					// Pass JSON stringified object safely
+					card.onclick = () => this.playVideo(v);
+
+					card.innerHTML = `
+						<div class="relative aspect-video bg-black overflow-hidden">
+							<img src="${v.thumb}" alt="${v.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x340/0f172a/94a3b8?text=Video'">
+							<div class="absolute bottom-2 right-2 bg-black/80 backdrop-blur-md text-white text-[10px] px-2 py-0.5 rounded font-mono border border-white/10">
+								YouTube
+							</div>
+						</div>
+						<div class="p-3 flex-1 flex flex-col justify-between">
+							<h3 class="font-semibold text-xs sm:text-sm text-slate-200 line-clamp-2 leading-snug group-hover:text-accent transition-colors">${v.title}</h3>
+							<div class="mt-3 text-[11px] text-slate-400 space-y-1">
+								<p class="font-medium text-slate-300 truncate">${v.channel}</p>
+								<div class="flex items-center justify-between text-slate-500">
+									<span>${this.formatNumber(v.views)}x dilihat</span>
+									<span>${v.date}</span>
+								</div>
+							</div>
+						</div>
+					`;
+					grid.appendChild(card);
+				});
+
+				document.getElementById('resultCount').innerText = `${videos.length} Video`;
+			},
+
+			handleSearch(e) {
+				e.preventDefault();
+				this.playSound();
+				const query = document.getElementById('searchInput').value.trim();
+				
+				if (!query) return;
+
+				document.getElementById('sectionTitle').innerHTML = `<i data-lucide="search" class="w-5 h-5 text-accent"></i> Hasil Pencarian: "${query}"`;
+				this.searchYouTube(query);
+				lucide.createIcons();
+			},
+
+			resetHome() {
+				document.getElementById('searchInput').value = '';
+				document.getElementById('sectionTitle').innerHTML = `<i data-lucide="sparkles" class="w-5 h-5 text-accent"></i> Video Terkait & Rekomendasi`;
+				this.searchYouTube("indonesia music video trending");
+				lucide.createIcons();
+			},
+
+			// ------------------------------------------
+			// Local Storage & State Persistence
+			// ------------------------------------------
+			loadLocalStorage() {
+				const savedUser = localStorage.getItem('st_user');
+				if (savedUser) this.state.user = JSON.parse(savedUser);
+				else localStorage.setItem('st_user', JSON.stringify(this.state.user));
+
+				const savedHistory = localStorage.getItem('st_history');
+				if (savedHistory) this.state.history = JSON.parse(savedHistory);
+
+				const savedDownloads = localStorage.getItem('st_downloads');
+				if (savedDownloads) this.state.downloads = JSON.parse(savedDownloads);
+
+				const savedSettings = localStorage.getItem('st_settings');
+				if (savedSettings) this.state.settings = Object.assign(this.state.settings, JSON.parse(savedSettings));
+
+				const savedLikes = localStorage.getItem('st_likes');
+				if (savedLikes) this.state.likes = JSON.parse(savedLikes);
+			},
+
+			saveState() {
+				localStorage.setItem('st_user', JSON.stringify(this.state.user));
+				localStorage.setItem('st_history', JSON.stringify(this.state.history));
+				localStorage.setItem('st_downloads', JSON.stringify(this.state.downloads));
+				localStorage.setItem('st_settings', JSON.stringify(this.state.settings));
+				localStorage.setItem('st_likes', JSON.stringify(this.state.likes));
+			},
+
+			// ------------------------------------------
+			// Likes & Downloads Action Handling
+			// ------------------------------------------
+			toggleLike() {
+				if (!this.state.currentVideo) return;
+				const ytId = this.state.currentVideo.ytId;
+				
+				if (this.state.likes[ytId]) {
+					delete this.state.likes[ytId];
+					this.showToast('Batal menyukai video');
+				} else {
+					this.state.likes[ytId] = true;
+					this.showToast('Ditambahkan ke video disukai');
+				}
+
+				this.saveState();
+				this.updateLikeButtonUI();
+				this.playSound();
+				this.triggerHaptic();
+			},
+
+			updateLikeButtonUI() {
+				if (!this.state.currentVideo) return;
+				const ytId = this.state.currentVideo.ytId;
+				const isLiked = !!this.state.likes[ytId];
+				const baseLikes = this.state.currentVideo.likes || 0;
+				
+				const likeBtn = document.getElementById('likeBtn');
+				const likeCountEl = document.getElementById('likeCount');
+
+				likeCountEl.innerText = this.formatNumber(baseLikes + (isLiked ? 1 : 0));
+				
+				if (isLiked) {
+					likeBtn.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-xl btn-accent text-xs font-medium shadow-md transition-all";
+				} else {
+					likeBtn.className = "flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-medium border border-slate-800 text-slate-300 transition-all";
+				}
+			},
+
+			downloadAction(type) {
+				if (!this.state.currentVideo) return;
+				this.playSound();
+				this.triggerHaptic();
+
+				const ytId = this.state.currentVideo.ytId;
+				const title = this.state.currentVideo.title;
+
+				this.state.downloads.unshift({
+					title: title,
+					type: type.toUpperCase(),
+					ytId: ytId,
+					downloadedAt: new Date().toLocaleString('id-ID')
+				});
+				this.saveState();
+
+				window.open(`https://y2mate.is/watch?v=${ytId}`, '_blank');
+				this.showToast(`Membuka konverter ${type.toUpperCase()}...`);
+			},
+
+			// ------------------------------------------
+			// Account & Settings Modal Controller
+			// ------------------------------------------
+			openModal(id) {
+				this.playSound();
+				document.getElementById(id).classList.remove('hidden');
+				if (id === 'accountModal') this.renderAccountModal();
+			},
+
+			closeModal(id) {
+				this.playSound();
+				document.getElementById(id).classList.add('hidden');
+			},
+
+			renderAccountModal() {
+				document.getElementById('accName').innerText = this.state.user.name;
+				document.getElementById('navAccountName').innerText = this.state.user.name;
+
+				const diffTime = Math.abs(Date.now() - (this.state.user.createdAt || Date.now()));
+				const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+				document.getElementById('accAge').innerText = `Umur Akun: ${diffDays} Hari`;
+
+				document.getElementById('countWatch').innerText = this.state.history.length;
+				document.getElementById('countDownload').innerText = this.state.downloads.length;
+
+				this.renderAccTabContent();
+			},
+
+			editName() {
+				const newName = prompt("Masukkan nama pengguna baru:", this.state.user.name);
+				if (newName && newName.trim() !== "") {
+					this.state.user.name = newName.trim();
+					this.saveState();
+					this.renderAccountModal();
+					this.showToast("Nama berhasil diperbarui");
+				}
+			},
+
+			switchAccTab(tab) {
+				this.playSound();
+				this.state.activeAccTab = tab;
+				
+				const tabW = document.getElementById('tabWatch');
+				const tabD = document.getElementById('tabDownload');
+
+				if (tab === 'watch') {
+					tabW.className = "py-2 px-4 border-b-2 border-accent text-accent font-medium";
+					tabD.className = "py-2 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-medium";
+				} else {
+					tabD.className = "py-2 px-4 border-b-2 border-accent text-accent font-medium";
+					tabW.className = "py-2 px-4 border-b-2 border-transparent text-slate-400 hover:text-slate-200 font-medium";
+				}
+
+				this.renderAccTabContent();
+			},
+
+			renderAccTabContent() {
+				const container = document.getElementById('accList');
+				container.innerHTML = '';
+
+				const list = this.state.activeAccTab === 'watch' ? this.state.history : this.state.downloads;
+
+				if (list.length === 0) {
+					container.innerHTML = `<div class="text-center text-slate-500 py-6 text-xs">Belum ada riwayat tercatat.</div>`;
+					return;
+				}
+
+				list.forEach(item => {
+					const el = document.createElement('div');
+					el.className = "p-2.5 bg-slate-950/60 rounded-xl border border-slate-800/80 flex justify-between items-center text-xs";
+					
+					if (this.state.activeAccTab === 'watch') {
+						el.innerHTML = `
+							<div class="truncate flex-1 pr-2">
+								<div class="font-medium text-slate-200 truncate">${item.title}</div>
+								<div class="text-[10px] text-slate-400">${item.watchedAt}</div>
+							</div>
+							<button onclick="app.playVideo(${JSON.stringify(item).replace(/"/g, '&quot;')}); app.closeModal('accountModal')" class="px-2.5 py-1 bg-slate-800 text-slate-200 rounded-lg text-[11px] hover:bg-slate-700 border border-slate-700">Putar</button>
+						`;
+					} else {
+						el.innerHTML = `
+							<div class="truncate flex-1 pr-2">
+								<div class="font-medium text-slate-200 truncate">${item.title}</div>
+								<div class="text-[10px] text-slate-400">${item.type} • ${item.downloadedAt}</div>
+							</div>
+							<span class="px-2 py-0.5 bg-emerald-950/80 text-emerald-400 rounded text-[10px] font-mono border border-emerald-800/50">Selesai</span>
+						`;
+					}
+					container.appendChild(el);
+				});
+			},
+
+			exportHistory() {
+				this.playSound();
+				const exportData = {
+					user: this.state.user,
+					history: this.state.history,
+					downloads: this.state.downloads,
+					settings: this.state.settings,
+					version: "1.0"
+				};
+
+				const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+				const downloadAnchor = document.createElement('a');
+				downloadAnchor.setAttribute("href", dataStr);
+				downloadAnchor.setAttribute("download", `StreamTube_Backup_${Date.now()}.json`);
+				document.body.appendChild(downloadAnchor);
+				downloadAnchor.click();
+				downloadAnchor.remove();
+
+				this.showToast("Riwayat berhasil diekspor!");
+			},
+
+			triggerImport() {
+				this.playSound();
+				document.getElementById('importFileInput').click();
+			},
+
+			handleImportFile(e) {
+				const file = e.target.files[0];
+				if (!file) return;
+
+				const reader = new FileReader();
+				reader.onload = (evt) => {
+					try {
+						const imported = JSON.parse(evt.target.result);
+						if (imported.history && imported.user) {
+							this.state.user = imported.user;
+							this.state.history = imported.history || [];
+							this.state.downloads = imported.downloads || [];
+							if (imported.settings) this.state.settings = imported.settings;
+
+							this.saveState();
+							this.applySettingsUI();
+							this.renderAccountModal();
+							this.showToast("Data berhasil diimpor!");
+						} else {
+							alert("Format JSON tidak valid.");
+						}
+					} catch (err) {
+						alert("Gagal membaca file JSON.");
+					}
+				};
+				reader.readAsText(file);
+			},
+
+			// ------------------------------------------
+			// Dynamic Settings Logic
+			// ------------------------------------------
+			applySettingsUI() {
+				const s = this.state.settings;
+
+				this.setTheme(s.theme, false);
+
+				this.updateFontSize(s.fontSize, false);
+				document.getElementById('fontSizeSlider').value = s.fontSize;
+
+				this.updateFontFamily(s.fontFamily, false);
+				document.getElementById('fontFamilySelect').value = s.fontFamily;
+
+				this.updateFontWeight(s.fontWeight, false);
+				document.getElementById('fontWeightSelect').value = s.fontWeight;
+
+				this.updateAccentColor(s.accentColor, false);
+				document.getElementById('accentColorInput').value = s.accentColor;
+
+				document.getElementById('soundToggle').checked = s.soundEnabled;
+				document.getElementById('hapticToggle').checked = s.hapticEnabled;
+			},
+
+			setTheme(themeName, save = true) {
+				if (save) this.playSound();
+				this.state.settings.theme = themeName;
+				const body = document.body;
+
+				body.classList.remove('bg-slate-950', 'bg-slate-900', 'bg-gray-950', 'bg-slate-100', 'text-slate-100', 'text-slate-900');
+
+				if (themeName === 'light') {
+					body.classList.add('bg-slate-100', 'text-slate-900');
+				} else if (themeName === 'slate') {
+					body.classList.add('bg-slate-900', 'text-slate-100');
+				} else {
+					body.classList.add('bg-slate-950', 'text-slate-100');
+				}
+
+				if (save) this.saveState();
+			},
+
+			updateFontSize(size, save = true) {
+				document.documentElement.style.setProperty('--base-font-size', size + 'px');
+				document.getElementById('fontSizeVal').innerText = size + 'px';
+				this.state.settings.fontSize = size;
+				if (save) this.saveState();
+			},
+
+			updateFontFamily(family, save = true) {
+				document.documentElement.style.setProperty('--app-font-family', `'${family}', sans-serif`);
+				this.state.settings.fontFamily = family;
+				if (save) {
+					this.playSound();
+					this.saveState();
+				}
+			},
+
+			updateFontWeight(weight, save = true) {
+				document.documentElement.style.setProperty('--app-font-weight', weight);
+				this.state.settings.fontWeight = weight;
+				if (save) {
+					this.playSound();
+					this.saveState();
+				}
+			},
+
+			updateAccentColor(color, save = true) {
+				document.documentElement.style.setProperty('--accent-color', color);
+				document.documentElement.style.setProperty('--accent-hover', color + 'dd');
+				document.getElementById('accentHexCode').innerText = color;
+				this.state.settings.accentColor = color;
+				if (save) this.saveState();
+			},
+
+			toggleSound(val) {
+				this.state.settings.soundEnabled = val;
+				this.saveState();
+			},
+
+			toggleHaptic(val) {
+				this.state.settings.hapticEnabled = val;
+				this.saveState();
+				if (val) this.triggerHaptic();
+			},
+
+			// Web Audio & Vibrations
+			playSound() {
+				if (!this.state.settings.soundEnabled) return;
+				try {
+					if (!this.audioCtx) {
+						this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+					}
+					if (this.audioCtx.state === 'suspended') {
+						this.audioCtx.resume();
+					}
+					
+					const osc = this.audioCtx.createOscillator();
+					const gain = this.audioCtx.createGain();
+
+					osc.type = 'sine';
+					osc.frequency.setValueAtTime(580, this.audioCtx.currentTime);
+					osc.frequency.exponentialRampToValueAtTime(280, this.audioCtx.currentTime + 0.04);
+
+					gain.gain.setValueAtTime(0.08, this.audioCtx.currentTime);
+					gain.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + 0.04);
+
+					osc.connect(gain);
+					gain.connect(this.audioCtx.destination);
+
+					osc.start();
+					osc.stop(this.audioCtx.currentTime + 0.04);
+				} catch (e) {}
+			},
+
+			triggerHaptic() {
+				if (!this.state.settings.hapticEnabled) return;
+				if (navigator.vibrate) navigator.vibrate(20);
+			},
+
+			showToast(msg) {
+				const toast = document.getElementById('toast');
+				document.getElementById('toastMsg').innerText = msg;
+				toast.classList.remove('opacity-0', 'pointer-events-none');
+				toast.classList.add('opacity-100');
+
+				setTimeout(() => {
+					toast.classList.remove('opacity-100');
+					toast.classList.add('opacity-0', 'pointer-events-none');
+				}, 3000);
+			},
+
+			formatNumber(num) {
+				if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+				if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+				return num;
+			}
+		};
+
+		// Launch Application on DOM Load
+		window.onload = function() {
+			app.init();
+		};
+	</script>
+</body>
+</html>
