@@ -14,7 +14,7 @@
 		   1. TOKEN TEMA (diubah lewat Pengaturan, lihat Theme.apply)
 		   ========================================================== */
 		:root {
-			--accent: #5f6ea6;
+			--accent: #4a6fe0;
 			--font: 'Inter', sans-serif;
 			--fs: 16px;
 			--fw: 400;
@@ -84,6 +84,11 @@
 		.btn-accent { background: var(--accent); color: #fff; }
 		.btn-accent:hover { filter: brightness(1.1); }
 		.btn.is-liked { color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+		/* Kilau lembut (glossy) untuk semua permukaan beraksen */
+		.btn-accent, [style*="background: var(--accent)"] {
+			background-image: linear-gradient(180deg, rgba(255, 255, 255, .26), rgba(255, 255, 255, 0) 58%) !important;
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 3px 10px color-mix(in srgb, var(--accent) 30%, transparent);
+		}
 		.icon-btn { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 9999px; transition: background .15s; }
 		.icon-btn:hover { background: var(--chip); }
 		.chip { display: inline-block; padding: .25rem .7rem; border-radius: 9999px; background: var(--chip); font-size: .75rem; font-weight: 600; }
@@ -120,14 +125,16 @@
 			</a>
 
 			<form id="searchForm" class="relative flex-1" role="search">
-				<input id="searchInput" class="field pr-12" style="border-radius: 9999px" type="search" placeholder="Cari video, musik, channel" autocomplete="off" aria-label="Cari video">
+				<input id="searchInput" list="recentSearches" class="field pr-12" style="border-radius: 9999px" type="search" placeholder="Cari video, musik, channel" autocomplete="off" aria-label="Cari video">
 				<button class="absolute right-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-white" style="background: var(--accent)" type="submit" aria-label="Cari">
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
 				</button>
+				<datalist id="recentSearches"></datalist>
 			</form>
 
 			<button id="btnAccount" class="icon-btn" aria-label="Akun">
-				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+				<img id="navAvatar" class="hidden h-8 w-8 rounded-full object-cover" alt="Foto profil">
+				<svg id="navIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
 			</button>
 			<button id="btnSettings" class="icon-btn" aria-label="Pengaturan">
 				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
@@ -155,6 +162,9 @@
 		<div id="chips" class="no-scrollbar -mx-3 mb-4 flex gap-2 overflow-x-auto px-3"></div>
 		<h2 id="feedTitle" class="mb-3 text-lg font-bold tracking-tight"></h2>
 		<div id="feed" class="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-3"></div>
+		<div id="moreWrap" class="mt-6 hidden text-center">
+			<button id="btnMore" class="btn btn-accent">Muat lebih banyak</button>
+		</div>
 		<p id="status" class="muted py-8 text-center text-sm"></p>
 	</main>
 
@@ -180,6 +190,8 @@
 					<li>Pilih kategori di atas untuk menjelajah dengan cepat.</li>
 					<li>Tekan Suka untuk menyimpan video ke akunmu.</li>
 					<li>Ekspor data secara berkala sebagai cadangan.</li>
+					<li>Tekan tombol / untuk langsung mencari.</li>
+					<li>Pakai Bagikan untuk menyalin tautan video.</li>
 				</ul>
 			</section>
 
@@ -214,6 +226,7 @@
 	</aside>
 	<div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[60] px-4 py-2 rounded-lg text-sm text-white bg-black/85 opacity-0 pointer-events-none transition-opacity"></div>
 	<input id="importFile" type="file" accept="application/json" class="hidden">
+	<input id="avatarFile" type="file" accept="image/*" class="hidden">
 
 	<script>
 	/* ==============================================================
@@ -224,15 +237,21 @@
 		REGION: 'ID',
 		CATEGORIES: ['Musik', 'Gaming', 'Berita', 'Teknologi', 'Kuliner', 'Olahraga', 'Film'],
 		LANG: 'id',
-		MAX_RESULTS: 12,
+		MAX_RESULTS: 24,
 		HISTORY_LIMIT: 100,
 		DOWNLOAD_API: '',     // Endpoint server unduhan milikmu, contoh: 'https://server-kamu.com/api/download'
 	};
 
 	const FONTS = ['Inter', 'Poppins', 'Nunito', 'Lora', 'Space Grotesk', 'JetBrains Mono'];
 	const WEIGHTS = { 400: 'Normal', 500: 'Sedang', 600: 'Tebal', 700: 'Sangat tebal' };
-	const ACCENTS = ['#5f6ea6', '#5b8a77', '#a8707f', '#a97f5f', '#527f90'];
-	const OLD_ACCENTS = ['#6366f1', '#0ea5e9', '#10b981', '#f43f5e', '#f59e0b', '#0e8f8c']; // warna lama, dimigrasi otomatis
+	const ACCENTS = ['#4a6fe0', '#ff0000', '#2f9e7a', '#8a5cd6', '#d9577a', '#c9772b']; // biru safir, merah YouTube, zamrud, kecubung, mawar, tembaga
+	// Warna lama => indeks warna baru, supaya pengaturan tersimpan ikut ter-upgrade
+	const LEGACY_ACCENTS = {
+		'#5f6ea6': 0, '#527f90': 0, '#6366f1': 0, '#0ea5e9': 0,
+		'#5b8a77': 2, '#10b981': 2, '#0e8f8c': 2,
+		'#a8707f': 4, '#f43f5e': 4,
+		'#a97f5f': 5, '#f59e0b': 5,
+	};
 
 	/* ==============================================================
 	   1. HELPER
@@ -277,6 +296,7 @@
 			history: [],
 			likes: [],
 			downloads: [],
+			searches: [],
 			settings: { mode: 'system', fontSize: 16, fontFamily: 'Inter', fontWeight: '400', accent: ACCENTS[0], animation: true, sound: true, vibrate: true },
 		}),
 
@@ -285,7 +305,8 @@
 			try {
 				const saved = JSON.parse(localStorage.getItem(this.KEY)) || {};
 				this.data = { ...base, ...saved, settings: { ...base.settings, ...saved.settings } };
-				if (OLD_ACCENTS.includes(this.data.settings.accent)) this.data.settings.accent = ACCENTS[0];
+				const legacy = LEGACY_ACCENTS[this.data.settings.accent];
+				if (legacy !== undefined) this.data.settings.accent = ACCENTS[legacy];
 			} catch {
 				this.data = base;
 			}
@@ -321,6 +342,33 @@
 			return !liked;
 		},
 
+		addSearch(q) {
+			this.data.searches = [q, ...this.data.searches.filter((x) => x !== q)].slice(0, 10);
+			this.save();
+			UI.renderSearches();
+		},
+
+		// Kecilkan foto ke 192x192 (potong bagian tengah) agar hemat penyimpanan
+		setAvatar(file) {
+			if (!file?.type.startsWith('image/')) return UI.toast('Pilih file gambar');
+			const url = URL.createObjectURL(file);
+			const img = new Image();
+			img.onload = () => {
+				const size = 192;
+				const side = Math.min(img.width, img.height);
+				const canvas = Object.assign(document.createElement('canvas'), { width: size, height: size });
+				canvas.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, size, size);
+				URL.revokeObjectURL(url);
+				this.data.profile.avatar = canvas.toDataURL('image/jpeg', 0.85);
+				this.save();
+				UI.renderAvatar();
+				Panel.refresh();
+				UI.toast('Foto profil diperbarui');
+			};
+			img.onerror = () => { URL.revokeObjectURL(url); UI.toast('Gambar tidak dapat dibaca'); };
+			img.src = url;
+		},
+
 		export() {
 			const blob = new Blob([JSON.stringify(this.data, null, '\t')], { type: 'application/json' });
 			const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'tonton-data.json' });
@@ -340,6 +388,8 @@
 					Theme.apply();
 					Panel.refresh();
 					UI.syncLike(App.current);
+					UI.renderAvatar();
+					UI.renderSearches();
 					UI.toast('Data berhasil diimpor');
 				} catch {
 					UI.toast('File tidak valid');
@@ -356,7 +406,9 @@
 		async get(endpoint, params) {
 			if (!CONFIG.API_KEY) throw new Error('NO_KEY');
 			const url = new URL(`https://www.googleapis.com/youtube/v3/${endpoint}`);
-			Object.entries({ ...params, key: CONFIG.API_KEY }).forEach(([k, v]) => url.searchParams.set(k, v));
+			Object.entries({ ...params, key: CONFIG.API_KEY })
+				.filter(([, v]) => v != null && v !== '')
+				.forEach(([k, v]) => url.searchParams.set(k, v));
 			const res = await fetch(url);
 			const json = await res.json();
 			if (!res.ok) throw new Error(json.error?.message || 'Gagal memuat data dari YouTube');
@@ -388,20 +440,22 @@
 			return (await this.withStats([id]))[0];
 		},
 
-		async popular() {
-			const r = await this.get('videos', { part: 'snippet,statistics,contentDetails', chart: 'mostPopular', regionCode: CONFIG.REGION, maxResults: CONFIG.MAX_RESULTS });
-			return r.items.map(this.normalize);
+		async popular(pageToken) {
+			const r = await this.get('videos', { part: 'snippet,statistics,contentDetails', chart: 'mostPopular', regionCode: CONFIG.REGION, maxResults: CONFIG.MAX_RESULTS, pageToken });
+			return Object.assign(r.items.map(this.normalize), { next: r.nextPageToken });
 		},
 
+		// Hasil berupa array video; token halaman berikutnya ada di properti `next`
 		async search(q, extra = {}) {
 			const r = await this.get('search', { part: 'snippet', type: 'video', q, maxResults: CONFIG.MAX_RESULTS, regionCode: CONFIG.REGION, relevanceLanguage: CONFIG.LANG, safeSearch: 'moderate', ...extra });
-			return this.withStats(r.items.map((i) => i.id.videoId));
+			const list = await this.withStats(r.items.map((i) => i.id.videoId));
+			return Object.assign(list, { next: r.nextPageToken });
 		},
 
 		// Parameter relatedToVideoId sudah dihapus YouTube, jadi saran dicari lewat judul video
-		async suggestions(video) {
-			const list = await this.search(video.title);
-			return list.filter((v) => v.id !== video.id);
+		async suggestions(video, pageToken) {
+			const list = await this.search(video.title, { pageToken });
+			return Object.assign(list.filter((v) => v.id !== video.id), { next: list.next });
 		},
 	};
 
@@ -504,6 +558,7 @@
 						${this.likeBtn(v)}
 						<button class="btn btn-accent" data-download="mp4">Unduh MP4</button>
 						<button class="btn" data-download="mp3">Konversi ke MP3</button>
+						<button class="btn" data-share>Bagikan</button>
 					</div>
 
 					<details class="mt-4 text-sm">
@@ -528,6 +583,18 @@
 			if (btn && v) btn.outerHTML = this.likeBtn(v);
 		},
 
+		renderAvatar() {
+			const src = Store.data.profile.avatar;
+			const img = $('#navAvatar');
+			if (src) img.src = src; else img.removeAttribute('src');
+			img.classList.toggle('hidden', !src);
+			$('#navIcon').classList.toggle('hidden', Boolean(src));
+		},
+
+		renderSearches() {
+			$('#recentSearches').innerHTML = Store.data.searches.map((q) => `<option value="${Fmt.esc(q)}"></option>`).join('');
+		},
+
 		renderFooter() {
 			const { history, likes, downloads } = Store.data;
 			const stats = [[history.length, 'ditonton'], [likes.length, 'disukai'], [downloads.length, 'diunduh']];
@@ -549,6 +616,7 @@
 	   ============================================================== */
 	const Panel = {
 		kind: null,
+		tab: 'history',
 
 		open(kind) {
 			this.kind = kind;
@@ -575,47 +643,108 @@
 			</div>`,
 
 		list(items, emptyText, extra = () => '') {
-			if (!items.length) return `<p class="muted text-sm py-3">${emptyText}</p>`;
-			return items.slice(0, 20).map((i) => `
-				<button class="row w-full text-left" data-play="${i.id}">
-					<span class="min-w-0">
-						<span class="block text-sm font-semibold truncate">${Fmt.esc(i.title)}</span>
-						<span class="block muted text-xs truncate">${Fmt.esc(i.channel)}, ${Fmt.date(i.at)}${extra(i)}</span>
+			if (!items.length) return `<p class="muted py-6 text-center text-sm">${emptyText}</p>`;
+			return items.slice(0, 50).map((i) => `
+				<button class="row w-full gap-3 text-left" data-play="${i.id}">
+					<img class="h-12 w-20 shrink-0 rounded-lg object-cover" src="https://i.ytimg.com/vi/${i.id}/default.jpg" alt="" loading="lazy">
+					<span class="min-w-0 flex-1">
+						<span class="block truncate text-sm font-semibold">${Fmt.esc(i.title)}</span>
+						<span class="muted block truncate text-xs">${Fmt.esc(i.channel)}, ${Fmt.ago(i.at)}${extra(i)}</span>
 					</span>
 				</button>`).join('');
 		},
 
+		avatar(profile, size) {
+			const ring = 'border-color: var(--surface)';
+			return profile.avatar
+				? `<img class="${size} rounded-full border-4 object-cover" style="${ring}" src="${profile.avatar}" alt="Foto profil">`
+				: `<span class="${size} grid place-items-center rounded-full border-4 font-bold text-white" style="background: var(--accent); ${ring}">${Fmt.esc((profile.name || '?').charAt(0).toUpperCase())}</span>`;
+		},
+
+		// Grafik aktivitas 7 hari + channel yang paling sering ditonton
+		insights(history) {
+			const days = [...Array(7)].map((_, i) => {
+				const d = new Date();
+				d.setHours(0, 0, 0, 0);
+				d.setDate(d.getDate() - (6 - i));
+				return d;
+			});
+			const counts = days.map((d) => history.filter((h) => h.at >= d.getTime() && h.at < d.getTime() + 864e5).length);
+			const max = Math.max(...counts, 1);
+			const bars = counts.map((c, i) => `
+				<div class="flex flex-1 flex-col items-center gap-1">
+					<div class="w-full rounded-md" style="height: ${Math.max(4, (c / max) * 48)}px; background: var(--accent); opacity: ${c ? 1 : 0.25}"></div>
+					<span class="muted text-[10px]">${days[i].toLocaleDateString('id-ID', { weekday: 'short' })}</span>
+				</div>`).join('');
+
+			const tally = {};
+			history.forEach((h) => { tally[h.channel] = (tally[h.channel] || 0) + 1; });
+			const top = Object.entries(tally).sort((a, b) => b[1] - a[1])[0];
+
+			return `
+				<div class="mt-4 rounded-2xl p-3" style="background: var(--chip)">
+					<p class="text-sm font-semibold">Aktivitas 7 hari terakhir</p>
+					<div class="mt-3 flex items-end gap-2">${bars}</div>
+					<p class="muted mt-3 text-xs">${top ? `Channel favorit: <b>${Fmt.esc(top[0])}</b> (${top[1]} video)` : 'Belum ada channel favorit.'}</p>
+				</div>`;
+		},
+
 		account() {
 			const { profile, history, likes, downloads } = Store.data;
+			const tabs = {
+				history: { label: 'Riwayat', items: history, empty: 'Belum ada video yang ditonton.' },
+				likes: { label: 'Disukai', items: likes, empty: 'Belum ada video yang disukai.' },
+				downloads: { label: 'Unduhan', items: downloads, empty: 'Belum ada unduhan.' },
+			};
+			const active = tabs[this.tab] ? this.tab : 'history';
+			const extra = active === 'downloads' ? (i) => `, ${i.format.toUpperCase()}` : undefined;
+			const stats = [[history.length, 'Ditonton'], [likes.length, 'Disukai'], [downloads.length, 'Diunduh']];
+
 			return `
-				<div class="py-4 border-b" style="border-color: var(--line)">
+				<div class="-mx-4 h-24" style="background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 45%, #000))"></div>
+
+				<div class="-mt-12 flex items-end gap-3">
+					<div class="relative shrink-0">
+						${this.avatar(profile, 'h-24 w-24 text-3xl')}
+						<button class="absolute bottom-0 right-0 grid h-8 w-8 place-items-center rounded-full text-white" style="background: var(--accent); border: 3px solid var(--surface)" data-action="avatar" aria-label="Ganti foto profil">
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+						</button>
+					</div>
+					<div class="min-w-0 pb-1">
+						<p class="truncate text-lg font-bold leading-tight">${Fmt.esc(profile.name)}</p>
+						<p class="muted text-xs">Bergabung ${Fmt.date(profile.createdAt)}</p>
+					</div>
+				</div>
+
+				<div class="mt-4">
 					<label class="muted text-xs" for="profileName">Nama</label>
 					<input id="profileName" class="field mt-1" data-profile="name" value="${Fmt.esc(profile.name)}" maxlength="40">
 					<div class="mt-3 flex flex-wrap gap-2">
 						<span class="chip">Umur akun ${Fmt.age(profile.createdAt)}</span>
-						<span class="chip">${history.length} ditonton</span>
-						<span class="chip">${likes.length} disukai</span>
-						<span class="chip">${downloads.length} diunduh</span>
+						${profile.avatar ? '<button class="chip" data-action="remove-avatar">Hapus foto</button>' : ''}
 					</div>
 				</div>
 
+				<div class="mt-5 grid grid-cols-3 gap-2 text-center">
+					${stats.map(([n, label]) => `
+						<div class="rounded-2xl p-3" style="background: var(--chip)">
+							<p class="text-xl font-bold">${n}</p>
+							<p class="muted text-xs">${label}</p>
+						</div>`).join('')}
+				</div>
+
+				${this.insights(history)}
+
+				<div class="mt-5 flex gap-1 rounded-full p-1" style="background: var(--chip)" role="tablist">
+					${Object.entries(tabs).map(([key, t]) => `
+						<button class="flex-1 rounded-full py-1.5 text-sm font-semibold ${key === active ? 'btn-accent' : ''}" data-tab="${key}" role="tab" aria-selected="${key === active}">${t.label} (${t.items.length})</button>`).join('')}
+				</div>
+
 				<div class="flex items-center justify-between pt-4">
-					<h3 class="font-semibold">Riwayat tontonan</h3>
-					<button class="muted text-sm" data-action="clear-history">Hapus</button>
+					<h3 class="font-semibold">${tabs[active].label}</h3>
+					<button class="muted text-sm" data-action="clear-${active}">Hapus</button>
 				</div>
-				${this.list(history, 'Belum ada video yang ditonton.')}
-
-				<div class="flex items-center justify-between pt-5">
-					<h3 class="font-semibold">Video yang disukai</h3>
-					<button class="muted text-sm" data-action="clear-likes">Hapus</button>
-				</div>
-				${this.list(likes, 'Belum ada video yang disukai.')}
-
-				<div class="flex items-center justify-between pt-5">
-					<h3 class="font-semibold">Riwayat unduhan</h3>
-					<button class="muted text-sm" data-action="clear-downloads">Hapus</button>
-				</div>
-				${this.list(downloads, 'Belum ada unduhan.', (i) => `, ${i.format.toUpperCase()}`)}
+				${this.list(tabs[active].items, tabs[active].empty, extra)}
 
 				${this.dataTools()}`;
 		},
@@ -649,6 +778,8 @@
 				${toggle('sound', 'Efek suara')}
 				${toggle('vibrate', 'Getar')}
 
+				<div class="row"><span>Riwayat pencarian</span><button class="btn" data-action="clear-searches">Hapus</button></div>
+
 				${this.dataTools()}`;
 		},
 	};
@@ -661,6 +792,7 @@
 		current: null,
 		playToken: 0,
 		feedToken: 0,
+		feedState: null,
 
 		init() {
 			Store.load();
@@ -669,8 +801,14 @@
 			this.bindLayout();
 			this.bindEvents();
 			this.renderChips();
+			UI.renderAvatar();
+			UI.renderSearches();
 			UI.renderFooter();
-			this.loadFeed('Sedang populer', () => Api.popular());
+			this.loadFeed('Sedang populer', (t) => Api.popular(t));
+
+			// Tautan langsung: index.html#v=ID_VIDEO
+			const deep = /^#v=([\w-]{11})$/.exec(location.hash);
+			if (deep) this.play(deep[1]);
 		},
 
 		// Geser konten ke bawah sesuai tinggi header melayang (navigasi + pemutar)
@@ -680,20 +818,50 @@
 			fit();
 		},
 
+		// loader(pageToken) mengembalikan array video; properti `next` = token halaman berikutnya
 		async loadFeed(title, loader) {
 			const token = ++this.feedToken;
+			this.feedState = { loader, next: null, seen: new Set() };
 			$('#feedTitle').textContent = title;
 			$('#feed').innerHTML = UI.skeleton();
 			$('#status').textContent = '';
+			$('#moreWrap').classList.add('hidden');
 			try {
 				const items = await loader();
 				if (token !== this.feedToken) return;
-				items.forEach((v) => this.cache.set(v.id, v));
-				$('#feed').innerHTML = items.map(UI.card).join('');
-				if (!items.length) $('#status').textContent = 'Tidak ada video yang cocok.';
+				this.appendItems(items, true);
 			} catch (e) {
 				if (token === this.feedToken) UI.fail(e);
 			}
+		},
+
+		appendItems(items, replace) {
+			const state = this.feedState;
+			state.next = items.next || null;
+			const fresh = items.filter((v) => !state.seen.has(v.id));
+			fresh.forEach((v) => { state.seen.add(v.id); this.cache.set(v.id, v); });
+			const html = fresh.map(UI.card).join('');
+			if (replace) $('#feed').innerHTML = html;
+			else $('#feed').insertAdjacentHTML('beforeend', html);
+			$('#status').textContent = state.seen.size ? '' : 'Tidak ada video yang cocok.';
+			$('#moreWrap').classList.toggle('hidden', !state.next);
+		},
+
+		async loadMore() {
+			const state = this.feedState;
+			if (!state?.next) return;
+			const token = this.feedToken;
+			const btn = $('#btnMore');
+			btn.disabled = true;
+			btn.textContent = 'Memuat...';
+			try {
+				const items = await state.loader(state.next);
+				if (token === this.feedToken) this.appendItems(items, false);
+			} catch (e) {
+				UI.toast(e.message);
+			}
+			btn.disabled = false;
+			btn.textContent = 'Muat lebih banyak';
 		},
 
 		// Kembali ke beranda tanpa menghentikan video yang sedang diputar
@@ -701,7 +869,7 @@
 			$('#searchInput').value = '';
 			$('#info').classList.add('hidden');
 			this.showNowPlaying(Boolean(this.current));
-			this.loadFeed('Sedang populer', () => Api.popular());
+			this.loadFeed('Sedang populer', (t) => Api.popular(t));
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 		},
 
@@ -716,8 +884,20 @@
 			if (!v) return;
 			UI.renderInfo(v);
 			this.showNowPlaying(false);
-			this.loadFeed('Video lainnya', () => Api.suggestions(v));
+			this.loadFeed('Video lainnya', (t) => Api.suggestions(v, t));
 			window.scrollTo({ top: 0, behavior: 'smooth' });
+		},
+
+		async share() {
+			const v = this.current;
+			if (!v) return;
+			const url = `${location.href.split('#')[0]}#v=${v.id}`;
+			try {
+				if (navigator.share) await navigator.share({ title: v.title, url });
+				else { await navigator.clipboard.writeText(url); UI.toast('Tautan disalin'); }
+			} catch (e) {
+				if (e.name !== 'AbortError') UI.toast('Tautan tidak dapat disalin');
+			}
 		},
 
 		like() {
@@ -735,14 +915,16 @@
 
 		browse(q) {
 			$('#searchInput').value = q;
-			if (q) return this.search(q);
-			this.loadFeed('Sedang populer', () => Api.popular());
+			if (q) return this.search(q, false);
+			this.loadFeed('Sedang populer', (t) => Api.popular(t));
 			window.scrollTo({ top: 0 });
 		},
 
-		search(q) {
-			if (!q.trim()) return;
-			this.loadFeed(`Hasil untuk "${q.trim()}"`, () => Api.search(q.trim()));
+		search(q, remember = true) {
+			const query = q.trim();
+			if (!query) return;
+			if (remember) Store.addSearch(query);
+			this.loadFeed(`Hasil untuk "${query}"`, (t) => Api.search(query, { pageToken: t }));
 			window.scrollTo({ top: 0 });
 		},
 
@@ -751,6 +933,8 @@
 			$('#playerWrap').classList.remove('hidden');
 			$('#player').src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
 			window.scrollTo({ top: 0, behavior: 'smooth' });
+
+			try { history.replaceState(null, '', `#v=${id}`); } catch { /* file:// atau diblokir */ }
 
 			let video = this.cache.get(id);
 			try {
@@ -765,7 +949,7 @@
 			Store.addHistory(video);
 			UI.renderInfo(video);
 			this.showNowPlaying(false);
-			this.loadFeed('Video lainnya', () => Api.suggestions(video));
+			this.loadFeed('Video lainnya', (t) => Api.suggestions(video, t));
 		},
 
 		download(format) {
@@ -784,12 +968,24 @@
 				this.search($('#searchInput').value);
 				$('#searchInput').blur();
 			});
+			document.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape') Panel.close();
+				if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
+					e.preventDefault();
+					$('#searchInput').focus();
+				}
+			});
+			$('#avatarFile').addEventListener('change', (e) => {
+				Store.setAvatar(e.target.files[0]);
+				e.target.value = '';
+			});
 			$('#logo').addEventListener('click', (e) => {
 				if (e.metaKey || e.ctrlKey || e.shiftKey) return;
 				e.preventDefault();
 				this.home();
 			});
 			$('#toTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+			$('#btnMore').addEventListener('click', () => this.loadMore());
 			$('#btnAccount').addEventListener('click', () => Panel.open('account'));
 			$('#btnSettings').addEventListener('click', () => Panel.open('settings'));
 			$('#panelClose').addEventListener('click', () => Panel.close());
@@ -810,6 +1006,10 @@
 				if (dl) this.download(dl.dataset.download);
 
 				if (e.target.closest('[data-like]')) this.like();
+				if (e.target.closest('[data-share]')) this.share();
+
+				const tab = e.target.closest('[data-tab]');
+				if (tab) { Panel.tab = tab.dataset.tab; Panel.refresh(); }
 				if (e.target.closest('[data-resume]')) this.resume();
 
 				const chip = e.target.closest('[data-search]');
@@ -824,6 +1024,9 @@
 				if (action === 'clear-history') { Store.data.history = []; Store.save(); Panel.refresh(); }
 				if (action === 'clear-downloads') { Store.data.downloads = []; Store.save(); Panel.refresh(); }
 				if (action === 'clear-likes') { Store.data.likes = []; Store.save(); Panel.refresh(); UI.syncLike(this.current); }
+				if (action === 'clear-searches') { Store.data.searches = []; Store.save(); UI.renderSearches(); UI.toast('Riwayat pencarian dihapus'); }
+				if (action === 'avatar') $('#avatarFile').click();
+				if (action === 'remove-avatar') { delete Store.data.profile.avatar; Store.save(); UI.renderAvatar(); Panel.refresh(); }
 			});
 
 			// Perubahan pengaturan & nama profil
