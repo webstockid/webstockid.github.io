@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>StreamTube - Custom YouTube Player & Streamer</title>
+	<!-- Tailwind CSS CDN -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<!-- FontAwesome 6 CDN -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+	<!-- Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<style>
+		/* Dynamic Design Tokens */
+		:root {
+			--accent-color: #6366f1; /* Soft Indigo Default */
+			--accent-hover: #4f46e5;
+			--accent-light: rgba(99, 102, 241, 0.15);
+			--base-font-size: 14px;
+			--app-font-family: 'Inter', sans-serif;
+			--app-font-weight: 400;
+		}
+
+		body {
+			font-family: var(--app-font-family);
+			font-size: var(--base-font-size);
+			font-weight: var(--app-font-weight);
+			transition: background-color 0.3s ease, color 0.3s ease;
+		}
+
+		/* Theme Base Styles for Smooth Harmonious Contrast */
+		body.theme-dark {
+			background-color: #020617;
+			color: #f8fafc;
+		}
+		body.theme-slate {
+			background-color: #0f172a;
+			color: #f8fafc;
+		}
+		body.theme-light {
+			background-color: #f8fafc;
+			color: #0f172a;
+		}
+
+		/* Dynamic Theme Utility Elements */
+		body.theme-dark .ui-nav { background-color: rgba(2, 6, 23, 0.88); border-color: #1e293b; }
+		body.theme-slate .ui-nav { background-color: rgba(15, 23, 42, 0.88); border-color: #334155; }
+		body.theme-light .ui-nav { background-color: rgba(255, 255, 255, 0.88); border-color: #e2e8f0; }
+
+		body.theme-dark .ui-card { background-color: #0f172a; border-color: #1e293b; color: #f8fafc; }
+		body.theme-slate .ui-card { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
+		body.theme-light .ui-card { background-color: #ffffff; border-color: #e2e8f0; color: #1e293b; shadow: 0 1px 3px rgba(0,0,0,0.05); }
+
+		body.theme-dark .ui-modal { background-color: #0f172a; border-color: #1e293b; color: #f8fafc; }
+		body.theme-slate .ui-modal { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
+		body.theme-light .ui-modal { background-color: #ffffff; border-color: #cbd5e1; color: #0f172a; }
+
+		body.theme-dark .ui-input { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
+		body.theme-slate .ui-input { background-color: #334155; border-color: #475569; color: #f8fafc; }
+		body.theme-light .ui-input { background-color: #f1f5f9; border-color: #cbd5e1; color: #0f172a; }
+
+		body.theme-dark .ui-sub-bg { background-color: #020617; }
+		body.theme-slate .ui-sub-bg { background-color: #0f172a; }
+		body.theme-light .ui-sub-bg { background-color: #f1f5f9; }
+
+		body.theme-dark .ui-hover-bg:hover { background-color: rgba(255, 255, 255, 0.06); }
+		body.theme-slate .ui-hover-bg:hover { background-color: rgba(255, 255, 255, 0.08); }
+		body.theme-light .ui-hover-bg:hover { background-color: rgba(0, 0, 0, 0.04); }
+
+		body.theme-dark .ui-text-subtle { color: #94a3b8; }
+		body.theme-slate .ui-text-subtle { color: #94a3b8; }
+		body.theme-light .ui-text-subtle { color: #64748b; }
+
+		.btn-accent {
+			background-color: var(--accent-color);
+			color: #ffffff;
+		}
+		.btn-accent:hover {
+			background-color: var(--accent-hover);
+		}
+		.text-accent {
+			color: var(--accent-color);
+		}
+		.border-accent {
+			border-color: var(--accent-color);
+		}
+		.bg-accent-subtle {
+			background-color: var(--accent-light);
+		}
+
+		/* Modal Open & Close Keyframe Animations */
+		@keyframes modalIn {
+			0% { opacity: 0; transform: scale(0.92) translateY(-10px); }
+			100% { opacity: 1; transform: scale(1) translateY(0); }
+		}
+		@keyframes modalOut {
+			0% { opacity: 1; transform: scale(1) translateY(0); }
+			100% { opacity: 0; transform: scale(0.92) translateY(-10px); }
+		}
+		@keyframes backdropIn {
+			from { opacity: 0; }
+			to { opacity: 1; }
+		}
+		@keyframes backdropOut {
+			from { opacity: 1; }
+			to { opacity: 0; }
+		}
+
+		.modal-anim-in {
+			animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+		}
+		.modal-anim-out {
+			animation: modalOut 0.2s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+		}
+		.backdrop-anim-in {
+			animation: backdropIn 0.22s ease-out forwards;
+		}
+		.backdrop-anim-out {
+			animation: backdropOut 0.2s ease-in forwards;
+		}
+
+		/* Collapsible Meta & Category Section on Scroll */
+		#videoMeta, #categoryMeta {
+			transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease, transform 0.3s ease;
+			max-height: 300px;
+			opacity: 1;
+			overflow: hidden;
+			transform: translateY(0);
+		}
+		#videoMeta.hidden-scroll, #categoryMeta.hidden-scroll {
+			max-height: 0px !important;
+			opacity: 0 !important;
+			margin-top: 0 !important;
+			margin-bottom: 0 !important;
+			padding-top: 0 !important;
+			padding-bottom: 0 !important;
+			transform: translateY(-8px);
+			pointer-events: none;
+		}
+
+		/* Horizontal Scrollbar Custom Styling */
+		.no-scrollbar::-webkit-scrollbar {
+			display: none;
+		}
+		.no-scrollbar {
+			-ms-overflow-style: none;
+			scrollbar-width: none;
+		}
+
+		::-webkit-scrollbar {
+			width: 6px;
+			height: 6px;
+		}
+		::-webkit-scrollbar-track {
+			background: transparent;
+		}
+		::-webkit-scrollbar-thumb {
+			background: rgba(148, 163, 184, 0.3);
+			border-radius: 9999px;
+		}
+
+		.aspect-video-container {
+			position: relative;
+			padding-bottom: 56.25%;
+			height: 0;
+			overflow: hidden;
+		}
+		.aspect-video-container iframe,
+		.aspect-video-container .hero-placeholder {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+</head>
+<body class="theme-dark min-h-screen flex flex-col justify-between">
+
+	<div>
+		<!-- ==========================================
+		     1. FLOATING FIXED NAV BAR
+		     ========================================== -->
+		<header id="navbar" class="fixed top-0 left-0 right-0 z-40 ui-nav backdrop-blur-md border-b px-4 py-2.5 transition-all">
+			<div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+				
+				<!-- App Logo -->
+				<div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="app.resetHome()">
+					<div class="w-9 h-9 rounded-xl btn-accent flex items-center justify-center shadow-md">
+						<i class="fa-solid fa-play text-xs text-white"></i>
+					</div>
+					<span class="font-semibold text-lg hidden sm:inline tracking-tight">Stream<span class="text-accent">Tube</span></span>
+				</div>
+
+				<!-- Search Bar with Auto Suggestions -->
+				<div class="flex-1 max-w-lg relative">
+					<form onsubmit="app.handleSearch(event)" class="relative flex items-center" autocomplete="off">
+						<input 
+							type="text" 
+							id="searchInput" 
+							placeholder="Cari video di YouTube..." 
+							oninput="app.handleSearchInput(this.value)"
+							onfocus="app.showSearchSuggestions()"
+							onblur="app.hideSearchSuggestions()"
+							class="w-full ui-input text-xs sm:text-sm rounded-full pl-10 pr-10 py-2 border focus:outline-none focus:border-accent transition-all shadow-inner"
+						/>
+						<i class="fa-solid fa-magnifying-glass ui-text-subtle absolute left-3.5 pointer-events-none text-xs"></i>
+						<button type="submit" aria-label="Cari" class="absolute right-1.5 p-1.5 rounded-full btn-accent text-white hover:scale-105 transition-transform flex items-center justify-center w-7 h-7">
+							<i class="fa-solid fa-arrow-right text-xs"></i>
+						</button>
+					</form>
+
+					<!-- Auto Suggestions Dropdown Menu -->
+					<div id="searchSuggestions" class="absolute top-full left-0 right-0 mt-1.5 ui-modal border rounded-2xl shadow-2xl py-2 hidden z-50 overflow-hidden text-xs transition-all">
+						<div class="px-3.5 py-1.5 flex items-center justify-between text-[11px] ui-text-subtle border-b border-slate-700/30 mb-1">
+							<span class="font-semibold flex items-center gap-1.5">
+								<i class="fa-solid fa-clock-rotate-left text-accent"></i> Riwayat Pencarian
+							</span>
+							<button type="button" onmousedown="app.clearSearchHistory(event)" class="hover:text-rose-400 transition-colors text-[10px]">
+								<i class="fa-solid fa-trash-can mr-1"></i>Hapus Semua
+							</button>
+						</div>
+						<div id="suggestionList" class="max-h-56 overflow-y-auto">
+							<!-- Dynamic Suggestions Rendered via JS -->
+						</div>
+					</div>
+				</div>
+
+				<!-- Account & Settings Buttons -->
+				<div class="flex items-center gap-2 shrink-0">
+					<!-- Profile Modal Button -->
+					<button onclick="app.openModal('accountModal')" class="flex items-center gap-2 px-3 py-1.5 rounded-full ui-card border text-xs sm:text-sm font-medium hover:border-accent transition-colors">
+						<img id="navAvatarImg" src="https://placehold.co/100x100/6366f1/ffffff?text=U" alt="Profile" class="w-5 h-5 rounded-full object-cover">
+						<span class="hidden md:inline" id="navAccountName">Akun</span>
+					</button>
+
+					<!-- Settings Modal Button -->
+					<button onclick="app.openModal('settingsModal')" class="w-9 h-9 rounded-full ui-card border flex items-center justify-center hover:border-accent transition-colors" title="Pengaturan Tampilan">
+						<i class="fa-solid fa-sliders text-xs"></i>
+					</button>
+				</div>
+			</div>
+		</header>
+
+		<!-- Main Page Layout -->
+		<main class="pt-16 max-w-6xl mx-auto px-0 sm:px-4 pb-12">
+
+			<!-- ==========================================
+			     2. FIXED VIDEO PLAYER & METADATA SECTION
+			     ========================================== -->
+			<section id="playerSection" class="sticky top-14 z-30 ui-sub-bg pt-0 pb-3 border-b border-slate-800/50 shadow-2xl transition-all duration-300">
+				
+				<!-- Full Width Video Container Wrapper (Edge to Edge) -->
+				<div id="playerWrapper" class="w-full mx-auto transition-all duration-300">
+					<div class="w-full bg-black shadow-2xl border-b border-slate-800/80 aspect-video-container relative sm:rounded-2xl sm:overflow-hidden sm:border">
+						
+						<!-- Hero / Last Watched Placeholder Screen -->
+						<div id="heroPlaceholder" class="hero-placeholder flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-900 via-slate-950 to-black text-slate-200 relative overflow-hidden">
+							<img id="heroBgThumb" src="" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20 blur-sm hidden">
+							<div class="relative z-10 flex flex-col items-center">
+								<div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full btn-accent flex items-center justify-center shadow-xl mb-4 group cursor-pointer hover:scale-110 transition-transform" onclick="app.playFirstAvailable()">
+									<i class="fa-solid fa-play text-xl sm:text-2xl text-white ml-1"></i>
+								</div>
+								<h3 id="heroTitle" class="text-base sm:text-xl font-bold tracking-tight mb-1 max-w-lg">Selamat Datang di StreamTube</h3>
+								<p id="heroSub" class="text-xs sm:text-sm text-slate-400 max-w-md">Pilih salah satu video dari daftar di bawah atau klik tombol untuk memutar video.</p>
+							</div>
+						</div>
+
+						<!-- YouTube Iframe Video Player -->
+						<iframe 
+							id="ytPlayer" 
+							class="hidden"
+							src="" 
+							title="YouTube Video Streamer" 
+							frameborder="0" 
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+							allowfullscreen>
+						</iframe>
+					</div>
+
+					<!-- Video Info & Controls Metadata (Collapses on Scroll) -->
+					<div id="videoMeta" class="w-full mt-3 px-4 sm:px-2">
+						<div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+							<div class="flex-1">
+								<h1 id="videoTitle" class="font-semibold text-base sm:text-lg leading-snug">
+									Siap memutar video
+								</h1>
+								<div class="flex items-center gap-3 text-xs ui-text-subtle mt-1 flex-wrap">
+									<span id="channelName" class="font-medium flex items-center gap-1.5">
+										<i class="fa-solid fa-tv text-accent"></i> Channel YouTube
+									</span>
+									<span>•</span>
+									<span id="viewCount" class="flex items-center gap-1">
+										<i class="fa-solid fa-eye"></i> - views
+									</span>
+									<span>•</span>
+									<span id="uploadDate" class="flex items-center gap-1">
+										<i class="fa-solid fa-calendar-days"></i> -
+									</span>
+								</div>
+							</div>
+
+							<!-- Action Buttons Row -->
+							<div class="flex items-center gap-2 shrink-0 flex-wrap">
+								<!-- Like Button -->
+								<button id="likeBtn" onclick="app.toggleLike()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl ui-card border text-xs font-medium hover:border-accent transition-all">
+									<i class="fa-solid fa-thumbs-up text-xs" id="likeIcon"></i>
+									<span id="likeCount">0</span>
+								</button>
+
+								<!-- Share Button -->
+								<button onclick="app.shareCurrentVideo()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl ui-card border text-xs font-medium hover:border-accent transition-all" title="Bagikan Tautan Video">
+									<i class="fa-solid fa-share-nodes text-xs"></i>
+									<span>Bagikan</span>
+								</button>
+
+								<!-- Theater Mode Toggle Button -->
+								<button onclick="app.toggleTheaterMode()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl ui-card border text-xs font-medium hover:border-accent transition-all" title="Mode Bioskop">
+									<i class="fa-solid fa-expand text-xs" id="theaterIcon"></i>
+									<span class="hidden sm:inline">Bioskop</span>
+								</button>
+
+								<!-- Download Options -->
+								<button onclick="app.downloadAction('mp4')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl btn-accent text-xs font-medium shadow-md">
+									<i class="fa-solid fa-download text-xs"></i>
+									<span>MP4</span>
+								</button>
+
+								<button onclick="app.downloadAction('mp3')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-700 hover:bg-teal-600 text-white text-xs font-medium shadow-md">
+									<i class="fa-solid fa-music text-xs"></i>
+									<span>MP3</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- ==========================================
+				     3. CATEGORY PILL SELECTOR MENU (Collapses on Scroll)
+				     ========================================== -->
+				<div id="categoryMeta" class="w-full max-w-6xl mx-auto mt-3 px-4 sm:px-2">
+					<div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 text-xs" id="categoryContainer">
+						<!-- Dynamic category buttons initialized via JS -->
+					</div>
+				</div>
+			</section>
+
+			<!-- ==========================================
+			     4. VIDEO SUGGESTIONS & SEARCH GRID
+			     ========================================== -->
+			<section class="mt-6 px-3 sm:px-0">
+				<div class="flex items-center justify-between mb-4 px-1">
+					<h2 id="sectionTitle" class="text-base sm:text-lg font-semibold flex items-center gap-2">
+						<i class="fa-solid fa-wand-magic-sparkles text-accent"></i> Rekomendasi Video
+					</h2>
+					<span id="resultCount" class="text-xs ui-text-subtle"></span>
+				</div>
+
+				<!-- Grid Container for Videos -->
+				<div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+					<!-- Rendered dynamically -->
+				</div>
+			</section>
+		</main>
+	</div>
+
+	<!-- ==========================================
+	     5. RICH FOOTER SECTION
+	     ========================================== -->
+	<footer class="ui-card border-t pt-8 pb-6 px-4 text-xs mt-auto">
+		<div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+			
+			<!-- Brand Summary -->
+			<div class="space-y-2.5">
+				<div class="flex items-center gap-2">
+					<div class="w-7 h-7 rounded-lg btn-accent flex items-center justify-center">
+						<i class="fa-solid fa-play text-xs text-white"></i>
+					</div>
+					<span class="font-semibold text-base">StreamTube</span>
+				</div>
+				<p class="ui-text-subtle leading-relaxed text-[11px]">
+					Aplikasi pemutar video YouTube kustom modern dengan antarmuka yang bersih, cepat, tanpa gangguan, dan bebas limit kuota.
+				</p>
+			</div>
+
+			<!-- Quick Categories -->
+			<div>
+				<h4 class="font-semibold mb-2 text-xs">Kategori Cepat</h4>
+				<ul class="space-y-1.5 ui-text-subtle">
+					<li><button onclick="app.selectCategory('Musik')" class="hover:text-accent transition-colors flex items-center gap-1.5"><i class="fa-solid fa-music text-pink-500 w-4"></i> Musik Hits</button></li>
+					<li><button onclick="app.selectCategory('Gaming')" class="hover:text-accent transition-colors flex items-center gap-1.5"><i class="fa-solid fa-gamepad text-indigo-400 w-4"></i> Gaming Highlights</button></li>
+					<li><button onclick="app.selectCategory('Teknologi')" class="hover:text-accent transition-colors flex items-center gap-1.5"><i class="fa-solid fa-laptop text-blue-400 w-4"></i> Review Gadget</button></li>
+					<li><button onclick="app.selectCategory('Berita')" class="hover:text-accent transition-colors flex items-center gap-1.5"><i class="fa-solid fa-newspaper text-emerald-400 w-4"></i> Berita Terkini</button></li>
+				</ul>
+			</div>
+
+			<!-- Core Features -->
+			<div>
+				<h4 class="font-semibold mb-2 text-xs">Fitur Utama</h4>
+				<ul class="space-y-1.5 ui-text-subtle">
+					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Hybrid Fallback API System</li>
+					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Foto Profil & Riwayat Lengkap</li>
+					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Auto-Hide Info saat Scroll</li>
+					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Mode Bioskop & Impor/Ekspor</li>
+				</ul>
+			</div>
+
+			<!-- System Status -->
+			<div class="space-y-2">
+				<h4 class="font-semibold text-xs">Status Server & API</h4>
+				<div class="p-3 ui-sub-bg rounded-xl border border-slate-700/40 space-y-1.5">
+					<div class="flex items-center justify-between">
+						<span class="text-[11px] ui-text-subtle">API Server:</span>
+						<span id="apiStatusBadge" class="flex items-center gap-1.5 text-[10px] text-emerald-500 font-mono">
+							<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Initializing...
+						</span>
+					</div>
+					<div class="flex items-center justify-between">
+						<span class="text-[11px] ui-text-subtle">Audio FX:</span>
+						<span id="footerSoundStatus" class="text-[10px] font-mono">Aktif</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Bottom Copyright -->
+		<div class="max-w-6xl mx-auto pt-4 border-t border-slate-700/30 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] ui-text-subtle">
+			<p>© 2026 StreamTube App. Powered by Hybrid Multi-Source API Engine.</p>
+			<p class="flex items-center gap-1">
+				<span>Dibuat dengan</span> <i class="fa-solid fa-heart text-rose-500"></i> <span>untuk pengalaman menonton terbaik</span>
+			</p>
+		</div>
+	</footer>
+
+	<!-- ==========================================
+	     6. MODAL: PROFILE & ACCOUNT MODAL
+	     ========================================== -->
+	<div id="accountModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm hidden">
+		<div class="ui-modal border rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+			
+			<!-- Modal Header -->
+			<div class="flex items-center justify-between p-4 border-b border-slate-700/40">
+				<h3 class="font-semibold flex items-center gap-2">
+					<i class="fa-solid fa-circle-user text-accent"></i> Profil & Riwayat Akun
+				</h3>
+				<button onclick="app.closeModal('accountModal')" class="w-8 h-8 rounded-lg text-slate-400 hover:bg-slate-800/50 flex items-center justify-center">
+					<i class="fa-solid fa-xmark text-base"></i>
+				</button>
+			</div>
+
+			<div class="p-4 overflow-y-auto space-y-4 text-xs sm:text-sm">
+				
+				<!-- Profile Card with Avatar Upload -->
+				<div class="p-4 ui-sub-bg border border-slate-700/40 rounded-xl flex flex-col sm:flex-row items-center gap-4">
+					<div class="relative group">
+						<img id="profileAvatar" src="https://placehold.co/100x100/6366f1/ffffff?text=U" alt="Avatar" class="w-16 h-16 rounded-full object-cover border-2 border-accent shadow-md">
+						<button onclick="document.getElementById('avatarFileInput').click()" class="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity text-[10px]" title="Ganti Foto">
+							<i class="fa-solid fa-camera text-base"></i>
+						</button>
+					</div>
+					<div class="flex-1 text-center sm:text-left">
+						<div class="flex items-center justify-center sm:justify-start gap-2">
+							<span id="accName" class="font-bold text-base">User Streamer</span>
+							<button onclick="app.editName()" class="p-1 text-slate-400 hover:text-accent" title="Ubah Nama">
+								<i class="fa-solid fa-pen-to-square text-xs"></i>
+							</button>
+						</div>
+						<div id="accAge" class="text-xs ui-text-subtle mt-0.5">Umur Akun: 0 Hari</div>
+						<button onclick="document.getElementById('avatarFileInput').click()" class="mt-2 text-[11px] text-accent hover:underline flex items-center gap-1 mx-auto sm:mx-0">
+							<i class="fa-solid fa-image"></i> Unggah Foto Profil
+						</button>
+					</div>
+				</div>
+
+				<!-- Hidden File Input for Avatar -->
+				<input type="file" id="avatarFileInput" class="hidden" accept="image/*" onchange="app.handleAvatarUpload(event)">
+
+				<!-- User Stats Overview Cards -->
+				<div class="grid grid-cols-4 gap-2 text-center">
+					<div class="p-2 ui-sub-bg rounded-xl border border-slate-700/30">
+						<div class="font-bold text-accent text-sm" id="statWatch">0</div>
+						<div class="text-[10px] ui-text-subtle">Tontonan</div>
+					</div>
+					<div class="p-2 ui-sub-bg rounded-xl border border-slate-700/30">
+						<div class="font-bold text-rose-500 text-sm" id="statLike">0</div>
+						<div class="text-[10px] ui-text-subtle">Disukai</div>
+					</div>
+					<div class="p-2 ui-sub-bg rounded-xl border border-slate-700/30">
+						<div class="font-bold text-teal-500 text-sm" id="statDownload">0</div>
+						<div class="text-[10px] ui-text-subtle">Unduhan</div>
+					</div>
+					<div class="p-2 ui-sub-bg rounded-xl border border-slate-700/30">
+						<div class="font-bold text-amber-500 text-sm" id="statDays">0d</div>
+						<div class="text-[10px] ui-text-subtle">Aktif</div>
+					</div>
+				</div>
+
+				<!-- Tab Navigation -->
+				<div class="flex border-b border-slate-700/40 text-xs overflow-x-auto no-scrollbar">
+					<button onclick="app.switchAccTab('watch')" id="tabWatch" class="py-2 px-3 border-b-2 border-accent text-accent font-medium whitespace-nowrap flex items-center gap-1.5">
+						<i class="fa-solid fa-clock-rotate-left"></i> Riwayat (<span id="countWatch">0</span>)
+					</button>
+					<button onclick="app.switchAccTab('like')" id="tabLike" class="py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5">
+						<i class="fa-solid fa-heart text-rose-500"></i> Disukai (<span id="countLike">0</span>)
+					</button>
+					<button onclick="app.switchAccTab('download')" id="tabDownload" class="py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5">
+						<i class="fa-solid fa-download text-teal-500"></i> Unduhan (<span id="countDownload">0</span>)
+					</button>
+				</div>
+
+				<!-- History Items List Container -->
+				<div id="accList" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+					<!-- Rendered dynamically -->
+				</div>
+			</div>
+
+			<!-- Footer Import Export Actions -->
+			<div class="p-3 border-t border-slate-700/40 ui-sub-bg flex justify-between gap-2">
+				<button onclick="app.exportHistory()" class="px-3 py-1.5 text-xs rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1.5 border border-slate-700">
+					<i class="fa-solid fa-file-export"></i> Ekspor JSON
+				</button>
+				<button onclick="app.triggerImport()" class="px-3 py-1.5 text-xs rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1.5 border border-slate-700">
+					<i class="fa-solid fa-file-import"></i> Impor JSON
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- ==========================================
+	     7. MODAL: DISPLAY & SYSTEM SETTINGS
+	     ========================================== -->
+	<div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm hidden">
+		<div class="ui-modal border rounded-2xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+			
+			<div class="flex items-center justify-between p-4 border-b border-slate-700/40">
+				<h3 class="font-semibold flex items-center gap-2">
+					<i class="fa-solid fa-sliders text-accent"></i> Pengaturan Tampilan
+				</h3>
+				<button onclick="app.closeModal('settingsModal')" class="w-8 h-8 rounded-lg text-slate-400 hover:bg-slate-800/50 flex items-center justify-center">
+					<i class="fa-solid fa-xmark text-base"></i>
+				</button>
+			</div>
+
+			<div class="p-4 overflow-y-auto space-y-4 text-xs sm:text-sm">
+				
+				<!-- Theme Mode Selector -->
+				<div>
+					<label class="block font-medium mb-1.5 flex items-center gap-1.5">
+						<i class="fa-solid fa-palette text-accent"></i> Mode Tema Tampilan
+					</label>
+					<div class="grid grid-cols-3 gap-2">
+						<button onclick="app.setTheme('dark')" id="btnThemeDark" class="p-2.5 border rounded-xl text-center text-xs font-medium ui-card hover:border-accent flex items-center justify-center gap-1.5">
+							<i class="fa-solid fa-moon"></i> Dark
+						</button>
+						<button onclick="app.setTheme('slate')" id="btnThemeSlate" class="p-2.5 border rounded-xl text-center text-xs font-medium ui-card hover:border-accent flex items-center justify-center gap-1.5">
+							<i class="fa-solid fa-layer-group"></i> Slate
+						</button>
+						<button onclick="app.setTheme('light')" id="btnThemeLight" class="p-2.5 border rounded-xl text-center text-xs font-medium ui-card hover:border-accent flex items-center justify-center gap-1.5">
+							<i class="fa-solid fa-sun"></i> Light
+						</button>
+					</div>
+				</div>
+
+				<!-- Font Size Slider -->
+				<div>
+					<div class="flex justify-between mb-1.5">
+						<label class="font-medium flex items-center gap-1.5">
+							<i class="fa-solid fa-text-height text-accent"></i> Ukuran Font Aplikasi
+						</label>
+						<span id="fontSizeVal" class="text-accent font-semibold">14px</span>
+					</div>
+					<input type="range" id="fontSizeSlider" min="12" max="18" value="14" step="1" oninput="app.updateFontSize(this.value)" class="w-full accent-indigo-500 cursor-pointer">
+				</div>
+
+				<!-- Font Family Select -->
+				<div>
+					<label class="block font-medium mb-1.5 flex items-center gap-1.5">
+						<i class="fa-solid fa-font text-accent"></i> Jenis Font
+					</label>
+					<select id="fontFamilySelect" onchange="app.updateFontFamily(this.value)" class="w-full ui-input border rounded-xl p-2.5 text-xs focus:outline-none focus:border-accent">
+						<option value="Inter">Inter</option>
+						<option value="Roboto">Roboto</option>
+						<option value="Poppins">Poppins</option>
+						<option value="Open Sans">Open Sans</option>
+						<option value="Montserrat">Montserrat</option>
+						<option value="system-ui">System UI</option>
+					</select>
+				</div>
+
+				<!-- Font Weight Select -->
+				<div>
+					<label class="block font-medium mb-1.5 flex items-center gap-1.5">
+						<i class="fa-solid fa-bold text-accent"></i> Ketebalan Font
+					</label>
+					<select id="fontWeightSelect" onchange="app.updateFontWeight(this.value)" class="w-full ui-input border rounded-xl p-2.5 text-xs focus:outline-none focus:border-accent">
+						<option value="400">Normal (400)</option>
+						<option value="500">Medium (500)</option>
+						<option value="600">Semi-Bold (600)</option>
+						<option value="700">Bold (700)</option>
+					</select>
+				</div>
+
+				<!-- Soft Color Palette Selection -->
+				<div>
+					<label class="block font-medium mb-1.5 flex items-center gap-1.5">
+						<i class="fa-solid fa-droplet text-accent"></i> Warna Aksen (Soft Palette)
+					</label>
+					<div class="grid grid-cols-6 gap-2 mb-2">
+						<button onclick="app.updateAccentColor('#6366f1')" class="h-8 rounded-lg bg-[#6366f1] border border-white/20 shadow-sm" title="Soft Indigo"></button>
+						<button onclick="app.updateAccentColor('#14b8a6')" class="h-8 rounded-lg bg-[#14b8a6] border border-white/20 shadow-sm" title="Muted Teal"></button>
+						<button onclick="app.updateAccentColor('#f43f5e')" class="h-8 rounded-lg bg-[#f43f5e] border border-white/20 shadow-sm" title="Dusty Rose"></button>
+						<button onclick="app.updateAccentColor('#f59e0b')" class="h-8 rounded-lg bg-[#f59e0b] border border-white/20 shadow-sm" title="Warm Amber"></button>
+						<button onclick="app.updateAccentColor('#10b981')" class="h-8 rounded-lg bg-[#10b981] border border-white/20 shadow-sm" title="Soft Emerald"></button>
+						<button onclick="app.updateAccentColor('#64748b')" class="h-8 rounded-lg bg-[#64748b] border border-white/20 shadow-sm" title="Cool Slate"></button>
+					</div>
+					<div class="flex items-center gap-3 mt-1">
+						<input type="color" id="accentColorInput" value="#6366f1" onchange="app.updateAccentColor(this.value)" class="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-0">
+						<span id="accentHexCode" class="text-xs font-mono ui-text-subtle">#6366f1</span>
+					</div>
+				</div>
+
+				<!-- Audio & Haptic Toggles -->
+				<div class="border-t border-slate-700/40 pt-3 space-y-2">
+					<div class="flex items-center justify-between">
+						<span class="font-medium flex items-center gap-1.5"><i class="fa-solid fa-volume-high text-accent"></i> Efek Suara (Audio FX)</span>
+						<input type="checkbox" id="soundToggle" onchange="app.toggleSound(this.checked)" class="w-4 h-4 accent-indigo-500 rounded cursor-pointer">
+					</div>
+					<div class="flex items-center justify-between">
+						<span class="font-medium flex items-center gap-1.5"><i class="fa-solid fa-mobile-screen-button text-accent"></i> Getar (Haptic Feedback)</span>
+						<input type="checkbox" id="hapticToggle" onchange="app.toggleHaptic(this.checked)" class="w-4 h-4 accent-indigo-500 rounded cursor-pointer">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Hidden Import File Input -->
+	<input type="file" id="importFileInput" class="hidden" accept=".json" onchange="app.handleImportFile(event)">
+
+	<!-- Toast Message Floating Notification -->
+	<div id="toast" class="fixed bottom-4 right-4 z-50 bg-slate-900 text-slate-100 border border-slate-700 px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-xs transition-opacity duration-300 opacity-0 pointer-events-none">
+		<i class="fa-solid fa-circle-info text-accent" id="toastIcon"></i>
+		<span id="toastMsg">Notifikasi</span>
+	</div>
+
+	<!-- ==========================================
+	     8. JAVASCRIPT LOGIC ENGINE (HYBRID FALLBACK)
+	     ========================================== -->
+	<script>
+		const app = {
+			// YouTube Data API Key
+			apiKey: "AIzaSyCtksa1GE6rBpnuAI4IonvzLYDvPI_5b_E",
+
+			// Backup Invidious API Public Instances Array for Automatic Fallback
+			invidiousInstances: [
+				"https://inv.tux.pizza/api/v1",
+				"https://invidious.nerdvpn.de/api/v1",
+				"https://vid.puffyan.us/api/v1"
+			],
+
+			currentApiMode: 'youtube', // 'youtube' or 'invidious'
+
+			// Preset Categories with FontAwesome icons
+			categories: [
+				{ name: "Populer", icon: "fa-solid fa-fire text-amber-500", query: "indonesia viral trending" },
+				{ name: "Musik", icon: "fa-solid fa-music text-pink-500", query: "indonesia musik populer" },
+				{ name: "Gaming", icon: "fa-solid fa-gamepad text-indigo-400", query: "gameplay indonesia trending" },
+				{ name: "Teknologi", icon: "fa-solid fa-laptop text-blue-400", query: "teknologi gadget indonesia" },
+				{ name: "Berita", icon: "fa-solid fa-newspaper text-emerald-400", query: "berita indonesia terkini" },
+				{ name: "Olahraga", icon: "fa-solid fa-football text-orange-400", query: "olahraga sepakbola indonesia" },
+				{ name: "Hiburan", icon: "fa-solid fa-film text-purple-400", query: "film hiburan indonesia" },
+				{ name: "Edukasi", icon: "fa-solid fa-graduation-cap text-yellow-400", query: "edukasi sains teknologi" },
+				{ name: "Kuliner", icon: "fa-solid fa-utensils text-rose-400", query: "kuliner resep makanan indonesia" },
+				{ name: "Otomotif", icon: "fa-solid fa-car text-cyan-400", query: "otomotif mobil motor indonesia" },
+				{ name: "Anime", icon: "fa-solid fa-palette text-violet-400", query: "anime animasi indonesia" },
+				{ name: "Komedi", icon: "fa-solid fa-face-laugh-squint text-amber-400", query: "sketsa komedi lucu indonesia" },
+				{ name: "Lifestyle", icon: "fa-solid fa-leaf text-green-400", query: "lifestyle vlog indonesia" },
+				{ name: "DIY", icon: "fa-solid fa-wrench text-slate-400", query: "diy kerajinan tangan tutorial" },
+				{ name: "Travel", icon: "fa-solid fa-plane text-sky-400", query: "travel wisata indonesia vlog" },
+				{ name: "Podcast", icon: "fa-solid fa-podcast text-red-400", query: "podcast indonesia populer" },
+				{ name: "Bisnis", icon: "fa-solid fa-chart-line text-emerald-500", query: "bisnis investasi keuangan indonesia" }
+			],
+
+			activeCategoryIndex: 0,
+			isTheaterMode: false,
+			audioCtx: null,
+			fetchedVideos: [],
+
+			// Application State
+			state: {
+				currentVideo: null,
+				lastWatched: null,
+				user: {
+					name: "Pengguna StreamTube",
+					avatar: null,
+					createdAt: Date.now()
+				},
+				history: [],
+				likedList: [],
+				downloads: [],
+				searchHistory: [],
+				likesMap: {},
+				settings: {
+					theme: "dark",
+					fontSize: 14,
+					fontFamily: "Inter",
+					fontWeight: "400",
+					accentColor: "#6366f1",
+					soundEnabled: true,
+					hapticEnabled: true
+				},
+				activeAccTab: 'watch'
+			},
+
+			init() {
+				this.loadLocalStorage();
+				this.applySettingsUI();
+				this.renderCategories();
+				this.setupScrollListener();
+
+				// Restore last watched video metadata without autoplay if exists
+				if (this.state.lastWatched) {
+					this.restoreLastWatched(this.state.lastWatched);
+				}
+
+				// Fetch initial video feed using Hybrid Search Engine
+				this.searchYouTube(this.categories[0].query, false);
+			},
+
+			restoreLastWatched(videoObj) {
+				this.state.currentVideo = videoObj;
+				document.getElementById('videoTitle').innerText = videoObj.title;
+				document.getElementById('channelName').innerHTML = `<i class="fa-solid fa-tv text-accent mr-1"></i> ${videoObj.channel}`;
+				document.getElementById('viewCount').innerHTML = `<i class="fa-solid fa-eye mr-1"></i> ${this.formatNumber(videoObj.views)}x dilihat`;
+				document.getElementById('uploadDate').innerHTML = `<i class="fa-solid fa-calendar-days mr-1"></i> ${videoObj.date}`;
+
+				const heroTitle = document.getElementById('heroTitle');
+				const heroSub = document.getElementById('heroSub');
+				const heroBgThumb = document.getElementById('heroBgThumb');
+
+				if (heroTitle) heroTitle.innerText = `Terakhir Ditonton: ${videoObj.title}`;
+				if (heroSub) heroSub.innerText = `Klik tombol putar untuk melanjutkan menonton`;
+				if (heroBgThumb && videoObj.thumb) {
+					heroBgThumb.src = videoObj.thumb;
+					heroBgThumb.classList.remove('hidden');
+				}
+
+				this.updateLikeButtonUI();
+			},
+
+			setupScrollListener() {
+				window.addEventListener('scroll', () => {
+					const videoMeta = document.getElementById('videoMeta');
+					const categoryMeta = document.getElementById('categoryMeta');
+
+					if (window.scrollY > 80) {
+						if (videoMeta) videoMeta.classList.add('hidden-scroll');
+						if (categoryMeta) categoryMeta.classList.add('hidden-scroll');
+					} else {
+						if (videoMeta) videoMeta.classList.remove('hidden-scroll');
+						if (categoryMeta) categoryMeta.classList.remove('hidden-scroll');
+					}
+				});
+			},
+
+			renderCategories() {
+				const container = document.getElementById('categoryContainer');
+				container.innerHTML = '';
+
+				this.categories.forEach((cat, idx) => {
+					const btn = document.createElement('button');
+					const isActive = idx === this.activeCategoryIndex;
+
+					btn.className = `px-3.5 py-1.5 rounded-full whitespace-nowrap transition-all font-medium text-xs flex items-center gap-1.5 ${
+						isActive ? 'btn-accent shadow-sm' : 'ui-card border hover:border-accent'
+					}`;
+					btn.innerHTML = `<i class="${cat.icon}"></i> ${cat.name}`;
+					btn.onclick = () => this.selectCategory(idx);
+
+					container.appendChild(btn);
+				});
+			},
+
+			selectCategory(idxOrName) {
+				this.playSound();
+				if (typeof idxOrName === 'string') {
+					const found = this.categories.findIndex(c => c.name.toLowerCase().includes(idxOrName.toLowerCase()));
+					this.activeCategoryIndex = found >= 0 ? found : 0;
+				} else {
+					this.activeCategoryIndex = idxOrName;
+				}
+
+				this.renderCategories();
+				const cat = this.categories[this.activeCategoryIndex];
+				document.getElementById('sectionTitle').innerHTML = `<i class="${cat.icon} mr-1"></i> Kategori: ${cat.name}`;
+				this.searchYouTube(cat.query);
+			},
+
+			// ------------------------------------------
+			// HYBRID FALLBACK SEARCH ENGINE
+			// 1st: YouTube Data API v3
+			// 2nd: Invidious API (No Quota Limit)
+			// ------------------------------------------
+			async searchYouTube(query, autoScroll = true) {
+				const grid = document.getElementById('videoGrid');
+				grid.innerHTML = `
+					<div class="col-span-full py-12 text-center text-slate-400 text-xs">
+						<i class="fa-solid fa-spinner fa-spin text-2xl text-accent mb-3"></i>
+						<p>Memuat video dari YouTube...</p>
+					</div>
+				`;
+
+				// 1. Try Primary YouTube Data API v3
+				try {
+					const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&type=video&q=${encodeURIComponent(query)}&key=${this.apiKey}`;
+					const res = await fetch(searchUrl);
+
+					if (!res.ok) {
+						throw new Error(`YouTube API HTTP error! Status: ${res.status}`);
+					}
+
+					const data = await res.json();
+					if (data.error) throw new Error(data.error.message);
+
+					if (data.items && data.items.length > 0) {
+						const videoIds = data.items.map(item => item.id.videoId).filter(Boolean).join(',');
+						const statsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoIds}&key=${this.apiKey}`;
+						const statsRes = await fetch(statsUrl);
+						const statsData = await statsRes.json();
+
+						this.fetchedVideos = statsData.items.map(item => ({
+							id: item.id,
+							ytId: item.id,
+							title: item.snippet.title,
+							channel: item.snippet.channelTitle,
+							views: parseInt(item.statistics?.viewCount || '0'),
+							likes: parseInt(item.statistics?.likeCount || '0'),
+							date: item.snippet.publishedAt ? item.snippet.publishedAt.split('T')[0] : '-',
+							thumb: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.medium?.url
+						}));
+
+						this.currentApiMode = 'youtube';
+						this.updateApiStatusUI('YouTube API (Primary)', 'emerald');
+						this.renderGrid(this.fetchedVideos);
+
+						if (autoScroll && window.scrollY > 400) {
+							window.scrollTo({ top: 400, behavior: 'smooth' });
+						}
+						return;
+					}
+				} catch (ytError) {
+					console.warn("YouTube Data API Quota Exceeded or Error. Switching to Invidious Fallback...", ytError);
+				}
+
+				// 2. Secondary Fallback: Invidious Open API (Zero Quota Limit)
+				for (const instanceUrl of this.invidiousInstances) {
+					try {
+						const fallbackUrl = `${instanceUrl}/search?q=${encodeURIComponent(query)}&type=video`;
+						const res = await fetch(fallbackUrl);
+						if (!res.ok) continue;
+
+						const data = await res.json();
+						if (Array.isArray(data) && data.length > 0) {
+							this.fetchedVideos = this.formatInvidiousVideos(data);
+							this.currentApiMode = 'invidious';
+							this.updateApiStatusUI('Invidious (Backup Server)', 'amber');
+							this.showToast('Beralih ke Server Cadangan (Bebas Limit)');
+							this.renderGrid(this.fetchedVideos);
+
+							if (autoScroll && window.scrollY > 400) {
+								window.scrollTo({ top: 400, behavior: 'smooth' });
+							}
+							return;
+						}
+					} catch (invError) {
+						console.warn(`Invidious instance ${instanceUrl} failed. Trying next...`, invError);
+					}
+				}
+
+				// If all APIs fail
+				grid.innerHTML = `<div class="col-span-full text-center text-rose-400 py-8 text-xs">Gagal memuat video dari semua server API. Mohon periksa koneksi internet Anda.</div>`;
+				this.updateApiStatusUI('Offline / Disconnected', 'rose');
+			},
+
+			// Invidious API Adapter function to harmonize dataset format
+			formatInvidiousVideos(invidiousList) {
+				return invidiousList.map(item => {
+					let thumbUrl = `https://i.ytimg.com/vi/${item.videoId}/hqdefault.jpg`;
+					if (item.videoThumbnails && item.videoThumbnails.length > 0) {
+						thumbUrl = item.videoThumbnails[0].url;
+					}
+
+					return {
+						id: item.videoId,
+						ytId: item.videoId,
+						title: item.title,
+						channel: item.author || 'YouTube Channel',
+						views: item.viewCount || (item.viewCountText ? parseInt(item.viewCountText) : 0),
+						likes: item.likeCount || 0,
+						date: item.publishedText || 'Terbaru',
+						thumb: thumbUrl
+					};
+				});
+			},
+
+			updateApiStatusUI(statusText, color = 'emerald') {
+				const badge = document.getElementById('apiStatusBadge');
+				if (!badge) return;
+
+				if (color === 'emerald') {
+					badge.className = "flex items-center gap-1.5 text-[10px] text-emerald-500 font-mono";
+					badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> <i class="fa-brands fa-youtube"></i> ${statusText}`;
+				} else if (color === 'amber') {
+					badge.className = "flex items-center gap-1.5 text-[10px] text-amber-400 font-mono";
+					badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> <i class="fa-solid fa-server"></i> ${statusText}`;
+				} else {
+					badge.className = "flex items-center gap-1.5 text-[10px] text-rose-500 font-mono";
+					badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span> ${statusText}`;
+				}
+			},
+
+			renderGrid(videos) {
+				const grid = document.getElementById('videoGrid');
+				grid.innerHTML = '';
+
+				videos.forEach(v => {
+					const card = document.createElement('div');
+					card.className = "ui-card border rounded-xl overflow-hidden cursor-pointer transition-all hover:scale-[1.02] shadow-sm flex flex-col group";
+					card.onclick = () => this.playVideo(v);
+
+					card.innerHTML = `
+						<div class="relative aspect-video bg-black overflow-hidden">
+							<img src="${v.thumb}" alt="${v.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x340/0f172a/94a3b8?text=Video'">
+							<div class="absolute bottom-2 right-2 bg-black/80 backdrop-blur-md text-white text-[10px] px-2 py-0.5 rounded font-mono border border-white/10 flex items-center gap-1">
+								<i class="fa-brands fa-youtube text-red-500"></i> YouTube
+							</div>
+						</div>
+						<div class="p-3 flex-1 flex flex-col justify-between">
+							<h3 class="font-medium text-xs sm:text-sm line-clamp-2 leading-snug group-hover:text-accent transition-colors">${v.title}</h3>
+							<div class="mt-3 text-[11px] ui-text-subtle space-y-1">
+								<p class="font-medium truncate flex items-center gap-1"><i class="fa-solid fa-circle-user text-[10px]"></i> ${v.channel}</p>
+								<div class="flex items-center justify-between text-slate-500">
+									<span>${this.formatNumber(v.views)}x dilihat</span>
+									<span>${v.date}</span>
+								</div>
+							</div>
+						</div>
+					`;
+					grid.appendChild(card);
+				});
+
+				document.getElementById('resultCount').innerText = `${videos.length} Video`;
+			},
+
+			playFirstAvailable() {
+				if (this.state.currentVideo) {
+					this.playVideo(this.state.currentVideo);
+				} else if (this.fetchedVideos && this.fetchedVideos.length > 0) {
+					this.playVideo(this.fetchedVideos[0]);
+				}
+			},
+
+			playVideo(videoObj, addToHistory = true) {
+				this.playSound();
+				this.triggerHaptic();
+
+				this.state.currentVideo = videoObj;
+				this.state.lastWatched = videoObj;
+
+				document.getElementById('heroPlaceholder').classList.add('hidden');
+				const iframe = document.getElementById('ytPlayer');
+				iframe.classList.remove('hidden');
+				iframe.src = `https://www.youtube-nocookie.com/embed/${videoObj.ytId}?autoplay=1&enablejsapi=1`;
+
+				document.getElementById('videoTitle').innerText = videoObj.title;
+				document.getElementById('channelName').innerHTML = `<i class="fa-solid fa-tv text-accent mr-1"></i> ${videoObj.channel}`;
+				document.getElementById('viewCount').innerHTML = `<i class="fa-solid fa-eye mr-1"></i> ${this.formatNumber(videoObj.views)}x dilihat`;
+				document.getElementById('uploadDate').innerHTML = `<i class="fa-solid fa-calendar-days mr-1"></i> ${videoObj.date}`;
+
+				this.updateLikeButtonUI();
+
+				if (addToHistory) {
+					const existingIndex = this.state.history.findIndex(item => item.ytId === videoObj.ytId);
+					if (existingIndex > -1) this.state.history.splice(existingIndex, 1);
+
+					this.state.history.unshift({
+						...videoObj,
+						watchedAt: new Date().toLocaleString('id-ID')
+					});
+				}
+
+				this.saveState();
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+			},
+
+			toggleLike() {
+				if (!this.state.currentVideo) {
+					this.showToast('Pilih video terlebih dahulu');
+					return;
+				}
+				this.playSound();
+				this.triggerHaptic();
+
+				const ytId = this.state.currentVideo.ytId;
+				const isLiked = !!this.state.likesMap[ytId];
+
+				if (isLiked) {
+					delete this.state.likesMap[ytId];
+					const idx = this.state.likedList.findIndex(v => v.ytId === ytId);
+					if (idx > -1) this.state.likedList.splice(idx, 1);
+					this.showToast('Batal menyukai video');
+				} else {
+					this.state.likesMap[ytId] = true;
+					this.state.likedList.unshift({
+						...this.state.currentVideo,
+						likedAt: new Date().toLocaleString('id-ID')
+					});
+					this.showToast('Video ditambahkan ke daftar disukai!');
+				}
+
+				this.saveState();
+				this.updateLikeButtonUI();
+			},
+
+			updateLikeButtonUI() {
+				if (!this.state.currentVideo) return;
+				const ytId = this.state.currentVideo.ytId;
+				const isLiked = !!this.state.likesMap[ytId];
+				const btn = document.getElementById('likeBtn');
+				const icon = document.getElementById('likeIcon');
+				const count = document.getElementById('likeCount');
+
+				const baseLikes = this.state.currentVideo.likes || 0;
+				count.innerText = this.formatNumber(isLiked ? baseLikes + 1 : baseLikes);
+
+				if (isLiked) {
+					btn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-600 text-white text-xs font-medium shadow-md transition-all";
+					icon.className = "fa-solid fa-heart text-xs";
+				} else {
+					btn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-xl ui-card border text-xs font-medium hover:border-accent transition-all";
+					icon.className = "fa-solid fa-thumbs-up text-xs";
+				}
+			},
+
+			toggleTheaterMode() {
+				this.playSound();
+				this.isTheaterMode = !this.isTheaterMode;
+				const wrapper = document.getElementById('playerWrapper');
+				const icon = document.getElementById('theaterIcon');
+
+				if (this.isTheaterMode) {
+					wrapper.classList.remove('max-w-4xl');
+					wrapper.classList.add('max-w-6xl');
+					icon.className = 'fa-solid fa-compress text-xs';
+					this.showToast('Mode Bioskop Diaktifkan');
+				} else {
+					wrapper.classList.remove('max-w-6xl');
+					wrapper.classList.add('max-w-4xl');
+					icon.className = 'fa-solid fa-expand text-xs';
+					this.showToast('Mode Bioskop Dinonaktifkan');
+				}
+			},
+
+			shareCurrentVideo() {
+				if (!this.state.currentVideo) {
+					this.showToast('Belum ada video yang diputar');
+					return;
+				}
+				const ytUrl = `https://www.youtube.com/watch?v=${this.state.currentVideo.ytId}`;
+				if (navigator.clipboard) {
+					navigator.clipboard.writeText(ytUrl);
+				} else {
+					const el = document.createElement('textarea');
+					el.value = ytUrl;
+					document.body.appendChild(el);
+					el.select();
+					document.execCommand('copy');
+					document.body.removeChild(el);
+				}
+				this.showToast('Tautan video berhasil disalin!');
+				this.playSound();
+			},
+
+			handleSearch(e) {
+				if (e) e.preventDefault();
+				this.playSound();
+				const input = document.getElementById('searchInput');
+				const query = input.value.trim();
+				if (!query) return;
+
+				this.addToSearchHistory(query);
+				this.hideSearchSuggestions();
+
+				document.getElementById('sectionTitle').innerHTML = `<i class="fa-solid fa-magnifying-glass text-accent mr-1"></i> Hasil Pencarian: "${query}"`;
+				this.searchYouTube(query);
+			},
+
+			addToSearchHistory(query) {
+				const existingIdx = this.state.searchHistory.indexOf(query);
+				if (existingIdx > -1) this.state.searchHistory.splice(existingIdx, 1);
+				this.state.searchHistory.unshift(query);
+				if (this.state.searchHistory.length > 15) this.state.searchHistory.pop();
+				this.saveState();
+			},
+
+			removeSearchHistoryItem(e, item) {
+				e.stopPropagation();
+				e.preventDefault();
+				this.state.searchHistory = this.state.searchHistory.filter(q => q !== item);
+				this.saveState();
+				this.renderSearchSuggestions(document.getElementById('searchInput').value);
+			},
+
+			clearSearchHistory(e) {
+				if (e) { e.stopPropagation(); e.preventDefault(); }
+				this.state.searchHistory = [];
+				this.saveState();
+				this.renderSearchSuggestions('');
+			},
+
+			handleSearchInput(val) {
+				this.renderSearchSuggestions(val);
+			},
+
+			showSearchSuggestions() {
+				const inputVal = document.getElementById('searchInput').value;
+				this.renderSearchSuggestions(inputVal);
+				document.getElementById('searchSuggestions').classList.remove('hidden');
+			},
+
+			hideSearchSuggestions() {
+				setTimeout(() => {
+					document.getElementById('searchSuggestions').classList.add('hidden');
+				}, 200);
+			},
+
+			renderSearchSuggestions(filterVal = '') {
+				const container = document.getElementById('suggestionList');
+				container.innerHTML = '';
+
+				const filtered = this.state.searchHistory.filter(item => 
+					item.toLowerCase().includes(filterVal.toLowerCase().trim())
+				);
+
+				if (filtered.length === 0) {
+					container.innerHTML = `<div class="px-4 py-3 text-center text-slate-500 text-[11px]">Belum ada riwayat pencarian.</div>`;
+					return;
+				}
+
+				filtered.forEach(item => {
+					const div = document.createElement('div');
+					div.className = "px-3.5 py-2 ui-hover-bg cursor-pointer flex items-center justify-between transition-colors";
+					div.onmousedown = () => {
+						document.getElementById('searchInput').value = item;
+						this.handleSearch();
+					};
+
+					div.innerHTML = `
+						<div class="flex items-center gap-2.5 truncate flex-1">
+							<i class="fa-solid fa-clock-rotate-left ui-text-subtle text-[11px]"></i>
+							<span class="truncate">${item}</span>
+						</div>
+						<button onmousedown="app.removeSearchHistoryItem(event, '${item.replace(/'/g, "\\'")}')" class="p-1 ui-text-subtle hover:text-rose-400 text-[11px] transition-colors" title="Hapus">
+							<i class="fa-solid fa-xmark"></i>
+						</button>
+					`;
+					container.appendChild(div);
+				});
+			},
+
+			resetHome() {
+				document.getElementById('searchInput').value = '';
+				this.selectCategory(0);
+			},
+
+			openModal(id) {
+				this.playSound();
+				const modal = document.getElementById(id);
+				const content = modal.querySelector('.ui-modal');
+
+				modal.classList.remove('hidden', 'backdrop-anim-out');
+				modal.classList.add('flex', 'backdrop-anim-in');
+
+				content.classList.remove('modal-anim-out');
+				content.classList.add('modal-anim-in');
+
+				if (id === 'accountModal') this.renderAccountModal();
+			},
+
+			closeModal(id) {
+				this.playSound();
+				const modal = document.getElementById(id);
+				const content = modal.querySelector('.ui-modal');
+
+				modal.classList.remove('backdrop-anim-in');
+				modal.classList.add('backdrop-anim-out');
+
+				content.classList.remove('modal-anim-in');
+				content.classList.add('modal-anim-out');
+
+				setTimeout(() => {
+					modal.classList.remove('flex', 'backdrop-anim-out');
+					modal.classList.add('hidden');
+				}, 200);
+			},
+
+			loadLocalStorage() {
+				const savedUser = localStorage.getItem('st_user');
+				if (savedUser) this.state.user = JSON.parse(savedUser);
+
+				const savedHistory = localStorage.getItem('st_history');
+				if (savedHistory) this.state.history = JSON.parse(savedHistory);
+
+				const savedLiked = localStorage.getItem('st_likedList');
+				if (savedLiked) this.state.likedList = JSON.parse(savedLiked);
+
+				const savedDownloads = localStorage.getItem('st_downloads');
+				if (savedDownloads) this.state.downloads = JSON.parse(savedDownloads);
+
+				const savedSearchHistory = localStorage.getItem('st_search_history');
+				if (savedSearchHistory) this.state.searchHistory = JSON.parse(savedSearchHistory);
+
+				const savedSettings = localStorage.getItem('st_settings');
+				if (savedSettings) this.state.settings = Object.assign(this.state.settings, JSON.parse(savedSettings));
+
+				const savedLikesMap = localStorage.getItem('st_likesMap');
+				if (savedLikesMap) this.state.likesMap = JSON.parse(savedLikesMap);
+
+				const savedLastWatched = localStorage.getItem('st_lastWatched');
+				if (savedLastWatched) this.state.lastWatched = JSON.parse(savedLastWatched);
+			},
+
+			saveState() {
+				localStorage.setItem('st_user', JSON.stringify(this.state.user));
+				localStorage.setItem('st_history', JSON.stringify(this.state.history));
+				localStorage.setItem('st_likedList', JSON.stringify(this.state.likedList));
+				localStorage.setItem('st_downloads', JSON.stringify(this.state.downloads));
+				localStorage.setItem('st_search_history', JSON.stringify(this.state.searchHistory));
+				localStorage.setItem('st_settings', JSON.stringify(this.state.settings));
+				localStorage.setItem('st_likesMap', JSON.stringify(this.state.likesMap));
+				if (this.state.lastWatched) {
+					localStorage.setItem('st_lastWatched', JSON.stringify(this.state.lastWatched));
+				}
+			},
+
+			downloadAction(type) {
+				if (!this.state.currentVideo) {
+					this.showToast('Pilih video terlebih dahulu');
+					return;
+				}
+				this.playSound();
+				this.triggerHaptic();
+
+				const ytId = this.state.currentVideo.ytId;
+				const title = this.state.currentVideo.title;
+				const thumb = this.state.currentVideo.thumb;
+
+				this.state.downloads.unshift({
+					title: title,
+					type: type.toUpperCase(),
+					ytId: ytId,
+					thumb: thumb,
+					downloadedAt: new Date().toLocaleString('id-ID')
+				});
+				this.saveState();
+
+				window.open(`https://y2mate.is/watch?v=${ytId}`, '_blank');
+				this.showToast(`Membuka konverter ${type.toUpperCase()}...`);
+			},
+
+			handleAvatarUpload(e) {
+				const file = e.target.files[0];
+				if (!file) return;
+
+				if (file.size > 2 * 1024 * 1024) {
+					alert("Ukuran gambar maksimal 2MB.");
+					return;
+				}
+
+				const reader = new FileReader();
+				reader.onload = (evt) => {
+					this.state.user.avatar = evt.target.result;
+					this.saveState();
+					this.updateAvatarUI();
+					this.showToast("Foto profil berhasil diperbarui!");
+				};
+				reader.readAsDataURL(file);
+			},
+
+			updateAvatarUI() {
+				const avatarSrc = this.state.user.avatar || `https://placehold.co/100x100/6366f1/ffffff?text=${encodeURIComponent(this.state.user.name.charAt(0))}`;
+				document.getElementById('profileAvatar').src = avatarSrc;
+				document.getElementById('navAvatarImg').src = avatarSrc;
+			},
+
+			renderAccountModal() {
+				document.getElementById('accName').innerText = this.state.user.name;
+				document.getElementById('navAccountName').innerText = this.state.user.name;
+
+				this.updateAvatarUI();
+
+				const diffTime = Math.abs(Date.now() - (this.state.user.createdAt || Date.now()));
+				const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+				document.getElementById('accAge').innerText = `Umur Akun: ${diffDays} Hari`;
+
+				document.getElementById('statWatch').innerText = this.state.history.length;
+				document.getElementById('statLike').innerText = this.state.likedList.length;
+				document.getElementById('statDownload').innerText = this.state.downloads.length;
+				document.getElementById('statDays').innerText = `${diffDays}d`;
+
+				document.getElementById('countWatch').innerText = this.state.history.length;
+				document.getElementById('countLike').innerText = this.state.likedList.length;
+				document.getElementById('countDownload').innerText = this.state.downloads.length;
+
+				this.renderAccTabContent();
+			},
+
+			editName() {
+				const newName = prompt("Masukkan nama profil baru:", this.state.user.name);
+				if (newName && newName.trim() !== "") {
+					this.state.user.name = newName.trim();
+					this.saveState();
+					this.renderAccountModal();
+					this.showToast("Nama berhasil diperbarui");
+				}
+			},
+
+			switchAccTab(tab) {
+				this.playSound();
+				this.state.activeAccTab = tab;
+
+				const tabW = document.getElementById('tabWatch');
+				const tabL = document.getElementById('tabLike');
+				const tabD = document.getElementById('tabDownload');
+
+				tabW.className = "py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5";
+				tabL.className = "py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5";
+				tabD.className = "py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5";
+
+				if (tab === 'watch') tabW.className = "py-2 px-3 border-b-2 border-accent text-accent font-medium whitespace-nowrap flex items-center gap-1.5";
+				else if (tab === 'like') tabL.className = "py-2 px-3 border-b-2 border-accent text-accent font-medium whitespace-nowrap flex items-center gap-1.5";
+				else if (tab === 'download') tabD.className = "py-2 px-3 border-b-2 border-accent text-accent font-medium whitespace-nowrap flex items-center gap-1.5";
+
+				this.renderAccTabContent();
+			},
+
+			renderAccTabContent() {
+				const container = document.getElementById('accList');
+				container.innerHTML = '';
+
+				let list = [];
+				if (this.state.activeAccTab === 'watch') list = this.state.history;
+				else if (this.state.activeAccTab === 'like') list = this.state.likedList;
+				else list = this.state.downloads;
+
+				if (list.length === 0) {
+					container.innerHTML = `<div class="text-center text-slate-500 py-6 text-xs">Belum ada riwayat di kategori ini.</div>`;
+					return;
+				}
+
+				list.forEach(item => {
+					const el = document.createElement('div');
+					el.className = "p-2 ui-sub-bg rounded-xl border border-slate-700/40 flex items-center gap-3 text-xs";
+					const thumbUrl = item.thumb || `https://placehold.co/120x68/0f172a/94a3b8?text=Video`;
+
+					if (this.state.activeAccTab === 'watch' || this.state.activeAccTab === 'like') {
+						const dateStr = item.watchedAt || item.likedAt || '-';
+						el.innerHTML = `
+							<img src="${thumbUrl}" alt="" class="w-16 h-10 object-cover rounded-lg shrink-0 border border-slate-700/50">
+							<div class="truncate flex-1">
+								<div class="font-medium truncate">${item.title}</div>
+								<div class="text-[10px] ui-text-subtle">${item.channel || 'YouTube'} • ${dateStr}</div>
+							</div>
+							<button onclick="app.playVideo(${JSON.stringify(item).replace(/"/g, '&quot;')}); app.closeModal('accountModal')" class="px-2.5 py-1 bg-slate-800 text-slate-200 rounded-lg text-[11px] hover:bg-slate-700 border border-slate-700 shrink-0">Putar</button>
+						`;
+					} else {
+						el.innerHTML = `
+							<img src="${thumbUrl}" alt="" class="w-16 h-10 object-cover rounded-lg shrink-0 border border-slate-700/50">
+							<div class="truncate flex-1">
+								<div class="font-medium truncate">${item.title}</div>
+								<div class="text-[10px] ui-text-subtle">${item.type} • ${item.downloadedAt}</div>
+							</div>
+							<span class="px-2 py-0.5 bg-emerald-950/80 text-emerald-400 rounded text-[10px] font-mono border border-emerald-800/50 shrink-0">Selesai</span>
+						`;
+					}
+					container.appendChild(el);
+				});
+			},
+
+			exportHistory() {
+				this.playSound();
+				const exportData = {
+					user: this.state.user,
+					history: this.state.history,
+					likedList: this.state.likedList,
+					downloads: this.state.downloads,
+					searchHistory: this.state.searchHistory,
+					settings: this.state.settings,
+					version: "1.4"
+				};
+
+				const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+				const downloadAnchor = document.createElement('a');
+				downloadAnchor.setAttribute("href", dataStr);
+				downloadAnchor.setAttribute("download", `StreamTube_Backup_${Date.now()}.json`);
+				document.body.appendChild(downloadAnchor);
+				downloadAnchor.click();
+				downloadAnchor.remove();
+
+				this.showToast("Data akun berhasil diekspor!");
+			},
+
+			triggerImport() {
+				this.playSound();
+				document.getElementById('importFileInput').click();
+			},
+
+			handleImportFile(e) {
+				const file = e.target.files[0];
+				if (!file) return;
+
+				const reader = new FileReader();
+				reader.onload = (evt) => {
+					try {
+						const imported = JSON.parse(evt.target.result);
+						if (imported.history && imported.user) {
+							this.state.user = imported.user;
+							this.state.history = imported.history || [];
+							this.state.likedList = imported.likedList || [];
+							this.state.downloads = imported.downloads || [];
+							this.state.searchHistory = imported.searchHistory || [];
+							if (imported.settings) this.state.settings = imported.settings;
+
+							this.saveState();
+							this.applySettingsUI();
+							this.renderAccountModal();
+							this.showToast("Data akun berhasil diimpor!");
+						} else {
+							alert("Format file JSON tidak valid.");
+						}
+					} catch (err) {
+						alert("Gagal membaca file JSON.");
+					}
+				};
+				reader.readAsText(file);
+			},
+
+			applySettingsUI() {
+				const s = this.state.settings;
+
+				this.setTheme(s.theme, false);
+
+				this.updateFontSize(s.fontSize, false);
+				document.getElementById('fontSizeSlider').value = s.fontSize;
+
+				this.updateFontFamily(s.fontFamily, false);
+				document.getElementById('fontFamilySelect').value = s.fontFamily;
+
+				this.updateFontWeight(s.fontWeight, false);
+				document.getElementById('fontWeightSelect').value = s.fontWeight;
+
+				this.updateAccentColor(s.accentColor, false);
+				document.getElementById('accentColorInput').value = s.accentColor;
+
+				document.getElementById('soundToggle').checked = s.soundEnabled;
+				document.getElementById('hapticToggle').checked = s.hapticEnabled;
+
+				this.updateAvatarUI();
+			},
+
+			setTheme(themeName, save = true) {
+				if (save) this.playSound();
+				this.state.settings.theme = themeName;
+				const body = document.body;
+
+				body.classList.remove('theme-dark', 'theme-slate', 'theme-light');
+				body.classList.add(`theme-${themeName}`);
+
+				if (save) this.saveState();
+			},
+
+			updateFontSize(size, save = true) {
+				document.documentElement.style.setProperty('--base-font-size', size + 'px');
+				document.getElementById('fontSizeVal').innerText = size + 'px';
+				this.state.settings.fontSize = size;
+				if (save) this.saveState();
+			},
+
+			updateFontFamily(family, save = true) {
+				document.documentElement.style.setProperty('--app-font-family', `'${family}', sans-serif`);
+				this.state.settings.fontFamily = family;
+				if (save) {
+					this.playSound();
+					this.saveState();
+				}
+			},
+
+			updateFontWeight(weight, save = true) {
+				document.documentElement.style.setProperty('--app-font-weight', weight);
+				this.state.settings.fontWeight = weight;
+				if (save) {
+					this.playSound();
+					this.saveState();
+				}
+			},
+
+			updateAccentColor(color, save = true) {
+				document.documentElement.style.setProperty('--accent-color', color);
+				document.documentElement.style.setProperty('--accent-hover', color + 'dd');
+				document.getElementById('accentHexCode').innerText = color;
+				this.state.settings.accentColor = color;
+				if (save) this.saveState();
+			},
+
+			toggleSound(val) {
+				this.state.settings.soundEnabled = val;
+				document.getElementById('footerSoundStatus').innerText = val ? 'Aktif' : 'Nonaktif';
+				this.saveState();
+			},
+
+			toggleHaptic(val) {
+				this.state.settings.hapticEnabled = val;
+				this.saveState();
+				if (val) this.triggerHaptic();
+			},
+
+			playSound() {
+				if (!this.state.settings.soundEnabled) return;
+				try {
+					if (!this.audioCtx) {
+						this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+					}
+					if (this.audioCtx.state === 'suspended') {
+						this.audioCtx.resume();
+					}
+
+					const osc = this.audioCtx.createOscillator();
+					const gain = this.audioCtx.createGain();
+
+					osc.type = 'sine';
+					osc.frequency.setValueAtTime(480, this.audioCtx.currentTime);
+					osc.frequency.exponentialRampToValueAtTime(240, this.audioCtx.currentTime + 0.04);
+
+					gain.gain.setValueAtTime(0.05, this.audioCtx.currentTime);
+					gain.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + 0.04);
+
+					osc.connect(gain);
+					gain.connect(this.audioCtx.destination);
+
+					osc.start();
+					osc.stop(this.audioCtx.currentTime + 0.04);
+				} catch (e) {}
+			},
+
+			triggerHaptic() {
+				if (!this.state.settings.hapticEnabled) return;
+				if (navigator.vibrate) navigator.vibrate(18);
+			},
+
+			showToast(msg) {
+				const toast = document.getElementById('toast');
+				document.getElementById('toastMsg').innerText = msg;
+				toast.classList.remove('opacity-0', 'pointer-events-none');
+				toast.classList.add('opacity-100');
+
+				setTimeout(() => {
+					toast.classList.remove('opacity-100');
+					toast.classList.add('opacity-0', 'pointer-events-none');
+				}, 3000);
+			},
+
+			formatNumber(num) {
+				if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+				if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+				return num;
+			}
+		};
+
+		// Launch Application
+		window.onload = function() {
+			app.init();
+		};
+	</script>
+</body>
+</html>
