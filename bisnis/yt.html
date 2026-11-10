@@ -7,6 +7,7 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=Poppins:wght@400;500;600;700&family=Nunito:wght@400..700&family=Lora:wght@400..700&family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400..700&display=swap">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<script src="https://cdn.tailwindcss.com/3.4.17"></script>
 
 	<style>
@@ -78,22 +79,25 @@
 			transition: border-color .15s, box-shadow .15s;
 		}
 		.field:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
-		.btn { padding: .55rem 1.1rem; border-radius: 9999px; background: var(--chip); font-weight: 600; transition: filter .15s, transform .15s; }
+		.btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .55rem 1.1rem; border-radius: 9999px; background: var(--chip); font-weight: 600; transition: filter .15s, transform .15s; }
 		.btn:hover { filter: brightness(.95); }
 		.btn:active { transform: scale(.97); }
 		.btn-accent { background: var(--accent); color: #fff; }
 		.btn-accent:hover { filter: brightness(1.1); }
+		.btn-danger { background: #d64545; color: #fff; }
+		.btn-danger:hover { filter: brightness(1.1); }
 		.btn.is-liked { color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
 		/* Kilau lembut (glossy) untuk semua permukaan beraksen */
-		.btn-accent, [style*="background: var(--accent)"] {
+		.btn-accent, .btn-danger, [style*="background: var(--accent)"] {
 			background-image: linear-gradient(180deg, rgba(255, 255, 255, .26), rgba(255, 255, 255, 0) 58%) !important;
 			box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 3px 10px color-mix(in srgb, var(--accent) 30%, transparent);
 		}
 		.icon-btn { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 9999px; transition: background .15s; }
 		.icon-btn:hover { background: var(--chip); }
-		.chip { display: inline-block; padding: .25rem .7rem; border-radius: 9999px; background: var(--chip); font-size: .75rem; font-weight: 600; }
+		.chip { display: inline-flex; align-items: center; gap: .35rem; padding: .25rem .7rem; border-radius: 9999px; background: var(--chip); font-size: .75rem; font-weight: 600; }
 		button.chip { padding: .45rem .95rem; font-size: .8rem; white-space: nowrap; transition: background .15s, color .15s; }
 		button.chip:hover { background: var(--accent); color: #fff; }
+		.icon { display: inline-block; flex-shrink: 0; line-height: 1; }
 
 		/* ==========================================================
 		   4. KARTU VIDEO & ANIMASI
@@ -103,10 +107,34 @@
 		.badge { position: absolute; right: .4rem; bottom: .4rem; padding: .1rem .4rem; border-radius: .4rem; background: rgba(0, 0, 0, .8); color: #fff; font-size: .7rem; font-weight: 600; }
 		.rise { animation: rise .35s ease both; }
 		@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
-		.panel-open #panel { transform: translateX(0); }
+		.wrap-text { overflow-wrap: anywhere; }
+		.suggest-row:hover { background: var(--chip); }
+		.chev { transition: transform .2s; }
+		details[open] > summary .chev { transform: rotate(180deg); }
+
+		/* ==========================================================
+		   5. MODAL & POPUP (panel samping, dialog, saran pencarian, toast)
+		   ========================================================== */
+		#panel { visibility: hidden; transition: transform .3s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .3s; }
+		#backdrop { transition: opacity .3s ease; }
+		.panel-open #panel { visibility: visible; transform: translateX(0); transition-delay: 0s; }
 		.panel-open #backdrop { opacity: 1; pointer-events: auto; }
-		.no-anim *, .no-anim *::before, .no-anim *::after { transition: none !important; animation: none !important; }
-		@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+		dialog::backdrop { background: rgba(0, 0, 0, .5); backdrop-filter: blur(2px); }
+		dialog[open] { animation: dialog-in .22s cubic-bezier(.2, .8, .2, 1) both; }
+		dialog[open]::backdrop { animation: fade-in .22s ease both; }
+		dialog.closing { animation: dialog-out .16s ease-in both; }
+		dialog.closing::backdrop { animation: fade-out .16s ease-in both; }
+		@keyframes dialog-in { from { opacity: 0; transform: translateY(12px) scale(.96); } }
+		@keyframes dialog-out { to { opacity: 0; transform: translateY(8px) scale(.97); } }
+		@keyframes fade-in { from { opacity: 0; } }
+		@keyframes fade-out { to { opacity: 0; } }
+
+		.suggest { opacity: 0; transform: translateY(-6px) scale(.98); transform-origin: top; visibility: hidden; pointer-events: none; transition: opacity .15s, transform .15s, visibility 0s linear .15s; }
+		.suggest[data-open="true"] { opacity: 1; transform: none; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+
+		.no-anim *, .no-anim *::before, .no-anim *::after, .no-anim dialog::backdrop { transition: none !important; animation: none !important; }
+		@media (prefers-reduced-motion: reduce) { *, dialog::backdrop { transition: none !important; animation: none !important; } }
 	</style>
 </head>
 
@@ -118,27 +146,21 @@
 	<header id="stack" class="glass fixed inset-x-0 top-0 z-40" style="padding-top: env(safe-area-inset-top, 0px);">
 		<nav class="mx-auto flex h-16 max-w-5xl items-center gap-2 px-3">
 			<a id="logo" href="./" class="flex items-center gap-2 text-lg font-bold tracking-tight" aria-label="Tonton, ke beranda">
-				<span class="grid h-9 w-9 place-items-center rounded-xl text-white" style="background: var(--accent)">
-					<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-				</span>
+				<span class="grid h-9 w-9 place-items-center rounded-xl text-white" style="background: var(--accent)" data-icon="play" data-icon-size="20"></span>
 				<span class="hidden sm:inline">Tonton</span>
 			</a>
 
 			<form id="searchForm" class="relative flex-1" role="search">
-				<input id="searchInput" list="recentSearches" class="field pr-12" style="border-radius: 9999px" type="search" placeholder="Cari video, musik, channel" autocomplete="off" aria-label="Cari video">
-				<button class="absolute right-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-white" style="background: var(--accent)" type="submit" aria-label="Cari">
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-				</button>
-				<datalist id="recentSearches"></datalist>
+				<input id="searchInput" class="field pr-12" style="border-radius: 9999px" type="search" placeholder="Cari video, musik, channel" autocomplete="off" aria-label="Cari video">
+				<button class="absolute right-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-white" style="background: var(--accent)" type="submit" aria-label="Cari" data-icon="search" data-icon-size="15"></button>
+				<div id="suggestBox" class="suggest surface absolute inset-x-0 top-full z-50 mt-2 max-h-80 overflow-y-auto rounded-2xl p-1.5" style="box-shadow: var(--shadow)"></div>
 			</form>
 
 			<button id="btnAccount" class="icon-btn" aria-label="Akun">
 				<img id="navAvatar" class="hidden h-8 w-8 rounded-full object-cover" alt="Foto profil">
-				<svg id="navIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+				<span id="navIcon" class="grid place-items-center" data-icon="user" data-icon-size="22"></span>
 			</button>
-			<button id="btnSettings" class="icon-btn" aria-label="Pengaturan">
-				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
-			</button>
+			<button id="btnSettings" class="icon-btn" aria-label="Pengaturan" data-icon="sliders" data-icon-size="21"></button>
 		</nav>
 
 		<section id="playerWrap" class="hidden bg-black">
@@ -154,16 +176,16 @@
 	     ========================================================== -->
 	<main id="main" class="mx-auto w-full max-w-5xl flex-1 px-3 pb-12">
 		<section id="info" class="mb-6 hidden"></section>
-		<button id="nowPlaying" class="surface mb-4 hidden w-full items-center gap-2 rounded-2xl px-3 py-2 text-left text-sm" data-resume>
-			<span class="chip">Sedang diputar</span>
-			<span id="nowTitle" class="min-w-0 flex-1 truncate font-semibold"></span>
-			<span class="muted text-xs">Lihat info</span>
+		<button id="nowPlaying" class="surface mb-4 flex hidden w-full items-center gap-2 rounded-2xl px-3 py-2 text-left text-sm" data-resume>
+			<span class="chip" data-icon="play" data-icon-size="12">Sedang diputar</span>
+			<span id="nowTitle" class="wrap-text min-w-0 flex-1 font-semibold"></span>
+			<span class="muted inline-flex items-center gap-1 text-xs" data-icon="info" data-icon-size="13">Lihat info</span>
 		</button>
 		<div id="chips" class="no-scrollbar -mx-3 mb-4 flex gap-2 overflow-x-auto px-3"></div>
 		<h2 id="feedTitle" class="mb-3 text-lg font-bold tracking-tight"></h2>
 		<div id="feed" class="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-3"></div>
 		<div id="moreWrap" class="mt-6 hidden text-center">
-			<button id="btnMore" class="btn btn-accent">Muat lebih banyak</button>
+			<button id="btnMore" class="btn btn-accent" data-icon="chevron-down"><span id="btnMoreLabel">Muat lebih banyak</span></button>
 		</div>
 		<p id="status" class="muted py-8 text-center text-sm"></p>
 	</main>
@@ -175,9 +197,7 @@
 		<div class="mx-auto grid max-w-5xl gap-8 px-4 py-10 sm:grid-cols-3">
 			<section>
 				<div class="flex items-center gap-2 font-bold">
-					<span class="grid h-8 w-8 place-items-center rounded-xl text-white" style="background: var(--accent)">
-						<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-					</span>
+					<span class="grid h-8 w-8 place-items-center rounded-xl text-white" style="background: var(--accent)" data-icon="play" data-icon-size="17"></span>
 					Tonton
 				</div>
 				<p class="muted mt-3 text-sm">Pemutar video dengan antarmuka sendiri. Video, pencarian, dan statistik diambil langsung dari YouTube.</p>
@@ -205,8 +225,8 @@
 		<div class="border-t" style="border-color: var(--line)">
 			<div class="muted mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-4 text-xs">
 				<p id="footYear"></p>
-				<p>Data dari YouTube Data API v3. <a class="underline" href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">Ketentuan YouTube</a></p>
-				<button id="toTop" class="font-semibold" style="color: var(--accent)">Kembali ke atas</button>
+				<p>Data dari YouTube Data API v3. <a class="inline-flex items-center gap-1 underline" data-icon="external" data-icon-size="12" href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">Ketentuan YouTube</a></p>
+				<button id="toTop" class="inline-flex items-center gap-1 font-semibold" style="color: var(--accent)" data-icon="arrow-up" data-icon-size="13">Kembali ke atas</button>
 			</div>
 		</div>
 	</footer>
@@ -218,15 +238,29 @@
 	<aside id="panel" class="surface fixed inset-y-0 right-0 z-50 w-full max-w-sm shadow-2xl sm:rounded-l-3xl translate-x-full transition-transform overflow-y-auto" style="padding-top: env(safe-area-inset-top, 0px);" aria-hidden="true">
 		<div class="surface sticky top-0 flex items-center justify-between px-4 h-14 border-x-0 border-t-0">
 			<h2 id="panelTitle" class="font-semibold"></h2>
-			<button id="panelClose" class="icon-btn" aria-label="Tutup">
-				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-			</button>
+			<button id="panelClose" class="icon-btn" aria-label="Tutup" data-icon="close" data-icon-size="18"></button>
 		</div>
 		<div id="panelBody" class="px-4 pb-8"></div>
 	</aside>
-	<div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[60] px-4 py-2 rounded-lg text-sm text-white bg-black/85 opacity-0 pointer-events-none transition-opacity"></div>
+	<div id="toast" class="fixed bottom-5 left-1/2 z-[60] -translate-x-1/2 translate-y-2 rounded-lg bg-black/85 px-4 py-2 text-sm text-white opacity-0 pointer-events-none transition" role="status" aria-live="polite"></div>
 	<input id="importFile" type="file" accept="application/json" class="hidden">
 	<input id="avatarFile" type="file" accept="image/*" class="hidden">
+
+	<dialog id="confirmDialog" class="surface w-[90%] max-w-sm rounded-3xl p-5" style="color: var(--text); box-shadow: var(--shadow)">
+		<form method="dialog">
+			<div class="flex items-start gap-3">
+				<span id="confirmIcon" class="grid h-10 w-10 shrink-0 place-items-center rounded-full" style="background: var(--chip); color: var(--accent)"></span>
+				<div class="min-w-0">
+					<h3 id="confirmTitle" class="wrap-text font-bold"></h3>
+					<p id="confirmText" class="muted wrap-text mt-1 text-sm"></p>
+				</div>
+			</div>
+			<div class="mt-5 flex justify-end gap-2">
+				<button class="btn" value="cancel" data-icon="close" data-icon-size="14">Batal</button>
+				<button id="confirmOk" class="btn btn-danger" value="ok"></button>
+			</div>
+		</form>
+	</dialog>
 
 	<script>
 	/* ==============================================================
@@ -235,8 +269,8 @@
 	const CONFIG = {
 		API_KEY: 'AIzaSyCtksa1GE6rBpnuAI4IonvzLYDvPI_5b_E',  // YouTube Data API v3 key
 		REGION: 'ID',
-		CATEGORIES: ['Musik', 'Gaming', 'Berita', 'Teknologi', 'Kuliner', 'Olahraga', 'Film'],
 		LANG: 'id',
+		CATEGORIES: ['Musik', 'Gaming', 'Berita', 'Teknologi', 'Kuliner', 'Olahraga', 'Film'],
 		MAX_RESULTS: 24,
 		HISTORY_LIMIT: 100,
 		DOWNLOAD_API: '',     // Endpoint server unduhan milikmu, contoh: 'https://server-kamu.com/api/download'
@@ -258,12 +292,60 @@
 	   ============================================================== */
 	const $ = (sel, root = document) => root.querySelector(sel);
 
+	// Ikon dari Bootstrap Icons (https://icons.getbootstrap.com): nama ikon kita => kelas bi-*
+	// Pakai icon('nama', ukuran) di template JS, atau data-icon="nama" di HTML statis
+	const ICONS = {
+		'play': 'play-fill',
+		'search': 'search',
+		'user': 'person',
+		'close': 'x-lg',
+		'heart': 'heart',
+		'heart-fill': 'heart-fill',
+		'download': 'download',
+		'upload': 'upload',
+		'video': 'camera-video',
+		'headphones': 'headphones',
+		'share': 'share',
+		'trash': 'trash3',
+		'eye': 'eye',
+		'comment': 'chat-dots',
+		'clock': 'clock',
+		'calendar': 'calendar3',
+		'info': 'info-circle',
+		'alert': 'exclamation-triangle',
+		'arrow-up': 'arrow-up',
+		'arrow-up-left': 'arrow-up-left',
+		'chevron-down': 'chevron-down',
+		'external': 'box-arrow-up-right',
+		'flame': 'fire',
+		'music': 'music-note-beamed',
+		'gamepad': 'controller',
+		'newspaper': 'newspaper',
+		'cpu': 'cpu',
+		'utensils': 'cup-hot',
+		'trophy': 'trophy',
+		'film': 'film',
+		'tag': 'tag',
+		'sun': 'sun',
+		'type': 'type',
+		'font': 'fonts',
+		'bold': 'type-bold',
+		'palette': 'palette',
+		'sparkles': 'stars',
+		'volume': 'volume-up',
+		'vibrate': 'phone-vibrate',
+		'camera': 'camera',
+		'sliders': 'sliders',
+	};
+	const icon = (name, size = 16) => `<i class="bi bi-${ICONS[name] || 'question-circle'} icon" style="font-size: ${size}px" aria-hidden="true"></i>`;
+	const CATEGORY_ICONS = { Populer: 'flame', Musik: 'music', Gaming: 'gamepad', Berita: 'newspaper', Teknologi: 'cpu', Kuliner: 'utensils', Olahraga: 'trophy', Film: 'film' };
+
 	const Fmt = {
 		num: (n) => n == null ? '-' : new Intl.NumberFormat('id-ID', { notation: 'compact' }).format(n),
 		date: (d) => new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
 		age(ts) {
 			const days = Math.floor((Date.now() - ts) / 864e5);
-			if (days < 1) return 'Baru dibuat hari ini';
+			if (days < 1) return 'kurang dari 1 hari';
 			if (days < 30) return `${days} hari`;
 			if (days < 365) return `${Math.floor(days / 30)} bulan`;
 			return `${Math.floor(days / 365)} tahun`;
@@ -300,15 +382,33 @@
 			settings: { mode: 'system', fontSize: 16, fontFamily: 'Inter', fontWeight: '400', accent: ACCENTS[0], animation: true, sound: true, vibrate: true },
 		}),
 
-		load() {
+		// Pastikan struktur data valid, baik dari localStorage maupun file impor
+		normalize(raw) {
 			const base = this.defaults();
+			const d = raw && typeof raw === 'object' ? raw : {};
+			const data = { ...base, ...d, profile: { ...base.profile, ...d.profile }, settings: { ...base.settings, ...d.settings } };
+			['history', 'likes', 'downloads', 'searches'].forEach((key) => {
+				if (!Array.isArray(data[key])) data[key] = base[key];
+			});
+			if (typeof data.profile.avatar !== 'string' || !data.profile.avatar.startsWith('data:image/')) delete data.profile.avatar;
+
+			const s = data.settings;
+			const legacy = LEGACY_ACCENTS[String(s.accent).toLowerCase()];
+			if (legacy !== undefined) s.accent = ACCENTS[legacy];
+			if (!/^#[0-9a-f]{6}$/i.test(s.accent)) s.accent = base.settings.accent;
+			if (!FONTS.includes(s.fontFamily)) s.fontFamily = base.settings.fontFamily;
+			if (!(String(s.fontWeight) in WEIGHTS)) s.fontWeight = base.settings.fontWeight;
+			if (!['system', 'light', 'dark'].includes(s.mode)) s.mode = base.settings.mode;
+			s.fontWeight = String(s.fontWeight);
+			s.fontSize = Math.min(22, Math.max(12, Number(s.fontSize) || base.settings.fontSize));
+			return data;
+		},
+
+		load() {
 			try {
-				const saved = JSON.parse(localStorage.getItem(this.KEY)) || {};
-				this.data = { ...base, ...saved, settings: { ...base.settings, ...saved.settings } };
-				const legacy = LEGACY_ACCENTS[this.data.settings.accent];
-				if (legacy !== undefined) this.data.settings.accent = ACCENTS[legacy];
+				this.data = this.normalize(JSON.parse(localStorage.getItem(this.KEY)));
 			} catch {
-				this.data = base;
+				this.data = this.defaults();
 			}
 		},
 
@@ -324,7 +424,7 @@
 		},
 
 		addDownload(v, format) {
-			this.data.downloads.unshift({ id: v.id, title: v.title, channel: v.channel, format, at: Date.now() });
+			this.data.downloads = [{ id: v.id, title: v.title, channel: v.channel, format, at: Date.now() }, ...this.data.downloads].slice(0, CONFIG.HISTORY_LIMIT);
 			this.save();
 		},
 
@@ -342,8 +442,48 @@
 			return !liked;
 		},
 
+		// Saran dari riwayat: cocok di awal/tengah kata, atau mirip (toleran salah ketik)
+		suggest(q) {
+			const query = q.trim().toLowerCase();
+			const list = this.data.searches;
+			if (!query) return list.slice(0, 6).map((text) => ({ text, similar: false }));
+
+			const tokens = query.split(/\s+/);
+			return list
+				.map((text, order) => {
+					const t = text.toLowerCase();
+					const words = t.split(/\s+/);
+					let score = 0;
+					if (t === query) return null;
+					if (t.startsWith(query)) score = 4;
+					else if (t.includes(query)) score = 3;
+					else if (tokens.every((w) => t.includes(w))) score = 2.5;
+					else if (tokens.some((w) => w.length > 2 && words.some((x) => x.startsWith(w)))) score = 1.5;
+					else if (this.similarity(query, t) >= 0.4 || words.some((w) => this.similarity(query, w) >= 0.6)) score = 1;
+					return score ? { text, similar: score < 3, score, order } : null;
+				})
+				.filter(Boolean)
+				.sort((a, b) => b.score - a.score || a.order - b.order)
+				.slice(0, 6);
+		},
+
+		// Kemiripan dua teks (koefisien Dice atas pasangan huruf): 0 sampai 1
+		similarity(a, b) {
+			const pairs = (str) => Array.from({ length: Math.max(str.length - 1, 0) }, (_, i) => str.slice(i, i + 2));
+			const x = pairs(a);
+			const pool = pairs(b);
+			if (!x.length || !pool.length) return 0;
+			const total = x.length + pool.length;
+			let hit = 0;
+			x.forEach((p) => {
+				const i = pool.indexOf(p);
+				if (i > -1) { hit++; pool.splice(i, 1); }
+			});
+			return (2 * hit) / total;
+		},
+
 		addSearch(q) {
-			this.data.searches = [q, ...this.data.searches.filter((x) => x !== q)].slice(0, 10);
+			this.data.searches = [q, ...this.data.searches.filter((x) => x !== q)].slice(0, 30);
 			this.save();
 			UI.renderSearches();
 		},
@@ -371,9 +511,12 @@
 
 		export() {
 			const blob = new Blob([JSON.stringify(this.data, null, '\t')], { type: 'application/json' });
-			const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'tonton-data.json' });
+			const a = Object.assign(document.createElement('a'), {
+				href: URL.createObjectURL(blob),
+				download: `tonton-data-${new Date().toISOString().slice(0, 10)}.json`,
+			});
 			a.click();
-			URL.revokeObjectURL(a.href);
+			setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 		},
 
 		import(file) {
@@ -382,8 +525,7 @@
 				try {
 					const d = JSON.parse(reader.result);
 					if (!d || typeof d !== 'object') throw new Error('invalid');
-					const base = this.defaults();
-					this.data = { ...base, ...d, settings: { ...base.settings, ...d.settings } };
+					this.data = this.normalize(d);
 					this.save();
 					Theme.apply();
 					Panel.refresh();
@@ -410,8 +552,15 @@
 				.filter(([, v]) => v != null && v !== '')
 				.forEach(([k, v]) => url.searchParams.set(k, v));
 			const res = await fetch(url);
-			const json = await res.json();
-			if (!res.ok) throw new Error(json.error?.message || 'Gagal memuat data dari YouTube');
+			const json = await res.json().catch(() => ({}));
+			if (!res.ok) {
+				const known = {
+					quotaExceeded: 'Kuota harian YouTube API habis. Coba lagi besok.',
+					keyInvalid: 'API key tidak valid. Periksa CONFIG.API_KEY.',
+					forbidden: 'Akses ditolak. Periksa pembatasan domain dan API pada API key.',
+				};
+				throw new Error(known[json.error?.errors?.[0]?.reason] || json.error?.message || 'Gagal memuat data dari YouTube');
+			}
 			return json;
 		},
 
@@ -431,9 +580,11 @@
 
 		// Ambil detail + statistik untuk banyak ID sekaligus (hemat kuota)
 		async withStats(ids) {
-			if (!ids.length) return [];
-			const r = await this.get('videos', { part: 'snippet,statistics,contentDetails', id: ids.join(',') });
-			return r.items.map(this.normalize);
+			const unique = [...new Set(ids)];
+			if (!unique.length) return [];
+			const r = await this.get('videos', { part: 'snippet,statistics,contentDetails', id: unique.join(',') });
+			const byId = new Map(r.items.map((i) => [i.id, this.normalize(i)]));
+			return unique.map((id) => byId.get(id)).filter(Boolean); // urutan sama dengan hasil pencarian
 		},
 
 		async detail(id) {
@@ -486,6 +637,7 @@
 		beep() {
 			try {
 				this.ctx ||= new AudioContext();
+				if (this.ctx.state === 'suspended') this.ctx.resume();
 				const t = this.ctx.currentTime;
 				const osc = this.ctx.createOscillator();
 				const gain = this.ctx.createGain();
@@ -504,24 +656,25 @@
 	   ============================================================== */
 	const UI = {
 		toastTimer: null,
+		suggestOpen: false,
 
 		toast(msg) {
 			const el = $('#toast');
 			el.textContent = msg;
-			el.classList.remove('opacity-0');
+			el.classList.remove('opacity-0', 'translate-y-2');
 			clearTimeout(this.toastTimer);
-			this.toastTimer = setTimeout(() => el.classList.add('opacity-0'), 2800);
+			this.toastTimer = setTimeout(() => el.classList.add('opacity-0', 'translate-y-2'), 2800);
 		},
 
 		card: (v) => `
-			<button class="card flex gap-3 text-left sm:flex-col" data-play="${v.id}">
+			<button class="card flex gap-3 text-left sm:flex-col" data-play="${Fmt.esc(v.id)}">
 				<span class="relative block w-40 shrink-0 overflow-hidden rounded-2xl bg-black/10 sm:w-full">
 					<img class="aspect-video w-full object-cover" src="${v.thumb}" alt="" loading="lazy">
 					${v.duration ? `<span class="badge">${v.duration}</span>` : ''}
 				</span>
 				<span class="min-w-0 flex-1 px-0.5">
-					<span class="line-clamp-2 block text-sm font-semibold leading-snug">${Fmt.esc(v.title)}</span>
-					<span class="muted mt-1 block truncate text-xs">${Fmt.esc(v.channel)}</span>
+					<span class="wrap-text block text-sm font-semibold leading-snug">${Fmt.esc(v.title)}</span>
+					<span class="muted wrap-text mt-1 block text-xs">${Fmt.esc(v.channel)}</span>
 					<span class="muted block text-xs">${Fmt.num(v.views)} ditonton, ${Fmt.ago(v.publishedAt)}</span>
 				</span>
 			</button>`,
@@ -537,32 +690,32 @@
 			el.classList.remove('hidden');
 			el.innerHTML = `
 				<div class="surface rise mx-auto max-w-3xl rounded-3xl p-4" style="box-shadow: var(--shadow)">
-					<h1 class="text-lg font-bold leading-snug tracking-tight">${Fmt.esc(v.title)}</h1>
+					<h1 class="wrap-text text-lg font-bold leading-snug tracking-tight">${Fmt.esc(v.title)}</h1>
 
 					<div class="mt-3 flex items-center gap-3">
 						<span class="grid h-10 w-10 shrink-0 place-items-center rounded-full font-bold text-white" style="background: var(--accent)">${Fmt.esc(v.channel.charAt(0).toUpperCase())}</span>
 						<div class="min-w-0">
-							<p class="truncate font-semibold">${Fmt.esc(v.channel)}</p>
+							<p class="wrap-text font-semibold">${Fmt.esc(v.channel)}</p>
 							<p class="muted text-xs">Diunggah ${Fmt.date(v.publishedAt)}, ${Fmt.ago(v.publishedAt)}</p>
 						</div>
 					</div>
 
 					<div class="mt-3 flex flex-wrap gap-2">
-						<span class="chip">${Fmt.num(v.views)} ditonton</span>
-						<span class="chip">${Fmt.num(v.likes)} suka</span>
-						<span class="chip">${Fmt.num(v.comments)} komentar</span>
-						${v.duration ? `<span class="chip">Durasi ${v.duration}</span>` : ''}
+						<span class="chip">${icon('eye', 14)}${Fmt.num(v.views)} ditonton</span>
+						<span class="chip">${icon('heart', 14)}${Fmt.num(v.likes)} suka</span>
+						<span class="chip">${icon('comment', 14)}${Fmt.num(v.comments)} komentar</span>
+						${v.duration ? `<span class="chip">${icon('clock', 14)}Durasi ${v.duration}</span>` : ''}
 					</div>
 
 					<div class="mt-4 flex flex-wrap gap-2">
 						${this.likeBtn(v)}
-						<button class="btn btn-accent" data-download="mp4">Unduh MP4</button>
-						<button class="btn" data-download="mp3">Konversi ke MP3</button>
-						<button class="btn" data-share>Bagikan</button>
+						<button class="btn btn-accent" data-download="mp4">${icon('video')}Unduh MP4</button>
+						<button class="btn" data-download="mp3">${icon('headphones')}Konversi ke MP3</button>
+						<button class="btn" data-share>${icon('share')}Bagikan</button>
 					</div>
 
 					<details class="mt-4 text-sm">
-						<summary class="cursor-pointer font-semibold">Deskripsi</summary>
+						<summary class="flex cursor-pointer items-center gap-2 font-semibold">${icon('info')}Deskripsi<span class="chev ml-auto">${icon('chevron-down')}</span></summary>
 						<p class="muted mt-2 whitespace-pre-line break-words">${Fmt.esc(v.description.slice(0, 800)) || 'Tidak ada deskripsi.'}${v.description.length > 800 ? '...' : ''}</p>
 						${v.tags.length ? `<div class="mt-3 flex flex-wrap gap-1.5">${v.tags.map((t) => `<span class="chip">#${Fmt.esc(t)}</span>`).join('')}</div>` : ''}
 					</details>
@@ -572,8 +725,8 @@
 		likeBtn(v) {
 			const liked = Store.isLiked(v.id);
 			return `
-				<button class="btn inline-flex items-center gap-1.5 ${liked ? 'is-liked' : ''}" data-like aria-pressed="${liked}">
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="${liked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20.5s-8-4.9-8-11A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5c0 6.1-8 11-8 11z"/></svg>
+				<button class="btn ${liked ? 'is-liked' : ''}" data-like aria-pressed="${liked}">
+					${icon(liked ? 'heart-fill' : 'heart')}
 					${liked ? 'Disukai' : 'Suka'}
 				</button>`;
 		},
@@ -581,6 +734,45 @@
 		syncLike(v) {
 			const btn = $('[data-like]');
 			if (btn && v) btn.outerHTML = this.likeBtn(v);
+		},
+
+		hydrateIcons() {
+			document.querySelectorAll('[data-icon]').forEach((el) => {
+				el.insertAdjacentHTML('afterbegin', icon(el.dataset.icon, Number(el.dataset.iconSize) || 16));
+			});
+		},
+
+		// Durasi animasi (ms); 0 jika animasi dimatikan di Pengaturan atau sistem meminta gerakan minimal
+		motionMs(ms) {
+			const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+			return reduced || document.documentElement.classList.contains('no-anim') ? 0 : ms;
+		},
+
+		// Dialog konfirmasi (<dialog>) dengan animasi masuk/keluar; hasilnya true jika disetujui
+		confirm({ title, text, ok = 'Hapus', icon: iconName = 'trash', danger = true }) {
+			return new Promise((resolve) => {
+				const dialog = $('#confirmDialog');
+				$('#confirmTitle').textContent = title;
+				$('#confirmText').textContent = text;
+				$('#confirmIcon').innerHTML = icon('alert', 20);
+				$('#confirmOk').className = `btn ${danger ? 'btn-danger' : 'btn-accent'}`;
+				$('#confirmOk').innerHTML = `${icon(iconName, 14)}${ok}`;
+
+				// Putar animasi keluar dulu, baru tutup dialog
+				const finish = (value) => {
+					dialog.classList.add('closing');
+					setTimeout(() => dialog.close(value), this.motionMs(160));
+				};
+				dialog.onsubmit = (e) => { e.preventDefault(); finish(e.submitter ? e.submitter.value : 'cancel'); };
+				dialog.oncancel = (e) => { e.preventDefault(); finish('cancel'); };
+				dialog.addEventListener('close', () => {
+					dialog.classList.remove('closing');
+					resolve(dialog.returnValue === 'ok');
+				}, { once: true });
+
+				dialog.returnValue = '';
+				dialog.showModal();
+			});
 		},
 
 		renderAvatar() {
@@ -591,8 +783,22 @@
 			$('#navIcon').classList.toggle('hidden', Boolean(src));
 		},
 
+		// Dropdown saran: riwayat pencarian yang cocok atau mirip dengan teks yang diketik
 		renderSearches() {
-			$('#recentSearches').innerHTML = Store.data.searches.map((q) => `<option value="${Fmt.esc(q)}"></option>`).join('');
+			const box = $('#suggestBox');
+			const query = $('#searchInput').value.trim();
+			const items = Store.suggest(query);
+			box.innerHTML = items.length ? `
+				<p class="muted px-3 pb-1 pt-2 text-xs">${query ? 'Saran dari riwayat pencarianmu' : 'Pencarian terakhir'}</p>
+				${items.map(({ text, similar }) => `
+					<div class="suggest-row flex items-center rounded-xl">
+						<button class="flex min-w-0 flex-1 items-center gap-3 px-3 py-2.5 text-left text-sm" data-suggest="${Fmt.esc(text)}">
+							${icon(similar ? 'search' : 'clock')}
+							<span class="wrap-text min-w-0">${Fmt.esc(text)}</span>
+						</button>
+						<button class="icon-btn shrink-0" data-fill="${Fmt.esc(text)}" aria-label="Isi kolom cari">${icon('arrow-up-left')}</button>
+					</div>`).join('')}` : '';
+			box.dataset.open = String(items.length > 0 && this.suggestOpen);
 		},
 
 		renderFooter() {
@@ -603,9 +809,9 @@
 		},
 
 		fail(e) {
-			const msg = e.message === 'NO_KEY'
-				? 'API key belum diisi. Buka file ini, lalu isi CONFIG.API_KEY dengan YouTube Data API v3 key.'
-				: e.message;
+			let msg = e.message;
+			if (e.message === 'NO_KEY') msg = 'API key belum diisi. Buka file ini, lalu isi CONFIG.API_KEY dengan YouTube Data API v3 key.';
+			else if (e instanceof TypeError) msg = 'Tidak dapat terhubung ke YouTube. Periksa koneksi internetmu.';
 			$('#feed').innerHTML = '';
 			$('#status').textContent = msg;
 		},
@@ -617,19 +823,24 @@
 	const Panel = {
 		kind: null,
 		tab: 'history',
+		opener: null,
 
 		open(kind) {
+			if (!this.kind) this.opener = document.activeElement;
 			this.kind = kind;
 			$('#panelTitle').textContent = kind === 'account' ? 'Akun' : 'Pengaturan';
 			$('#panel').setAttribute('aria-hidden', 'false');
 			document.body.classList.add('panel-open');
 			this.refresh();
+			$('#panelClose').focus({ preventScroll: true });
 		},
 
 		close() {
 			this.kind = null;
 			$('#panel').setAttribute('aria-hidden', 'true');
 			document.body.classList.remove('panel-open');
+			this.opener?.focus({ preventScroll: true });
+			this.opener = null;
 		},
 
 		refresh() {
@@ -638,18 +849,18 @@
 
 		dataTools: () => `
 			<div class="flex gap-2 pt-4">
-				<button class="btn flex-1" data-action="export">Ekspor data</button>
-				<button class="btn flex-1" data-action="import">Impor data</button>
+				<button class="btn flex-1" data-action="export">${icon('download')}Ekspor data</button>
+				<button class="btn flex-1" data-action="import">${icon('upload')}Impor data</button>
 			</div>`,
 
 		list(items, emptyText, extra = () => '') {
 			if (!items.length) return `<p class="muted py-6 text-center text-sm">${emptyText}</p>`;
 			return items.slice(0, 50).map((i) => `
-				<button class="row w-full gap-3 text-left" data-play="${i.id}">
-					<img class="h-12 w-20 shrink-0 rounded-lg object-cover" src="https://i.ytimg.com/vi/${i.id}/default.jpg" alt="" loading="lazy">
+				<button class="row w-full gap-3 text-left" data-play="${Fmt.esc(i.id)}">
+					<img class="h-12 w-20 shrink-0 rounded-lg object-cover" src="https://i.ytimg.com/vi/${Fmt.esc(i.id)}/default.jpg" alt="" loading="lazy">
 					<span class="min-w-0 flex-1">
-						<span class="block truncate text-sm font-semibold">${Fmt.esc(i.title)}</span>
-						<span class="muted block truncate text-xs">${Fmt.esc(i.channel)}, ${Fmt.ago(i.at)}${extra(i)}</span>
+						<span class="wrap-text block text-sm font-semibold">${Fmt.esc(i.title)}</span>
+						<span class="muted wrap-text block text-xs">${Fmt.esc(i.channel)}, ${Fmt.ago(i.at)}${extra(i)}</span>
 					</span>
 				</button>`).join('');
 		},
@@ -657,7 +868,7 @@
 		avatar(profile, size) {
 			const ring = 'border-color: var(--surface)';
 			return profile.avatar
-				? `<img class="${size} rounded-full border-4 object-cover" style="${ring}" src="${profile.avatar}" alt="Foto profil">`
+				? `<img class="${size} rounded-full border-4 object-cover" style="${ring}" src="${Fmt.esc(profile.avatar)}" alt="Foto profil">`
 				: `<span class="${size} grid place-items-center rounded-full border-4 font-bold text-white" style="background: var(--accent); ${ring}">${Fmt.esc((profile.name || '?').charAt(0).toUpperCase())}</span>`;
 		},
 
@@ -692,13 +903,13 @@
 		account() {
 			const { profile, history, likes, downloads } = Store.data;
 			const tabs = {
-				history: { label: 'Riwayat', items: history, empty: 'Belum ada video yang ditonton.' },
-				likes: { label: 'Disukai', items: likes, empty: 'Belum ada video yang disukai.' },
-				downloads: { label: 'Unduhan', items: downloads, empty: 'Belum ada unduhan.' },
+				history: { label: 'Riwayat', icon: 'clock', items: history, empty: 'Belum ada video yang ditonton.' },
+				likes: { label: 'Disukai', icon: 'heart', items: likes, empty: 'Belum ada video yang disukai.' },
+				downloads: { label: 'Unduhan', icon: 'download', items: downloads, empty: 'Belum ada unduhan.' },
 			};
 			const active = tabs[this.tab] ? this.tab : 'history';
 			const extra = active === 'downloads' ? (i) => `, ${i.format.toUpperCase()}` : undefined;
-			const stats = [[history.length, 'Ditonton'], [likes.length, 'Disukai'], [downloads.length, 'Diunduh']];
+			const stats = [[history.length, 'Ditonton', 'eye'], [likes.length, 'Disukai', 'heart'], [downloads.length, 'Diunduh', 'download']];
 
 			return `
 				<div class="-mx-4 h-24" style="background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 45%, #000))"></div>
@@ -707,29 +918,29 @@
 					<div class="relative shrink-0">
 						${this.avatar(profile, 'h-24 w-24 text-3xl')}
 						<button class="absolute bottom-0 right-0 grid h-8 w-8 place-items-center rounded-full text-white" style="background: var(--accent); border: 3px solid var(--surface)" data-action="avatar" aria-label="Ganti foto profil">
-							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+							${icon('camera', 15)}
 						</button>
 					</div>
 					<div class="min-w-0 pb-1">
-						<p class="truncate text-lg font-bold leading-tight">${Fmt.esc(profile.name)}</p>
+						<p class="wrap-text text-lg font-bold leading-tight">${Fmt.esc(profile.name)}</p>
 						<p class="muted text-xs">Bergabung ${Fmt.date(profile.createdAt)}</p>
 					</div>
 				</div>
 
 				<div class="mt-4">
-					<label class="muted text-xs" for="profileName">Nama</label>
+					<label class="muted flex items-center gap-1.5 text-xs" for="profileName">${icon('user', 14)}Nama</label>
 					<input id="profileName" class="field mt-1" data-profile="name" value="${Fmt.esc(profile.name)}" maxlength="40">
 					<div class="mt-3 flex flex-wrap gap-2">
-						<span class="chip">Umur akun ${Fmt.age(profile.createdAt)}</span>
-						${profile.avatar ? '<button class="chip" data-action="remove-avatar">Hapus foto</button>' : ''}
+						<span class="chip">${icon('calendar', 13)}Umur akun ${Fmt.age(profile.createdAt)}</span>
+						${profile.avatar ? `<button class="chip" data-action="remove-avatar">${icon('trash', 13)}Hapus foto</button>` : ''}
 					</div>
 				</div>
 
 				<div class="mt-5 grid grid-cols-3 gap-2 text-center">
-					${stats.map(([n, label]) => `
+					${stats.map(([n, label, ic]) => `
 						<div class="rounded-2xl p-3" style="background: var(--chip)">
 							<p class="text-xl font-bold">${n}</p>
-							<p class="muted text-xs">${label}</p>
+							<p class="muted flex items-center justify-center gap-1 text-xs">${icon(ic, 12)}${label}</p>
 						</div>`).join('')}
 				</div>
 
@@ -737,12 +948,12 @@
 
 				<div class="mt-5 flex gap-1 rounded-full p-1" style="background: var(--chip)" role="tablist">
 					${Object.entries(tabs).map(([key, t]) => `
-						<button class="flex-1 rounded-full py-1.5 text-sm font-semibold ${key === active ? 'btn-accent' : ''}" data-tab="${key}" role="tab" aria-selected="${key === active}">${t.label} (${t.items.length})</button>`).join('')}
+						<button class="flex-1 rounded-full px-1 py-1.5 text-sm font-semibold ${key === active ? 'btn-accent' : ''}" data-tab="${key}" role="tab" aria-selected="${key === active}">${icon(t.icon, 14)}${t.label} (${t.items.length})</button>`).join('')}
 				</div>
 
 				<div class="flex items-center justify-between pt-4">
 					<h3 class="font-semibold">${tabs[active].label}</h3>
-					<button class="muted text-sm" data-action="clear-${active}">Hapus</button>
+					<button class="muted inline-flex items-center gap-1 text-sm" data-action="clear-${active}">${icon('trash', 14)}Hapus</button>
 				</div>
 				${this.list(tabs[active].items, tabs[active].empty, extra)}
 
@@ -752,33 +963,33 @@
 		settings() {
 			const s = Store.data.settings;
 			const opts = (list, current) => list.map(([v, label]) => `<option value="${v}" ${String(v) === String(current) ? 'selected' : ''}>${label}</option>`).join('');
-			const toggle = (key, label) => `
-				<label class="row cursor-pointer"><span>${label}</span><input type="checkbox" data-set="${key}" ${s[key] ? 'checked' : ''}></label>`;
+			const toggle = (key, label, ic) => `
+				<label class="row cursor-pointer"><span class="flex items-center gap-2">${icon(ic)}${label}</span><input type="checkbox" data-set="${key}" ${s[key] ? 'checked' : ''}></label>`;
 
 			return `
-				<div class="row"><span>Mode</span>
+				<div class="row"><span class="flex items-center gap-2">${icon('sun')}Mode</span>
 					<select class="field w-auto" data-set="mode">${opts([['system', 'Ikuti sistem'], ['light', 'Terang'], ['dark', 'Gelap']], s.mode)}</select></div>
 
-				<div class="row"><span>Ukuran font <b id="fsVal">${s.fontSize}px</b></span>
+				<div class="row"><span class="flex items-center gap-2">${icon('type')}Ukuran font <b id="fsVal">${s.fontSize}px</b></span>
 					<input type="range" min="12" max="22" step="1" value="${s.fontSize}" data-set="fontSize" class="w-40"></div>
 
-				<div class="row"><span>Jenis font</span>
+				<div class="row"><span class="flex items-center gap-2">${icon('font')}Jenis font</span>
 					<select class="field w-auto" data-set="fontFamily">${opts(FONTS.map((f) => [f, f]), s.fontFamily)}</select></div>
 
-				<div class="row"><span>Ketebalan font</span>
+				<div class="row"><span class="flex items-center gap-2">${icon('bold')}Ketebalan font</span>
 					<select class="field w-auto" data-set="fontWeight">${opts(Object.entries(WEIGHTS), s.fontWeight)}</select></div>
 
-				<div class="row"><span>Warna aksen</span>
+				<div class="row"><span class="flex items-center gap-2">${icon('palette')}Warna aksen</span>
 					<span class="flex items-center gap-2">
 						${ACCENTS.map((c) => `<button class="w-6 h-6 rounded-full border" style="background:${c}; border-color: var(--line)" data-accent="${c}" aria-label="Aksen ${c}"></button>`).join('')}
 						<input id="accentPicker" type="color" value="${s.accent}" data-set="accent" class="w-8 h-8 bg-transparent">
 					</span></div>
 
-				${toggle('animation', 'Animasi')}
-				${toggle('sound', 'Efek suara')}
-				${toggle('vibrate', 'Getar')}
+				${toggle('animation', 'Animasi', 'sparkles')}
+				${toggle('sound', 'Efek suara', 'volume')}
+				${toggle('vibrate', 'Getar', 'vibrate')}
 
-				<div class="row"><span>Riwayat pencarian</span><button class="btn" data-action="clear-searches">Hapus</button></div>
+				<div class="row"><span class="flex items-center gap-2">${icon('search')}Riwayat pencarian</span><button class="btn" data-action="clear-searches">${icon('trash')}Hapus</button></div>
 
 				${this.dataTools()}`;
 		},
@@ -794,6 +1005,15 @@
 		feedToken: 0,
 		feedState: null,
 
+		// Aksi penghapusan: teks konfirmasi + proses yang dijalankan setelah disetujui
+		removals: {
+			'clear-history': { title: 'Hapus riwayat tontonan?', text: 'Semua video di riwayat tontonan akan dihapus dan tidak bisa dikembalikan.', done: 'Riwayat tontonan dihapus', run: () => { Store.data.history = []; } },
+			'clear-likes': { title: 'Hapus video yang disukai?', text: 'Semua video yang kamu sukai akan dihapus dari daftar.', done: 'Daftar video disukai dihapus', run: () => { Store.data.likes = []; } },
+			'clear-downloads': { title: 'Hapus riwayat unduhan?', text: 'Catatan unduhan akan dihapus. File yang sudah kamu unduh tidak terpengaruh.', done: 'Riwayat unduhan dihapus', run: () => { Store.data.downloads = []; } },
+			'clear-searches': { title: 'Hapus riwayat pencarian?', text: 'Saran pencarian dari riwayat juga akan hilang.', done: 'Riwayat pencarian dihapus', run: () => { Store.data.searches = []; } },
+			'remove-avatar': { title: 'Hapus foto profil?', text: 'Foto akan diganti dengan inisial namamu.', done: 'Foto profil dihapus', run: () => { delete Store.data.profile.avatar; } },
+		},
+
 		init() {
 			Store.load();
 			Theme.apply();
@@ -801,6 +1021,7 @@
 			this.bindLayout();
 			this.bindEvents();
 			this.renderChips();
+			UI.hydrateIcons();
 			UI.renderAvatar();
 			UI.renderSearches();
 			UI.renderFooter();
@@ -853,7 +1074,7 @@
 			const token = this.feedToken;
 			const btn = $('#btnMore');
 			btn.disabled = true;
-			btn.textContent = 'Memuat...';
+			$('#btnMoreLabel').textContent = 'Memuat...';
 			try {
 				const items = await state.loader(state.next);
 				if (token === this.feedToken) this.appendItems(items, false);
@@ -861,7 +1082,7 @@
 				UI.toast(e.message);
 			}
 			btn.disabled = false;
-			btn.textContent = 'Muat lebih banyak';
+			$('#btnMoreLabel').textContent = 'Muat lebih banyak';
 		},
 
 		// Kembali ke beranda tanpa menghentikan video yang sedang diputar
@@ -888,6 +1109,18 @@
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 		},
 
+		async remove(action) {
+			const item = this.removals[action];
+			if (!await UI.confirm(item)) return;
+			item.run();
+			Store.save();
+			Panel.refresh();
+			UI.syncLike(this.current);
+			UI.renderSearches();
+			UI.renderAvatar();
+			UI.toast(item.done);
+		},
+
 		async share() {
 			const v = this.current;
 			if (!v) return;
@@ -910,7 +1143,7 @@
 
 		renderChips() {
 			const items = [['Populer', ''], ...CONFIG.CATEGORIES.map((c) => [c, c])];
-			$('#chips').innerHTML = items.map(([label, q]) => `<button class="chip" data-search="${q}">${label}</button>`).join('');
+			$('#chips').innerHTML = items.map(([label, q]) => `<button class="chip" data-search="${Fmt.esc(q)}">${icon(CATEGORY_ICONS[label] || 'tag', 14)}${label}</button>`).join('');
 		},
 
 		browse(q) {
@@ -923,6 +1156,8 @@
 		search(q, remember = true) {
 			const query = q.trim();
 			if (!query) return;
+			UI.suggestOpen = false;
+			UI.renderSearches();
 			if (remember) Store.addSearch(query);
 			this.loadFeed(`Hasil untuk "${query}"`, (t) => Api.search(query, { pageToken: t }));
 			window.scrollTo({ top: 0 });
@@ -942,7 +1177,8 @@
 			} catch (e) {
 				return UI.fail(e);
 			}
-			if (token !== this.playToken || !video) return;
+			if (token !== this.playToken) return;
+			if (!video) return UI.toast('Info video tidak tersedia');
 
 			this.cache.set(id, video);
 			this.current = video;
@@ -969,12 +1205,24 @@
 				$('#searchInput').blur();
 			});
 			document.addEventListener('keydown', (e) => {
-				if (e.key === 'Escape') Panel.close();
+				if (e.key === 'Escape' && !$('#confirmDialog').open) {
+					UI.suggestOpen = false;
+					UI.renderSearches();
+					Panel.close();
+				}
 				if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
 					e.preventDefault();
 					$('#searchInput').focus();
 				}
 			});
+			// Dropdown saran dari riwayat pencarian
+			const input = $('#searchInput');
+			const toggleSuggest = (open) => { UI.suggestOpen = open; UI.renderSearches(); };
+			input.addEventListener('focus', () => toggleSuggest(true));
+			input.addEventListener('input', () => toggleSuggest(true));
+			input.addEventListener('blur', () => setTimeout(() => toggleSuggest(false), 200));
+			$('#suggestBox').addEventListener('mousedown', (e) => e.preventDefault());
+
 			$('#avatarFile').addEventListener('change', (e) => {
 				Store.setAvatar(e.target.files[0]);
 				e.target.value = '';
@@ -990,9 +1238,11 @@
 			$('#btnSettings').addEventListener('click', () => Panel.open('settings'));
 			$('#panelClose').addEventListener('click', () => Panel.close());
 			$('#backdrop').addEventListener('click', () => Panel.close());
-			$('#importFile').addEventListener('change', (e) => {
-				if (e.target.files[0]) Store.import(e.target.files[0]);
+			$('#importFile').addEventListener('change', async (e) => {
+				const file = e.target.files[0];
 				e.target.value = '';
+				const ok = file && await UI.confirm({ title: 'Impor data?', text: 'Riwayat, daftar suka, dan pengaturan saat ini akan diganti dengan isi file.', ok: 'Impor', icon: 'upload', danger: false });
+				if (ok) Store.import(file);
 			});
 
 			// Efek suara + getar untuk setiap tombol
@@ -1012,6 +1262,20 @@
 				if (tab) { Panel.tab = tab.dataset.tab; Panel.refresh(); }
 				if (e.target.closest('[data-resume]')) this.resume();
 
+				const suggest = e.target.closest('[data-suggest]');
+				if (suggest) {
+					$('#searchInput').value = suggest.dataset.suggest;
+					this.search(suggest.dataset.suggest);
+					$('#searchInput').blur();
+				}
+
+				const fill = e.target.closest('[data-fill]');
+				if (fill) {
+					$('#searchInput').value = fill.dataset.fill;
+					$('#searchInput').focus();
+					UI.renderSearches();
+				}
+
 				const chip = e.target.closest('[data-search]');
 				if (chip) this.browse(chip.dataset.search);
 
@@ -1021,12 +1285,8 @@
 				const action = e.target.closest('[data-action]')?.dataset.action;
 				if (action === 'export') Store.export();
 				if (action === 'import') $('#importFile').click();
-				if (action === 'clear-history') { Store.data.history = []; Store.save(); Panel.refresh(); }
-				if (action === 'clear-downloads') { Store.data.downloads = []; Store.save(); Panel.refresh(); }
-				if (action === 'clear-likes') { Store.data.likes = []; Store.save(); Panel.refresh(); UI.syncLike(this.current); }
-				if (action === 'clear-searches') { Store.data.searches = []; Store.save(); UI.renderSearches(); UI.toast('Riwayat pencarian dihapus'); }
+				if (this.removals[action]) this.remove(action);
 				if (action === 'avatar') $('#avatarFile').click();
-				if (action === 'remove-avatar') { delete Store.data.profile.avatar; Store.save(); UI.renderAvatar(); Panel.refresh(); }
 			});
 
 			// Perubahan pengaturan & nama profil
