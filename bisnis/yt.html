@@ -240,7 +240,7 @@
 	<main id="main" class="mx-auto w-full page-w flex-1 px-3 pb-12">
 		<section id="info" class="mb-6 hidden"></section>
 		<button id="nowPlaying" class="surface mb-4 flex hidden w-full items-center gap-2 rounded-2xl px-3 py-2 text-left text-sm" data-resume>
-			<span class="chip" data-icon="play" data-icon-size="12">Sedang diputar</span>
+			<span class="chip" data-icon="play" data-icon-size="12"><span id="nowLabel">Sedang diputar</span></span>
 			<span id="nowTitle" class="wrap-text min-w-0 flex-1 font-semibold"></span>
 			<span class="muted inline-flex items-center gap-1 text-xs" data-icon="info" data-icon-size="13">Lihat info</span>
 		</button>
@@ -483,6 +483,8 @@
 			likes: [],
 			downloads: [],
 			searches: [],
+			seen: [],
+			last: null,
 			settings: { mode: 'system', fontSize: 16, fontFamily: DEFAULT_FONT, fontWeight: '400', accent: DEFAULT_ACCENT, animation: true, sound: true, vibrate: true, volume: 100, brightness: 100, warmth: 0 },
 		}),
 
@@ -491,10 +493,16 @@
 			const base = this.defaults();
 			const d = raw && typeof raw === 'object' ? raw : {};
 			const data = { ...base, ...d, profile: { ...base.profile, ...d.profile }, settings: { ...base.settings, ...d.settings } };
-			['history', 'likes', 'downloads', 'searches'].forEach((key) => {
+			['history', 'likes', 'downloads', 'searches', 'seen'].forEach((key) => {
 				if (!Array.isArray(data[key])) data[key] = base[key];
 			});
 			if (typeof data.profile.avatar !== 'string' || !data.profile.avatar.startsWith('data:image/')) delete data.profile.avatar;
+
+			// Video terakhir yang ditonton: hanya simpan bila id-nya valid
+			const last = data.last;
+			data.last = last && typeof last === 'object' && /^[\w-]{11}$/.test(last.id)
+				? { id: last.id, title: String(last.title || ''), channel: String(last.channel || ''), time: Math.max(0, Number(last.time) || 0) }
+				: null;
 
 			const s = data.settings;
 			const legacy = LEGACY_ACCENTS[String(s.accent).toLowerCase()];
@@ -537,6 +545,23 @@
 
 		addDownload(v, format) {
 			this.data.downloads = [{ id: v.id, title: v.title, channel: v.channel, format, at: Date.now() }, ...this.data.downloads].slice(0, CONFIG.HISTORY_LIMIT);
+			this.save();
+		},
+
+		// Simpan video yang sedang ditonton (untuk standby saat halaman dibuka lagi)
+		setLast(v, time = 0) {
+			this.data.last = { id: v.id, title: v.title, channel: v.channel, time };
+			this.save();
+		},
+
+		// Cari data video yang tersimpan secara lokal (tanpa memanggil API)
+		lookup(id) {
+			return [this.data.last, ...this.data.history, ...this.data.likes].find((v) => v && v.id === id);
+		},
+
+		// Catat video yang sudah tampil di umpan kategori (maks. 300) agar klik berikutnya memprioritaskan konten baru
+		markSeen(ids) {
+			this.data.seen = [...ids, ...this.data.seen.filter((id) => !ids.includes(id))].slice(0, 300);
 			this.save();
 		},
 
@@ -703,8 +728,8 @@
 			return (await this.withStats([id]))[0];
 		},
 
-		async popular(pageToken) {
-			const r = await this.get('videos', { part: 'snippet,statistics,contentDetails', chart: 'mostPopular', regionCode: CONFIG.REGION, maxResults: CONFIG.MAX_RESULTS, pageToken });
+		async popular(pageToken, videoCategoryId) {
+			const r = await this.get('videos', { part: 'snippet,statistics,contentDetails', chart: 'mostPopular', regionCode: CONFIG.REGION, maxResults: CONFIG.MAX_RESULTS, pageToken, videoCategoryId });
 			return Object.assign(r.items.map(this.normalize), { next: r.nextPageToken });
 		},
 
@@ -781,10 +806,30 @@
 	const Player = {
 		ORIGIN: 'https://www.youtube-nocookie.com',
 
-		// enablejsapi=1 agar pemutar menerima perintah volume
-		load(id) {
+		savedAt: 0,
+		state: -1,      // status pemutar terakhir (1 = memutar, 2 = jeda, 0 = selesai)
+		currentId: null,
+
+		// enablejsapi=1 agar pemutar menerima perintah volume; autoplay=0 + start= untuk standby di posisi terakhir
+		load(id, { autoplay = true, start = 0 } = {}) {
 			const origin = location.protocol.startsWith('http') ? `&origin=${encodeURIComponent(location.origin)}` : '';
-			$('#player').src = `${this.ORIGIN}/embed/${id}?autoplay=1&rel=0&playsinline=1&enablejsapi=1${origin}`;
+			const begin = start > 0 ? `&start=${Math.floor(start)}` : '';
+			this.currentId = id;
+			this.state = -1;
+			$('#player').src = `${this.ORIGIN}/embed/${id}?autoplay=${autoplay ? 1 : 0}&rel=0&playsinline=1&enablejsapi=1${begin}${origin}`;
+		},
+
+		// Catat posisi tonton dari pesan pemutar (hanya saat memutar/jeda), disimpan setiap beberapa detik
+		track(info = {}) {
+			if (typeof info.playerState === 'number') this.state = info.playerState;
+			const last = Store.data.last;
+			if (!last || last.id !== this.currentId) return;
+			if (this.state === 0) last.time = 0; // video selesai: lain kali mulai dari awal
+			else if (typeof info.currentTime === 'number' && [1, 2].includes(this.state)) last.time = Math.floor(info.currentTime);
+			if (Date.now() - this.savedAt > 5000) {
+				this.savedAt = Date.now();
+				Store.save();
+			}
 		},
 
 		post(payload) {
@@ -1237,10 +1282,11 @@
 		playToken: 0,
 		feedToken: 0,
 		feedState: null,
+		nowLabel: 'Sedang diputar', // teks bar video saat ini: 'Terakhir ditonton' saat standby
 
 		// Aksi penghapusan: teks konfirmasi + proses yang dijalankan setelah disetujui
 		removals: {
-			'clear-history': { title: 'Hapus riwayat tontonan?', text: 'Semua video di riwayat tontonan akan dihapus dan tidak bisa dikembalikan.', done: 'Riwayat tontonan dihapus', run: () => { Store.data.history = []; } },
+			'clear-history': { title: 'Hapus riwayat tontonan?', text: 'Semua video di riwayat tontonan akan dihapus, termasuk video standby terakhir. Tindakan ini tidak bisa dikembalikan.', done: 'Riwayat tontonan dihapus', run: () => { Store.data.history = []; Store.data.last = null; Store.data.seen = []; } },
 			'clear-likes': { title: 'Hapus video yang disukai?', text: 'Semua video yang kamu sukai akan dihapus dari daftar.', done: 'Daftar video disukai dihapus', run: () => { Store.data.likes = []; } },
 			'clear-downloads': { title: 'Hapus riwayat unduhan?', text: 'Catatan unduhan akan dihapus. File yang sudah kamu unduh tidak terpengaruh.', done: 'Riwayat unduhan dihapus', run: () => { Store.data.downloads = []; } },
 			'clear-searches': { title: 'Hapus riwayat pencarian?', text: 'Saran pencarian dari riwayat juga akan hilang.', done: 'Riwayat pencarian dihapus', run: () => { Store.data.searches = []; } },
@@ -1260,9 +1306,8 @@
 			UI.renderFooter();
 			this.loadFeed('Sedang populer', (t) => Api.popular(t));
 
-			// Tautan langsung: index.html#v=ID_VIDEO
-			const deep = /^#v=([\w-]{11})$/.exec(location.hash);
-			if (deep) this.play(deep[1]);
+			// Video terakhir (atau tautan index.html#v=ID_VIDEO) dimuat standby, tidak diputar otomatis
+			this.restore();
 		},
 
 		// Geser konten ke bawah sesuai tinggi header melayang (navigasi + pemutar)
@@ -1273,9 +1318,9 @@
 		},
 
 		// loader(pageToken) mengembalikan array video; properti `next` = token halaman berikutnya
-		async loadFeed(title, loader) {
+		async loadFeed(title, loader, opts = {}) {
 			const token = ++this.feedToken;
-			this.feedState = { loader, next: null, seen: new Set() };
+			this.feedState = { loader, next: null, seen: new Set(), avoidSeen: Boolean(opts.avoidSeen) };
 			$('#feedTitle').textContent = title;
 			$('#feed').innerHTML = UI.skeleton();
 			$('#status').textContent = '';
@@ -1292,7 +1337,13 @@
 		appendItems(items, replace) {
 			const state = this.feedState;
 			state.next = items.next || null;
-			const fresh = items.filter((v) => !state.seen.has(v.id));
+			let fresh = items.filter((v) => !state.seen.has(v.id));
+			if (state.avoidSeen) {
+				// Utamakan video yang belum pernah tampil di kategori sebelumnya
+				const unseen = fresh.filter((v) => !Store.data.seen.includes(v.id));
+				if (unseen.length >= (replace ? 6 : 1)) fresh = unseen;
+				Store.markSeen(fresh.map((v) => v.id));
+			}
 			fresh.forEach((v) => { state.seen.add(v.id); this.cache.set(v.id, v); });
 			const html = fresh.map(UI.card).join('');
 			if (replace) {
@@ -1336,13 +1387,25 @@
 
 		showNowPlaying(show) {
 			$('#nowPlaying').classList.toggle('hidden', !show);
-			if (show) $('#nowTitle').textContent = this.current.title;
+			if (!show) return;
+			$('#nowLabel').textContent = this.nowLabel;
+			$('#nowTitle').textContent = this.current.title;
 		},
 
 		// Tampilkan lagi info + saran untuk video yang sedang diputar
-		resume() {
-			const v = this.current;
+		async resume() {
+			let v = this.current;
 			if (!v) return;
+			if (!v.publishedAt) { // data hasil pemulihan tontonan terakhir: ambil info lengkapnya dulu
+				try {
+					v = this.cache.get(v.id) || await Api.detail(v.id);
+				} catch (e) {
+					return UI.fail(e);
+				}
+				if (!v) return UI.toast('Info video tidak tersedia');
+				this.cache.set(v.id, v);
+				this.current = v;
+			}
 			UI.renderInfo(v);
 			this.showNowPlaying(false);
 			this.loadFeed('Video lainnya', (t) => Api.suggestions(v, t));
@@ -1386,46 +1449,99 @@
 			$('#chips').innerHTML = items.map(([label, q]) => `<button class="chip" data-search="${Fmt.esc(q)}">${icon(CATEGORY_ICONS[label] || 'tag', 14)}${label}</button>`).join('');
 		},
 
+		// Kategori: kata kunci, urutan, dan rentang waktu diacak di setiap klik agar hasilnya tidak itu-itu saja
+		variedSearch(query) {
+			const pick = (list) => list[Math.floor(Math.random() * list.length)];
+			const days = pick([30, 90, 180, 365, 730]);
+			let params = {
+				q: `${query} ${pick(['terbaru', 'populer', 'terbaik', 'rekomendasi', 'pilihan', 'viral', 'trending', String(new Date().getFullYear())])}`,
+				order: pick(['relevance', 'date', 'viewCount']),
+				publishedAfter: new Date(Date.now() - days * 864e5).toISOString().replace(/\.\d{3}Z$/, 'Z'),
+			};
+			return async (t) => {
+				const { q, ...extra } = params;
+				const list = await Api.search(q, { ...extra, pageToken: t });
+				if (t || list.length >= 6) return list;
+				params = { q: query, order: 'relevance' }; // hasil terlalu sedikit: pakai pencarian polos
+				return Api.search(query, { order: 'relevance', pageToken: t });
+			};
+		},
+
+		// "Populer": kategori video populer diacak (musik, gaming, dll.) agar isinya tidak itu-itu saja
+		popularLoader() {
+			const ids = ['', '10', '17', '20', '22', '23', '24', '25', '28'];
+			let categoryId = ids[Math.floor(Math.random() * ids.length)];
+			return async (t) => {
+				if (!t && categoryId) {
+					try {
+						const list = await Api.popular(t, categoryId);
+						if (list.length >= 6) return list;
+					} catch (e) {
+						if (e.message === 'NO_KEY' || e instanceof TypeError) throw e; // masalah umum, bukan soal kategori
+					}
+					categoryId = ''; // kategori tidak tersedia: pakai populer umum
+				}
+				return Api.popular(t, categoryId);
+			};
+		},
+
 		browse(q) {
 			$('#searchInput').value = q;
-			if (q) return this.search(q, false);
-			this.loadFeed('Sedang populer', (t) => Api.popular(t));
+			if (q) return this.search(q, false, true);
+			this.loadFeed('Sedang populer', this.popularLoader(), { avoidSeen: true });
 			window.scrollTo({ top: 0 });
 		},
 
-		search(q, remember = true) {
+		// vary = true dipakai oleh kategori (hasil diacak); pencarian biasa tetap apa adanya
+		search(q, remember = true, vary = false) {
 			const query = q.trim();
 			if (!query) return;
 			UI.suggestOpen = false;
 			UI.renderSearches();
 			if (remember) Store.addSearch(query);
-			this.loadFeed(`Hasil untuk "${query}"`, (t) => Api.search(query, { pageToken: t }));
+			if (vary) this.loadFeed(`Kategori: ${query}`, this.variedSearch(query), { avoidSeen: true });
+			else this.loadFeed(`Hasil untuk "${query}"`, (t) => Api.search(query, { pageToken: t }));
 			window.scrollTo({ top: 0 });
 		},
 
-		async play(id) {
+		// standby = true: muat video tanpa memutarnya (dipakai saat memulihkan tontonan terakhir)
+		async play(id, { standby = false, start = 0 } = {}) {
 			const token = ++this.playToken;
+			this.nowLabel = standby ? 'Terakhir ditonton' : 'Sedang diputar';
 			$('#playerWrap').classList.remove('hidden');
-			Player.load(id);
-			window.scrollTo({ top: 0, behavior: 'smooth' });
+			Player.load(id, { autoplay: !standby, start });
+			if (!standby) window.scrollTo({ top: 0, behavior: 'smooth' });
 
 			try { history.replaceState(null, '', `#v=${id}`); } catch { /* file:// atau diblokir */ }
 
-			let video = this.cache.get(id);
+			// Saat standby, pakai data tersimpan lebih dulu agar tidak memakai kuota API
+			let video = this.cache.get(id) || (standby ? Store.lookup(id) : null);
 			try {
 				video ||= await Api.detail(id);
 			} catch (e) {
-				return UI.fail(e);
+				return standby ? undefined : UI.fail(e);
 			}
 			if (token !== this.playToken) return;
-			if (!video) return UI.toast('Info video tidak tersedia');
+			if (!video) return standby ? undefined : UI.toast('Info video tidak tersedia');
+
+			this.current = video;
+			if (standby) return this.showNowPlaying(true);
 
 			this.cache.set(id, video);
-			this.current = video;
 			Store.addHistory(video);
+			Store.setLast(video);
 			UI.renderInfo(video);
 			this.showNowPlaying(false);
 			this.loadFeed('Video lainnya', (t) => Api.suggestions(video, t));
+		},
+
+		// Muat video tontonan terakhir (atau dari tautan #v=ID) dalam keadaan standby, tanpa autoplay
+		restore() {
+			const hashId = (/^#v=([\w-]{11})$/.exec(location.hash) || [])[1];
+			const last = Store.data.last;
+			const id = hashId || last?.id || Store.data.history[0]?.id;
+			if (!/^[\w-]{11}$/.test(id || '')) return;
+			this.play(id, { standby: true, start: last?.id === id ? last.time : 0 });
 		},
 
 		download(format) {
@@ -1476,8 +1592,16 @@
 			$('#player').addEventListener('load', () => Player.onLoad());
 			window.addEventListener('message', (e) => {
 				if (e.origin !== Player.ORIGIN) return;
-				try { if (JSON.parse(e.data).event === 'onReady') Player.applyVolume(); } catch { /* bukan pesan JSON */ }
+				try {
+					const data = JSON.parse(e.data);
+					if (data.event === 'onReady') Player.applyVolume();
+					if (data.event === 'infoDelivery') Player.track(data.info);
+					if (data.event === 'onStateChange') Player.track({ playerState: data.info });
+				} catch { /* bukan pesan JSON */ }
 			});
+			// Simpan posisi tonton saat halaman ditutup atau berpindah tab
+			window.addEventListener('pagehide', () => Store.save());
+			document.addEventListener('visibilitychange', () => { if (document.hidden) Store.save(); });
 			$('#toTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 			$('#btnMore').addEventListener('click', () => this.loadMore());
 			$('#btnAccount').addEventListener('click', () => Panel.open('account'));
