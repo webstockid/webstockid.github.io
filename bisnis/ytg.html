@@ -26,9 +26,13 @@
 			--player-brightness: 100%;
 		}
 
+		html {
+			font-size: var(--base-font-size);
+		}
+
 		body {
 			font-family: var(--app-font-family);
-			font-size: var(--base-font-size);
+			font-size: 1rem;
 			font-weight: var(--app-font-weight);
 			transition: background-color 0.3s ease, color 0.3s ease;
 		}
@@ -220,12 +224,12 @@
 		<header id="navbar" class="fixed top-0 left-0 right-0 z-40 ui-nav backdrop-blur-md border-b px-3 sm:px-4 py-2 sm:py-2.5 transition-all">
 			<div class="max-w-6xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
 				
-				<!-- App Logo -->
-				<div class="flex items-center gap-2 cursor-pointer shrink-0" onclick="app.resetHome()">
-					<div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl btn-accent flex items-center justify-center shadow-md">
-						<i class="fa-solid fa-play text-xs text-white"></i>
+				<!-- App Logo with Stream Tube Label Always Visible Across All Screen Sizes -->
+				<div class="flex items-center gap-1.5 sm:gap-2 cursor-pointer shrink-0" onclick="app.resetHome()">
+					<div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl btn-accent flex items-center justify-center shadow-md">
+						<i class="fa-solid fa-play text-[10px] sm:text-xs text-white"></i>
 					</div>
-					<span class="font-semibold text-base sm:text-lg tracking-tight hidden xs:inline">Stream<span class="text-accent">Tube</span></span>
+					<span class="font-semibold text-xs sm:text-sm md:text-base tracking-tight whitespace-nowrap">Stream <span class="text-accent">Tube</span></span>
 				</div>
 
 				<!-- Search Bar with Auto Suggestions -->
@@ -367,6 +371,21 @@
 									<span>MP3</span>
 								</button>
 							</div>
+						</div>
+
+						<!-- Expandable Video Description Box -->
+						<div id="videoDescriptionBox" class="mt-2.5 p-2.5 sm:p-3 ui-sub-bg rounded-xl border border-slate-700/40 text-xs">
+							<div class="flex items-center justify-between mb-1">
+								<span class="font-semibold text-[11px] sm:text-xs flex items-center gap-1 text-accent">
+									<i class="fa-solid fa-align-left"></i> Deskripsi Video
+								</span>
+								<button id="toggleDescBtn" onclick="app.toggleDescription()" class="text-[10px] sm:text-[11px] text-accent hover:underline font-medium focus:outline-none flex items-center">
+									Lihat Selengkapnya <i class="fa-solid fa-chevron-down text-[9px] ml-1"></i>
+								</button>
+							</div>
+							<p id="videoDescriptionText" class="line-clamp-2 leading-relaxed text-[11px] sm:text-xs ui-text-subtle whitespace-pre-line">
+								Pilih video untuk menampilkan deskripsi di sini.
+							</p>
 						</div>
 					</div>
 				</div>
@@ -824,6 +843,7 @@
 
 			activeCategoryIndex: 0,
 			isTheaterMode: false,
+			isDescExpanded: false,
 			audioCtx: null,
 			fetchedVideos: [],
 
@@ -904,6 +924,15 @@
 				document.getElementById('viewCount').innerHTML = `<i class="fa-solid fa-eye mr-1"></i> ${this.formatNumber(videoObj.views)}x dilihat`;
 				document.getElementById('uploadDate').innerHTML = `<i class="fa-solid fa-calendar-days mr-1"></i> ${videoObj.date}`;
 
+				const descEl = document.getElementById('videoDescriptionText');
+				if (descEl) {
+					descEl.innerText = videoObj.description || 'Tidak ada deskripsi tersedia untuk video ini.';
+					this.isDescExpanded = false;
+					descEl.classList.add('line-clamp-2');
+					const btn = document.getElementById('toggleDescBtn');
+					if (btn) btn.innerHTML = `Lihat Selengkapnya <i class="fa-solid fa-chevron-down text-[9px] ml-1"></i>`;
+				}
+
 				const heroTitle = document.getElementById('heroTitle');
 				const heroSub = document.getElementById('heroSub');
 				const heroBgThumb = document.getElementById('heroBgThumb');
@@ -916,6 +945,22 @@
 				}
 
 				this.updateLikeButtonUI();
+			},
+
+			toggleDescription() {
+				this.playSound();
+				this.triggerHaptic();
+				this.isDescExpanded = !this.isDescExpanded;
+				const descEl = document.getElementById('videoDescriptionText');
+				const btn = document.getElementById('toggleDescBtn');
+
+				if (this.isDescExpanded) {
+					descEl.classList.remove('line-clamp-2');
+					btn.innerHTML = `Sembunyikan <i class="fa-solid fa-chevron-up text-[9px] ml-1"></i>`;
+				} else {
+					descEl.classList.add('line-clamp-2');
+					btn.innerHTML = `Lihat Selengkapnya <i class="fa-solid fa-chevron-down text-[9px] ml-1"></i>`;
+				}
 			},
 
 			setupScrollListener() {
@@ -1011,7 +1056,8 @@
 								views: parseInt(item.statistics?.viewCount || '0'),
 								likes: parseInt(item.statistics?.likeCount || '0'),
 								date: item.snippet.publishedAt ? item.snippet.publishedAt.split('T')[0] : '-',
-								thumb: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.medium?.url
+								thumb: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.medium?.url,
+								description: item.snippet.description || 'Tidak ada deskripsi tersedia untuk video ini.'
 							}));
 						} else if (server.type === 'piped') {
 							const res = await fetch(`${server.baseUrl}/search?q=${encodeURIComponent(query)}&filter=all`);
@@ -1025,7 +1071,8 @@
 								views: i.views || 0,
 								likes: 0,
 								date: i.uploadedDate || '-',
-								thumb: i.thumbnail
+								thumb: i.thumbnail,
+								description: i.shortDescription || 'Tidak ada deskripsi tersedia untuk video ini.'
 							}));
 						}
 
@@ -1105,6 +1152,15 @@
 				document.getElementById('channelName').innerHTML = `<i class="fa-solid fa-tv text-accent mr-1"></i> ${videoObj.channel}`;
 				document.getElementById('viewCount').innerHTML = `<i class="fa-solid fa-eye mr-1"></i> ${this.formatNumber(videoObj.views)}x dilihat`;
 				document.getElementById('uploadDate').innerHTML = `<i class="fa-solid fa-calendar-days mr-1"></i> ${videoObj.date}`;
+
+				const descEl = document.getElementById('videoDescriptionText');
+				if (descEl) {
+					descEl.innerText = videoObj.description || 'Tidak ada deskripsi tersedia untuk video ini.';
+					this.isDescExpanded = false;
+					descEl.classList.add('line-clamp-2');
+					const btn = document.getElementById('toggleDescBtn');
+					if (btn) btn.innerHTML = `Lihat Selengkapnya <i class="fa-solid fa-chevron-down text-[9px] ml-1"></i>`;
+				}
 
 				this.updateLikeButtonUI();
 
@@ -1851,12 +1907,12 @@
 					osc.stop(this.audioCtx.currentTime + 0.04);
 				} catch (e) {}
 			},
-
+			// VIBRATION HAPTIC FEEDBACK (EXTENDED TO 0.7 SECONDS / 700MS)
 			triggerHaptic() {
 				if (!this.state.settings.hapticEnabled) return;
 				try {
 					if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-						navigator.vibrate([35, 25, 35]);
+						navigator.vibrate(700);
 					}
 				} catch (e) {}
 			},

@@ -6,7 +6,7 @@
 	<title>Tonton</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=Poppins:wght@400;500;600;700&family=Nunito:wght@400..700&family=Lora:wght@400..700&family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400..700&display=swap">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400..700&family=DM+Sans:wght@400..700&family=Outfit:wght@400..700&family=Manrope:wght@400..700&family=Lexend:wght@400..700&display=swap">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<script src="https://cdn.tailwindcss.com/3.4.17"></script>
 
@@ -15,8 +15,10 @@
 		   1. TOKEN TEMA (diubah lewat Pengaturan, lihat Theme.apply)
 		   ========================================================== */
 		:root {
-			--accent: #4a6fe0;
-			--font: 'Inter', sans-serif;
+			--accent: #6aa5ee;
+			--on-accent: #1f2430;
+			--accent-ink: color-mix(in srgb, var(--accent) 60%, #000);
+			--font: 'Plus Jakarta Sans', sans-serif;
 			--fs: 16px;
 			--fw: 400;
 			--bg: #f6f7fb;
@@ -36,13 +38,14 @@
 			--muted: #9ba3b4;
 			--line: #232834;
 			--chip: #1d212b;
+			--accent-ink: color-mix(in srgb, var(--accent) 62%, #fff);
 			--shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px rgba(0, 0, 0, .35);
 		}
 
 		/* ==========================================================
 		   2. DASAR
 		   ========================================================== */
-		html { font-size: var(--fs); -webkit-tap-highlight-color: transparent; }
+		html { font-size: var(--fs); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
 		body {
 			font-family: var(--font);
 			font-weight: var(--fw);
@@ -52,7 +55,18 @@
 			display: flex;
 			flex-direction: column;
 		}
-		input[type="checkbox"], input[type="range"] { accent-color: var(--accent); }
+		input[type="range"] { accent-color: var(--accent); }
+
+		/* Checkbox tampil sebagai saklar (switch), radio sebagai lingkaran bertitik; tanpa gaya bawaan browser */
+		input[type="checkbox"], input[type="radio"] { appearance: none; -webkit-appearance: none; flex-shrink: 0; margin: 0; cursor: pointer; transition: background .2s, border-color .2s, box-shadow .2s; }
+		input[type="checkbox"] { position: relative; width: 2.5rem; height: 1.5rem; border-radius: 9999px; background: var(--line); }
+		input[type="checkbox"]::before { content: ''; position: absolute; top: .1875rem; left: .1875rem; width: 1.125rem; height: 1.125rem; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .3); transition: transform .2s cubic-bezier(.2, .8, .2, 1); }
+		input[type="checkbox"]:checked { background-color: var(--accent); background-image: linear-gradient(180deg, rgba(255, 255, 255, .26), rgba(255, 255, 255, 0) 58%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35); }
+		input[type="checkbox"]:checked::before { transform: translateX(1rem); }
+		input[type="radio"] { display: grid; place-content: center; width: 1.375rem; height: 1.375rem; border-radius: 50%; border: 2px solid var(--line); background: var(--surface); }
+		input[type="radio"]::before { content: ''; width: .625rem; height: .625rem; border-radius: 50%; background: var(--accent); transform: scale(0); transition: transform .15s cubic-bezier(.2, .8, .2, 1); }
+		input[type="radio"]:checked { border-color: var(--accent); }
+		input[type="radio"]:checked::before { transform: scale(1); }
 		:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 		.no-scrollbar { scrollbar-width: none; }
 		.no-scrollbar::-webkit-scrollbar { display: none; }
@@ -82,21 +96,22 @@
 		.btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .55rem 1.1rem; border-radius: 9999px; background: var(--chip); font-weight: 600; transition: filter .15s, transform .15s; }
 		.btn:hover { filter: brightness(.95); }
 		.btn:active { transform: scale(.97); }
-		.btn-accent { background: var(--accent); color: #fff; }
+		.btn-accent { background: var(--accent); color: var(--on-accent); }
 		.btn-accent:hover { filter: brightness(1.1); }
 		.btn-danger { background: #d64545; color: #fff; }
 		.btn-danger:hover { filter: brightness(1.1); }
-		.btn.is-liked { color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+		.btn.is-liked { color: var(--accent-ink); background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
 		/* Kilau lembut (glossy) untuk semua permukaan beraksen */
 		.btn-accent, .btn-danger, [style*="background: var(--accent)"] {
 			background-image: linear-gradient(180deg, rgba(255, 255, 255, .26), rgba(255, 255, 255, 0) 58%) !important;
 			box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 3px 10px color-mix(in srgb, var(--accent) 30%, transparent);
 		}
-		.icon-btn { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 9999px; transition: background .15s; }
+		.btn-accent, [style*="background: var(--accent)"] { color: var(--on-accent) !important; }
+		.icon-btn { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px; transition: background .15s; }
 		.icon-btn:hover { background: var(--chip); }
 		.chip { display: inline-flex; align-items: center; gap: .35rem; padding: .25rem .7rem; border-radius: 9999px; background: var(--chip); font-size: .75rem; font-weight: 600; }
 		button.chip { padding: .45rem .95rem; font-size: .8rem; white-space: nowrap; transition: background .15s, color .15s; }
-		button.chip:hover { background: var(--accent); color: #fff; }
+		button.chip:hover { background: var(--accent); color: var(--on-accent); }
 		.icon { display: inline-block; flex-shrink: 0; line-height: 1; }
 
 		/* ==========================================================
@@ -135,6 +150,53 @@
 
 		.no-anim *, .no-anim *::before, .no-anim *::after, .no-anim dialog::backdrop { transition: none !important; animation: none !important; }
 		@media (prefers-reduced-motion: reduce) { *, dialog::backdrop { transition: none !important; animation: none !important; } }
+
+		/* ==========================================================
+		   6. KOMPONEN TAMBAHAN: swatch warna, tab bergeser, tata letak
+		   ========================================================== */
+		.row-stack { flex-direction: column; align-items: stretch; gap: .75rem; }
+		.swatch {
+			position: relative; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 9999px;
+			color: #fff; background-image: linear-gradient(180deg, rgba(255, 255, 255, .38), rgba(255, 255, 255, 0) 60%);
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), 0 2px 6px rgba(0, 0, 0, .15);
+			transition: transform .15s, box-shadow .15s;
+		}
+		.swatch:hover { transform: scale(1.08); }
+		.swatch[data-active="true"] { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), 0 0 0 2px var(--surface), 0 0 0 4px var(--c, var(--accent)); }
+		.swatch-custom { background-color: transparent; background-image: conic-gradient(from 0deg, #f28b82, #fbd56b, #8fd9a8, #7db4f2, #b69cf5, #f28b82); }
+
+		.tab-bar { position: relative; display: flex; padding: .25rem; border-radius: 9999px; background: var(--chip); }
+		.tab-indicator {
+			position: absolute; top: .25rem; bottom: .25rem; left: .25rem; border-radius: 9999px;
+			width: calc((100% - .5rem) / var(--count));
+			transform: translateX(calc(var(--i) * 100%));
+			transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+		}
+		.tab-btn { position: relative; z-index: 1; flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: .35rem; padding: .4rem .25rem; border-radius: 9999px; font-size: .875rem; font-weight: 600; transition: color .2s; }
+		.tab-btn.is-active { color: var(--on-accent); }
+		.slide-right { animation: slide-from-right .28s cubic-bezier(.2, .8, .2, 1) both; }
+		.slide-left { animation: slide-from-left .28s cubic-bezier(.2, .8, .2, 1) both; }
+		@keyframes slide-from-right { from { opacity: 0; transform: translateX(24px); } }
+		@keyframes slide-from-left { from { opacity: 0; transform: translateX(-24px); } }
+
+		/* ==========================================================
+		   7. RESPONSIF (HP = bawaan, tablet >= 768px, desktop >= 1280px)
+		   ========================================================== */
+		@media (min-width: 640px) { .icon-btn { width: 2.5rem; height: 2.5rem; } }
+		.page-w { max-width: 64rem; }
+		.watch-col { width: 100%; max-width: 48rem; margin-inline: auto; }
+		.watch-player { --max-h: 42vh; aspect-ratio: 16 / 9; width: min(100%, calc(var(--max-h) * 16 / 9)); }
+		@media (min-width: 768px) {
+			.watch-col { max-width: 56rem; }
+			.watch-player { --max-h: 52vh; }
+		}
+		@media (min-width: 1280px) {
+			.page-w { max-width: 80rem; }
+			.watch-col { max-width: 64rem; }
+		}
+		@media (orientation: landscape) and (max-height: 500px) {
+			.watch-player { --max-h: 64vh; }
+		}
 	</style>
 </head>
 
@@ -144,15 +206,16 @@
 	     HEADER MELAYANG: navigasi + pemutar video
 	     ========================================================== -->
 	<header id="stack" class="glass fixed inset-x-0 top-0 z-40" style="padding-top: env(safe-area-inset-top, 0px);">
-		<nav class="mx-auto flex h-16 max-w-5xl items-center gap-2 px-3">
-			<a id="logo" href="./" class="flex items-center gap-2 text-lg font-bold tracking-tight" aria-label="Tonton, ke beranda">
-				<span class="grid h-9 w-9 place-items-center rounded-xl text-white" style="background: var(--accent)" data-icon="play" data-icon-size="20"></span>
-				<span class="hidden sm:inline">Tonton</span>
+		<nav class="mx-auto flex h-16 page-w items-center gap-1.5 px-2.5 sm:gap-2 sm:px-3">
+			<a id="logo" href="./" class="flex shrink-0 items-center gap-1.5 font-bold tracking-tight sm:gap-2" aria-label="Tonton, ke beranda">
+				<span class="grid h-8 w-8 place-items-center rounded-xl sm:h-9 sm:w-9" style="background: var(--accent)" data-icon="play" data-icon-size="18"></span>
+				<span class="text-[0.95rem] leading-none min-[400px]:text-base sm:text-lg">Tonton</span>
 			</a>
 
-			<form id="searchForm" class="relative flex-1" role="search">
-				<input id="searchInput" class="field pr-12" style="border-radius: 9999px" type="search" placeholder="Cari video, musik, channel" autocomplete="off" aria-label="Cari video">
-				<button class="absolute right-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-white" style="background: var(--accent)" type="submit" aria-label="Cari" data-icon="search" data-icon-size="15"></button>
+			<form id="searchForm" class="relative min-w-0 flex-1 md:mx-auto md:max-w-2xl" role="search">
+				<input id="searchInput" class="field pr-12 md:pr-20" style="border-radius: 9999px" type="search" placeholder="Cari video" autocomplete="off" aria-label="Cari video">
+				<kbd class="muted pointer-events-none absolute right-12 top-1/2 hidden -translate-y-1/2 rounded-md px-1.5 text-xs font-semibold md:block" style="background: var(--bg)" aria-hidden="true">/</kbd>
+				<button class="absolute right-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full" style="background: var(--accent)" type="submit" aria-label="Cari" data-icon="search" data-icon-size="15"></button>
 				<div id="suggestBox" class="suggest surface absolute inset-x-0 top-full z-50 mt-2 max-h-80 overflow-y-auto rounded-2xl p-1.5" style="box-shadow: var(--shadow)"></div>
 			</form>
 
@@ -164,7 +227,7 @@
 		</nav>
 
 		<section id="playerWrap" class="hidden bg-black">
-			<div class="mx-auto w-full max-w-3xl" style="aspect-ratio: 16 / 9; max-height: 42vh;">
+			<div class="watch-col watch-player">
 				<iframe id="player" class="h-full w-full" title="Pemutar video"
 					allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
 			</div>
@@ -174,16 +237,16 @@
 	<!-- ==========================================================
 	     KONTEN UTAMA: info video + kategori + daftar video
 	     ========================================================== -->
-	<main id="main" class="mx-auto w-full max-w-5xl flex-1 px-3 pb-12">
+	<main id="main" class="mx-auto w-full page-w flex-1 px-3 pb-12">
 		<section id="info" class="mb-6 hidden"></section>
 		<button id="nowPlaying" class="surface mb-4 flex hidden w-full items-center gap-2 rounded-2xl px-3 py-2 text-left text-sm" data-resume>
 			<span class="chip" data-icon="play" data-icon-size="12">Sedang diputar</span>
 			<span id="nowTitle" class="wrap-text min-w-0 flex-1 font-semibold"></span>
 			<span class="muted inline-flex items-center gap-1 text-xs" data-icon="info" data-icon-size="13">Lihat info</span>
 		</button>
-		<div id="chips" class="no-scrollbar -mx-3 mb-4 flex gap-2 overflow-x-auto px-3"></div>
+		<div id="chips" class="no-scrollbar -mx-3 mb-4 flex gap-2 overflow-x-auto px-3 md:mx-0 md:flex-wrap md:overflow-visible md:px-0"></div>
 		<h2 id="feedTitle" class="mb-3 text-lg font-bold tracking-tight"></h2>
-		<div id="feed" class="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2 lg:grid-cols-3"></div>
+		<div id="feed" class="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"></div>
 		<div id="moreWrap" class="mt-6 hidden text-center">
 			<button id="btnMore" class="btn btn-accent" data-icon="chevron-down"><span id="btnMoreLabel">Muat lebih banyak</span></button>
 		</div>
@@ -194,10 +257,10 @@
 	     FOOTER: tentang, tips, aktivitas, dan sumber data
 	     ========================================================== -->
 	<footer class="mt-4 border-t" style="background: var(--surface); border-color: var(--line); padding-bottom: env(safe-area-inset-bottom, 0px);">
-		<div class="mx-auto grid max-w-5xl gap-8 px-4 py-10 sm:grid-cols-3">
+		<div class="mx-auto grid page-w gap-8 px-4 py-10 sm:grid-cols-3">
 			<section>
 				<div class="flex items-center gap-2 font-bold">
-					<span class="grid h-8 w-8 place-items-center rounded-xl text-white" style="background: var(--accent)" data-icon="play" data-icon-size="17"></span>
+					<span class="grid h-8 w-8 place-items-center rounded-xl" style="background: var(--accent)" data-icon="play" data-icon-size="17"></span>
 					Tonton
 				</div>
 				<p class="muted mt-3 text-sm">Pemutar video dengan antarmuka sendiri. Video, pencarian, dan statistik diambil langsung dari YouTube.</p>
@@ -223,10 +286,10 @@
 		</div>
 
 		<div class="border-t" style="border-color: var(--line)">
-			<div class="muted mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-4 text-xs">
+			<div class="muted mx-auto flex page-w flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-4 text-xs">
 				<p id="footYear"></p>
 				<p>Data dari YouTube Data API v3. <a class="inline-flex items-center gap-1 underline" data-icon="external" data-icon-size="12" href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">Ketentuan YouTube</a></p>
-				<button id="toTop" class="inline-flex items-center gap-1 font-semibold" style="color: var(--accent)" data-icon="arrow-up" data-icon-size="13">Kembali ke atas</button>
+				<button id="toTop" class="inline-flex items-center gap-1 font-semibold" style="color: var(--accent-ink)" data-icon="arrow-up" data-icon-size="13">Kembali ke atas</button>
 			</div>
 		</div>
 	</footer>
@@ -235,7 +298,7 @@
 	     PANEL SAMPING (Akun / Pengaturan), TOAST, INPUT FILE
 	     ========================================================== -->
 	<div id="backdrop" class="fixed inset-0 z-[45] bg-black/50 opacity-0 pointer-events-none transition-opacity"></div>
-	<aside id="panel" class="surface fixed inset-y-0 right-0 z-50 w-full max-w-sm shadow-2xl sm:rounded-l-3xl translate-x-full transition-transform overflow-y-auto" style="padding-top: env(safe-area-inset-top, 0px);" aria-hidden="true">
+	<aside id="panel" class="surface fixed inset-y-0 right-0 z-50 w-full max-w-sm shadow-2xl md:max-w-md sm:rounded-l-3xl translate-x-full transition-transform overflow-y-auto" style="padding-top: env(safe-area-inset-top, 0px);" aria-hidden="true">
 		<div class="surface sticky top-0 flex items-center justify-between px-4 h-14 border-x-0 border-t-0">
 			<h2 id="panelTitle" class="font-semibold"></h2>
 			<button id="panelClose" class="icon-btn" aria-label="Tutup" data-icon="close" data-icon-size="18"></button>
@@ -249,7 +312,7 @@
 	<dialog id="confirmDialog" class="surface w-[90%] max-w-sm rounded-3xl p-5" style="color: var(--text); box-shadow: var(--shadow)">
 		<form method="dialog">
 			<div class="flex items-start gap-3">
-				<span id="confirmIcon" class="grid h-10 w-10 shrink-0 place-items-center rounded-full" style="background: var(--chip); color: var(--accent)"></span>
+				<span id="confirmIcon" class="grid h-10 w-10 shrink-0 place-items-center rounded-full" style="background: var(--chip); color: var(--accent-ink)"></span>
 				<div class="min-w-0">
 					<h3 id="confirmTitle" class="wrap-text font-bold"></h3>
 					<p id="confirmText" class="muted wrap-text mt-1 text-sm"></p>
@@ -270,21 +333,37 @@
 		API_KEY: 'AIzaSyCtksa1GE6rBpnuAI4IonvzLYDvPI_5b_E',  // YouTube Data API v3 key
 		REGION: 'ID',
 		LANG: 'id',
-		CATEGORIES: ['Musik', 'Gaming', 'Berita', 'Teknologi', 'Kuliner', 'Olahraga', 'Film'],
+		CATEGORIES: [
+			'Musik', 'Gaming', 'Film', 'Anime', 'Komedi', 'Berita', 'Teknologi', 'Edukasi', 'Sains', 'Kuliner',
+			'Olahraga', 'Otomotif', 'Wisata', 'Kesehatan', 'Bisnis', 'Keuangan', 'Seni', 'Fotografi', 'Podcast',
+			'Fashion', 'Kecantikan', 'DIY', 'Buku', 'Religi', 'Motivasi', 'Vlog',
+		],
 		MAX_RESULTS: 24,
 		HISTORY_LIMIT: 100,
+		VIBRATE_MS: 700,      // Lama getar tiap klik (ms); hanya jalan di perangkat yang mendukung (mis. Chrome Android)
 		DOWNLOAD_API: '',     // Endpoint server unduhan milikmu, contoh: 'https://server-kamu.com/api/download'
 	};
 
-	const FONTS = ['Inter', 'Poppins', 'Nunito', 'Lora', 'Space Grotesk', 'JetBrains Mono'];
+	const FONTS = ['Poppins', 'Plus Jakarta Sans', 'DM Sans', 'Outfit', 'Manrope', 'Lexend'];
+	const DEFAULT_FONT = 'Plus Jakarta Sans';
+	// Font lama => font baru, supaya pengaturan tersimpan ikut ter-upgrade
+	const LEGACY_FONTS = { 'Inter': 'Plus Jakarta Sans', 'Nunito': 'DM Sans', 'Lora': 'Manrope', 'Space Grotesk': 'Outfit', 'JetBrains Mono': 'Lexend' };
 	const WEIGHTS = { 400: 'Normal', 500: 'Sedang', 600: 'Tebal', 700: 'Sangat tebal' };
-	const ACCENTS = ['#4a6fe0', '#ff0000', '#2f9e7a', '#8a5cd6', '#d9577a', '#c9772b']; // biru safir, merah YouTube, zamrud, kecubung, mawar, tembaga
+	const UNITS = { fontSize: 'px', volume: '%', brightness: '%', warmth: '%' }; // pengaturan angka (slider) + satuannya
+	// Semua elemen yang memicu efek getar + suara saat diklik
+	const CLICKABLE = 'button, a, summary, label, select, [role="tab"], [data-play], input[type="checkbox"], input[type="radio"], input[type="range"], input[type="color"]';
+	// Warna aksen: merah YouTube + lima warna lembut (urutan sama dengan ACCENT_NAMES). Pilihan lain: warna kustom
+	const ACCENTS = ['#ff0000', '#f2cc5a', '#6cc59a', '#6aa5ee', '#f4a35e', '#a68cf0'];
+	const ACCENT_NAMES = ['Merah YouTube', 'Kuning lembut', 'Hijau lembut', 'Biru lembut', 'Oren lembut', 'Ungu lembut'];
+	const DEFAULT_ACCENT = ACCENTS[3];
 	// Warna lama => indeks warna baru, supaya pengaturan tersimpan ikut ter-upgrade
 	const LEGACY_ACCENTS = {
-		'#5f6ea6': 0, '#527f90': 0, '#6366f1': 0, '#0ea5e9': 0,
-		'#5b8a77': 2, '#10b981': 2, '#0e8f8c': 2,
-		'#a8707f': 4, '#f43f5e': 4,
-		'#a97f5f': 5, '#f59e0b': 5,
+		'#f43f5e': 0, '#d9577a': 0, '#a8707f': 0,
+		'#f59e0b': 1,
+		'#2f9e7a': 2, '#10b981': 2, '#0e8f8c': 2, '#5b8a77': 2,
+		'#4a6fe0': 3, '#5f6ea6': 3, '#527f90': 3, '#6366f1': 3, '#0ea5e9': 3,
+		'#c9772b': 4, '#a97f5f': 4,
+		'#8a5cd6': 5,
 	};
 
 	/* ==============================================================
@@ -336,9 +415,34 @@
 		'vibrate': 'phone-vibrate',
 		'camera': 'camera',
 		'sliders': 'sliders',
+		'volume-down': 'volume-down',
+		'brightness': 'brightness-high',
+		'warmth': 'thermometer-half',
+		'eyedropper': 'eyedropper',
+		'tv': 'tv',
+		'laugh': 'emoji-laughing',
+		'mortarboard': 'mortarboard',
+		'bulb': 'lightbulb',
+		'car': 'car-front',
+		'plane': 'airplane',
+		'pulse': 'heart-pulse',
+		'briefcase': 'briefcase',
+		'piggy': 'piggy-bank',
+		'brush': 'brush',
+		'mic': 'mic',
+		'bag': 'bag',
+		'gem': 'gem',
+		'tools': 'tools',
+		'book': 'book',
+		'moon': 'moon-stars',
 	};
-	const icon = (name, size = 16) => `<i class="bi bi-${ICONS[name] || 'question-circle'} icon" style="font-size: ${size}px" aria-hidden="true"></i>`;
-	const CATEGORY_ICONS = { Populer: 'flame', Musik: 'music', Gaming: 'gamepad', Berita: 'newspaper', Teknologi: 'cpu', Kuliner: 'utensils', Olahraga: 'trophy', Film: 'film' };
+	const icon = (name, size = 16) => `<i class="bi bi-${ICONS[name] || 'question-circle'} icon" style="font-size: ${size / 16}rem" aria-hidden="true"></i>`;
+	const CATEGORY_ICONS = {
+		Populer: 'flame', Musik: 'music', Gaming: 'gamepad', Film: 'film', Anime: 'tv', Komedi: 'laugh', Berita: 'newspaper',
+		Teknologi: 'cpu', Edukasi: 'mortarboard', Sains: 'bulb', Kuliner: 'utensils', Olahraga: 'trophy', Otomotif: 'car',
+		Wisata: 'plane', Kesehatan: 'pulse', Bisnis: 'briefcase', Keuangan: 'piggy', Seni: 'brush', Fotografi: 'camera',
+		Podcast: 'mic', Fashion: 'bag', Kecantikan: 'gem', DIY: 'tools', Buku: 'book', Religi: 'moon', Motivasi: 'sun', Vlog: 'video',
+	};
 
 	const Fmt = {
 		num: (n) => n == null ? '-' : new Intl.NumberFormat('id-ID', { notation: 'compact' }).format(n),
@@ -379,7 +483,7 @@
 			likes: [],
 			downloads: [],
 			searches: [],
-			settings: { mode: 'system', fontSize: 16, fontFamily: 'Inter', fontWeight: '400', accent: ACCENTS[0], animation: true, sound: true, vibrate: true },
+			settings: { mode: 'system', fontSize: 16, fontFamily: DEFAULT_FONT, fontWeight: '400', accent: DEFAULT_ACCENT, animation: true, sound: true, vibrate: true, volume: 100, brightness: 100, warmth: 0 },
 		}),
 
 		// Pastikan struktur data valid, baik dari localStorage maupun file impor
@@ -396,11 +500,19 @@
 			const legacy = LEGACY_ACCENTS[String(s.accent).toLowerCase()];
 			if (legacy !== undefined) s.accent = ACCENTS[legacy];
 			if (!/^#[0-9a-f]{6}$/i.test(s.accent)) s.accent = base.settings.accent;
+			s.fontFamily = LEGACY_FONTS[s.fontFamily] || s.fontFamily;
 			if (!FONTS.includes(s.fontFamily)) s.fontFamily = base.settings.fontFamily;
 			if (!(String(s.fontWeight) in WEIGHTS)) s.fontWeight = base.settings.fontWeight;
 			if (!['system', 'light', 'dark'].includes(s.mode)) s.mode = base.settings.mode;
 			s.fontWeight = String(s.fontWeight);
-			s.fontSize = Math.min(22, Math.max(12, Number(s.fontSize) || base.settings.fontSize));
+			s.fontSize = Math.min(24, Math.max(12, Number(s.fontSize) || base.settings.fontSize));
+			const clamp = (key, min, max) => {
+				const n = Number(s[key]);
+				s[key] = Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : base.settings[key];
+			};
+			clamp('volume', 0, 100);
+			clamp('brightness', 50, 130);
+			clamp('warmth', 0, 60);
 			return data;
 		},
 
@@ -611,9 +723,17 @@
 	};
 
 	/* ==============================================================
-	   4. TEMA & EFEK (suara + getar)
+	   4. TEMA, EFEK (suara + getar) & PEMUTAR
 	   ============================================================== */
 	const Theme = {
+		// Warna teks yang terbaca di atas warna aksen (putih atau gelap, mana yang kontrasnya lebih baik)
+		onAccent(hex) {
+			const [r, g, b] = [1, 3, 5]
+				.map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+				.map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+			return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.217 ? '#1f2430' : '#ffffff';
+		},
+
 		apply() {
 			const s = Store.data.settings;
 			const root = document.documentElement;
@@ -623,15 +743,21 @@
 			root.style.setProperty('--font', `'${s.fontFamily}', sans-serif`);
 			root.style.setProperty('--fs', `${s.fontSize}px`);
 			root.style.setProperty('--fw', s.fontWeight);
+			root.style.setProperty('--on-accent', this.onAccent(s.accent));
 			root.classList.toggle('no-anim', !s.animation);
+			Player.applyLight();
 		},
 	};
 
 	const Feedback = {
 		ctx: null,
+		last: 0,
 		tap() {
+			const now = Date.now();
+			if (now - this.last < 150) return; // satu klik bisa memicu beberapa event (mis. label + input)
+			this.last = now;
 			const s = Store.data.settings;
-			if (s.vibrate && navigator.vibrate) navigator.vibrate(12);
+			if (s.vibrate && navigator.vibrate) navigator.vibrate(CONFIG.VIBRATE_MS);
 			if (s.sound) this.beep();
 		},
 		beep() {
@@ -648,6 +774,41 @@
 				osc.start(t);
 				osc.stop(t + 0.08);
 			} catch { /* audio tidak tersedia */ }
+		},
+	};
+
+	// Pemutar YouTube (iframe lintas-origin): volume lewat postMessage, cahaya lewat filter CSS
+	const Player = {
+		ORIGIN: 'https://www.youtube-nocookie.com',
+
+		// enablejsapi=1 agar pemutar menerima perintah volume
+		load(id) {
+			const origin = location.protocol.startsWith('http') ? `&origin=${encodeURIComponent(location.origin)}` : '';
+			$('#player').src = `${this.ORIGIN}/embed/${id}?autoplay=1&rel=0&playsinline=1&enablejsapi=1${origin}`;
+		},
+
+		post(payload) {
+			const win = $('#player').contentWindow;
+			if (win) win.postMessage(JSON.stringify(payload), this.ORIGIN);
+		},
+
+		applyVolume() {
+			this.post({ event: 'command', func: 'setVolume', args: [Store.data.settings.volume] });
+		},
+
+		// Kecerahan & cahaya hangat diterapkan sebagai filter CSS pada pemutar
+		applyLight() {
+			const { brightness, warmth } = Store.data.settings;
+			const filters = [];
+			if (brightness !== 100) filters.push(`brightness(${brightness}%)`);
+			if (warmth > 0) filters.push(`sepia(${warmth}%)`);
+			$('#player').style.filter = filters.join(' ');
+		},
+
+		// Dipanggil setiap video selesai dimuat: daftarkan pendengar, lalu terapkan volume
+		onLoad() {
+			this.post({ event: 'listening', id: 1, channel: 'widget' });
+			[0, 600, 1800].forEach((ms) => setTimeout(() => this.applyVolume(), ms));
 		},
 	};
 
@@ -689,11 +850,11 @@
 			const el = $('#info');
 			el.classList.remove('hidden');
 			el.innerHTML = `
-				<div class="surface rise mx-auto max-w-3xl rounded-3xl p-4" style="box-shadow: var(--shadow)">
+				<div class="surface rise watch-col rounded-3xl p-4" style="box-shadow: var(--shadow)">
 					<h1 class="wrap-text text-lg font-bold leading-snug tracking-tight">${Fmt.esc(v.title)}</h1>
 
 					<div class="mt-3 flex items-center gap-3">
-						<span class="grid h-10 w-10 shrink-0 place-items-center rounded-full font-bold text-white" style="background: var(--accent)">${Fmt.esc(v.channel.charAt(0).toUpperCase())}</span>
+						<span class="grid h-10 w-10 shrink-0 place-items-center rounded-full font-bold" style="background: var(--accent)">${Fmt.esc(v.channel.charAt(0).toUpperCase())}</span>
 						<div class="min-w-0">
 							<p class="wrap-text font-semibold">${Fmt.esc(v.channel)}</p>
 							<p class="muted text-xs">Diunggah ${Fmt.date(v.publishedAt)}, ${Fmt.ago(v.publishedAt)}</p>
@@ -734,6 +895,14 @@
 		syncLike(v) {
 			const btn = $('[data-like]');
 			if (btn && v) btn.outerHTML = this.likeBtn(v);
+		},
+
+		// Tandai swatch warna aksen yang sedang aktif di panel pengaturan
+		markAccent(value) {
+			const color = value.toLowerCase();
+			document.querySelectorAll('[data-accent]').forEach((b) => { b.dataset.active = String(b.dataset.accent === color); });
+			const custom = $('#swatchCustom');
+			if (custom) custom.dataset.active = String(!ACCENTS.includes(color));
 		},
 
 		hydrateIcons() {
@@ -869,7 +1038,7 @@
 			const ring = 'border-color: var(--surface)';
 			return profile.avatar
 				? `<img class="${size} rounded-full border-4 object-cover" style="${ring}" src="${Fmt.esc(profile.avatar)}" alt="Foto profil">`
-				: `<span class="${size} grid place-items-center rounded-full border-4 font-bold text-white" style="background: var(--accent); ${ring}">${Fmt.esc((profile.name || '?').charAt(0).toUpperCase())}</span>`;
+				: `<span class="${size} grid place-items-center rounded-full border-4 font-bold" style="background: var(--accent); ${ring}">${Fmt.esc((profile.name || '?').charAt(0).toUpperCase())}</span>`;
 		},
 
 		// Grafik aktivitas 7 hari + channel yang paling sering ditonton
@@ -884,8 +1053,8 @@
 			const max = Math.max(...counts, 1);
 			const bars = counts.map((c, i) => `
 				<div class="flex flex-1 flex-col items-center gap-1">
-					<div class="w-full rounded-md" style="height: ${Math.max(4, (c / max) * 48)}px; background: var(--accent); opacity: ${c ? 1 : 0.25}"></div>
-					<span class="muted text-[10px]">${days[i].toLocaleDateString('id-ID', { weekday: 'short' })}</span>
+					<div class="w-full rounded-md" style="height: ${Math.max(0.25, (c / max) * 3)}rem; background: var(--accent); opacity: ${c ? 1 : 0.25}"></div>
+					<span class="muted text-[0.625rem]">${days[i].toLocaleDateString('id-ID', { weekday: 'short' })}</span>
 				</div>`).join('');
 
 			const tally = {};
@@ -900,15 +1069,63 @@
 				</div>`;
 		},
 
-		account() {
-			const { profile, history, likes, downloads } = Store.data;
-			const tabs = {
+		tabData() {
+			const { history, likes, downloads } = Store.data;
+			return {
 				history: { label: 'Riwayat', icon: 'clock', items: history, empty: 'Belum ada video yang ditonton.' },
 				likes: { label: 'Disukai', icon: 'heart', items: likes, empty: 'Belum ada video yang disukai.' },
 				downloads: { label: 'Unduhan', icon: 'download', items: downloads, empty: 'Belum ada unduhan.' },
 			};
-			const active = tabs[this.tab] ? this.tab : 'history';
+		},
+
+		// Bar tab dengan penanda yang bergeser mengikuti tab aktif
+		tabBar(active) {
+			const tabs = this.tabData();
+			const keys = Object.keys(tabs);
+			return `
+				<div id="tabBar" class="tab-bar mt-5" role="tablist" style="--count: ${keys.length}; --i: ${keys.indexOf(active)}">
+					<span class="tab-indicator btn-accent" aria-hidden="true"></span>
+					${keys.map((key) => `
+						<button class="tab-btn ${key === active ? 'is-active' : ''}" data-tab="${key}" role="tab" aria-selected="${key === active}">${icon(tabs[key].icon, 14)}${tabs[key].label} (${tabs[key].items.length})</button>`).join('')}
+				</div>`;
+		},
+
+		tabBody(active) {
+			const tab = this.tabData()[active];
 			const extra = active === 'downloads' ? (i) => `, ${i.format.toUpperCase()}` : undefined;
+			return `
+				<div class="flex items-center justify-between pt-4">
+					<h3 class="font-semibold">${tab.label}</h3>
+					<button class="muted inline-flex items-center gap-1 text-sm" data-action="clear-${active}">${icon('trash', 14)}Hapus</button>
+				</div>
+				${this.list(tab.items, tab.empty, extra)}`;
+		},
+
+		// Pindah tab: penanda bergeser, isi menggeser searah tab tujuan (tanpa merender ulang seluruh panel)
+		switchTab(key) {
+			const keys = Object.keys(this.tabData());
+			if (key === this.tab || !keys.includes(key)) return;
+			const dir = keys.indexOf(key) > keys.indexOf(this.tab) ? 'right' : 'left';
+			this.tab = key;
+
+			const bar = $('#tabBar');
+			bar.style.setProperty('--i', keys.indexOf(key));
+			bar.querySelectorAll('[data-tab]').forEach((b) => {
+				const on = b.dataset.tab === key;
+				b.classList.toggle('is-active', on);
+				b.setAttribute('aria-selected', String(on));
+			});
+
+			const body = $('#tabBody');
+			body.innerHTML = this.tabBody(key);
+			body.classList.remove('slide-left', 'slide-right');
+			void body.offsetWidth; // mulai ulang animasi
+			body.classList.add(`slide-${dir}`);
+		},
+
+		account() {
+			const { profile, history, likes, downloads } = Store.data;
+			const active = Object.keys(this.tabData()).includes(this.tab) ? this.tab : 'history';
 			const stats = [[history.length, 'Ditonton', 'eye'], [likes.length, 'Disukai', 'heart'], [downloads.length, 'Diunduh', 'download']];
 
 			return `
@@ -917,7 +1134,7 @@
 				<div class="-mt-12 flex items-end gap-3">
 					<div class="relative shrink-0">
 						${this.avatar(profile, 'h-24 w-24 text-3xl')}
-						<button class="absolute bottom-0 right-0 grid h-8 w-8 place-items-center rounded-full text-white" style="background: var(--accent); border: 3px solid var(--surface)" data-action="avatar" aria-label="Ganti foto profil">
+						<button class="absolute bottom-0 right-0 grid h-8 w-8 place-items-center rounded-full" style="background: var(--accent); border: 3px solid var(--surface)" data-action="avatar" aria-label="Ganti foto profil">
 							${icon('camera', 15)}
 						</button>
 					</div>
@@ -946,16 +1163,9 @@
 
 				${this.insights(history)}
 
-				<div class="mt-5 flex gap-1 rounded-full p-1" style="background: var(--chip)" role="tablist">
-					${Object.entries(tabs).map(([key, t]) => `
-						<button class="flex-1 rounded-full px-1 py-1.5 text-sm font-semibold ${key === active ? 'btn-accent' : ''}" data-tab="${key}" role="tab" aria-selected="${key === active}">${icon(t.icon, 14)}${t.label} (${t.items.length})</button>`).join('')}
-				</div>
+				${this.tabBar(active)}
 
-				<div class="flex items-center justify-between pt-4">
-					<h3 class="font-semibold">${tabs[active].label}</h3>
-					<button class="muted inline-flex items-center gap-1 text-sm" data-action="clear-${active}">${icon('trash', 14)}Hapus</button>
-				</div>
-				${this.list(tabs[active].items, tabs[active].empty, extra)}
+				<div id="tabBody">${this.tabBody(active)}</div>
 
 				${this.dataTools()}`;
 		},
@@ -963,15 +1173,18 @@
 		settings() {
 			const s = Store.data.settings;
 			const opts = (list, current) => list.map(([v, label]) => `<option value="${v}" ${String(v) === String(current) ? 'selected' : ''}>${label}</option>`).join('');
+			const active = s.accent.toLowerCase();
+			const section = (title) => `<h3 class="muted pb-1 pt-5 text-xs font-semibold uppercase tracking-wide">${title}</h3>`;
 			const toggle = (key, label, ic) => `
 				<label class="row cursor-pointer"><span class="flex items-center gap-2">${icon(ic)}${label}</span><input type="checkbox" data-set="${key}" ${s[key] ? 'checked' : ''}></label>`;
 
 			return `
+				${section('Tampilan')}
 				<div class="row"><span class="flex items-center gap-2">${icon('sun')}Mode</span>
 					<select class="field w-auto" data-set="mode">${opts([['system', 'Ikuti sistem'], ['light', 'Terang'], ['dark', 'Gelap']], s.mode)}</select></div>
 
-				<div class="row"><span class="flex items-center gap-2">${icon('type')}Ukuran font <b id="fsVal">${s.fontSize}px</b></span>
-					<input type="range" min="12" max="22" step="1" value="${s.fontSize}" data-set="fontSize" class="w-40"></div>
+				<div class="row"><span class="flex items-center gap-2">${icon('type')}Ukuran font <b id="val-fontSize">${s.fontSize}px</b></span>
+					<input type="range" min="12" max="24" step="1" value="${s.fontSize}" data-set="fontSize" class="w-40"></div>
 
 				<div class="row"><span class="flex items-center gap-2">${icon('font')}Jenis font</span>
 					<select class="field w-auto" data-set="fontFamily">${opts(FONTS.map((f) => [f, f]), s.fontFamily)}</select></div>
@@ -979,12 +1192,32 @@
 				<div class="row"><span class="flex items-center gap-2">${icon('bold')}Ketebalan font</span>
 					<select class="field w-auto" data-set="fontWeight">${opts(Object.entries(WEIGHTS), s.fontWeight)}</select></div>
 
-				<div class="row"><span class="flex items-center gap-2">${icon('palette')}Warna aksen</span>
-					<span class="flex items-center gap-2">
-						${ACCENTS.map((c) => `<button class="w-6 h-6 rounded-full border" style="background:${c}; border-color: var(--line)" data-accent="${c}" aria-label="Aksen ${c}"></button>`).join('')}
-						<input id="accentPicker" type="color" value="${s.accent}" data-set="accent" class="w-8 h-8 bg-transparent">
-					</span></div>
+				<div class="row row-stack">
+					<span class="flex items-center gap-2">${icon('palette')}Warna aksen</span>
+					<div class="flex flex-wrap items-center gap-3">
+						${ACCENTS.map((c, i) => `
+							<button class="swatch" style="background-color: ${c}; --c: ${c}" data-accent="${c}" data-active="${active === c}" title="${ACCENT_NAMES[i]}" aria-label="${ACCENT_NAMES[i]}"></button>`).join('')}
+						<label id="swatchCustom" class="swatch swatch-custom cursor-pointer" data-active="${!ACCENTS.includes(active)}" title="Warna kustom">
+							${icon('eyedropper', 14)}
+							<input id="accentPicker" type="color" value="${s.accent}" data-set="accent" class="absolute inset-0 h-full w-full cursor-pointer opacity-0" aria-label="Warna kustom">
+						</label>
+					</div>
+				</div>
 
+				${section('Pemutaran video')}
+				<div class="row"><span class="flex items-center gap-2">${icon('volume-down')}Volume <b id="val-volume">${s.volume}%</b></span>
+					<input type="range" min="0" max="100" step="5" value="${s.volume}" data-set="volume" class="w-40"></div>
+
+				<div class="row"><span class="flex items-center gap-2">${icon('brightness')}Kecerahan <b id="val-brightness">${s.brightness}%</b></span>
+					<input type="range" min="50" max="130" step="5" value="${s.brightness}" data-set="brightness" class="w-40"></div>
+
+				<div class="row"><span class="flex items-center gap-2">${icon('warmth')}Cahaya hangat <b id="val-warmth">${s.warmth}%</b></span>
+					<input type="range" min="0" max="60" step="5" value="${s.warmth}" data-set="warmth" class="w-40"></div>
+
+				<p class="muted flex items-start gap-2 py-3 text-xs">${icon('info', 14)}<span>Mode audio (mono, stereo, Dolby) dan equalizer tidak tersedia, karena suara video YouTube yang disematkan tidak bisa diolah oleh halaman ini.</span></p>
+
+
+				${section('Umum')}
 				${toggle('animation', 'Animasi', 'sparkles')}
 				${toggle('sound', 'Efek suara', 'volume')}
 				${toggle('vibrate', 'Getar', 'vibrate')}
@@ -1062,8 +1295,15 @@
 			const fresh = items.filter((v) => !state.seen.has(v.id));
 			fresh.forEach((v) => { state.seen.add(v.id); this.cache.set(v.id, v); });
 			const html = fresh.map(UI.card).join('');
-			if (replace) $('#feed').innerHTML = html;
-			else $('#feed').insertAdjacentHTML('beforeend', html);
+			if (replace) {
+				const feed = $('#feed');
+				feed.innerHTML = html;
+				feed.classList.remove('rise');
+				void feed.offsetWidth; // mulai ulang animasi
+				feed.classList.add('rise');
+			} else {
+				$('#feed').insertAdjacentHTML('beforeend', html);
+			}
 			$('#status').textContent = state.seen.size ? '' : 'Tidak ada video yang cocok.';
 			$('#moreWrap').classList.toggle('hidden', !state.next);
 		},
@@ -1166,7 +1406,7 @@
 		async play(id) {
 			const token = ++this.playToken;
 			$('#playerWrap').classList.remove('hidden');
-			$('#player').src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
+			Player.load(id);
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 
 			try { history.replaceState(null, '', `#v=${id}`); } catch { /* file:// atau diblokir */ }
@@ -1232,6 +1472,12 @@
 				e.preventDefault();
 				this.home();
 			});
+			// Pemutar: terapkan volume setiap video selesai dimuat
+			$('#player').addEventListener('load', () => Player.onLoad());
+			window.addEventListener('message', (e) => {
+				if (e.origin !== Player.ORIGIN) return;
+				try { if (JSON.parse(e.data).event === 'onReady') Player.applyVolume(); } catch { /* bukan pesan JSON */ }
+			});
 			$('#toTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 			$('#btnMore').addEventListener('click', () => this.loadMore());
 			$('#btnAccount').addEventListener('click', () => Panel.open('account'));
@@ -1247,7 +1493,7 @@
 
 			// Efek suara + getar untuk setiap tombol
 			document.addEventListener('click', (e) => {
-				if (e.target.closest('button, a')) Feedback.tap();
+				if (e.target.closest(CLICKABLE)) Feedback.tap();
 
 				const play = e.target.closest('[data-play]');
 				if (play) { Panel.close(); this.play(play.dataset.play); }
@@ -1259,7 +1505,7 @@
 				if (e.target.closest('[data-share]')) this.share();
 
 				const tab = e.target.closest('[data-tab]');
-				if (tab) { Panel.tab = tab.dataset.tab; Panel.refresh(); }
+				if (tab) Panel.switchTab(tab.dataset.tab);
 				if (e.target.closest('[data-resume]')) this.resume();
 
 				const suggest = e.target.closest('[data-suggest]');
@@ -1303,11 +1549,18 @@
 		},
 
 		setSetting(key, value, rerender = true) {
-			Store.data.settings[key] = key === 'fontSize' ? Number(value) : value;
+			Store.data.settings[key] = key in UNITS ? Number(value) : value;
 			Store.save();
 			Theme.apply();
-			if (key === 'fontSize') $('#fsVal').textContent = `${value}px`;
-			if (key === 'accent' && rerender) $('#accentPicker').value = value;
+			if (key in UNITS) {
+				const out = $(`#val-${key}`);
+				if (out) out.textContent = `${value}${UNITS[key]}`;
+			}
+			if (key === 'volume') Player.applyVolume();
+			if (key === 'accent') {
+				UI.markAccent(value);
+				if (rerender) $('#accentPicker').value = value;
+			}
 		},
 	};
 
