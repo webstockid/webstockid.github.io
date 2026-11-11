@@ -452,51 +452,51 @@
 	</div>
 
 	<!-- ==========================================
-	     5. ENLARGED FLOATING FIXED BOTTOM PLAYER CONTROL BAR
+	     5. MODERN FLOATING FIXED BOTTOM PLAYER CONTROL BAR
 	     ========================================== -->
-	<div id="bottomPlayerBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 ui-card border rounded-2xl shadow-2xl px-4 sm:px-6 py-2.5 sm:py-3.5 flex items-center gap-2 sm:gap-4 transition-all duration-300 ease-in-out backdrop-blur-xl bg-slate-900/95 border-slate-700/80 max-w-[96vw] sm:max-w-none">
+	<div id="bottomPlayerBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 ui-card border rounded-full shadow-2xl px-4 sm:px-6 py-2 sm:py-3 flex items-center gap-2 sm:gap-3.5 transition-all duration-300 ease-in-out backdrop-blur-xl bg-slate-900/90 border-slate-700/80 max-w-[96vw] sm:max-w-none">
 		<!-- Prev Video Button -->
-		<button onclick="app.playPrevVideo()" class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105" title="Video Sebelumnya">
-			<i class="fa-solid fa-backward-step text-sm sm:text-base"></i>
+		<button onclick="app.playPrevVideo()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105 active:scale-95" title="Video Sebelumnya">
+			<i class="fa-solid fa-backward-step text-sm"></i>
 		</button>
 		
 		<!-- Rewind 10s Button -->
-		<button onclick="app.seekRelative(-10)" class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105 text-xs sm:text-sm font-mono font-bold" title="Mundur 10 Detik">
-			<i class="fa-solid fa-rotate-left text-xs mr-1"></i>10s
+		<button onclick="app.seekRelative(-10)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold" title="Mundur 10 Detik">
+			<i class="fa-solid fa-rotate-left text-[11px] mr-1"></i>10s
 		</button>
 
 		<!-- Hero Play / Pause Button -->
-		<button onclick="app.togglePlayPause()" id="btnBottomPlay" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl btn-accent flex items-center justify-center text-white shadow-xl hover:scale-110 transition-transform" title="Play / Pause">
-			<i class="fa-solid fa-play text-base sm:text-xl ml-0.5" id="bottomPlayIcon"></i>
+		<button onclick="app.togglePlayPause()" id="btnBottomPlay" class="w-11 h-11 sm:w-13 sm:h-13 rounded-full btn-accent flex items-center justify-center text-white shadow-lg shadow-blue-500/25 hover:scale-110 active:scale-95 transition-all" title="Play / Pause">
+			<i class="fa-solid fa-play text-sm sm:text-lg ml-0.5" id="bottomPlayIcon"></i>
 		</button>
 
 		<!-- Forward 10s Button -->
-		<button onclick="app.seekRelative(10)" class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105 text-xs sm:text-sm font-mono font-bold" title="Maju 10 Detik">
-			10s<i class="fa-solid fa-rotate-right text-xs ml-1"></i>
+		<button onclick="app.seekRelative(10)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold" title="Maju 10 Detik">
+			10s<i class="fa-solid fa-rotate-right text-[11px] ml-1"></i>
 		</button>
 
 		<!-- Next Video Button -->
-		<button onclick="app.playNextVideo()" class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105" title="Video Selanjutnya">
-			<i class="fa-solid fa-forward-step text-sm sm:text-base"></i>
+		<button onclick="app.playNextVideo()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105 active:scale-95" title="Video Selanjutnya">
+			<i class="fa-solid fa-forward-step text-sm"></i>
 		</button>
 
-		<div class="h-6 w-[1px] bg-slate-700/80 mx-1 sm:mx-2"></div>
+		<div class="h-6 w-[1px] bg-slate-700/80 mx-1 sm:mx-1.5"></div>
 
 		<!-- Repeat Mode Button (Off / 1x / ALL) -->
-		<button onclick="app.toggleRepeatMode()" id="btnBottomRepeat" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl ui-hover-bg flex items-center gap-1.5 text-slate-300 hover:text-accent transition-all text-xs sm:text-sm font-medium" title="Mode Pengulangan Video">
-			<i class="fa-solid fa-repeat text-sm sm:text-base" id="repeatIcon"></i>
-			<span id="repeatBadge" class="font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700">Off</span>
+		<button onclick="app.toggleRepeatMode()" id="btnBottomRepeat" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 text-slate-300 hover:text-accent transition-all text-xs font-medium" title="Mode Pengulangan Video">
+			<i class="fa-solid fa-repeat text-xs sm:text-sm" id="repeatIcon"></i>
+			<span id="repeatBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700">Off</span>
 		</button>
 
 		<!-- Autoplay Toggle Button -->
-		<button onclick="app.toggleAutoplayMode()" id="btnBottomAutoplay" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-indigo-600 text-white flex items-center gap-1.5 text-xs sm:text-sm font-medium shadow-md transition-all hover:brightness-110" title="Auto Play Video Selanjutnya">
-			<i class="fa-solid fa-circle-play text-sm sm:text-base" id="autoplayIcon"></i>
-			<span id="autoplayBadge" class="font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-indigo-950/60 border border-indigo-400/30">ON</span>
+		<button onclick="app.toggleAutoplayMode()" id="btnBottomAutoplay" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-md transition-all hover:brightness-110" title="Auto Play Video Selanjutnya">
+			<i class="fa-solid fa-circle-play text-xs sm:text-sm" id="autoplayIcon"></i>
+			<span id="autoplayBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 border border-indigo-400/30">ON</span>
 		</button>
 	</div>
 
 	<!-- ==========================================
-	     6. FOOTER SECTION
+	     6. FOOTER SECTION (TECHNICAL DETAILS & ARCHITECTURE)
 	     ========================================== -->
 	<footer class="ui-card border-t pt-6 sm:pt-8 pb-6 px-4 text-xs mt-auto">
 		<div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6 sm:mb-8">
@@ -514,39 +514,31 @@
 			</div>
 
 			<div>
-				<h4 class="font-semibold mb-2 text-xs">Kategori Cepat</h4>
-				<ul class="space-y-1.5 ui-text-subtle">
-					<li><button onclick="app.selectCategory('Musik')" class="hover:text-accent transition-colors flex items-center gap-1.5"><i class="fa-solid fa-music text-pink-500 w-4"></i> Musik Hits</button></li>
-					<li><button onclick="app.selectCategory('Gaming')" class="hover:text-accent transition-colors flex items-center gap-1.5"><i class="fa-solid fa-gamepad text-indigo-400 w-4"></i> Gaming Highlights</button></li>
-					<li><button onclick="app.selectCategory('Teknologi')" class="hover:text-accent transition-colors flex items-center gap-1.5"><i class="fa-solid fa-laptop text-blue-400 w-4"></i> Review Gadget</button></li>
-					<li><button onclick="app.selectCategory('Berita')" class="hover:text-accent transition-colors flex items-center gap-1.5"><i class="fa-solid fa-newspaper text-emerald-400 w-4"></i> Berita Terkini</button></li>
+				<h4 class="font-semibold mb-2 text-xs flex items-center gap-1.5"><i class="fa-solid fa-code text-accent"></i> Teknologi & API</h4>
+				<ul class="space-y-1.5 ui-text-subtle text-[11px]">
+					<li class="flex items-center gap-1.5"><i class="fa-brands fa-js text-yellow-400"></i> ES6+ Vanilla JavaScript</li>
+					<li class="flex items-center gap-1.5"><i class="fa-brands fa-html5 text-orange-500"></i> HTML5 & CSS3 Utility</li>
+					<li class="flex items-center gap-1.5"><i class="fa-solid fa-wind text-sky-400"></i> Tailwind CSS Framework</li>
+					<li class="flex items-center gap-1.5"><i class="fa-solid fa-server text-emerald-400"></i> YouTube API v3 & Piped</li>
+					<li class="flex items-center gap-1.5"><i class="fa-solid fa-wave-square text-purple-400"></i> Web Audio & Haptics API</li>
 				</ul>
 			</div>
 
 			<div>
-				<h4 class="font-semibold mb-2 text-xs">Fitur Utama</h4>
-				<ul class="space-y-1.5 ui-text-subtle">
-					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Floating Enlarged Bottom Controls</li>
-					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Reliable Repeat 1x/ALL & Autoplay</li>
-					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Video Durations & Auto-Hide Bar</li>
-					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Multi-Server Failover API</li>
+				<h4 class="font-semibold mb-2 text-xs flex items-center gap-1.5"><i class="fa-solid fa-layer-group text-accent"></i> Fitur & Arsitektur Web</h4>
+				<ul class="space-y-1.5 ui-text-subtle text-[11px]">
+					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Single Page Application (SPA)</li>
+					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Floating Nav & Auto-Hide Scroll</li>
+					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Dynamic State & LocalStorage</li>
+					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Smart Audio EQ & 300ms Haptics</li>
 				</ul>
 			</div>
 
 			<div class="space-y-2">
-				<h4 class="font-semibold text-xs">Status Server & API</h4>
-				<div class="p-3 ui-sub-bg rounded-xl border border-slate-700/40 space-y-1.5">
-					<div class="flex items-center justify-between">
-						<span class="text-[11px] ui-text-subtle">Server API:</span>
-						<span id="footerServerStatus" class="flex items-center gap-1.5 text-[10px] text-emerald-500 font-mono">
-							<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Multi-Server
-						</span>
-					</div>
-					<div class="flex items-center justify-between">
-						<span class="text-[11px] ui-text-subtle">Audio FX:</span>
-						<span id="footerSoundStatus" class="text-[10px] font-mono">Aktif</span>
-					</div>
-				</div>
+				<h4 class="font-semibold text-xs flex items-center gap-1.5"><i class="fa-solid fa-microchip text-accent"></i> Logika & Arsitektur</h4>
+				<p class="ui-text-subtle leading-relaxed text-[11px]">
+					Aplikasi ini dirancang menggunakan arsitektur <b>Single State Management</b> yang terisolasi dalam objek modul JavaScript. Logika pemutaran media memanfaatkan listener message YouTube iframe untuk pemutaran otomatis dan pengulangan tanpa hambatan.
+				</p>
 			</div>
 		</div>
 
@@ -1439,7 +1431,7 @@
 			updateBottomBarUI() {
 				const playIcon = document.getElementById('bottomPlayIcon');
 				if (playIcon) {
-					playIcon.className = this.isPlaying ? 'fa-solid fa-pause text-base sm:text-xl' : 'fa-solid fa-play text-base sm:text-xl ml-0.5';
+					playIcon.className = this.isPlaying ? 'fa-solid fa-pause text-sm sm:text-lg' : 'fa-solid fa-play text-sm sm:text-lg ml-0.5';
 				}
 
 				const repeatBadge = document.getElementById('repeatBadge');
@@ -1447,16 +1439,16 @@
 				if (repeatBadge && repeatBtn) {
 					if (this.repeatMode === 'one') {
 						repeatBadge.innerText = '1x';
-						repeatBadge.className = 'font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-amber-500/30 text-amber-300 border border-amber-400/50';
-						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-amber-600 text-white flex items-center gap-1.5 text-xs sm:text-sm font-medium shadow-md";
+						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-amber-500/30 text-amber-300 border border-amber-400/50';
+						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-amber-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-md";
 					} else if (this.repeatMode === 'all') {
 						repeatBadge.innerText = 'ALL';
-						repeatBadge.className = 'font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-teal-500/30 text-teal-300 border border-teal-400/50';
-						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-teal-600 text-white flex items-center gap-1.5 text-xs sm:text-sm font-medium shadow-md";
+						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-teal-500/30 text-teal-300 border border-teal-400/50';
+						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-teal-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-md";
 					} else {
 						repeatBadge.innerText = 'OFF';
-						repeatBadge.className = 'font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700';
-						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl ui-hover-bg flex items-center gap-1.5 text-slate-300 hover:text-accent transition-all text-xs sm:text-sm font-medium";
+						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
+						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 text-slate-300 hover:text-accent transition-all text-xs font-medium";
 					}
 				}
 
@@ -1465,12 +1457,12 @@
 				if (autoplayBadge && autoplayBtn) {
 					if (this.isAutoplay) {
 						autoplayBadge.innerText = 'ON';
-						autoplayBadge.className = 'font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-indigo-950/60 text-indigo-200 border border-indigo-400/30';
-						autoplayBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-indigo-600 text-white flex items-center gap-1.5 text-xs sm:text-sm font-medium shadow-md transition-all hover:brightness-110";
+						autoplayBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 text-indigo-200 border border-indigo-400/30';
+						autoplayBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-md transition-all hover:brightness-110";
 					} else {
 						autoplayBadge.innerText = 'OFF';
-						autoplayBadge.className = 'font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700';
-						autoplayBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl ui-hover-bg flex items-center gap-1.5 text-slate-300 hover:text-accent transition-all text-xs sm:text-sm font-medium";
+						autoplayBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
+						autoplayBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 text-slate-300 hover:text-accent transition-all text-xs font-medium";
 					}
 				}
 			},
@@ -2252,7 +2244,7 @@
 				if (!this.state.settings.hapticEnabled) return;
 				try {
 					if ('vibrate' in navigator) {
-						navigator.vibrate(700);
+						navigator.vibrate(300);
 					}
 				} catch (e) {}
 			},

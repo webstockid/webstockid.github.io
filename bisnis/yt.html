@@ -155,6 +155,12 @@
 		   6. KOMPONEN TAMBAHAN: swatch warna, tab bergeser, tata letak
 		   ========================================================== */
 		.row-stack { flex-direction: column; align-items: stretch; gap: .75rem; }
+		.about { padding: .65rem .85rem; border: 1px solid var(--line); border-radius: .875rem; background: var(--bg); }
+		.about summary { display: flex; align-items: center; gap: .5rem; list-style: none; cursor: pointer; font-size: .875rem; font-weight: 600; }
+		.about summary::-webkit-details-marker { display: none; }
+		.about-body { margin-top: .65rem; color: var(--muted); font-size: .8125rem; line-height: 1.55; }
+		.about[open] .about-body { animation: rise .25s ease both; }
+		.about code { padding: .05rem .3rem; border-radius: .3rem; background: var(--line); color: var(--text); font-size: .75rem; }
 		.swatch {
 			position: relative; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 9999px;
 			color: #fff; background-image: linear-gradient(180deg, rgba(255, 255, 255, .38), rgba(255, 255, 255, 0) 60%);
@@ -282,10 +288,10 @@
 	</main>
 
 	<!-- ==========================================================
-	     FOOTER: tentang, tips, aktivitas, dan sumber data
+	     FOOTER: profil singkat, info cara web app dibuat, aktivitas, dan sumber data
 	     ========================================================== -->
 	<footer class="mt-4 border-t" style="background: var(--surface); border-color: var(--line); padding-bottom: env(safe-area-inset-bottom, 0px);">
-		<div class="mx-auto grid page-w gap-8 px-4 py-10 sm:grid-cols-3">
+		<div class="mx-auto grid page-w gap-8 px-4 py-10 md:grid-cols-[1fr_1.7fr_1fr]">
 			<section>
 				<div class="flex items-center gap-2 font-bold">
 					<span class="grid h-8 w-8 place-items-center rounded-xl" style="background: var(--accent)" data-icon="play" data-icon-size="17"></span>
@@ -295,15 +301,66 @@
 			</section>
 
 			<section>
-				<h3 class="text-sm font-semibold">Tips cepat</h3>
-				<ul class="muted mt-3 space-y-2 text-sm">
-					<li>Ketuk logo untuk kembali ke beranda, video tetap berjalan.</li>
-					<li>Pilih kategori di atas untuk menjelajah dengan cepat.</li>
-					<li>Tekan Suka untuk menyimpan video ke akunmu.</li>
-					<li>Ekspor data secara berkala sebagai cadangan.</li>
-					<li>Tekan tombol / untuk langsung mencari.</li>
-					<li>Pakai Bagikan untuk menyalin tautan video.</li>
-				</ul>
+				<h3 class="text-sm font-semibold">Tentang web app ini</h3>
+				<p class="muted mt-3 text-sm">Dibuat tanpa framework dan tanpa proses build. Ketuk judul di bawah untuk melihat detailnya.</p>
+				<div class="mt-3 space-y-2">
+					<details class="about">
+						<summary><span class="flex items-center gap-2" data-icon="code" data-icon-size="15">Bahasa pemrograman</span><span class="chev ml-auto" data-icon="chevron-down" data-icon-size="14"></span></summary>
+						<div class="about-body">
+							<p>Tiga bahasa standar web, semuanya dalam satu file <code>index.html</code>:</p>
+							<ul class="mt-2 list-disc space-y-1 pl-5">
+								<li><b>HTML5</b> untuk struktur halaman.</li>
+								<li><b>CSS3</b> untuk tampilan: variabel CSS, <code>color-mix</code>, animasi, dan tata letak responsif.</li>
+								<li><b>JavaScript murni (ES2022)</b> untuk seluruh logika, tanpa framework dan tanpa proses build.</li>
+							</ul>
+						</div>
+					</details>
+
+					<details class="about">
+						<summary><span class="flex items-center gap-2" data-icon="layers" data-icon-size="15">Teknologi yang dipakai</span><span class="chev ml-auto" data-icon="chevron-down" data-icon-size="14"></span></summary>
+						<div class="about-body">
+							<ul class="list-disc space-y-1 pl-5">
+								<li><b>Tailwind CSS</b> (CDN) untuk gaya berbasis utilitas, ditambah CSS sendiri untuk komponen.</li>
+								<li><b>Bootstrap Icons</b> untuk ikon dan <b>Google Fonts</b> untuk enam pilihan font.</li>
+								<li><b>YouTube Data API v3</b> untuk pencarian, video populer, dan statistik.</li>
+								<li><b>YouTube Embed</b> (youtube-nocookie) dengan <code>postMessage</code> untuk memutar video, volume, dan lompat waktu.</li>
+								<li><b>localStorage</b> untuk riwayat, suka, profil, dan pengaturan.</li>
+								<li>API browser: Web Audio (efek suara), Vibration (getar), Web Share, Canvas (foto profil), <code>&lt;dialog&gt;</code>, dan ResizeObserver.</li>
+							</ul>
+						</div>
+					</details>
+
+					<details class="about">
+						<summary><span class="flex items-center gap-2" data-icon="diagram" data-icon-size="15">Struktur kode</span><span class="chev ml-auto" data-icon="chevron-down" data-icon-size="14"></span></summary>
+						<div class="about-body">
+							<p>Skrip dibagi menjadi modul berupa objek, masing-masing punya satu tugas:</p>
+							<ul class="mt-2 list-disc space-y-1 pl-5">
+								<li><code>CONFIG</code>: API key dan batas-batas aplikasi.</li>
+								<li><code>Fmt</code> dan <code>icon()</code>: pemformat angka, tanggal, dan ikon.</li>
+								<li><code>Store</code>: data lokal, impor dan ekspor, serta saran pencarian.</li>
+								<li><code>Api</code>: semua panggilan ke YouTube.</li>
+								<li><code>Theme</code> dan <code>Feedback</code>: warna, font, suara, dan getar.</li>
+								<li><code>Player</code> dan <code>Controls</code>: pemutar dan kontrol melayang di bawah.</li>
+								<li><code>UI</code> dan <code>Panel</code>: tampilan, akun, dan pengaturan.</li>
+								<li><code>App</code>: alur utama dan penanganan event.</li>
+							</ul>
+						</div>
+					</details>
+
+					<details class="about">
+						<summary><span class="flex items-center gap-2" data-icon="gear" data-icon-size="15">Cara kerjanya</span><span class="chev ml-auto" data-icon="chevron-down" data-icon-size="14"></span></summary>
+						<div class="about-body">
+							<ol class="list-decimal space-y-1 pl-5">
+								<li>Pencarian atau kategori memanggil <code>Api</code>; hasilnya dinormalkan lalu digambar <code>UI</code> sebagai kartu.</li>
+								<li>Memilih video memuat embed YouTube. <code>Store</code> mencatat riwayat dan posisi tonton, sehingga video terakhir standby saat halaman dibuka lagi.</li>
+								<li><code>Controls</code> mengirim perintah (putar, jeda, lompat 10 detik) lewat <code>postMessage</code> dan membaca status pemutar dari pesan balasan.</li>
+								<li>Tombol Sebelumnya, Berikutnya, dan putar otomatis memakai antrean rekomendasi video.</li>
+								<li>Kategori diacak (kata kunci, urutan, rentang waktu) dan video yang sudah tampil diingat agar tidak berulang.</li>
+								<li>Semua data pengguna hanya tersimpan di perangkat ini.</li>
+							</ol>
+						</div>
+					</details>
+				</div>
 			</section>
 
 			<section>
@@ -389,7 +446,7 @@
 		],
 		MAX_RESULTS: 24,
 		HISTORY_LIMIT: 100,
-		VIBRATE_MS: 700,      // Lama getar tiap klik (ms); hanya jalan di perangkat yang mendukung (mis. Chrome Android)
+		VIBRATE_MS: 300,      // Lama getar tiap klik (ms); hanya jalan di perangkat yang mendukung (mis. Chrome Android)
 		DOWNLOAD_API: '',     // Endpoint server unduhan milikmu, contoh: 'https://server-kamu.com/api/download'
 	};
 
@@ -485,6 +542,10 @@
 		'book': 'book',
 		'moon': 'moon-stars',
 		'pause': 'pause-fill',
+		'code': 'code-slash',
+		'layers': 'layers',
+		'diagram': 'diagram-3',
+		'gear': 'gear',
 		'skip-prev': 'skip-start-fill',
 		'skip-next': 'skip-end-fill',
 		'rewind': 'arrow-counterclockwise',
