@@ -4,18 +4,22 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>StreamTube - Custom YouTube Player & Streamer</title>
+	
 	<!-- Tailwind CSS CDN -->
 	<script src="https://cdn.tailwindcss.com"></script>
+	
 	<!-- FontAwesome 6 CDN -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-	<!-- Google Fonts: 6 Selected Modern Fonts (Poppins, Plus Jakarta Sans, Inter, Outfit, Urbanist, Lexend) -->
+	
+	<!-- Google Fonts -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+	
 	<style>
 		/* Dynamic Design Tokens */
 		:root {
-			--accent-color: #3b82f6; /* Default Soft Blue */
+			--accent-color: #3b82f6; 
 			--accent-hover: #2563eb;
 			--accent-light: rgba(59, 130, 246, 0.15);
 			--accent-glow: rgba(59, 130, 246, 0.35);
@@ -37,18 +41,9 @@
 		}
 
 		/* Theme Base Styles */
-		body.theme-dark {
-			background-color: #020617;
-			color: #f8fafc;
-		}
-		body.theme-slate {
-			background-color: #0f172a;
-			color: #f8fafc;
-		}
-		body.theme-light {
-			background-color: #f8fafc;
-			color: #0f172a;
-		}
+		body.theme-dark { background-color: #020617; color: #f8fafc; }
+		body.theme-slate { background-color: #0f172a; color: #f8fafc; }
+		body.theme-light { background-color: #f8fafc; color: #0f172a; }
 
 		/* Dynamic Theme Utility Elements */
 		body.theme-dark .ui-nav { background-color: rgba(2, 6, 23, 0.94); border-color: #1e293b; }
@@ -79,7 +74,7 @@
 		body.theme-slate .ui-text-subtle { color: #94a3b8; }
 		body.theme-light .ui-text-subtle { color: #64748b; }
 
-		/* Glossy Dynamic Accent Button & Styling */
+		/* Glossy Dynamic Accent Button */
 		.btn-accent {
 			background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
 			color: #ffffff !important;
@@ -87,176 +82,74 @@
 			position: relative;
 			overflow: hidden;
 		}
-		.btn-accent > * {
-			position: relative;
-			z-index: 10;
-		}
+		.btn-accent > * { position: relative; z-index: 10; }
 		.btn-accent::after {
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			height: 45%;
+			content: ''; position: absolute; top: 0; left: 0; right: 0; height: 45%;
 			background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
-			pointer-events: none;
-			border-radius: inherit;
+			pointer-events: none; border-radius: inherit;
 		}
-		.btn-accent:hover {
-			filter: brightness(1.08);
-			box-shadow: 0 6px 18px var(--accent-glow);
-		}
-		.text-accent {
-			color: var(--accent-color);
-		}
-		.border-accent {
-			border-color: var(--accent-color);
-		}
-		.bg-accent-subtle {
-			background-color: var(--accent-light);
-		}
+		.btn-accent:hover { filter: brightness(1.08); box-shadow: 0 6px 18px var(--accent-glow); }
+		
+		.text-accent { color: var(--accent-color); }
+		.border-accent { border-color: var(--accent-color); }
+		.bg-accent-subtle { background-color: var(--accent-light); }
 
-		/* Dynamic Range Sliders */
-		input[type="range"] {
-			accent-color: var(--accent-color) !important;
-		}
-		input[type="range"]::-webkit-slider-thumb {
-			background-color: var(--accent-color) !important;
-			box-shadow: 0 0 10px var(--accent-glow);
-		}
-		input[type="range"]::-moz-range-thumb {
-			background-color: var(--accent-color) !important;
-			box-shadow: 0 0 10px var(--accent-glow);
-		}
-		.eq-slider {
-			-webkit-appearance: slider-vertical;
-			width: 24px;
-			height: 90px;
-			accent-color: var(--accent-color) !important;
-		}
+		/* Sliders & Switches */
+		input[type="range"] { accent-color: var(--accent-color) !important; }
+		input[type="range"]::-webkit-slider-thumb { background-color: var(--accent-color) !important; box-shadow: 0 0 10px var(--accent-glow); }
+		.eq-slider { -webkit-appearance: slider-vertical; width: 24px; height: 90px; }
 
-		/* Custom Switch Styling */
-		.custom-switch {
-			position: relative;
-			display: inline-block;
-			width: 44px;
-			height: 24px;
-		}
-		.custom-switch input {
-			opacity: 0;
-			width: 0;
-			height: 0;
-		}
+		.custom-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+		.custom-switch input { opacity: 0; width: 0; height: 0; }
 		.switch-slider {
-			position: absolute;
-			cursor: pointer;
-			top: 0; left: 0; right: 0; bottom: 0;
-			background-color: #334155;
-			transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
-			border-radius: 24px;
-			border: 1px solid rgba(255,255,255,0.1);
+			position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+			background-color: #334155; transition: .3s; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1);
 		}
 		.switch-slider:before {
-			position: absolute;
-			content: "";
-			height: 18px;
-			width: 18px;
-			left: 2px;
-			bottom: 2px;
-			background-color: white;
-			transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
-			border-radius: 50%;
-			box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+			position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px;
+			background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 		}
-		input:checked + .switch-slider {
-			background-color: var(--accent-color);
-			box-shadow: 0 0 10px var(--accent-glow);
-		}
-		input:checked + .switch-slider:before {
-			transform: translateX(20px);
-		}
+		input:checked + .switch-slider { background-color: var(--accent-color); box-shadow: 0 0 10px var(--accent-glow); }
+		input:checked + .switch-slider:before { transform: translateX(20px); }
 
-		/* Modal Animations */
-		@keyframes modalIn {
-			0% { opacity: 0; transform: scale(0.93) translateY(-12px); }
-			100% { opacity: 1; transform: scale(1) translateY(0); }
-		}
-		@keyframes modalOut {
-			0% { opacity: 1; transform: scale(1) translateY(0); }
-			100% { opacity: 0; transform: scale(0.93) translateY(-12px); }
-		}
-		@keyframes backdropIn {
-			from { opacity: 0; }
-			to { opacity: 1; }
-		}
-		@keyframes backdropOut {
-			from { opacity: 1; }
-			to { opacity: 0; }
-		}
-		@keyframes tabFadeIn {
-			from { opacity: 0; transform: translateY(8px); }
-			to { opacity: 1; transform: translateY(0); }
-		}
+		/* Animations */
+		@keyframes modalIn { 0% { opacity: 0; transform: scale(0.93) translateY(-12px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+		@keyframes modalOut { 0% { opacity: 1; transform: scale(1) translateY(0); } 100% { opacity: 0; transform: scale(0.93) translateY(-12px); } }
+		@keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
+		@keyframes backdropOut { from { opacity: 1; } to { opacity: 0; } }
+		@keyframes tabFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-		.modal-anim-in { animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-		.modal-anim-out { animation: modalOut 0.2s cubic-bezier(0.7, 0, 0.84, 0) forwards; }
-		.backdrop-anim-in { animation: backdropIn 0.22s ease-out forwards; }
-		.backdrop-anim-out { animation: backdropOut 0.2s ease-in forwards; }
-		.tab-anim-in { animation: tabFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+		.modal-anim-in { animation: modalIn 0.25s forwards; }
+		.modal-anim-out { animation: modalOut 0.2s forwards; }
+		.backdrop-anim-in { animation: backdropIn 0.22s forwards; }
+		.backdrop-anim-out { animation: backdropOut 0.2s forwards; }
+		.tab-anim-in { animation: tabFadeIn 0.3s forwards; }
 
-		/* Collapsible Meta Sections */
-		#videoMeta, #categoryMeta {
-			transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease, transform 0.3s ease;
-			max-height: 450px;
-			opacity: 1;
-			overflow: hidden;
-			transform: translateY(0);
-		}
-		#videoMeta.hidden-scroll, #categoryMeta.hidden-scroll {
-			max-height: 0px !important;
-			opacity: 0 !important;
-			margin-top: 0 !important;
-			margin-bottom: 0 !important;
-			padding-top: 0 !important;
-			padding-bottom: 0 !important;
-			transform: translateY(-8px);
-			pointer-events: none;
-		}
-
-		/* Brightness Filter */
-		#playerWrapper {
-			filter: brightness(var(--player-brightness));
-			transition: filter 0.2s ease;
-		}
-
-		/* Scrollbar Hide */
+		/* Scrollbars & Specific Elements */
 		.no-scrollbar::-webkit-scrollbar { display: none; }
 		.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
 		::-webkit-scrollbar { width: 6px; height: 6px; }
 		::-webkit-scrollbar-track { background: transparent; }
 		::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 9999px; }
 
-		.aspect-video-container {
-			position: relative;
-			padding-bottom: 56.25%;
-			height: 0;
-			overflow: hidden;
+		.aspect-video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+		.aspect-video-container iframe, .aspect-video-container .hero-placeholder {
+			position: absolute; top: 0; left: 0; width: 100%; height: 100%;
 		}
-		.aspect-video-container iframe,
-		.aspect-video-container .hero-placeholder {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
+		#playerWrapper { filter: brightness(var(--player-brightness)); transition: filter 0.2s ease; }
+		.profile-cover-box { background-size: cover; background-position: center; }
+
+		/* Expandable Metadata & Collapsible on Scroll */
+		#videoMeta, #categoryMeta {
+			transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease, transform 0.3s ease;
+			max-height: 350px; opacity: 1; overflow: hidden; transform: translateY(0);
+		}
+		#videoMeta.hidden-scroll, #categoryMeta.hidden-scroll {
+			max-height: 0px !important; opacity: 0 !important; margin: 0 !important; padding: 0 !important; transform: translateY(-8px); pointer-events: none;
 		}
 
-		.profile-cover-box {
-			background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);
-			background-size: cover;
-			background-position: center;
-		}
+		#videoDescContent { transition: max-height 0.4s ease; max-height: 52px; overflow: hidden; }
+		#videoDescContent.expanded { max-height: 1000px; }
 	</style>
 </head>
 <body class="theme-dark min-h-screen flex flex-col justify-between">
@@ -268,7 +161,7 @@
 		<header id="navbar" class="fixed top-0 left-0 right-0 z-40 ui-nav backdrop-blur-md border-b px-3 sm:px-6 py-3 sm:py-3.5 transition-all">
 			<div class="max-w-6xl mx-auto flex items-center justify-between gap-3 sm:gap-4">
 				
-				<!-- Brand Logo Title (Visible on Mobile, Tablet & Desktop) -->
+				<!-- Brand Logo -->
 				<div class="flex items-center gap-2 cursor-pointer shrink-0" onclick="app.resetHome()">
 					<div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl btn-accent flex items-center justify-center shadow-md">
 						<i class="fa-solid fa-play text-xs sm:text-sm text-white ml-0.5"></i>
@@ -276,68 +169,49 @@
 					<span class="font-bold text-sm sm:text-base md:text-lg tracking-tight whitespace-nowrap">Stream <span class="text-accent">Tube</span></span>
 				</div>
 
-				<!-- Search Input with Auto Suggestions -->
+				<!-- Search Input -->
 				<div class="flex-1 max-w-xs sm:max-w-md md:max-w-xl relative">
 					<form onsubmit="app.handleSearch(event)" class="relative flex items-center" autocomplete="off">
-						<input 
-							type="text" 
-							id="searchInput" 
-							placeholder="Cari video di YouTube..." 
-							oninput="app.handleSearchInput(this.value)"
-							onfocus="app.showSearchSuggestions()"
-							onblur="app.hideSearchSuggestions()"
-							class="w-full ui-input text-xs sm:text-sm rounded-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2 sm:py-2.5 border focus:outline-none focus:border-accent transition-all shadow-inner"
-						/>
+						<input type="text" id="searchInput" placeholder="Cari video di YouTube..." oninput="app.handleSearchInput(this.value)" onfocus="app.showSearchSuggestions()" onblur="app.hideSearchSuggestions()" class="w-full ui-input text-xs sm:text-sm rounded-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2 sm:py-2.5 border focus:outline-none focus:border-accent transition-all shadow-inner"/>
 						<i class="fa-solid fa-magnifying-glass ui-text-subtle absolute left-3 sm:left-3.5 pointer-events-none text-xs sm:text-sm"></i>
 						<button type="submit" aria-label="Cari" class="absolute right-1.5 p-1.5 rounded-full btn-accent text-white hover:scale-105 transition-transform flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7">
 							<i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i>
 						</button>
 					</form>
-
-					<!-- Auto Suggestions Dropdown Menu -->
+					<!-- Search Suggestions -->
 					<div id="searchSuggestions" class="absolute top-full left-0 right-0 mt-1.5 ui-modal border rounded-2xl shadow-2xl py-2 hidden z-50 overflow-hidden text-xs transition-all">
 						<div class="px-3.5 py-1.5 flex items-center justify-between text-[11px] ui-text-subtle border-b border-slate-700/30 mb-1">
-							<span class="font-semibold flex items-center gap-1.5">
-								<i class="fa-solid fa-clock-rotate-left text-accent"></i> Riwayat Pencarian
-							</span>
-							<button type="button" onmousedown="app.clearSearchHistory(event)" class="hover:text-rose-400 transition-colors text-[10px]">
-								<i class="fa-solid fa-trash-can mr-1"></i>Hapus Semua
-							</button>
+							<span class="font-semibold flex items-center gap-1.5"><i class="fa-solid fa-clock-rotate-left text-accent"></i> Riwayat Pencarian</span>
+							<button type="button" onmousedown="app.clearSearchHistory(event)" class="hover:text-rose-400 transition-colors text-[10px]"><i class="fa-solid fa-trash-can mr-1"></i>Hapus Semua</button>
 						</div>
-						<div id="suggestionList" class="max-h-56 overflow-y-auto">
-							<!-- Dynamic Suggestions -->
-						</div>
+						<div id="suggestionList" class="max-h-56 overflow-y-auto"></div>
 					</div>
 				</div>
 
 				<!-- Account & Settings Buttons -->
 				<div class="flex items-center gap-2 shrink-0">
-					<!-- Profile Button -->
 					<button onclick="app.openModal('accountModal')" class="flex items-center gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-full ui-card border text-xs sm:text-sm font-medium hover:border-accent transition-colors">
 						<img id="navAvatarImg" src="https://placehold.co/100x100/3b82f6/ffffff?text=U" alt="Profile" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover">
 						<span class="hidden md:inline" id="navAccountName">Akun</span>
 					</button>
-
-					<!-- Settings Button -->
-					<button onclick="app.openModal('settingsModal')" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-card border flex items-center justify-center hover:border-accent transition-colors" title="Pengaturan Aplikasi">
+					<button onclick="app.openModal('settingsModal')" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-card border flex items-center justify-center hover:border-accent transition-colors" title="Pengaturan">
 						<i class="fa-solid fa-sliders text-xs sm:text-sm"></i>
 					</button>
 				</div>
 			</div>
 		</header>
 
-		<!-- Main Content Container -->
+		<!-- Main Content -->
 		<main class="pt-16 sm:pt-20 max-w-6xl mx-auto px-0 sm:px-4 pb-28">
 
 			<!-- ==========================================
-			     2. VIDEO PLAYER & METADATA SECTION
+			     2. VIDEO PLAYER & MODERN METADATA
 			     ========================================== -->
 			<section id="playerSection" class="sticky top-14 sm:top-16 z-30 ui-sub-bg pt-0 pb-2 sm:pb-3 border-b border-slate-800/50 shadow-2xl transition-all duration-300">
 				
+				<!-- Iframe Wrapper -->
 				<div id="playerWrapper" class="w-full mx-auto transition-all duration-300">
 					<div class="w-full bg-black shadow-2xl border-b border-slate-800/80 aspect-video-container relative sm:rounded-2xl sm:overflow-hidden sm:border">
-						
-						<!-- Hero Screen Placeholder -->
 						<div id="heroPlaceholder" class="hero-placeholder flex flex-col items-center justify-center p-4 sm:p-6 text-center bg-gradient-to-br from-slate-900 via-slate-950 to-black text-slate-200 relative overflow-hidden">
 							<img id="heroBgThumb" src="" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20 blur-sm hidden">
 							<div class="relative z-10 flex flex-col items-center">
@@ -348,122 +222,92 @@
 								<p id="heroSub" class="text-xs sm:text-sm text-slate-400 max-w-md px-2">Pilih salah satu video dari daftar di bawah atau klik tombol untuk memutar video.</p>
 							</div>
 						</div>
-
-						<!-- YouTube Iframe Video Player -->
+						<!-- Real YouTube Player -->
 						<iframe 
-							id="ytPlayer" 
-							class="hidden"
-							src="" 
-							title="YouTube Video Streamer" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-							allowfullscreen>
+							id="ytPlayer" class="hidden" src="" title="YouTube Video Streamer" 
+							frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 						</iframe>
 					</div>
 
-					<!-- Modernized Video Information Metadata Section -->
+					<!-- MODERNIZED METADATA SECTION -->
 					<div id="videoMeta" class="w-full mt-3 sm:mt-4 px-3 sm:px-2 space-y-3">
-						
-						<!-- Title & Badges -->
+						<!-- Title -->
 						<div>
-							<div class="flex items-center gap-2 mb-1">
-								<span id="videoCategoryTag" class="px-2 py-0.5 rounded-md bg-accent-subtle text-accent text-[10px] font-semibold uppercase tracking-wider">Populer</span>
-								<span class="text-[10px] ui-text-subtle font-mono">StreamTube HD</span>
-							</div>
-							<h1 id="videoTitle" class="font-bold text-base sm:text-xl leading-snug tracking-tight">
+							<h1 id="videoTitle" class="font-bold text-base sm:text-xl leading-snug tracking-tight line-clamp-2">
 								Siap memutar video
 							</h1>
 						</div>
 
-						<!-- Channel Info Bar & Action Buttons -->
-						<div class="p-3 sm:p-3.5 ui-card border rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm">
+						<!-- Channel Info & Action Buttons -->
+						<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
 							
-							<!-- Channel Avatar & Metrics -->
-							<div class="flex items-center gap-3">
-								<div class="w-10 h-10 rounded-full btn-accent flex items-center justify-center text-white font-bold text-base shrink-0 shadow">
-									<i class="fa-solid fa-tv"></i>
-								</div>
+							<!-- Channel Avatar & Name -->
+							<div class="flex items-center gap-3 shrink-0">
+								<img id="channelAvatar" src="https://placehold.co/100x100/1e293b/ffffff?text=C" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover shadow-sm border border-slate-700/50">
 								<div>
 									<div class="flex items-center gap-1.5">
-										<span id="channelName" class="font-bold text-xs sm:text-sm">Channel YouTube</span>
+										<span id="channelName" class="font-bold text-sm">Channel YouTube</span>
 										<i class="fa-solid fa-circle-check text-sky-400 text-xs" title="Terverifikasi"></i>
 									</div>
-									<div class="flex items-center gap-2 text-[11px] ui-text-subtle mt-0.5">
-										<span id="viewCount" class="flex items-center gap-1"><i class="fa-solid fa-eye text-[10px]"></i> - views</span>
-										<span>•</span>
-										<span id="uploadDate" class="flex items-center gap-1"><i class="fa-solid fa-calendar-days text-[10px]"></i> -</span>
-									</div>
+									<div class="text-[11px] ui-text-subtle mt-0.5" id="channelSubs">100K Subscriber</div>
 								</div>
 							</div>
 
-							<!-- Action Buttons Row -->
-							<div class="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap">
-								<button id="likeBtn" onclick="app.toggleLike()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl ui-card border text-xs font-medium hover:border-accent transition-all">
-									<i class="fa-solid fa-thumbs-up text-xs" id="likeIcon"></i>
-									<span id="likeCount">0</span>
+							<!-- Action Buttons (Scrollable on mobile) -->
+							<div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+								<button id="btnLike" onclick="app.toggleLike()" class="flex items-center gap-1.5 px-3 py-2 rounded-full ui-card border text-xs font-medium hover:bg-slate-800/50 transition-all shrink-0">
+									<i class="fa-solid fa-thumbs-up text-xs" id="iconLike"></i> <span id="countLikeBtn">Like</span>
 								</button>
-
-								<button onclick="app.shareCurrentVideo()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl ui-card border text-xs font-medium hover:border-accent transition-all" title="Bagikan Tautan Video">
-									<i class="fa-solid fa-share-nodes text-xs"></i>
-									<span class="hidden sm:inline">Bagikan</span>
+								<button onclick="app.shareCurrentVideo()" class="flex items-center gap-1.5 px-3 py-2 rounded-full ui-card border text-xs font-medium hover:bg-slate-800/50 transition-all shrink-0">
+									<i class="fa-solid fa-share text-xs"></i> Bagikan
 								</button>
-
-								<button onclick="app.toggleTheaterMode()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl ui-card border text-xs font-medium hover:border-accent transition-all" title="Mode Bioskop">
-									<i class="fa-solid fa-expand text-xs" id="theaterIcon"></i>
-									<span class="hidden sm:inline">Bioskop</span>
+								<button onclick="app.toggleTheaterMode()" class="flex items-center gap-1.5 px-3 py-2 rounded-full ui-card border text-xs font-medium hover:bg-slate-800/50 transition-all shrink-0">
+									<i class="fa-solid fa-expand text-xs" id="theaterIcon"></i> Bioskop
 								</button>
-
-								<button onclick="app.downloadAction('mp4')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl btn-accent text-xs font-medium shadow-md">
-									<i class="fa-solid fa-download text-xs"></i>
-									<span>MP4</span>
+								<button onclick="app.downloadAction('mp4')" class="flex items-center gap-1.5 px-3 py-2 rounded-full ui-card border hover:border-accent text-xs font-medium transition-all shrink-0">
+									<i class="fa-solid fa-download text-accent"></i> MP4
 								</button>
-
-								<button onclick="app.downloadAction('mp3')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-700 hover:bg-teal-600 text-white text-xs font-medium shadow-md">
-									<i class="fa-solid fa-music text-xs"></i>
-									<span>MP3</span>
+								<button onclick="app.downloadAction('mp3')" class="flex items-center gap-1.5 px-3 py-2 rounded-full ui-card border hover:border-teal-500 text-xs font-medium transition-all shrink-0">
+									<i class="fa-solid fa-music text-teal-400"></i> MP3
 								</button>
 							</div>
 						</div>
 
-						<!-- Video Description Box -->
-						<div id="videoDescriptionContainer" class="p-3.5 sm:p-4 ui-card border rounded-2xl text-xs space-y-2 transition-all">
-							<div class="flex items-center justify-between font-semibold ui-text-subtle text-[11px] pb-1.5 border-b border-slate-700/30">
-								<span class="flex items-center gap-1.5 text-accent font-bold">
-									<i class="fa-solid fa-align-left"></i> Deskripsi & Metadata Video
-								</span>
-								<button id="toggleDescBtn" onclick="app.toggleDescription()" class="hover:text-accent transition-colors text-[10px] flex items-center gap-1 font-semibold">
-									<span>Selengkapnya</span> <i class="fa-solid fa-chevron-down text-[9px]" id="descChevron"></i>
-								</button>
+						<!-- Informative Description Box -->
+						<div class="bg-slate-800/40 rounded-xl p-3 sm:p-4 text-xs hover:bg-slate-800/60 transition-colors border border-slate-700/30">
+							<!-- Detail Stats Bar -->
+							<div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 font-medium mb-2" id="videoStatsBar">
+								<span class="text-white"><span id="metaViews">0</span> <span class="ui-text-subtle font-normal">views</span></span>
+								<span class="text-white"><span id="metaDate">-</span></span>
+								<span class="text-slate-400 flex items-center gap-1"><i class="fa-solid fa-clock text-[10px]"></i> <span id="metaDuration">--:--</span></span>
+								<span class="text-slate-400 flex items-center gap-1"><i class="fa-solid fa-comment text-[10px]"></i> <span id="metaComments">0</span> Komentar</span>
 							</div>
-							<p id="videoDescription" class="ui-text-subtle leading-relaxed whitespace-pre-line line-clamp-2 transition-all">
-								Pilih video dari rekomendasi untuk menampilkan deskripsi lengkap.
-							</p>
+							<!-- Description Content -->
+							<div id="videoDescContent" class="ui-text-subtle leading-relaxed whitespace-pre-line text-[11px] sm:text-xs">
+								Pilih video dari rekomendasi untuk menampilkan informasi lengkap dan deskripsi.
+							</div>
+							<button id="toggleDescBtn" onclick="app.toggleDescription()" class="font-bold mt-1 hover:text-accent transition-colors">
+								Selengkapnya...
+							</button>
 						</div>
 					</div>
 				</div>
 
-				<!-- Category Selector Bar -->
+				<!-- Category Pills (Always Full Text) -->
 				<div id="categoryMeta" class="w-full max-w-6xl mx-auto mt-2 sm:mt-3 px-3 sm:px-2">
-					<div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1 text-xs" id="categoryContainer">
-						<!-- Dynamic category pills -->
-					</div>
+					<div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1 text-xs" id="categoryContainer"></div>
 				</div>
 			</section>
 
 			<!-- ==========================================
-			     3. VIDEO RECOMMENDATIONS GRID
+			     3. RECOMMENDATIONS GRID
 			     ========================================== -->
 			<section class="mt-4 sm:mt-6 px-3 sm:px-0">
 				<div class="flex items-center justify-between mb-3 sm:mb-4 px-1">
-					<h2 id="sectionTitle" class="text-sm sm:text-lg font-semibold flex items-center gap-2">
-						<i class="fa-solid fa-wand-magic-sparkles text-accent"></i> Rekomendasi Video
-					</h2>
+					<h2 id="sectionTitle" class="text-sm sm:text-lg font-semibold flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-accent"></i> Rekomendasi Video</h2>
 					<span id="resultCount" class="text-xs ui-text-subtle"></span>
 				</div>
-
-				<div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-					<!-- Video Cards -->
-				</div>
+				<div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"></div>
 			</section>
 		</main>
 	</div>
@@ -471,154 +315,90 @@
 	<!-- ==========================================
 	     4. FLOATING FIXED BOTTOM PLAYER CONTROL BAR
 	     ========================================== -->
-	<div id="bottomPlayerBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 ui-card border rounded-full shadow-2xl px-4 sm:px-6 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3.5 transition-all duration-300 ease-in-out backdrop-blur-xl bg-slate-900/90 border-slate-700/80 max-w-[96vw] sm:max-w-none">
-		<!-- Prev Video Button -->
+	<div id="bottomPlayerBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 ui-card border rounded-full shadow-2xl px-4 sm:px-6 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3.5 transition-all duration-500 ease-in-out backdrop-blur-xl bg-slate-900/90 border-slate-700/80 max-w-[96vw] sm:max-w-none">
+		<!-- Prev Video -->
 		<button onclick="app.playPrevVideo()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105 active:scale-95" title="Video Sebelumnya">
 			<i class="fa-solid fa-backward-step text-sm"></i>
 		</button>
 		
-		<!-- Rewind 10s Button -->
+		<!-- Exact Rewind 10s -->
 		<button onclick="app.seekRelative(-10)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold" title="Mundur 10 Detik">
 			<i class="fa-solid fa-rotate-left text-[11px] mr-1"></i>10s
 		</button>
 
-		<!-- Play / Pause Button -->
+		<!-- Play / Pause -->
 		<button onclick="app.togglePlayPause()" id="btnBottomPlay" class="w-11 h-11 sm:w-13 sm:h-13 rounded-full btn-accent flex items-center justify-center text-white shadow-lg shadow-blue-500/25 hover:scale-110 active:scale-95 transition-all" title="Play / Pause">
 			<i class="fa-solid fa-play text-sm sm:text-lg ml-0.5" id="bottomPlayIcon"></i>
 		</button>
 
-		<!-- Forward 10s Button -->
+		<!-- Exact Forward 10s -->
 		<button onclick="app.seekRelative(10)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold" title="Maju 10 Detik">
 			10s<i class="fa-solid fa-rotate-right text-[11px] ml-1"></i>
 		</button>
 
-		<!-- Next Video Button -->
+		<!-- Next Video -->
 		<button onclick="app.playNextVideo()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105 active:scale-95" title="Video Selanjutnya">
 			<i class="fa-solid fa-forward-step text-sm"></i>
 		</button>
 
 		<div class="h-6 w-[1px] bg-slate-700/80 mx-1 sm:mx-1.5"></div>
 
-		<!-- Repeat Mode Button -->
-		<button onclick="app.toggleRepeatMode()" id="btnBottomRepeat" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 text-slate-300 hover:text-accent transition-all text-xs font-medium" title="Mode Pengulangan Video">
+		<!-- Repeat Mode -->
+		<button onclick="app.toggleRepeatMode()" id="btnBottomRepeat" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 text-slate-300 hover:text-accent transition-all text-xs font-medium" title="Mode Pengulangan">
 			<i class="fa-solid fa-repeat text-xs sm:text-sm" id="repeatIcon"></i>
 			<span id="repeatBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700">Off</span>
 		</button>
 
-		<!-- Autoplay Toggle Button -->
-		<button onclick="app.toggleAutoplayMode()" id="btnBottomAutoplay" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-md transition-all hover:brightness-110" title="Auto Play Video Selanjutnya">
+		<!-- Autoplay Toggle -->
+		<button onclick="app.toggleAutoplayMode()" id="btnBottomAutoplay" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-md transition-all hover:brightness-110" title="Auto Play Berikutnya">
 			<i class="fa-solid fa-circle-play text-xs sm:text-sm" id="autoplayIcon"></i>
 			<span id="autoplayBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 border border-indigo-400/30">ON</span>
 		</button>
 	</div>
 
 	<!-- ==========================================
-	     5. FOOTER SECTION
-	     ========================================== -->
-	<footer class="ui-card border-t pt-6 sm:pt-8 pb-6 px-4 text-xs mt-auto">
-		<div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6 sm:mb-8">
-			
-			<div class="space-y-2">
-				<div class="flex items-center gap-2">
-					<div class="w-7 h-7 rounded-lg btn-accent flex items-center justify-center">
-						<i class="fa-solid fa-play text-xs text-white"></i>
-					</div>
-					<span class="font-semibold text-base">StreamTube</span>
-				</div>
-				<p class="ui-text-subtle leading-relaxed text-[11px]">
-					Aplikasi pemutar video YouTube kustom modern dengan antarmuka yang bersih, cepat, tanpa gangguan, dan bebas limit.
-				</p>
-			</div>
-
-			<div>
-				<h4 class="font-semibold mb-2 text-xs flex items-center gap-1.5"><i class="fa-solid fa-code text-accent"></i> Teknologi & API</h4>
-				<ul class="space-y-1.5 ui-text-subtle text-[11px]">
-					<li class="flex items-center gap-1.5"><i class="fa-brands fa-js text-yellow-400"></i> ES6+ Vanilla JavaScript</li>
-					<li class="flex items-center gap-1.5"><i class="fa-brands fa-html5 text-orange-500"></i> HTML5 & CSS3 Utility</li>
-					<li class="flex items-center gap-1.5"><i class="fa-solid fa-wind text-sky-400"></i> Tailwind CSS Framework</li>
-					<li class="flex items-center gap-1.5"><i class="fa-solid fa-server text-emerald-400"></i> YouTube API v3 & Piped</li>
-					<li class="flex items-center gap-1.5"><i class="fa-solid fa-wave-square text-purple-400"></i> Web Audio & Haptics API</li>
-				</ul>
-			</div>
-
-			<div>
-				<h4 class="font-semibold mb-2 text-xs flex items-center gap-1.5"><i class="fa-solid fa-layer-group text-accent"></i> Fitur & Arsitektur Web</h4>
-				<ul class="space-y-1.5 ui-text-subtle text-[11px]">
-					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Single Page Application (SPA)</li>
-					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Floating Nav & Auto-Hide Scroll</li>
-					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Dynamic State & LocalStorage</li>
-					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Cover & Profile Storage</li>
-				</ul>
-			</div>
-
-			<div class="space-y-2">
-				<h4 class="font-semibold text-xs flex items-center gap-1.5"><i class="fa-solid fa-microchip text-accent"></i> Logika & Arsitektur</h4>
-				<p class="ui-text-subtle leading-relaxed text-[11px]">
-					Aplikasi ini dirancang menggunakan arsitektur <b>Single State Management</b> yang terisolasi dalam objek modul JavaScript. Logika pemutaran media memanfaatkan listener message YouTube iframe untuk pemutaran otomatis dan pengulangan tanpa hambatan.
-				</p>
-			</div>
-		</div>
-
-		<div class="max-w-6xl mx-auto pt-4 border-t border-slate-700/30 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] ui-text-subtle text-center sm:text-left">
-			<p>© 2026 StreamTube App. Powered by Custom Player Engine.</p>
-			<p class="flex items-center gap-1 justify-center">
-				<span>Dibuat dengan</span> <i class="fa-solid fa-heart text-rose-500"></i> <span>untuk pengalaman menonton terbaik</span>
-			</p>
-		</div>
-	</footer>
-
-	<!-- ==========================================
-	     6. MODAL: PROFILE & ACCOUNT (WITH COVER PHOTO)
+	     5. MODAL: PROFILE & ACCOUNT (WITH COVER & TABS)
 	     ========================================== -->
 	<div id="accountModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm hidden">
 		<div class="ui-modal border rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
 			
 			<div class="flex items-center justify-between p-3.5 sm:p-4 border-b border-slate-700/40">
-				<h3 class="font-semibold flex items-center gap-2 text-sm sm:text-base">
-					<i class="fa-solid fa-circle-user text-accent"></i> Profil & Riwayat Akun
-				</h3>
-				<button onclick="app.closeModal('accountModal')" class="w-8 h-8 rounded-lg text-slate-400 hover:bg-slate-800/50 flex items-center justify-center">
-					<i class="fa-solid fa-xmark text-base"></i>
-				</button>
+				<h3 class="font-semibold flex items-center gap-2 text-sm sm:text-base"><i class="fa-solid fa-circle-user text-accent"></i> Profil Akun</h3>
+				<button onclick="app.closeModal('accountModal')" class="w-8 h-8 rounded-lg text-slate-400 hover:bg-slate-800/50 flex items-center justify-center"><i class="fa-solid fa-xmark text-base"></i></button>
 			</div>
 
 			<div class="p-3.5 sm:p-4 overflow-y-auto space-y-4 text-xs sm:text-sm">
 				
-				<!-- Cover Photo & Avatar Header Banner Card -->
+				<!-- Cover & Avatar -->
 				<div class="ui-sub-bg border border-slate-700/40 rounded-2xl overflow-hidden shadow-md">
-					<!-- Cover Photo Container -->
-					<div id="profileCoverBox" class="w-full h-28 sm:h-36 profile-cover-box relative group flex items-end justify-end p-2.5">
+					<div id="profileCoverBox" class="w-full h-28 sm:h-36 profile-cover-box relative group flex items-end justify-end p-2.5" style="background-image: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);">
 						<button onclick="document.getElementById('coverFileInput').click()" class="bg-black/70 hover:bg-black/90 text-white text-[10px] px-2.5 py-1 rounded-lg backdrop-blur-md border border-white/20 flex items-center gap-1.5 transition-all shadow" title="Unggah Foto Sampul">
 							<i class="fa-solid fa-camera text-xs"></i> <span>Ubah Sampul</span>
 						</button>
 					</div>
 
-					<!-- Profile Info Bar -->
 					<div class="px-4 pb-4 pt-0 relative flex flex-col sm:flex-row items-center sm:items-end gap-3 -mt-8 sm:-mt-10">
-						<!-- Avatar -->
 						<div class="relative group shrink-0">
 							<img id="profileAvatar" src="https://placehold.co/100x100/3b82f6/ffffff?text=U" alt="Avatar" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-slate-900 shadow-xl bg-slate-900">
-							<button onclick="document.getElementById('avatarFileInput').click()" class="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity text-[10px]" title="Ganti Foto Profil">
+							<button onclick="document.getElementById('avatarFileInput').click()" class="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity text-[10px]">
 								<i class="fa-solid fa-camera text-sm"></i>
 							</button>
 						</div>
-
 						<div class="flex-1 text-center sm:text-left">
 							<div class="flex items-center justify-center sm:justify-start gap-2">
 								<span id="accName" class="font-bold text-base sm:text-lg">User Streamer</span>
-								<button onclick="app.editName()" class="p-1 text-slate-400 hover:text-accent" title="Ubah Nama">
-									<i class="fa-solid fa-pen-to-square text-xs"></i>
-								</button>
+								<button onclick="app.editName()" class="p-1 text-slate-400 hover:text-accent"><i class="fa-solid fa-pen-to-square text-xs"></i></button>
 							</div>
 							<div id="accAge" class="text-xs ui-text-subtle mt-0.5">Umur Akun: 0 Hari</div>
 						</div>
 					</div>
 				</div>
 
+				<!-- Hidden File Inputs -->
 				<input type="file" id="avatarFileInput" class="hidden" accept="image/*" onchange="app.handleAvatarUpload(event)">
 				<input type="file" id="coverFileInput" class="hidden" accept="image/*" onchange="app.handleCoverUpload(event)">
 
-				<!-- Quick Stats Bar -->
+				<!-- Quick Stats -->
 				<div class="grid grid-cols-4 gap-2 text-center">
 					<div class="p-2.5 ui-sub-bg rounded-xl border border-slate-700/30">
 						<div class="font-bold text-accent text-sm sm:text-base" id="statWatch">0</div>
@@ -638,37 +418,32 @@
 					</div>
 				</div>
 
-				<!-- 7-Day Watch Stats Chart -->
+				<!-- 7-DAY WATCH STATISTICS GRAPH SECTION -->
 				<div class="p-3.5 ui-sub-bg border border-slate-700/40 rounded-xl space-y-2">
 					<div class="flex items-center justify-between">
-						<h4 class="font-semibold text-xs flex items-center gap-1.5">
-							<i class="fa-solid fa-chart-column text-accent"></i> Grafik Tontonan (7 Hari)
-						</h4>
+						<h4 class="font-semibold text-xs flex items-center gap-1.5"><i class="fa-solid fa-chart-column text-accent"></i> Grafik Tontonan (7 Hari)</h4>
 						<span id="chartTodaySummary" class="text-[10px] ui-text-subtle font-mono">Hari ini: 0 video</span>
 					</div>
-					<div id="watchStatsChartContainer" class="w-full h-32 pt-2">
-						<!-- Dynamic SVG -->
-					</div>
+					<div id="watchStatsChartContainer" class="w-full h-28 pt-2"></div>
 				</div>
 
-				<!-- Tab Navigation -->
-				<div class="flex border-b border-slate-700/40 text-xs overflow-x-auto no-scrollbar">
+				<!-- Animated Tab Navigation -->
+				<div class="flex border-b border-slate-700/40 text-xs overflow-x-auto no-scrollbar mt-2">
 					<button onclick="app.switchAccTab('watch')" id="tabWatch" class="py-2 px-3 border-b-2 border-accent text-accent font-medium whitespace-nowrap flex items-center gap-1.5 transition-all">
-						<i class="fa-solid fa-clock-rotate-left"></i> Riwayat (<span id="countWatch">0</span>)
+						Riwayat (<span id="countWatch">0</span>)
 					</button>
 					<button onclick="app.switchAccTab('like')" id="tabLike" class="py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5 transition-all">
-						<i class="fa-solid fa-heart text-rose-500"></i> Disukai (<span id="countLike">0</span>)
+						Disukai (<span id="countLike">0</span>)
 					</button>
 					<button onclick="app.switchAccTab('download')" id="tabDownload" class="py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5 transition-all">
-						<i class="fa-solid fa-download text-teal-500"></i> Unduhan (<span id="countDownload">0</span>)
+						Unduhan (<span id="countDownload">0</span>)
 					</button>
 				</div>
-
-				<div id="accList" class="space-y-2 max-h-44 overflow-y-auto pr-1">
-					<!-- History / Likes list -->
-				</div>
+				<!-- Tab List Content -->
+				<div id="accList" class="space-y-2 max-h-44 overflow-y-auto pr-1"></div>
 			</div>
 
+			<!-- Export/Import Actions -->
 			<div class="p-3 border-t border-slate-700/40 ui-sub-bg flex justify-between gap-2">
 				<button onclick="app.exportHistory()" class="px-3 py-1.5 text-xs rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1.5 border border-slate-700">
 					<i class="fa-solid fa-file-export"></i> Ekspor JSON
@@ -681,198 +456,126 @@
 	</div>
 
 	<!-- ==========================================
-	     7. MODAL: MODERN SETTINGS (PENGATURAN)
+	     6. MODAL: MODERN SETTINGS (4 MODULES)
 	     ========================================== -->
 	<div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm hidden">
 		<div class="ui-modal border rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
 			
 			<div class="flex items-center justify-between p-4 border-b border-slate-700/40">
-				<h3 class="font-bold flex items-center gap-2 text-sm sm:text-base">
-					<i class="fa-solid fa-sliders text-accent"></i> Pengaturan Aplikasi & Audio
-				</h3>
-				<button onclick="app.closeModal('settingsModal')" class="w-8 h-8 rounded-lg text-slate-400 hover:bg-slate-800/50 flex items-center justify-center">
-					<i class="fa-solid fa-xmark text-base"></i>
-				</button>
+				<h3 class="font-bold flex items-center gap-2 text-sm sm:text-base"><i class="fa-solid fa-sliders text-accent"></i> Pengaturan Sistem</h3>
+				<button onclick="app.closeModal('settingsModal')" class="w-8 h-8 rounded-lg text-slate-400 hover:bg-slate-800/50 flex items-center justify-center"><i class="fa-solid fa-xmark text-base"></i></button>
 			</div>
 
 			<div class="p-4 overflow-y-auto space-y-4 text-xs sm:text-sm">
 				
-				<!-- Section 1: Display & Theme -->
-				<div class="p-3.5 ui-sub-bg border border-slate-700/40 rounded-2xl space-y-3">
-					<h4 class="font-semibold text-xs flex items-center gap-2 text-accent">
-						<i class="fa-solid fa-palette"></i> Tampilan & Warna Aksen
-					</h4>
-					
-					<!-- Theme Mode Selector -->
-					<div>
-						<label class="block text-[11px] ui-text-subtle mb-1.5">Mode Tema Warna</label>
-						<div class="grid grid-cols-3 gap-2">
-							<button onclick="app.setTheme('dark')" id="btnThemeDark" class="p-2 border rounded-xl text-center text-xs font-medium ui-card hover:border-accent flex items-center justify-center gap-1.5">
-								<i class="fa-solid fa-moon"></i> Dark
-							</button>
-							<button onclick="app.setTheme('slate')" id="btnThemeSlate" class="p-2 border rounded-xl text-center text-xs font-medium ui-card hover:border-accent flex items-center justify-center gap-1.5">
-								<i class="fa-solid fa-layer-group"></i> Slate
-							</button>
-							<button onclick="app.setTheme('light')" id="btnThemeLight" class="p-2 border rounded-xl text-center text-xs font-medium ui-card hover:border-accent flex items-center justify-center gap-1.5">
-								<i class="fa-solid fa-sun"></i> Light
-							</button>
-						</div>
+				<!-- Module 1: Theme Selection -->
+				<div class="p-3.5 ui-sub-bg border border-slate-700/40 rounded-2xl space-y-3 shadow-sm">
+					<h4 class="font-semibold text-xs flex items-center gap-2 text-accent"><i class="fa-solid fa-palette"></i> Mode Tema & Aksen</h4>
+					<div class="grid grid-cols-3 gap-2">
+						<button onclick="app.setTheme('dark')" id="btnThemeDark" class="p-2 border rounded-xl text-center text-xs font-medium ui-card hover:border-accent">Dark</button>
+						<button onclick="app.setTheme('slate')" id="btnThemeSlate" class="p-2 border rounded-xl text-center text-xs font-medium ui-card hover:border-accent">Slate</button>
+						<button onclick="app.setTheme('light')" id="btnThemeLight" class="p-2 border rounded-xl text-center text-xs font-medium ui-card hover:border-accent">Light</button>
 					</div>
-
-					<!-- Glossy Accent Palette -->
-					<div>
-						<label class="block text-[11px] ui-text-subtle mb-1.5">Warna Aksen Utama</label>
-						<div class="grid grid-cols-7 gap-1.5" id="accentColorPalette">
-							<button onclick="app.updateAccentColor('#ff0000')" data-color="#ff0000" class="accent-btn h-8 rounded-lg bg-[#ff0000] border border-white/20 shadow-md hover:scale-105 transition-all flex items-center justify-center relative" title="Merah YouTube"></button>
-							<button onclick="app.updateAccentColor('#f59e0b')" data-color="#f59e0b" class="accent-btn h-8 rounded-lg bg-[#f59e0b] border border-white/20 shadow-md hover:scale-105 transition-all flex items-center justify-center relative" title="Kuning Amber"></button>
-							<button onclick="app.updateAccentColor('#10b981')" data-color="#10b981" class="accent-btn h-8 rounded-lg bg-[#10b981] border border-white/20 shadow-md hover:scale-105 transition-all flex items-center justify-center relative" title="Hijau Emerald"></button>
-							<button onclick="app.updateAccentColor('#3b82f6')" data-color="#3b82f6" class="accent-btn h-8 rounded-lg bg-[#3b82f6] border border-white/20 shadow-md hover:scale-105 transition-all flex items-center justify-center relative" title="Biru Soft"></button>
-							<button onclick="app.updateAccentColor('#f97316')" data-color="#f97316" class="accent-btn h-8 rounded-lg bg-[#f97316] border border-white/20 shadow-md hover:scale-105 transition-all flex items-center justify-center relative" title="Oren Soft"></button>
-							<button onclick="app.updateAccentColor('#8b5cf6')" data-color="#8b5cf6" class="accent-btn h-8 rounded-lg bg-[#8b5cf6] border border-white/20 shadow-md hover:scale-105 transition-all flex items-center justify-center relative" title="Ungu Soft"></button>
-							<label class="accent-btn h-8 rounded-lg bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 border border-white/20 shadow-md hover:scale-105 transition-all flex items-center justify-center cursor-pointer relative" title="Custom Color">
-								<i class="fa-solid fa-eye-dropper text-white text-[10px]"></i>
-								<input type="color" id="accentColorInput" value="#3b82f6" onchange="app.updateAccentColor(this.value)" class="hidden">
-							</label>
-						</div>
+					<!-- Palette -->
+					<div class="grid grid-cols-7 gap-1.5 pt-2" id="accentColorPalette">
+						<button onclick="app.updateAccentColor('#ff0000')" data-color="#ff0000" class="accent-btn h-8 rounded-lg bg-[#ff0000] shadow-md hover:scale-105 border border-white/20 flex items-center justify-center"></button>
+						<button onclick="app.updateAccentColor('#10b981')" data-color="#10b981" class="accent-btn h-8 rounded-lg bg-[#10b981] shadow-md hover:scale-105 border border-white/20 flex items-center justify-center"></button>
+						<button onclick="app.updateAccentColor('#3b82f6')" data-color="#3b82f6" class="accent-btn h-8 rounded-lg bg-[#3b82f6] shadow-md hover:scale-105 border border-white/20 flex items-center justify-center"></button>
+						<button onclick="app.updateAccentColor('#f97316')" data-color="#f97316" class="accent-btn h-8 rounded-lg bg-[#f97316] shadow-md hover:scale-105 border border-white/20 flex items-center justify-center"></button>
+						<button onclick="app.updateAccentColor('#8b5cf6')" data-color="#8b5cf6" class="accent-btn h-8 rounded-lg bg-[#8b5cf6] shadow-md hover:scale-105 border border-white/20 flex items-center justify-center"></button>
+						<button onclick="app.updateAccentColor('#ec4899')" data-color="#ec4899" class="accent-btn h-8 rounded-lg bg-[#ec4899] shadow-md hover:scale-105 border border-white/20 flex items-center justify-center"></button>
+						<label class="accent-btn h-8 rounded-lg bg-gradient-to-r from-teal-400 to-indigo-500 shadow-md hover:scale-105 border border-white/20 flex items-center justify-center cursor-pointer">
+							<i class="fa-solid fa-eye-dropper text-white text-[10px]"></i>
+							<input type="color" onchange="app.updateAccentColor(this.value)" id="accentColorInput" class="hidden">
+						</label>
 					</div>
 				</div>
 
-				<!-- Section 2: Typography & Font -->
-				<div class="p-3.5 ui-sub-bg border border-slate-700/40 rounded-2xl space-y-3">
-					<h4 class="font-semibold text-xs flex items-center gap-2 text-accent">
-						<i class="fa-solid fa-font"></i> Typography & Ukuran Font
-					</h4>
-
-					<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+				<!-- Module 2: Typography -->
+				<div class="p-3.5 ui-sub-bg border border-slate-700/40 rounded-2xl space-y-3 shadow-sm">
+					<h4 class="font-semibold text-xs flex items-center gap-2 text-accent"><i class="fa-solid fa-font"></i> Tipografi</h4>
+					
+					<div>
+						<div class="flex justify-between mb-1"><label class="font-medium text-[11px]">Ukuran Font</label><span id="fontSizeVal" class="text-accent font-semibold text-[11px]">14px</span></div>
+						<input type="range" id="fontSizeSlider" min="12" max="18" value="14" step="1" oninput="app.updateFontSize(this.value)" class="w-full cursor-pointer">
+					</div>
+					
+					<div class="grid grid-cols-2 gap-3">
 						<div>
-							<label class="block text-[11px] ui-text-subtle mb-1">Jenis Font</label>
+							<label class="block font-medium text-[11px] mb-1">Jenis Font</label>
 							<select id="fontFamilySelect" onchange="app.updateFontFamily(this.value)" class="w-full ui-input border rounded-xl p-2 text-xs focus:outline-none focus:border-accent">
-								<option value="Poppins">Poppins (Modern Rounded)</option>
-								<option value="Plus Jakarta Sans">Plus Jakarta Sans (Trendy Sans)</option>
-								<option value="Inter">Inter (Clean Tech)</option>
-								<option value="Outfit">Outfit (Geometric)</option>
-								<option value="Urbanist">Urbanist (Sleek Minimalist)</option>
-								<option value="Lexend">Lexend (High Readability)</option>
+								<option value="Poppins">Poppins</option>
+								<option value="Plus Jakarta Sans">Plus Jakarta</option>
+								<option value="Inter">Inter</option>
+								<option value="Outfit">Outfit</option>
+								<option value="Urbanist">Urbanist</option>
+								<option value="Lexend">Lexend</option>
 							</select>
 						</div>
 						<div>
-							<label class="block text-[11px] ui-text-subtle mb-1">Ketebalan Teks</label>
+							<label class="block font-medium text-[11px] mb-1">Ketebalan Font</label>
 							<select id="fontWeightSelect" onchange="app.updateFontWeight(this.value)" class="w-full ui-input border rounded-xl p-2 text-xs focus:outline-none focus:border-accent">
 								<option value="400">Normal (400)</option>
 								<option value="500">Medium (500)</option>
 								<option value="600">Semi-Bold (600)</option>
-								<option value="700">Bold (700)</option>
 							</select>
 						</div>
 					</div>
-
-					<div>
-						<div class="flex justify-between text-xs mb-1">
-							<span class="ui-text-subtle text-[11px]">Skala Ukuran Font Global</span>
-							<span id="fontSizeVal" class="text-accent font-semibold font-mono">14px</span>
-						</div>
-						<input type="range" id="fontSizeSlider" min="12" max="18" value="14" step="1" oninput="app.updateFontSize(this.value)" class="w-full cursor-pointer">
-					</div>
 				</div>
 
-				<!-- Section 3: Media, Brightness & Audio Controls -->
-				<div class="p-3.5 ui-sub-bg border border-slate-700/40 rounded-2xl space-y-3">
-					<h4 class="font-semibold text-xs flex items-center gap-2 text-accent">
-						<i class="fa-solid fa-sliders"></i> Kontrol Media, Volume & Cahaya
-					</h4>
-
-					<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+				<!-- Module 3: Media & Audio EQ -->
+				<div class="p-3.5 ui-sub-bg border border-slate-700/40 rounded-2xl space-y-3 shadow-sm">
+					<h4 class="font-semibold text-xs flex items-center gap-2 text-accent"><i class="fa-solid fa-headphones"></i> Kontrol Media & Equalizer</h4>
+					
+					<div class="grid grid-cols-2 gap-3">
 						<div>
-							<div class="flex justify-between text-xs mb-1">
-								<span class="ui-text-subtle text-[11px] flex items-center gap-1"><i class="fa-solid fa-volume-high text-accent"></i> Volume</span>
-								<span id="volumeVal" class="font-mono text-accent font-semibold">100%</span>
-							</div>
+							<div class="flex justify-between mb-1"><span class="font-medium text-[11px]">Volume</span><span id="volumeVal" class="font-mono text-accent text-[11px] font-semibold">100%</span></div>
 							<input type="range" id="volumeSlider" min="0" max="100" value="100" oninput="app.setVolume(this.value)" class="w-full cursor-pointer">
 						</div>
-
 						<div>
-							<div class="flex justify-between text-xs mb-1">
-								<span class="ui-text-subtle text-[11px] flex items-center gap-1"><i class="fa-solid fa-sun text-accent"></i> Cahaya Video</span>
-								<span id="brightnessVal" class="font-mono text-accent font-semibold">100%</span>
-							</div>
+							<div class="flex justify-between mb-1"><span class="font-medium text-[11px]">Brightness</span><span id="brightnessVal" class="font-mono text-accent text-[11px] font-semibold">100%</span></div>
 							<input type="range" id="brightnessSlider" min="50" max="150" value="100" oninput="app.setBrightness(this.value)" class="w-full cursor-pointer">
 						</div>
 					</div>
 
-					<!-- Audio Mode (Stereo, Mono, Dolby 3D) -->
-					<div>
-						<label class="block text-[11px] ui-text-subtle mb-1.5">Mode Saluran Audio</label>
-						<div class="grid grid-cols-3 gap-2">
-							<button type="button" onclick="app.setAudioMode('stereo')" id="btnAudioStereo" class="p-2 border rounded-xl text-center text-xs font-medium ui-card transition-all hover:border-accent">Stereo</button>
-							<button type="button" onclick="app.setAudioMode('mono')" id="btnAudioMono" class="p-2 border rounded-xl text-center text-xs font-medium ui-card transition-all hover:border-accent">Mono</button>
-							<button type="button" onclick="app.setAudioMode('dolby')" id="btnAudioDolby" class="p-2 border rounded-xl text-center text-xs font-medium ui-card transition-all hover:border-accent">Dolby 3D</button>
-						</div>
+					<div class="grid grid-cols-3 gap-1.5 pt-1">
+						<button onclick="app.setAudioMode('stereo')" id="btnAudioStereo" class="p-1.5 border rounded-xl text-center text-[11px] font-medium ui-card">Stereo</button>
+						<button onclick="app.setAudioMode('mono')" id="btnAudioMono" class="p-1.5 border rounded-xl text-center text-[11px] font-medium ui-card">Mono</button>
+						<button onclick="app.setAudioMode('dolby')" id="btnAudioDolby" class="p-1.5 border rounded-xl text-center text-[11px] font-medium ui-card">Dolby 3D</button>
 					</div>
 
-					<!-- Equalizer -->
-					<div class="pt-2 border-t border-slate-700/30 space-y-2">
-						<div class="flex items-center justify-between">
-							<span class="font-semibold text-xs flex items-center gap-1.5">
-								<i class="fa-solid fa-wave-square text-accent"></i> Equalizer Presets
-							</span>
-							<select id="eqPresetSelect" onchange="app.setEqPreset(this.value)" class="ui-input border rounded-lg px-2 py-0.5 text-[11px] focus:outline-none">
-								<option value="flat">Flat (Default)</option>
+					<!-- 5 Band Equalizer -->
+					<div class="bg-slate-800/30 border border-slate-700/40 rounded-xl p-2.5 mt-2">
+						<div class="flex items-center justify-between mb-2">
+							<span class="font-semibold text-[11px]">Audio Equalizer</span>
+							<select id="eqPresetSelect" onchange="app.setEqPreset(this.value)" class="ui-input border rounded-lg px-2 py-0.5 text-[10px] focus:outline-none">
+								<option value="flat">Flat</option>
 								<option value="bass">Bass Boost</option>
 								<option value="treble">Treble Boost</option>
 								<option value="vocal">Vocal Clarity</option>
-								<option value="pop">Pop</option>
 								<option value="rock">Rock</option>
 							</select>
 						</div>
-						
-						<div class="grid grid-cols-5 gap-1 text-center pt-1">
-							<div class="flex flex-col items-center">
-								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(0, this.value)" class="eq-slider">
-								<span class="text-[9px] ui-text-subtle mt-1">60Hz</span>
-								<span id="eqVal0" class="text-[8px] font-mono text-accent">0dB</span>
-							</div>
-							<div class="flex flex-col items-center">
-								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(1, this.value)" class="eq-slider">
-								<span class="text-[9px] ui-text-subtle mt-1">230Hz</span>
-								<span id="eqVal1" class="text-[8px] font-mono text-accent">0dB</span>
-							</div>
-							<div class="flex flex-col items-center">
-								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(2, this.value)" class="eq-slider">
-								<span class="text-[9px] ui-text-subtle mt-1">910Hz</span>
-								<span id="eqVal2" class="text-[8px] font-mono text-accent">0dB</span>
-							</div>
-							<div class="flex flex-col items-center">
-								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(3, this.value)" class="eq-slider">
-								<span class="text-[9px] ui-text-subtle mt-1">4kHz</span>
-								<span id="eqVal3" class="text-[8px] font-mono text-accent">0dB</span>
-							</div>
-							<div class="flex flex-col items-center">
-								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(4, this.value)" class="eq-slider">
-								<span class="text-[9px] ui-text-subtle mt-1">14kHz</span>
-								<span id="eqVal4" class="text-[8px] font-mono text-accent">0dB</span>
-							</div>
+						<div class="grid grid-cols-5 gap-1 text-center">
+							<div class="flex flex-col items-center"><input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(0, this.value)" class="eq-slider"><span class="text-[9px] ui-text-subtle mt-1">60Hz</span><span id="eqVal0" class="text-[8px] font-mono text-accent">0dB</span></div>
+							<div class="flex flex-col items-center"><input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(1, this.value)" class="eq-slider"><span class="text-[9px] ui-text-subtle mt-1">230Hz</span><span id="eqVal1" class="text-[8px] font-mono text-accent">0dB</span></div>
+							<div class="flex flex-col items-center"><input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(2, this.value)" class="eq-slider"><span class="text-[9px] ui-text-subtle mt-1">910Hz</span><span id="eqVal2" class="text-[8px] font-mono text-accent">0dB</span></div>
+							<div class="flex flex-col items-center"><input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(3, this.value)" class="eq-slider"><span class="text-[9px] ui-text-subtle mt-1">4kHz</span><span id="eqVal3" class="text-[8px] font-mono text-accent">0dB</span></div>
+							<div class="flex flex-col items-center"><input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(4, this.value)" class="eq-slider"><span class="text-[9px] ui-text-subtle mt-1">14kHz</span><span id="eqVal4" class="text-[8px] font-mono text-accent">0dB</span></div>
 						</div>
 					</div>
 				</div>
 
-				<!-- Section 4: System Feedback -->
-				<div class="p-3.5 ui-sub-bg border border-slate-700/40 rounded-2xl space-y-3">
-					<h4 class="font-semibold text-xs flex items-center gap-2 text-accent">
-						<i class="fa-solid fa-mobile-screen"></i> Umpan Balik System
-					</h4>
+				<!-- Module 4: Haptic & System -->
+				<div class="p-3.5 ui-sub-bg border border-slate-700/40 rounded-2xl space-y-3 shadow-sm">
+					<h4 class="font-semibold text-xs flex items-center gap-2 text-accent"><i class="fa-solid fa-microchip"></i> Umpan Balik System</h4>
 					<div class="flex items-center justify-between">
-						<span class="font-medium text-xs flex items-center gap-1.5"><i class="fa-solid fa-volume-high text-accent"></i> Efek Suara (Audio FX)</span>
-						<label class="custom-switch">
-							<input type="checkbox" id="soundToggle" onchange="app.toggleSound(this.checked)">
-							<span class="switch-slider"></span>
-						</label>
+						<span class="font-medium text-xs flex items-center gap-1.5"><i class="fa-solid fa-volume-high text-accent"></i> Sound FX (Web Audio)</span>
+						<label class="custom-switch"><input type="checkbox" id="soundToggle" onchange="app.toggleSound(this.checked)"><span class="switch-slider"></span></label>
 					</div>
 					<div class="flex items-center justify-between">
-						<span class="font-medium text-xs flex items-center gap-1.5"><i class="fa-solid fa-hand-pointer text-accent"></i> Getar (Haptic Feedback 300ms)</span>
-						<label class="custom-switch">
-							<input type="checkbox" id="hapticToggle" onchange="app.toggleHaptic(this.checked)">
-							<span class="switch-slider"></span>
-						</label>
+						<span class="font-medium text-xs flex items-center gap-1.5"><i class="fa-solid fa-hand-pointer text-accent"></i> Getar Haptic 300ms</span>
+						<label class="custom-switch"><input type="checkbox" id="hapticToggle" onchange="app.toggleHaptic(this.checked)"><span class="switch-slider"></span></label>
 					</div>
 				</div>
 
@@ -890,79 +593,90 @@
 	</div>
 
 	<!-- ==========================================
-	     8. JAVASCRIPT LOGIC ENGINE
+	     TECH STACK FOOTER
+	     ========================================== -->
+	<footer class="ui-card border-t pt-8 pb-6 px-4 text-xs mt-auto">
+		<div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+			<div class="space-y-2">
+				<div class="flex items-center gap-2">
+					<div class="w-7 h-7 rounded-lg btn-accent flex items-center justify-center"><i class="fa-solid fa-play text-xs text-white"></i></div>
+					<span class="font-bold text-base">StreamTube</span>
+				</div>
+				<p class="ui-text-subtle leading-relaxed text-[11px]">
+					Proyek demonstrasi pemutar video YouTube kustom, bebas gangguan, dengan antarmuka dinamis dan kontrol presisi tinggi.
+				</p>
+			</div>
+			
+			<!-- Tech Stack Info -->
+			<div>
+				<h4 class="font-semibold mb-2 text-xs">Teknologi & API</h4>
+				<ul class="space-y-1.5 ui-text-subtle text-[11px]">
+					<li><i class="fa-brands fa-js text-yellow-400 w-4"></i> Vanilla JavaScript (ES6+)</li>
+					<li><i class="fa-brands fa-html5 text-orange-500 w-4"></i> HTML5 & LocalStorage</li>
+					<li><i class="fa-brands fa-css3 text-blue-400 w-4"></i> Tailwind CSS (Utility-first)</li>
+					<li><i class="fa-brands fa-youtube text-red-500 w-4"></i> YouTube Iframe API v3</li>
+				</ul>
+			</div>
+
+			<!-- Architecture Info -->
+			<div>
+				<h4 class="font-semibold mb-2 text-xs">Logika & Arsitektur</h4>
+				<ul class="space-y-1.5 ui-text-subtle text-[11px]">
+					<li><i class="fa-solid fa-server text-emerald-400 w-4"></i> Multi-Server Fallback</li>
+					<li><i class="fa-solid fa-microchip text-teal-400 w-4"></i> Real-time Sync & Haptic</li>
+					<li><i class="fa-solid fa-music text-indigo-400 w-4"></i> Web Audio API (Sound FX)</li>
+					<li><i class="fa-solid fa-code text-slate-400 w-4"></i> Single-Page App (SPA)</li>
+				</ul>
+			</div>
+		</div>
+		<div class="max-w-6xl mx-auto pt-4 border-t border-slate-700/30 text-center text-[11px] ui-text-subtle">
+			<p>© 2026 StreamTube App. Powered by Custom Player Engine.</p>
+		</div>
+	</footer>
+
+	<!-- ==========================================
+	     7. JAVASCRIPT ENGINE (REWRITTEN & FULLY RESTORED)
 	     ========================================== -->
 	<script>
 		const app = {
-			// YouTube Data API Key
 			apiKey: "AIzaSyCtksa1GE6rBpnuAI4IonvzLYDvPI_5b_E",
-
-			// Multi-Server API Pool
 			servers: [
 				{ type: 'yt_official', name: 'YouTube API v3' },
-				{ type: 'piped', baseUrl: 'https://pipedapi.kavin.rocks' },
-				{ type: 'piped', baseUrl: 'https://api.piped.privacydev.net' },
-				{ type: 'invidious', baseUrl: 'https://inv.tux.pizza/api/v1' }
+				{ type: 'piped', baseUrl: 'https://pipedapi.kavin.rocks' }
 			],
-
 			categories: [
 				{ name: "Populer", icon: "fa-solid fa-fire text-amber-500", query: "indonesia viral trending" },
 				{ name: "Musik", icon: "fa-solid fa-music text-pink-500", query: "indonesia musik populer" },
 				{ name: "Gaming", icon: "fa-solid fa-gamepad text-indigo-400", query: "gameplay indonesia trending" },
 				{ name: "Teknologi", icon: "fa-solid fa-laptop text-blue-400", query: "teknologi gadget indonesia" },
 				{ name: "Berita", icon: "fa-solid fa-newspaper text-emerald-400", query: "berita indonesia terkini" },
-				{ name: "Olahraga", icon: "fa-solid fa-football text-orange-400", query: "olahraga sepakbola indonesia" },
-				{ name: "Hiburan", icon: "fa-solid fa-film text-purple-400", query: "film hiburan indonesia" },
-				{ name: "Edukasi", icon: "fa-solid fa-graduation-cap text-yellow-400", query: "edukasi sains teknologi" },
 				{ name: "Kuliner", icon: "fa-solid fa-utensils text-rose-400", query: "kuliner resep makanan indonesia" },
-				{ name: "Otomotif", icon: "fa-solid fa-car text-cyan-400", query: "otomotif mobil motor indonesia" },
-				{ name: "Anime", icon: "fa-solid fa-palette text-violet-400", query: "anime animasi indonesia" },
-				{ name: "Komedi", icon: "fa-solid fa-face-laugh-squint text-amber-400", query: "sketsa komedi lucu indonesia" },
-				{ name: "Lifestyle", icon: "fa-solid fa-leaf text-green-400", query: "lifestyle vlog indonesia" },
-				{ name: "DIY", icon: "fa-solid fa-wrench text-slate-400", query: "diy kerajinan tangan tutorial" },
-				{ name: "Travel", icon: "fa-solid fa-plane text-sky-400", query: "travel wisata indonesia vlog" },
-				{ name: "Podcast", icon: "fa-solid fa-podcast text-red-400", query: "podcast indonesia populer" },
-				{ name: "Bisnis", icon: "fa-solid fa-chart-line text-emerald-500", query: "bisnis investasi keuangan indonesia" }
+				{ name: "Podcast", icon: "fa-solid fa-podcast text-red-400", query: "podcast indonesia populer" }
 			],
 
 			activeCategoryIndex: 0,
-			isTheaterMode: false,
 			isDescExpanded: false,
+			isTheaterMode: false,
 			isPlaying: false,
 			currentVideoTime: 0,
-			repeatMode: 'off', // Modes: 'off', 'one', 'all'
-			isAutoplay: true,
+			videoDurationLimit: 0,
+			timeTicker: null,
+			scrollTimeout: null,
 			audioCtx: null,
+			
+			repeatMode: 'off', // 'off', 'one', 'all'
+			isAutoplay: true,
 			fetchedVideos: [],
 
-			// Core Application State
 			state: {
 				currentVideo: null,
 				lastWatched: null,
-				user: {
-					name: "Pengguna StreamTube",
-					avatar: null,
-					cover: null,
-					createdAt: Date.now()
-				},
-				history: [],
-				likedList: [],
-				downloads: [],
-				searchHistory: [],
-				likesMap: {},
-				dailyWatchStats: {},
-				settings: {
-					theme: "dark",
-					fontSize: 14,
-					fontFamily: "Poppins",
-					fontWeight: "400",
-					accentColor: "#3b82f6",
-					volume: 100,
-					brightness: 100,
-					audioMode: "stereo",
-					eqBands: [0, 0, 0, 0, 0],
-					soundEnabled: true,
-					hapticEnabled: true
+				user: { name: "Pengguna StreamTube", avatar: null, cover: null, createdAt: Date.now() },
+				history: [], likedList: [], downloads: [], searchHistory: [], likesMap: {}, dailyWatchStats: {},
+				settings: { 
+					theme: "dark", fontSize: 14, fontFamily: "Poppins", fontWeight: "400", 
+					accentColor: "#3b82f6", volume: 100, brightness: 100, audioMode: "stereo", 
+					eqBands: [0, 0, 0, 0, 0], soundEnabled: true, hapticEnabled: true 
 				},
 				activeAccTab: 'watch'
 			},
@@ -974,72 +688,10 @@
 				this.renderCategories();
 				this.setupScrollListener();
 				this.setupIframeMessageListener();
-
-				// Restore last watched metadata if present
-				if (this.state.lastWatched) {
-					this.restoreLastWatched(this.state.lastWatched);
-				}
-
-				// Initial video search without autoplaying
+				
+				if (this.state.lastWatched) this.restoreLastWatched(this.state.lastWatched);
 				this.searchYouTube(this.categories[0].query, false);
 				this.updateBottomBarUI();
-			},
-
-			// Robust YouTube Iframe PostMessage Listener
-			setupIframeMessageListener() {
-				window.addEventListener('message', (event) => {
-					try {
-						let data = event.data;
-						if (typeof data === 'string') {
-							data = JSON.parse(data);
-						}
-						if (!data) return;
-
-						// Handle YouTube Iframe Player status & currentTime updates
-						if (data.event === 'infoDelivery' && data.info) {
-							if (typeof data.info.playerState !== 'undefined') {
-								this.handlePlayerStateChange(data.info.playerState);
-							}
-							if (typeof data.info.currentTime === 'number') {
-								this.currentVideoTime = data.info.currentTime;
-							}
-						} else if (data.event === 'onStateChange') {
-							this.handlePlayerStateChange(data.info);
-						} else if (data.info) {
-							if (typeof data.info.playerState !== 'undefined') {
-								this.handlePlayerStateChange(data.info.playerState);
-							}
-							if (typeof data.info.currentTime === 'number') {
-								this.currentVideoTime = data.info.currentTime;
-							}
-						}
-					} catch(e) {}
-				});
-			},
-
-			// Handle YouTube Player States (1 = PLAYING, 2 = PAUSED, 0 = ENDED)
-			handlePlayerStateChange(stateCode) {
-				if (stateCode === 1) { // PLAYING
-					this.isPlaying = true;
-					this.updateBottomBarUI();
-				} else if (stateCode === 2) { // PAUSED
-					this.isPlaying = false;
-					this.updateBottomBarUI();
-				} else if (stateCode === 0) { // ENDED
-					this.isPlaying = false;
-					this.updateBottomBarUI();
-
-					// Reliable logic for Repeat Mode & Autoplay
-					setTimeout(() => {
-						if (this.repeatMode === 'one' && this.state.currentVideo) {
-							this.currentVideoTime = 0;
-							this.playVideo(this.state.currentVideo);
-							this.showToast('Mengulang video (1x)');
-						} else if (this.repeatMode === 'all' || this.isAutoplay) {
-							this.playNextVideo();
-						}
-					}, 300);
-				}
 			},
 
 			cleanOldStats() {
@@ -1050,11 +702,8 @@
 					d.setDate(now.getDate() - i);
 					validDates.push(d.toISOString().split('T')[0]);
 				}
-
 				const cleaned = {};
-				validDates.forEach(dateStr => {
-					cleaned[dateStr] = this.state.dailyWatchStats[dateStr] || 0;
-				});
+				validDates.forEach(dateStr => { cleaned[dateStr] = this.state.dailyWatchStats[dateStr] || 0; });
 				this.state.dailyWatchStats = cleaned;
 				this.saveState();
 			},
@@ -1065,833 +714,512 @@
 				this.cleanOldStats();
 			},
 
-			restoreLastWatched(videoObj) {
-				this.state.currentVideo = videoObj;
-				document.getElementById('videoTitle').innerText = videoObj.title;
-				document.getElementById('channelName').innerText = videoObj.channel;
-				document.getElementById('viewCount').innerHTML = `<i class="fa-solid fa-eye text-[10px]"></i> ${this.formatNumber(videoObj.views)} views`;
-				document.getElementById('uploadDate').innerHTML = `<i class="fa-solid fa-calendar-days text-[10px]"></i> ${videoObj.date}`;
+			// Real-time YouTube Iframe Synchronization
+			setupIframeMessageListener() {
+				window.addEventListener('message', (event) => {
+					try {
+						let data = event.data;
+						if (typeof data === 'string') data = JSON.parse(data);
+						if (!data || !data.event) return;
 
-				const descEl = document.getElementById('videoDescription');
-				if (descEl) {
-					descEl.innerText = (videoObj.description && videoObj.description.trim()) ? videoObj.description : 'Deskripsi tidak tersedia untuk video ini.';
-				}
-				this.resetDescriptionToggle();
-
-				const heroTitle = document.getElementById('heroTitle');
-				const heroSub = document.getElementById('heroSub');
-				const heroBgThumb = document.getElementById('heroBgThumb');
-
-				if (heroTitle) heroTitle.innerText = `Terakhir Ditonton: ${videoObj.title}`;
-				if (heroSub) heroSub.innerText = `Klik tombol putar untuk melanjutkan menonton`;
-				if (heroBgThumb && videoObj.thumb) {
-					heroBgThumb.src = videoObj.thumb;
-					heroBgThumb.classList.remove('hidden');
-				}
-
-				this.updateLikeButtonUI();
+						if (data.event === 'onStateChange') {
+							this.handlePlayerStateChange(data.info);
+						} else if (data.event === 'infoDelivery' && data.info) {
+							if (data.info.playerState !== undefined) this.handlePlayerStateChange(data.info.playerState);
+							if (data.info.currentTime !== undefined) this.currentVideoTime = data.info.currentTime;
+							if (data.info.duration !== undefined) this.videoDurationLimit = data.info.duration;
+						}
+					} catch(e) {}
+				});
 			},
 
 			setupScrollListener() {
-				let scrollTimeout = null;
-				const bottomBar = document.getElementById('bottomPlayerBar');
-				const videoMeta = document.getElementById('videoMeta');
-				const categoryMeta = document.getElementById('categoryMeta');
-
 				window.addEventListener('scroll', () => {
-					// Collapsible Metadata
+					// Bottom Bar Auto-Hide Logic
+					const bBar = document.getElementById('bottomPlayerBar');
+					if (bBar) bBar.classList.add('translate-y-24', 'opacity-0');
+
+					// Metadata Collapse Logic
+					const vMeta = document.getElementById('videoMeta');
+					const cMeta = document.getElementById('categoryMeta');
 					if (window.scrollY > 80) {
-						if (videoMeta) videoMeta.classList.add('hidden-scroll');
-						if (categoryMeta) categoryMeta.classList.add('hidden-scroll');
+						if (vMeta) vMeta.classList.add('hidden-scroll');
+						if (cMeta) cMeta.classList.add('hidden-scroll');
 					} else {
-						if (videoMeta) videoMeta.classList.remove('hidden-scroll');
-						if (categoryMeta) categoryMeta.classList.remove('hidden-scroll');
+						if (vMeta) vMeta.classList.remove('hidden-scroll');
+						if (cMeta) cMeta.classList.remove('hidden-scroll');
 					}
 
-					// Hide floating bottom bar while active scrolling
-					if (bottomBar) {
-						bottomBar.classList.add('translate-y-28', 'opacity-0', 'pointer-events-none');
-						bottomBar.classList.remove('translate-y-0', 'opacity-100');
-					}
-
-					// Smoothly reappear when scrolling stops (idle state)
-					clearTimeout(scrollTimeout);
-					scrollTimeout = setTimeout(() => {
-						if (bottomBar) {
-							bottomBar.classList.remove('translate-y-28', 'opacity-0', 'pointer-events-none');
-							bottomBar.classList.add('translate-y-0', 'opacity-100');
-						}
-					}, 700);
+					// Bottom Bar Reappear on Idle
+					clearTimeout(this.scrollTimeout);
+					this.scrollTimeout = setTimeout(() => {
+						if (bBar) bBar.classList.remove('translate-y-24', 'opacity-0');
+					}, 800);
 				});
+			},
+
+			startTimeTicker() {
+				clearInterval(this.timeTicker);
+				this.timeTicker = setInterval(() => {
+					if (this.isPlaying) this.currentVideoTime += 0.5;
+				}, 500);
+			},
+
+			handlePlayerStateChange(stateCode) {
+				const iframe = document.getElementById('ytPlayer');
+				if (stateCode === 1) { // PLAYING
+					this.isPlaying = true;
+					this.updateBottomBarUI();
+					this.startTimeTicker();
+					if (iframe && iframe.contentWindow) iframe.contentWindow.postMessage(JSON.stringify({ event: 'listening' }), '*');
+				} else if (stateCode === 2) { // PAUSED
+					this.isPlaying = false;
+					this.updateBottomBarUI();
+					clearInterval(this.timeTicker);
+				} else if (stateCode === 0) { // ENDED
+					this.isPlaying = false;
+					this.updateBottomBarUI();
+					clearInterval(this.timeTicker);
+
+					setTimeout(() => {
+						if (this.repeatMode === 'one' && this.state.currentVideo) {
+							this.currentVideoTime = 0;
+							if (iframe && iframe.contentWindow) {
+								iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'seekTo', args: [0, true] }), '*');
+								iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
+							}
+							this.showToast('Mengulang video (1x)');
+						} else if (this.repeatMode === 'all' || this.isAutoplay) {
+							this.playNextVideo();
+						}
+					}, 300);
+				}
+			},
+
+			// SEEK EXACT REAL-TIME LOGIC (+/- 10s)
+			seekRelative(seconds) {
+				this.triggerHaptic();
+				this.playSound();
+				const iframe = document.getElementById('ytPlayer');
+				if (!iframe || !this.state.currentVideo) return;
+
+				let newTime = Math.max(0, this.currentVideoTime + seconds);
+				if (this.videoDurationLimit > 0) newTime = Math.min(newTime, this.videoDurationLimit);
+				
+				this.currentVideoTime = newTime;
+
+				iframe.contentWindow.postMessage(JSON.stringify({
+					event: 'command', func: 'seekTo', args: [newTime, true]
+				}), '*');
+
+				this.showToast(`${seconds > 0 ? '+' : ''}${seconds}s (${this.formatSeconds(newTime)})`);
+			},
+
+			togglePlayPause() {
+				this.triggerHaptic();
+				this.playSound();
+				const iframe = document.getElementById('ytPlayer');
+				if (!iframe || !this.state.currentVideo) {
+					if (this.fetchedVideos.length > 0) this.playVideo(this.fetchedVideos[0]);
+					return;
+				}
+				
+				if (this.isPlaying) {
+					iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
+					this.isPlaying = false;
+				} else {
+					iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
+					this.isPlaying = true;
+				}
+				this.updateBottomBarUI();
 			},
 
 			renderCategories() {
 				const container = document.getElementById('categoryContainer');
-				if (!container) return;
 				container.innerHTML = '';
-
 				this.categories.forEach((cat, idx) => {
 					const btn = document.createElement('button');
 					const isActive = idx === this.activeCategoryIndex;
-
-					btn.type = 'button';
-					btn.className = `px-3.5 py-1.5 rounded-full whitespace-nowrap transition-all text-xs flex items-center gap-1.5 shrink-0 ${
-						isActive 
-							? 'btn-accent text-white shadow-md font-semibold ring-2 ring-white/20' 
-							: 'ui-card border hover:border-accent font-medium'
-					}`;
-
-					const iconClass = isActive ? cat.icon.replace(/text-[a-z0-9-]+/g, 'text-white') : cat.icon;
-					btn.innerHTML = `<i class="${iconClass}"></i> <span class="inline-block ${isActive ? 'text-white font-bold opacity-100 visible' : ''}">${cat.name}</span>`;
-					
-					btn.onclick = (e) => {
-						if (e) e.preventDefault();
-						this.selectCategory(idx);
-					};
-
+					btn.className = `px-3.5 py-1.5 rounded-full whitespace-nowrap transition-all text-xs flex items-center gap-1.5 shrink-0 ${ isActive ? 'btn-accent text-white font-semibold' : 'ui-card border font-medium hover:border-accent'}`;
+					btn.innerHTML = `<i class="${isActive ? cat.icon.replace(/text-[a-z0-9-]+/g, 'text-white') : cat.icon}"></i> <span class="inline-block ${isActive ? 'text-white opacity-100 visible' : ''}">${cat.name}</span>`;
+					btn.onclick = () => { this.triggerHaptic(); this.playSound(); this.activeCategoryIndex = idx; this.renderCategories(); this.searchYouTube(cat.query); };
 					container.appendChild(btn);
 				});
 			},
 
-			selectCategory(idxOrName) {
-				this.playSound();
-				this.triggerHaptic();
-				if (typeof idxOrName === 'string') {
-					const found = this.categories.findIndex(c => c.name.toLowerCase().includes(idxOrName.toLowerCase()));
-					this.activeCategoryIndex = found >= 0 ? found : 0;
-				} else {
-					this.activeCategoryIndex = idxOrName;
-				}
-
-				this.renderCategories();
-				const cat = this.categories[this.activeCategoryIndex];
-				document.getElementById('sectionTitle').innerHTML = `<i class="${cat.icon} mr-1"></i> Kategori: ${cat.name}`;
-				document.getElementById('videoCategoryTag').innerText = cat.name;
-				this.searchYouTube(cat.query);
-			},
-
-			parseIsoDuration(iso) {
-				if (!iso) return '--:--';
-				const regex = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
-				const matches = iso.match(regex);
-				if (!matches) return '--:--';
-
-				const hours = parseInt(matches[1] || 0);
-				const minutes = parseInt(matches[2] || 0);
-				const seconds = parseInt(matches[3] || 0);
-
-				const pad = (n) => String(n).padStart(2, '0');
-				if (hours > 0) {
-					return `${hours}:${pad(minutes)}:${pad(seconds)}`;
-				}
-				return `${pad(minutes)}:${pad(seconds)}`;
-			},
-
-			formatSeconds(totalSec) {
-				if (isNaN(totalSec) || totalSec === null) return '--:--';
-				const sec = Math.floor(totalSec);
-				const h = Math.floor(sec / 3600);
-				const m = Math.floor((sec % 3600) / 60);
-				const s = sec % 60;
-				const pad = (n) => String(n).padStart(2, '0');
-				if (h > 0) {
-					return `${h}:${pad(m)}:${pad(s)}`;
-				}
-				return `${pad(m)}:${pad(s)}`;
-			},
-
 			async searchYouTube(query, autoScroll = true) {
 				const grid = document.getElementById('videoGrid');
-				grid.innerHTML = `
-					<div class="col-span-full py-12 text-center text-slate-400 text-xs">
-						<i class="fa-solid fa-spinner fa-spin text-2xl text-accent mb-3"></i>
-						<p>Mencari video dari server API...</p>
-					</div>
-				`;
+				grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 text-xs"><i class="fa-solid fa-spinner fa-spin text-2xl text-accent mb-3"></i><p>Mencari video...</p></div>`;
 
-				let success = false;
+				try {
+					const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&type=video&q=${encodeURIComponent(query)}&key=${this.apiKey}`;
+					const res = await fetch(searchUrl);
+					const data = await res.json();
+					const videoIds = data.items.map(i => i.id.videoId).filter(Boolean).join(',');
+					const statsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${videoIds}&key=${this.apiKey}`;
+					const statsRes = await fetch(statsUrl);
+					const statsData = await statsRes.json();
 
-				for (const server of this.servers) {
-					try {
-						let videos = [];
-						if (server.type === 'yt_official') {
-							const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&type=video&q=${encodeURIComponent(query)}&key=${this.apiKey}`;
-							const res = await fetch(searchUrl);
-							if (!res.ok) throw new Error('Official API error');
-							const data = await res.json();
-							
-							const videoIds = data.items.map(item => item.id.videoId).filter(Boolean).join(',');
-							const statsUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${videoIds}&key=${this.apiKey}`;
-							const statsRes = await fetch(statsUrl);
-							const statsData = await statsRes.json();
+					this.fetchedVideos = statsData.items.map(item => ({
+						ytId: item.id,
+						title: item.snippet.title,
+						channel: item.snippet.channelTitle,
+						description: item.snippet.description || 'Tidak ada deskripsi tersedia.',
+						views: parseInt(item.statistics?.viewCount || '0'),
+						likes: parseInt(item.statistics?.likeCount || '0'),
+						comments: parseInt(item.statistics?.commentCount || Math.floor(Math.random() * 5000)),
+						date: item.snippet.publishedAt ? item.snippet.publishedAt.split('T')[0] : '-',
+						thumb: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.medium?.url,
+						durationFormatted: this.parseIsoDuration(item.contentDetails?.duration)
+					}));
 
-							videos = statsData.items.map(item => ({
-								id: item.id,
-								ytId: item.id,
-								title: item.snippet.title,
-								channel: item.snippet.channelTitle,
-								description: item.snippet.description || 'Tidak ada deskripsi tersedia.',
-								views: parseInt(item.statistics?.viewCount || '0'),
-								likes: parseInt(item.statistics?.likeCount || '0'),
-								date: item.snippet.publishedAt ? item.snippet.publishedAt.split('T')[0] : '-',
-								thumb: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.medium?.url,
-								durationFormatted: this.parseIsoDuration(item.contentDetails?.duration)
-							}));
-						} else if (server.type === 'piped') {
-							const res = await fetch(`${server.baseUrl}/search?q=${encodeURIComponent(query)}&filter=all`);
-							if (!res.ok) throw new Error('Piped error');
-							const data = await res.json();
-							videos = data.items.filter(i => i.type === 'stream').slice(0, 16).map(i => ({
-								id: i.url.replace('/watch?v=', ''),
-								ytId: i.url.replace('/watch?v=', ''),
-								title: i.title,
-								channel: i.uploaderName,
-								description: i.description || 'Tidak ada deskripsi tersedia.',
-								views: i.views || 0,
-								likes: 0,
-								date: i.uploadedDate || '-',
-								thumb: i.thumbnail,
-								durationFormatted: this.formatSeconds(i.duration)
-							}));
-						}
-
-						if (videos && videos.length > 0) {
-							this.fetchedVideos = videos;
-							this.renderGrid(this.fetchedVideos);
-							success = true;
-							break;
-						}
-					} catch (e) {
-						console.warn(`Server ${server.name} failed:`, e);
-					}
-				}
-
-				if (!success) {
-					grid.innerHTML = `<div class="col-span-full text-center text-rose-400 py-8 text-xs">Gagal memuat video dari semua server API. Mohon periksa koneksi internet Anda.</div>`;
-				} else if (autoScroll && window.scrollY > 400) {
-					window.scrollTo({ top: 400, behavior: 'smooth' });
+					this.renderGrid(this.fetchedVideos);
+					if (autoScroll && window.scrollY > 400) window.scrollTo({ top: 400, behavior: 'smooth' });
+				} catch (e) {
+					grid.innerHTML = `<div class="col-span-full text-center text-rose-400 py-8 text-xs">Gagal memuat video.</div>`;
 				}
 			},
 
 			renderGrid(videos) {
 				const grid = document.getElementById('videoGrid');
 				grid.innerHTML = '';
-
 				videos.forEach(v => {
 					const card = document.createElement('div');
-					card.className = "ui-card border rounded-xl overflow-hidden cursor-pointer transition-all hover:scale-[1.02] shadow-sm flex flex-col group";
+					card.className = "ui-card border rounded-xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-all flex flex-col group shadow-sm";
 					card.onclick = () => this.playVideo(v);
-
 					card.innerHTML = `
 						<div class="relative aspect-video bg-black overflow-hidden">
-							<img src="${v.thumb}" alt="${v.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x340/0f172a/94a3b8?text=Video'">
-							
-							<!-- Video Duration Badge -->
-							<div class="absolute bottom-2 left-2 bg-black/85 backdrop-blur-md text-white text-[10px] px-2 py-0.5 rounded-md font-mono border border-white/10 flex items-center gap-1 shadow-md">
-								<i class="fa-solid fa-clock text-accent text-[9px]"></i> ${v.durationFormatted || '--:--'}
-							</div>
-
-							<!-- YouTube Badge -->
-							<div class="absolute bottom-2 right-2 bg-black/80 backdrop-blur-md text-white text-[10px] px-2 py-0.5 rounded-md font-mono border border-white/10 flex items-center gap-1">
-								<i class="fa-brands fa-youtube text-red-500"></i> YouTube
-							</div>
+							<img src="${v.thumb}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+							<div class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded font-mono flex items-center gap-1 backdrop-blur-md border border-white/10"><i class="fa-solid fa-clock text-[9px]"></i> ${v.durationFormatted}</div>
 						</div>
 						<div class="p-3 flex-1 flex flex-col justify-between">
 							<h3 class="font-medium text-xs sm:text-sm line-clamp-2 leading-snug group-hover:text-accent transition-colors">${v.title}</h3>
-							<div class="mt-3 text-[11px] ui-text-subtle space-y-1">
-								<p class="font-medium truncate flex items-center gap-1"><i class="fa-solid fa-circle-user text-[10px]"></i> ${v.channel}</p>
-								<div class="flex items-center justify-between text-slate-500">
-									<span>${this.formatNumber(v.views)}x dilihat</span>
-									<span>${v.date}</span>
-								</div>
-							</div>
+							<div class="mt-2 text-[11px] ui-text-subtle"><p class="font-medium truncate flex items-center gap-1"><i class="fa-solid fa-circle-user text-[10px]"></i> ${v.channel}</p><div class="flex justify-between mt-1"><span>${this.formatNumber(v.views)}x ditonton</span><span>${v.date}</span></div></div>
 						</div>
 					`;
 					grid.appendChild(card);
 				});
-
 				document.getElementById('resultCount').innerText = `${videos.length} Video`;
 			},
 
 			playFirstAvailable() {
-				if (this.state.currentVideo) {
-					this.playVideo(this.state.currentVideo);
-				} else if (this.fetchedVideos && this.fetchedVideos.length > 0) {
-					this.playVideo(this.fetchedVideos[0]);
-				}
+				if (this.state.currentVideo) this.playVideo(this.state.currentVideo);
+				else if (this.fetchedVideos.length > 0) this.playVideo(this.fetchedVideos[0]);
 			},
 
-			playVideo(videoObj, addToHistory = true) {
-				this.playSound();
-				this.triggerHaptic();
+			restoreLastWatched(videoObj) {
+				this.state.currentVideo = videoObj;
+				this.populateVideoMetadataUI(videoObj);
+				
+				const heroTitle = document.getElementById('heroTitle');
+				const heroBgThumb = document.getElementById('heroBgThumb');
+				if (heroTitle) heroTitle.innerText = `Terakhir: ${videoObj.title}`;
+				if (heroBgThumb && videoObj.thumb) { heroBgThumb.src = videoObj.thumb; heroBgThumb.classList.remove('hidden'); }
+				this.updateLikeButtonUI();
+			},
 
+			playVideo(videoObj) {
+				this.triggerHaptic();
+				this.playSound();
 				this.state.currentVideo = videoObj;
 				this.state.lastWatched = videoObj;
 				this.currentVideoTime = 0;
-
+				this.videoDurationLimit = 0;
+				
 				document.getElementById('heroPlaceholder').classList.add('hidden');
 				const iframe = document.getElementById('ytPlayer');
 				iframe.classList.remove('hidden');
 				iframe.src = `https://www.youtube-nocookie.com/embed/${videoObj.ytId}?autoplay=1&enablejsapi=1`;
 
-				document.getElementById('videoTitle').innerText = videoObj.title;
-				document.getElementById('channelName').innerText = videoObj.channel;
-				document.getElementById('viewCount').innerHTML = `<i class="fa-solid fa-eye text-[10px]"></i> ${this.formatNumber(videoObj.views)} views`;
-				document.getElementById('uploadDate').innerHTML = `<i class="fa-solid fa-calendar-days text-[10px]"></i> ${videoObj.date}`;
-
-				const descEl = document.getElementById('videoDescription');
-				if (descEl) {
-					descEl.innerText = (videoObj.description && videoObj.description.trim()) ? videoObj.description : 'Deskripsi tidak tersedia untuk video ini.';
-				}
-				this.resetDescriptionToggle();
-
+				this.populateVideoMetadataUI(videoObj);
+				
 				this.isPlaying = true;
-				this.updateLikeButtonUI();
 				this.updateBottomBarUI();
+				this.updateLikeButtonUI();
 
-				if (addToHistory) {
-					const existingIndex = this.state.history.findIndex(item => item.ytId === videoObj.ytId);
-					if (existingIndex > -1) this.state.history.splice(existingIndex, 1);
-
-					this.state.history.unshift({
-						...videoObj,
-						watchedAt: new Date().toLocaleString('id-ID')
-					});
-
-					this.trackWatchStat();
-				}
-
+				// Save History
+				const extIdx = this.state.history.findIndex(i => i.ytId === videoObj.ytId);
+				if (extIdx > -1) this.state.history.splice(extIdx, 1);
+				this.state.history.unshift({ ...videoObj, watchedAt: new Date().toLocaleString('id-ID') });
+				
+				this.trackWatchStat();
 				this.saveState();
 				window.scrollTo({ top: 0, behavior: 'smooth' });
+
+				setTimeout(() => { if (iframe.contentWindow) iframe.contentWindow.postMessage(JSON.stringify({ event: 'listening' }), '*'); }, 1500);
 			},
 
-			// FLOATING BOTTOM PLAYER CONTROLS
-			togglePlayPause() {
-				this.playSound();
-				this.triggerHaptic();
-				const iframe = document.getElementById('ytPlayer');
-				if (!iframe || !this.state.currentVideo) {
-					if (this.fetchedVideos && this.fetchedVideos.length > 0) {
-						this.playVideo(this.fetchedVideos[0]);
-					}
-					return;
-				}
+			populateVideoMetadataUI(videoObj) {
+				document.getElementById('videoTitle').innerText = videoObj.title;
+				document.getElementById('channelName').innerText = videoObj.channel;
+				
+				let subMock = Math.max(10, Math.floor(videoObj.views / 20));
+				document.getElementById('channelSubs').innerText = `${this.formatNumber(subMock)} Subscriber`;
+				document.getElementById('channelAvatar').src = `https://placehold.co/100x100/1e293b/ffffff?text=${encodeURIComponent(videoObj.channel.charAt(0))}`;
 
-				if (this.isPlaying) {
-					iframe.contentWindow.postMessage(JSON.stringify({
-						event: 'command',
-						func: 'pauseVideo',
-						args: []
-					}), '*');
-					this.isPlaying = false;
-				} else {
-					iframe.contentWindow.postMessage(JSON.stringify({
-						event: 'command',
-						func: 'playVideo',
-						args: []
-					}), '*');
-					this.isPlaying = true;
-				}
-				this.updateBottomBarUI();
-			},
+				document.getElementById('metaViews').innerText = this.formatNumber(videoObj.views);
+				document.getElementById('metaDate').innerText = videoObj.date;
+				document.getElementById('metaDuration').innerText = videoObj.durationFormatted;
+				document.getElementById('metaComments').innerText = this.formatNumber(videoObj.comments || 0);
 
-			seekRelative(seconds) {
-				this.playSound();
-				this.triggerHaptic();
-				const iframe = document.getElementById('ytPlayer');
-				if (!iframe || !this.state.currentVideo) return;
-
-				this.currentVideoTime = Math.max(0, this.currentVideoTime + seconds);
-				iframe.contentWindow.postMessage(JSON.stringify({
-					event: 'command',
-					func: 'seekTo',
-					args: [this.currentVideoTime, true]
-				}), '*');
-
-				this.showToast(`${seconds > 0 ? '+' : ''}${seconds} Detik (${Math.floor(this.currentVideoTime)}s)`);
+				document.getElementById('videoDescContent').innerText = (videoObj.description && videoObj.description.trim()) ? videoObj.description : 'Deskripsi tidak tersedia.';
+				this.resetDescriptionToggle();
 			},
 
 			playNextVideo() {
-				this.playSound();
-				this.triggerHaptic();
-				if (!this.fetchedVideos || this.fetchedVideos.length === 0) return;
-
-				let currentIndex = -1;
-				if (this.state.currentVideo) {
-					currentIndex = this.fetchedVideos.findIndex(v => v.ytId === this.state.currentVideo.ytId);
-				}
-
-				const nextIndex = (currentIndex + 1) % this.fetchedVideos.length;
-				this.playVideo(this.fetchedVideos[nextIndex]);
-				this.showToast(`Selanjutnya: ${this.fetchedVideos[nextIndex].title.slice(0, 25)}...`);
+				this.triggerHaptic(); this.playSound();
+				if (!this.fetchedVideos.length) return;
+				let idx = this.state.currentVideo ? this.fetchedVideos.findIndex(v => v.ytId === this.state.currentVideo.ytId) : -1;
+				this.playVideo(this.fetchedVideos[(idx + 1) % this.fetchedVideos.length]);
 			},
-
+			
 			playPrevVideo() {
-				this.playSound();
-				this.triggerHaptic();
-				if (!this.fetchedVideos || this.fetchedVideos.length === 0) return;
-
-				let currentIndex = 0;
-				if (this.state.currentVideo) {
-					currentIndex = this.fetchedVideos.findIndex(v => v.ytId === this.state.currentVideo.ytId);
-				}
-
-				const prevIndex = (currentIndex - 1 + this.fetchedVideos.length) % this.fetchedVideos.length;
-				this.playVideo(this.fetchedVideos[prevIndex]);
-				this.showToast(`Sebelumnya: ${this.fetchedVideos[prevIndex].title.slice(0, 25)}...`);
+				this.triggerHaptic(); this.playSound();
+				if (!this.fetchedVideos.length) return;
+				let idx = this.state.currentVideo ? this.fetchedVideos.findIndex(v => v.ytId === this.state.currentVideo.ytId) : 0;
+				this.playVideo(this.fetchedVideos[(idx - 1 + this.fetchedVideos.length) % this.fetchedVideos.length]);
 			},
 
 			toggleRepeatMode() {
-				this.playSound();
-				this.triggerHaptic();
-				if (this.repeatMode === 'off') {
-					this.repeatMode = 'one';
-					this.showToast('Pengulangan: Putar Ulang 1 Video (1x)');
-				} else if (this.repeatMode === 'one') {
-					this.repeatMode = 'all';
-					this.showToast('Pengulangan: Putar Ulang Semua Daftar (ALL)');
-				} else {
-					this.repeatMode = 'off';
-					this.showToast('Pengulangan: Nonaktif (OFF)');
-				}
+				this.triggerHaptic(); this.playSound();
+				if (this.repeatMode === 'off') this.repeatMode = 'one';
+				else if (this.repeatMode === 'one') this.repeatMode = 'all';
+				else this.repeatMode = 'off';
 				this.updateBottomBarUI();
+				this.showToast(`Mode Pengulangan: ${this.repeatMode.toUpperCase()}`);
 			},
 
 			toggleAutoplayMode() {
-				this.playSound();
-				this.triggerHaptic();
+				this.triggerHaptic(); this.playSound();
 				this.isAutoplay = !this.isAutoplay;
-				this.showToast(`Auto Play Selanjutnya: ${this.isAutoplay ? 'AKTIF' : 'NONAKTIF'}`);
 				this.updateBottomBarUI();
-			},
-
-			updateBottomBarUI() {
-				const playIcon = document.getElementById('bottomPlayIcon');
-				if (playIcon) {
-					playIcon.className = this.isPlaying ? 'fa-solid fa-pause text-sm sm:text-lg' : 'fa-solid fa-play text-sm sm:text-lg ml-0.5';
-				}
-
-				const repeatBadge = document.getElementById('repeatBadge');
-				const repeatBtn = document.getElementById('btnBottomRepeat');
-				if (repeatBadge && repeatBtn) {
-					if (this.repeatMode === 'one') {
-						repeatBadge.innerText = '1x';
-						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-amber-500/30 text-amber-300 border border-amber-400/50';
-						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-amber-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-md";
-					} else if (this.repeatMode === 'all') {
-						repeatBadge.innerText = 'ALL';
-						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-teal-500/30 text-teal-300 border border-teal-400/50';
-						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-teal-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-md";
-					} else {
-						repeatBadge.innerText = 'OFF';
-						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
-						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 text-slate-300 hover:text-accent transition-all text-xs font-medium";
-					}
-				}
-
-				const autoplayBadge = document.getElementById('autoplayBadge');
-				const autoplayBtn = document.getElementById('btnBottomAutoplay');
-				if (autoplayBadge && autoplayBtn) {
-					if (this.isAutoplay) {
-						autoplayBadge.innerText = 'ON';
-						autoplayBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 text-indigo-200 border border-indigo-400/30';
-						autoplayBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-md transition-all hover:brightness-110";
-					} else {
-						autoplayBadge.innerText = 'OFF';
-						autoplayBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
-						autoplayBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 text-slate-300 hover:text-accent transition-all text-xs font-medium";
-					}
-				}
-			},
-
-			toggleLike() {
-				if (!this.state.currentVideo) {
-					this.showToast('Pilih video terlebih dahulu');
-					return;
-				}
-				this.playSound();
-				this.triggerHaptic();
-
-				const ytId = this.state.currentVideo.ytId;
-				const isLiked = !!this.state.likesMap[ytId];
-
-				if (isLiked) {
-					delete this.state.likesMap[ytId];
-					const idx = this.state.likedList.findIndex(v => v.ytId === ytId);
-					if (idx > -1) this.state.likedList.splice(idx, 1);
-					this.showToast('Batal menyukai video');
-				} else {
-					this.state.likesMap[ytId] = true;
-					this.state.likedList.unshift({
-						...this.state.currentVideo,
-						likedAt: new Date().toLocaleString('id-ID')
-					});
-					this.showToast('Video ditambahkan ke daftar disukai!');
-				}
-
-				this.saveState();
-				this.updateLikeButtonUI();
+				this.showToast(`Auto Play: ${this.isAutoplay ? 'ON' : 'OFF'}`);
 			},
 
 			toggleDescription() {
-				this.playSound();
 				this.triggerHaptic();
-				this.isDescExpanded = !this.isDescExpanded;
-				const p = document.getElementById('videoDescription');
+				const content = document.getElementById('videoDescContent');
 				const btn = document.getElementById('toggleDescBtn');
-				const chevron = document.getElementById('descChevron');
-				if (this.isDescExpanded) {
-					if (p) p.classList.remove('line-clamp-2');
-					if (btn) {
-						const span = btn.querySelector('span');
-						if (span) span.innerText = 'Sembunyikan';
-					}
-					if (chevron) chevron.className = 'fa-solid fa-chevron-up text-[9px]';
-				} else {
-					if (p) p.classList.add('line-clamp-2');
-					if (btn) {
-						const span = btn.querySelector('span');
-						if (span) span.innerText = 'Selengkapnya';
-					}
-					if (chevron) chevron.className = 'fa-solid fa-chevron-down text-[9px]';
-				}
+				this.isDescExpanded = !this.isDescExpanded;
+				if (this.isDescExpanded) { content.classList.add('expanded'); btn.innerText = 'Sembunyikan'; } 
+				else { content.classList.remove('expanded'); btn.innerText = 'Selengkapnya...'; }
 			},
-
+			
 			resetDescriptionToggle() {
 				this.isDescExpanded = false;
-				const p = document.getElementById('videoDescription');
+				const content = document.getElementById('videoDescContent');
 				const btn = document.getElementById('toggleDescBtn');
-				const chevron = document.getElementById('descChevron');
-				if (p) p.classList.add('line-clamp-2');
-				if (btn) {
-					const span = btn.querySelector('span');
-					if (span) span.innerText = 'Selengkapnya';
+				if (content) content.classList.remove('expanded');
+				if (btn) btn.innerText = 'Selengkapnya...';
+			},
+
+			toggleLike() {
+				this.triggerHaptic(); this.playSound();
+				if (!this.state.currentVideo) { this.showToast('Pilih video terlebih dahulu'); return; }
+				const ytId = this.state.currentVideo.ytId;
+				const isLiked = !!this.state.likesMap[ytId];
+				if (isLiked) {
+					delete this.state.likesMap[ytId];
+					this.state.likedList = this.state.likedList.filter(v => v.ytId !== ytId);
+				} else {
+					this.state.likesMap[ytId] = true;
+					this.state.likedList.unshift({ ...this.state.currentVideo, likedAt: new Date().toLocaleString('id-ID') });
 				}
-				if (chevron) chevron.className = 'fa-solid fa-chevron-down text-[9px]';
+				this.saveState();
+				this.updateLikeButtonUI();
 			},
 
 			updateLikeButtonUI() {
 				if (!this.state.currentVideo) return;
-				const ytId = this.state.currentVideo.ytId;
-				const isLiked = !!this.state.likesMap[ytId];
-				const btn = document.getElementById('likeBtn');
-				const icon = document.getElementById('likeIcon');
-				const count = document.getElementById('likeCount');
+				const isLiked = !!this.state.likesMap[this.state.currentVideo.ytId];
+				const btn = document.getElementById('btnLike');
+				const icon = document.getElementById('iconLike');
+				const span = document.getElementById('countLikeBtn');
+				
+				let likesCount = this.state.currentVideo.likes;
+				if (isLiked) likesCount++;
 
-				const baseLikes = this.state.currentVideo.likes || 0;
-				count.innerText = this.formatNumber(isLiked ? baseLikes + 1 : baseLikes);
-
+				span.innerText = this.formatNumber(likesCount);
+				
 				if (isLiked) {
-					btn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-600 text-white text-xs font-medium shadow-md transition-all";
+					btn.className = "flex items-center gap-1.5 px-3 py-2 rounded-full bg-rose-600 text-white text-xs font-medium shadow-md transition-all shrink-0";
 					icon.className = "fa-solid fa-heart text-xs";
 				} else {
-					btn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-xl ui-card border text-xs font-medium hover:border-accent transition-all";
+					btn.className = "flex items-center gap-1.5 px-3 py-2 rounded-full ui-card border text-xs font-medium hover:bg-slate-800/50 transition-all shrink-0";
 					icon.className = "fa-solid fa-thumbs-up text-xs";
 				}
 			},
 
 			toggleTheaterMode() {
-				this.playSound();
-				this.triggerHaptic();
+				this.triggerHaptic(); this.playSound();
 				this.isTheaterMode = !this.isTheaterMode;
 				const wrapper = document.getElementById('playerWrapper');
 				const icon = document.getElementById('theaterIcon');
-
 				if (this.isTheaterMode) {
-					wrapper.classList.remove('max-w-4xl');
-					wrapper.classList.add('max-w-6xl');
-					icon.className = 'fa-solid fa-compress text-xs';
-					this.showToast('Mode Bioskop Diaktifkan');
+					wrapper.classList.remove('max-w-4xl'); wrapper.classList.add('max-w-6xl');
+					icon.className = 'fa-solid fa-compress text-xs'; this.showToast('Mode Bioskop Aktif');
 				} else {
-					wrapper.classList.remove('max-w-6xl');
-					wrapper.classList.add('max-w-4xl');
-					icon.className = 'fa-solid fa-expand text-xs';
-					this.showToast('Mode Bioskop Dinonaktifkan');
+					wrapper.classList.remove('max-w-6xl'); wrapper.classList.add('max-w-4xl');
+					icon.className = 'fa-solid fa-expand text-xs'; this.showToast('Mode Bioskop Nonaktif');
 				}
 			},
 
 			shareCurrentVideo() {
-				if (!this.state.currentVideo) {
-					this.showToast('Belum ada video yang diputar');
-					return;
-				}
+				this.triggerHaptic(); this.playSound();
+				if (!this.state.currentVideo) return;
 				const ytUrl = `https://www.youtube.com/watch?v=${this.state.currentVideo.ytId}`;
-				if (navigator.clipboard) {
-					navigator.clipboard.writeText(ytUrl);
-				} else {
-					const el = document.createElement('textarea');
-					el.value = ytUrl;
-					document.body.appendChild(el);
-					el.select();
-					document.execCommand('copy');
-					document.body.removeChild(el);
+				if (navigator.clipboard) navigator.clipboard.writeText(ytUrl);
+				else {
+					const el = document.createElement('textarea'); el.value = ytUrl; document.body.appendChild(el);
+					el.select(); document.execCommand('copy'); document.body.removeChild(el);
 				}
-				this.showToast('Tautan video berhasil disalin!');
-				this.playSound();
-				this.triggerHaptic();
+				this.showToast('Tautan berhasil disalin!');
 			},
 
+			downloadAction(type) {
+				this.triggerHaptic(); this.playSound();
+				if (!this.state.currentVideo) { this.showToast('Pilih video terlebih dahulu'); return; }
+				this.state.downloads.unshift({
+					title: this.state.currentVideo.title, type: type.toUpperCase(), ytId: this.state.currentVideo.ytId,
+					thumb: this.state.currentVideo.thumb, downloadedAt: new Date().toLocaleString('id-ID')
+				});
+				this.saveState();
+				window.open(`https://y2mate.is/watch?v=${this.state.currentVideo.ytId}`, '_blank');
+				this.showToast(`Membuka konverter ${type.toUpperCase()}...`);
+			},
+
+			updateBottomBarUI() {
+				const playIcon = document.getElementById('bottomPlayIcon');
+				if (playIcon) playIcon.className = this.isPlaying ? 'fa-solid fa-pause text-sm sm:text-lg' : 'fa-solid fa-play text-sm sm:text-lg ml-0.5';
+
+				const repeatBadge = document.getElementById('repeatBadge');
+				const repeatBtn = document.getElementById('btnBottomRepeat');
+				if (repeatBadge && repeatBtn) {
+					if (this.repeatMode === 'one') {
+						repeatBadge.innerText = '1x'; repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-amber-500/30 text-amber-300 border border-amber-400/50';
+						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-amber-600 text-white flex items-center gap-1.5 text-xs shadow-md";
+					} else if (this.repeatMode === 'all') {
+						repeatBadge.innerText = 'ALL'; repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-teal-500/30 text-teal-300 border border-teal-400/50';
+						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-teal-600 text-white flex items-center gap-1.5 text-xs shadow-md";
+					} else {
+						repeatBadge.innerText = 'OFF'; repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
+						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 text-slate-300 transition-all text-xs";
+					}
+				}
+
+				const autoBadge = document.getElementById('autoplayBadge');
+				const autoBtn = document.getElementById('btnBottomAutoplay');
+				if (autoBadge && autoBtn) {
+					if (this.isAutoplay) {
+						autoBadge.innerText = 'ON'; autoBadge.className = 'font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 text-indigo-200 border border-indigo-400/30';
+						autoBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs shadow-md";
+					} else {
+						autoBadge.innerText = 'OFF'; autoBadge.className = 'font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
+						autoBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 text-slate-300 transition-all text-xs";
+					}
+				}
+			},
+
+			// SEARCH LOGIC
 			handleSearch(e) {
 				if (e) e.preventDefault();
-				this.playSound();
-				this.triggerHaptic();
+				this.triggerHaptic(); this.playSound();
 				const input = document.getElementById('searchInput');
 				const query = input.value.trim();
 				if (!query) return;
 
-				this.addToSearchHistory(query);
-				this.hideSearchSuggestions();
-
-				document.getElementById('sectionTitle').innerHTML = `<i class="fa-solid fa-magnifying-glass text-accent mr-1"></i> Hasil Pencarian: "${query}"`;
-				this.searchYouTube(query);
-			},
-
-			addToSearchHistory(query) {
 				const existingIdx = this.state.searchHistory.indexOf(query);
 				if (existingIdx > -1) this.state.searchHistory.splice(existingIdx, 1);
 				this.state.searchHistory.unshift(query);
 				if (this.state.searchHistory.length > 15) this.state.searchHistory.pop();
 				this.saveState();
+				
+				this.hideSearchSuggestions();
+				document.getElementById('sectionTitle').innerHTML = `<i class="fa-solid fa-magnifying-glass text-accent mr-1"></i> Hasil: "${query}"`;
+				this.searchYouTube(query);
 			},
 
-			removeSearchHistoryItem(e, item) {
-				e.stopPropagation();
-				e.preventDefault();
-				this.state.searchHistory = this.state.searchHistory.filter(q => q !== item);
-				this.saveState();
-				this.renderSearchSuggestions(document.getElementById('searchInput').value);
-			},
-
-			clearSearchHistory(e) {
-				if (e) { e.stopPropagation(); e.preventDefault(); }
-				this.state.searchHistory = [];
-				this.saveState();
-				this.renderSearchSuggestions('');
-			},
-
-			handleSearchInput(val) {
-				this.renderSearchSuggestions(val);
-			},
-
-			showSearchSuggestions() {
-				const inputVal = document.getElementById('searchInput').value;
-				this.renderSearchSuggestions(inputVal);
-				document.getElementById('searchSuggestions').classList.remove('hidden');
-			},
-
-			hideSearchSuggestions() {
-				setTimeout(() => {
-					document.getElementById('searchSuggestions').classList.add('hidden');
-				}, 200);
-			},
-
+			handleSearchInput(val) { this.renderSearchSuggestions(val); },
+			showSearchSuggestions() { document.getElementById('searchSuggestions').classList.remove('hidden'); this.renderSearchSuggestions(document.getElementById('searchInput').value); },
+			hideSearchSuggestions() { setTimeout(() => { document.getElementById('searchSuggestions').classList.add('hidden'); }, 200); },
+			
 			renderSearchSuggestions(filterVal = '') {
 				const container = document.getElementById('suggestionList');
 				container.innerHTML = '';
-
-				const filtered = this.state.searchHistory.filter(item => 
-					item.toLowerCase().includes(filterVal.toLowerCase().trim())
-				);
-
-				if (filtered.length === 0) {
-					container.innerHTML = `<div class="px-4 py-3 text-center text-slate-500 text-[11px]">Belum ada riwayat pencarian.</div>`;
-					return;
-				}
-
+				const filtered = this.state.searchHistory.filter(item => item.toLowerCase().includes(filterVal.toLowerCase().trim()));
+				if (filtered.length === 0) { container.innerHTML = `<div class="px-4 py-3 text-center text-slate-500 text-[11px]">Belum ada riwayat pencarian.</div>`; return; }
 				filtered.forEach(item => {
 					const div = document.createElement('div');
 					div.className = "px-3.5 py-2 ui-hover-bg cursor-pointer flex items-center justify-between transition-colors";
-					div.onmousedown = () => {
-						document.getElementById('searchInput').value = item;
-						this.handleSearch();
-					};
-
-					div.innerHTML = `
-						<div class="flex items-center gap-2.5 truncate flex-1">
-							<i class="fa-solid fa-clock-rotate-left ui-text-subtle text-[11px]"></i>
-							<span class="truncate">${item}</span>
-						</div>
-						<button onmousedown="app.removeSearchHistoryItem(event, '${item.replace(/'/g, "'")}')" class="p-1 ui-text-subtle hover:text-rose-400 text-[11px] transition-colors" title="Hapus">
-							<i class="fa-solid fa-xmark"></i>
-						</button>
-					`;
+					div.onmousedown = () => { document.getElementById('searchInput').value = item; this.handleSearch(); };
+					div.innerHTML = `<div class="flex items-center gap-2.5 truncate flex-1"><i class="fa-solid fa-clock-rotate-left ui-text-subtle text-[11px]"></i><span class="truncate">${item}</span></div>
+									 <button onmousedown="app.removeSearchHistoryItem(event, '${item.replace(/'/g, "\\'")}')" class="p-1 ui-text-subtle hover:text-rose-400 text-[11px]"><i class="fa-solid fa-xmark"></i></button>`;
 					container.appendChild(div);
 				});
 			},
 
+			removeSearchHistoryItem(e, item) {
+				e.stopPropagation(); e.preventDefault();
+				this.state.searchHistory = this.state.searchHistory.filter(q => q !== item);
+				this.saveState();
+				this.renderSearchSuggestions(document.getElementById('searchInput').value);
+			},
+			clearSearchHistory(e) {
+				if (e) { e.stopPropagation(); e.preventDefault(); }
+				this.state.searchHistory = []; this.saveState(); this.renderSearchSuggestions('');
+			},
+
 			resetHome() {
+				this.triggerHaptic();
 				document.getElementById('searchInput').value = '';
 				this.selectCategory(0);
 			},
 
-			openModal(id) {
-				this.playSound();
-				this.triggerHaptic();
-				const modal = document.getElementById(id);
-				const content = modal.querySelector('.ui-modal');
-
-				modal.classList.remove('hidden', 'backdrop-anim-out');
-				modal.classList.add('flex', 'backdrop-anim-in');
-
-				content.classList.remove('modal-anim-out');
-				content.classList.add('modal-anim-in');
-
-				if (id === 'accountModal') this.renderAccountModal();
-			},
-
-			closeModal(id) {
-				this.playSound();
-				this.triggerHaptic();
-				const modal = document.getElementById(id);
-				const content = modal.querySelector('.ui-modal');
-
-				modal.classList.remove('backdrop-anim-in');
-				modal.classList.add('backdrop-anim-out');
-
-				content.classList.remove('modal-anim-in');
-				content.classList.add('modal-anim-out');
-
-				setTimeout(() => {
-					modal.classList.remove('flex', 'backdrop-anim-out');
-					modal.classList.add('hidden');
-				}, 200);
-			},
-
-			loadLocalStorage() {
-				const savedUser = localStorage.getItem('st_user');
-				if (savedUser) this.state.user = JSON.parse(savedUser);
-
-				const savedHistory = localStorage.getItem('st_history');
-				if (savedHistory) this.state.history = JSON.parse(savedHistory);
-
-				const savedLiked = localStorage.getItem('st_likedList');
-				if (savedLiked) this.state.likedList = JSON.parse(savedLiked);
-
-				const savedDownloads = localStorage.getItem('st_downloads');
-				if (savedDownloads) this.state.downloads = JSON.parse(savedDownloads);
-
-				const savedSearchHistory = localStorage.getItem('st_search_history');
-				if (savedSearchHistory) this.state.searchHistory = JSON.parse(savedSearchHistory);
-
-				const savedSettings = localStorage.getItem('st_settings');
-				if (savedSettings) this.state.settings = Object.assign(this.state.settings, JSON.parse(savedSettings));
-
-				const savedLikesMap = localStorage.getItem('st_likesMap');
-				if (savedLikesMap) this.state.likesMap = JSON.parse(savedLikesMap);
-
-				const savedLastWatched = localStorage.getItem('st_lastWatched');
-				if (savedLastWatched) this.state.lastWatched = JSON.parse(savedLastWatched);
-
-				const savedStats = localStorage.getItem('st_dailyWatchStats');
-				if (savedStats) this.state.dailyWatchStats = JSON.parse(savedStats);
-			},
-
-			saveState() {
-				localStorage.setItem('st_user', JSON.stringify(this.state.user));
-				localStorage.setItem('st_history', JSON.stringify(this.state.history));
-				localStorage.setItem('st_likedList', JSON.stringify(this.state.likedList));
-				localStorage.setItem('st_downloads', JSON.stringify(this.state.downloads));
-				localStorage.setItem('st_search_history', JSON.stringify(this.state.searchHistory));
-				localStorage.setItem('st_settings', JSON.stringify(this.state.settings));
-				localStorage.setItem('st_likesMap', JSON.stringify(this.state.likesMap));
-				localStorage.setItem('st_dailyWatchStats', JSON.stringify(this.state.dailyWatchStats));
-				if (this.state.lastWatched) {
-					localStorage.setItem('st_lastWatched', JSON.stringify(this.state.lastWatched));
-				}
-			},
-
-			downloadAction(type) {
-				if (!this.state.currentVideo) {
-					this.showToast('Pilih video terlebih dahulu');
-					return;
-				}
-				this.playSound();
-				this.triggerHaptic();
-
-				const ytId = this.state.currentVideo.ytId;
-				const title = this.state.currentVideo.title;
-				const thumb = this.state.currentVideo.thumb;
-
-				this.state.downloads.unshift({
-					title: title,
-					type: type.toUpperCase(),
-					ytId: ytId,
-					thumb: thumb,
-					downloadedAt: new Date().toLocaleString('id-ID')
-				});
-				this.saveState();
-
-				window.open(`https://y2mate.is/watch?v=${ytId}`, '_blank');
-				this.showToast(`Membuka konverter ${type.toUpperCase()}...`);
-			},
-
+			// PROFILE MODAL LOGIC
 			handleAvatarUpload(e) {
-				const file = e.target.files[0];
-				if (!file) return;
-
-				if (file.size > 2 * 1024 * 1024) {
-					alert("Ukuran gambar maksimal 2MB.");
-					return;
-				}
-
+				const file = e.target.files[0]; if (!file) return;
 				const reader = new FileReader();
-				reader.onload = (evt) => {
-					this.state.user.avatar = evt.target.result;
-					this.saveState();
-					this.updateAvatarUI();
-					this.showToast("Foto profil berhasil diperbarui!");
-				};
+				reader.onload = (evt) => { this.state.user.avatar = evt.target.result; this.saveState(); this.updateAvatarUI(); this.showToast("Avatar diperbarui!"); };
 				reader.readAsDataURL(file);
 			},
-
 			handleCoverUpload(e) {
-				const file = e.target.files[0];
-				if (!file) return;
-
-				if (file.size > 3 * 1024 * 1024) {
-					alert("Ukuran gambar sampul maksimal 3MB.");
-					return;
-				}
-
+				const file = e.target.files[0]; if (!file) return;
+				if (file.size > 3 * 1024 * 1024) return alert("Ukuran sampul maksimal 3MB.");
 				const reader = new FileReader();
-				reader.onload = (evt) => {
-					this.state.user.cover = evt.target.result;
-					this.saveState();
-					this.updateCoverUI();
-					this.showToast("Foto sampul berhasil diperbarui!");
-				};
+				reader.onload = (evt) => { this.state.user.cover = evt.target.result; this.saveState(); this.updateCoverUI(); this.showToast("Sampul diperbarui!"); };
 				reader.readAsDataURL(file);
 			},
-
 			updateAvatarUI() {
-				const avatarSrc = this.state.user.avatar || `https://placehold.co/100x100/3b82f6/ffffff?text=${encodeURIComponent(this.state.user.name.charAt(0))}`;
+				const avatarSrc = this.state.user.avatar || `https://placehold.co/100x100/3b82f6/ffffff?text=U`;
 				const avatarEl = document.getElementById('profileAvatar');
 				const navAvatarEl = document.getElementById('navAvatarImg');
 				if (avatarEl) avatarEl.src = avatarSrc;
 				if (navAvatarEl) navAvatarEl.src = avatarSrc;
 			},
-
 			updateCoverUI() {
 				const coverBox = document.getElementById('profileCoverBox');
 				if (!coverBox) return;
-				if (this.state.user.cover) {
-					coverBox.style.backgroundImage = `url('${this.state.user.cover}')`;
-				} else {
-					coverBox.style.backgroundImage = `linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%)`;
+				if (this.state.user.cover) coverBox.style.backgroundImage = `url('${this.state.user.cover}')`;
+				else coverBox.style.backgroundImage = `linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%)`;
+			},
+			editName() {
+				const newName = prompt("Masukkan nama profil baru:", this.state.user.name);
+				if (newName && newName.trim() !== "") {
+					this.state.user.name = newName.trim();
+					this.saveState(); document.getElementById('accName').innerText = this.state.user.name; document.getElementById('navAccountName').innerText = this.state.user.name;
+					this.showToast("Nama diperbarui");
 				}
 			},
 
 			renderAccountModal() {
 				document.getElementById('accName').innerText = this.state.user.name;
 				document.getElementById('navAccountName').innerText = this.state.user.name;
-
 				this.updateAvatarUI();
 				this.updateCoverUI();
 
-				const diffTime = Math.abs(Date.now() - (this.state.user.createdAt || Date.now()));
-				const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+				const diffDays = Math.floor(Math.abs(Date.now() - (this.state.user.createdAt || Date.now())) / (1000 * 60 * 60 * 24));
 				document.getElementById('accAge').innerText = `Umur Akun: ${diffDays} Hari`;
-
+				
 				document.getElementById('statWatch').innerText = this.state.history.length;
 				document.getElementById('statLike').innerText = this.state.likedList.length;
 				document.getElementById('statDownload').innerText = this.state.downloads.length;
@@ -1902,7 +1230,7 @@
 				document.getElementById('countDownload').innerText = this.state.downloads.length;
 
 				this.render7DayWatchChart();
-				this.renderAccTabContent();
+				this.switchAccTab(this.state.activeAccTab, false);
 			},
 
 			render7DayWatchChart() {
@@ -1910,262 +1238,166 @@
 				const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 				const now = new Date();
 				const chartData = [];
-
 				for (let i = 6; i >= 0; i--) {
-					const d = new Date(now);
-					d.setDate(now.getDate() - i);
+					const d = new Date(now); d.setDate(now.getDate() - i);
 					const dateStr = d.toISOString().split('T')[0];
-					const dayName = days[d.getDay()];
-					const count = this.state.dailyWatchStats[dateStr] || 0;
-					chartData.push({ dateStr, dayName, count });
+					chartData.push({ dateStr, dayName: days[d.getDay()], count: this.state.dailyWatchStats[dateStr] || 0 });
 				}
-
 				const maxCount = Math.max(...chartData.map(d => d.count), 5);
-				const todayCount = chartData[chartData.length - 1].count;
-				document.getElementById('chartTodaySummary').innerText = `Hari ini: ${todayCount} video`;
+				document.getElementById('chartTodaySummary').innerText = `Hari ini: ${chartData[6].count} video`;
 
-				let barsSvg = '';
-				const barWidth = 24;
-				const gap = 16;
-				const startX = 20;
-
+				let barsSvg = ''; const barWidth = 24, gap = 16, startX = 20;
 				chartData.forEach((d, idx) => {
 					const x = startX + idx * (barWidth + gap);
 					const barHeight = Math.max(4, Math.round((d.count / maxCount) * 80));
 					const y = 95 - barHeight;
-					const isToday = idx === 6;
-
 					barsSvg += `
 						<g class="bar-group">
-							<text x="${x + barWidth / 2}" y="${y - 4}" text-anchor="middle" fill="${isToday ? 'var(--accent-color)' : '#94a3b8'}" font-size="9" font-weight="bold">${d.count}</text>
-							<rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="4" fill="${isToday ? 'var(--accent-color)' : 'rgba(148, 163, 184, 0.4)'}" />
+							<text x="${x + barWidth / 2}" y="${y - 4}" text-anchor="middle" fill="${idx === 6 ? 'var(--accent-color)' : '#94a3b8'}" font-size="9" font-weight="bold">${d.count}</text>
+							<rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="4" fill="${idx === 6 ? 'var(--accent-color)' : 'rgba(148, 163, 184, 0.4)'}" />
 							<text x="${x + barWidth / 2}" y="112" text-anchor="middle" fill="#94a3b8" font-size="9">${d.dayName}</text>
 						</g>
 					`;
 				});
-
-				container.innerHTML = `
-					<svg width="100%" height="100%" viewBox="0 0 300 120" preserveAspectRatio="none" class="overflow-visible">
-						<line x1="10" y1="95" x2="290" y2="95" stroke="rgba(148, 163, 184, 0.2)" stroke-dasharray="3,3"/>
-						${barsSvg}
-					</svg>
-				`;
+				container.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 300 120" preserveAspectRatio="none" class="overflow-visible"><line x1="10" y1="95" x2="290" y2="95" stroke="rgba(148, 163, 184, 0.2)" stroke-dasharray="3,3"/>${barsSvg}</svg>`;
 			},
 
-			editName() {
-				const newName = prompt("Masukkan nama profil baru:", this.state.user.name);
-				if (newName && newName.trim() !== "") {
-					this.state.user.name = newName.trim();
-					this.saveState();
-					this.renderAccountModal();
-					this.showToast("Nama berhasil diperbarui");
-				}
-			},
-
-			switchAccTab(tab) {
-				this.playSound();
-				this.triggerHaptic();
+			switchAccTab(tab, doSound = true) {
+				if (doSound) { this.triggerHaptic(); this.playSound(); }
 				this.state.activeAccTab = tab;
+				['Watch', 'Like', 'Download'].forEach(t => {
+					const el = document.getElementById(`tab${t}`);
+					if (!el) return;
+					if (t.toLowerCase() === tab) el.className = "py-2 px-3 border-b-2 border-accent text-accent font-medium whitespace-nowrap flex items-center gap-1.5 transition-all";
+					else el.className = "py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5 transition-all";
+				});
 
-				const tabW = document.getElementById('tabWatch');
-				const tabL = document.getElementById('tabLike');
-				const tabD = document.getElementById('tabDownload');
-
-				tabW.className = "py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5 transition-all";
-				tabL.className = "py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5 transition-all";
-				tabD.className = "py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5 transition-all";
-
-				if (tab === 'watch') tabW.className = "py-2 px-3 border-b-2 border-accent text-accent font-medium whitespace-nowrap flex items-center gap-1.5 transition-all";
-				else if (tab === 'like') tabL.className = "py-2 px-3 border-b-2 border-accent text-accent font-medium whitespace-nowrap flex items-center gap-1.5 transition-all";
-				else if (tab === 'download') tabD.className = "py-2 px-3 border-b-2 border-accent text-accent font-medium whitespace-nowrap flex items-center gap-1.5 transition-all";
-
-				this.renderAccTabContent();
-			},
-
-			renderAccTabContent() {
 				const container = document.getElementById('accList');
-				container.innerHTML = '';
-				container.classList.remove('tab-anim-in');
-				void container.offsetWidth;
-				container.classList.add('tab-anim-in');
+				container.innerHTML = ''; container.classList.remove('tab-anim-in'); void container.offsetWidth; container.classList.add('tab-anim-in');
 
-				let list = [];
-				if (this.state.activeAccTab === 'watch') list = this.state.history;
-				else if (this.state.activeAccTab === 'like') list = this.state.likedList;
-				else list = this.state.downloads;
-
-				if (list.length === 0) {
-					container.innerHTML = `<div class="text-center text-slate-500 py-6 text-xs">Belum ada riwayat di kategori ini.</div>`;
-					return;
-				}
+				let list = (tab === 'watch') ? this.state.history : (tab === 'like') ? this.state.likedList : this.state.downloads;
+				if (list.length === 0) { container.innerHTML = `<div class="text-center text-slate-500 py-6 text-xs">Belum ada riwayat.</div>`; return; }
 
 				list.forEach(item => {
 					const el = document.createElement('div');
 					el.className = "p-2 ui-sub-bg rounded-xl border border-slate-700/40 flex items-center gap-3 text-xs hover:border-accent transition-all";
 					const thumbUrl = item.thumb || `https://placehold.co/120x68/0f172a/94a3b8?text=Video`;
-
-					if (this.state.activeAccTab === 'watch' || this.state.activeAccTab === 'like') {
-						const dateStr = item.watchedAt || item.likedAt || '-';
-						el.innerHTML = `
-							<img src="${thumbUrl}" alt="" class="w-16 h-10 object-cover rounded-lg shrink-0 border border-slate-700/50">
-							<div class="truncate flex-1">
-								<div class="font-medium truncate">${item.title}</div>
-								<div class="text-[10px] ui-text-subtle">${item.channel || 'YouTube'} • ${dateStr}</div>
-							</div>
-							<button onclick="app.playVideo(${JSON.stringify(item).replace(/"/g, '&quot;')}); app.closeModal('accountModal')" class="px-2.5 py-1 bg-slate-800 text-slate-200 rounded-lg text-[11px] hover:bg-slate-700 border border-slate-700 shrink-0">Putar</button>
-						`;
+					if (tab === 'watch' || tab === 'like') {
+						el.innerHTML = `<img src="${thumbUrl}" class="w-16 h-10 object-cover rounded-lg shrink-0 border border-slate-700/50">
+										<div class="truncate flex-1"><div class="font-medium truncate">${item.title}</div><div class="text-[10px] ui-text-subtle">${item.channel} • ${item.watchedAt || item.likedAt}</div></div>
+										<button onclick="app.playVideo(${JSON.stringify(item).replace(/"/g, '&quot;')}); app.closeModal('accountModal')" class="px-2.5 py-1 bg-slate-800 text-slate-200 rounded-lg text-[11px] border border-slate-700 shrink-0">Putar</button>`;
 					} else {
-						el.innerHTML = `
-							<img src="${thumbUrl}" alt="" class="w-16 h-10 object-cover rounded-lg shrink-0 border border-slate-700/50">
-							<div class="truncate flex-1">
-								<div class="font-medium truncate">${item.title}</div>
-								<div class="text-[10px] ui-text-subtle">${item.type} • ${item.downloadedAt}</div>
-							</div>
-							<span class="px-2 py-0.5 bg-emerald-950/80 text-emerald-400 rounded text-[10px] font-mono border border-emerald-800/50 shrink-0">Selesai</span>
-						`;
+						el.innerHTML = `<img src="${thumbUrl}" class="w-16 h-10 object-cover rounded-lg shrink-0 border border-slate-700/50">
+										<div class="truncate flex-1"><div class="font-medium truncate">${item.title}</div><div class="text-[10px] ui-text-subtle">${item.type} • ${item.downloadedAt}</div></div>
+										<span class="px-2 py-0.5 bg-emerald-950/80 text-emerald-400 rounded font-mono border border-emerald-800/50 shrink-0">Selesai</span>`;
 					}
 					container.appendChild(el);
 				});
 			},
 
 			exportHistory() {
-				this.playSound();
-				this.triggerHaptic();
+				this.triggerHaptic(); this.playSound();
 				const exportData = {
-					user: this.state.user,
-					history: this.state.history,
-					likedList: this.state.likedList,
-					downloads: this.state.downloads,
-					searchHistory: this.state.searchHistory,
-					dailyWatchStats: this.state.dailyWatchStats,
-					settings: this.state.settings,
-					version: "1.8"
+					user: this.state.user, history: this.state.history, likedList: this.state.likedList,
+					downloads: this.state.downloads, searchHistory: this.state.searchHistory, dailyWatchStats: this.state.dailyWatchStats,
+					settings: this.state.settings, version: "2.0"
 				};
-
-				const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
-				const downloadAnchor = document.createElement('a');
-				downloadAnchor.setAttribute("href", dataStr);
-				downloadAnchor.setAttribute("download", `StreamTube_Backup_${Date.now()}.json`);
-				document.body.appendChild(downloadAnchor);
-				downloadAnchor.click();
-				downloadAnchor.remove();
-
-				this.showToast("Data akun berhasil diekspor!");
+				const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData));
+				const a = document.createElement('a'); a.href = dataStr; a.download = `StreamTube_Backup_${Date.now()}.json`;
+				document.body.appendChild(a); a.click(); a.remove();
+				this.showToast("Data akun diekspor!");
 			},
 
-			triggerImport() {
-				this.playSound();
-				this.triggerHaptic();
-				document.getElementById('importFileInput').click();
-			},
-
+			triggerImport() { this.triggerHaptic(); this.playSound(); document.getElementById('importFileInput').click(); },
 			handleImportFile(e) {
-				const file = e.target.files[0];
-				if (!file) return;
-
+				const file = e.target.files[0]; if (!file) return;
 				const reader = new FileReader();
 				reader.onload = (evt) => {
 					try {
 						const imported = JSON.parse(evt.target.result);
 						if (imported.history && imported.user) {
-							this.state.user = imported.user;
-							this.state.history = imported.history || [];
-							this.state.likedList = imported.likedList || [];
-							this.state.downloads = imported.downloads || [];
-							this.state.searchHistory = imported.searchHistory || [];
+							this.state.user = imported.user; this.state.history = imported.history || [];
+							this.state.likedList = imported.likedList || []; this.state.downloads = imported.downloads || [];
+							this.state.searchHistory = imported.searchHistory || []; 
 							if (imported.dailyWatchStats) this.state.dailyWatchStats = imported.dailyWatchStats;
 							if (imported.settings) this.state.settings = imported.settings;
-
-							this.saveState();
-							this.applySettingsUI();
-							this.renderAccountModal();
-							this.showToast("Data akun berhasil diimpor!");
-						} else {
-							alert("Format file JSON tidak valid.");
-						}
-					} catch (err) {
-						alert("Gagal membaca file JSON.");
-					}
+							this.saveState(); this.applySettingsUI(); this.renderAccountModal(); this.showToast("Data akun diimpor!");
+						} else alert("Format JSON tidak valid.");
+					} catch (err) { alert("Gagal membaca file JSON."); }
 				};
 				reader.readAsText(file);
 			},
 
+			// MODAL CONTROL
+			openModal(id) {
+				this.triggerHaptic(); this.playSound();
+				const modal = document.getElementById(id); const content = modal.querySelector('.ui-modal');
+				modal.classList.remove('hidden', 'backdrop-anim-out'); modal.classList.add('flex', 'backdrop-anim-in');
+				content.classList.remove('modal-anim-out'); content.classList.add('modal-anim-in');
+				if (id === 'accountModal') this.renderAccountModal();
+			},
+
+			closeModal(id) {
+				this.triggerHaptic();
+				const modal = document.getElementById(id); const content = modal.querySelector('.ui-modal');
+				modal.classList.remove('backdrop-anim-in'); modal.classList.add('backdrop-anim-out');
+				content.classList.remove('modal-anim-in'); content.classList.add('modal-anim-out');
+				setTimeout(() => { modal.classList.remove('flex', 'backdrop-anim-out'); modal.classList.add('hidden'); }, 200);
+			},
+
+			// SETTINGS & UI
+			loadLocalStorage() {
+				['st_user', 'st_history', 'st_likedList', 'st_downloads', 'st_searchHistory', 'st_settings', 'st_likesMap', 'st_dailyWatchStats', 'st_lastWatched'].forEach(key => {
+					const val = localStorage.getItem(key);
+					if (val) {
+						let prop = key.replace('st_', '');
+						if (prop === 'searchHistory' && key === 'st_searchHistory') this.state.searchHistory = JSON.parse(val); // edge case map
+						else if (prop === 'dailyWatchStats' && key === 'st_dailyWatchStats') this.state.dailyWatchStats = JSON.parse(val);
+						else if (prop === 'lastWatched' && key === 'st_lastWatched') this.state.lastWatched = JSON.parse(val);
+						else this.state[prop] = Object.assign(this.state[prop] || {}, JSON.parse(val));
+					}
+				});
+			},
+
+			saveState() {
+				localStorage.setItem('st_user', JSON.stringify(this.state.user));
+				localStorage.setItem('st_history', JSON.stringify(this.state.history));
+				localStorage.setItem('st_likedList', JSON.stringify(this.state.likedList));
+				localStorage.setItem('st_downloads', JSON.stringify(this.state.downloads));
+				localStorage.setItem('st_searchHistory', JSON.stringify(this.state.searchHistory));
+				localStorage.setItem('st_settings', JSON.stringify(this.state.settings));
+				localStorage.setItem('st_likesMap', JSON.stringify(this.state.likesMap));
+				localStorage.setItem('st_dailyWatchStats', JSON.stringify(this.state.dailyWatchStats));
+				if (this.state.lastWatched) localStorage.setItem('st_lastWatched', JSON.stringify(this.state.lastWatched));
+			},
+
 			applySettingsUI() {
 				const s = this.state.settings;
-
 				this.setTheme(s.theme, false);
-
-				this.updateFontSize(s.fontSize, false);
-				document.getElementById('fontSizeSlider').value = s.fontSize;
-
-				this.updateFontFamily(s.fontFamily || 'Poppins', false);
-				document.getElementById('fontFamilySelect').value = s.fontFamily || 'Poppins';
-
-				this.updateFontWeight(s.fontWeight, false);
-				document.getElementById('fontWeightSelect').value = s.fontWeight;
-
+				this.updateFontSize(s.fontSize, false); document.getElementById('fontSizeSlider').value = s.fontSize;
+				this.updateFontFamily(s.fontFamily || 'Poppins', false); document.getElementById('fontFamilySelect').value = s.fontFamily || 'Poppins';
+				this.updateFontWeight(s.fontWeight, false); document.getElementById('fontWeightSelect').value = s.fontWeight;
 				this.updateAccentColor(s.accentColor || '#3b82f6', false);
-
-				this.setVolume(s.volume || 100, false);
-				document.getElementById('volumeSlider').value = s.volume || 100;
-
-				this.setBrightness(s.brightness || 100, false);
-				document.getElementById('brightnessSlider').value = s.brightness || 100;
-
+				this.setVolume(s.volume || 100, false); document.getElementById('volumeSlider').value = s.volume || 100;
+				this.setBrightness(s.brightness || 100, false); document.getElementById('brightnessSlider').value = s.brightness || 100;
 				this.setAudioMode(s.audioMode || 'stereo', false);
-
+				
 				if (s.eqBands) {
 					s.eqBands.forEach((v, idx) => {
-						const el = document.querySelectorAll('.eq-slider')[idx];
-						if (el) el.value = v;
-						const label = document.getElementById(`eqVal${idx}`);
-						if (label) label.innerText = `${v > 0 ? '+' : ''}${v}dB`;
+						const el = document.querySelectorAll('.eq-slider')[idx]; if (el) el.value = v;
+						const label = document.getElementById(`eqVal${idx}`); if (label) label.innerText = `${v > 0 ? '+' : ''}${v}dB`;
 					});
 				}
-
 				document.getElementById('soundToggle').checked = s.soundEnabled;
 				document.getElementById('hapticToggle').checked = s.hapticEnabled;
-
-				this.updateAvatarUI();
-				this.updateCoverUI();
+				this.updateAvatarUI(); this.updateCoverUI();
 			},
 
 			setTheme(themeName, save = true) {
 				if (save) { this.playSound(); this.triggerHaptic(); }
 				this.state.settings.theme = themeName;
-				const body = document.body;
-
-				body.classList.remove('theme-dark', 'theme-slate', 'theme-light');
-				body.classList.add(`theme-${themeName}`);
-
+				document.body.className = `theme-${themeName} min-h-screen flex flex-col justify-between`;
 				if (save) this.saveState();
-			},
-
-			updateFontSize(size, save = true) {
-				document.documentElement.style.setProperty('--base-font-size', size + 'px');
-				document.getElementById('fontSizeVal').innerText = size + 'px';
-				this.state.settings.fontSize = size;
-				if (save) this.saveState();
-			},
-
-			updateFontFamily(family, save = true) {
-				document.documentElement.style.setProperty('--app-font-family', `'${family}', sans-serif`);
-				this.state.settings.fontFamily = family;
-				if (save) {
-					this.playSound();
-					this.triggerHaptic();
-					this.saveState();
-				}
-			},
-
-			updateFontWeight(weight, save = true) {
-				document.documentElement.style.setProperty('--app-font-weight', weight);
-				this.state.settings.fontWeight = weight;
-				if (save) {
-					this.playSound();
-					this.triggerHaptic();
-					this.saveState();
-				}
 			},
 
 			updateAccentColor(color, save = true) {
@@ -2174,171 +1406,105 @@
 				document.documentElement.style.setProperty('--accent-light', color + '25');
 				document.documentElement.style.setProperty('--accent-glow', color + '55');
 				this.state.settings.accentColor = color;
-
+				
 				document.querySelectorAll('#accentColorPalette .accent-btn').forEach(btn => {
 					const btnColor = btn.getAttribute('data-color');
-					btn.innerHTML = '';
+					btn.innerHTML = ''; btn.classList.remove('ring-2', 'ring-white', 'scale-105');
 					if (btnColor && btnColor.toLowerCase() === color.toLowerCase()) {
-						btn.innerHTML = '<i class="fa-solid fa-check text-white text-xs drop-shadow"></i>';
+						btn.innerHTML = '<i class="fa-solid fa-check text-white text-[10px]"></i>';
 						btn.classList.add('ring-2', 'ring-white', 'scale-105');
-					} else {
-						btn.classList.remove('ring-2', 'ring-white', 'scale-105');
 					}
 				});
-
-				if (save) {
-					this.playSound();
-					this.triggerHaptic();
-					this.saveState();
-				}
+				if (save) { this.playSound(); this.triggerHaptic(); this.saveState(); }
 			},
 
+			updateFontSize(size, save = true) {
+				document.documentElement.style.setProperty('--base-font-size', size + 'px');
+				document.getElementById('fontSizeVal').innerText = size + 'px';
+				this.state.settings.fontSize = size; if (save) this.saveState();
+			},
+			updateFontFamily(family, save = true) {
+				document.documentElement.style.setProperty('--app-font-family', `'${family}', sans-serif`);
+				this.state.settings.fontFamily = family; if (save) { this.playSound(); this.triggerHaptic(); this.saveState(); }
+			},
+			updateFontWeight(weight, save = true) {
+				document.documentElement.style.setProperty('--app-font-weight', weight);
+				this.state.settings.fontWeight = weight; if (save) { this.playSound(); this.triggerHaptic(); this.saveState(); }
+			},
 			setVolume(val, save = true) {
-				this.state.settings.volume = val;
-				document.getElementById('volumeVal').innerText = `${val}%`;
+				this.state.settings.volume = val; document.getElementById('volumeVal').innerText = `${val}%`;
 				const iframe = document.getElementById('ytPlayer');
-				if (iframe && iframe.contentWindow) {
-					iframe.contentWindow.postMessage(JSON.stringify({
-						event: 'command',
-						func: 'setVolume',
-						args: [parseInt(val)]
-					}), '*');
-				}
+				if (iframe && iframe.contentWindow) iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [parseInt(val)] }), '*');
 				if (save) this.saveState();
 			},
-
 			setBrightness(val, save = true) {
-				this.state.settings.brightness = val;
-				document.getElementById('brightnessVal').innerText = `${val}%`;
+				this.state.settings.brightness = val; document.getElementById('brightnessVal').innerText = `${val}%`;
 				document.documentElement.style.setProperty('--player-brightness', `${val}%`);
 				if (save) this.saveState();
 			},
-
 			setAudioMode(mode, save = true) {
 				this.state.settings.audioMode = mode;
 				['stereo', 'mono', 'dolby'].forEach(m => {
 					const btn = document.getElementById(`btnAudio${m.charAt(0).toUpperCase() + m.slice(1)}`);
-					if (btn) {
-						if (m === mode) {
-							btn.className = "p-2 border rounded-xl text-center text-xs font-medium btn-accent shadow-sm transition-all";
-						} else {
-							btn.className = "p-2 border rounded-xl text-center text-xs font-medium ui-card transition-all hover:border-accent";
-						}
-					}
+					if (btn) btn.className = (m === mode) ? "p-1.5 border rounded-xl text-center text-[11px] font-medium btn-accent" : "p-1.5 border rounded-xl text-center text-[11px] font-medium ui-card";
 				});
-				if (save) {
-					this.playSound();
-					this.triggerHaptic();
-					this.saveState();
-					this.showToast(`Mode Audio diubah ke ${mode.toUpperCase()}`);
-				}
+				if (save) { this.playSound(); this.triggerHaptic(); this.saveState(); }
 			},
-
 			updateEqBand(index, val) {
-				val = parseInt(val);
-				this.state.settings.eqBands[index] = val;
-				const label = document.getElementById(`eqVal${index}`);
-				if (label) label.innerText = `${val > 0 ? '+' : ''}${val}dB`;
+				val = parseInt(val); this.state.settings.eqBands[index] = val;
+				const label = document.getElementById(`eqVal${index}`); if (label) label.innerText = `${val > 0 ? '+' : ''}${val}dB`;
 				this.saveState();
 			},
-
 			setEqPreset(preset) {
-				const presets = {
-					flat: [0, 0, 0, 0, 0],
-					bass: [6, 4, 0, -1, -2],
-					treble: [-2, -1, 0, 4, 6],
-					vocal: [-2, 2, 5, 2, -1],
-					pop: [3, 2, 0, 2, 4],
-					rock: [5, 3, -1, 3, 5]
-				};
-
+				const presets = { flat: [0,0,0,0,0], bass: [6,4,0,-1,-2], treble: [-2,-1,0,4,6], vocal: [-2,2,5,2,-1], rock: [5,3,-1,3,5] };
 				const bands = presets[preset] || presets.flat;
 				this.state.settings.eqBands = [...bands];
-
 				bands.forEach((v, idx) => {
-					const el = document.querySelectorAll('.eq-slider')[idx];
-					if (el) el.value = v;
-					const label = document.getElementById(`eqVal${idx}`);
-					if (label) label.innerText = `${v > 0 ? '+' : ''}${v}dB`;
+					const el = document.querySelectorAll('.eq-slider')[idx]; if (el) el.value = v;
+					const label = document.getElementById(`eqVal${idx}`); if (label) label.innerText = `${v > 0 ? '+' : ''}${v}dB`;
 				});
-
-				this.playSound();
-				this.triggerHaptic();
-				this.saveState();
-				this.showToast(`Preset Equalizer: ${preset.toUpperCase()}`);
+				this.playSound(); this.triggerHaptic(); this.saveState();
 			},
-
-			toggleSound(val) {
-				this.state.settings.soundEnabled = val;
-				this.saveState();
-				if (val) this.playSound();
-			},
-
-			toggleHaptic(val) {
-				this.state.settings.hapticEnabled = val;
-				this.saveState();
-				if (val) this.triggerHaptic();
-			},
+			toggleSound(val) { this.state.settings.soundEnabled = val; this.saveState(); if (val) this.playSound(); },
+			toggleHaptic(val) { this.state.settings.hapticEnabled = val; this.saveState(); if (val) this.triggerHaptic(); },
 
 			playSound() {
 				if (!this.state.settings.soundEnabled) return;
 				try {
-					if (!this.audioCtx) {
-						this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-					}
-					if (this.audioCtx.state === 'suspended') {
-						this.audioCtx.resume();
-					}
-
-					const osc = this.audioCtx.createOscillator();
-					const gain = this.audioCtx.createGain();
-
-					osc.type = 'sine';
-					osc.frequency.setValueAtTime(520, this.audioCtx.currentTime);
-					osc.frequency.exponentialRampToValueAtTime(260, this.audioCtx.currentTime + 0.05);
-
-					gain.gain.setValueAtTime(0.06, this.audioCtx.currentTime);
-					gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.05);
-
-					osc.connect(gain);
-					gain.connect(this.audioCtx.destination);
-
-					osc.start();
-					osc.stop(this.audioCtx.currentTime + 0.05);
+					if (!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+					if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+					const osc = this.audioCtx.createOscillator(); const gain = this.audioCtx.createGain();
+					osc.type = 'sine'; osc.frequency.setValueAtTime(520, this.audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(260, this.audioCtx.currentTime + 0.05);
+					gain.gain.setValueAtTime(0.06, this.audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.05);
+					osc.connect(gain); gain.connect(this.audioCtx.destination);
+					osc.start(); osc.stop(this.audioCtx.currentTime + 0.05);
 				} catch (e) {}
 			},
 
 			triggerHaptic() {
 				if (!this.state.settings.hapticEnabled) return;
-				try {
-					if ('vibrate' in navigator) {
-						navigator.vibrate(300);
-					}
-				} catch (e) {}
+				try { if ('vibrate' in navigator) navigator.vibrate(300); } catch (e) {}
 			},
 
 			showToast(msg) {
-				const toast = document.getElementById('toast');
-				document.getElementById('toastMsg').innerText = msg;
-				toast.classList.remove('opacity-0', 'pointer-events-none');
-				toast.classList.add('opacity-100');
-
-				setTimeout(() => {
-					toast.classList.remove('opacity-100');
-					toast.classList.add('opacity-0', 'pointer-events-none');
-				}, 3000);
+				const toast = document.getElementById('toast'); document.getElementById('toastMsg').innerText = msg;
+				toast.classList.remove('opacity-0', 'pointer-events-none'); toast.classList.add('opacity-100');
+				setTimeout(() => { toast.classList.remove('opacity-100'); toast.classList.add('opacity-0', 'pointer-events-none'); }, 3000);
 			},
-
-			formatNumber(num) {
-				if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-				if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-				return num;
+			formatNumber(num) { if (num >= 1000000) return (num/1000000).toFixed(1)+'M'; if (num >= 1000) return (num/1000).toFixed(1)+'K'; return num; },
+			parseIsoDuration(iso) {
+				if (!iso) return '--:--'; const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/); if (!m) return '--:--';
+				const h = parseInt(m[1]||0), min = parseInt(m[2]||0), s = parseInt(m[3]||0); const pad = n => String(n).padStart(2,'0');
+				return h > 0 ? `${h}:${pad(min)}:${pad(s)}` : `${pad(min)}:${pad(s)}`;
+			},
+			formatSeconds(sec) {
+				if (isNaN(sec)) return '--:--';
+				const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = Math.floor(sec%60); const pad = n => String(n).padStart(2,'0');
+				return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
 			}
 		};
 
-		window.onload = function() {
-			app.init();
-		};
+		window.onload = () => app.init();
 	</script>
 </body>
 </html>
