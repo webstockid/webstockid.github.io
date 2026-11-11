@@ -71,9 +71,9 @@
 		body.theme-slate .ui-sub-bg { background-color: #0f172a; }
 		body.theme-light .ui-sub-bg { background-color: #f1f5f9; }
 
-		body.theme-dark .ui-hover-bg:hover { background-color: rgba(255, 255, 255, 0.06); }
-		body.theme-slate .ui-hover-bg:hover { background-color: rgba(255, 255, 255, 0.08); }
-		body.theme-light .ui-hover-bg:hover { background-color: rgba(0, 0, 0, 0.04); }
+		body.theme-dark .ui-hover-bg:hover { background-color: rgba(255, 255, 255, 0.08); }
+		body.theme-slate .ui-hover-bg:hover { background-color: rgba(255, 255, 255, 0.1); }
+		body.theme-light .ui-hover-bg:hover { background-color: rgba(0, 0, 0, 0.05); }
 
 		body.theme-dark .ui-text-subtle { color: #94a3b8; }
 		body.theme-slate .ui-text-subtle { color: #94a3b8; }
@@ -83,7 +83,7 @@
 		.btn-accent {
 			background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
 			color: #ffffff !important;
-			box-shadow: 0 4px 12px var(--accent-glow);
+			box-shadow: 0 4px 14px var(--accent-glow);
 			position: relative;
 			overflow: hidden;
 		}
@@ -104,7 +104,7 @@
 		}
 		.btn-accent:hover {
 			filter: brightness(1.08);
-			box-shadow: 0 6px 16px var(--accent-glow);
+			box-shadow: 0 6px 18px var(--accent-glow);
 		}
 		.text-accent {
 			color: var(--accent-color);
@@ -116,7 +116,7 @@
 			background-color: var(--accent-light);
 		}
 
-		/* DYNAMIC SLIDER STYLING MATCHING SELECTED ACCENT COLOR */
+		/* Dynamic Range Sliders */
 		input[type="range"] {
 			accent-color: var(--accent-color) !important;
 		}
@@ -135,7 +135,7 @@
 			accent-color: var(--accent-color) !important;
 		}
 
-		/* CUSTOM MODERN TOGGLE SWITCH STYLING */
+		/* Custom Switch Styling */
 		.custom-switch {
 			position: relative;
 			display: inline-block;
@@ -176,7 +176,7 @@
 			transform: translateX(20px);
 		}
 
-		/* Modal & Tab Keyframe Animations */
+		/* Modal Animations */
 		@keyframes modalIn {
 			0% { opacity: 0; transform: scale(0.92) translateY(-10px); }
 			100% { opacity: 1; transform: scale(1) translateY(0); }
@@ -204,7 +204,7 @@
 		.backdrop-anim-out { animation: backdropOut 0.2s ease-in forwards; }
 		.tab-anim-in { animation: tabFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-		/* Collapsible Meta & Category Section on Scroll */
+		/* Collapsible Meta Sections */
 		#videoMeta, #categoryMeta {
 			transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease, transform 0.3s ease;
 			max-height: 350px;
@@ -223,13 +223,13 @@
 			pointer-events: none;
 		}
 
-		/* Brightness Filter Controlled via Settings */
+		/* Brightness Filter */
 		#playerWrapper {
 			filter: brightness(var(--player-brightness));
 			transition: filter 0.2s ease;
 		}
 
-		/* Scrollbar Styling */
+		/* Scrollbar Hide */
 		.no-scrollbar::-webkit-scrollbar { display: none; }
 		.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -257,12 +257,12 @@
 
 	<div>
 		<!-- ==========================================
-		     1. FLOATING FIXED NAV BAR (Responsive)
+		     1. FLOATING FIXED NAV BAR
 		     ========================================== -->
 		<header id="navbar" class="fixed top-0 left-0 right-0 z-40 ui-nav backdrop-blur-md border-b px-3 sm:px-4 py-2 sm:py-2.5 transition-all">
 			<div class="max-w-6xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
 				
-				<!-- App Logo (Stream Tube displayed on Mobile, Tablet & Desktop) -->
+				<!-- Logo Title (Stream Tube on Mobile, Tablet & Desktop) -->
 				<div class="flex items-center gap-1.5 sm:gap-2 cursor-pointer shrink-0" onclick="app.resetHome()">
 					<div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl btn-accent flex items-center justify-center shadow-md">
 						<i class="fa-solid fa-play text-[10px] sm:text-xs text-white"></i>
@@ -270,7 +270,7 @@
 					<span class="font-bold text-xs sm:text-sm md:text-base tracking-tight whitespace-nowrap">Stream <span class="text-accent">Tube</span></span>
 				</div>
 
-				<!-- Search Bar with Auto Suggestions -->
+				<!-- Search Input with Auto Suggestions -->
 				<div class="flex-1 max-w-xs sm:max-w-md md:max-w-lg relative">
 					<form onsubmit="app.handleSearch(event)" class="relative flex items-center" autocomplete="off">
 						<input 
@@ -320,19 +320,18 @@
 			</div>
 		</header>
 
-		<!-- Main Page Layout (Responsive padding for mobile/tablet/desktop) -->
-		<main class="pt-14 sm:pt-16 max-w-6xl mx-auto px-0 sm:px-4 pb-20">
+		<!-- Main Layout -->
+		<main class="pt-14 sm:pt-16 max-w-6xl mx-auto px-0 sm:px-4 pb-28">
 
 			<!-- ==========================================
-			     2. FIXED VIDEO PLAYER & METADATA SECTION
+			     2. VIDEO PLAYER & METADATA SECTION
 			     ========================================== -->
 			<section id="playerSection" class="sticky top-12 sm:top-14 z-30 ui-sub-bg pt-0 pb-2 sm:pb-3 border-b border-slate-800/50 shadow-2xl transition-all duration-300">
 				
-				<!-- Full Width Video Container Wrapper (Edge to Edge) -->
 				<div id="playerWrapper" class="w-full mx-auto transition-all duration-300">
 					<div class="w-full bg-black shadow-2xl border-b border-slate-800/80 aspect-video-container relative sm:rounded-2xl sm:overflow-hidden sm:border">
 						
-						<!-- Hero / Last Watched Placeholder Screen -->
+						<!-- Hero Screen Placeholder -->
 						<div id="heroPlaceholder" class="hero-placeholder flex flex-col items-center justify-center p-4 sm:p-6 text-center bg-gradient-to-br from-slate-900 via-slate-950 to-black text-slate-200 relative overflow-hidden">
 							<img id="heroBgThumb" src="" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20 blur-sm hidden">
 							<div class="relative z-10 flex flex-col items-center">
@@ -356,7 +355,7 @@
 						</iframe>
 					</div>
 
-					<!-- Video Info & Controls Metadata (Collapses on Scroll) -->
+					<!-- Video Info & Controls Metadata -->
 					<div id="videoMeta" class="w-full mt-2 sm:mt-3 px-3 sm:px-2">
 						<div class="flex flex-col md:flex-row md:items-center justify-between gap-2 sm:gap-3">
 							<div class="flex-1">
@@ -378,27 +377,23 @@
 								</div>
 							</div>
 
-							<!-- Action Buttons Row -->
+							<!-- Action Buttons -->
 							<div class="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap">
-								<!-- Like Button -->
 								<button id="likeBtn" onclick="app.toggleLike()" class="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl ui-card border text-xs font-medium hover:border-accent transition-all">
 									<i class="fa-solid fa-thumbs-up text-xs" id="likeIcon"></i>
 									<span id="likeCount">0</span>
 								</button>
 
-								<!-- Share Button -->
 								<button onclick="app.shareCurrentVideo()" class="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl ui-card border text-xs font-medium hover:border-accent transition-all" title="Bagikan Tautan Video">
 									<i class="fa-solid fa-share-nodes text-xs"></i>
 									<span class="hidden xs:inline">Bagikan</span>
 								</button>
 
-								<!-- Theater Mode Toggle Button -->
 								<button onclick="app.toggleTheaterMode()" class="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl ui-card border text-xs font-medium hover:border-accent transition-all" title="Mode Bioskop">
 									<i class="fa-solid fa-expand text-xs" id="theaterIcon"></i>
 									<span class="hidden sm:inline">Bioskop</span>
 								</button>
 
-								<!-- Download Options -->
 								<button onclick="app.downloadAction('mp4')" class="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl btn-accent text-xs font-medium shadow-md">
 									<i class="fa-solid fa-download text-xs"></i>
 									<span>MP4</span>
@@ -429,17 +424,17 @@
 				</div>
 
 				<!-- ==========================================
-				     3. CATEGORY PILL SELECTOR MENU (Full Text Displayed Always)
+				     3. CATEGORY PILL SELECTOR MENU
 				     ========================================== -->
 				<div id="categoryMeta" class="w-full max-w-6xl mx-auto mt-2 sm:mt-3 px-3 sm:px-2">
 					<div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1 text-xs" id="categoryContainer">
-						<!-- Dynamic category buttons -->
+						<!-- Dynamic category pills -->
 					</div>
 				</div>
 			</section>
 
 			<!-- ==========================================
-			     4. VIDEO SUGGESTIONS & SEARCH GRID (Responsive Columns)
+			     4. VIDEO SUGGESTIONS & SEARCH GRID
 			     ========================================== -->
 			<section class="mt-4 sm:mt-6 px-3 sm:px-0">
 				<div class="flex items-center justify-between mb-3 sm:mb-4 px-1">
@@ -449,65 +444,63 @@
 					<span id="resultCount" class="text-xs ui-text-subtle"></span>
 				</div>
 
-				<!-- Grid Container: 1 col on Mobile, 2 on Tablet, 3-4 on Desktop -->
 				<div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-					<!-- Rendered dynamically -->
+					<!-- Video Cards -->
 				</div>
 			</section>
 		</main>
 	</div>
 
 	<!-- ==========================================
-	     5. FLOATING FIXED BOTTOM PLAYER CONTROL BAR (Auto-Hides on Scroll)
+	     5. ENLARGED FLOATING FIXED BOTTOM PLAYER CONTROL BAR
 	     ========================================== -->
-	<div id="bottomPlayerBar" class="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 ui-card border rounded-full shadow-2xl px-3 py-1.5 sm:px-4 sm:py-2 flex items-center gap-1.5 sm:gap-2.5 transition-all duration-300 ease-in-out backdrop-blur-lg bg-slate-900/90 border-slate-700/60 max-w-[95vw] sm:max-w-none">
+	<div id="bottomPlayerBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 ui-card border rounded-2xl shadow-2xl px-4 sm:px-6 py-2.5 sm:py-3.5 flex items-center gap-2 sm:gap-4 transition-all duration-300 ease-in-out backdrop-blur-xl bg-slate-900/95 border-slate-700/80 max-w-[96vw] sm:max-w-none">
 		<!-- Prev Video Button -->
-		<button onclick="app.playPrevVideo()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-colors" title="Video Sebelumnya">
-			<i class="fa-solid fa-backward-step text-xs sm:text-sm"></i>
+		<button onclick="app.playPrevVideo()" class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105" title="Video Sebelumnya">
+			<i class="fa-solid fa-backward-step text-sm sm:text-base"></i>
 		</button>
 		
 		<!-- Rewind 10s Button -->
-		<button onclick="app.seekRelative(-10)" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-colors text-xs font-mono" title="Mundur 10 Detik">
-			<i class="fa-solid fa-rotate-left text-xs mr-0.5"></i>10s
+		<button onclick="app.seekRelative(-10)" class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105 text-xs sm:text-sm font-mono font-bold" title="Mundur 10 Detik">
+			<i class="fa-solid fa-rotate-left text-xs mr-1"></i>10s
 		</button>
 
-		<!-- Play / Pause Button -->
-		<button onclick="app.togglePlayPause()" id="btnBottomPlay" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full btn-accent flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform" title="Play / Pause">
-			<i class="fa-solid fa-play text-xs sm:text-sm ml-0.5" id="bottomPlayIcon"></i>
+		<!-- Hero Play / Pause Button -->
+		<button onclick="app.togglePlayPause()" id="btnBottomPlay" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl btn-accent flex items-center justify-center text-white shadow-xl hover:scale-110 transition-transform" title="Play / Pause">
+			<i class="fa-solid fa-play text-base sm:text-xl ml-0.5" id="bottomPlayIcon"></i>
 		</button>
 
 		<!-- Forward 10s Button -->
-		<button onclick="app.seekRelative(10)" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-colors text-xs font-mono" title="Maju 10 Detik">
-			10s<i class="fa-solid fa-rotate-right text-xs ml-0.5"></i>
+		<button onclick="app.seekRelative(10)" class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105 text-xs sm:text-sm font-mono font-bold" title="Maju 10 Detik">
+			10s<i class="fa-solid fa-rotate-right text-xs ml-1"></i>
 		</button>
 
 		<!-- Next Video Button -->
-		<button onclick="app.playNextVideo()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-colors" title="Video Selanjutnya">
-			<i class="fa-solid fa-forward-step text-xs sm:text-sm"></i>
+		<button onclick="app.playNextVideo()" class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl ui-hover-bg flex items-center justify-center text-slate-300 hover:text-accent transition-all hover:scale-105" title="Video Selanjutnya">
+			<i class="fa-solid fa-forward-step text-sm sm:text-base"></i>
 		</button>
 
-		<div class="h-5 w-[1px] bg-slate-700/60 mx-0.5 sm:mx-1"></div>
+		<div class="h-6 w-[1px] bg-slate-700/80 mx-1 sm:mx-2"></div>
 
-		<!-- Repeat Mode Button (Off / 1x / All) -->
-		<button onclick="app.toggleRepeatMode()" id="btnBottomRepeat" class="px-2 py-1 sm:px-2.5 sm:py-1 rounded-full ui-hover-bg flex items-center gap-1 text-slate-400 hover:text-accent transition-colors text-[10px] sm:text-xs" title="Mode Pengulangan">
-			<i class="fa-solid fa-repeat text-xs" id="repeatIcon"></i>
-			<span id="repeatBadge" class="font-mono text-[9px] uppercase font-semibold">Off</span>
+		<!-- Repeat Mode Button (Off / 1x / ALL) -->
+		<button onclick="app.toggleRepeatMode()" id="btnBottomRepeat" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl ui-hover-bg flex items-center gap-1.5 text-slate-300 hover:text-accent transition-all text-xs sm:text-sm font-medium" title="Mode Pengulangan Video">
+			<i class="fa-solid fa-repeat text-sm sm:text-base" id="repeatIcon"></i>
+			<span id="repeatBadge" class="font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700">Off</span>
 		</button>
 
 		<!-- Autoplay Toggle Button -->
-		<button onclick="app.toggleAutoplayMode()" id="btnBottomAutoplay" class="px-2 py-1 sm:px-2.5 sm:py-1 rounded-full bg-indigo-600 text-white flex items-center gap-1 text-[10px] sm:text-xs shadow-sm" title="Auto Play Video Selanjutnya">
-			<i class="fa-solid fa-circle-play text-xs" id="autoplayIcon"></i>
-			<span id="autoplayBadge" class="font-mono text-[9px] uppercase font-semibold">ON</span>
+		<button onclick="app.toggleAutoplayMode()" id="btnBottomAutoplay" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-indigo-600 text-white flex items-center gap-1.5 text-xs sm:text-sm font-medium shadow-md transition-all hover:brightness-110" title="Auto Play Video Selanjutnya">
+			<i class="fa-solid fa-circle-play text-sm sm:text-base" id="autoplayIcon"></i>
+			<span id="autoplayBadge" class="font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-indigo-950/60 border border-indigo-400/30">ON</span>
 		</button>
 	</div>
 
 	<!-- ==========================================
-	     6. RICH FOOTER SECTION (Responsive)
+	     6. FOOTER SECTION
 	     ========================================== -->
 	<footer class="ui-card border-t pt-6 sm:pt-8 pb-6 px-4 text-xs mt-auto">
 		<div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6 sm:mb-8">
 			
-			<!-- Brand Summary -->
 			<div class="space-y-2">
 				<div class="flex items-center gap-2">
 					<div class="w-7 h-7 rounded-lg btn-accent flex items-center justify-center">
@@ -520,7 +513,6 @@
 				</p>
 			</div>
 
-			<!-- Quick Categories -->
 			<div>
 				<h4 class="font-semibold mb-2 text-xs">Kategori Cepat</h4>
 				<ul class="space-y-1.5 ui-text-subtle">
@@ -531,18 +523,16 @@
 				</ul>
 			</div>
 
-			<!-- Core Features -->
 			<div>
 				<h4 class="font-semibold mb-2 text-xs">Fitur Utama</h4>
 				<ul class="space-y-1.5 ui-text-subtle">
-					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Floating Fixed Bottom Controls</li>
+					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Floating Enlarged Bottom Controls</li>
+					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Reliable Repeat 1x/ALL & Autoplay</li>
 					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Video Durations & Auto-Hide Bar</li>
-					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Repeat 1x / ALL & Autoplay</li>
 					<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-teal-500"></i> Multi-Server Failover API</li>
 				</ul>
 			</div>
 
-			<!-- System Status -->
 			<div class="space-y-2">
 				<h4 class="font-semibold text-xs">Status Server & API</h4>
 				<div class="p-3 ui-sub-bg rounded-xl border border-slate-700/40 space-y-1.5">
@@ -560,7 +550,6 @@
 			</div>
 		</div>
 
-		<!-- Bottom Copyright -->
 		<div class="max-w-6xl mx-auto pt-4 border-t border-slate-700/30 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] ui-text-subtle text-center sm:text-left">
 			<p>© 2026 StreamTube App. Powered by Custom Player Engine.</p>
 			<p class="flex items-center gap-1 justify-center">
@@ -570,12 +559,11 @@
 	</footer>
 
 	<!-- ==========================================
-	     7. MODAL: PROFILE & ACCOUNT MODAL (With Tab Animations & 7-Day Chart)
+	     7. MODAL: PROFILE & ACCOUNT
 	     ========================================== -->
 	<div id="accountModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm hidden">
 		<div class="ui-modal border rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
 			
-			<!-- Modal Header -->
 			<div class="flex items-center justify-between p-3.5 sm:p-4 border-b border-slate-700/40">
 				<h3 class="font-semibold flex items-center gap-2 text-sm sm:text-base">
 					<i class="fa-solid fa-circle-user text-accent"></i> Profil & Riwayat Akun
@@ -587,7 +575,6 @@
 
 			<div class="p-3.5 sm:p-4 overflow-y-auto space-y-4 text-xs sm:text-sm">
 				
-				<!-- Profile Card with Avatar Upload -->
 				<div class="p-3.5 sm:p-4 ui-sub-bg border border-slate-700/40 rounded-xl flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
 					<div class="relative group">
 						<img id="profileAvatar" src="https://placehold.co/100x100/3b82f6/ffffff?text=U" alt="Avatar" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-accent shadow-md">
@@ -609,10 +596,8 @@
 					</div>
 				</div>
 
-				<!-- Hidden File Input for Avatar -->
 				<input type="file" id="avatarFileInput" class="hidden" accept="image/*" onchange="app.handleAvatarUpload(event)">
 
-				<!-- User Stats Overview Cards -->
 				<div class="grid grid-cols-4 gap-2 text-center">
 					<div class="p-2 ui-sub-bg rounded-xl border border-slate-700/30">
 						<div class="font-bold text-accent text-sm" id="statWatch">0</div>
@@ -632,7 +617,7 @@
 					</div>
 				</div>
 
-				<!-- 7-DAY WATCH STATISTICS GRAPH SECTION -->
+				<!-- 7-Day Watch Stats SVG Bar Chart -->
 				<div class="p-3.5 ui-sub-bg border border-slate-700/40 rounded-xl space-y-2">
 					<div class="flex items-center justify-between">
 						<h4 class="font-semibold text-xs flex items-center gap-1.5">
@@ -640,9 +625,8 @@
 						</h4>
 						<span id="chartTodaySummary" class="text-[10px] ui-text-subtle font-mono">Hari ini: 0 video</span>
 					</div>
-					<!-- SVG Bar Chart Container -->
 					<div id="watchStatsChartContainer" class="w-full h-32 pt-2">
-						<!-- Dynamic SVG Rendered via JS -->
+						<!-- Dynamic SVG -->
 					</div>
 				</div>
 
@@ -659,13 +643,11 @@
 					</button>
 				</div>
 
-				<!-- History Items List Container with Animated Transition -->
 				<div id="accList" class="space-y-2 max-h-44 overflow-y-auto pr-1">
-					<!-- Rendered dynamically -->
+					<!-- History / Likes list -->
 				</div>
 			</div>
 
-			<!-- Footer Import Export Actions -->
 			<div class="p-3 border-t border-slate-700/40 ui-sub-bg flex justify-between gap-2">
 				<button onclick="app.exportHistory()" class="px-3 py-1.5 text-xs rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1.5 border border-slate-700">
 					<i class="fa-solid fa-file-export"></i> Ekspor JSON
@@ -712,7 +694,7 @@
 					</div>
 				</div>
 
-				<!-- Font Size Slider -->
+				<!-- Global Font Size Slider -->
 				<div>
 					<div class="flex justify-between mb-1">
 						<label class="font-medium flex items-center gap-1.5">
@@ -723,7 +705,7 @@
 					<input type="range" id="fontSizeSlider" min="12" max="18" value="14" step="1" oninput="app.updateFontSize(this.value)" class="w-full cursor-pointer">
 				</div>
 
-				<!-- 6 NEW HIGH-QUALITY FONTS SELECT -->
+				<!-- 6 High-Quality Fonts -->
 				<div>
 					<label class="block font-medium mb-1.5 flex items-center gap-1.5">
 						<i class="fa-solid fa-font text-accent"></i> Jenis Font
@@ -751,7 +733,7 @@
 					</select>
 				</div>
 
-				<!-- GLOSSY ACCENT COLOR SELECTION (WITH VISUAL SELECTION INDICATOR ICON) -->
+				<!-- Glossy Accent Palette -->
 				<div>
 					<label class="block font-medium mb-1.5 flex items-center gap-1.5">
 						<i class="fa-solid fa-droplet text-accent"></i> Warna Aksen Glossy
@@ -774,13 +756,13 @@
 					</div>
 				</div>
 
-				<!-- MEDIA & AUDIO ENHANCEMENTS SECTION -->
+				<!-- Media & Audio Controls -->
 				<div class="border-t border-slate-700/40 pt-3 space-y-3">
 					<h4 class="font-semibold text-xs flex items-center gap-1.5 text-accent">
 						<i class="fa-solid fa-sliders"></i> Kontrol Media & Audio
 					</h4>
 
-					<!-- 1. PENGATURAN VOLUME -->
+					<!-- Volume -->
 					<div>
 						<div class="flex justify-between mb-1">
 							<span class="font-medium flex items-center gap-1.5"><i class="fa-solid fa-volume-high text-accent"></i> Pengaturan Volume</span>
@@ -789,7 +771,7 @@
 						<input type="range" id="volumeSlider" min="0" max="100" value="100" oninput="app.setVolume(this.value)" class="w-full cursor-pointer">
 					</div>
 
-					<!-- 2. PENGATURAN CAHAYA (BRIGHTNESS) -->
+					<!-- Brightness -->
 					<div>
 						<div class="flex justify-between mb-1">
 							<span class="font-medium flex items-center gap-1.5"><i class="fa-solid fa-sun text-accent"></i> Pengaturan Cahaya Video</span>
@@ -798,7 +780,7 @@
 						<input type="range" id="brightnessSlider" min="50" max="150" value="100" oninput="app.setBrightness(this.value)" class="w-full cursor-pointer">
 					</div>
 
-					<!-- 3. PENGATURAN AUDIO MODE (MONO, STEREO, DOLBY) WITH CUSTOM ANIMATED TAB STYLING -->
+					<!-- Audio Mode (Stereo, Mono, Dolby 3D) -->
 					<div>
 						<label class="block font-medium mb-1.5 flex items-center gap-1.5">
 							<i class="fa-solid fa-headphones text-accent"></i> Mode Saluran Audio
@@ -810,7 +792,7 @@
 						</div>
 					</div>
 
-					<!-- 4. EQUALIZER AUDIO CONTROLLER -->
+					<!-- Equalizer -->
 					<div class="p-3 ui-sub-bg border border-slate-700/40 rounded-xl space-y-2">
 						<div class="flex items-center justify-between">
 							<span class="font-semibold text-xs flex items-center gap-1.5">
@@ -826,7 +808,6 @@
 							</select>
 						</div>
 						
-						<!-- 5 Band Equalizer Sliders -->
 						<div class="grid grid-cols-5 gap-1 text-center pt-1">
 							<div class="flex flex-col items-center">
 								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(0, this.value)" class="eq-slider">
@@ -857,7 +838,7 @@
 					</div>
 				</div>
 
-				<!-- AUDIO & HAPTIC TOGGLES WITH CUSTOM MODERN SWITCHES -->
+				<!-- Audio & Haptic Toggles -->
 				<div class="border-t border-slate-700/40 pt-3 space-y-3">
 					<div class="flex items-center justify-between">
 						<span class="font-medium flex items-center gap-1.5"><i class="fa-solid fa-volume-high text-accent"></i> Efek Suara (Audio FX)</span>
@@ -881,8 +862,8 @@
 	<!-- Hidden Import File Input -->
 	<input type="file" id="importFileInput" class="hidden" accept=".json" onchange="app.handleImportFile(event)">
 
-	<!-- Toast Message Floating Notification -->
-	<div id="toast" class="fixed bottom-16 right-4 z-50 bg-slate-900 text-slate-100 border border-slate-700 px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-xs transition-opacity duration-300 opacity-0 pointer-events-none">
+	<!-- Toast Message Notification -->
+	<div id="toast" class="fixed bottom-20 right-4 z-50 bg-slate-900 text-slate-100 border border-slate-700 px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-xs transition-opacity duration-300 opacity-0 pointer-events-none">
 		<i class="fa-solid fa-circle-info text-accent" id="toastIcon"></i>
 		<span id="toastMsg">Notifikasi</span>
 	</div>
@@ -895,7 +876,7 @@
 			// YouTube Data API Key
 			apiKey: "AIzaSyCtksa1GE6rBpnuAI4IonvzLYDvPI_5b_E",
 
-			// Multi-Server Backup API Pool
+			// Multi-Server API Pool
 			servers: [
 				{ type: 'yt_official', name: 'YouTube API v3' },
 				{ type: 'piped', baseUrl: 'https://pipedapi.kavin.rocks' },
@@ -928,12 +909,12 @@
 			isDescExpanded: false,
 			isPlaying: false,
 			currentVideoTime: 0,
-			repeatMode: 'off', // 'off', 'one', 'all'
+			repeatMode: 'off', // Modes: 'off', 'one', 'all'
 			isAutoplay: true,
 			audioCtx: null,
 			fetchedVideos: [],
 
-			// Application State
+			// Core Application State
 			state: {
 				currentVideo: null,
 				lastWatched: null,
@@ -972,53 +953,64 @@
 				this.setupScrollListener();
 				this.setupIframeMessageListener();
 
-				// Restore last watched video metadata on initial load without autoplay
+				// Restore last watched metadata if present
 				if (this.state.lastWatched) {
 					this.restoreLastWatched(this.state.lastWatched);
 				}
 
-				// Search videos from multi-server API pool without starting autoplay
+				// Initial video search without autoplaying
 				this.searchYouTube(this.categories[0].query, false);
 				this.updateBottomBarUI();
 			},
 
-			// YouTube PostMessage Listener to track video end & playback state
+			// Robust YouTube Iframe PostMessage Listener
 			setupIframeMessageListener() {
 				window.addEventListener('message', (event) => {
 					try {
-						const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-						if (data && data.event === 'onStateChange') {
-							this.handlePlayerStateChange(data.info);
-						} else if (data && data.info) {
+						let data = event.data;
+						if (typeof data === 'string') {
+							data = JSON.parse(data);
+						}
+						if (!data) return;
+
+						// Handle YouTube Iframe Player status changes
+						if (data.event === 'infoDelivery' && data.info) {
 							if (typeof data.info.playerState !== 'undefined') {
 								this.handlePlayerStateChange(data.info.playerState);
 							}
 							if (typeof data.info.currentTime !== 'undefined') {
 								this.currentVideoTime = data.info.currentTime;
 							}
+						} else if (data.event === 'onStateChange') {
+							this.handlePlayerStateChange(data.info);
+						} else if (data.info && typeof data.info.playerState !== 'undefined') {
+							this.handlePlayerStateChange(data.info.playerState);
 						}
 					} catch(e) {}
 				});
 			},
 
+			// Handle YouTube Player States (1 = PLAYING, 2 = PAUSED, 0 = ENDED)
 			handlePlayerStateChange(stateCode) {
-				// State codes: 1 = PLAYING, 2 = PAUSED, 0 = ENDED, 3 = BUFFERING
-				if (stateCode === 1) {
+				if (stateCode === 1) { // PLAYING
 					this.isPlaying = true;
 					this.updateBottomBarUI();
-				} else if (stateCode === 2) {
+				} else if (stateCode === 2) { // PAUSED
 					this.isPlaying = false;
 					this.updateBottomBarUI();
-				} else if (stateCode === 0) {
+				} else if (stateCode === 0) { // ENDED
 					this.isPlaying = false;
 					this.updateBottomBarUI();
-					
-					// Handle Repeat / Autoplay when video ends
-					if (this.repeatMode === 'one' && this.state.currentVideo) {
-						this.playVideo(this.state.currentVideo);
-					} else if (this.isAutoplay || this.repeatMode === 'all') {
-						this.playNextVideo();
-					}
+
+					// Reliable logic for Repeat Mode & Autoplay
+					setTimeout(() => {
+						if (this.repeatMode === 'one' && this.state.currentVideo) {
+							this.playVideo(this.state.currentVideo);
+							this.showToast('Mengulang video (1x)');
+						} else if (this.repeatMode === 'all' || this.isAutoplay) {
+							this.playNextVideo();
+						}
+					}, 300);
 				}
 			},
 
@@ -1079,7 +1071,7 @@
 				const categoryMeta = document.getElementById('categoryMeta');
 
 				window.addEventListener('scroll', () => {
-					// Collapsible Header Metadata
+					// Collapsible Metadata
 					if (window.scrollY > 80) {
 						if (videoMeta) videoMeta.classList.add('hidden-scroll');
 						if (categoryMeta) categoryMeta.classList.add('hidden-scroll');
@@ -1088,24 +1080,23 @@
 						if (categoryMeta) categoryMeta.classList.remove('hidden-scroll');
 					}
 
-					// Hide floating bottom player bar during active scroll
+					// Hide floating bottom bar while active scrolling
 					if (bottomBar) {
-						bottomBar.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+						bottomBar.classList.add('translate-y-28', 'opacity-0', 'pointer-events-none');
 						bottomBar.classList.remove('translate-y-0', 'opacity-100');
 					}
 
-					// Re-appear smoothly when scrolling stops (idle state)
+					// Smoothly reappear when scrolling stops (idle state)
 					clearTimeout(scrollTimeout);
 					scrollTimeout = setTimeout(() => {
 						if (bottomBar) {
-							bottomBar.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+							bottomBar.classList.remove('translate-y-28', 'opacity-0', 'pointer-events-none');
 							bottomBar.classList.add('translate-y-0', 'opacity-100');
 						}
-					}, 800);
+					}, 700);
 				});
 			},
 
-			// RENDER CATEGORIES - FULL TEXT AND ICON ALWAYS DISPLAYED & GUARANTEED VISIBLE WHEN SELECTED
 			renderCategories() {
 				const container = document.getElementById('categoryContainer');
 				if (!container) return;
@@ -1150,7 +1141,6 @@
 				this.searchYouTube(cat.query);
 			},
 
-			// Parse ISO 8601 Duration String (e.g., PT4M13S -> 04:13)
 			parseIsoDuration(iso) {
 				if (!iso) return '--:--';
 				const regex = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
@@ -1168,7 +1158,6 @@
 				return `${pad(minutes)}:${pad(seconds)}`;
 			},
 
-			// Format seconds into mm:ss or hh:mm:ss
 			formatSeconds(totalSec) {
 				if (isNaN(totalSec) || totalSec === null) return '--:--';
 				const sec = Math.floor(totalSec);
@@ -1182,7 +1171,6 @@
 				return `${pad(m)}:${pad(s)}`;
 			},
 
-			// Multi-Server API Fetch with Fallback
 			async searchYouTube(query, autoScroll = true) {
 				const grid = document.getElementById('videoGrid');
 				grid.innerHTML = `
@@ -1270,7 +1258,7 @@
 						<div class="relative aspect-video bg-black overflow-hidden">
 							<img src="${v.thumb}" alt="${v.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x340/0f172a/94a3b8?text=Video'">
 							
-							<!-- Video Duration Badge Overlay -->
+							<!-- Video Duration Badge -->
 							<div class="absolute bottom-2 left-2 bg-black/85 backdrop-blur-md text-white text-[10px] px-2 py-0.5 rounded-md font-mono border border-white/10 flex items-center gap-1 shadow-md">
 								<i class="fa-solid fa-clock text-accent text-[9px]"></i> ${v.durationFormatted || '--:--'}
 							</div>
@@ -1406,7 +1394,7 @@
 
 				const nextIndex = (currentIndex + 1) % this.fetchedVideos.length;
 				this.playVideo(this.fetchedVideos[nextIndex]);
-				this.showToast(`Memutar selanjutnya: ${this.fetchedVideos[nextIndex].title.slice(0, 25)}...`);
+				this.showToast(`Selanjutnya: ${this.fetchedVideos[nextIndex].title.slice(0, 25)}...`);
 			},
 
 			playPrevVideo() {
@@ -1421,7 +1409,7 @@
 
 				const prevIndex = (currentIndex - 1 + this.fetchedVideos.length) % this.fetchedVideos.length;
 				this.playVideo(this.fetchedVideos[prevIndex]);
-				this.showToast(`Memutar sebelumnya: ${this.fetchedVideos[prevIndex].title.slice(0, 25)}...`);
+				this.showToast(`Sebelumnya: ${this.fetchedVideos[prevIndex].title.slice(0, 25)}...`);
 			},
 
 			toggleRepeatMode() {
@@ -1451,7 +1439,7 @@
 			updateBottomBarUI() {
 				const playIcon = document.getElementById('bottomPlayIcon');
 				if (playIcon) {
-					playIcon.className = this.isPlaying ? 'fa-solid fa-pause text-xs sm:text-sm' : 'fa-solid fa-play text-xs sm:text-sm ml-0.5';
+					playIcon.className = this.isPlaying ? 'fa-solid fa-pause text-base sm:text-xl' : 'fa-solid fa-play text-base sm:text-xl ml-0.5';
 				}
 
 				const repeatBadge = document.getElementById('repeatBadge');
@@ -1459,13 +1447,16 @@
 				if (repeatBadge && repeatBtn) {
 					if (this.repeatMode === 'one') {
 						repeatBadge.innerText = '1x';
-						repeatBtn.className = "px-2 py-1 sm:px-2.5 sm:py-1 rounded-full btn-accent flex items-center gap-1 text-white text-[10px] sm:text-xs shadow-sm";
+						repeatBadge.className = 'font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-amber-500/30 text-amber-300 border border-amber-400/50';
+						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-amber-600 text-white flex items-center gap-1.5 text-xs sm:text-sm font-medium shadow-md";
 					} else if (this.repeatMode === 'all') {
 						repeatBadge.innerText = 'ALL';
-						repeatBtn.className = "px-2.5 py-1 rounded-full bg-teal-600 text-white flex items-center gap-1 text-[10px] sm:text-xs shadow-sm";
+						repeatBadge.className = 'font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-teal-500/30 text-teal-300 border border-teal-400/50';
+						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-teal-600 text-white flex items-center gap-1.5 text-xs sm:text-sm font-medium shadow-md";
 					} else {
 						repeatBadge.innerText = 'OFF';
-						repeatBtn.className = "px-2 py-1 sm:px-2.5 sm:py-1 rounded-full ui-hover-bg flex items-center gap-1 text-slate-400 hover:text-accent transition-colors text-[10px] sm:text-xs";
+						repeatBadge.className = 'font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700';
+						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl ui-hover-bg flex items-center gap-1.5 text-slate-300 hover:text-accent transition-all text-xs sm:text-sm font-medium";
 					}
 				}
 
@@ -1474,10 +1465,12 @@
 				if (autoplayBadge && autoplayBtn) {
 					if (this.isAutoplay) {
 						autoplayBadge.innerText = 'ON';
-						autoplayBtn.className = "px-2 py-1 sm:px-2.5 sm:py-1 rounded-full bg-indigo-600 text-white flex items-center gap-1 text-[10px] sm:text-xs shadow-sm";
+						autoplayBadge.className = 'font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-indigo-950/60 text-indigo-200 border border-indigo-400/30';
+						autoplayBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-indigo-600 text-white flex items-center gap-1.5 text-xs sm:text-sm font-medium shadow-md transition-all hover:brightness-110";
 					} else {
 						autoplayBadge.innerText = 'OFF';
-						autoplayBtn.className = "px-2 py-1 sm:px-2.5 sm:py-1 rounded-full ui-hover-bg flex items-center gap-1 text-slate-400 hover:text-accent transition-colors text-[10px] sm:text-xs";
+						autoplayBadge.className = 'font-mono text-xs uppercase font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700';
+						autoplayBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl ui-hover-bg flex items-center gap-1.5 text-slate-300 hover:text-accent transition-all text-xs sm:text-sm font-medium";
 					}
 				}
 			},
@@ -1609,7 +1602,6 @@
 				this.triggerHaptic();
 			},
 
-			// Search History logic
 			handleSearch(e) {
 				if (e) e.preventDefault();
 				this.playSound();
@@ -1703,7 +1695,6 @@
 				this.selectCategory(0);
 			},
 
-			// Modal Handler
 			openModal(id) {
 				this.playSound();
 				this.triggerHaptic();
@@ -1849,9 +1840,7 @@
 				document.getElementById('countLike').innerText = this.state.likedList.length;
 				document.getElementById('countDownload').innerText = this.state.downloads.length;
 
-				// Render 7-day watch graph
 				this.render7DayWatchChart();
-
 				this.renderAccTabContent();
 			},
 
@@ -1932,12 +1921,11 @@
 				this.renderAccTabContent();
 			},
 
-			// ANIMATED TAB CONTENT SWITCHING
 			renderAccTabContent() {
 				const container = document.getElementById('accList');
 				container.innerHTML = '';
 				container.classList.remove('tab-anim-in');
-				void container.offsetWidth; // Trigger reflow for animation restart
+				void container.offsetWidth;
 				container.classList.add('tab-anim-in');
 
 				let list = [];
@@ -1990,7 +1978,7 @@
 					searchHistory: this.state.searchHistory,
 					dailyWatchStats: this.state.dailyWatchStats,
 					settings: this.state.settings,
-					version: "1.6"
+					version: "1.7"
 				};
 
 				const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
@@ -2041,7 +2029,6 @@
 				reader.readAsText(file);
 			},
 
-			// Settings Engine
 			applySettingsUI() {
 				const s = this.state.settings;
 
@@ -2066,7 +2053,6 @@
 
 				this.setAudioMode(s.audioMode || 'stereo', false);
 
-				// Apply Equalizer UI
 				if (s.eqBands) {
 					s.eqBands.forEach((v, idx) => {
 						const el = document.querySelectorAll('.eq-slider')[idx];
@@ -2120,7 +2106,6 @@
 				}
 			},
 
-			// ACCENT COLOR UPDATER WITH SELECTION CHECKMARK INDICATOR
 			updateAccentColor(color, save = true) {
 				document.documentElement.style.setProperty('--accent-color', color);
 				document.documentElement.style.setProperty('--accent-hover', color + 'cc');
@@ -2129,7 +2114,6 @@
 				document.getElementById('accentHexCode').innerText = color;
 				this.state.settings.accentColor = color;
 
-				// Update indicator icon on color buttons
 				document.querySelectorAll('#accentColorPalette .accent-btn').forEach(btn => {
 					const btnColor = btn.getAttribute('data-color');
 					btn.innerHTML = '';
@@ -2236,7 +2220,6 @@
 				if (val) this.triggerHaptic();
 			},
 
-			// SOUND FX VIA WEB AUDIO API
 			playSound() {
 				if (!this.state.settings.soundEnabled) return;
 				try {
@@ -2265,7 +2248,6 @@
 				} catch (e) {}
 			},
 
-			// HAPTIC VIBRATION FEEDBACK (0.7 SECONDS DURATION)
 			triggerHaptic() {
 				if (!this.state.settings.hapticEnabled) return;
 				try {
