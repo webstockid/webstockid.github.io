@@ -26,29 +26,27 @@
 		}
 	</script>
 
-	<!-- 6 NEW MODERN GOOGLE FONTS: Plus Jakarta Sans, Inter, Outfit, Sora, Manrope, Space Grotesk -->
+	<!-- Google Fonts: Quicksand (Default), Comfortaa, Rubik, Barlow, Comic Neue, Fredoka -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sora:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Comic+Neue:wght@300;400;700&family=Comfortaa:wght@300;400;500;600;700&family=Fredoka:wght@300;400;500;600;700&family=Quicksand:wght@300;400;500;600;700&family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 	
-	<!-- Font Awesome 6 Icons & Chart.js CDN -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+	<!-- Lucide Icons & Chart.js CDN -->
+	<script src="https://unpkg.com/lucide@latest"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 	<style>
 		:root {
 			--app-accent: #06b6d4;
 			--app-accent-hover: #0891b2;
-			--app-accent-light: rgba(6, 182, 212, 0.12);
-			--app-accent-border: rgba(6, 182, 212, 0.3);
+			--app-accent-light: rgba(6, 182, 212, 0.15);
+			--app-accent-border: rgba(6, 182, 212, 0.35);
 			--app-accent-text: #22d3ee;
-			--app-font-family: 'Plus Jakarta Sans', sans-serif;
 			--app-font-weight: 400;
 		}
 
-		/* Universal Font Family and Weight applied to ALL text and numbers */
-		*, input, select, textarea, button, span, p, h1, h2, h3, h4, h5, h6, div {
-			font-family: var(--app-font-family) !important;
+		/* Global Font Weight Override for Text and Financial Numbers */
+		* {
 			font-weight: var(--app-font-weight, 400);
 		}
 
@@ -56,7 +54,7 @@
 			font-weight: calc(var(--app-font-weight, 400) + 250) !important;
 		}
 
-		/* Smooth Custom Scrollbar */
+		/* Custom Smooth Scrollbar */
 		::-webkit-scrollbar {
 			width: 4px;
 			height: 4px;
@@ -69,45 +67,30 @@
 			border-radius: 4px;
 		}
 
+		/* Default Font: Quicksand */
 		body {
+			font-family: 'Quicksand', sans-serif;
 			font-size: 15px;
 			transition: background-color 0.25s ease, color 0.25s ease;
-			overscroll-behavior-y: none;
 		}
 
-		/* Dynamic Accent Color Classes */
+		/* Dynamic Accent CSS Classes */
 		.accent-bg { background-color: var(--app-accent) !important; }
 		.accent-bg-hover:hover { background-color: var(--app-accent-hover) !important; }
 		.accent-bg-light { background-color: var(--app-accent-light) !important; }
 		.accent-text { color: var(--app-accent-text) !important; }
 		.accent-border { border-color: var(--app-accent-border) !important; }
 
-		/* Clean Non-AI Fintech Card Styling */
-		.fintech-card {
+		/* Professional Surface Styling */
+		.glass-card {
 			background: rgba(15, 23, 42, 0.85);
 			backdrop-filter: blur(12px);
 			border: 1px solid rgba(51, 65, 85, 0.5);
 		}
-		.fintech-nav {
+		.glass-nav {
 			background: rgba(15, 23, 42, 0.95);
 			backdrop-filter: blur(16px);
 			border-top: 1px solid rgba(51, 65, 85, 0.5);
-		}
-
-		/* Tab Transition Animation */
-		@keyframes tabSlideIn {
-			from {
-				opacity: 0;
-				transform: translateY(8px);
-			}
-			to {
-				opacity: 1;
-				transform: translateY(0);
-			}
-		}
-
-		.tab-pane {
-			animation: tabSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 		}
 
 		/* Keyframe Animations */
@@ -133,7 +116,7 @@
 		.animate-toast-in { animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 		.animate-toast-out { animation: slideOutRight 0.2s ease-in forwards; }
 
-		/* Form Input Focus */
+		/* Clean Form Input Focus */
 		.input-glow:focus {
 			outline: none;
 			border-color: var(--app-accent);
@@ -148,6 +131,8 @@
 			background-size: 1.25em 1.25em;
 			padding-right: 2.25rem;
 		}
+
+		body { overscroll-behavior-y: none; }
 	</style>
 </head>
 <body id="app-body" class="bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-cyan-500 selection:text-slate-950 flex justify-center items-center sm:py-4">
@@ -158,20 +143,20 @@
 		<!-- TOAST NOTIFICATIONS CONTAINER -->
 		<div id="toast-container" class="fixed top-4 right-4 sm:absolute sm:top-4 sm:right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-xs w-full px-3"></div>
 
-		<!-- STICKY TOP APP HEADER -->
+		<!-- 1. STICKY TOP APP HEADER -->
 		<header class="sticky top-0 z-30 bg-slate-950/95 backdrop-blur-md px-4 py-3 border-b border-slate-800/80 flex items-center justify-between shrink-0">
 			<!-- User Profile Greeting & Avatar -->
 			<div onclick="openProfileModal()" class="flex items-center gap-3 cursor-pointer group">
 				<div class="relative">
 					<div id="header-avatar-container" class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0 group-hover:border-cyan-500 transition">
-						<i class="fa-solid fa-user text-slate-400 text-sm"></i>
+						<i data-lucide="user" class="w-4 h-4 text-slate-400"></i>
 					</div>
 					<span id="header-status-dot" class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-slate-950"></span>
 				</div>
 				<div class="truncate">
 					<div class="flex items-center gap-1.5">
 						<h1 id="header-user-name" class="text-xs font-bold text-slate-100 truncate group-hover:text-cyan-400 transition">Pengguna ArthaPulse</h1>
-						<i class="fa-solid fa-chevron-down text-[10px] text-slate-500"></i>
+						<i data-lucide="chevron-down" class="w-3 h-3 text-slate-500"></i>
 					</div>
 					<p id="header-greeting" class="text-[10px] text-slate-400 leading-none mt-0.5">Fintech Dashboard</p>
 				</div>
@@ -181,11 +166,11 @@
 			<div class="flex items-center gap-2">
 				<!-- INBOX / NOTIFICATION BELL WITH UNREAD BADGE -->
 				<button onclick="openInboxModal()" id="btn-inbox-top" title="Kotak Masuk Notifikasi" class="relative p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 transition">
-					<i class="fa-solid fa-bell text-sm" id="header-bell-icon"></i>
+					<i data-lucide="bell" id="header-bell-icon" class="w-4 h-4"></i>
 					<span id="inbox-unread-badge" class="hidden absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-extrabold px-1.5 py-0.2 rounded-full border-2 border-slate-950 animate-pulse">0</span>
 				</button>
-				<button onclick="openTxModal()" title="Tambah Transaksi Baru" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl accent-bg accent-bg-hover text-slate-950 font-bold text-xs shadow-sm transition hover:scale-95">
-					<i class="fa-solid fa-plus text-xs"></i>
+				<button onclick="openTxModal()" title="Tambah Transaksi Baru" class="flex items-center gap-1 px-3 py-1.5 rounded-xl accent-bg accent-bg-hover text-slate-950 font-bold text-xs shadow-sm transition hover:scale-95">
+					<i data-lucide="plus" class="w-4 h-4 stroke-[3]"></i>
 					<span>Catat</span>
 				</button>
 			</div>
@@ -195,33 +180,33 @@
 		<main class="flex-1 overflow-y-auto px-4 py-4 space-y-5 pb-24">
 
 			<!-- TAB 1: BERANDA / DASHBOARD OVERVIEW -->
-			<div id="tab-content-dashboard" class="space-y-4 tab-pane">
+			<div id="tab-content-dashboard" class="space-y-4">
 
 				<!-- Key Metrics Cards -->
 				<section class="grid grid-cols-2 gap-3">
 					<!-- Net Balance -->
-					<div class="col-span-2 fintech-card p-4 rounded-2xl relative overflow-hidden border border-slate-800">
+					<div class="col-span-2 glass-card p-4 rounded-2xl relative overflow-hidden border border-slate-800">
 						<div class="flex justify-between items-start">
 							<div>
 								<p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Saldo Utama</p>
 								<h3 id="stat-balance" class="text-2xl font-black text-slate-100 mt-1">Rp 0</h3>
 							</div>
-							<div class="p-2.5 bg-slate-900 rounded-xl accent-text border border-slate-800">
-								<i class="fa-solid fa-wallet text-sm"></i>
+							<div class="p-2 bg-slate-900 rounded-xl accent-text border border-slate-800">
+								<i data-lucide="wallet" class="w-4 h-4"></i>
 							</div>
 						</div>
 						<div class="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-800/80 text-[10px] text-slate-400">
-							<span>Savings Rate: <strong id="stat-savings-rate-badge" class="text-emerald-400 font-bold">0%</strong></span>
-							<span>Dana Di Kantong: <strong id="stat-pockets-total-badge" class="text-indigo-400 font-bold">Rp 0</strong></span>
+							<span>Savings Rate: <strong id="stat-savings-rate-badge" class="text-emerald-400 font-mono font-bold">0%</strong></span>
+							<span>Dana Di Kantong: <strong id="stat-pockets-total-badge" class="text-indigo-400 font-mono font-bold">Rp 0</strong></span>
 						</div>
 					</div>
 
 					<!-- Income Summary -->
-					<div class="fintech-card p-3.5 rounded-2xl border border-slate-800">
+					<div class="glass-card p-3.5 rounded-2xl border border-slate-800">
 						<div class="flex items-center justify-between mb-1">
 							<span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pemasukan</span>
 							<div class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-								<i class="fa-solid fa-arrow-down-left text-xs"></i>
+								<i data-lucide="arrow-down-left" class="w-3.5 h-3.5"></i>
 							</div>
 						</div>
 						<h4 id="stat-income" class="text-base font-bold text-emerald-400 mt-1">Rp 0</h4>
@@ -229,11 +214,11 @@
 					</div>
 
 					<!-- Expense Summary -->
-					<div class="fintech-card p-3.5 rounded-2xl border border-slate-800">
+					<div class="glass-card p-3.5 rounded-2xl border border-slate-800">
 						<div class="flex items-center justify-between mb-1">
 							<span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pengeluaran</span>
 							<div class="p-1.5 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20">
-								<i class="fa-solid fa-arrow-up-right text-xs"></i>
+								<i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
 							</div>
 						</div>
 						<h4 id="stat-expense" class="text-base font-bold text-rose-400 mt-1">Rp 0</h4>
@@ -242,10 +227,10 @@
 				</section>
 
 				<!-- Monthly Budget Tracker Widget -->
-				<section class="fintech-card p-4 rounded-2xl border border-slate-800 space-y-3">
+				<section class="glass-card p-4 rounded-2xl border border-slate-800 space-y-3">
 					<div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
 						<div class="flex items-center gap-2">
-							<i class="fa-solid fa-bullseye text-amber-400 text-sm"></i>
+							<i data-lucide="target" class="w-4 h-4 text-amber-400"></i>
 							<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Anggaran Bulan Ini</h3>
 						</div>
 						<span id="budget-badge-status" class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
@@ -273,7 +258,7 @@
 					<div class="space-y-1.5 pt-1">
 						<div class="flex justify-between text-[10px] font-semibold">
 							<span class="text-slate-400">Penggunaan Anggaran</span>
-							<span id="budget-progress-percent" class="text-amber-400 font-bold">0%</span>
+							<span id="budget-progress-percent" class="text-amber-400 font-mono font-bold">0%</span>
 						</div>
 						<div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
 							<div id="budget-progress-bar" class="h-full rounded-full bg-emerald-400 transition-all duration-500 ease-out" style="width: 0%"></div>
@@ -282,10 +267,10 @@
 				</section>
 
 				<!-- Financial Health Diagnostic -->
-				<section class="fintech-card p-4 rounded-2xl border border-slate-800">
+				<section class="glass-card p-4 rounded-2xl border border-slate-800">
 					<div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-3">
 						<div class="flex items-center gap-2">
-							<i class="fa-solid fa-heart-pulse accent-text text-sm"></i>
+							<i data-lucide="activity" class="w-4 h-4 accent-text"></i>
 							<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Kesehatan Keuangan</h3>
 						</div>
 						<span id="health-status-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -294,33 +279,33 @@
 					</div>
 
 					<div class="flex items-center gap-4">
-						<div class="relative w-20 h-20 flex items-center justify-center shrink-0">
+						<div class="relative w-22 h-22 flex items-center justify-center shrink-0">
 							<svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
 								<path class="text-slate-900" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
 								<path id="health-score-circle" class="accent-text transition-all duration-700 ease-out" stroke-dasharray="0, 100" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
 							</svg>
 							<div class="absolute text-center">
-								<span id="health-score-num" class="text-lg font-black text-slate-100">0</span>
-								<span class="text-[8px] text-slate-400 block -mt-1">/ 100</span>
+								<span id="health-score-num" class="text-xl font-black text-slate-100">0</span>
+								<span class="text-[9px] text-slate-400 block -mt-1">/ 100</span>
 							</div>
 						</div>
 
 						<div class="flex-1 space-y-1.5">
-							<p class="text-[11px] font-medium text-slate-300">Rasio Tabungan: <span id="stat-savings-rate" class="font-bold text-indigo-400">0%</span></p>
+							<p class="text-[11px] font-medium text-slate-300">Rasio Tabungan: <span id="stat-savings-rate" class="font-bold text-indigo-400 font-mono">0%</span></p>
 							<div id="health-advice-container" class="space-y-1"></div>
 						</div>
 					</div>
 				</section>
 
-				<!-- RECENT TRANSACTIONS (BERANDA) -->
-				<section class="fintech-card p-4 rounded-2xl border border-slate-800">
+				<!-- REDESIGNED RECENT TRANSACTIONS (BERANDA) -->
+				<section class="glass-card p-4 rounded-2xl border border-slate-800">
 					<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
 						<div class="flex items-center gap-2">
-							<i class="fa-solid fa-receipt accent-text text-sm"></i>
+							<i data-lucide="receipt" class="w-4 h-4 accent-text"></i>
 							<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Transaksi Terakhir</h3>
 						</div>
 						<button onclick="switchTab('transactions')" class="text-[11px] accent-text font-semibold hover:underline flex items-center gap-1">
-							Lihat Semua <i class="fa-solid fa-chevron-right text-[9px]"></i>
+							Lihat Semua <i data-lucide="chevron-right" class="w-3 h-3"></i>
 						</button>
 					</div>
 					<div id="recent-transactions-list" class="space-y-2.5"></div>
@@ -329,22 +314,22 @@
 			</div>
 
 			<!-- TAB 2: TRANSAKSI & RIWAYAT -->
-			<div id="tab-content-transactions" class="space-y-4 hidden tab-pane">
+			<div id="tab-content-transactions" class="space-y-4 hidden">
 
 				<!-- Advanced Filter Panel -->
-				<section class="fintech-card p-3.5 rounded-2xl border border-slate-800 space-y-3">
+				<section class="glass-card p-3.5 rounded-2xl border border-slate-800 space-y-3">
 					<div class="flex items-center justify-between">
 						<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-							<i class="fa-solid fa-filter accent-text text-xs"></i> Cari & Filter Histori
+							<i data-lucide="filter" class="w-3.5 h-3.5 accent-text"></i> Cari & Filter Histori
 						</h3>
 						<button onclick="exportToCSV()" class="text-[10px] font-semibold bg-slate-900 hover:bg-slate-800 text-emerald-400 px-2.5 py-1 rounded-lg border border-slate-800 flex items-center gap-1 transition">
-							<i class="fa-solid fa-file-csv text-xs"></i> Unduh CSV
+							<i data-lucide="file-spreadsheet" class="w-3 h-3"></i> Unduh CSV
 						</button>
 					</div>
 
 					<div class="grid grid-cols-2 gap-2">
 						<div class="col-span-2 relative">
-							<i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+							<i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
 							<input type="text" id="filter-search" oninput="renderTransactions()" placeholder="Cari deskripsi, kategori, atau nominal..." class="input-glow w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl pl-8 pr-3 py-2 transition">
 						</div>
 
@@ -384,24 +369,24 @@
 				<!-- Transaction Cards List -->
 				<section class="space-y-2" id="transaction-list-container"></section>
 
-				<div id="empty-state" class="hidden py-10 text-center fintech-card rounded-2xl border border-slate-800">
-					<i class="fa-solid fa-box-open text-3xl text-slate-600 mx-auto mb-2 block"></i>
+				<div id="empty-state" class="hidden py-10 text-center glass-card rounded-2xl border border-slate-800">
+					<i data-lucide="inbox" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i>
 					<p class="text-slate-400 text-xs">Tidak ada catatan transaksi yang sesuai filter.</p>
 				</div>
 			</div>
 
 			<!-- TAB 3: FITUR KANTONG (POCKETS) -->
-			<div id="tab-content-pockets" class="space-y-4 hidden tab-pane">
+			<div id="tab-content-pockets" class="space-y-4 hidden">
 
 				<!-- Pocket Summary Header -->
-				<section class="fintech-card p-4 rounded-2xl border border-slate-800 flex items-center justify-between">
+				<section class="glass-card p-4 rounded-2xl border border-slate-800 flex items-center justify-between">
 					<div>
 						<p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Dana Di Kantong</p>
 						<h3 id="pockets-total-amount" class="text-xl font-black text-indigo-400 mt-0.5">Rp 0</h3>
 						<p class="text-[9px] text-slate-500 mt-0.5"><span id="pockets-count">0</span> Kantong Terdaftar</p>
 					</div>
-					<button onclick="openPocketModal()" class="px-3 py-2 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-extrabold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 hover:scale-95">
-						<i class="fa-solid fa-folder-plus text-xs"></i> Buat Kantong
+					<button onclick="openPocketModal()" class="px-3 py-2 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-extrabold text-xs rounded-xl shadow-sm transition flex items-center gap-1 hover:scale-95">
+						<i data-lucide="folder-plus" class="w-4 h-4"></i> Buat Kantong
 					</button>
 				</section>
 
@@ -411,12 +396,12 @@
 			</div>
 
 			<!-- TAB 4: MENU REKAP PRESISI LENGKAP -->
-			<div id="tab-content-recap" class="space-y-4 hidden tab-pane">
+			<div id="tab-content-recap" class="space-y-4 hidden">
 
 				<!-- Precision Time Period Filters -->
-				<section class="fintech-card p-3.5 rounded-2xl border border-slate-800 space-y-3">
+				<section class="glass-card p-3.5 rounded-2xl border border-slate-800 space-y-3">
 					<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-800 pb-2">
-						<i class="fa-solid fa-chart-column accent-text text-xs"></i> Pilihan Periode Rekap Presisi
+						<i data-lucide="bar-chart-3" class="w-3.5 h-3.5 accent-text"></i> Pilihan Periode Rekap Presisi
 					</h3>
 
 					<!-- Primary Tab Selector: Harian, Mingguan, Bulanan, Tahunan -->
@@ -456,9 +441,9 @@
 				</section>
 
 				<!-- Doughnut Category Distribution Chart -->
-				<section class="fintech-card p-4 rounded-2xl border border-slate-800 space-y-3">
+				<section class="glass-card p-4 rounded-2xl border border-slate-800 space-y-3">
 					<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-800 pb-2">
-						<i class="fa-solid fa-chart-pie text-rose-400 text-xs"></i> Distribusi Kategori Pengeluaran
+						<i data-lucide="pie-chart" class="w-3.5 h-3.5 text-rose-400"></i> Distribusi Kategori Pengeluaran
 					</h3>
 					<div class="w-44 h-44 mx-auto relative">
 						<canvas id="recapExpenseChart"></canvas>
@@ -467,9 +452,9 @@
 				</section>
 
 				<!-- Multi-Period Trend Bar Chart -->
-				<section class="fintech-card p-4 rounded-2xl border border-slate-800 space-y-3">
+				<section class="glass-card p-4 rounded-2xl border border-slate-800 space-y-3">
 					<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-800 pb-2">
-						<i class="fa-solid fa-chart-line accent-text text-xs"></i> Grafik Tren Arus Kas
+						<i data-lucide="trending-up" class="w-3.5 h-3.5 accent-text"></i> Grafik Tren Arus Kas
 					</h3>
 					<div class="h-52 relative">
 						<canvas id="recapTrendChart"></canvas>
@@ -478,17 +463,17 @@
 
 			</div>
 
-			<!-- TAB 5: ALAT KEUANGAN (FINANCIAL CALCULATOR SUITE) -->
-			<div id="tab-content-tools" class="space-y-4 hidden tab-pane">
+			<!-- TAB 5: ALAT KEUANGAN (PROFESSIONAL SUITE CALCULATOR) -->
+			<div id="tab-content-tools" class="space-y-4 hidden">
 
-				<section class="fintech-card p-4 rounded-2xl border border-slate-800 space-y-4">
+				<section class="glass-card p-4 rounded-2xl border border-slate-800 space-y-4">
 					<div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
 						<div class="flex items-center gap-2">
-							<i class="fa-solid fa-calculator accent-text text-sm"></i>
+							<i data-lucide="calculator" class="w-4 h-4 accent-text"></i>
 							<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Suite Kalkulator Keuangan</h3>
 						</div>
 						<button onclick="saveToolsStateManual()" class="px-2.5 py-1 text-[10px] font-bold accent-bg-light accent-text accent-border border rounded-lg flex items-center gap-1 transition">
-							<i class="fa-solid fa-floppy-disk text-xs"></i> Simpan Hasil
+							<i data-lucide="save" class="w-3 h-3"></i> Simpan Hasil
 						</button>
 					</div>
 
@@ -681,8 +666,8 @@
 						<div class="space-y-2">
 							<span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Kalkulator Ringkas</span>
 							<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-right">
-								<div id="calc-history" class="text-[10px] text-slate-500 h-4 overflow-hidden"></div>
-								<div id="calc-screen" class="text-2xl font-bold accent-text truncate">0</div>
+								<div id="calc-history" class="text-[10px] text-slate-500 h-4 overflow-hidden font-mono"></div>
+								<div id="calc-screen" class="text-2xl font-mono font-bold accent-text truncate">0</div>
 							</div>
 
 							<div class="grid grid-cols-4 gap-2 text-xs font-bold">
@@ -711,7 +696,7 @@
 							</div>
 
 							<button onclick="applyCalcToForm()" class="w-full py-2 px-3 bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 text-xs font-semibold rounded-xl transition flex items-center justify-center gap-1.5">
-								<i class="fa-solid fa-copy text-xs"></i> Salin Nominal Ke Form Catat
+								<i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Nominal Ke Form Catat
 							</button>
 						</div>
 
@@ -738,33 +723,33 @@
 			</div>
 
 			<!-- TAB 6: PENGATURAN TYPOGRAPHY, ACCENT COLOR, KATEGORI, PROFILE & BACKUP -->
-			<div id="tab-content-settings" class="space-y-4 hidden tab-pane">
+			<div id="tab-content-settings" class="space-y-4 hidden">
 
 				<!-- User Profile Quick Card -->
-				<section class="fintech-card p-4 rounded-2xl border border-slate-800 space-y-3">
+				<section class="glass-card p-4 rounded-2xl border border-slate-800 space-y-3">
 					<div class="flex items-center justify-between border-b border-slate-800 pb-2">
 						<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-							<i class="fa-solid fa-user-check accent-text text-xs"></i> Profil Pengguna
+							<i data-lucide="user-check" class="w-3.5 h-3.5 accent-text"></i> Profil Pengguna
 						</h3>
 						<button onclick="openProfileModal()" class="text-[10px] font-bold accent-text hover:underline">Edit Profil</button>
 					</div>
 					<div class="flex items-center gap-3">
 						<div id="settings-avatar-container" class="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center overflow-hidden shrink-0">
-							<i class="fa-solid fa-user text-slate-400 text-lg"></i>
+							<i data-lucide="user" class="w-6 h-6 text-slate-400"></i>
 						</div>
 						<div class="truncate">
 							<p id="settings-user-name" class="text-sm font-bold text-slate-100 truncate">Pengguna ArthaPulse</p>
-							<p id="settings-user-phone" class="text-xs text-slate-400 mt-0.5">0812-3456-7890</p>
+							<p id="settings-user-phone" class="text-xs text-slate-400 font-mono mt-0.5">0812-3456-7890</p>
 						</div>
 					</div>
 				</section>
 
 				<!-- Category Manager Button & Card -->
-				<section class="fintech-card p-4 rounded-2xl border border-slate-800 space-y-3">
+				<section class="glass-card p-4 rounded-2xl border border-slate-800 space-y-3">
 					<div class="flex items-center justify-between">
 						<div>
 							<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-								<i class="fa-solid fa-shapes text-indigo-400 text-xs"></i> Kelola Kategori & Ikon
+								<i data-lucide="grid" class="w-3.5 h-3.5 text-indigo-400"></i> Kelola Kategori & Ikon
 							</h3>
 							<p class="text-[10px] text-slate-400 mt-0.5">Tambah kategori baru atau ganti gambar/ikon kategori.</p>
 						</div>
@@ -775,9 +760,9 @@
 				</section>
 
 				<!-- UI Customizer Settings: Theme, Accent Color, Font Family, Font Weight, Font Size -->
-				<section class="fintech-card p-4 rounded-2xl border border-slate-800 space-y-3.5">
+				<section class="glass-card p-4 rounded-2xl border border-slate-800 space-y-3.5">
 					<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-800 pb-2">
-						<i class="fa-solid fa-palette accent-text text-xs"></i> Kustomisasi Warna Aksen & Tampilan
+						<i data-lucide="palette" class="w-3.5 h-3.5 accent-text"></i> Kustomisasi Warna Aksen & Tampilan
 					</h3>
 					
 					<div class="space-y-3">
@@ -805,16 +790,16 @@
 							</select>
 						</div>
 
-						<!-- Font Family Select (6 NEW MATCHING FONTS) -->
+						<!-- Font Family Select -->
 						<div>
-							<label class="block text-[10px] font-medium text-slate-400 mb-1">Jenis Font APLIKASI (Teks & Angka)</label>
+							<label class="block text-[10px] font-medium text-slate-400 mb-1">Jenis Font APLIKASI</label>
 							<select id="setting-font-family" onchange="applyCustomTheme()" class="custom-select input-glow w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
-								<option value="Plus Jakarta Sans" selected>Plus Jakarta Sans (Bawaan Fintech)</option>
-								<option value="Inter">Inter (Presisi Minimalis)</option>
-								<option value="Outfit">Outfit (Modern & Clean)</option>
-								<option value="Sora">Sora (Futuristis Geometris)</option>
-								<option value="Manrope">Manrope (Sleek Corporate)</option>
-								<option value="Space Grotesk">Space Grotesk (Tekno & Angka Tegas)</option>
+								<option value="Quicksand" selected>Quicksand (Geometric & Clean - Bawaan)</option>
+								<option value="Comfortaa">Comfortaa (Soft & Curved)</option>
+								<option value="Rubik">Rubik (Modern & Solid)</option>
+								<option value="Barlow">Barlow (Sleek Fintech)</option>
+								<option value="Comic Neue">Comic Neue (Playful)</option>
+								<option value="Fredoka">Fredoka (Rounded & Soft)</option>
 							</select>
 						</div>
 
@@ -845,7 +830,7 @@
 						<div>
 							<div class="flex justify-between items-center mb-1">
 								<label class="text-[10px] font-medium text-slate-400">Ukuran Font Base</label>
-								<span id="setting-font-size-label" class="text-xs font-bold accent-text">15px</span>
+								<span id="setting-font-size-label" class="text-xs font-mono font-bold accent-text">15px</span>
 							</div>
 							<input type="range" id="setting-font-size" min="12" max="22" value="15" oninput="applyCustomTheme()" class="w-full accent-cyan-400 bg-slate-900 h-2 rounded-lg cursor-pointer">
 						</div>
@@ -853,9 +838,9 @@
 				</section>
 
 				<!-- Monthly Budget Limits -->
-				<section class="fintech-card p-4 rounded-2xl border border-slate-800 space-y-3">
+				<section class="glass-card p-4 rounded-2xl border border-slate-800 space-y-3">
 					<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-800 pb-2">
-						<i class="fa-solid fa-sliders text-amber-400 text-xs"></i> Pengaturan Batas Anggaran
+						<i data-lucide="sliders" class="w-3.5 h-3.5 text-amber-400"></i> Pengaturan Batas Anggaran
 					</h3>
 					<form onsubmit="handleSaveBudget(event)" class="space-y-3">
 						<div>
@@ -870,9 +855,9 @@
 				</section>
 
 				<!-- Push Notification & Sound FX Settings -->
-				<section class="fintech-card p-4 rounded-2xl border border-slate-800 space-y-3">
+				<section class="glass-card p-4 rounded-2xl border border-slate-800 space-y-3">
 					<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-800 pb-2">
-						<i class="fa-solid fa-bell accent-text text-xs"></i> Notifikasi & Umpan Balik Suara
+						<i data-lucide="bell" class="w-3.5 h-3.5 accent-text"></i> Notifikasi & Umpan Balik Suara
 					</h3>
 					<div class="space-y-3">
 						<div class="flex items-center justify-between">
@@ -903,27 +888,27 @@
 				</section>
 
 				<!-- Data Backup & Reset (100% COMPLETE BACKUP) -->
-				<section class="fintech-card p-4 rounded-2xl border border-slate-800 space-y-3">
+				<section class="glass-card p-4 rounded-2xl border border-slate-800 space-y-3">
 					<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-800 pb-2">
-						<i class="fa-solid fa-database text-emerald-400 text-xs"></i> Data & Cadangan (Full Backup & Restore)
+						<i data-lucide="database" class="w-3.5 h-3.5 text-emerald-400"></i> Data & Cadangan (Full Backup & Restore)
 					</h3>
 					<p class="text-[10px] text-slate-400">Cadangan mencakup 100% data: Transaksi, Kantong, Kotak Masuk, Profil, Kategori, & Pengaturan Warna.</p>
 					<div class="space-y-2">
 						<button onclick="exportToJSON()" class="w-full py-2 px-3 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-medium rounded-xl border border-slate-800 transition flex items-center justify-center gap-2">
-							<i class="fa-solid fa-download accent-text text-xs"></i> Unduh Cadangan Lengkap (JSON)
+							<i data-lucide="download" class="w-3.5 h-3.5 accent-text"></i> Unduh Cadangan Lengkap (JSON)
 						</button>
 
 						<input type="file" id="import-file" accept=".json" class="hidden" onchange="handleImportJSON(event)">
 						<button onclick="document.getElementById('import-file').click()" class="w-full py-2 px-3 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-medium rounded-xl border border-slate-800 transition flex items-center justify-center gap-2">
-							<i class="fa-solid fa-upload text-emerald-400 text-xs"></i> Impor Berkas Cadangan JSON
+							<i data-lucide="upload" class="w-3.5 h-3.5 text-emerald-400"></i> Impor Berkas Cadangan JSON
 						</button>
 
 						<button onclick="confirmResetData()" class="w-full py-2 px-3 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 text-xs font-semibold rounded-xl border border-rose-500/20 transition flex items-center justify-center gap-2">
-							<i class="fa-solid fa-rotate-left text-rose-400 text-xs"></i> Reset Ke Data Sampel Rupiah
+							<i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-rose-400"></i> Reset Ke Data Sampel Rupiah
 						</button>
 
 						<button onclick="confirmClearAllData()" class="w-full py-2 px-3 bg-rose-600/20 hover:bg-rose-600/30 text-rose-200 text-xs font-bold rounded-xl border border-rose-500/40 transition flex items-center justify-center gap-2">
-							<i class="fa-solid fa-trash-can text-rose-400 text-xs"></i> Reset / Hapus Semua Data
+							<i data-lucide="trash-2" class="w-3.5 h-3.5 text-rose-400"></i> Reset / Hapus Semua Data
 						</button>
 					</div>
 				</section>
@@ -932,31 +917,31 @@
 
 		</main>
 
-		<!-- FIXED BOTTOM NAVIGATION BAR WITH FA6 ICONS & HAPTIC VIBRATION -->
-		<nav class="fixed bottom-0 left-0 right-0 z-40 max-w-lg mx-auto fintech-nav px-1.5 py-2 flex items-center justify-between rounded-t-2xl sm:absolute sm:bottom-0">
-			<button id="nav-btn-dashboard" onclick="switchTab('dashboard')" class="flex flex-col items-center gap-0.5 p-1 accent-text transition w-1/6 font-bold">
-				<i class="fa-solid fa-house text-sm"></i>
-				<span class="text-[8px]">Beranda</span>
+		<!-- 2. FIXED BOTTOM NAVIGATION BAR (6 MENU ITEMS) -->
+		<nav class="fixed bottom-0 left-0 right-0 z-40 max-w-lg mx-auto glass-nav px-1.5 py-2 flex items-center justify-between rounded-t-2xl sm:absolute sm:bottom-0">
+			<button id="nav-btn-dashboard" onclick="switchTab('dashboard')" class="flex flex-col items-center gap-0.5 p-1 accent-text transition w-1/6">
+				<i data-lucide="home" class="w-4 h-4"></i>
+				<span class="text-[8px] font-bold">Beranda</span>
 			</button>
 			<button id="nav-btn-transactions" onclick="switchTab('transactions')" class="flex flex-col items-center gap-0.5 p-1 text-slate-400 hover:text-slate-200 transition w-1/6">
-				<i class="fa-solid fa-clock-rotate-left text-sm"></i>
-				<span class="text-[8px]">Riwayat</span>
+				<i data-lucide="receipt" class="w-4 h-4"></i>
+				<span class="text-[8px] font-bold">Riwayat</span>
 			</button>
 			<button id="nav-btn-pockets" onclick="switchTab('pockets')" class="flex flex-col items-center gap-0.5 p-1 text-slate-400 hover:text-slate-200 transition w-1/6">
-				<i class="fa-solid fa-wallet text-sm"></i>
-				<span class="text-[8px]">Kantong</span>
+				<i data-lucide="wallet-cards" class="w-4 h-4"></i>
+				<span class="text-[8px] font-bold">Kantong</span>
 			</button>
 			<button id="nav-btn-recap" onclick="switchTab('recap')" class="flex flex-col items-center gap-0.5 p-1 text-slate-400 hover:text-slate-200 transition w-1/6">
-				<i class="fa-solid fa-chart-pie text-sm"></i>
-				<span class="text-[8px]">Rekap</span>
+				<i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+				<span class="text-[8px] font-bold">Rekap</span>
 			</button>
 			<button id="nav-btn-tools" onclick="switchTab('tools')" class="flex flex-col items-center gap-0.5 p-1 text-slate-400 hover:text-slate-200 transition w-1/6">
-				<i class="fa-solid fa-calculator text-sm"></i>
-				<span class="text-[8px]">Alat</span>
+				<i data-lucide="calculator" class="w-4 h-4"></i>
+				<span class="text-[8px] font-bold">Alat</span>
 			</button>
 			<button id="nav-btn-settings" onclick="switchTab('settings')" class="flex flex-col items-center gap-0.5 p-1 text-slate-400 hover:text-slate-200 transition w-1/6">
-				<i class="fa-solid fa-gear text-sm"></i>
-				<span class="text-[8px]">Pengaturan</span>
+				<i data-lucide="settings" class="w-4 h-4"></i>
+				<span class="text-[8px] font-bold">Pengaturan</span>
 			</button>
 		</nav>
 
@@ -964,15 +949,15 @@
 
 	<!-- MODAL: KOTAK MASUK & NOTIFIKASI (INBOX MODAL) -->
 	<div id="inbox-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
-		<div class="fintech-card w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal max-h-[85vh] flex flex-col space-y-3">
+		<div class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal max-h-[85vh] flex flex-col space-y-3">
 			<div class="flex items-center justify-between pb-3 border-b border-slate-800 shrink-0">
 				<div class="flex items-center gap-2">
-					<i class="fa-solid fa-bell accent-text text-sm"></i>
+					<i data-lucide="bell" class="w-4 h-4 accent-text"></i>
 					<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Kotak Masuk & Notifikasi</h3>
 					<span id="inbox-modal-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">0 Belum Dibaca</span>
 				</div>
 				<button onclick="closeInboxModal()" class="text-slate-400 hover:text-slate-200">
-					<i class="fa-solid fa-xmark text-base"></i>
+					<i data-lucide="x" class="w-4 h-4"></i>
 				</button>
 			</div>
 
@@ -984,11 +969,11 @@
 					<button onclick="setInboxFilter('WARNING')" id="inbox-filter-warning" class="px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-400 hover:text-slate-200">Peringatan</button>
 				</div>
 				<div class="flex items-center gap-1">
-					<button onclick="markAllInboxRead()" title="Tandai Semua Dibaca" class="p-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-emerald-400 transition">
-						<i class="fa-solid fa-check-double text-xs"></i>
+					<button onclick="markAllInboxRead()" title="Tandai Semua Dibaca" class="p-1 rounded-lg bg-slate-900 text-slate-400 hover:text-emerald-400 transition">
+						<i data-lucide="check-check" class="w-3.5 h-3.5"></i>
 					</button>
-					<button onclick="clearAllInbox()" title="Hapus Semua Notifikasi" class="p-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-rose-400 transition">
-						<i class="fa-solid fa-trash-can text-xs"></i>
+					<button onclick="clearAllInbox()" title="Hapus Semua Notifikasi" class="p-1 rounded-lg bg-slate-900 text-slate-400 hover:text-rose-400 transition">
+						<i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
 					</button>
 				</div>
 			</div>
@@ -1000,14 +985,14 @@
 
 	<!-- MODAL: EDIT USER PROFILE -->
 	<div id="profile-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden animate-backdrop">
-		<div class="fintech-card w-full max-w-xs rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal">
+		<div class="glass-card w-full max-w-xs rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal">
 			<div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
 				<div class="flex items-center gap-2">
-					<i class="fa-solid fa-user-gear accent-text text-sm"></i>
+					<i data-lucide="user-cog" class="w-4 h-4 accent-text"></i>
 					<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Profil Pengguna</h3>
 				</div>
 				<button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-200">
-					<i class="fa-solid fa-xmark text-base"></i>
+					<i data-lucide="x" class="w-4 h-4"></i>
 				</button>
 			</div>
 
@@ -1015,10 +1000,10 @@
 				<div class="text-center">
 					<div class="relative w-16 h-16 mx-auto mb-2">
 						<div id="modal-avatar-preview" class="w-full h-full rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center overflow-hidden">
-							<i class="fa-solid fa-user text-slate-400 text-2xl"></i>
+							<i data-lucide="user" class="w-8 h-8 text-slate-400"></i>
 						</div>
 						<button type="button" onclick="document.getElementById('profile-photo-input').click()" class="absolute bottom-0 right-0 p-1.5 rounded-full accent-bg text-slate-950 shadow-md transition">
-							<i class="fa-solid fa-camera text-xs"></i>
+							<i data-lucide="camera" class="w-3 h-3"></i>
 						</button>
 					</div>
 					<input type="file" id="profile-photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
@@ -1045,14 +1030,14 @@
 
 	<!-- MODAL: CATEGORY MANAGER -->
 	<div id="category-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
-		<div class="fintech-card w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal max-h-[88vh] overflow-y-auto space-y-4">
+		<div class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal max-h-[88vh] overflow-y-auto space-y-4">
 			<div class="flex items-center justify-between pb-3 border-b border-slate-800">
 				<div class="flex items-center gap-2">
-					<i class="fa-solid fa-shapes text-indigo-400 text-sm"></i>
+					<i data-lucide="grid" class="w-4 h-4 text-indigo-400"></i>
 					<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Manajer Kategori & Ikon</h3>
 				</div>
 				<button onclick="closeCategoryManagerModal()" class="text-slate-400 hover:text-slate-200">
-					<i class="fa-solid fa-xmark text-base"></i>
+					<i data-lucide="x" class="w-4 h-4"></i>
 				</button>
 			</div>
 
@@ -1071,8 +1056,8 @@
 					
 					<div class="flex items-center gap-2 pt-1">
 						<input type="file" id="cat-image-upload" accept="image/*" class="hidden" onchange="handleCatImageUpload(event)">
-						<button type="button" onclick="document.getElementById('cat-image-upload').click()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-semibold rounded-lg border border-slate-700 transition flex items-center gap-1.5">
-							<i class="fa-solid fa-cloud-arrow-up accent-text text-xs"></i> Upload Logo Sendiri
+						<button type="button" onclick="document.getElementById('cat-image-upload').click()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-semibold rounded-lg border border-slate-700 transition flex items-center gap-1">
+							<i data-lucide="upload-cloud" class="w-3.5 h-3.5 accent-text"></i> Upload Logo Sendiri
 						</button>
 						<span id="cat-image-status" class="text-[9px] text-slate-400 truncate"></span>
 					</div>
@@ -1090,14 +1075,14 @@
 
 	<!-- MODAL: ADD / EDIT TRANSACTION -->
 	<div id="tx-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
-		<div class="fintech-card w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal max-h-[90vh] overflow-y-auto">
+		<div class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal max-h-[90vh] overflow-y-auto">
 			<div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
 				<div class="flex items-center gap-2">
-					<i class="fa-solid fa-circle-plus accent-text text-sm"></i>
+					<i data-lucide="plus-circle" class="w-4 h-4 accent-text"></i>
 					<h3 id="form-title" class="text-xs font-bold text-slate-200 uppercase tracking-wider">Tambah Transaksi</h3>
 				</div>
 				<button onclick="closeTxModal()" class="text-slate-400 hover:text-slate-200">
-					<i class="fa-solid fa-xmark text-base"></i>
+					<i data-lucide="x" class="w-4 h-4"></i>
 				</button>
 			</div>
 
@@ -1108,10 +1093,10 @@
 					<label class="block text-[11px] font-medium text-slate-300 mb-1">Jenis Transaksi</label>
 					<div class="grid grid-cols-2 gap-1.5 p-1 bg-slate-900 rounded-xl border border-slate-800">
 						<button type="button" id="btn-type-income" onclick="setType('income')" class="py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1 text-slate-400 hover:text-slate-200">
-							<i class="fa-solid fa-arrow-down-left text-emerald-400 text-xs"></i> Pemasukan
+							<i data-lucide="arrow-down-left" class="w-3.5 h-3.5 text-emerald-400"></i> Pemasukan
 						</button>
 						<button type="button" id="btn-type-expense" onclick="setType('expense')" class="py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1 bg-rose-500/20 text-rose-300 border border-rose-500/30 shadow-sm">
-							<i class="fa-solid fa-arrow-up-right text-rose-400 text-xs"></i> Pengeluaran
+							<i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-rose-400"></i> Pengeluaran
 						</button>
 					</div>
 					<input type="hidden" id="tx-type" value="expense">
@@ -1144,7 +1129,7 @@
 				<div class="pt-2 flex gap-2">
 					<button type="button" onclick="closeTxModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700 transition">Batal</button>
 					<button type="submit" id="submit-btn" class="flex-1 py-2.5 accent-bg accent-bg-hover text-slate-950 font-extrabold text-xs rounded-xl shadow-sm transition flex items-center justify-center gap-1.5">
-						<i class="fa-solid fa-check text-xs"></i>
+						<i data-lucide="check" class="w-4 h-4"></i>
 						<span id="submit-btn-text">Simpan Catatan</span>
 					</button>
 				</div>
@@ -1154,14 +1139,14 @@
 
 	<!-- MODAL: CREATE / EDIT POCKET -->
 	<div id="pocket-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
-		<div class="fintech-card w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal max-h-[90vh] overflow-y-auto">
+		<div class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal max-h-[90vh] overflow-y-auto">
 			<div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
 				<div class="flex items-center gap-2">
-					<i class="fa-solid fa-wallet text-indigo-400 text-sm"></i>
+					<i data-lucide="wallet-cards" class="w-4 h-4 text-indigo-400"></i>
 					<h3 id="pocket-modal-title" class="text-xs font-bold text-slate-200 uppercase tracking-wider">Kantong Simpanan Baru</h3>
 				</div>
 				<button onclick="closePocketModal()" class="text-slate-400 hover:text-slate-200">
-					<i class="fa-solid fa-xmark text-base"></i>
+					<i data-lucide="x" class="w-4 h-4"></i>
 				</button>
 			</div>
 
@@ -1199,11 +1184,11 @@
 
 	<!-- MODAL: POCKET MUTATION (DEPOSIT / WITHDRAW / TRANSFER) -->
 	<div id="pocket-mutation-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden animate-backdrop">
-		<div class="fintech-card w-full max-w-xs rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal">
+		<div class="glass-card w-full max-w-xs rounded-2xl border border-slate-800 p-5 shadow-2xl relative animate-modal">
 			<div class="flex items-center justify-between pb-2 border-b border-slate-800 mb-3">
 				<h3 id="mutation-modal-title" class="text-xs font-bold text-slate-200 uppercase">Setor / Tarik / Transfer</h3>
 				<button onclick="closePocketMutationModal()" class="text-slate-400 hover:text-slate-200">
-					<i class="fa-solid fa-xmark text-base"></i>
+					<i data-lucide="x" class="w-4 h-4"></i>
 				</button>
 			</div>
 
@@ -1243,9 +1228,9 @@
 
 	<!-- MODAL: CONFIRMATION DIALOG -->
 	<div id="confirm-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden animate-backdrop">
-		<div class="fintech-card w-full max-w-xs rounded-2xl border border-slate-800 p-5 shadow-2xl text-center animate-modal">
+		<div class="glass-card w-full max-w-xs rounded-2xl border border-slate-800 p-5 shadow-2xl text-center animate-modal">
 			<div class="w-10 h-10 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mx-auto mb-3">
-				<i class="fa-solid fa-triangle-exclamation text-lg"></i>
+				<i data-lucide="alert-triangle" class="w-5 h-5"></i>
 			</div>
 			<h3 id="confirm-title" class="text-xs font-bold text-slate-100 mb-1">Konfirmasi</h3>
 			<p id="confirm-message" class="text-[11px] text-slate-400 mb-4 leading-relaxed">Apakah Anda yakin ingin melanjutkan tindakan ini?</p>
@@ -1274,37 +1259,36 @@
 		const INBOX_KEY = 'arthapulse_inbox_v6';
 
 		const ACCENT_PALETTES = {
-			teal: { main: '#06b6d4', hover: '#0891b2', light: 'rgba(6, 182, 212, 0.12)', border: 'rgba(6, 182, 212, 0.3)', text: '#22d3ee' },
-			emerald: { main: '#10b981', hover: '#059669', light: 'rgba(16, 185, 129, 0.12)', border: 'rgba(16, 185, 129, 0.3)', text: '#34d399' },
-			violet: { main: '#8b5cf6', hover: '#7c3aed', light: 'rgba(139, 92, 246, 0.12)', border: 'rgba(139, 92, 246, 0.3)', text: '#a78bfa' },
-			blue: { main: '#3b82f6', hover: '#2563eb', light: 'rgba(59, 130, 246, 0.12)', border: 'rgba(59, 130, 246, 0.3)', text: '#60a5fa' },
-			amber: { main: '#f59e0b', hover: '#d97706', light: 'rgba(245, 158, 11, 0.12)', border: 'rgba(245, 158, 11, 0.3)', text: '#fbbf24' },
-			rose: { main: '#f43f5e', hover: '#e11d48', light: 'rgba(244, 63, 94, 0.12)', border: 'rgba(244, 63, 94, 0.3)', text: '#fb7185' }
+			teal: { main: '#06b6d4', hover: '#0891b2', light: 'rgba(6, 182, 212, 0.15)', border: 'rgba(6, 182, 212, 0.35)', text: '#22d3ee' },
+			emerald: { main: '#10b981', hover: '#059669', light: 'rgba(16, 185, 129, 0.15)', border: 'rgba(16, 185, 129, 0.35)', text: '#34d399' },
+			violet: { main: '#8b5cf6', hover: '#7c3aed', light: 'rgba(139, 92, 246, 0.15)', border: 'rgba(139, 92, 246, 0.35)', text: '#a78bfa' },
+			blue: { main: '#3b82f6', hover: '#2563eb', light: 'rgba(59, 130, 246, 0.15)', border: 'rgba(59, 130, 246, 0.35)', text: '#60a5fa' },
+			amber: { main: '#f59e0b', hover: '#d97706', light: 'rgba(245, 158, 11, 0.15)', border: 'rgba(245, 158, 11, 0.35)', text: '#fbbf24' },
+			rose: { main: '#f43f5e', hover: '#e11d48', light: 'rgba(244, 63, 94, 0.15)', border: 'rgba(244, 63, 94, 0.35)', text: '#fb7185' }
 		};
 
-		// Font Awesome Icon Mapping for Standard Icons
 		const STANDARD_ICON_LIST = [
-			"utensils", "bus", "bag-shopping", "house", "film", "heart-pulse",
-			"graduation-cap", "briefcase", "rocket", "chart-line", "gift", "piggy-bank",
-			"shield-halved", "handshake", "box", "car", "mug-hot", "mobile-screen",
-			"wifi", "bolt", "plane", "dollar-sign"
+			"utensils", "bus", "shopping-bag", "home", "film", "heart-pulse",
+			"graduation-cap", "briefcase", "rocket", "trending-up", "gift", "piggy-bank",
+			"shield-check", "heart-handshake", "box", "car", "coffee", "smartphone",
+			"wifi", "zap", "plane", "dollar-sign"
 		];
 
 		const DEFAULT_CATEGORIES = [
 			{ id: 'cat-01', name: 'Makanan & Minuman', icon: 'utensils', image: '' },
 			{ id: 'cat-02', name: 'Transportasi & Bensin', icon: 'bus', image: '' },
-			{ id: 'cat-03', name: 'Belanja & Kebutuhan', icon: 'bag-shopping', image: '' },
-			{ id: 'cat-04', name: 'Rumah & Tagihan', icon: 'house', image: '' },
+			{ id: 'cat-03', name: 'Belanja & Kebutuhan', icon: 'shopping-bag', image: '' },
+			{ id: 'cat-04', name: 'Rumah & Tagihan', icon: 'home', image: '' },
 			{ id: 'cat-05', name: 'Hiburan & Hobi', icon: 'film', image: '' },
 			{ id: 'cat-06', name: 'Kesehatan & Perawatan', icon: 'heart-pulse', image: '' },
 			{ id: 'cat-07', name: 'Pendidikan & Kursus', icon: 'graduation-cap', image: '' },
 			{ id: 'cat-08', name: 'Gaji & Utama', icon: 'briefcase', image: '' },
 			{ id: 'cat-09', name: 'Usaha & Freelance', icon: 'rocket', image: '' },
-			{ id: 'cat-10', name: 'Investasi & Dividen', icon: 'chart-line', image: '' },
+			{ id: 'cat-10', name: 'Investasi & Dividen', icon: 'trending-up', image: '' },
 			{ id: 'cat-11', name: 'Hadiah & Bonus', icon: 'gift', image: '' },
 			{ id: 'cat-12', name: 'Tabungan & Deposito', icon: 'piggy-bank', image: '' },
-			{ id: 'cat-13', name: 'Asuransi & Proteksi', icon: 'shield-halved', image: '' },
-			{ id: 'cat-14', name: 'Sosial & Sedekah', icon: 'handshake', image: '' },
+			{ id: 'cat-13', name: 'Asuransi & Proteksi', icon: 'shield-check', image: '' },
+			{ id: 'cat-14', name: 'Sosial & Sedekah', icon: 'heart-handshake', image: '' },
 			{ id: 'cat-15', name: 'Lain-lain', icon: 'box', image: '' }
 		];
 
@@ -1349,7 +1333,7 @@
 		let themeSettings = {
 			themeMode: 'dark-slate',
 			accentColor: 'teal',
-			fontFamily: 'Plus Jakarta Sans',
+			fontFamily: 'Quicksand',
 			fontSize: 15,
 			fontWeight: '400'
 		};
@@ -1372,18 +1356,9 @@
 		let calcNewInput = true;
 
 		// ==========================================
-		// 2. HAPTIC FEEDBACK (200ms) & SOUND FX
+		// 2. SOUND & HELPER FUNCTIONS
 		// ==========================================
-		function triggerHaptic(duration = 200) {
-			if ('vibrate' in navigator) {
-				try {
-					navigator.vibrate(duration);
-				} catch (e) {}
-			}
-		}
-
 		function playSoundFX(type = 'click') {
-			triggerHaptic(200);
 			if (!appSettings.soundFxEnabled) return;
 			try {
 				const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -1437,26 +1412,27 @@
 			const toast = document.createElement('div');
 
 			let bgBorder = 'bg-slate-900/95 border-slate-800 text-slate-200';
-			let icon = 'fa-solid fa-circle-info';
+			let icon = 'info';
 
 			if (type === 'success') {
 				bgBorder = 'bg-slate-900/95 border-emerald-500/40 text-emerald-400';
-				icon = 'fa-solid fa-circle-check';
+				icon = 'check-circle';
 			} else if (type === 'warning') {
 				bgBorder = 'bg-slate-900/95 border-amber-500/40 text-amber-400';
-				icon = 'fa-solid fa-triangle-exclamation';
+				icon = 'alert-triangle';
 			} else if (type === 'danger') {
 				bgBorder = 'bg-slate-900/95 border-rose-500/40 text-rose-400';
-				icon = 'fa-solid fa-circle-exclamation';
+				icon = 'alert-circle';
 			}
 
-			toast.className = `fintech-card p-3 rounded-xl border shadow-xl flex items-center gap-2.5 text-xs font-semibold pointer-events-auto animate-toast-in ${bgBorder}`;
+			toast.className = `glass-card p-3 rounded-xl border shadow-xl flex items-center gap-2.5 text-xs font-semibold pointer-events-auto animate-toast-in ${bgBorder}`;
 			toast.innerHTML = `
-				<i class="${icon} text-sm shrink-0"></i>
+				<i data-lucide="${icon}" class="w-4 h-4 shrink-0"></i>
 				<span class="flex-1">${message}</span>
 			`;
 
 			container.appendChild(toast);
+			if (window.lucide) lucide.createIcons();
 
 			setTimeout(() => {
 				toast.classList.remove('animate-toast-in');
@@ -1465,7 +1441,7 @@
 			}, 3200);
 		}
 
-		function renderCategoryIconHTML(catName, extraClasses = "text-cyan-400 text-sm") {
+		function renderCategoryIconHTML(catName, extraClasses = "w-4 h-4 text-cyan-400") {
 			const safeCatName = (catName || '').toLowerCase().trim();
 			const cat = userCategories.find(c => c && c.name && c.name.toLowerCase().trim() === safeCatName);
 			if (cat) {
@@ -1473,22 +1449,22 @@
 					return `<img src="${cat.image}" class="w-4 h-4 object-cover rounded-full shrink-0" alt="${cat.name}">`;
 				}
 				if (cat.icon) {
-					const cleanIcon = cat.icon.split(' ')[0].replace('fa-', '');
-					return `<i class="fa-solid fa-${cleanIcon} ${extraClasses} shrink-0"></i>`;
+					const cleanIcon = cat.icon.split(' ')[0];
+					return `<i data-lucide="${cleanIcon}" class="${extraClasses} shrink-0"></i>`;
 				}
 			}
-			return `<i class="fa-solid fa-box ${extraClasses} shrink-0"></i>`;
+			return `<i data-lucide="box" class="${extraClasses} shrink-0"></i>`;
 		}
 
 		// ==========================================
-		// 3. INBOX & NOTIFICATION ENGINE
+		// 3. INBOX & NOTIFICATION LOGGING ENGINE
 		// ==========================================
 		function addInboxMessage(title, message, type = 'info') {
 			const newMsg = {
 				id: 'inb-' + Date.now(),
 				title,
 				message,
-				type,
+				type, // 'info', 'warning', 'transaction', 'system'
 				date: getFormattedDate(0),
 				time: getFormattedTime(),
 				read: false
@@ -1522,7 +1498,6 @@
 		}
 
 		function closeInboxModal() {
-			triggerHaptic(200);
 			document.getElementById('inbox-modal').classList.add('hidden');
 		}
 
@@ -1548,35 +1523,36 @@
 
 			if (filtered.length === 0) {
 				container.innerHTML = `
-					<div class="py-10 text-center fintech-card rounded-2xl border border-slate-800">
-						<i class="fa-solid fa-bell-slash text-2xl text-slate-600 mx-auto mb-2 block"></i>
+					<div class="py-10 text-center glass-card rounded-2xl border border-slate-800">
+						<i data-lucide="bell-off" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i>
 						<p class="text-slate-400 text-xs">Kotak masuk kosong.</p>
 					</div>
 				`;
+				if (window.lucide) lucide.createIcons();
 				updateInboxBadgeUI();
 				return;
 			}
 
 			container.innerHTML = filtered.map(item => {
 				let typeBg = 'bg-slate-900 border-slate-800 text-slate-400';
-				let typeIcon = 'fa-solid fa-circle-info';
+				let typeIcon = 'info';
 
 				if (item.type === 'warning') {
 					typeBg = 'bg-amber-500/10 border-amber-500/20 text-amber-400';
-					typeIcon = 'fa-solid fa-triangle-exclamation';
+					typeIcon = 'alert-triangle';
 				} else if (item.type === 'transaction') {
 					typeBg = 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400';
-					typeIcon = 'fa-solid fa-receipt';
+					typeIcon = 'receipt';
 				} else if (item.type === 'system') {
 					typeBg = 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400';
-					typeIcon = 'fa-solid fa-shield-halved';
+					typeIcon = 'shield-check';
 				}
 
 				return `
 					<div onclick="toggleReadInboxItem('${item.id}')" class="p-3 rounded-xl border transition cursor-pointer flex items-start justify-between gap-3 ${item.read ? 'bg-slate-900/60 border-slate-800/80 opacity-75' : 'bg-slate-900 border-slate-700 font-semibold shadow-sm'}">
 						<div class="flex items-start gap-2.5">
 							<div class="p-2 rounded-lg border ${typeBg} shrink-0 mt-0.5">
-								<i class="${typeIcon} text-xs"></i>
+								<i data-lucide="${typeIcon}" class="w-3.5 h-3.5"></i>
 							</div>
 							<div>
 								<div class="flex items-center gap-1.5">
@@ -1584,21 +1560,21 @@
 									${!item.read ? '<span class="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>' : ''}
 								</div>
 								<p class="text-[11px] text-slate-300 leading-snug mt-0.5">${item.message}</p>
-								<p class="text-[9px] text-slate-500 mt-1">${item.date} • ${item.time}</p>
+								<p class="text-[9px] text-slate-500 font-mono mt-1">${item.date} • ${item.time}</p>
 							</div>
 						</div>
 						<button onclick="event.stopPropagation(); deleteInboxItem('${item.id}')" class="p-1 text-slate-500 hover:text-rose-400 transition shrink-0">
-							<i class="fa-solid fa-trash-can text-xs"></i>
+							<i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
 						</button>
 					</div>
 				`;
 			}).join('');
 
+			if (window.lucide) lucide.createIcons();
 			updateInboxBadgeUI();
 		}
 
 		function toggleReadInboxItem(id) {
-			triggerHaptic(200);
 			const idx = inbox.findIndex(i => i.id === id);
 			if (idx !== -1) {
 				inbox[idx].read = !inbox[idx].read;
@@ -1648,6 +1624,7 @@
 			root.style.setProperty('--app-accent-border', pal.border);
 			root.style.setProperty('--app-accent-text', pal.text);
 
+			// Highlight selected color swatch in settings
 			Object.keys(ACCENT_PALETTES).forEach(k => {
 				const btn = document.getElementById(`accent-swatch-${k}`);
 				if (btn) btn.textContent = k === colorKey ? '✓' : '';
@@ -1655,7 +1632,7 @@
 		}
 
 		// ==========================================
-		// 5. STORAGE & STATE ENGINE
+		// 5. STORAGE & STATE PERSISTENCE ENGINE
 		// ==========================================
 		function loadAppState() {
 			try {
@@ -1782,6 +1759,7 @@
 		function updateNotificationUI() {
 			const statusNotifElem = document.getElementById('settings-notif-status');
 			const btnToggleNotif = document.getElementById('btn-toggle-notif');
+			const btnNotifTop = document.getElementById('btn-inbox-top');
 			const statusDot = document.getElementById('header-status-dot');
 
 			if (appSettings.notificationEnabled) {
@@ -1837,12 +1815,12 @@
 
 			const avatarContent = userProfile.photo
 				? `<img src="${userProfile.photo}" class="w-full h-full object-cover">`
-				: `<i class="fa-solid fa-user text-slate-400 text-sm"></i>`;
+				: `<i data-lucide="user" class="w-4 h-4 text-slate-400"></i>`;
 
 			avatarContainer.innerHTML = avatarContent;
 			settingsAvatarContainer.innerHTML = userProfile.photo
 				? `<img src="${userProfile.photo}" class="w-full h-full object-cover">`
-				: `<i class="fa-solid fa-user text-slate-400 text-lg"></i>`;
+				: `<i data-lucide="user" class="w-6 h-6 text-slate-400"></i>`;
 
 			document.getElementById('settings-user-name').textContent = userProfile.name || 'Pengguna ArthaPulse';
 			document.getElementById('settings-user-phone').textContent = userProfile.phone || 'Belum diisi';
@@ -1851,20 +1829,19 @@
 		}
 
 		function openProfileModal() {
-			playSoundFX('click');
 			document.getElementById('profile-name-input').value = userProfile.name || '';
 			document.getElementById('profile-phone-input').value = userProfile.phone || '';
 
 			const modalAvatar = document.getElementById('modal-avatar-preview');
 			modalAvatar.innerHTML = userProfile.photo
 				? `<img src="${userProfile.photo}" class="w-full h-full object-cover">`
-				: `<i class="fa-solid fa-user text-slate-400 text-2xl"></i>`;
+				: `<i data-lucide="user" class="w-8 h-8 text-slate-400"></i>`;
 
 			document.getElementById('profile-modal').classList.remove('hidden');
+			if (window.lucide) lucide.createIcons();
 		}
 
 		function closeProfileModal() {
-			triggerHaptic(200);
 			document.getElementById('profile-modal').classList.add('hidden');
 		}
 
@@ -1899,7 +1876,6 @@
 		// 8. CATEGORIES MANAGER ENGINE
 		// ==========================================
 		function openCategoryManagerModal() {
-			playSoundFX('click');
 			renderCategoryIconPickerGrid();
 			renderCategoryManagerList();
 			document.getElementById('cat-edit-id').value = '';
@@ -1909,10 +1885,10 @@
 			customCatImageTemp = '';
 
 			document.getElementById('category-modal').classList.remove('hidden');
+			if (window.lucide) lucide.createIcons();
 		}
 
 		function closeCategoryManagerModal() {
-			triggerHaptic(200);
 			document.getElementById('category-modal').classList.add('hidden');
 		}
 
@@ -1922,13 +1898,14 @@
 
 			grid.innerHTML = STANDARD_ICON_LIST.map(ic => `
 				<button type="button" onclick="selectCategoryIcon('${ic}')" class="p-2 rounded-xl flex items-center justify-center border transition ${selectedIcon === ic ? 'accent-bg-light accent-border accent-text' : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'}">
-					<i class="fa-solid fa-${ic} text-xs"></i>
+					<i data-lucide="${ic}" class="w-4 h-4"></i>
 				</button>
 			`).join('');
+
+			if (window.lucide) lucide.createIcons();
 		}
 
 		function selectCategoryIcon(ic) {
-			triggerHaptic(200);
 			document.getElementById('cat-selected-icon').value = ic;
 			customCatImageTemp = '';
 			document.getElementById('cat-image-status').textContent = 'Ikon dipilih: ' + ic;
@@ -1987,18 +1964,19 @@
 			container.innerHTML = userCategories.map(c => `
 				<div class="p-2 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
 					<div class="flex items-center gap-2">
-						${c.image ? `<img src="${c.image}" class="w-4 h-4 rounded-full object-cover">` : `<i class="fa-solid fa-${(c.icon || 'box').split(' ')[0]} accent-text text-xs"></i>`}
+						${c.image ? `<img src="${c.image}" class="w-4 h-4 rounded-full object-cover">` : `<i data-lucide="${(c.icon || 'box').split(' ')[0]}" class="w-4 h-4 accent-text"></i>`}
 						<span class="font-bold text-slate-200">${c.name}</span>
 					</div>
 					<button onclick="deleteCategory('${c.id}')" class="p-1 text-slate-500 hover:text-rose-400 transition">
-						<i class="fa-solid fa-trash-can text-xs"></i>
+						<i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
 					</button>
 				</div>
 			`).join('');
+
+			if (window.lucide) lucide.createIcons();
 		}
 
 		function deleteCategory(id) {
-			triggerHaptic(200);
 			if (userCategories.length <= 1) {
 				showToast('Minimal harus menyisakan 1 kategori', 'warning');
 				return;
@@ -2011,7 +1989,7 @@
 		}
 
 		// ==========================================
-		// 9. THEME & UNIVERSAL FONT ENGINE
+		// 9. THEME & FONT CUSTOMIZATION ENGINE
 		// ==========================================
 		function applyCustomTheme() {
 			const mode = document.getElementById('setting-theme-mode').value;
@@ -2029,11 +2007,10 @@
 			themeSettings.fontWeight = weight;
 			saveAppState();
 
-			// Universal CSS Variable Application for Text & Financial Numbers
-			const root = document.documentElement;
-			root.style.setProperty('--app-font-family', `'${font}', sans-serif`);
-			root.style.setProperty('--app-font-weight', weight);
+			// Apply CSS Root Font Weight (Affects Numbers & Text)
+			document.documentElement.style.setProperty('--app-font-weight', weight);
 
+			document.body.style.fontFamily = `'${font}', sans-serif`;
 			document.body.style.fontSize = `${size}px`;
 			document.getElementById('setting-font-size-label').textContent = `${size}px`;
 
@@ -2064,7 +2041,7 @@
 
 		function syncSettingsUI() {
 			document.getElementById('setting-theme-mode').value = themeSettings.themeMode || 'dark-slate';
-			document.getElementById('setting-font-family').value = themeSettings.fontFamily || 'Plus Jakarta Sans';
+			document.getElementById('setting-font-family').value = themeSettings.fontFamily || 'Quicksand';
 			document.getElementById('setting-font-size').value = themeSettings.fontSize || 15;
 
 			document.querySelectorAll('input[name="font-weight-opt"]').forEach(r => {
@@ -2076,7 +2053,7 @@
 		}
 
 		// ==========================================
-		// 10. NAVIGATION & ANIMATED TAB SWITCHER
+		// 10. NAVIGATION & TAB SWITCHER ENGINE
 		// ==========================================
 		function switchTab(tabId) {
 			playSoundFX('click');
@@ -2088,11 +2065,6 @@
 				
 				if (t === tabId) {
 					content.classList.remove('hidden');
-					// Trigger Animation Restart
-					content.classList.remove('tab-pane');
-					void content.offsetWidth;
-					content.classList.add('tab-pane');
-
 					btn.className = "flex flex-col items-center gap-0.5 p-1 accent-text transition w-1/6 font-bold";
 				} else {
 					content.classList.add('hidden');
@@ -2110,10 +2082,12 @@
 			if (tabId === 'tools') {
 				restoreToolsCalculatorState();
 			}
+
+			if (window.lucide) lucide.createIcons();
 		}
 
 		// ==========================================
-		// 11. DASHBOARD & RECENT TRANSACTIONS
+		// 11. DASHBOARD & REDESIGNED RECENT TRANSACTIONS
 		// ==========================================
 		function updateDashboard() {
 			let totalInc = 0;
@@ -2248,6 +2222,7 @@
 			container.innerHTML = advice.map(a => `<p class="text-[10px] text-slate-400 leading-snug">${a}</p>`).join('');
 		}
 
+		// REDESIGNED PROFESSIONAL RECENT TRANSACTIONS LIST
 		function renderRecentTransactions() {
 			const container = document.getElementById('recent-transactions-list');
 			const sorted = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
@@ -2255,10 +2230,11 @@
 			if (sorted.length === 0) {
 				container.innerHTML = `
 					<div class="py-6 text-center border border-dashed border-slate-800 rounded-xl">
-						<i class="fa-solid fa-receipt text-2xl text-slate-600 mx-auto mb-1 block"></i>
+						<i data-lucide="receipt" class="w-6 h-6 text-slate-600 mx-auto mb-1"></i>
 						<p class="text-[10px] text-slate-500">Belum ada transaksi tercatat.</p>
 					</div>
 				`;
+				if (window.lucide) lucide.createIcons();
 				return;
 			}
 
@@ -2271,33 +2247,35 @@
 					<div class="p-3 bg-slate-900/90 hover:bg-slate-900 rounded-2xl border border-slate-800/90 shadow-sm flex items-center justify-between gap-3 transition">
 						<div class="flex items-center gap-3 overflow-hidden">
 							<div class="w-10 h-10 rounded-xl ${badgeBg} border flex items-center justify-center shrink-0 shadow-inner">
-								${renderCategoryIconHTML(t.category, isInc ? 'text-emerald-400 text-xs' : 'text-rose-400 text-xs')}
+								${renderCategoryIconHTML(t.category, isInc ? 'w-4 h-4 text-emerald-400' : 'w-4 h-4 text-rose-400')}
 							</div>
 							<div class="truncate">
 								<div class="flex items-center gap-1.5">
 									<h4 class="text-xs font-bold text-slate-100 truncate">${t.notes || t.category}</h4>
 									<span class="px-1.5 py-0.2 rounded-full text-[8px] font-extrabold border ${badgeBg}">${badgeLabel}</span>
 								</div>
-								<p class="text-[10px] text-slate-400 mt-0.5">${t.category} • <span class="text-slate-500">${t.date}</span></p>
+								<p class="text-[10px] text-slate-400 mt-0.5">${t.category} • <span class="font-mono text-slate-500">${t.date}</span></p>
 							</div>
 						</div>
 
 						<div class="text-right shrink-0">
-							<span class="text-xs font-extrabold block ${isInc ? 'text-emerald-400' : 'text-rose-400'}">
+							<span class="text-xs font-extrabold font-mono block ${isInc ? 'text-emerald-400' : 'text-rose-400'}">
 								${isInc ? '+' : '-'}${formatIDR(t.amount)}
 							</span>
 							<div class="flex items-center justify-end gap-1 mt-1">
 								<button onclick="editTransaction('${t.id}')" title="Edit" class="p-1 rounded-md hover:bg-slate-800 text-slate-500 hover:text-cyan-400 transition">
-									<i class="fa-solid fa-pen-to-square text-xs"></i>
+									<i data-lucide="edit-3" class="w-3 h-3"></i>
 								</button>
 								<button onclick="deleteTransaction('${t.id}')" title="Hapus" class="p-1 rounded-md hover:bg-slate-800 text-slate-500 hover:text-rose-400 transition">
-									<i class="fa-solid fa-trash-can text-xs"></i>
+									<i data-lucide="trash-2" class="w-3 h-3"></i>
 								</button>
 							</div>
 						</div>
 					</div>
 				`;
 			}).join('');
+
+			if (window.lucide) lucide.createIcons();
 		}
 
 		// ==========================================
@@ -2374,10 +2352,10 @@
 			emptyState.classList.add('hidden');
 
 			container.innerHTML = filtered.map(t => `
-				<div class="fintech-card p-3 rounded-2xl border border-slate-800 flex items-center justify-between hover:border-slate-700 transition">
+				<div class="glass-card p-3 rounded-2xl border border-slate-800 flex items-center justify-between hover:border-slate-700 transition">
 					<div class="flex items-center gap-3 overflow-hidden">
 						<div class="p-2.5 rounded-xl ${t.type === 'income' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} shrink-0 flex items-center justify-center">
-							${renderCategoryIconHTML(t.category, t.type === 'income' ? 'text-emerald-400 text-xs' : 'text-rose-400 text-xs')}
+							${renderCategoryIconHTML(t.category, t.type === 'income' ? 'w-4 h-4 text-emerald-400' : 'w-4 h-4 text-rose-400')}
 						</div>
 						<div class="truncate">
 							<h4 class="text-xs font-bold text-slate-100 truncate">${t.notes || t.category}</h4>
@@ -2386,27 +2364,28 @@
 					</div>
 
 					<div class="flex items-center gap-3 shrink-0">
-						<span class="text-xs font-bold ${t.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}">
+						<span class="text-xs font-bold font-mono ${t.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}">
 							${t.type === 'income' ? '+' : '-'}${formatIDR(t.amount)}
 						</span>
 						<div class="flex items-center gap-1">
 							<button onclick="editTransaction('${t.id}')" class="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-cyan-400 transition">
-								<i class="fa-solid fa-pen-to-square text-xs"></i>
+								<i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
 							</button>
 							<button onclick="deleteTransaction('${t.id}')" class="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-rose-400 transition">
-								<i class="fa-solid fa-trash-can text-xs"></i>
+								<i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
 							</button>
 						</div>
 					</div>
 				</div>
 			`).join('');
+
+			if (window.lucide) lucide.createIcons();
 		}
 
 		// ==========================================
 		// 13. TRANSACTION MODAL HANDLERS
 		// ==========================================
 		function openTxModal() {
-			playSoundFX('click');
 			document.getElementById('tx-id').value = '';
 			document.getElementById('form-title').textContent = 'Tambah Transaksi';
 			document.getElementById('submit-btn-text').textContent = 'Simpan Catatan';
@@ -2419,12 +2398,10 @@
 		}
 
 		function closeTxModal() {
-			triggerHaptic(200);
 			document.getElementById('tx-modal').classList.add('hidden');
 		}
 
 		function setType(type) {
-			triggerHaptic(200);
 			document.getElementById('tx-type').value = type;
 			const btnInc = document.getElementById('btn-type-income');
 			const btnExp = document.getElementById('btn-type-expense');
@@ -2495,7 +2472,6 @@
 		}
 
 		function editTransaction(id) {
-			playSoundFX('click');
 			const t = transactions.find(item => item.id === id);
 			if (!t) return;
 
@@ -2524,7 +2500,7 @@
 		}
 
 		// ==========================================
-		// 14. KANTONG (POCKETS) ENGINE WITH MUTATION
+		// 14. KANTONG (POCKETS) ENGINE WITH TRANSFER
 		// ==========================================
 		function renderPockets() {
 			const container = document.getElementById('pockets-grid-container');
@@ -2537,22 +2513,23 @@
 
 			if (pockets.length === 0) {
 				container.innerHTML = `
-					<div class="py-8 text-center fintech-card rounded-2xl border border-slate-800">
-						<i class="fa-solid fa-wallet text-2xl text-slate-600 mx-auto mb-2 block"></i>
+					<div class="py-8 text-center glass-card rounded-2xl border border-slate-800">
+						<i data-lucide="wallet-cards" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i>
 						<p class="text-slate-400 text-xs">Belum ada kantong simpanan terdaftar.</p>
 					</div>
 				`;
+				if (window.lucide) lucide.createIcons();
 				return;
 			}
 
 			container.innerHTML = pockets.map(p => {
 				const percent = p.target > 0 ? Math.min(100, Math.round((p.balance / p.target) * 100)) : 100;
 				return `
-					<div class="fintech-card p-4 rounded-2xl border border-slate-800 space-y-3">
+					<div class="glass-card p-4 rounded-2xl border border-slate-800 space-y-3">
 						<div class="flex items-center justify-between">
 							<div class="flex items-center gap-2.5">
-								<div class="p-2.5 bg-slate-900 text-indigo-400 rounded-xl border border-slate-800">
-									<i class="fa-solid fa-folder text-sm"></i>
+								<div class="p-2 bg-slate-900 text-indigo-400 rounded-xl border border-slate-800">
+									<i data-lucide="folder" class="w-4 h-4"></i>
 								</div>
 								<div>
 									<h4 class="text-xs font-bold text-slate-100">${p.name}</h4>
@@ -2563,19 +2540,19 @@
 								<button onclick="openPocketMutationModal('${p.id}')" class="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-indigo-400 border border-slate-800 text-[10px] font-bold rounded-lg transition">
 									Setor / Tarik / Transfer
 								</button>
-								<button onclick="editPocket('${p.id}')" class="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-cyan-400 transition">
-									<i class="fa-solid fa-pen-to-square text-xs"></i>
+								<button onclick="editPocket('${p.id}')" class="p-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-cyan-400 transition">
+									<i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
 								</button>
-								<button onclick="deletePocket('${p.id}')" class="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-rose-400 transition">
-									<i class="fa-solid fa-trash-can text-xs"></i>
+								<button onclick="deletePocket('${p.id}')" class="p-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-rose-400 transition">
+									<i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
 								</button>
 							</div>
 						</div>
 
 						<div>
 							<div class="flex justify-between items-baseline mb-1">
-								<span class="text-sm font-bold text-slate-100">${formatIDR(p.balance)}</span>
-								<span class="text-[10px] font-bold text-indigo-400">${percent}%</span>
+								<span class="text-sm font-black text-slate-100 font-mono">${formatIDR(p.balance)}</span>
+								<span class="text-[10px] font-mono font-bold text-indigo-400">${percent}%</span>
 							</div>
 							<div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
 								<div class="h-full bg-indigo-500 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
@@ -2584,10 +2561,11 @@
 					</div>
 				`;
 			}).join('');
+
+			if (window.lucide) lucide.createIcons();
 		}
 
 		function openPocketModal() {
-			playSoundFX('click');
 			document.getElementById('pocket-id').value = '';
 			document.getElementById('pocket-modal-title').textContent = 'Kantong Simpanan Baru';
 			document.getElementById('pocket-name').value = '';
@@ -2597,7 +2575,6 @@
 		}
 
 		function closePocketModal() {
-			triggerHaptic(200);
 			document.getElementById('pocket-modal').classList.add('hidden');
 		}
 
@@ -2637,7 +2614,6 @@
 		}
 
 		function editPocket(id) {
-			playSoundFX('click');
 			const p = pockets.find(item => item.id === id);
 			if (!p) return;
 
@@ -2662,7 +2638,6 @@
 		}
 
 		function openPocketMutationModal(id) {
-			playSoundFX('click');
 			const p = pockets.find(item => item.id === id);
 			if (!p) return;
 
@@ -2682,12 +2657,10 @@
 		}
 
 		function closePocketMutationModal() {
-			triggerHaptic(200);
 			document.getElementById('pocket-mutation-modal').classList.add('hidden');
 		}
 
 		function setMutationType(type) {
-			triggerHaptic(200);
 			document.getElementById('mutation-type').value = type;
 			const btnDep = document.getElementById('btn-mut-dep');
 			const btnWd = document.getElementById('btn-mut-wd');
@@ -2760,7 +2733,6 @@
 		// 15. REKAP & PRECISION ANALYTICS ENGINE
 		// ==========================================
 		function setRecapType(type) {
-			playSoundFX('click');
 			currentRecapType = type;
 			saveAppState();
 
@@ -2892,9 +2864,9 @@
 					<div class="space-y-1">
 						<div class="flex justify-between items-center text-[10px]">
 							<span class="text-slate-300 font-medium flex items-center gap-1.5">
-								${renderCategoryIconHTML(cat, 'text-slate-400 text-xs')} ${cat}
+								${renderCategoryIconHTML(cat, 'w-3 h-3 text-slate-400')} ${cat}
 							</span>
-							<span class="font-bold text-slate-200">${formatIDR(val)} (${pct}%)</span>
+							<span class="font-bold font-mono text-slate-200">${formatIDR(val)} (${pct}%)</span>
 						</div>
 						<div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden border border-slate-800">
 							<div class="h-full rounded-full transition-all duration-500" style="width: ${pct}%; background-color: ${col}"></div>
@@ -3044,7 +3016,6 @@
 		}
 
 		function saveToolsStateManual() {
-			playSoundFX('click');
 			saveToolsStateAuto();
 			showToast('Hasil & masukan kalkulator berhasil disimpan', 'success');
 		}
@@ -3082,7 +3053,6 @@
 		}
 
 		function calculateStockAveraging() {
-			playSoundFX('click');
 			const lot1 = Number(document.getElementById('avg-lot1').value) || 0;
 			const price1 = parseDotNumber(document.getElementById('avg-price1').value);
 			const lot2 = Number(document.getElementById('avg-lot2').value) || 0;
@@ -3134,7 +3104,6 @@
 		}
 
 		function calculate503020Split() {
-			playSoundFX('click');
 			const income = parseDotNumber(document.getElementById('split-income-input').value);
 			if (income <= 0) {
 				showToast('Masukkan total pemasukan bulanan', 'warning');
@@ -3153,7 +3122,6 @@
 		}
 
 		function applySplitToBudgetLimit() {
-			playSoundFX('click');
 			const income = parseDotNumber(document.getElementById('split-income-input').value);
 			if (income > 0) {
 				budgetLimit = Math.round(income * 0.5);
@@ -3164,7 +3132,6 @@
 		}
 
 		function calculateEmergencyFund() {
-			playSoundFX('click');
 			const exp = parseDotNumber(document.getElementById('ef-monthly-exp').value);
 			const mult = Number(document.getElementById('ef-profile').value);
 
@@ -3180,7 +3147,6 @@
 		}
 
 		function calculateInvestmentGrowth() {
-			playSoundFX('click');
 			const P = parseDotNumber(document.getElementById('inv-initial').value);
 			const PMT = parseDotNumber(document.getElementById('inv-monthly').value);
 			const rate = Number(document.getElementById('inv-rate').value) / 100 / 12;
@@ -3205,7 +3171,6 @@
 		}
 
 		function calculateSavingsPlan() {
-			playSoundFX('click');
 			const target = parseDotNumber(document.getElementById('plan-target-amount').value);
 			const months = Number(document.getElementById('plan-target-months').value);
 
@@ -3280,7 +3245,6 @@
 		}
 
 		function applyCalcToForm() {
-			playSoundFX('click');
 			const val = parseDotNumber(calcScreenVal);
 			if (val > 0) {
 				openTxModal();
@@ -3308,7 +3272,7 @@
 		}
 
 		// ==========================================
-		// 17. BACKUP & EXPORT HANDLERS
+		// 17. 100% COMPLETE BACKUP & RESET HANDLERS
 		// ==========================================
 		function handleSaveBudget(e) {
 			e.preventDefault();
@@ -3321,7 +3285,6 @@
 		}
 
 		function exportToCSV() {
-			playSoundFX('click');
 			let csv = 'ID,Jenis,Nominal,Kategori,Tanggal,Catatan\n';
 			transactions.forEach(t => {
 				csv += `"${t.id}","${t.type}","${t.amount}","${t.category}","${t.date}","${(t.notes || '').replace(/"/g, '""')}"\n`;
@@ -3337,8 +3300,8 @@
 			addInboxMessage('Ekspor CSV', 'Data transaksi telah diunduh dalam format CSV.', 'system');
 		}
 
+		// FULL COMPLETE 100% JSON BACKUP EXPORT
 		function exportToJSON() {
-			playSoundFX('click');
 			const data = {
 				transactions,
 				budgetLimit,
@@ -3362,6 +3325,7 @@
 			addInboxMessage('Cadangan Diunduh', 'Cadangan data 100% lengkap berhasil diunduh.', 'system');
 		}
 
+		// FULL COMPLETE 100% JSON RESTORE IMPORT
 		function handleImportJSON(e) {
 			const file = e.target.files[0];
 			if (!file) return;
@@ -3454,7 +3418,6 @@
 		}
 
 		function openConfirmModal(title, msg, callback) {
-			playSoundFX('click');
 			document.getElementById('confirm-title').textContent = title;
 			document.getElementById('confirm-message').textContent = msg;
 			confirmCallback = callback;
@@ -3462,7 +3425,6 @@
 		}
 
 		function closeConfirmModal(result) {
-			triggerHaptic(200);
 			document.getElementById('confirm-modal').classList.add('hidden');
 			if (confirmCallback) confirmCallback(result);
 			confirmCallback = null;
@@ -3493,6 +3455,8 @@
 			renderPockets();
 			restoreToolsCalculatorState();
 			bindToolsAutoSave();
+
+			if (window.lucide) lucide.createIcons();
 		});
 	</script>
 </body>
