@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#100b25">
+	<title>Happy Birthday!</title>
+	<meta property="og:title" content="Faiz Syamsie">
+	<meta property="og:description" content="Selamat Ulang Tahun">
+	<style>
+		:root {
+			--bg: #100b25;
+			--pink: #ff78bd;
+			--purple: #a88bff;
+			--cyan: #78e6ff;
+			--gold: #ffe09a;
+			--white: #fffaff;
+			--muted: #c4badc;
+		}
+
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		html {
+			scroll-behavior: smooth;
+		}
+
+		body {
+			min-height: 100vh;
+			overflow-x: hidden;
+			color: var(--white);
+			font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+			background:
+				radial-gradient(ellipse at 15% 10%, rgba(167, 91, 255, 0.28), transparent 35%),
+				radial-gradient(ellipse at 90% 30%, rgba(255, 91, 177, 0.18), transparent 32%),
+				radial-gradient(ellipse at 50% 100%, rgba(71, 184, 255, 0.15), transparent 40%),
+				var(--bg);
+		}
+
+		button {
+			font: inherit;
+		}
+
+		#particles,
+		#confetti {
+			position: fixed;
+			inset: 0;
+			z-index: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+		}
+
+		.ambient {
+			position: fixed;
+			z-index: 0;
+			width: 360px;
+			height: 360px;
+			border-radius: 50%;
+			filter: blur(90px);
+			opacity: 0.18;
+			pointer-events: none;
+			animation: ambientFloat 12s ease-in-out infinite alternate;
+		}
+
+		.ambient-one {
+			top: 10%;
+			left: -180px;
+			background: #a45cff;
+		}
+
+		.ambient-two {
+			right: -180px;
+			bottom: 8%;
+			background: #ff5fae;
+			animation-delay: -5s;
+		}
+
+		@keyframes ambientFloat {
+			to {
+				transform: translate(60px, -40px) scale(1.2);
+			}
+		}
+
+		.page {
+			position: relative;
+			z-index: 1;
+			width: min(100% - 32px, 960px);
+			margin: 0 auto;
+			padding: 42px 0 30px;
+		}
+
+		.topbar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			margin-bottom: 24px;
+		}
+
+		.brand {
+			display: flex;
+			align-items: center;
+			gap: 9px;
+			color: #eee5ff;
+			font-size: 0.82rem;
+			font-weight: 800;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+		}
+
+		.brand-mark {
+			display: grid;
+			width: 34px;
+			height: 34px;
+			place-items: center;
+			border: 1px solid rgba(255, 255, 255, 0.22);
+			border-radius: 12px;
+			background: linear-gradient(135deg, #ff78bd, #9c7cff);
+			box-shadow: 0 5px 25px rgba(206, 105, 255, 0.35);
+		}
+
+		.top-actions {
+			display: flex;
+			gap: 8px;
+		}
+
+		.icon-button {
+			display: grid;
+			width: 40px;
+			height: 40px;
+			place-items: center;
+			border: 1px solid rgba(255, 255, 255, 0.15);
+			border-radius: 50%;
+			color: white;
+			background: rgba(255, 255, 255, 0.07);
+			cursor: pointer;
+			transition: 0.2s ease;
+		}
+
+		.icon-button:hover {
+			transform: translateY(-3px);
+			background: rgba(255, 255, 255, 0.15);
+		}
+
+		.hero {
+			position: relative;
+			overflow: hidden;
+			padding: clamp(28px, 6vw, 66px);
+			border: 1px solid rgba(255, 255, 255, 0.18);
+			border-radius: 34px;
+			background:
+				linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.035)),
+				rgba(24, 15, 48, 0.72);
+			box-shadow: 0 35px 100px rgba(0, 0, 0, 0.35), inset 0 1px rgba(255, 255, 255, 0.12);
+			backdrop-filter: blur(22px);
+			text-align: center;
+		}
+
+		.hero::before {
+			position: absolute;
+			top: -190px;
+			left: 50%;
+			width: 470px;
+			height: 350px;
+			border-radius: 50%;
+			background: rgba(174, 111, 255, 0.22);
+			content: "";
+			filter: blur(75px);
+			transform: translateX(-50%);
+			pointer-events: none;
+		}
+
+		.hero::after {
+			position: absolute;
+			right: -100px;
+			bottom: -170px;
+			width: 300px;
+			height: 300px;
+			border-radius: 50%;
+			background: rgba(255, 100, 174, 0.15);
+			content: "";
+			filter: blur(65px);
+			pointer-events: none;
+		}
+
+		.hero-content {
+			position: relative;
+			z-index: 1;
+		}
+
+		.pill {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 9px 15px;
+			border: 1px solid rgba(255, 255, 255, 0.19);
+			border-radius: 999px;
+			color: #ffe1f2;
+			background: rgba(255, 255, 255, 0.08);
+			font-size: 0.72rem;
+			font-weight: 800;
+			letter-spacing: 0.16em;
+			text-transform: uppercase;
+		}
+
+		.pulse-dot {
+			width: 7px;
+			height: 7px;
+			border-radius: 50%;
+			background: #82ffd1;
+			box-shadow: 0 0 13px #82ffd1;
+			animation: pulse 1.4s infinite;
+		}
+
+		@keyframes pulse {
+			50% {
+				opacity: 0.35;
+				transform: scale(0.65);
+			}
+		}
+
+		.photo-frame {
+			position: relative;
+			width: 204px;
+			height: 204px;
+			margin: 30px auto 22px;
+			padding: 6px;
+			border-radius: 50%;
+			background: conic-gradient(from 0deg, #ff8cc8, #ffe09a, #83eaff, #b28cff, #ff8cc8);
+			box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.035), 0 0 55px rgba(203, 122, 255, 0.35);
+			animation: ringRotate 9s linear infinite;
+		}
+
+		@keyframes ringRotate {
+			to {
+				filter: hue-rotate(360deg);
+			}
+		}
+
+		.profile-photo {
+			width: 100%;
+			height: 100%;
+			display: block;
+			border: 5px solid #1c1434;
+			border-radius: 50%;
+			object-fit: cover;
+			background: #2d214a;
+			animation: photoFloat 4s ease-in-out infinite;
+		}
+
+		@keyframes photoFloat {
+			50% {
+				transform: translateY(-5px);
+			}
+		}
+
+		.photo-tools {
+			display: flex;
+			justify-content: center;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+
+		.upload-label,
+		.text-button {
+			display: inline-flex;
+			align-items: center;
+			gap: 7px;
+			padding: 8px 13px;
+			border: 1px solid rgba(255, 255, 255, 0.16);
+			border-radius: 999px;
+			color: #f2eaff;
+			background: rgba(255, 255, 255, 0.07);
+			font-size: 0.76rem;
+			font-weight: 700;
+			cursor: pointer;
+			transition: 0.2s ease;
+		}
+
+		.upload-label:hover,
+		.text-button:hover {
+			border-color: var(--pink);
+			background: rgba(255, 120, 189, 0.13);
+		}
+
+		.upload-label input {
+			display: none;
+		}
+
+		.headline {
+			margin-top: 27px;
+			color: var(--gold);
+			font-size: 0.8rem;
+			font-weight: 900;
+			letter-spacing: 0.35em;
+			text-transform: uppercase;
+		}
+
+		h1 {
+			margin-top: 12px;
+			font-size: clamp(2.8rem, 9vw, 6.5rem);
+			font-weight: 950;
+			letter-spacing: -0.075em;
+			line-height: 0.98;
+			background: linear-gradient(100deg, #fff 12%, #ffd2eb 48%, #b7a6ff 76%, #8ceaff);
+			-webkit-background-clip: text;
+			background-clip: text;
+			color: transparent;
+			overflow-wrap: anywhere;
+			filter: drop-shadow(0 8px 24px rgba(255, 120, 189, 0.12));
+		}
+
+		.subtitle {
+			margin-top: 18px;
+			color: var(--muted);
+			font-size: clamp(0.92rem, 2.5vw, 1.08rem);
+			line-height: 1.7;
+		}
+
+		.info-grid {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 13px;
+			max-width: 570px;
+			margin: 34px auto 0;
+		}
+
+		.info-card {
+			padding: 20px 12px;
+			border: 1px solid rgba(255, 255, 255, 0.13);
+			border-radius: 20px;
+			background: rgba(12, 8, 29, 0.42);
+		}
+
+		.info-icon {
+			display: block;
+			margin-bottom: 9px;
+			font-size: 1.35rem;
+		}
+
+		.info-label {
+			display: block;
+			margin-bottom: 7px;
+			color: #aaa0c5;
+			font-size: 0.67rem;
+			font-weight: 800;
+			letter-spacing: 0.15em;
+			text-transform: uppercase;
+		}
+
+		.info-value {
+			font-size: clamp(1rem, 3vw, 1.22rem);
+			font-weight: 850;
+		}
+
+		.section {
+			margin-top: 22px;
+			padding: clamp(24px, 5vw, 38px);
+			border: 1px solid rgba(255, 255, 255, 0.13);
+			border-radius: 28px;
+			background: rgba(255, 255, 255, 0.055);
+			backdrop-filter: blur(18px);
+		}
+
+		.section-heading {
+			margin-bottom: 18px;
+			color: var(--gold);
+			font-size: 0.75rem;
+			font-weight: 900;
+			letter-spacing: 0.22em;
+			text-align: center;
+			text-transform: uppercase;
+		}
+
+		.message {
+			max-width: 700px;
+			margin: 0 auto;
+			color: #eee8fa;
+			font-size: 1rem;
+			line-height: 2;
+			text-align: center;
+			white-space: pre-line;
+		}
+
+		.wishes {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 12px;
+			margin-top: 20px;
+		}
+
+		.wish {
+			padding: 18px 12px;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 18px;
+			background: rgba(255, 255, 255, 0.045);
+			text-align: center;
+		}
+
+		.wish span {
+			display: block;
+			margin-bottom: 8px;
+			font-size: 1.5rem;
+		}
+
+		.wish strong {
+			font-size: 0.85rem;
+		}
+
+		.wish p {
+			margin-top: 5px;
+			color: var(--muted);
+			font-size: 0.73rem;
+			line-height: 1.5;
+		}
+
+		.gift-area {
+			display: grid;
+			place-items: center;
+			padding: 8px 0 0;
+			text-align: center;
+		}
+
+		.gift {
+			position: relative;
+			width: 105px;
+			height: 95px;
+			margin: 18px auto 20px;
+			border: 0;
+			background: transparent;
+			cursor: pointer;
+			animation: giftBounce 2s ease-in-out infinite;
+		}
+
+		@keyframes giftBounce {
+			0%, 100% {
+				transform: translateY(0) rotate(0);
+			}
+			50% {
+				transform: translateY(-9px) rotate(2deg);
+			}
+		}
+
+		.gift-box {
+			position: absolute;
+			right: 7px;
+			bottom: 0;
+			left: 7px;
+			height: 65px;
+			border: 2px solid rgba(255, 255, 255, 0.55);
+			border-radius: 9px;
+			background: linear-gradient(135deg, #ff78bd, #a36bff);
+			box-shadow: 0 12px 30px rgba(195, 93, 255, 0.25);
+		}
+
+		.gift-box::before {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 39%;
+			width: 19px;
+			background: #ffe09a;
+			content: "";
+		}
+
+		.gift-lid {
+			position: absolute;
+			top: 17px;
+			left: 0;
+			width: 105px;
+			height: 20px;
+			border: 2px solid rgba(255, 255, 255, 0.6);
+			border-radius: 7px;
+			background: linear-gradient(90deg, #ff9bca, #c18cff);
+			transition: transform 0.5s ease;
+		}
+
+		.gift-lid::before {
+			position: absolute;
+			top: -19px;
+			left: 38px;
+			width: 25px;
+			height: 18px;
+			border: 7px solid #ffe09a;
+			border-radius: 50% 50% 0 50%;
+			content: "";
+			transform: rotate(25deg);
+		}
+
+		.gift-lid::after {
+			position: absolute;
+			top: -19px;
+			left: 48px;
+			width: 25px;
+			height: 18px;
+			border: 7px solid #ffe09a;
+			border-radius: 50% 50% 50% 0;
+			content: "";
+			transform: rotate(-25deg);
+		}
+
+		.gift.open .gift-lid {
+			transform: translate(12px, -35px) rotate(18deg);
+		}
+
+		.gift-caption {
+			color: #f4eaff;
+			font-size: 0.92rem;
+			font-weight: 750;
+		}
+
+		.gift-note {
+			max-width: 550px;
+			max-height: 0;
+			overflow: hidden;
+			color: #f7d9ec;
+			font-size: 0.95rem;
+			line-height: 1.8;
+			opacity: 0;
+			transition: max-height 0.7s ease, opacity 0.5s ease, margin 0.5s ease;
+		}
+
+		.gift-note.show {
+			max-height: 250px;
+			margin-top: 17px;
+			opacity: 1;
+		}
+
+		.actions {
+			display: flex;
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: 11px;
+			margin-top: 26px;
+		}
+
+		.action-button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+			min-height: 47px;
+			padding: 12px 20px;
+			border: 1px solid rgba(255, 255, 255, 0.16);
+			border-radius: 999px;
+			color: white;
+			background: rgba(255, 255, 255, 0.075);
+			font-size: 0.84rem;
+			font-weight: 800;
+			cursor: pointer;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.action-button:hover {
+			transform: translateY(-3px);
+		}
+
+		.action-primary {
+			border: 0;
+			color: #281431;
+			background: linear-gradient(100deg, #ffacd4, #d1b7ff, #9deaff);
+			box-shadow: 0 10px 30px rgba(197, 126, 255, 0.22);
+		}
+
+		.footer {
+			padding: 24px 0 8px;
+			color: #988eae;
+			font-size: 0.75rem;
+			text-align: center;
+		}
+
+		.footer span {
+			color: #ff8fc6;
+		}
+
+		.balloon {
+			position: fixed;
+			z-index: 0;
+			bottom: -180px;
+			width: 52px;
+			height: 66px;
+			border-radius: 50% 50% 46% 46%;
+			opacity: 0.25;
+			pointer-events: none;
+			animation: balloonRise linear infinite;
+		}
+
+		.balloon::before {
+			position: absolute;
+			bottom: -7px;
+			left: 22px;
+			width: 9px;
+			height: 9px;
+			background: inherit;
+			content: "";
+			clip-path: polygon(0 0, 100% 0, 50% 100%);
+		}
+
+		.balloon::after {
+			position: absolute;
+			top: 72px;
+			left: 25px;
+			width: 1px;
+			height: 90px;
+			background: rgba(255, 255, 255, 0.35);
+			content: "";
+		}
+
+		@keyframes balloonRise {
+			to {
+				transform: translateY(-125vh) translateX(45px) rotate(12deg);
+			}
+		}
+
+		.toast {
+			position: fixed;
+			z-index: 10;
+			right: 18px;
+			bottom: 18px;
+			max-width: calc(100% - 36px);
+			padding: 13px 17px;
+			border: 1px solid rgba(255, 255, 255, 0.18);
+			border-radius: 14px;
+			color: white;
+			background: rgba(35, 22, 59, 0.94);
+			box-shadow: 0 15px 45px rgba(0, 0, 0, 0.3);
+			font-size: 0.85rem;
+			opacity: 0;
+			transform: translateY(15px);
+			transition: 0.25s ease;
+			pointer-events: none;
+		}
+
+		.toast.show {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		@media (max-width: 600px) {
+			.page {
+				width: min(100% - 22px, 960px);
+				padding-top: 20px;
+			}
+
+			.hero {
+				padding: 30px 17px;
+				border-radius: 26px;
+			}
+
+			.photo-frame {
+				width: 170px;
+				height: 170px;
+			}
+
+			.wishes {
+				grid-template-columns: 1fr;
+			}
+
+			.wish {
+				display: flex;
+				align-items: center;
+				gap: 13px;
+				text-align: left;
+			}
+
+			.wish span {
+				margin: 0;
+			}
+
+			.wish p {
+				margin-top: 3px;
+			}
+
+			.section {
+				border-radius: 23px;
+			}
+
+			.brand {
+				font-size: 0.68rem;
+			}
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			*, *::before, *::after {
+				scroll-behavior: auto !important;
+				animation-duration: 0.01ms !important;
+				animation-iteration-count: 1 !important;
+				transition-duration: 0.01ms !important;
+			}
+		}
+
+		@media print {
+			body {
+				background: #100b25 !important;
+				-webkit-print-color-adjust: exact;
+				print-color-adjust: exact;
+			}
+
+			.topbar,
+			.photo-tools,
+			.actions,
+			.gift,
+			.gift-caption,
+			.footer,
+			#particles,
+			#confetti,
+			.balloon {
+				display: none !important;
+			}
+
+			.page {
+				width: 100%;
+				padding: 0;
+			}
+
+			.hero,
+			.section {
+				break-inside: avoid;
+				box-shadow: none;
+			}
+		}
+	</style>
+</head>
+<body>
+	<canvas id="particles"></canvas>
+	<canvas id="confetti"></canvas>
+	<div class="ambient ambient-one"></div>
+	<div class="ambient ambient-two"></div>
+
+	<main class="page">
+		<header class="topbar">
+			<div class="brand">
+				<span class="brand-mark">✦</span>
+				<span>Birthday Celebration</span>
+			</div>
+
+			<div class="top-actions">
+				<button class="icon-button" id="musicButton" type="button" aria-label="Putar musik" title="Musik">♫</button>
+				<button class="icon-button" id="shareButton" type="button" aria-label="Bagikan halaman" title="Bagikan">↗</button>
+			</div>
+		</header>
+
+		<section class="hero">
+			<div class="hero-content">
+				<div class="pill"><span class="pulse-dot"></span> Today is your special day</div>
+
+				<div class="photo-frame">
+					<img
+						id="profilePhoto"
+						class="profile-photo"
+						src="faiz.jpg"
+						alt="Foto orang yang berulang tahun"
+					>
+				</div>
+
+				<!--<div class="photo-tools">
+					<label class="upload-label">
+						<span>📷 Ganti Foto</span>
+						<input id="photoInput" type="file" accept="image/*">
+					</label>
+				</div>-->
+
+				<p class="headline">Happy Birthday</p>
+				<h1 id="personName">Faiz Syamsie</h1>
+				<p class="subtitle">Hari ini dunia terasa sedikit lebih indah, karena seseorang yang luar biasa sedang merayakan hari istimewanya. ✨</p>
+
+				<div class="info-grid">
+					<div class="info-card">
+						<span class="info-icon">🎂</span>
+						<span class="info-label">Tanggal Lahir</span>
+						<span class="info-value" id="birthDate">12 - November - 2010</span>
+					</div>
+					<div class="info-card">
+						<span class="info-icon">🎈</span>
+						<span class="info-label">Usia Sekarang</span>
+						<span class="info-value" id="age">16 Tahun</span>
+					</div>
+				</div>
+
+				<div class="actions">
+					<button class="action-button action-primary" id="celebrateButton" type="button">🎉 Celebrate!</button>
+					<button class="action-button" id="printButton" type="button">⤓ Simpan / Cetak</button>
+				</div>
+			</div>
+		</section>
+
+		<section class="section">
+			<h2 class="section-heading">A little message for you</h2>
+			<p class="message" id="birthdayMessage">Selamat ulang tahun! 🎂
+
+Semoga di usia yang baru ini, semua hal baik datang menghampirimu. Semoga langkahmu selalu dimudahkan, hatimu selalu dikuatkan, dan senyummu tidak pernah kehilangan alasannya.
+
+Teruslah tumbuh menjadi versi terbaik dari dirimu. Jangan takut bermimpi besar, karena kamu punya banyak kesempatan indah yang menunggu di depan sana.
+
+Hari ini adalah harimu. Bahagia selalu, sehat selalu, dan semoga semua doa terbaikmu satu per satu menjadi nyata. You deserve all the happiness in the world! ??</p>
+
+			<div class="wishes">
+				<div class="wish">
+					<span>💖</span>
+					<div>
+						<strong>More Happiness</strong>
+						<p>Semoga bahagia selalu menemanimu.</p>
+					</div>
+				</div>
+				<div class="wish">
+					<span>🌟</span>
+					<div>
+						<strong>More Success</strong>
+						<p>Semoga semua impianmu tercapai.</p>
+					</div>
+				</div>
+				<div class="wish">
+					<span>🌷</span>
+					<div>
+						<strong>More Blessings</strong>
+						<p>Semoga hal baik datang tanpa henti.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="section gift-area">
+			<h2 class="section-heading">One little surprise</h2>
+			<button class="gift" id="giftButton" type="button" aria-label="Buka hadiah">
+				<span class="gift-lid"></span>
+				<span class="gift-box"></span>
+			</button>
+			<p class="gift-caption">Ada hadiah kecil untukmu. Coba buka! 🎁</p>
+			<p class="gift-note" id="giftNote">Kamu adalah salah satu alasan dunia ini terasa lebih berwarna. Jangan pernah meragukan betapa berharganya dirimu. Semoga hari ini dipenuhi kejutan manis dan kenangan yang indah. Happy birthday! 💝</p>
+		</section>
+
+		<footer class="footer">
+			Made with <span>♥</span> just for you · Make a wish and enjoy your day!
+		</footer>
+	</main>
+
+	<div class="toast" id="toast"></div>
+
+	<script>
+		/*
+		 * ==================================================
+		 * PENGATURAN UTAMA
+		 * Ganti nama, tanggal lahir, ucapan, dan pesan hadiah.
+		 * Format tanggal lahir: YYYY-MM-DD
+		 * ==================================================
+		 */
+		const birthdayData = {
+			name: "Faiz Syamsie",
+			birthDate: "2010-11-12",
+			message: `Selamat ulang tahun! 🎂
+
+Semoga di usia yang baru ini, semua hal baik datang menghampirimu. Semoga langkahmu selalu dimudahkan, hatimu selalu dikuatkan, dan senyummu tidak pernah kehilangan alasannya.
+
+Teruslah tumbuh menjadi versi terbaik dari dirimu. Jangan takut bermimpi besar, karena kamu punya banyak kesempatan indah yang menunggu di depan sana.
+
+Hari ini adalah harimu. Bahagia selalu, sehat selalu, dan semoga semua doa terbaikmu satu per satu menjadi nyata. You deserve all the happiness in the world! 💖`,
+			giftMessage: "Kamu adalah salah satu alasan dunia ini terasa lebih berwarna. Jangan pernah meragukan betapa berharganya dirimu. Semoga hari ini dipenuhi kejutan manis dan kenangan yang indah. Happy birthday! 💝"
+		};
+
+		const $ = (selector) => document.querySelector(selector);
+		let audioContext = null;
+		let musicTimer = null;
+		let musicPlaying = false;
+		let toastTimer = null;
+
+		function formatDate(dateString) {
+			const date = new Date(`${dateString}T00:00:00`);
+
+			if (Number.isNaN(date.getTime())) {
+				return "Tanggal belum diatur";
+			}
+
+			return new Intl.DateTimeFormat("id-ID", {
+				day: "numeric",
+				month: "long",
+				year: "numeric"
+			}).format(date);
+		}
+
+		function calculateAge(dateString) {
+			const birth = new Date(`${dateString}T00:00:00`);
+			const today = new Date();
+
+			if (Number.isNaN(birth.getTime()) || birth > today) {
+				return "—";
+			}
+
+			let age = today.getFullYear() - birth.getFullYear();
+			const birthdayPassed =
+				today.getMonth() > birth.getMonth() ||
+				(today.getMonth() === birth.getMonth() && today.getDate() >= birth.getDate());
+
+			if (!birthdayPassed) {
+				age--;
+			}
+
+			return `${age} Tahun`;
+		}
+
+		function renderBirthday() {
+			$("#personName").textContent = birthdayData.name;
+			$("#birthDate").textContent = formatDate(birthdayData.birthDate);
+			$("#age").textContent = calculateAge(birthdayData.birthDate);
+			$("#birthdayMessage").textContent = birthdayData.message;
+			$("#giftNote").textContent = birthdayData.giftMessage;
+			document.title = `Happy Birthday, ${birthdayData.name}!`;
+		}
+
+		function showToast(message) {
+			const toast = $("#toast");
+			toast.textContent = message;
+			toast.classList.add("show");
+
+			clearTimeout(toastTimer);
+			toastTimer = setTimeout(() => {
+				toast.classList.remove("show");
+			}, 2600);
+		}
+
+		$("#photoInput").addEventListener("change", (event) => {
+			const file = event.target.files[0];
+
+			if (!file) {
+				return;
+			}
+
+			if (!file.type.startsWith("image/")) {
+				showToast("Pilih file gambar yang valid.");
+				return;
+			}
+
+			const reader = new FileReader();
+
+			reader.onload = () => {
+				$("#profilePhoto").src = reader.result;
+				showToast("Foto berhasil diganti! ✨");
+			};
+
+			reader.readAsDataURL(file);
+		});
+
+		/*
+		 * CONFETTI DAN FIREWORKS
+		 */
+		const confettiCanvas = $("#confetti");
+		const confettiContext = confettiCanvas.getContext("2d");
+		let confettiPieces = [];
+		let confettiFrame = null;
+
+		function resizeCanvas(canvas, context) {
+			const ratio = window.devicePixelRatio || 1;
+			canvas.width = window.innerWidth * ratio;
+			canvas.height = window.innerHeight * ratio;
+			context.setTransform(ratio, 0, 0, ratio, 0, 0);
+		}
+
+		function launchConfetti() {
+			const colors = ["#ff78bd", "#a88bff", "#78e6ff", "#ffe09a", "#ffffff", "#8effc8"];
+
+			confettiPieces = Array.from({ length: 230 }, () => ({
+				x: Math.random() * window.innerWidth,
+				y: -Math.random() * window.innerHeight * 0.7,
+				size: Math.random() * 8 + 3,
+				speed: Math.random() * 4 + 2,
+				rotation: Math.random() * 360,
+				spin: Math.random() * 10 - 5,
+				drift: Math.random() * 2 - 1,
+				color: colors[Math.floor(Math.random() * colors.length)]
+			}));
+
+			if (confettiFrame) {
+				cancelAnimationFrame(confettiFrame);
+			}
+
+			animateConfetti();
+		}
+
+		function animateConfetti() {
+			confettiContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+			confettiPieces.forEach((piece) => {
+				piece.y += piece.speed;
+				piece.x += piece.drift + Math.sin(piece.y * 0.018) * 1.2;
+				piece.rotation += piece.spin;
+
+				confettiContext.save();
+				confettiContext.translate(piece.x, piece.y);
+				confettiContext.rotate(piece.rotation * Math.PI / 180);
+				confettiContext.fillStyle = piece.color;
+				confettiContext.fillRect(-piece.size / 2, -piece.size / 2, piece.size, piece.size * 0.7);
+				confettiContext.restore();
+			});
+
+			confettiPieces = confettiPieces.filter((piece) => piece.y < window.innerHeight + 30);
+
+			if (confettiPieces.length) {
+				confettiFrame = requestAnimationFrame(animateConfetti);
+			} else {
+				confettiContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+				confettiFrame = null;
+			}
+		}
+
+		/*
+		 * BACKGROUND PARTICLES
+		 */
+		const particleCanvas = $("#particles");
+		const particleContext = particleCanvas.getContext("2d");
+		let particles = [];
+
+		function createParticles() {
+			const count = Math.min(75, Math.floor(window.innerWidth / 12));
+
+			particles = Array.from({ length: count }, () => ({
+				x: Math.random() * window.innerWidth,
+				y: Math.random() * window.innerHeight,
+				radius: Math.random() * 1.8 + 0.5,
+				speed: Math.random() * 0.35 + 0.08,
+				alpha: Math.random() * 0.6 + 0.15
+			}));
+		}
+
+		function animateParticles() {
+			particleContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+			particles.forEach((particle) => {
+				particle.y -= particle.speed;
+
+				if (particle.y < -5) {
+					particle.y = window.innerHeight + 5;
+					particle.x = Math.random() * window.innerWidth;
+				}
+
+				particleContext.beginPath();
+				particleContext.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+				particleContext.fillStyle = `rgba(255, 231, 255, ${particle.alpha})`;
+				particleContext.fill();
+			});
+
+			requestAnimationFrame(animateParticles);
+		}
+
+		/*
+		 * BALON ANIMASI
+		 */
+		function createBalloons() {
+			const colors = ["#ff78bd", "#a88bff", "#78e6ff", "#ffe09a"];
+
+			for (let i = 0; i < 9; i++) {
+				const balloon = document.createElement("div");
+				balloon.className = "balloon";
+				balloon.style.left = `${Math.random() * 100}%`;
+				balloon.style.background = colors[i % colors.length];
+				balloon.style.animationDuration = `${18 + Math.random() * 20}s`;
+				balloon.style.animationDelay = `${-Math.random() * 30}s`;
+				document.body.appendChild(balloon);
+			}
+		}
+
+		/*
+		 * MUSIK ORIGINAL SEDERHANA DENGAN WEB AUDIO.
+		 * Browser akan mulai memutar setelah tombol musik ditekan.
+		 */
+		function playTone(frequency, startTime, duration, volume = 0.045) {
+			const oscillator = audioContext.createOscillator();
+			const gain = audioContext.createGain();
+
+			oscillator.type = "sine";
+			oscillator.frequency.value = frequency;
+			gain.gain.setValueAtTime(0, startTime);
+			gain.gain.linearRampToValueAtTime(volume, startTime + 0.025);
+			gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+			oscillator.connect(gain);
+			gain.connect(audioContext.destination);
+			oscillator.start(startTime);
+			oscillator.stop(startTime + duration + 0.03);
+		}
+
+		function playMelody() {
+			const notes = [
+				523.25, 659.25, 783.99, 659.25,
+				587.33, 698.46, 880.00, 783.99,
+				659.25, 783.99, 987.77, 880.00,
+				783.99, 659.25, 587.33, 523.25
+			];
+
+			let index = 0;
+
+			musicTimer = setInterval(() => {
+				if (!musicPlaying || !audioContext) {
+					return;
+				}
+
+				const now = audioContext.currentTime;
+				playTone(notes[index % notes.length], now, 0.34);
+				index++;
+			}, 390);
+		}
+
+		async function toggleMusic() {
+			if (!audioContext) {
+				const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+				if (!AudioContextClass) {
+					showToast("Browser tidak mendukung audio.");
+					return;
+				}
+
+				audioContext = new AudioContextClass();
+			}
+
+			if (audioContext.state === "suspended") {
+				await audioContext.resume();
+			}
+
+			musicPlaying = !musicPlaying;
+			$("#musicButton").textContent = musicPlaying ? "♫" : "♪";
+
+			if (musicPlaying) {
+				playMelody();
+				showToast("Musik ulang tahun dinyalakan! ♪");
+			} else {
+				clearInterval(musicTimer);
+				showToast("Musik dijeda.");
+			}
+		}
+
+		/*
+		 * INTERAKSI HALAMAN
+		 */
+		$("#celebrateButton").addEventListener("click", () => {
+			launchConfetti();
+			showToast("Yeay! Selamat ulang tahun! 🎉");
+		});
+
+		$("#giftButton").addEventListener("click", () => {
+			const gift = $("#giftButton");
+			const note = $("#giftNote");
+			const isOpen = gift.classList.toggle("open");
+
+			note.classList.toggle("show", isOpen);
+			gift.setAttribute("aria-label", isOpen ? "Tutup hadiah" : "Buka hadiah");
+
+			if (isOpen) {
+				launchConfetti();
+			}
+		});
+
+		$("#musicButton").addEventListener("click", toggleMusic);
+
+		$("#printButton").addEventListener("click", () => {
+			window.print();
+		});
+
+		$("#shareButton").addEventListener("click", async () => {
+			const shareData = {
+				title: document.title,
+				text: `Ucapan spesial untuk ${birthdayData.name}!`,
+				url: window.location.href
+			};
+
+			if (navigator.share) {
+				try {
+					await navigator.share(shareData);
+				} catch (error) {
+					if (error.name !== "AbortError") {
+						showToast("Halaman siap dibagikan melalui alamat file.");
+					}
+				}
+			} else if (navigator.clipboard && window.isSecureContext) {
+				await navigator.clipboard.writeText(window.location.href);
+				showToast("Link berhasil disalin!");
+			} else {
+				showToast("Gunakan menu browser untuk membagikan halaman.");
+			}
+		});
+
+		window.addEventListener("resize", () => {
+			resizeCanvas(confettiCanvas, confettiContext);
+			resizeCanvas(particleCanvas, particleContext);
+			createParticles();
+		});
+
+		resizeCanvas(confettiCanvas, confettiContext);
+		resizeCanvas(particleCanvas, particleContext);
+		createParticles();
+		createBalloons();
+		animateParticles();
+		renderBirthday();
+	</script>
+</body>
+</html>
