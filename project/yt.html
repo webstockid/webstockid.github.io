@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title>Tonton - Custom YouTube Player & Streamer</title>
+	<meta property="og:image" content="tonton/tonton.png">
+	<meta property="og:url" content="https://webstockid.github.io/tonton.html">
+	<meta property="og:title" content="Tonton">
+	<meta property="og:description" content="YouTube Player & Streamer">
+	<link rel="apple-touch-icon" sizes="180x180" href="tonton/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="tonton/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="tonton/favicon-16x16.png">
+	<link rel="manifest" href="tonton/site.webmanifest">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400..700&family=DM+Sans:wght@400..700&family=Outfit:wght@400..700&family=Manrope:wght@400..700&family=Lexend:wght@400..700&display=swap">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+	<style>
+		/* ==========================================================
+		   1. TOKEN TEMA (diubah lewat Pengaturan, lihat Theme.apply)
+		   ========================================================== */
+		:root {
+			--accent: #6aa5ee;
+			--on-accent: #1f2430;
+			--accent-ink: color-mix(in srgb, var(--accent) 60%, #000);
+			--font: 'Plus Jakarta Sans', sans-serif;
+			--fs: 16px;
+			--fw: 400;
+			--bg: #f6f7fb;
+			--surface: #ffffff;
+			--glass: rgba(255, 255, 255, .8);
+			--text: #151a23;
+			--muted: #6b7280;
+			--line: #e6e8ef;
+			--chip: #eef0f6;
+			--shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 10px 28px rgba(16, 24, 40, .07);
+		}
+		[data-theme="dark"] {
+			--bg: #0b0d12;
+			--surface: #14171e;
+			--glass: rgba(20, 23, 30, .8);
+			--text: #eef0f5;
+			--muted: #9ba3b4;
+			--line: #232834;
+			--chip: #1d212b;
+			--accent-ink: color-mix(in srgb, var(--accent) 62%, #fff);
+			--shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px rgba(0, 0, 0, .35);
+		}
+
+		/* ==========================================================
+		   2. DASAR
+		   ========================================================== */
+		html { font-size: var(--fs); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+		body {
+			font-family: var(--font);
+			font-weight: var(--fw);
+			background: var(--bg);
+			color: var(--text);
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+		input[type="range"] { accent-color: var(--accent); }
+
+		/* Checkbox tampil sebagai saklar (switch), radio sebagai lingkaran bertitik; tanpa gaya bawaan browser */
+		input[type="checkbox"], input[type="radio"] { appearance: none; -webkit-appearance: none; flex-shrink: 0; margin: 0; cursor: pointer; transition: background .2s, border-color .2s, box-shadow .2s; }
+		input[type="checkbox"] { position: relative; width: 2.5rem; height: 1.5rem; border-radius: 9999px; background: var(--line); }
+		input[type="checkbox"]::before { content: ''; position: absolute; top: .1875rem; left: .1875rem; width: 1.125rem; height: 1.125rem; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .3); transition: transform .2s cubic-bezier(.2, .8, .2, 1); }
+		input[type="checkbox"]:checked { background-color: var(--accent); background-image: linear-gradient(180deg, rgba(255, 255, 255, .26), rgba(255, 255, 255, 0) 58%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35); }
+		input[type="checkbox"]:checked::before { transform: translateX(1rem); }
+		input[type="radio"] { display: grid; place-content: center; width: 1.375rem; height: 1.375rem; border-radius: 50%; border: 2px solid var(--line); background: var(--surface); }
+		input[type="radio"]::before { content: ''; width: .625rem; height: .625rem; border-radius: 50%; background: var(--accent); transform: scale(0); transition: transform .15s cubic-bezier(.2, .8, .2, 1); }
+		input[type="radio"]:checked { border-color: var(--accent); }
+		input[type="radio"]:checked::before { transform: scale(1); }
+		:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+		.no-scrollbar { scrollbar-width: none; }
+		.no-scrollbar::-webkit-scrollbar { display: none; }
+
+		/* ==========================================================
+		   3. KOMPONEN (dipakai ulang di seluruh halaman)
+		   ========================================================== */
+		.surface { background: var(--surface); border: 1px solid var(--line); }
+		.glass {
+			background: var(--glass);
+			backdrop-filter: blur(18px) saturate(1.5);
+			-webkit-backdrop-filter: blur(18px) saturate(1.5);
+			border-bottom: 1px solid var(--line);
+		}
+		.muted { color: var(--muted); }
+		.row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .75rem 0; border-bottom: 1px solid var(--line); }
+		.field {
+			width: 100%;
+			padding: .6rem 1rem;
+			border-radius: .75rem;
+			background: var(--chip);
+			border: 1px solid transparent;
+			color: var(--text);
+			transition: border-color .15s, box-shadow .15s;
+		}
+		.field:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+		.btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .55rem 1.1rem; border-radius: 9999px; background: var(--chip); font-weight: 600; transition: filter .15s, transform .15s; }
+		.btn:hover { filter: brightness(.95); }
+		.btn:active { transform: scale(.97); }
+		.btn-accent { background: var(--accent); color: var(--on-accent); }
+		.btn-accent:hover { filter: brightness(1.1); }
+		.btn-danger { background: #d64545; color: #fff; }
+		.btn-danger:hover { filter: brightness(1.1); }
+		.btn.is-liked { color: var(--accent-ink); background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+		/* Kilau lembut (glossy) untuk semua permukaan beraksen */
+		.btn-accent, .btn-danger, [style*="background: var(--accent)"] {
+			background-image: linear-gradient(180deg, rgba(255, 255, 255, .26), rgba(255, 255, 255, 0) 58%) !important;
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 3px 10px color-mix(in srgb, var(--accent) 30%, transparent);
+		}
+		.btn-accent, [style*="background: var(--accent)"] { color: var(--on-accent) !important; }
+		.icon-btn { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px; transition: background .15s; }
+		.icon-btn:hover { background: var(--chip); }
+		.chip { display: inline-flex; align-items: center; gap: .35rem; padding: .25rem .7rem; border-radius: 9999px; background: var(--chip); font-size: .75rem; font-weight: 600; }
+		button.chip { padding: .45rem .95rem; font-size: .8rem; white-space: nowrap; transition: background .15s, color .15s; }
+		button.chip:hover { background: var(--accent); color: var(--on-accent); }
+		.icon { display: inline-block; flex-shrink: 0; line-height: 1; }
+
+		/* ==========================================================
+		   4. KARTU VIDEO & ANIMASI
+		   ========================================================== */
+		.card img { transition: transform .3s; }
+		.card:hover img { transform: scale(1.04); }
+		.badge { position: absolute; right: .4rem; bottom: .4rem; padding: .1rem .4rem; border-radius: .4rem; background: rgba(0, 0, 0, .8); color: #fff; font-size: .7rem; font-weight: 600; }
+		.rise { animation: rise .35s ease both; }
+		@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+		.wrap-text { overflow-wrap: anywhere; }
+		.suggest-row:hover { background: var(--chip); }
+		.chev { transition: transform .2s; }
+		details[open] > summary .chev { transform: rotate(180deg); }
+
+		/* ==========================================================
+		   5. MODAL & POPUP (panel samping, dialog, saran pencarian, toast)
+		   ========================================================== */
+		#panel { visibility: hidden; transition: transform .3s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .3s; }
+		#backdrop { transition: opacity .3s ease; }
+		.panel-open #panel { visibility: visible; transform: translateX(0); transition-delay: 0s; }
+		.panel-open #backdrop { opacity: 1; pointer-events: auto; }
+
+		dialog::backdrop { background: rgba(0, 0, 0, .5); backdrop-filter: blur(2px); }
+		dialog[open] { animation: dialog-in .22s cubic-bezier(.2, .8, .2, 1) both; }
+		dialog[open]::backdrop { animation: fade-in .22s ease both; }
+		dialog.closing { animation: dialog-out .16s ease-in both; }
+		dialog.closing::backdrop { animation: fade-out .16s ease-in both; }
+		@keyframes dialog-in { from { opacity: 0; transform: translateY(12px) scale(.96); } }
+		@keyframes dialog-out { to { opacity: 0; transform: translateY(8px) scale(.97); } }
+		@keyframes fade-in { from { opacity: 0; } }
+		@keyframes fade-out { to { opacity: 0; } }
+
+		.suggest { opacity: 0; transform: translateY(-6px) scale(.98); transform-origin: top; visibility: hidden; pointer-events: none; transition: opacity .15s, transform .15s, visibility 0s linear .15s; }
+		.suggest[data-open="true"] { opacity: 1; transform: none; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+
+		.no-anim *, .no-anim *::before, .no-anim *::after, .no-anim dialog::backdrop { transition: none !important; animation: none !important; }
+		@media (prefers-reduced-motion: reduce) { *, dialog::backdrop { transition: none !important; animation: none !important; } }
+
+		/* ==========================================================
+		   6. KOMPONEN TAMBAHAN: swatch warna, tab bergeser, tata letak
+		   ========================================================== */
+		.row-stack { flex-direction: column; align-items: stretch; gap: .75rem; }
+		.about { padding: .65rem .85rem; border: 1px solid var(--line); border-radius: .875rem; background: var(--bg); }
+		.about summary { display: flex; align-items: center; gap: .5rem; list-style: none; cursor: pointer; font-size: .875rem; font-weight: 600; }
+		.about summary::-webkit-details-marker { display: none; }
+		.about-body { margin-top: .65rem; color: var(--muted); font-size: .8125rem; line-height: 1.55; }
+		.about[open] .about-body { animation: rise .25s ease both; }
+		.about code { padding: .05rem .3rem; border-radius: .3rem; background: var(--line); color: var(--text); font-size: .75rem; }
+		.swatch {
+			position: relative; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 9999px;
+			color: #fff; background-image: linear-gradient(180deg, rgba(255, 255, 255, .38), rgba(255, 255, 255, 0) 60%);
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), 0 2px 6px rgba(0, 0, 0, .15);
+			transition: transform .15s, box-shadow .15s;
+		}
+		.swatch:hover { transform: scale(1.08); }
+		.swatch[data-active="true"] { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .45), 0 0 0 2px var(--surface), 0 0 0 4px var(--c, var(--accent)); }
+		.swatch-custom { background-color: transparent; background-image: conic-gradient(from 0deg, #f28b82, #fbd56b, #8fd9a8, #7db4f2, #b69cf5, #f28b82); }
+
+		.tab-bar { position: relative; display: flex; padding: .25rem; border-radius: 9999px; background: var(--chip); }
+		.tab-indicator {
+			position: absolute; top: .25rem; bottom: .25rem; left: .25rem; border-radius: 9999px;
+			width: calc((100% - .5rem) / var(--count));
+			transform: translateX(calc(var(--i) * 100%));
+			transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+		}
+		.tab-btn { position: relative; z-index: 1; flex: 1; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: .3rem; padding: .45rem .2rem; border-radius: 9999px; font-size: .8125rem; font-weight: 600; white-space: nowrap; transition: color .2s; }
+		.tab-count { padding: 0 .4rem; border-radius: 9999px; background: color-mix(in srgb, currentColor 16%, transparent); font-size: .7rem; line-height: 1.25rem; }
+		@media (max-width: 400px) { .tab-btn .icon { display: none; } }
+		.tab-btn.is-active { color: var(--on-accent); }
+		.slide-right { animation: slide-from-right .28s cubic-bezier(.2, .8, .2, 1) both; }
+		.slide-left { animation: slide-from-left .28s cubic-bezier(.2, .8, .2, 1) both; }
+		@keyframes slide-from-right { from { opacity: 0; transform: translateX(24px); } }
+		@keyframes slide-from-left { from { opacity: 0; transform: translateX(-24px); } }
+
+		/* ==========================================================
+		   7. RESPONSIF (HP = bawaan, tablet >= 768px, desktop >= 1280px)
+		   ========================================================== */
+		@media (min-width: 640px) { .icon-btn { width: 2.5rem; height: 2.5rem; } }
+		.panel-w { width: 100%; max-width: 26rem; }
+		@media (max-width: 480px) { .panel-w { max-width: none; } }
+		@media (min-width: 768px) { .panel-w { max-width: 28rem; } }
+		.page-w { max-width: 64rem; }
+		.watch-col { width: 100%; max-width: 48rem; margin-inline: auto; }
+		.watch-player { --max-h: 42vh; aspect-ratio: 16 / 9; width: min(100%, calc(var(--max-h) * 16 / 9)); }
+		@media (min-width: 768px) {
+			.watch-col { max-width: 56rem; }
+			.watch-player { --max-h: 52vh; }
+		}
+		@media (min-width: 1280px) {
+			.page-w { max-width: 80rem; }
+			.watch-col { max-width: 64rem; }
+		}
+		@media (orientation: landscape) and (max-height: 500px) {
+			.watch-player { --max-h: 64vh; }
+		}
+
+		/* ==========================================================
+		   8. KONTROL PEMUTAR MELAYANG
+		   ========================================================== */
+		.controls { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + .75rem); transition: transform .35s cubic-bezier(.2, .8, .2, 1), opacity .25s ease; }
+		.controls[data-hidden="true"] { transform: translateY(calc(100% + 1.5rem)); opacity: 0; }
+		.controls[data-hidden="true"] > div { pointer-events: none; }
+		.ctl { position: relative; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px; transition: background .15s, color .15s, transform .15s; }
+		.ctl:hover { background: var(--chip); }
+		.ctl:active { transform: scale(.92); }
+		.ctl[data-on="true"] { color: var(--accent-ink); background: color-mix(in srgb, var(--accent) 18%, transparent); }
+		.ctl-main { width: 2.75rem; height: 2.75rem; }
+		.ctl-main:hover { background-color: var(--accent); filter: brightness(1.08); }
+		.ctl-sec { position: absolute; inset: 0; display: grid; place-items: center; font-size: .5rem; font-weight: 800; pointer-events: none; }
+		.ctl-badge { position: absolute; top: 0; right: -.1rem; padding: .12rem .22rem; border-radius: 9999px; background: var(--accent); color: var(--on-accent); font-size: .5rem; font-weight: 800; line-height: 1; }
+		.ctl-badge:empty { display: none; }
+		@media (min-width: 640px) {
+			.ctl { width: 2.5rem; height: 2.5rem; }
+			.ctl-main { width: 3rem; height: 3rem; }
+		}
+		/* Beri ruang agar footer & toast tidak tertutup kontrol */
+		body.has-controls footer { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.75rem) !important; }
+		body.has-controls #toast { bottom: calc(env(safe-area-inset-bottom, 0px) + 5.5rem); }
+	</style>
+</head>
+
+<body>
+
+	<!-- ==========================================================
+	     HEADER MELAYANG: navigasi + pemutar video
+	     ========================================================== -->
+	<header id="stack" class="glass fixed inset-x-0 top-0 z-40" style="padding-top: env(safe-area-inset-top, 0px);">
+		<nav class="mx-auto flex h-16 page-w items-center gap-1.5 px-2.5 sm:gap-2 sm:px-3">
+			<a id="logo" href="./" class="flex shrink-0 items-center gap-1.5 font-bold tracking-tight sm:gap-2" aria-label="Tonton, ke beranda">
+				<span class="grid h-8 w-8 place-items-center rounded-xl sm:h-9 sm:w-9" style="background: var(--accent)" data-icon="play" data-icon-size="18"></span>
+				<span class="text-[0.95rem] leading-none min-[400px]:text-base sm:text-lg">Tonton</span>
+			</a>
+
+			<form id="searchForm" class="relative min-w-0 flex-1 md:mx-auto md:max-w-2xl" role="search">
+				<input id="searchInput" class="field pr-12 md:pr-20" style="border-radius: 9999px" type="search" placeholder="Cari video" autocomplete="off" aria-label="Cari video">
+				<kbd class="muted pointer-events-none absolute right-12 top-1/2 hidden -translate-y-1/2 rounded-md px-1.5 text-xs font-semibold md:block" style="background: var(--bg)" aria-hidden="true">/</kbd>
+				<button class="absolute right-1 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full" style="background: var(--accent)" type="submit" aria-label="Cari" data-icon="search" data-icon-size="15"></button>
+				<div id="suggestBox" class="suggest surface absolute inset-x-0 top-full z-50 mt-2 max-h-80 overflow-y-auto rounded-2xl p-1.5" style="box-shadow: var(--shadow)"></div>
+			</form>
+
+			<button id="btnAccount" class="icon-btn" aria-label="Akun">
+				<img id="navAvatar" class="hidden h-8 w-8 rounded-full object-cover" alt="Foto profil">
+				<span id="navIcon" class="grid place-items-center" data-icon="user" data-icon-size="22"></span>
+			</button>
+			<button id="btnSettings" class="icon-btn" aria-label="Pengaturan" data-icon="sliders" data-icon-size="21"></button>
+		</nav>
+
+		<section id="playerWrap" class="hidden bg-black">
+			<div class="watch-col watch-player">
+				<iframe id="player" class="h-full w-full" title="Pemutar video"
+					allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+			</div>
+		</section>
+	</header>
+
+	<!-- ==========================================================
+	     KONTEN UTAMA: info video + kategori + daftar video
+	     ========================================================== -->
+	<main id="main" class="mx-auto w-full page-w flex-1 px-3 pb-12">
+		<section id="info" class="mb-6 hidden"></section>
+		<button id="nowPlaying" class="surface mb-4 flex hidden w-full items-center gap-2 rounded-2xl px-3 py-2 text-left text-sm" data-resume>
+			<span class="chip" data-icon="play" data-icon-size="12"><span id="nowLabel">Sedang diputar</span></span>
+			<span id="nowTitle" class="wrap-text min-w-0 flex-1 font-semibold"></span>
+			<span class="muted inline-flex items-center gap-1 text-xs" data-icon="info" data-icon-size="13">Lihat info</span>
+		</button>
+		<div id="chips" class="no-scrollbar -mx-3 mb-4 flex gap-2 overflow-x-auto px-3 md:mx-0 md:flex-wrap md:overflow-visible md:px-0"></div>
+		<h2 id="feedTitle" class="mb-3 text-lg font-bold tracking-tight"></h2>
+		<div id="feed" class="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"></div>
+		<div id="moreWrap" class="mt-6 hidden text-center">
+			<button id="btnMore" class="btn btn-accent" data-icon="chevron-down"><span id="btnMoreLabel">Muat lebih banyak</span></button>
+		</div>
+		<p id="status" class="muted py-8 text-center text-sm"></p>
+	</main>
+
+	<!-- ==========================================================
+	     FOOTER: profil singkat, info cara web app dibuat, aktivitas, dan sumber data
+	     ========================================================== -->
+	<footer class="mt-4 border-t" style="background: var(--surface); border-color: var(--line); padding-bottom: env(safe-area-inset-bottom, 0px);">
+		<div class="mx-auto grid page-w gap-8 px-4 py-10 md:grid-cols-[1fr_1.7fr_1fr]">
+			<section>
+				<div class="flex items-center gap-2 font-bold">
+					<span class="grid h-8 w-8 place-items-center rounded-xl" style="background: var(--accent)" data-icon="play" data-icon-size="17"></span>
+					Tonton
+				</div>
+				<p class="muted mt-3 text-sm">Pemutar video dengan antarmuka sendiri. Video, pencarian, dan statistik diambil langsung dari YouTube.</p>
+			</section>
+
+			<section>
+				<h3 class="text-sm font-semibold">Tentang web app ini</h3>
+				<p class="muted mt-3 text-sm">Dibuat tanpa framework dan tanpa proses build. Ketuk judul di bawah untuk melihat detailnya.</p>
+				<div class="mt-3 space-y-2">
+					<details class="about">
+						<summary><span class="flex items-center gap-2" data-icon="code" data-icon-size="15">Bahasa pemrograman</span><span class="chev ml-auto" data-icon="chevron-down" data-icon-size="14"></span></summary>
+						<div class="about-body">
+							<p>Tiga bahasa standar web, semuanya dalam satu file <code>index.html</code>:</p>
+							<ul class="mt-2 list-disc space-y-1 pl-5">
+								<li><b>HTML5</b> untuk struktur halaman.</li>
+								<li><b>CSS3</b> untuk tampilan: variabel CSS, <code>color-mix</code>, animasi, dan tata letak responsif.</li>
+								<li><b>JavaScript murni (ES2022)</b> untuk seluruh logika, tanpa framework dan tanpa proses build.</li>
+							</ul>
+						</div>
+					</details>
+
+					<details class="about">
+						<summary><span class="flex items-center gap-2" data-icon="layers" data-icon-size="15">Teknologi yang dipakai</span><span class="chev ml-auto" data-icon="chevron-down" data-icon-size="14"></span></summary>
+						<div class="about-body">
+							<ul class="list-disc space-y-1 pl-5">
+								<li><b>Tailwind CSS</b> (CDN) untuk gaya berbasis utilitas, ditambah CSS sendiri untuk komponen.</li>
+								<li><b>Bootstrap Icons</b> untuk ikon dan <b>Google Fonts</b> untuk enam pilihan font.</li>
+								<li><b>YouTube Data API v3</b> untuk pencarian, video populer, dan statistik.</li>
+								<li><b>YouTube Embed</b> (youtube-nocookie) dengan <code>postMessage</code> untuk memutar video, volume, dan lompat waktu.</li>
+								<li><b>localStorage</b> untuk riwayat, suka, profil, dan pengaturan.</li>
+								<li>API browser: Web Audio (efek suara), Vibration (getar), Web Share, Canvas (foto profil), <code>&lt;dialog&gt;</code>, dan ResizeObserver.</li>
+							</ul>
+						</div>
+					</details>
+
+					<details class="about">
+						<summary><span class="flex items-center gap-2" data-icon="diagram" data-icon-size="15">Struktur kode</span><span class="chev ml-auto" data-icon="chevron-down" data-icon-size="14"></span></summary>
+						<div class="about-body">
+							<p>Skrip dibagi menjadi modul berupa objek, masing-masing punya satu tugas:</p>
+							<ul class="mt-2 list-disc space-y-1 pl-5">
+								<li><code>CONFIG</code>: API key dan batas-batas aplikasi.</li>
+								<li><code>Fmt</code> dan <code>icon()</code>: pemformat angka, tanggal, dan ikon.</li>
+								<li><code>Store</code>: data lokal, impor dan ekspor, serta saran pencarian.</li>
+								<li><code>Api</code>: semua panggilan ke YouTube.</li>
+								<li><code>Theme</code> dan <code>Feedback</code>: warna, font, suara, dan getar.</li>
+								<li><code>Player</code> dan <code>Controls</code>: pemutar dan kontrol melayang di bawah.</li>
+								<li><code>UI</code> dan <code>Panel</code>: tampilan, akun, dan pengaturan.</li>
+								<li><code>App</code>: alur utama dan penanganan event.</li>
+							</ul>
+						</div>
+					</details>
+
+					<details class="about">
+						<summary><span class="flex items-center gap-2" data-icon="gear" data-icon-size="15">Cara kerjanya</span><span class="chev ml-auto" data-icon="chevron-down" data-icon-size="14"></span></summary>
+						<div class="about-body">
+							<ol class="list-decimal space-y-1 pl-5">
+								<li>Pencarian atau kategori memanggil <code>Api</code>; hasilnya dinormalkan lalu digambar <code>UI</code> sebagai kartu.</li>
+								<li>Memilih video memuat embed YouTube. <code>Store</code> mencatat riwayat dan posisi tonton, sehingga video terakhir standby saat halaman dibuka lagi.</li>
+								<li><code>Controls</code> mengirim perintah (putar, jeda, lompat 10 detik) lewat <code>postMessage</code> dan membaca status pemutar dari pesan balasan.</li>
+								<li>Tombol Sebelumnya, Berikutnya, dan putar otomatis memakai antrean rekomendasi video.</li>
+								<li>Kategori diacak (kata kunci, urutan, rentang waktu) dan video yang sudah tampil diingat agar tidak berulang.</li>
+								<li>Semua data pengguna hanya tersimpan di perangkat ini.</li>
+							</ol>
+						</div>
+					</details>
+				</div>
+			</section>
+
+			<section>
+				<h3 class="text-sm font-semibold">Aktivitasmu</h3>
+				<div id="footStats" class="mt-3 flex flex-wrap gap-2"></div>
+				<p class="muted mt-3 text-xs">Semua data tersimpan di perangkat ini saja.</p>
+			</section>
+		</div>
+
+		<div class="border-t" style="border-color: var(--line)">
+			<div class="muted mx-auto flex page-w flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-4 text-xs">
+				<p id="footYear"></p>
+				<p>Data dari YouTube Data API v3. <a class="inline-flex items-center gap-1 underline" data-icon="external" data-icon-size="12" href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">Ketentuan YouTube</a></p>
+				<button id="toTop" class="inline-flex items-center gap-1 font-semibold" style="color: var(--accent-ink)" data-icon="arrow-up" data-icon-size="13">Kembali ke atas</button>
+			</div>
+		</div>
+	</footer>
+
+	<!-- ==========================================================
+	     KONTROL PEMUTAR MELAYANG: bersembunyi saat layar digulir, muncul lagi saat diam
+	     ========================================================== -->
+	<div id="controlBar" class="controls pointer-events-none fixed inset-x-0 bottom-0 z-40 flex hidden justify-center px-3" data-hidden="false">
+		<div class="glass pointer-events-auto flex items-center gap-0.5 rounded-full p-1.5 sm:gap-1.5 sm:p-2" style="box-shadow: var(--shadow); border: 1px solid var(--line)">
+			<button id="ctlRepeat" class="ctl" aria-label="Pengulangan: mati, 1x, atau terus" title="Pengulangan: mati / 1x / terus" data-icon="repeat" data-icon-size="19">
+				<span id="ctlRepeatBadge" class="ctl-badge"></span>
+			</button>
+			<button id="ctlPrev" class="ctl" aria-label="Video sebelumnya" title="Video sebelumnya" data-icon="skip-prev" data-icon-size="20"></button>
+			<button id="ctlBack" class="ctl" aria-label="Mundur 10 detik" title="Mundur 10 detik" data-icon="rewind" data-icon-size="23">
+				<span class="ctl-sec">10</span>
+			</button>
+			<button id="ctlPlay" class="ctl ctl-main btn-accent" aria-label="Putar" title="Putar / jeda"></button>
+			<button id="ctlFwd" class="ctl" aria-label="Maju 10 detik" title="Maju 10 detik" data-icon="forward" data-icon-size="23">
+				<span class="ctl-sec">10</span>
+			</button>
+			<button id="ctlNext" class="ctl" aria-label="Video berikutnya" title="Video berikutnya" data-icon="skip-next" data-icon-size="20"></button>
+			<button id="ctlAuto" class="ctl" aria-label="Putar otomatis ke video berikutnya" title="Putar otomatis ke video berikutnya" data-icon="autoplay" data-icon-size="19"></button>
+		</div>
+	</div>
+
+	<!-- ==========================================================
+	     PANEL SAMPING (Akun / Pengaturan), TOAST, INPUT FILE
+	     ========================================================== -->
+	<div id="backdrop" class="fixed inset-0 z-[45] bg-black/50 opacity-0 pointer-events-none transition-opacity"></div>
+	<aside id="panel" class="surface fixed inset-y-0 right-0 z-50 panel-w shadow-2xl sm:rounded-l-3xl translate-x-full transition-transform overflow-y-auto" style="padding-top: env(safe-area-inset-top, 0px);" aria-hidden="true">
+		<div class="surface sticky top-0 flex items-center justify-between px-4 h-14 border-x-0 border-t-0">
+			<h2 id="panelTitle" class="font-semibold"></h2>
+			<button id="panelClose" class="icon-btn" aria-label="Tutup" data-icon="close" data-icon-size="18"></button>
+		</div>
+		<div id="panelBody" class="px-4 pb-8"></div>
+	</aside>
+	<div id="toast" class="fixed bottom-5 left-1/2 z-[60] -translate-x-1/2 translate-y-2 rounded-lg bg-black/85 px-4 py-2 text-sm text-white opacity-0 pointer-events-none transition" role="status" aria-live="polite"></div>
+	<input id="importFile" type="file" accept="application/json" class="hidden">
+	<input id="avatarFile" type="file" accept="image/*" class="hidden">
+
+	<dialog id="confirmDialog" class="surface w-[90%] max-w-sm rounded-3xl p-5" style="color: var(--text); box-shadow: var(--shadow)">
+		<form method="dialog">
+			<div class="flex items-start gap-3">
+				<span id="confirmIcon" class="grid h-10 w-10 shrink-0 place-items-center rounded-full" style="background: var(--chip); color: var(--accent-ink)"></span>
+				<div class="min-w-0">
+					<h3 id="confirmTitle" class="wrap-text font-bold"></h3>
+					<p id="confirmText" class="muted wrap-text mt-1 text-sm"></p>
+				</div>
+			</div>
+			<div class="mt-5 flex justify-end gap-2">
+				<button class="btn" value="cancel" data-icon="close" data-icon-size="14">Batal</button>
+				<button id="confirmOk" class="btn btn-danger" value="ok"></button>
+			</div>
+		</form>
+	</dialog>
+
+	<script>
+	/* ==============================================================
+	   0. KONFIGURASI: ubah di sini saja
+	   ============================================================== */
+	const CONFIG = {
+		API_KEY: 'AIzaSyCtksa1GE6rBpnuAI4IonvzLYDvPI_5b_E',  // YouTube Data API v3 key
+		REGION: 'ID',
+		LANG: 'id',
+		CATEGORIES: [
+			'Musik', 'Gaming', 'Film', 'Anime', 'Komedi', 'Berita', 'Teknologi', 'Edukasi', 'Sains', 'Kuliner',
+			'Olahraga', 'Otomotif', 'Wisata', 'Kesehatan', 'Bisnis', 'Keuangan', 'Seni', 'Fotografi', 'Podcast',
+			'Fashion', 'Kecantikan', 'DIY', 'Buku', 'Religi', 'Motivasi', 'Vlog',
+		],
+		MAX_RESULTS: 24,
+		HISTORY_LIMIT: 100,
+		VIBRATE_MS: 300,      // Lama getar tiap klik (ms); hanya jalan di perangkat yang mendukung (mis. Chrome Android)
+		DOWNLOAD_API: '',     // Endpoint server unduhan milikmu, contoh: 'https://server-kamu.com/api/download'
+	};
+
+	const FONTS = ['Poppins', 'Plus Jakarta Sans', 'DM Sans', 'Outfit', 'Manrope', 'Lexend'];
+	const DEFAULT_FONT = 'Plus Jakarta Sans';
+	// Font lama => font baru, supaya pengaturan tersimpan ikut ter-upgrade
+	const LEGACY_FONTS = { 'Inter': 'Plus Jakarta Sans', 'Nunito': 'DM Sans', 'Lora': 'Manrope', 'Space Grotesk': 'Outfit', 'JetBrains Mono': 'Lexend' };
+	const WEIGHTS = { 400: 'Normal', 500: 'Sedang', 600: 'Tebal', 700: 'Sangat tebal' };
+	const UNITS = { fontSize: 'px', volume: '%', brightness: '%', warmth: '%' }; // pengaturan angka (slider) + satuannya
+	// Semua elemen yang memicu efek getar + suara saat diklik
+	const CLICKABLE = 'button, a, summary, label, select, [role="tab"], [data-play], input[type="checkbox"], input[type="radio"], input[type="range"], input[type="color"]';
+	// Warna aksen: merah YouTube + lima warna lembut (urutan sama dengan ACCENT_NAMES). Pilihan lain: warna kustom
+	const ACCENTS = ['#ff0000', '#f2cc5a', '#6cc59a', '#6aa5ee', '#f4a35e', '#a68cf0'];
+	const ACCENT_NAMES = ['Merah YouTube', 'Kuning lembut', 'Hijau lembut', 'Biru lembut', 'Oren lembut', 'Ungu lembut'];
+	const DEFAULT_ACCENT = ACCENTS[3];
+	// Warna lama => indeks warna baru, supaya pengaturan tersimpan ikut ter-upgrade
+	const LEGACY_ACCENTS = {
+		'#f43f5e': 0, '#d9577a': 0, '#a8707f': 0,
+		'#f59e0b': 1,
+		'#2f9e7a': 2, '#10b981': 2, '#0e8f8c': 2, '#5b8a77': 2,
+		'#4a6fe0': 3, '#5f6ea6': 3, '#527f90': 3, '#6366f1': 3, '#0ea5e9': 3,
+		'#c9772b': 4, '#a97f5f': 4,
+		'#8a5cd6': 5,
+	};
+
+	/* ==============================================================
+	   1. HELPER
+	   ============================================================== */
+	const $ = (sel, root = document) => root.querySelector(sel);
+
+	// Ikon dari Bootstrap Icons (https://icons.getbootstrap.com): nama ikon kita => kelas bi-*
+	// Pakai icon('nama', ukuran) di template JS, atau data-icon="nama" di HTML statis
+	const ICONS = {
+		'play': 'play-fill',
+		'search': 'search',
+		'user': 'person',
+		'close': 'x-lg',
+		'heart': 'heart',
+		'heart-fill': 'heart-fill',
+		'download': 'download',
+		'upload': 'upload',
+		'video': 'camera-video',
+		'headphones': 'headphones',
+		'share': 'share',
+		'trash': 'trash3',
+		'eye': 'eye',
+		'comment': 'chat-dots',
+		'clock': 'clock',
+		'calendar': 'calendar3',
+		'info': 'info-circle',
+		'alert': 'exclamation-triangle',
+		'arrow-up': 'arrow-up',
+		'arrow-up-left': 'arrow-up-left',
+		'chevron-down': 'chevron-down',
+		'external': 'box-arrow-up-right',
+		'flame': 'fire',
+		'music': 'music-note-beamed',
+		'gamepad': 'controller',
+		'newspaper': 'newspaper',
+		'cpu': 'cpu',
+		'utensils': 'cup-hot',
+		'trophy': 'trophy',
+		'film': 'film',
+		'tag': 'tag',
+		'sun': 'sun',
+		'type': 'type',
+		'font': 'fonts',
+		'bold': 'type-bold',
+		'palette': 'palette',
+		'sparkles': 'stars',
+		'volume': 'volume-up',
+		'vibrate': 'phone-vibrate',
+		'camera': 'camera',
+		'sliders': 'sliders',
+		'volume-down': 'volume-down',
+		'brightness': 'brightness-high',
+		'warmth': 'thermometer-half',
+		'eyedropper': 'eyedropper',
+		'tv': 'tv',
+		'laugh': 'emoji-laughing',
+		'mortarboard': 'mortarboard',
+		'bulb': 'lightbulb',
+		'car': 'car-front',
+		'plane': 'airplane',
+		'pulse': 'heart-pulse',
+		'briefcase': 'briefcase',
+		'piggy': 'piggy-bank',
+		'brush': 'brush',
+		'mic': 'mic',
+		'bag': 'bag',
+		'gem': 'gem',
+		'tools': 'tools',
+		'book': 'book',
+		'moon': 'moon-stars',
+		'pause': 'pause-fill',
+		'code': 'code-slash',
+		'layers': 'layers',
+		'diagram': 'diagram-3',
+		'gear': 'gear',
+		'skip-prev': 'skip-start-fill',
+		'skip-next': 'skip-end-fill',
+		'rewind': 'arrow-counterclockwise',
+		'forward': 'arrow-clockwise',
+		'repeat': 'repeat',
+		'autoplay': 'collection-play',
+	};
+	const icon = (name, size = 16) => `<i class="bi bi-${ICONS[name] || 'question-circle'} icon" style="font-size: ${size / 16}rem" aria-hidden="true"></i>`;
+	const CATEGORY_ICONS = {
+		Populer: 'flame', Musik: 'music', Gaming: 'gamepad', Film: 'film', Anime: 'tv', Komedi: 'laugh', Berita: 'newspaper',
+		Teknologi: 'cpu', Edukasi: 'mortarboard', Sains: 'bulb', Kuliner: 'utensils', Olahraga: 'trophy', Otomotif: 'car',
+		Wisata: 'plane', Kesehatan: 'pulse', Bisnis: 'briefcase', Keuangan: 'piggy', Seni: 'brush', Fotografi: 'camera',
+		Podcast: 'mic', Fashion: 'bag', Kecantikan: 'gem', DIY: 'tools', Buku: 'book', Religi: 'moon', Motivasi: 'sun', Vlog: 'video',
+	};
+
+	const Fmt = {
+		num: (n) => n == null ? '-' : new Intl.NumberFormat('id-ID', { notation: 'compact' }).format(n),
+		date: (d) => new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+		age(ts) {
+			const days = Math.floor((Date.now() - ts) / 864e5);
+			if (days < 1) return 'kurang dari 1 hari';
+			if (days < 30) return `${days} hari`;
+			if (days < 365) return `${Math.floor(days / 30)} bulan`;
+			return `${Math.floor(days / 365)} tahun`;
+		},
+		dur(iso) {
+			const m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(iso || '');
+			if (!m) return '';
+			const [h, min, sec] = [m[1] || 0, m[2] || 0, m[3] || 0].map(Number);
+			const pad = (n) => String(n).padStart(2, '0');
+			return h ? `${h}:${pad(min)}:${pad(sec)}` : `${min}:${pad(sec)}`;
+		},
+		ago(d) {
+			const sec = (Date.now() - new Date(d)) / 1000;
+			const units = [[31536000, 'tahun'], [2592000, 'bulan'], [604800, 'minggu'], [86400, 'hari'], [3600, 'jam'], [60, 'menit']];
+			for (const [size, name] of units) if (sec >= size) return `${Math.floor(sec / size)} ${name} lalu`;
+			return 'Baru saja';
+		},
+		esc: (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])),
+	};
+
+	/* ==============================================================
+	   2. STORE: data pengguna di localStorage + impor/ekspor
+	   ============================================================== */
+	const Store = {
+		KEY: 'tonton.v1',
+		data: null,
+
+		defaults: () => ({
+			profile: { name: 'Tamu', createdAt: Date.now() },
+			history: [],
+			likes: [],
+			downloads: [],
+			searches: [],
+			seen: [],
+			last: null,
+			settings: { mode: 'system', fontSize: 16, fontFamily: DEFAULT_FONT, fontWeight: '400', accent: DEFAULT_ACCENT, animation: true, sound: true, vibrate: true, volume: 100, brightness: 100, warmth: 0, repeat: 'off', autoNext: false },
+		}),
+
+		// Pastikan struktur data valid, baik dari localStorage maupun file impor
+		normalize(raw) {
+			const base = this.defaults();
+			const d = raw && typeof raw === 'object' ? raw : {};
+			const data = { ...base, ...d, profile: { ...base.profile, ...d.profile }, settings: { ...base.settings, ...d.settings } };
+			['history', 'likes', 'downloads', 'searches', 'seen'].forEach((key) => {
+				if (!Array.isArray(data[key])) data[key] = base[key];
+			});
+			if (typeof data.profile.avatar !== 'string' || !data.profile.avatar.startsWith('data:image/')) delete data.profile.avatar;
+
+			// Video terakhir yang ditonton: hanya simpan bila id-nya valid
+			const last = data.last;
+			data.last = last && typeof last === 'object' && /^[\w-]{11}$/.test(last.id)
+				? { id: last.id, title: String(last.title || ''), channel: String(last.channel || ''), time: Math.max(0, Number(last.time) || 0) }
+				: null;
+
+			const s = data.settings;
+			const legacy = LEGACY_ACCENTS[String(s.accent).toLowerCase()];
+			if (legacy !== undefined) s.accent = ACCENTS[legacy];
+			if (!/^#[0-9a-f]{6}$/i.test(s.accent)) s.accent = base.settings.accent;
+			s.fontFamily = LEGACY_FONTS[s.fontFamily] || s.fontFamily;
+			if (!FONTS.includes(s.fontFamily)) s.fontFamily = base.settings.fontFamily;
+			if (!(String(s.fontWeight) in WEIGHTS)) s.fontWeight = base.settings.fontWeight;
+			if (!['system', 'light', 'dark'].includes(s.mode)) s.mode = base.settings.mode;
+			s.fontWeight = String(s.fontWeight);
+			s.fontSize = Math.min(24, Math.max(12, Number(s.fontSize) || base.settings.fontSize));
+			const clamp = (key, min, max) => {
+				const n = Number(s[key]);
+				s[key] = Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : base.settings[key];
+			};
+			clamp('volume', 0, 100);
+			clamp('brightness', 50, 130);
+			clamp('warmth', 0, 60);
+			if (!['off', 'once', 'loop'].includes(s.repeat)) s.repeat = base.settings.repeat;
+			s.autoNext = Boolean(s.autoNext);
+			return data;
+		},
+
+		load() {
+			try {
+				this.data = this.normalize(JSON.parse(localStorage.getItem(this.KEY)));
+			} catch {
+				this.data = this.defaults();
+			}
+		},
+
+		save() {
+			try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch { /* penyimpanan penuh / diblokir */ }
+			UI.renderFooter();
+		},
+
+		addHistory(v) {
+			const item = { id: v.id, title: v.title, channel: v.channel, at: Date.now() };
+			this.data.history = [item, ...this.data.history.filter((h) => h.id !== v.id)].slice(0, CONFIG.HISTORY_LIMIT);
+			this.save();
+		},
+
+		addDownload(v, format) {
+			this.data.downloads = [{ id: v.id, title: v.title, channel: v.channel, format, at: Date.now() }, ...this.data.downloads].slice(0, CONFIG.HISTORY_LIMIT);
+			this.save();
+		},
+
+		// Simpan video yang sedang ditonton (untuk standby saat halaman dibuka lagi)
+		setLast(v, time = 0) {
+			this.data.last = { id: v.id, title: v.title, channel: v.channel, time };
+			this.save();
+		},
+
+		// Cari data video yang tersimpan secara lokal (tanpa memanggil API)
+		lookup(id) {
+			return [this.data.last, ...this.data.history, ...this.data.likes].find((v) => v && v.id === id);
+		},
+
+		// Catat video yang sudah tampil di umpan kategori (maks. 300) agar klik berikutnya memprioritaskan konten baru
+		markSeen(ids) {
+			this.data.seen = [...ids, ...this.data.seen.filter((id) => !ids.includes(id))].slice(0, 300);
+			this.save();
+		},
+
+		isLiked(id) {
+			return this.data.likes.some((l) => l.id === id);
+		},
+
+		// Mengembalikan status terbaru: true = disukai, false = batal suka
+		toggleLike(v) {
+			const liked = this.isLiked(v.id);
+			this.data.likes = liked
+				? this.data.likes.filter((l) => l.id !== v.id)
+				: [{ id: v.id, title: v.title, channel: v.channel, at: Date.now() }, ...this.data.likes];
+			this.save();
+			return !liked;
+		},
+
+		// Saran dari riwayat: cocok di awal/tengah kata, atau mirip (toleran salah ketik)
+		suggest(q) {
+			const query = q.trim().toLowerCase();
+			const list = this.data.searches;
+			if (!query) return list.slice(0, 6).map((text) => ({ text, similar: false }));
+
+			const tokens = query.split(/\s+/);
+			return list
+				.map((text, order) => {
+					const t = text.toLowerCase();
+					const words = t.split(/\s+/);
+					let score = 0;
+					if (t === query) return null;
+					if (t.startsWith(query)) score = 4;
+					else if (t.includes(query)) score = 3;
+					else if (tokens.every((w) => t.includes(w))) score = 2.5;
+					else if (tokens.some((w) => w.length > 2 && words.some((x) => x.startsWith(w)))) score = 1.5;
+					else if (this.similarity(query, t) >= 0.4 || words.some((w) => this.similarity(query, w) >= 0.6)) score = 1;
+					return score ? { text, similar: score < 3, score, order } : null;
+				})
+				.filter(Boolean)
+				.sort((a, b) => b.score - a.score || a.order - b.order)
+				.slice(0, 6);
+		},
+
+		// Kemiripan dua teks (koefisien Dice atas pasangan huruf): 0 sampai 1
+		similarity(a, b) {
+			const pairs = (str) => Array.from({ length: Math.max(str.length - 1, 0) }, (_, i) => str.slice(i, i + 2));
+			const x = pairs(a);
+			const pool = pairs(b);
+			if (!x.length || !pool.length) return 0;
+			const total = x.length + pool.length;
+			let hit = 0;
+			x.forEach((p) => {
+				const i = pool.indexOf(p);
+				if (i > -1) { hit++; pool.splice(i, 1); }
+			});
+			return (2 * hit) / total;
+		},
+
+		addSearch(q) {
+			this.data.searches = [q, ...this.data.searches.filter((x) => x !== q)].slice(0, 30);
+			this.save();
+			UI.renderSearches();
+		},
+
+		// Kecilkan foto ke 192x192 (potong bagian tengah) agar hemat penyimpanan
+		setAvatar(file) {
+			if (!file?.type.startsWith('image/')) return UI.toast('Pilih file gambar');
+			const url = URL.createObjectURL(file);
+			const img = new Image();
+			img.onload = () => {
+				const size = 192;
+				const side = Math.min(img.width, img.height);
+				const canvas = Object.assign(document.createElement('canvas'), { width: size, height: size });
+				canvas.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, size, size);
+				URL.revokeObjectURL(url);
+				this.data.profile.avatar = canvas.toDataURL('image/jpeg', 0.85);
+				this.save();
+				UI.renderAvatar();
+				Panel.refresh();
+				UI.toast('Foto profil diperbarui');
+			};
+			img.onerror = () => { URL.revokeObjectURL(url); UI.toast('Gambar tidak dapat dibaca'); };
+			img.src = url;
+		},
+
+		export() {
+			const blob = new Blob([JSON.stringify(this.data, null, '\t')], { type: 'application/json' });
+			const a = Object.assign(document.createElement('a'), {
+				href: URL.createObjectURL(blob),
+				download: `tonton-data-${new Date().toISOString().slice(0, 10)}.json`,
+			});
+			a.click();
+			setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+		},
+
+		import(file) {
+			const reader = new FileReader();
+			reader.onload = () => {
+				try {
+					const d = JSON.parse(reader.result);
+					if (!d || typeof d !== 'object') throw new Error('invalid');
+					this.data = this.normalize(d);
+					this.save();
+					Theme.apply();
+					Panel.refresh();
+					UI.syncLike(App.current);
+					Controls.sync();
+					UI.renderAvatar();
+					UI.renderSearches();
+					UI.toast('Data berhasil diimpor');
+				} catch {
+					UI.toast('File tidak valid');
+				}
+			};
+			reader.readAsText(file);
+		},
+	};
+
+	/* ==============================================================
+	   3. API YOUTUBE (YouTube Data API v3)
+	   ============================================================== */
+	const Api = {
+		async get(endpoint, params) {
+			if (!CONFIG.API_KEY) throw new Error('NO_KEY');
+			const url = new URL(`https://www.googleapis.com/youtube/v3/${endpoint}`);
+			Object.entries({ ...params, key: CONFIG.API_KEY })
+				.filter(([, v]) => v != null && v !== '')
+				.forEach(([k, v]) => url.searchParams.set(k, v));
+			const res = await fetch(url);
+			const json = await res.json().catch(() => ({}));
+			if (!res.ok) {
+				const known = {
+					quotaExceeded: 'Kuota harian YouTube API habis. Coba lagi besok.',
+					keyInvalid: 'API key tidak valid. Periksa CONFIG.API_KEY.',
+					forbidden: 'Akses ditolak. Periksa pembatasan domain dan API pada API key.',
+				};
+				throw new Error(known[json.error?.errors?.[0]?.reason] || json.error?.message || 'Gagal memuat data dari YouTube');
+			}
+			return json;
+		},
+
+		normalize: (i) => ({
+			id: i.id,
+			title: i.snippet.title,
+			channel: i.snippet.channelTitle,
+			thumb: `https://i.ytimg.com/vi/${i.id}/mqdefault.jpg`,
+			publishedAt: i.snippet.publishedAt,
+			description: i.snippet.description || '',
+			tags: (i.snippet.tags || []).slice(0, 6),
+			duration: Fmt.dur(i.contentDetails?.duration),
+			views: i.statistics?.viewCount,
+			likes: i.statistics?.likeCount,
+			comments: i.statistics?.commentCount,
+		}),
+
+		// Ambil detail + statistik untuk banyak ID sekaligus (hemat kuota)
+		async withStats(ids) {
+			const unique = [...new Set(ids)];
+			if (!unique.length) return [];
+			const r = await this.get('videos', { part: 'snippet,statistics,contentDetails', id: unique.join(',') });
+			const byId = new Map(r.items.map((i) => [i.id, this.normalize(i)]));
+			return unique.map((id) => byId.get(id)).filter(Boolean); // urutan sama dengan hasil pencarian
+		},
+
+		async detail(id) {
+			return (await this.withStats([id]))[0];
+		},
+
+		async popular(pageToken, videoCategoryId) {
+			const r = await this.get('videos', { part: 'snippet,statistics,contentDetails', chart: 'mostPopular', regionCode: CONFIG.REGION, maxResults: CONFIG.MAX_RESULTS, pageToken, videoCategoryId });
+			return Object.assign(r.items.map(this.normalize), { next: r.nextPageToken });
+		},
+
+		// Hasil berupa array video; token halaman berikutnya ada di properti `next`
+		async search(q, extra = {}) {
+			const r = await this.get('search', { part: 'snippet', type: 'video', q, maxResults: CONFIG.MAX_RESULTS, regionCode: CONFIG.REGION, relevanceLanguage: CONFIG.LANG, safeSearch: 'moderate', ...extra });
+			const list = await this.withStats(r.items.map((i) => i.id.videoId));
+			return Object.assign(list, { next: r.nextPageToken });
+		},
+
+		// Parameter relatedToVideoId sudah dihapus YouTube, jadi saran dicari lewat judul video
+		async suggestions(video, pageToken) {
+			const list = await this.search(video.title, { pageToken });
+			return Object.assign(list.filter((v) => v.id !== video.id), { next: list.next });
+		},
+	};
+
+	/* ==============================================================
+	   4. TEMA, EFEK (suara + getar) & PEMUTAR
+	   ============================================================== */
+	const Theme = {
+		// Warna teks yang terbaca di atas warna aksen (putih atau gelap, mana yang kontrasnya lebih baik)
+		onAccent(hex) {
+			const [r, g, b] = [1, 3, 5]
+				.map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+				.map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+			return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.217 ? '#1f2430' : '#ffffff';
+		},
+
+		apply() {
+			const s = Store.data.settings;
+			const root = document.documentElement;
+			const dark = s.mode === 'dark' || (s.mode === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+			root.dataset.theme = dark ? 'dark' : 'light';
+			root.style.setProperty('--accent', s.accent);
+			root.style.setProperty('--font', `'${s.fontFamily}', sans-serif`);
+			root.style.setProperty('--fs', `${s.fontSize}px`);
+			root.style.setProperty('--fw', s.fontWeight);
+			root.style.setProperty('--on-accent', this.onAccent(s.accent));
+			root.classList.toggle('no-anim', !s.animation);
+			Player.applyLight();
+		},
+	};
+
+	const Feedback = {
+		ctx: null,
+		last: 0,
+		tap() {
+			const now = Date.now();
+			if (now - this.last < 150) return; // satu klik bisa memicu beberapa event (mis. label + input)
+			this.last = now;
+			const s = Store.data.settings;
+			if (s.vibrate && navigator.vibrate) navigator.vibrate(CONFIG.VIBRATE_MS);
+			if (s.sound) this.beep();
+		},
+		beep() {
+			try {
+				this.ctx ||= new AudioContext();
+				if (this.ctx.state === 'suspended') this.ctx.resume();
+				const t = this.ctx.currentTime;
+				const osc = this.ctx.createOscillator();
+				const gain = this.ctx.createGain();
+				osc.frequency.value = 660;
+				gain.gain.setValueAtTime(0.05, t);
+				gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+				osc.connect(gain).connect(this.ctx.destination);
+				osc.start(t);
+				osc.stop(t + 0.08);
+			} catch { /* audio tidak tersedia */ }
+		},
+	};
+
+	// Pemutar YouTube (iframe lintas-origin): volume lewat postMessage, cahaya lewat filter CSS
+	const Player = {
+		ORIGIN: 'https://www.youtube-nocookie.com',
+
+		savedAt: 0,
+		state: -1,      // status pemutar: 1 memutar, 2 jeda, 3 buffering, 0 selesai, 5 / -1 belum mulai
+		time: 0,        // posisi putar terakhir (detik)
+		currentId: null,
+
+		// enablejsapi=1 agar pemutar menerima perintah; autoplay=0 + start= untuk standby di posisi terakhir
+		load(id, { autoplay = true, start = 0 } = {}) {
+			const origin = location.protocol.startsWith('http') ? `&origin=${encodeURIComponent(location.origin)}` : '';
+			const begin = start > 0 ? `&start=${Math.floor(start)}` : '';
+			this.currentId = id;
+			this.state = -1;
+			this.time = start;
+			Controls.armRepeat();
+			Controls.sync();
+			$('#player').src = `${this.ORIGIN}/embed/${id}?autoplay=${autoplay ? 1 : 0}&rel=0&playsinline=1&enablejsapi=1${begin}${origin}`;
+		},
+
+		// Terima status & waktu dari pesan pemutar: perbarui tombol, deteksi video selesai, dan simpan posisi tonton
+		track(info = {}) {
+			const before = this.state;
+			if (typeof info.playerState === 'number') this.state = info.playerState;
+			if (typeof info.currentTime === 'number' && [1, 2, 3].includes(this.state)) this.time = info.currentTime;
+			if (this.state !== before) Controls.sync();
+			if (this.state === 0 && before !== 0) Controls.ended();
+
+			const last = Store.data.last;
+			if (!last || last.id !== this.currentId) return;
+			if (this.state === 0) last.time = 0; // video selesai: lain kali mulai dari awal
+			else if (typeof info.currentTime === 'number' && [1, 2].includes(this.state)) last.time = Math.floor(info.currentTime);
+			if (Date.now() - this.savedAt > 5000) {
+				this.savedAt = Date.now();
+				Store.save();
+			}
+		},
+
+		command(func, args = []) {
+			this.post({ event: 'command', func, args });
+		},
+
+		// Putar/jeda; status diperkirakan dulu, lalu dikoreksi oleh pesan dari pemutar
+		toggle() {
+			const playing = [1, 3].includes(this.state);
+			this.command(playing ? 'pauseVideo' : 'playVideo');
+			this.state = playing ? 2 : 1;
+		},
+
+		// Maju/mundur relatif terhadap posisi terakhir yang dilaporkan pemutar
+		seekBy(seconds) {
+			this.time = Math.max(0, this.time + seconds);
+			this.command('seekTo', [this.time, true]);
+		},
+
+		replay() {
+			this.time = 0;
+			this.command('seekTo', [0, true]);
+			this.command('playVideo');
+		},
+
+		post(payload) {
+			const win = $('#player').contentWindow;
+			if (win) win.postMessage(JSON.stringify(payload), this.ORIGIN);
+		},
+
+		applyVolume() {
+			this.post({ event: 'command', func: 'setVolume', args: [Store.data.settings.volume] });
+		},
+
+		// Kecerahan & cahaya hangat diterapkan sebagai filter CSS pada pemutar
+		applyLight() {
+			const { brightness, warmth } = Store.data.settings;
+			const filters = [];
+			if (brightness !== 100) filters.push(`brightness(${brightness}%)`);
+			if (warmth > 0) filters.push(`sepia(${warmth}%)`);
+			$('#player').style.filter = filters.join(' ');
+		},
+
+		// Dipanggil setiap video selesai dimuat: daftarkan pendengar, lalu terapkan volume
+		onLoad() {
+			this.post({ event: 'listening', id: 1, channel: 'widget' });
+			[0, 600, 1800].forEach((ms) => setTimeout(() => this.applyVolume(), ms));
+		},
+	};
+
+	/* ==============================================================
+	   4b. KONTROL PEMUTAR: bar melayang di bawah layar
+	   ============================================================== */
+	const Controls = {
+		hideTimer: null,
+		repeatLeft: 0, // sisa pengulangan untuk mode "1x"
+
+		init() {
+			const on = (id, handler) => $(`#${id}`).addEventListener('click', handler);
+			on('ctlPlay', () => this.toggle());
+			on('ctlPrev', () => App.previous());
+			on('ctlNext', () => App.next());
+			on('ctlBack', () => Player.seekBy(-10));
+			on('ctlFwd', () => Player.seekBy(10));
+			on('ctlRepeat', () => this.cycleRepeat());
+			on('ctlAuto', () => this.toggleAuto());
+			this.watchScroll();
+			this.sync();
+		},
+
+		// Tampilkan bar setelah ada video yang dimuat
+		enable() {
+			$('#controlBar').classList.remove('hidden');
+			document.body.classList.add('has-controls');
+		},
+
+		// Sembunyi saat layar digulir (atas maupun bawah), muncul lagi setelah diam sebentar
+		watchScroll() {
+			const bar = $('#controlBar');
+			window.addEventListener('scroll', () => {
+				bar.dataset.hidden = 'true';
+				clearTimeout(this.hideTimer);
+				this.hideTimer = setTimeout(() => { bar.dataset.hidden = 'false'; }, 700);
+			}, { passive: true });
+		},
+
+		// Samakan ikon & status tombol dengan status pemutar dan pengaturan
+		sync() {
+			const { repeat, autoNext } = Store.data.settings;
+			const playing = [1, 3].includes(Player.state);
+			$('#ctlPlay').innerHTML = icon(playing ? 'pause' : 'play', 22);
+			$('#ctlPlay').setAttribute('aria-label', playing ? 'Jeda' : 'Putar');
+			$('#ctlRepeat').dataset.on = String(repeat !== 'off');
+			$('#ctlRepeatBadge').textContent = { off: '', once: '1x', loop: '\u221e' }[repeat];
+			$('#ctlAuto').dataset.on = String(autoNext);
+			$('#ctlAuto').setAttribute('aria-pressed', String(autoNext));
+		},
+
+		toggle() {
+			Player.toggle();
+			this.sync();
+		},
+
+		// Pengulangan: mati -> 1x -> terus -> mati
+		cycleRepeat() {
+			const s = Store.data.settings;
+			s.repeat = { off: 'once', once: 'loop', loop: 'off' }[s.repeat] || 'off';
+			this.armRepeat();
+			Store.save();
+			this.sync();
+			UI.toast({ off: 'Pengulangan mati', once: 'Ulangi 1x', loop: 'Ulangi terus' }[s.repeat]);
+		},
+
+		toggleAuto() {
+			const s = Store.data.settings;
+			s.autoNext = !s.autoNext;
+			Store.save();
+			this.sync();
+			UI.toast(s.autoNext ? 'Putar otomatis ke video berikutnya: aktif' : 'Putar otomatis: nonaktif');
+		},
+
+		// Dipanggil setiap video baru dimuat: pengulangan "1x" siap dipakai lagi
+		armRepeat() {
+			this.repeatLeft = Store.data.settings.repeat === 'once' ? 1 : 0;
+		},
+
+		// Dipanggil sekali saat video selesai: ulang sesuai mode, atau lanjut ke video berikutnya
+		ended() {
+			const s = Store.data.settings;
+			if (s.repeat === 'loop' || (s.repeat === 'once' && this.repeatLeft > 0)) {
+				if (s.repeat === 'once') { // pengulangan 1x sudah terpakai
+					this.repeatLeft = 0;
+					s.repeat = 'off';
+					Store.save();
+					this.sync();
+				}
+				return Player.replay();
+			}
+			if (s.autoNext) App.next();
+		},
+	};
+
+	/* ==============================================================
+	   5. UI: render potongan halaman
+	   ============================================================== */
+	const UI = {
+		toastTimer: null,
+		suggestOpen: false,
+
+		toast(msg) {
+			const el = $('#toast');
+			el.textContent = msg;
+			el.classList.remove('opacity-0', 'translate-y-2');
+			clearTimeout(this.toastTimer);
+			this.toastTimer = setTimeout(() => el.classList.add('opacity-0', 'translate-y-2'), 2800);
+		},
+
+		card: (v) => `
+			<button class="card flex gap-3 text-left sm:flex-col" data-play="${Fmt.esc(v.id)}">
+				<span class="relative block w-40 shrink-0 overflow-hidden rounded-2xl bg-black/10 sm:w-full">
+					<img class="aspect-video w-full object-cover" src="${v.thumb}" alt="" loading="lazy">
+					${v.duration ? `<span class="badge">${v.duration}</span>` : ''}
+				</span>
+				<span class="min-w-0 flex-1 px-0.5">
+					<span class="wrap-text block text-sm font-semibold leading-snug">${Fmt.esc(v.title)}</span>
+					<span class="muted wrap-text mt-1 block text-xs">${Fmt.esc(v.channel)}</span>
+					<span class="muted block text-xs">${Fmt.num(v.views)} ditonton, ${Fmt.ago(v.publishedAt)}</span>
+				</span>
+			</button>`,
+
+		skeleton: () => Array(6).fill(`
+			<div class="flex animate-pulse gap-3 sm:flex-col">
+				<div class="aspect-video w-40 shrink-0 rounded-2xl sm:w-full" style="background: var(--chip)"></div>
+				<div class="flex-1 space-y-2"><div class="h-3 rounded" style="background: var(--chip)"></div><div class="h-3 w-2/3 rounded" style="background: var(--chip)"></div></div>
+			</div>`).join(''),
+
+		renderInfo(v) {
+			const el = $('#info');
+			el.classList.remove('hidden');
+			el.innerHTML = `
+				<div class="surface rise watch-col rounded-3xl p-4" style="box-shadow: var(--shadow)">
+					<h1 class="wrap-text text-lg font-bold leading-snug tracking-tight">${Fmt.esc(v.title)}</h1>
+
+					<div class="mt-3 flex items-center gap-3">
+						<span class="grid h-10 w-10 shrink-0 place-items-center rounded-full font-bold" style="background: var(--accent)">${Fmt.esc(v.channel.charAt(0).toUpperCase())}</span>
+						<div class="min-w-0">
+							<p class="wrap-text font-semibold">${Fmt.esc(v.channel)}</p>
+							<p class="muted text-xs">Diunggah ${Fmt.date(v.publishedAt)}, ${Fmt.ago(v.publishedAt)}</p>
+						</div>
+					</div>
+
+					<div class="mt-3 flex flex-wrap gap-2">
+						<span class="chip">${icon('eye', 14)}${Fmt.num(v.views)} ditonton</span>
+						<span class="chip">${icon('heart', 14)}${Fmt.num(v.likes)} suka</span>
+						<span class="chip">${icon('comment', 14)}${Fmt.num(v.comments)} komentar</span>
+						${v.duration ? `<span class="chip">${icon('clock', 14)}Durasi ${v.duration}</span>` : ''}
+					</div>
+
+					<div class="mt-4 flex flex-wrap gap-2">
+						${this.likeBtn(v)}
+						<button class="btn btn-accent" data-download="mp4">${icon('video')}Unduh MP4</button>
+						<button class="btn" data-download="mp3">${icon('headphones')}Konversi ke MP3</button>
+						<button class="btn" data-share>${icon('share')}Bagikan</button>
+					</div>
+
+					<details class="mt-4 text-sm">
+						<summary class="flex cursor-pointer items-center gap-2 font-semibold">${icon('info')}Deskripsi<span class="chev ml-auto">${icon('chevron-down')}</span></summary>
+						<p class="muted mt-2 whitespace-pre-line break-words">${Fmt.esc(v.description.slice(0, 800)) || 'Tidak ada deskripsi.'}${v.description.length > 800 ? '...' : ''}</p>
+						${v.tags.length ? `<div class="mt-3 flex flex-wrap gap-1.5">${v.tags.map((t) => `<span class="chip">#${Fmt.esc(t)}</span>`).join('')}</div>` : ''}
+					</details>
+				</div>`;
+		},
+
+		likeBtn(v) {
+			const liked = Store.isLiked(v.id);
+			return `
+				<button class="btn ${liked ? 'is-liked' : ''}" data-like aria-pressed="${liked}">
+					${icon(liked ? 'heart-fill' : 'heart')}
+					${liked ? 'Disukai' : 'Suka'}
+				</button>`;
+		},
+
+		syncLike(v) {
+			const btn = $('[data-like]');
+			if (btn && v) btn.outerHTML = this.likeBtn(v);
+		},
+
+		// Tandai swatch warna aksen yang sedang aktif di panel pengaturan
+		markAccent(value) {
+			const color = value.toLowerCase();
+			document.querySelectorAll('[data-accent]').forEach((b) => { b.dataset.active = String(b.dataset.accent === color); });
+			const custom = $('#swatchCustom');
+			if (custom) custom.dataset.active = String(!ACCENTS.includes(color));
+		},
+
+		hydrateIcons() {
+			document.querySelectorAll('[data-icon]').forEach((el) => {
+				el.insertAdjacentHTML('afterbegin', icon(el.dataset.icon, Number(el.dataset.iconSize) || 16));
+			});
+		},
+
+		// Durasi animasi (ms); 0 jika animasi dimatikan di Pengaturan atau sistem meminta gerakan minimal
+		motionMs(ms) {
+			const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+			return reduced || document.documentElement.classList.contains('no-anim') ? 0 : ms;
+		},
+
+		// Dialog konfirmasi (<dialog>) dengan animasi masuk/keluar; hasilnya true jika disetujui
+		confirm({ title, text, ok = 'Hapus', icon: iconName = 'trash', danger = true }) {
+			return new Promise((resolve) => {
+				const dialog = $('#confirmDialog');
+				$('#confirmTitle').textContent = title;
+				$('#confirmText').textContent = text;
+				$('#confirmIcon').innerHTML = icon('alert', 20);
+				$('#confirmOk').className = `btn ${danger ? 'btn-danger' : 'btn-accent'}`;
+				$('#confirmOk').innerHTML = `${icon(iconName, 14)}${ok}`;
+
+				// Putar animasi keluar dulu, baru tutup dialog
+				const finish = (value) => {
+					dialog.classList.add('closing');
+					setTimeout(() => dialog.close(value), this.motionMs(160));
+				};
+				dialog.onsubmit = (e) => { e.preventDefault(); finish(e.submitter ? e.submitter.value : 'cancel'); };
+				dialog.oncancel = (e) => { e.preventDefault(); finish('cancel'); };
+				dialog.addEventListener('close', () => {
+					dialog.classList.remove('closing');
+					resolve(dialog.returnValue === 'ok');
+				}, { once: true });
+
+				dialog.returnValue = '';
+				dialog.showModal();
+			});
+		},
+
+		renderAvatar() {
+			const src = Store.data.profile.avatar;
+			const img = $('#navAvatar');
+			if (src) img.src = src; else img.removeAttribute('src');
+			img.classList.toggle('hidden', !src);
+			$('#navIcon').classList.toggle('hidden', Boolean(src));
+		},
+
+		// Dropdown saran: riwayat pencarian yang cocok atau mirip dengan teks yang diketik
+		renderSearches() {
+			const box = $('#suggestBox');
+			const query = $('#searchInput').value.trim();
+			const items = Store.suggest(query);
+			box.innerHTML = items.length ? `
+				<p class="muted px-3 pb-1 pt-2 text-xs">${query ? 'Saran dari riwayat pencarianmu' : 'Pencarian terakhir'}</p>
+				${items.map(({ text, similar }) => `
+					<div class="suggest-row flex items-center rounded-xl">
+						<button class="flex min-w-0 flex-1 items-center gap-3 px-3 py-2.5 text-left text-sm" data-suggest="${Fmt.esc(text)}">
+							${icon(similar ? 'search' : 'clock')}
+							<span class="wrap-text min-w-0">${Fmt.esc(text)}</span>
+						</button>
+						<button class="icon-btn shrink-0" data-fill="${Fmt.esc(text)}" aria-label="Isi kolom cari">${icon('arrow-up-left')}</button>
+					</div>`).join('')}` : '';
+			box.dataset.open = String(items.length > 0 && this.suggestOpen);
+		},
+
+		renderFooter() {
+			const { history, likes, downloads } = Store.data;
+			const stats = [[history.length, 'ditonton'], [likes.length, 'disukai'], [downloads.length, 'diunduh']];
+			$('#footStats').innerHTML = stats.map(([n, label]) => `<span class="chip">${n} ${label}</span>`).join('');
+			$('#footYear').textContent = `© ${new Date().getFullYear()} Tonton. Tidak berafiliasi dengan YouTube.`;
+		},
+
+		fail(e) {
+			let msg = e.message;
+			if (e.message === 'NO_KEY') msg = 'API key belum diisi. Buka file ini, lalu isi CONFIG.API_KEY dengan YouTube Data API v3 key.';
+			else if (e instanceof TypeError) msg = 'Tidak dapat terhubung ke YouTube. Periksa koneksi internetmu.';
+			$('#feed').innerHTML = '';
+			$('#status').textContent = msg;
+		},
+	};
+
+	/* ==============================================================
+	   6. PANEL (Akun & Pengaturan)
+	   ============================================================== */
+	const Panel = {
+		kind: null,
+		tab: 'history',
+		opener: null,
+
+		open(kind) {
+			if (!this.kind) this.opener = document.activeElement;
+			this.kind = kind;
+			$('#panelTitle').textContent = kind === 'account' ? 'Akun' : 'Pengaturan';
+			$('#panel').setAttribute('aria-hidden', 'false');
+			document.body.classList.add('panel-open');
+			this.refresh();
+			$('#panelClose').focus({ preventScroll: true });
+		},
+
+		close() {
+			this.kind = null;
+			$('#panel').setAttribute('aria-hidden', 'true');
+			document.body.classList.remove('panel-open');
+			this.opener?.focus({ preventScroll: true });
+			this.opener = null;
+		},
+
+		refresh() {
+			if (this.kind) $('#panelBody').innerHTML = this[this.kind]();
+		},
+
+		dataTools: () => `
+			<div class="flex gap-2 pt-4">
+				<button class="btn flex-1" data-action="export">${icon('download')}Ekspor data</button>
+				<button class="btn flex-1" data-action="import">${icon('upload')}Impor data</button>
+			</div>`,
+
+		list(items, emptyText, extra = () => '') {
+			if (!items.length) return `<p class="muted py-6 text-center text-sm">${emptyText}</p>`;
+			return items.slice(0, 50).map((i) => `
+				<button class="row w-full gap-3 text-left" data-play="${Fmt.esc(i.id)}">
+					<img class="h-12 w-20 shrink-0 rounded-lg object-cover" src="https://i.ytimg.com/vi/${Fmt.esc(i.id)}/default.jpg" alt="" loading="lazy">
+					<span class="min-w-0 flex-1">
+						<span class="wrap-text block text-sm font-semibold">${Fmt.esc(i.title)}</span>
+						<span class="muted wrap-text block text-xs">${Fmt.esc(i.channel)}, ${Fmt.ago(i.at)}${extra(i)}</span>
+					</span>
+				</button>`).join('');
+		},
+
+		avatar(profile, size) {
+			const ring = 'border-color: var(--surface)';
+			return profile.avatar
+				? `<img class="${size} rounded-full border-4 object-cover" style="${ring}" src="${Fmt.esc(profile.avatar)}" alt="Foto profil">`
+				: `<span class="${size} grid place-items-center rounded-full border-4 font-bold" style="background: var(--accent); ${ring}">${Fmt.esc((profile.name || '?').charAt(0).toUpperCase())}</span>`;
+		},
+
+		// Grafik aktivitas 7 hari + channel yang paling sering ditonton
+		insights(history) {
+			const days = [...Array(7)].map((_, i) => {
+				const d = new Date();
+				d.setHours(0, 0, 0, 0);
+				d.setDate(d.getDate() - (6 - i));
+				return d;
+			});
+			const counts = days.map((d) => history.filter((h) => h.at >= d.getTime() && h.at < d.getTime() + 864e5).length);
+			const max = Math.max(...counts, 1);
+			const bars = counts.map((c, i) => `
+				<div class="flex flex-1 flex-col items-center gap-1">
+					<div class="w-full rounded-md" style="height: ${Math.max(0.25, (c / max) * 3)}rem; background: var(--accent); opacity: ${c ? 1 : 0.25}"></div>
+					<span class="muted text-[0.625rem]">${days[i].toLocaleDateString('id-ID', { weekday: 'short' })}</span>
+				</div>`).join('');
+
+			const tally = {};
+			history.forEach((h) => { tally[h.channel] = (tally[h.channel] || 0) + 1; });
+			const top = Object.entries(tally).sort((a, b) => b[1] - a[1])[0];
+
+			return `
+				<div class="mt-4 rounded-2xl p-3" style="background: var(--chip)">
+					<p class="text-sm font-semibold">Aktivitas 7 hari terakhir</p>
+					<div class="mt-3 flex items-end gap-2">${bars}</div>
+					<p class="muted mt-3 text-xs">${top ? `Channel favorit: <b>${Fmt.esc(top[0])}</b> (${top[1]} video)` : 'Belum ada channel favorit.'}</p>
+				</div>`;
+		},
+
+		tabData() {
+			const { history, likes, downloads } = Store.data;
+			return {
+				history: { label: 'Riwayat', icon: 'clock', items: history, empty: 'Belum ada video yang ditonton.' },
+				likes: { label: 'Disukai', icon: 'heart', items: likes, empty: 'Belum ada video yang disukai.' },
+				downloads: { label: 'Unduhan', icon: 'download', items: downloads, empty: 'Belum ada unduhan.' },
+			};
+		},
+
+		// Bar tab dengan penanda yang bergeser mengikuti tab aktif
+		tabBar(active) {
+			const tabs = this.tabData();
+			const keys = Object.keys(tabs);
+			return `
+				<div id="tabBar" class="tab-bar mt-5" role="tablist" style="--count: ${keys.length}; --i: ${keys.indexOf(active)}">
+					<span class="tab-indicator btn-accent" aria-hidden="true"></span>
+					${keys.map((key) => `
+						<button class="tab-btn ${key === active ? 'is-active' : ''}" data-tab="${key}" role="tab" aria-selected="${key === active}">${icon(tabs[key].icon, 14)}<span class="tab-label">${tabs[key].label}</span><span class="tab-count">${tabs[key].items.length}</span></button>`).join('')}
+				</div>`;
+		},
+
+		tabBody(active) {
+			const tab = this.tabData()[active];
+			const extra = active === 'downloads' ? (i) => `, ${i.format.toUpperCase()}` : undefined;
+			return `
+				<div class="flex items-center justify-between pt-4">
+					<h3 class="font-semibold">${tab.label}</h3>
+					<button class="muted inline-flex items-center gap-1 text-sm" data-action="clear-${active}">${icon('trash', 14)}Hapus</button>
+				</div>
+				${this.list(tab.items, tab.empty, extra)}`;
+		},
+
+		// Pindah tab: penanda bergeser, isi menggeser searah tab tujuan (tanpa merender ulang seluruh panel)
+		switchTab(key) {
+			const keys = Object.keys(this.tabData());
+			if (key === this.tab || !keys.includes(key)) return;
+			const dir = keys.indexOf(key) > keys.indexOf(this.tab) ? 'right' : 'left';
+			this.tab = key;
+
+			const bar = $('#tabBar');
+			bar.style.setProperty('--i', keys.indexOf(key));
+			bar.querySelectorAll('[data-tab]').forEach((b) => {
+				const on = b.dataset.tab === key;
+				b.classList.toggle('is-active', on);
+				b.setAttribute('aria-selected', String(on));
+			});
+
+			const body = $('#tabBody');
+			body.innerHTML = this.tabBody(key);
+			body.classList.remove('slide-left', 'slide-right');
+			void body.offsetWidth; // mulai ulang animasi
+			body.classList.add(`slide-${dir}`);
+		},
+
+		account() {
+			const { profile, history, likes, downloads } = Store.data;
+			const active = Object.keys(this.tabData()).includes(this.tab) ? this.tab : 'history';
+			const stats = [[history.length, 'Ditonton', 'eye'], [likes.length, 'Disukai', 'heart'], [downloads.length, 'Diunduh', 'download']];
+
+			return `
+				<div class="-mx-4 h-24" style="background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 45%, #000))"></div>
+
+				<div class="-mt-12 flex items-end gap-3">
+					<div class="relative shrink-0">
+						${this.avatar(profile, 'h-24 w-24 text-3xl')}
+						<button class="absolute bottom-0 right-0 grid h-8 w-8 place-items-center rounded-full" style="background: var(--accent); border: 3px solid var(--surface)" data-action="avatar" aria-label="Ganti foto profil">
+							${icon('camera', 15)}
+						</button>
+					</div>
+					<div class="min-w-0 pb-1">
+						<p class="wrap-text text-lg font-bold leading-tight">${Fmt.esc(profile.name)}</p>
+						<p class="muted text-xs">Bergabung ${Fmt.date(profile.createdAt)}</p>
+					</div>
+				</div>
+
+				<div class="mt-4">
+					<label class="muted flex items-center gap-1.5 text-xs" for="profileName">${icon('user', 14)}Nama</label>
+					<input id="profileName" class="field mt-1" data-profile="name" value="${Fmt.esc(profile.name)}" maxlength="40">
+					<div class="mt-3 flex flex-wrap gap-2">
+						<span class="chip">${icon('calendar', 13)}Umur akun ${Fmt.age(profile.createdAt)}</span>
+						${profile.avatar ? `<button class="chip" data-action="remove-avatar">${icon('trash', 13)}Hapus foto</button>` : ''}
+					</div>
+				</div>
+
+				<div class="mt-5 grid grid-cols-3 gap-2 text-center">
+					${stats.map(([n, label, ic]) => `
+						<div class="rounded-2xl p-3" style="background: var(--chip)">
+							<p class="text-xl font-bold">${n}</p>
+							<p class="muted flex items-center justify-center gap-1 text-xs">${icon(ic, 12)}${label}</p>
+						</div>`).join('')}
+				</div>
+
+				${this.insights(history)}
+
+				${this.tabBar(active)}
+
+				<div id="tabBody">${this.tabBody(active)}</div>
+
+				${this.dataTools()}`;
+		},
+
+		settings() {
+			const s = Store.data.settings;
+			const opts = (list, current) => list.map(([v, label]) => `<option value="${v}" ${String(v) === String(current) ? 'selected' : ''}>${label}</option>`).join('');
+			const active = s.accent.toLowerCase();
+			const section = (title) => `<h3 class="muted pb-1 pt-5 text-xs font-semibold uppercase tracking-wide">${title}</h3>`;
+			const toggle = (key, label, ic) => `
+				<label class="row cursor-pointer"><span class="flex items-center gap-2">${icon(ic)}${label}</span><input type="checkbox" data-set="${key}" ${s[key] ? 'checked' : ''}></label>`;
+
+			return `
+				${section('Tampilan')}
+				<div class="row"><span class="flex items-center gap-2">${icon('sun')}Mode</span>
+					<select class="field w-auto" data-set="mode">${opts([['system', 'Ikuti sistem'], ['light', 'Terang'], ['dark', 'Gelap']], s.mode)}</select></div>
+
+				<div class="row"><span class="flex items-center gap-2">${icon('type')}Ukuran font <b id="val-fontSize">${s.fontSize}px</b></span>
+					<input type="range" min="12" max="24" step="1" value="${s.fontSize}" data-set="fontSize" class="w-40"></div>
+
+				<div class="row"><span class="flex items-center gap-2">${icon('font')}Jenis font</span>
+					<select class="field w-auto" data-set="fontFamily">${opts(FONTS.map((f) => [f, f]), s.fontFamily)}</select></div>
+
+				<div class="row"><span class="flex items-center gap-2">${icon('bold')}Ketebalan font</span>
+					<select class="field w-auto" data-set="fontWeight">${opts(Object.entries(WEIGHTS), s.fontWeight)}</select></div>
+
+				<div class="row row-stack">
+					<span class="flex items-center gap-2">${icon('palette')}Warna aksen</span>
+					<div class="flex flex-wrap items-center gap-3">
+						${ACCENTS.map((c, i) => `
+							<button class="swatch" style="background-color: ${c}; --c: ${c}" data-accent="${c}" data-active="${active === c}" title="${ACCENT_NAMES[i]}" aria-label="${ACCENT_NAMES[i]}"></button>`).join('')}
+						<label id="swatchCustom" class="swatch swatch-custom cursor-pointer" data-active="${!ACCENTS.includes(active)}" title="Warna kustom">
+							${icon('eyedropper', 14)}
+							<input id="accentPicker" type="color" value="${s.accent}" data-set="accent" class="absolute inset-0 h-full w-full cursor-pointer opacity-0" aria-label="Warna kustom">
+						</label>
+					</div>
+				</div>
+
+				${section('Pemutaran video')}
+				<div class="row"><span class="flex items-center gap-2">${icon('volume-down')}Volume <b id="val-volume">${s.volume}%</b></span>
+					<input type="range" min="0" max="100" step="5" value="${s.volume}" data-set="volume" class="w-40"></div>
+
+				<div class="row"><span class="flex items-center gap-2">${icon('brightness')}Kecerahan <b id="val-brightness">${s.brightness}%</b></span>
+					<input type="range" min="50" max="130" step="5" value="${s.brightness}" data-set="brightness" class="w-40"></div>
+
+				<div class="row"><span class="flex items-center gap-2">${icon('warmth')}Cahaya hangat <b id="val-warmth">${s.warmth}%</b></span>
+					<input type="range" min="0" max="60" step="5" value="${s.warmth}" data-set="warmth" class="w-40"></div>
+
+
+				${section('Umum')}
+				${toggle('animation', 'Animasi', 'sparkles')}
+				${toggle('sound', 'Efek suara', 'volume')}
+				${toggle('vibrate', 'Getar', 'vibrate')}
+
+				<div class="row"><span class="flex items-center gap-2">${icon('search')}Riwayat pencarian</span><button class="btn" data-action="clear-searches">${icon('trash')}Hapus</button></div>
+
+				${this.dataTools()}`;
+		},
+	};
+
+	/* ==============================================================
+	   7. APP: alur utama (putar, cari, unduh)
+	   ============================================================== */
+	const App = {
+		cache: new Map(),
+		current: null,
+		playToken: 0,
+		feedToken: 0,
+		feedState: null,
+		nowLabel: 'Sedang diputar', // teks bar video saat ini: 'Terakhir ditonton' saat standby
+		queue: [],                  // antrean: video yang dipilih + rekomendasinya (dipakai tombol Sebelumnya/Berikutnya)
+		queueIndex: 0,
+		navBusy: false,
+
+		// Aksi penghapusan: teks konfirmasi + proses yang dijalankan setelah disetujui
+		removals: {
+			'clear-history': { title: 'Hapus riwayat tontonan?', text: 'Semua video di riwayat tontonan akan dihapus, termasuk video standby terakhir. Tindakan ini tidak bisa dikembalikan.', done: 'Riwayat tontonan dihapus', run: () => { Store.data.history = []; Store.data.last = null; Store.data.seen = []; } },
+			'clear-likes': { title: 'Hapus video yang disukai?', text: 'Semua video yang kamu sukai akan dihapus dari daftar.', done: 'Daftar video disukai dihapus', run: () => { Store.data.likes = []; } },
+			'clear-downloads': { title: 'Hapus riwayat unduhan?', text: 'Catatan unduhan akan dihapus. File yang sudah kamu unduh tidak terpengaruh.', done: 'Riwayat unduhan dihapus', run: () => { Store.data.downloads = []; } },
+			'clear-searches': { title: 'Hapus riwayat pencarian?', text: 'Saran pencarian dari riwayat juga akan hilang.', done: 'Riwayat pencarian dihapus', run: () => { Store.data.searches = []; } },
+			'remove-avatar': { title: 'Hapus foto profil?', text: 'Foto akan diganti dengan inisial namamu.', done: 'Foto profil dihapus', run: () => { delete Store.data.profile.avatar; } },
+		},
+
+		init() {
+			Store.load();
+			Theme.apply();
+			matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => Theme.apply());
+			this.bindLayout();
+			this.bindEvents();
+			this.renderChips();
+			UI.hydrateIcons();
+			Controls.init();
+			UI.renderAvatar();
+			UI.renderSearches();
+			UI.renderFooter();
+			this.loadFeed('Sedang populer', (t) => Api.popular(t));
+
+			// Video terakhir (atau tautan index.html#v=ID_VIDEO) dimuat standby, tidak diputar otomatis
+			this.restore();
+		},
+
+		// Geser konten ke bawah sesuai tinggi header melayang (navigasi + pemutar)
+		bindLayout() {
+			const fit = () => { $('#main').style.paddingTop = `${$('#stack').offsetHeight + 16}px`; };
+			new ResizeObserver(fit).observe($('#stack'));
+			fit();
+		},
+
+		// loader(pageToken) mengembalikan array video; properti `next` = token halaman berikutnya
+		async loadFeed(title, loader, opts = {}) {
+			const token = ++this.feedToken;
+			this.feedState = { loader, next: null, seen: new Set(), avoidSeen: Boolean(opts.avoidSeen) };
+			$('#feedTitle').textContent = title;
+			$('#feed').innerHTML = UI.skeleton();
+			$('#status').textContent = '';
+			$('#moreWrap').classList.add('hidden');
+			try {
+				const items = await loader();
+				if (token !== this.feedToken) return;
+				this.appendItems(items, true);
+			} catch (e) {
+				if (token === this.feedToken) UI.fail(e);
+			}
+		},
+
+		appendItems(items, replace) {
+			const state = this.feedState;
+			state.next = items.next || null;
+			let fresh = items.filter((v) => !state.seen.has(v.id));
+			if (state.avoidSeen) {
+				// Utamakan video yang belum pernah tampil di kategori sebelumnya
+				const unseen = fresh.filter((v) => !Store.data.seen.includes(v.id));
+				if (unseen.length >= (replace ? 6 : 1)) fresh = unseen;
+				Store.markSeen(fresh.map((v) => v.id));
+			}
+			fresh.forEach((v) => { state.seen.add(v.id); this.cache.set(v.id, v); });
+			const html = fresh.map(UI.card).join('');
+			if (replace) {
+				const feed = $('#feed');
+				feed.innerHTML = html;
+				feed.classList.remove('rise');
+				void feed.offsetWidth; // mulai ulang animasi
+				feed.classList.add('rise');
+			} else {
+				$('#feed').insertAdjacentHTML('beforeend', html);
+			}
+			$('#status').textContent = state.seen.size ? '' : 'Tidak ada video yang cocok.';
+			$('#moreWrap').classList.toggle('hidden', !state.next);
+		},
+
+		async loadMore() {
+			const state = this.feedState;
+			if (!state?.next) return;
+			const token = this.feedToken;
+			const btn = $('#btnMore');
+			btn.disabled = true;
+			$('#btnMoreLabel').textContent = 'Memuat...';
+			try {
+				const items = await state.loader(state.next);
+				if (token === this.feedToken) this.appendItems(items, false);
+			} catch (e) {
+				UI.toast(e.message);
+			}
+			btn.disabled = false;
+			$('#btnMoreLabel').textContent = 'Muat lebih banyak';
+		},
+
+		// Kembali ke beranda tanpa menghentikan video yang sedang diputar
+		home() {
+			$('#searchInput').value = '';
+			$('#info').classList.add('hidden');
+			this.showNowPlaying(Boolean(this.current));
+			this.loadFeed('Sedang populer', (t) => Api.popular(t));
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		},
+
+		showNowPlaying(show) {
+			$('#nowPlaying').classList.toggle('hidden', !show);
+			if (!show) return;
+			$('#nowLabel').textContent = this.nowLabel;
+			$('#nowTitle').textContent = this.current.title;
+		},
+
+		// Tampilkan lagi info + saran untuk video yang sedang diputar
+		async resume() {
+			let v = this.current;
+			if (!v) return;
+			if (!v.publishedAt) { // data hasil pemulihan tontonan terakhir: ambil info lengkapnya dulu
+				try {
+					v = this.cache.get(v.id) || await Api.detail(v.id);
+				} catch (e) {
+					return UI.fail(e);
+				}
+				if (!v) return UI.toast('Info video tidak tersedia');
+				this.cache.set(v.id, v);
+				this.current = v;
+			}
+			UI.renderInfo(v);
+			this.showNowPlaying(false);
+			this.loadSuggestions(v);
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		},
+
+		async remove(action) {
+			const item = this.removals[action];
+			if (!await UI.confirm(item)) return;
+			item.run();
+			Store.save();
+			Panel.refresh();
+			UI.syncLike(this.current);
+			UI.renderSearches();
+			UI.renderAvatar();
+			UI.toast(item.done);
+		},
+
+		async share() {
+			const v = this.current;
+			if (!v) return;
+			const url = `${location.href.split('#')[0]}#v=${v.id}`;
+			try {
+				if (navigator.share) await navigator.share({ title: v.title, url });
+				else { await navigator.clipboard.writeText(url); UI.toast('Tautan disalin'); }
+			} catch (e) {
+				if (e.name !== 'AbortError') UI.toast('Tautan tidak dapat disalin');
+			}
+		},
+
+		like() {
+			const v = this.current;
+			if (!v) return;
+			const liked = Store.toggleLike(v);
+			UI.syncLike(v);
+			UI.toast(liked ? 'Ditambahkan ke video yang disukai' : 'Dihapus dari video yang disukai');
+		},
+
+		renderChips() {
+			const items = [['Populer', ''], ...CONFIG.CATEGORIES.map((c) => [c, c])];
+			$('#chips').innerHTML = items.map(([label, q]) => `<button class="chip" data-search="${Fmt.esc(q)}">${icon(CATEGORY_ICONS[label] || 'tag', 14)}${label}</button>`).join('');
+		},
+
+		// Kategori: kata kunci, urutan, dan rentang waktu diacak di setiap klik agar hasilnya tidak itu-itu saja
+		variedSearch(query) {
+			const pick = (list) => list[Math.floor(Math.random() * list.length)];
+			const days = pick([30, 90, 180, 365, 730]);
+			let params = {
+				q: `${query} ${pick(['terbaru', 'populer', 'terbaik', 'rekomendasi', 'pilihan', 'viral', 'trending', String(new Date().getFullYear())])}`,
+				order: pick(['relevance', 'date', 'viewCount']),
+				publishedAfter: new Date(Date.now() - days * 864e5).toISOString().replace(/\.\d{3}Z$/, 'Z'),
+			};
+			return async (t) => {
+				const { q, ...extra } = params;
+				const list = await Api.search(q, { ...extra, pageToken: t });
+				if (t || list.length >= 6) return list;
+				params = { q: query, order: 'relevance' }; // hasil terlalu sedikit: pakai pencarian polos
+				return Api.search(query, { order: 'relevance', pageToken: t });
+			};
+		},
+
+		// "Populer": kategori video populer diacak (musik, gaming, dll.) agar isinya tidak itu-itu saja
+		popularLoader() {
+			const ids = ['', '10', '17', '20', '22', '23', '24', '25', '28'];
+			let categoryId = ids[Math.floor(Math.random() * ids.length)];
+			return async (t) => {
+				if (!t && categoryId) {
+					try {
+						const list = await Api.popular(t, categoryId);
+						if (list.length >= 6) return list;
+					} catch (e) {
+						if (e.message === 'NO_KEY' || e instanceof TypeError) throw e; // masalah umum, bukan soal kategori
+					}
+					categoryId = ''; // kategori tidak tersedia: pakai populer umum
+				}
+				return Api.popular(t, categoryId);
+			};
+		},
+
+		browse(q) {
+			$('#searchInput').value = q;
+			if (q) return this.search(q, false, true);
+			this.loadFeed('Sedang populer', this.popularLoader(), { avoidSeen: true });
+			window.scrollTo({ top: 0 });
+		},
+
+		// vary = true dipakai oleh kategori (hasil diacak); pencarian biasa tetap apa adanya
+		search(q, remember = true, vary = false) {
+			const query = q.trim();
+			if (!query) return;
+			UI.suggestOpen = false;
+			UI.renderSearches();
+			if (remember) Store.addSearch(query);
+			if (vary) this.loadFeed(`Kategori: ${query}`, this.variedSearch(query), { avoidSeen: true });
+			else this.loadFeed(`Hasil untuk "${query}"`, (t) => Api.search(query, { pageToken: t }));
+			window.scrollTo({ top: 0 });
+		},
+
+		// standby = true: muat video tanpa memutarnya; nav = true: pindah lewat tombol Sebelumnya/Berikutnya (antrean tetap)
+		async play(id, { standby = false, start = 0, nav = false } = {}) {
+			const token = ++this.playToken;
+			this.nowLabel = standby ? 'Terakhir ditonton' : 'Sedang diputar';
+			$('#playerWrap').classList.remove('hidden');
+			Controls.enable();
+			Player.load(id, { autoplay: !standby, start });
+			if (!standby) window.scrollTo({ top: 0, behavior: 'smooth' });
+
+			try { history.replaceState(null, '', `#v=${id}`); } catch { /* file:// atau diblokir */ }
+
+			// Saat standby, pakai data tersimpan lebih dulu agar tidak memakai kuota API
+			let video = this.cache.get(id) || (standby ? Store.lookup(id) : null);
+			try {
+				video ||= await Api.detail(id);
+			} catch (e) {
+				return standby ? undefined : UI.fail(e);
+			}
+			if (token !== this.playToken) return;
+			if (!video) return standby ? undefined : UI.toast('Info video tidak tersedia');
+
+			this.current = video;
+			if (!nav) { this.queue = [video]; this.queueIndex = 0; } // pilihan manual: antrean baru
+			if (standby) return this.showNowPlaying(true);
+
+			this.cache.set(id, video);
+			Store.addHistory(video);
+			Store.setLast(video);
+			UI.renderInfo(video);
+			this.showNowPlaying(false);
+			this.loadSuggestions(video);
+		},
+
+		// Umpan "Video lainnya"; hasil pertamanya juga menjadi antrean untuk tombol Berikutnya/Sebelumnya
+		loadSuggestions(video) {
+			this.loadFeed('Video lainnya', async (t) => {
+				const list = await Api.suggestions(video, t);
+				if (!t && this.queue.length === 1 && this.queue[0].id === video.id) this.queue = [video, ...list];
+				return list;
+			});
+		},
+
+		// Video berikutnya dari rekomendasi; bila antrean habis, ambil rekomendasi baru dari video terakhir
+		async next() {
+			if (!this.current || this.navBusy) return;
+			this.navBusy = true;
+			try {
+				if (this.queueIndex + 1 >= this.queue.length) {
+					const list = await Api.suggestions(this.queue[this.queueIndex]);
+					const ids = new Set(this.queue.map((v) => v.id));
+					const more = list.filter((v) => !ids.has(v.id));
+					more.forEach((v) => this.cache.set(v.id, v));
+					this.queue.push(...more);
+				}
+				const target = this.queue[this.queueIndex + 1];
+				if (!target) return UI.toast('Tidak ada rekomendasi berikutnya');
+				this.queueIndex++;
+				this.play(target.id, { nav: true });
+			} catch (e) {
+				UI.toast(e.message === 'NO_KEY' ? 'API key belum diisi' : e.message);
+			} finally {
+				this.navBusy = false;
+			}
+		},
+
+		// Video sebelumnya di antrean; di awal antrean, kembali ke video yang ditonton sebelumnya (riwayat)
+		previous() {
+			if (!this.current) return;
+			if (this.queueIndex > 0) {
+				this.queueIndex--;
+				return this.play(this.queue[this.queueIndex].id, { nav: true });
+			}
+			const prev = Store.data.history.find((h) => h.id !== this.current.id);
+			if (prev) return this.play(prev.id);
+			UI.toast('Tidak ada video sebelumnya');
+		},
+
+		// Muat video tontonan terakhir (atau dari tautan #v=ID) dalam keadaan standby, tanpa autoplay
+		restore() {
+			const hashId = (/^#v=([\w-]{11})$/.exec(location.hash) || [])[1];
+			const last = Store.data.last;
+			const id = hashId || last?.id || Store.data.history[0]?.id;
+			if (!/^[\w-]{11}$/.test(id || '')) return;
+			this.play(id, { standby: true, start: last?.id === id ? last.time : 0 });
+		},
+
+		download(format) {
+			const v = this.current;
+			if (!v) return;
+			if (!CONFIG.DOWNLOAD_API) return UI.toast('Isi CONFIG.DOWNLOAD_API dengan server unduhan milikmu dulu.');
+			const url = `${CONFIG.DOWNLOAD_API}?id=${encodeURIComponent(v.id)}&format=${format}`;
+			Object.assign(document.createElement('a'), { href: url, download: '' }).click();
+			Store.addDownload(v, format);
+			UI.toast(`Mengunduh ${format.toUpperCase()}...`);
+		},
+
+		bindEvents() {
+			$('#searchForm').addEventListener('submit', (e) => {
+				e.preventDefault();
+				this.search($('#searchInput').value);
+				$('#searchInput').blur();
+			});
+			document.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape' && !$('#confirmDialog').open) {
+					UI.suggestOpen = false;
+					UI.renderSearches();
+					Panel.close();
+				}
+				if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
+					e.preventDefault();
+					$('#searchInput').focus();
+				}
+			});
+			// Dropdown saran dari riwayat pencarian
+			const input = $('#searchInput');
+			const toggleSuggest = (open) => { UI.suggestOpen = open; UI.renderSearches(); };
+			input.addEventListener('focus', () => toggleSuggest(true));
+			input.addEventListener('input', () => toggleSuggest(true));
+			input.addEventListener('blur', () => setTimeout(() => toggleSuggest(false), 200));
+			$('#suggestBox').addEventListener('mousedown', (e) => e.preventDefault());
+
+			$('#avatarFile').addEventListener('change', (e) => {
+				Store.setAvatar(e.target.files[0]);
+				e.target.value = '';
+			});
+			$('#logo').addEventListener('click', (e) => {
+				if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+				e.preventDefault();
+				this.home();
+			});
+			// Pemutar: terapkan volume setiap video selesai dimuat
+			$('#player').addEventListener('load', () => Player.onLoad());
+			window.addEventListener('message', (e) => {
+				if (e.origin !== Player.ORIGIN) return;
+				try {
+					const data = JSON.parse(e.data);
+					if (data.event === 'onReady') Player.applyVolume();
+					if (data.event === 'infoDelivery') Player.track(data.info);
+					if (data.event === 'onStateChange') Player.track({ playerState: data.info });
+				} catch { /* bukan pesan JSON */ }
+			});
+			// Simpan posisi tonton saat halaman ditutup atau berpindah tab
+			window.addEventListener('pagehide', () => Store.save());
+			document.addEventListener('visibilitychange', () => { if (document.hidden) Store.save(); });
+			$('#toTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+			$('#btnMore').addEventListener('click', () => this.loadMore());
+			$('#btnAccount').addEventListener('click', () => Panel.open('account'));
+			$('#btnSettings').addEventListener('click', () => Panel.open('settings'));
+			$('#panelClose').addEventListener('click', () => Panel.close());
+			$('#backdrop').addEventListener('click', () => Panel.close());
+			$('#importFile').addEventListener('change', async (e) => {
+				const file = e.target.files[0];
+				e.target.value = '';
+				const ok = file && await UI.confirm({ title: 'Impor data?', text: 'Riwayat, daftar suka, dan pengaturan saat ini akan diganti dengan isi file.', ok: 'Impor', icon: 'upload', danger: false });
+				if (ok) Store.import(file);
+			});
+
+			// Efek suara + getar untuk setiap tombol
+			document.addEventListener('click', (e) => {
+				if (e.target.closest(CLICKABLE)) Feedback.tap();
+
+				const play = e.target.closest('[data-play]');
+				if (play) { Panel.close(); this.play(play.dataset.play); }
+
+				const dl = e.target.closest('[data-download]');
+				if (dl) this.download(dl.dataset.download);
+
+				if (e.target.closest('[data-like]')) this.like();
+				if (e.target.closest('[data-share]')) this.share();
+
+				const tab = e.target.closest('[data-tab]');
+				if (tab) Panel.switchTab(tab.dataset.tab);
+				if (e.target.closest('[data-resume]')) this.resume();
+
+				const suggest = e.target.closest('[data-suggest]');
+				if (suggest) {
+					$('#searchInput').value = suggest.dataset.suggest;
+					this.search(suggest.dataset.suggest);
+					$('#searchInput').blur();
+				}
+
+				const fill = e.target.closest('[data-fill]');
+				if (fill) {
+					$('#searchInput').value = fill.dataset.fill;
+					$('#searchInput').focus();
+					UI.renderSearches();
+				}
+
+				const chip = e.target.closest('[data-search]');
+				if (chip) this.browse(chip.dataset.search);
+
+				const accent = e.target.closest('[data-accent]');
+				if (accent) this.setSetting('accent', accent.dataset.accent);
+
+				const action = e.target.closest('[data-action]')?.dataset.action;
+				if (action === 'export') Store.export();
+				if (action === 'import') $('#importFile').click();
+				if (this.removals[action]) this.remove(action);
+				if (action === 'avatar') $('#avatarFile').click();
+			});
+
+			// Perubahan pengaturan & nama profil
+			$('#panelBody').addEventListener('input', (e) => {
+				const el = e.target;
+				if (el.dataset.profile) {
+					Store.data.profile[el.dataset.profile] = el.value;
+					Store.save();
+				}
+				if (el.dataset.set) {
+					this.setSetting(el.dataset.set, el.type === 'checkbox' ? el.checked : el.value, false);
+				}
+			});
+		},
+
+		setSetting(key, value, rerender = true) {
+			Store.data.settings[key] = key in UNITS ? Number(value) : value;
+			Store.save();
+			Theme.apply();
+			if (key in UNITS) {
+				const out = $(`#val-${key}`);
+				if (out) out.textContent = `${value}${UNITS[key]}`;
+			}
+			if (key === 'volume') Player.applyVolume();
+			if (key === 'accent') {
+				UI.markAccent(value);
+				if (rerender) $('#accentPicker').value = value;
+			}
+		},
+	};
+
+	App.init();
+	</script>
+</body>
+</html>
