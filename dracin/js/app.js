@@ -50,34 +50,35 @@ searchInput.addEventListener('input', () => {
 	}, 500);
 });
 
-// ----- Klik drama -> buka player -----
+// Ganti handler dramaSelected di app.js dengan ini:
+
 window.addEventListener('dramaSelected', async (event) => {
 	const { id, title } = event.detail;
 
-	// Simpan histori
 	storage.saveToHistory({ id, title });
 
-	// Ambil episode
 	try {
 		const episodes = await api.getEpisodes(id);
+		console.log('[App] Episodes:', episodes);
+
 		if (!episodes || episodes.length === 0) {
 			alert('Episode tidak tersedia untuk drama ini.');
 			return;
 		}
 
-		// Ambil stream URL episode pertama
-		const first = episodes[0];
-		const streamUrl = first.url || first.play_url || first.video_url || first.m3u8 || '';
+		// Ambil URL play episode pertama
+		const streamUrl = await api.getPlayUrl(id, 1);
+		console.log('[App] Stream URL:', streamUrl);
 
 		if (!streamUrl) {
-			alert('Link streaming tidak ditemukan.');
+			alert('Link streaming tidak ditemukan. Coba drama lain.');
 			return;
 		}
 
 		player.openPlayer(videoPlayer, playerModal, playerInfo, streamUrl, title);
 	} catch (err) {
-		console.error('Gagal memuat episode:', err);
-		alert('Gagal memuat episode.');
+		console.error('[App] Error:', err);
+		alert(`Gagal memuat: ${err.message}`);
 	}
 });
 

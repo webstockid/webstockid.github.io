@@ -1,93 +1,97 @@
 // ============================================================
-// api.js — Satu-satunya tempat yang tahu tentang API eksternal.
-// Ganti PROVIDER jika ingin beralih ke sumber lain (mis. Hoshiyomi).
+// api.js — Lapisan API, menggunakan Dracin API dengan provider bstation
+// Dokumentasi: https://dracinapi.com/providers/bstation/
 // ============================================================
 
 const CONFIG = {
-	// Dracin API: klaim tanpa API key [citation:6]
 	baseUrl: 'https://dracinapi.com',
-	provider: 'iqiyi', // iQIYI = drama China; bisa ganti 'bilitv', 'starshort', dll.
+	provider: 'bstation', // Bstation (Bilibili) memiliki banyak drama China
 	timeout: 15000,
 };
 
-// ----- Helper request generik -----
-async function request(endpoint, params = {}) {
-	const url = new URL(`${CONFIG.baseUrl}/${CONFIG.provider}/api/v1${endpoint}`);
-	Object.keys(params).forEach((key) => {
-		if (params[key] !== undefined && params[key] !== null) {
-			url.searchParams.append(key, params[key]);
-		}
-	});
+async function request(path) {
+	const url = `${CONFIG.baseUrl}${path}`;
+	console.log('[API] Request:', url);
 
 	const controller = new AbortController();
 	const timeoutId = setTimeout(() => controller.abort(), CONFIG.timeout);
 
 	try {
-		const response = await fetch(url.toString(), {
+		const response = await fetch(url, {
 			signal: controller.signal,
 			headers: { Accept: 'application/json' },
 		});
+
+		console.log('[API] Status:', response.status);
 
 		if (!response.ok) {
 			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 		}
 
 		const data = await response.json();
+		console.log('[API] Response:', data);
 		return data;
+	} catch (err) {
+		if (err.name === 'AbortError') {
+			throw new Error('Request timeout (15s)');
+		}
+		throw err;
 	} finally {
 		clearTimeout(timeoutId);
 	}
 }
 
-// ----- Endpoint publik -----
-export async function getTrending(page = 1) {
-	// Dracin API: /home atau /trending (sesuaikan dengan dokumentasi provider)
-	const data = await request('/home', { page });
+// ----- Home / Trending -----
+export async function getTrending() {
+	// Path yang benar: /bstation/api/v1/home
+	const data = await request(`/${CONFIG.provider}/api/v1/home`);
 	return normalizeList(data);
 }
 
-export async function searchDramas(query, page = 1) {
+// ----- Search -----
+export async function searchDramas(query) {
 	if (!query || query.trim().length < 2) return [];
-	const data = await request('/search', { keyword: query.trim(), page });
+	// Path yang benar: /bstation/api/v1/search?keyword=...
+	const data = await request(
+		`/${CONFIG.provider}/api/v1/search?keyword=${encodeURIComponent(query.trim())}`
+	);
 	return normalizeList(data);
 }
 
-export async function getDramaDetail(id) {
-	const data = await request(`/drama/${id}`);
-	return data?.data || data;
-}
-
+// ----- Episodes -----
 export async function getEpisodes(id) {
-	const data = await request(`/episode/${id}`);
-	// Respons bisa berupa array episode langsung
-	return Array.isArray(data?.data) ? data.data : data?.data?.episodes || [];
+	// Path yang benar: /bstation/api/v1/episodes/{id}
+	const data = await request(`/${CONFIG.provider}/api/v1/episodes/${id}`);
+	// Struktur respons Dracin: { status: "success", data: [...] }
+	if (data.status === 'success' && Array.isArray(data.data)) {
+		return data.data;
+	}
+	return [];
 }
 
-// ----- Normalizer: menyeragamkan bentuk respons -----
-// Setiap API punya struktur JSON berbeda; normalizer memastikan
-// UI selalu menerima { id, title, poster, episodes }.
+// ----- Play URL -----
+export async function getPlayUrl(id, episodeIndex = 1) {
+	// Path yang benar: /bstation/api/v1/play/{id}/{ep}
+	const data = await request(`/${CONFIG.provider}/api/v1/play/${id}/${episodeIndex}`);
+	if (data.status === 'success' && data.data) {
+		return data.data.url || data.data.play_url || data.data.m3u8 || '';
+	}
+	return '';
+}
+
+// ----- Normalizer -----
 function normalizeList(raw) {
-	// Coba beberapa kemungkinan path umum
-	const items =
-		raw?.data?.items ||
-		raw?.data ||
-		raw?.items ||
-		raw?.results ||
-		raw ||
-		[];
+	// Dracin mengembalikan: { status: "success", provider: "bstation", data: [...] }
+	if (raw.status !== 'success' || !Array.isArray(raw.data)) {
+		console.warn('[API] Unexpected response format:', raw);
+		return [];
+	}
 
-	if (!Array.isArray(items)) return [];
-
-	return items.map((item) => ({
-		id: item.id || item.drama_id || item.slug || '',
-		title: item.title || item.name || item.book_name || 'Tanpa Judul',
-		poster:
-			item.poster ||
-			item.cover ||
-			item.thumbnail ||
-			item.book_pic ||
-			'',
-		episodes: item.episodes || item.episode_count || item.total_episode || 0,
+	return raw.data.map((item) => ({
+		id: item.id || item.drama_id || '',
+		title: item.title || item.name || 'Tanpa Judul',
+		poster: item.cover || item.poster || item.thumbnail || '',
+		episodes: item.episodes || item.episode_count || 0,
 	}));
 }
 
