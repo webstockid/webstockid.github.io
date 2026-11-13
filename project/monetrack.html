@@ -3032,5 +3032,19 @@
 		init();
 
 	</script>
+	
+	<script>
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('load', () => {
+				navigator.serviceWorker.register('/monetrack.js')
+					.then((registration) => {
+						console.log('ServiceWorker sukses didaftarkan dengan scope: ', registration.scope);
+					})
+					.catch((error) => {
+						console.log('Pendaftaran ServiceWorker gagal: ', error);
+					});
+			});
+		}
+	</script>
 </body>
 </html>
