@@ -1,0 +1,535 @@
+/* ============================================================
+   modal.css — Semua modal, tab, form, animasi
+   ============================================================ */
+
+/* ---------- Overlay modal ---------- */
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.7);
+	backdrop-filter: blur(4px);
+	z-index: 200;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+	animation: fadeIn 0.25s ease;
+}
+
+.modal-overlay.hidden {
+	display: none;
+}
+
+.modal-content {
+	background: var(--bg-secondary);
+	border-radius: var(--radius);
+	width: 100%;
+	max-width: 520px;
+	max-height: 90vh;
+	overflow-y: auto;
+	box-shadow: var(--shadow);
+	animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px 20px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	position: sticky;
+	top: 0;
+	background: var(--bg-secondary);
+	z-index: 2;
+}
+
+.modal-header h2 {
+	font-size: 1.1rem;
+}
+
+.modal-close {
+	font-size: 1.1rem;
+	padding: 4px 10px;
+	border-radius: 6px;
+	transition: background 0.2s;
+}
+
+.modal-close:hover {
+	background: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- Tab ---------- */
+.tabs {
+	display: flex;
+	gap: 4px;
+	padding: 12px 16px 0;
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+	display: none;
+}
+
+.tab-btn {
+	padding: 8px 14px;
+	border-radius: 8px 8px 0 0;
+	font-size: 0.85rem;
+	color: var(--text-secondary);
+	white-space: nowrap;
+	transition: color 0.2s, background 0.2s;
+	position: relative;
+}
+
+.tab-btn.active {
+	color: var(--accent);
+	background: rgba(255, 255, 255, 0.04);
+}
+
+.tab-btn.active::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 12px;
+	right: 12px;
+	height: 2px;
+	background: var(--accent);
+	border-radius: 2px;
+	animation: slideIn 0.25s ease;
+}
+
+.tab-panels {
+	padding: 16px 20px 24px;
+}
+
+.tab-panel {
+	display: none;
+	animation: fadeSlide 0.3s ease;
+}
+
+.tab-panel.active {
+	display: block;
+}
+
+/* ---------- Form ---------- */
+.form-label {
+	display: block;
+	font-size: 0.8rem;
+	color: var(--text-secondary);
+	margin-bottom: 6px;
+}
+
+.form-input {
+	width: 100%;
+	padding: 10px 14px;
+	border-radius: 8px;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	background: var(--bg-card);
+	color: var(--text-primary);
+	outline: none;
+	font-size: 0.9rem;
+	transition: border-color 0.2s;
+}
+
+.form-input:focus {
+	border-color: var(--accent);
+}
+
+.form-range {
+	width: 100%;
+	accent-color: var(--accent);
+}
+
+/* ---------- Tombol ---------- */
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+	padding: 10px 16px;
+	border-radius: 8px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	transition: transform 0.15s, filter 0.2s;
+}
+
+.btn-primary {
+	background: var(--accent);
+	color: #fff;
+	margin-top: 8px;
+}
+
+.btn-secondary {
+	background: rgba(255, 255, 255, 0.08);
+	color: var(--text-primary);
+	display: inline-block;
+	cursor: pointer;
+	text-align: center;
+}
+
+.btn-danger {
+	background: rgba(230, 57, 70, 0.15);
+	color: #ff6b78;
+}
+
+.btn-primary:active,
+.btn-secondary:active,
+.btn-danger:active {
+	transform: scale(0.97);
+}
+
+.data-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+/* ---------- Profile ---------- */
+.profile-top {
+	display: flex;
+	gap: 16px;
+	padding: 16px 20px;
+	align-items: center;
+}
+
+.avatar-wrapper {
+	position: relative;
+	flex-shrink: 0;
+}
+
+.avatar-img {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	object-fit: cover;
+	background: var(--bg-card);
+	border: 2px solid var(--accent);
+}
+
+.avatar-upload-label {
+	position: absolute;
+	bottom: -2px;
+	right: -2px;
+	background: var(--accent);
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.8rem;
+	cursor: pointer;
+}
+
+.profile-name-wrapper {
+	flex: 1;
+}
+
+/* ---------- Setting row ---------- */
+.setting-row {
+	margin-bottom: 18px;
+}
+
+.switch-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.switch {
+	position: relative;
+	display: inline-block;
+	width: 44px;
+	height: 24px;
+}
+
+.switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.slider {
+	position: absolute;
+	inset: 0;
+	background: rgba(255, 255, 255, 0.15);
+	border-radius: 999px;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+
+.slider::before {
+	content: '';
+	position: absolute;
+	width: 18px;
+	height: 18px;
+	left: 3px;
+	top: 3px;
+	background: #fff;
+	border-radius: 50%;
+	transition: transform 0.2s;
+}
+
+.switch input:checked + .slider {
+	background: var(--accent);
+}
+
+.switch input:checked + .slider::before {
+	transform: translateX(20px);
+}
+
+/* ---------- Accent swatches ---------- */
+.accent-swatches {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.accent-swatch {
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: var(--sw);
+	border: 2px solid transparent;
+	transition: transform 0.2s, border-color 0.2s;
+	box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3), 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.accent-swatch:hover {
+	transform: scale(1.1);
+}
+
+.accent-swatch.selected {
+	border-color: #fff;
+}
+
+/* ---------- Player modal (revisi dari components.css lama) ---------- */
+.player-modal {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.95);
+	z-index: 150;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding: 0;
+	overflow-y: auto;
+	animation: fadeIn 0.25s ease;
+}
+
+.player-modal.hidden {
+	display: none;
+}
+
+.player-container {
+	position: relative;
+	width: 100%;
+	max-width: 900px;
+	background: var(--bg-primary);
+	min-height: 100vh;
+	animation: slideUp 0.3s ease;
+}
+
+.player-container video {
+	width: 100%;
+	max-height: 60vh;
+	background: #000;
+	display: block;
+}
+
+/* Toolbar melayang di atas video */
+.player-toolbar {
+	position: sticky;
+	top: 0;
+	z-index: 5;
+	display: flex;
+	gap: 8px;
+	padding: 10px 12px;
+	background: rgba(0, 0, 0, 0.75);
+	backdrop-filter: blur(8px);
+	animation: slideDown 0.3s ease;
+}
+
+.player-search {
+	flex: 1;
+	padding: 8px 14px;
+	border-radius: 999px;
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	background: rgba(255, 255, 255, 0.08);
+	color: #fff;
+	font-size: 0.85rem;
+	outline: none;
+}
+
+.player-select {
+	padding: 8px 10px;
+	border-radius: 8px;
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	background: rgba(255, 255, 255, 0.08);
+	color: #fff;
+	font-size: 0.8rem;
+	outline: none;
+}
+
+/* Info drama di bawah video */
+.player-drama-info {
+	padding: 16px 18px;
+	background: var(--bg-secondary);
+	animation: fadeSlide 0.35s ease;
+}
+
+.drama-title {
+	font-size: 1.15rem;
+	margin-bottom: 10px;
+}
+
+.drama-meta-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	font-size: 0.8rem;
+	color: var(--text-secondary);
+	margin-bottom: 14px;
+}
+
+.drama-actions-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+	margin-bottom: 14px;
+}
+
+.action-btn {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 14px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.06);
+	font-size: 0.85rem;
+	transition: background 0.2s, transform 0.15s;
+}
+
+.action-btn.active {
+	background: var(--accent);
+	color: #fff;
+}
+
+.action-btn:active {
+	transform: scale(0.95);
+}
+
+.episode-nav {
+	display: flex;
+	gap: 8px;
+	margin-left: auto;
+}
+
+.nav-btn {
+	padding: 8px 14px;
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.08);
+	font-size: 0.8rem;
+	transition: background 0.2s;
+}
+
+.nav-btn:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+.nav-btn:not(:disabled):hover {
+	background: var(--accent);
+}
+
+.drama-description {
+	font-size: 0.85rem;
+	color: var(--text-secondary);
+	line-height: 1.6;
+}
+
+/* Episode list */
+.episode-list-wrapper,
+.related-wrapper {
+	padding: 16px 18px;
+	border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.section-title-small {
+	font-size: 0.95rem;
+	margin-bottom: 12px;
+}
+
+.episode-list {
+	display: flex;
+	gap: 8px;
+	overflow-x: auto;
+	padding-bottom: 4px;
+	scrollbar-width: thin;
+}
+
+.episode-chip {
+	flex-shrink: 0;
+	padding: 8px 14px;
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.06);
+	font-size: 0.8rem;
+	white-space: nowrap;
+	transition: background 0.2s;
+}
+
+.episode-chip.active {
+	background: var(--accent);
+	color: #fff;
+}
+
+/* ---------- Animasi ---------- */
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes slideUp {
+	from { opacity: 0; transform: translateY(30px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+	from { opacity: 0; transform: translateY(-20px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeSlide {
+	from { opacity: 0; transform: translateY(8px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+	from { transform: scaleX(0); }
+	to { transform: scaleX(1); }
+}
+
+/* Animasi bisa dimatikan lewat setting */
+body.no-anim *,
+body.no-anim *::before,
+body.no-anim *::after {
+	animation: none !important;
+	transition: none !important;
+}
+
+/* ---------- Responsif ---------- */
+@media (max-width: 480px) {
+	.profile-top {
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.drama-actions-row {
+		gap: 8px;
+	}
+
+	.episode-nav {
+		margin-left: 0;
+		width: 100%;
+		justify-content: space-between;
+	}
+}

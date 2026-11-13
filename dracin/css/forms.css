@@ -1,0 +1,252 @@
+/* ============================================================
+   forms.css — Reset & custom native form controls
+   (select, checkbox, range, input) agar tidak terlihat kuno
+   ============================================================ */
+
+/* ---------- Select wrapper ---------- */
+.select-wrapper {
+	position: relative;
+	display: block;
+}
+
+.select-wrapper .select-arrow {
+	position: absolute;
+	right: 14px;
+	top: 50%;
+	transform: translateY(-50%);
+	pointer-events: none;
+	color: var(--text-secondary);
+	font-size: 0.75rem;
+	transition: transform 0.2s;
+}
+
+.select-wrapper:hover .select-arrow {
+	color: var(--accent);
+}
+
+/* Reset native select */
+select.form-input,
+select.player-select {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	width: 100%;
+	padding: 10px 40px 10px 14px;
+	border-radius: 10px;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	background: var(--bg-card);
+	color: var(--text-primary);
+	font-size: 0.9rem;
+	cursor: pointer;
+	outline: none;
+	transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+select.form-input:focus,
+select.player-select:focus {
+	border-color: var(--accent);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* Style option di dalam dropdown (browser dukung berbeda-beda) */
+select.form-input option,
+select.player-select option {
+	background: var(--bg-card);
+	color: var(--text-primary);
+	padding: 8px;
+}
+
+/* ---------- Input text / search ---------- */
+input[type='text'].form-input,
+input[type='search'].form-input,
+input[type='search'].player-search,
+input[type='search']#searchInput {
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+/* Search box di header: tambah ikon di dalam */
+.search-box {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.search-icon {
+	position: absolute;
+	left: 14px;
+	color: var(--text-secondary);
+	font-size: 0.85rem;
+	pointer-events: none;
+	transition: color 0.2s;
+}
+
+.search-box input {
+	padding-left: 40px !important;
+}
+
+.search-box input:focus ~ .search-icon,
+.search-box:focus-within .search-icon {
+	color: var(--accent);
+}
+
+/* Player search wrapper */
+.player-search-wrapper {
+	position: relative;
+	flex: 1;
+	display: flex;
+	align-items: center;
+}
+
+.player-search-wrapper > i {
+	position: absolute;
+	left: 12px;
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 0.8rem;
+	pointer-events: none;
+}
+
+.player-search-wrapper input {
+	padding-left: 34px !important;
+}
+
+/* ---------- Range slider ---------- */
+input[type='range'].form-range {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100%;
+	height: 6px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.12);
+	outline: none;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+
+input[type='range'].form-range::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: var(--accent);
+	border: 2px solid var(--bg-secondary);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+	cursor: pointer;
+	transition: transform 0.15s;
+}
+
+input[type='range'].form-range::-webkit-slider-thumb:hover {
+	transform: scale(1.15);
+}
+
+input[type='range'].form-range::-moz-range-thumb {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: var(--accent);
+	border: 2px solid var(--bg-secondary);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+	cursor: pointer;
+}
+
+input[type='range'].form-range::-moz-range-track {
+	height: 6px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.12);
+}
+
+/* Progress fill (Chrome/Edge modern) */
+input[type='range'].form-range::-webkit-slider-runnable-track {
+	height: 6px;
+	border-radius: 999px;
+}
+
+/* ---------- Checkbox native (jika ada di masa depan) ---------- */
+input[type='checkbox'].form-checkbox {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	border-radius: 6px;
+	border: 2px solid rgba(255, 255, 255, 0.25);
+	background: var(--bg-card);
+	cursor: pointer;
+	position: relative;
+	transition: background 0.2s, border-color 0.2s;
+}
+
+input[type='checkbox'].form-checkbox:checked {
+	background: var(--accent);
+	border-color: var(--accent);
+}
+
+input[type='checkbox'].form-checkbox:checked::after {
+	content: '';
+	position: absolute;
+	left: 5px;
+	top: 1px;
+	width: 6px;
+	height: 11px;
+	border: solid #fff;
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+}
+
+/* ---------- Switch (sudah custom, perbaiki sedikit) ---------- */
+.switch {
+	position: relative;
+	display: inline-block;
+	width: 46px;
+	height: 26px;
+	flex-shrink: 0;
+}
+
+.switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+	position: absolute;
+}
+
+.switch .slider {
+	position: absolute;
+	inset: 0;
+	background: rgba(255, 255, 255, 0.15);
+	border-radius: 999px;
+	cursor: pointer;
+	transition: background 0.25s;
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.switch .slider::before {
+	content: '';
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	left: 3px;
+	top: 3px;
+	background: #fff;
+	border-radius: 50%;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+	transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.switch input:checked + .slider {
+	background: var(--accent);
+}
+
+.switch input:checked + .slider::before {
+	transform: translateX(20px);
+}
+
+.switch input:focus-visible + .slider {
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+/* ---------- Disable semua animasi jika setting off ---------- */
+body.no-anim input[type='range'].form-range::-webkit-slider-thumb,
+body.no-anim .switch .slider,
+body.no-anim .switch .slider::before {
+	transition: none;
+}

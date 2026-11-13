@@ -123,3 +123,28 @@
 	color: var(--text-secondary);
 	font-size: 0.9rem;
 }
+
+/* Tambahan untuk components.css */
+.history-item {
+	padding: 10px 12px;
+	background: rgba(255, 255, 255, 0.04);
+	border-radius: 8px;
+	margin-bottom: 8px;
+	border-left: 3px solid var(--accent);
+	transition: background 0.2s;
+}
+
+.history-item:hover {
+	background: rgba(255, 255, 255, 0.08);
+}
+
+.history-item-title {
+	font-size: 0.9rem;
+	font-weight: 600;
+}
+
+.history-item-meta {
+	font-size: 0.75rem;
+	color: var(--text-secondary);
+	margin-top: 2px;
+}
