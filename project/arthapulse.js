@@ -1,9 +1,8 @@
 const CACHE_NAME = 'arthapulse-cache-v1';
 const urlsToCache = [
-	'/',
-	'/arthapulsepro.html',
-	'/arthapulse/logo.png',
-	'/arthapulse/site.webmanifest'
+	'arthapulsepro.html',
+	'arthapulse/logo.png',
+	'arthapulse/site.webmanifest'
 ];
 
 // Instalasi Service Worker & Caching File

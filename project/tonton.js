@@ -1,9 +1,8 @@
 const CACHE_NAME = 'tonton-cache-v1';
 const urlsToCache = [
-	'/',
-	'/tonton.html',
-	'/tonton/logo.png',
-	'/tonton/site.webmanifest'
+	'tonton.html',
+	'tonton/logo.png',
+	'tonton/site.webmanifest'
 ];
 
 // Instalasi Service Worker & Caching File

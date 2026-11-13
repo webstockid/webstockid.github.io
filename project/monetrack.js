@@ -1,9 +1,8 @@
-const CACHE_NAME = 'nonton-cache-v1';
+const CACHE_NAME = 'monetrack-cache-v1';
 const urlsToCache = [
-	'/',
-	'/nonton.html',
-	'/nonton/logo.png',
-	'/nonton/site.webmanifest'
+	'monetrack.html',
+	'monetrack/logo.png',
+	'monetrack/site.webmanifest'
 ];
 
 // Instalasi Service Worker & Caching File

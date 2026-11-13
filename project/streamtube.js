@@ -1,9 +1,8 @@
 const CACHE_NAME = 'streamtube-cache-v1';
 const urlsToCache = [
-	'/',
-	'/streamtube.html',
-	'/streamtube/logo.png',
-	'/streamtube/site.webmanifest'
+	'streamtube.html',
+	'streamtube/logo.png',
+	'streamtube/site.webmanifest'
 ];
 
 // Instalasi Service Worker & Caching File

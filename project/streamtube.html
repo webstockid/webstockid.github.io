@@ -1518,7 +1518,7 @@
 	<script>
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', () => {
-				navigator.serviceWorker.register('/streamtube.js')
+				navigator.serviceWorker.register('streamtube.js')
 					.then((registration) => {
 						console.log('ServiceWorker sukses didaftarkan dengan scope: ', registration.scope);
 					})
