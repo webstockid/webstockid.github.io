@@ -2,7 +2,7 @@
 	"name": "Streamtube",
 	"short_name": "Streamtube",
 	"description": "Custom YouTube Player & Streamer",
-	"start_url": "/streamtube.html",
+	"start_url": "../streamtube.html",
 	"display": "standalone",
 	"orientation": "portrait",
 	"background_color": "#060b16",
