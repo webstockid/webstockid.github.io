@@ -5,33 +5,111 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>Dracin Stream</title>
 
-	<!-- Font Awesome 6 (ikon) -->
+	<!-- Font Awesome -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-	<link rel="stylesheet" href="css/base.css">
-	<link rel="stylesheet" href="css/layout.css">
-	<link rel="stylesheet" href="css/components.css">
-	<link rel="stylesheet" href="css/modal.css">
-	<link rel="stylesheet" href="css/forms.css">
+	<!-- Tailwind Play CDN -->
+	<script src="https://cdn.tailwindcss.com"></script>
+
+	<!-- Konfigurasi Tailwind (harus setelah CDN, sebelum body dirender) -->
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					colors: {
+						primary: 'var(--bg-primary)',
+						secondary: 'var(--bg-secondary)',
+						card: 'var(--bg-card)',
+						'text-main': 'var(--text-primary)',
+						'text-sub': 'var(--text-secondary)',
+						accent: 'var(--accent)',
+						'accent-hover': 'var(--accent-hover)',
+					},
+					keyframes: {
+						fadeIn: {
+							from: { opacity: 0 },
+							to: { opacity: 1 },
+						},
+						slideUp: {
+							from: { opacity: 0, transform: 'translateY(30px)' },
+							to: { opacity: 1, transform: 'translateY(0)' },
+						},
+						slideDown: {
+							from: { opacity: 0, transform: 'translateY(-20px)' },
+							to: { opacity: 1, transform: 'translateY(0)' },
+						},
+						fadeSlide: {
+							from: { opacity: 0, transform: 'translateY(8px)' },
+							to: { opacity: 1, transform: 'translateY(0)' },
+						},
+						slideIn: {
+							from: { transform: 'scaleX(0)' },
+							to: { transform: 'scaleX(1)' },
+						},
+					},
+					animation: {
+						fadeIn: 'fadeIn 0.25s ease',
+						slideUp: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+						slideDown: 'slideDown 0.3s ease',
+						fadeSlide: 'fadeSlide 0.3s ease',
+						slideIn: 'slideIn 0.25s ease',
+					},
+				},
+			},
+			safelist: [
+				'bg-accent',
+				'text-white',
+				'bg-white/5',
+				'hover:bg-white/10',
+				'grid-cols-2',
+				'sm:grid-cols-3',
+				'lg:grid-cols-5',
+				'xl:grid-cols-6',
+				'active',
+				'hidden',
+				'flex',
+			],
+		};
+	</script>
+
+	<!-- CSS kustom (hanya yang tidak bisa di-Tailwind) -->
+	<link rel="stylesheet" href="css/custom.css">
 </head>
-<body>
+<body class="bg-primary text-text-main min-h-screen antialiased">
 
 	<!-- ============================================================ -->
 	<!-- HEADER                                                       -->
 	<!-- ============================================================ -->
-	<header class="app-header">
-		<h1 class="logo"><i class="fa-solid fa-clapperboard"></i> Dracin<span>Stream</span></h1>
+	<header class="sticky top-0 z-10 flex flex-wrap items-center gap-4 bg-secondary px-4 py-3">
+		<h1 class="whitespace-nowrap text-xl font-bold">
+			<i class="fa-solid fa-clapperboard"></i>
+			Dracin<span class="text-accent">Stream</span>
+		</h1>
 
-		<div class="search-box">
-			<i class="fa-solid fa-magnifying-glass search-icon"></i>
-			<input type="search" id="searchInput" placeholder="Cari drama China..." autocomplete="off">
+		<div class="relative flex min-w-[160px] flex-1 items-center">
+			<i class="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 text-sm text-text-sub"></i>
+			<input
+				type="search"
+				id="searchInput"
+				placeholder="Cari drama China..."
+				autocomplete="off"
+				class="w-full rounded-full border border-white/10 bg-card py-2.5 pl-10 pr-4 text-sm text-text-main outline-none transition-colors placeholder:text-text-sub focus:border-accent"
+			>
 		</div>
 
-		<div class="header-actions">
-			<button class="icon-btn" id="btnProfile" aria-label="Profile">
+		<div class="flex gap-2">
+			<button
+				id="btnProfile"
+				aria-label="Profile"
+				class="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-base transition hover:bg-white/10 active:scale-95"
+			>
 				<i class="fa-solid fa-user"></i>
 			</button>
-			<button class="icon-btn" id="btnSettings" aria-label="Pengaturan">
+			<button
+				id="btnSettings"
+				aria-label="Pengaturan"
+				class="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-base transition hover:bg-white/10 active:scale-95"
+			>
 				<i class="fa-solid fa-gear"></i>
 			</button>
 		</div>
@@ -40,8 +118,8 @@
 	<!-- ============================================================ -->
 	<!-- MAIN                                                         -->
 	<!-- ============================================================ -->
-	<main id="app">
-		<div class="loading" id="loadingIndicator">
+	<main id="app" class="mx-auto max-w-[1400px] p-4">
+		<div id="loadingIndicator" class="py-10 text-center text-text-sub">
 			<i class="fa-solid fa-spinner fa-spin"></i> Memuat...
 		</div>
 	</main>
@@ -49,17 +127,26 @@
 	<!-- ============================================================ -->
 	<!-- PLAYER MODAL                                                 -->
 	<!-- ============================================================ -->
-	<div class="player-modal hidden" id="playerModal">
-		<div class="player-container">
+	<div id="playerModal" class="fixed inset-0 z-[150] hidden items-start justify-center overflow-y-auto bg-black/95 animate-fadeIn">
+		<div class="relative min-h-screen w-full max-w-[900px] bg-primary animate-slideUp">
 
 			<!-- Toolbar melayang di atas video -->
-			<div class="player-toolbar">
-				<div class="player-search-wrapper">
-					<i class="fa-solid fa-magnifying-glass"></i>
-					<input type="search" id="playerSearchInput" placeholder="Cari dalam drama..." class="player-search">
+			<div class="sticky top-0 z-[5] flex gap-2 bg-black/75 px-3 py-2.5 backdrop-blur-md animate-slideDown">
+				<div class="relative flex flex-1 items-center">
+					<i class="fa-solid fa-magnifying-glass pointer-events-none absolute left-3 text-xs text-white/60"></i>
+					<input
+						type="search"
+						id="playerSearchInput"
+						placeholder="Cari dalam drama..."
+						class="w-full rounded-full border border-white/15 bg-white/10 py-2 pl-9 pr-4 text-sm text-white outline-none placeholder:text-white/50 focus:border-accent"
+					>
 				</div>
-				<div class="select-wrapper">
-					<select id="playerCategorySelect" class="player-select">
+
+				<div class="relative">
+					<select
+						id="playerCategorySelect"
+						class="appearance-none rounded-lg border border-white/15 bg-white/10 py-2 pl-3 pr-9 text-xs text-white outline-none focus:border-accent"
+					>
 						<option value="">Semua Kategori</option>
 						<option value="romance">Romance</option>
 						<option value="historical">Historical</option>
@@ -67,70 +154,89 @@
 						<option value="fantasy">Fantasy</option>
 						<option value="thriller">Thriller</option>
 					</select>
-					<i class="fa-solid fa-chevron-down select-arrow"></i>
+					<i class="fa-solid fa-chevron-down pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-white/60"></i>
 				</div>
-				<div class="select-wrapper">
-					<select id="playerFilterSelect" class="player-select">
+
+				<div class="relative">
+					<select
+						id="playerFilterSelect"
+						class="appearance-none rounded-lg border border-white/15 bg-white/10 py-2 pl-3 pr-9 text-xs text-white outline-none focus:border-accent"
+					>
 						<option value="latest">Terbaru</option>
 						<option value="popular">Populer</option>
 						<option value="rating">Rating</option>
 					</select>
-					<i class="fa-solid fa-chevron-down select-arrow"></i>
+					<i class="fa-solid fa-chevron-down pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-white/60"></i>
 				</div>
 			</div>
 
-			<video id="videoPlayer" controls playsinline></video>
+			<video id="videoPlayer" controls playsinline class="block max-h-[60vh] w-full bg-black"></video>
 
 			<!-- Info drama -->
-			<div class="player-drama-info" id="playerDramaInfo">
-				<h2 class="drama-title" id="playerDramaTitle">—</h2>
+			<div id="playerDramaInfo" class="bg-secondary px-4 py-4 animate-fadeSlide">
+				<h2 id="playerDramaTitle" class="mb-2.5 text-lg font-semibold">—</h2>
 
-				<div class="drama-meta-row">
-					<span class="meta-item"><i class="fa-solid fa-list-ol"></i> <span id="playerEpisodeCount">0</span> Episode</span>
-					<span class="meta-item"><i class="fa-solid fa-masks-theater"></i> <span id="playerGenre">—</span></span>
-					<span class="meta-item"><i class="fa-solid fa-clock"></i> <span id="playerDuration">—</span></span>
-					<span class="meta-item"><i class="fa-solid fa-eye"></i> <span id="playerViews">0</span> tayangan</span>
+				<div class="mb-3.5 flex flex-wrap gap-3 text-xs text-text-sub">
+					<span><i class="fa-solid fa-list-ol"></i> <span id="playerEpisodeCount">0</span> Episode</span>
+					<span><i class="fa-solid fa-masks-theater"></i> <span id="playerGenre">—</span></span>
+					<span><i class="fa-solid fa-clock"></i> <span id="playerDuration">—</span></span>
+					<span><i class="fa-solid fa-eye"></i> <span id="playerViews">0</span> tayangan</span>
 				</div>
 
-				<div class="drama-actions-row">
-					<button class="action-btn" id="btnLike">
+				<div class="mb-3.5 flex flex-wrap items-center gap-2.5">
+					<button
+						id="btnLike"
+						class="action-btn flex items-center gap-1.5 rounded-full bg-white/5 px-3.5 py-2 text-sm transition hover:bg-white/10 active:scale-95"
+					>
 						<i class="fa-regular fa-heart"></i>
-						<span class="action-label">Like</span>
+						<span>Like</span>
 					</button>
-					<button class="action-btn" id="btnSave">
+					<button
+						id="btnSave"
+						class="action-btn flex items-center gap-1.5 rounded-full bg-white/5 px-3.5 py-2 text-sm transition hover:bg-white/10 active:scale-95"
+					>
 						<i class="fa-regular fa-bookmark"></i>
-						<span class="action-label">Simpan</span>
+						<span>Simpan</span>
 					</button>
-					<div class="episode-nav">
-						<button class="nav-btn" id="btnPrevEp" disabled>
+
+					<div class="ml-auto flex gap-2 max-[480px]:ml-0 max-[480px]:w-full max-[480px]:justify-between">
+						<button
+							id="btnPrevEp"
+							disabled
+							class="rounded-lg bg-white/10 px-3.5 py-2 text-xs transition enabled:hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
+						>
 							<i class="fa-solid fa-backward-step"></i> Sebelumnya
 						</button>
-						<button class="nav-btn" id="btnNextEp" disabled>
+						<button
+							id="btnNextEp"
+							disabled
+							class="rounded-lg bg-white/10 px-3.5 py-2 text-xs transition enabled:hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
+						>
 							Selanjutnya <i class="fa-solid fa-forward-step"></i>
 						</button>
 					</div>
 				</div>
 
-				<p class="drama-description" id="playerDescription">—</p>
+				<p id="playerDescription" class="text-sm leading-relaxed text-text-sub">—</p>
 			</div>
 
 			<!-- Episode lain -->
-			<div class="episode-list-wrapper">
-				<h3 class="section-title-small">
-					<i class="fa-solid fa-layer-group"></i> Episode Lain
-				</h3>
-				<div class="episode-list" id="episodeList"></div>
+			<div class="border-t border-white/5 px-4 py-4">
+				<h3 class="mb-3 text-base font-semibold"><i class="fa-solid fa-layer-group"></i> Episode Lain</h3>
+				<div id="episodeList" class="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]"></div>
 			</div>
 
 			<!-- Drama relevan -->
-			<div class="related-wrapper">
-				<h3 class="section-title-small">
-					<i class="fa-solid fa-fire"></i> Drama Relevan
-				</h3>
-				<div class="drama-grid" id="relatedGrid"></div>
+			<div class="border-t border-white/5 px-4 py-4">
+				<h3 class="mb-3 text-base font-semibold"><i class="fa-solid fa-fire"></i> Drama Relevan</h3>
+				<div id="relatedGrid" class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6"></div>
 			</div>
 
-			<button class="btn-close-player" id="btnClosePlayer" aria-label="Tutup">
+			<button
+				id="btnClosePlayer"
+				aria-label="Tutup"
+				class="absolute right-2.5 top-2.5 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white transition hover:bg-black/80"
+			>
 				<i class="fa-solid fa-xmark"></i>
 			</button>
 		</div>
@@ -139,63 +245,80 @@
 	<!-- ============================================================ -->
 	<!-- MODAL PROFILE                                                -->
 	<!-- ============================================================ -->
-	<div class="modal-overlay hidden" id="modalProfile">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h2><i class="fa-solid fa-user"></i> Profile</h2>
-				<button class="modal-close" data-close="modalProfile">
+	<div id="modalProfile" class="modal-overlay fixed inset-0 z-[200] hidden items-center justify-center bg-black/70 p-4 backdrop-blur-sm animate-fadeIn">
+		<div class="max-h-[90vh] w-full max-w-[520px] overflow-y-auto rounded-xl bg-secondary shadow-2xl animate-slideUp">
+
+			<div class="sticky top-0 z-[2] flex items-center justify-between border-b border-white/10 bg-secondary px-5 py-4">
+				<h2 class="text-lg font-semibold"><i class="fa-solid fa-user"></i> Profile</h2>
+				<button data-close="modalProfile" class="rounded-md px-2.5 py-1 transition hover:bg-white/10">
 					<i class="fa-solid fa-xmark"></i>
 				</button>
 			</div>
 
-			<div class="profile-top">
-				<div class="avatar-wrapper">
-					<img id="profileAvatar" class="avatar-img" src="" alt="Avatar">
-					<label for="avatarUpload" class="avatar-upload-label">
+			<div class="flex items-center gap-4 px-5 py-4 max-[480px]:flex-col max-[480px]:text-center">
+				<div class="relative shrink-0">
+					<img
+						id="profileAvatar"
+						src=""
+						alt="Avatar"
+						class="h-20 w-20 rounded-full border-2 border-accent bg-card object-cover"
+					>
+					<label
+						for="avatarUpload"
+						class="absolute -bottom-0.5 -right-0.5 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-accent text-xs"
+					>
 						<i class="fa-solid fa-camera"></i>
 					</label>
 					<input type="file" id="avatarUpload" accept="image/*" hidden>
 				</div>
-				<div class="profile-name-wrapper">
-					<label class="form-label">Nama</label>
-					<input type="text" id="profileNameInput" class="form-input" placeholder="Nama kamu">
-					<button class="btn-primary" id="btnSaveProfileName">
+				<div class="flex-1">
+					<label class="mb-1.5 block text-xs text-text-sub">Nama</label>
+					<input
+						type="text"
+						id="profileNameInput"
+						placeholder="Nama kamu"
+						class="w-full rounded-lg border border-white/10 bg-card px-3.5 py-2.5 text-sm text-text-main outline-none focus:border-accent"
+					>
+					<button
+						id="btnSaveProfileName"
+						class="mt-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-white transition active:scale-95"
+					>
 						<i class="fa-solid fa-check"></i> Simpan Nama
 					</button>
 				</div>
 			</div>
 
-			<div class="tabs" data-tabs="profile">
-				<button class="tab-btn active" data-tab="history"><i class="fa-solid fa-clock-rotate-left"></i> Histori</button>
-				<button class="tab-btn" data-tab="likes"><i class="fa-solid fa-heart"></i> Like</button>
-				<button class="tab-btn" data-tab="saved"><i class="fa-solid fa-bookmark"></i> Simpan</button>
-				<button class="tab-btn" data-tab="stats"><i class="fa-solid fa-chart-column"></i> Grafik</button>
-				<button class="tab-btn" data-tab="data"><i class="fa-solid fa-database"></i> Data</button>
+			<div class="flex gap-1 overflow-x-auto px-4 pt-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" data-tabs="profile">
+				<button data-tab="history" class="tab-btn active relative whitespace-nowrap rounded-t-lg px-3.5 py-2 text-sm text-text-sub transition"><i class="fa-solid fa-clock-rotate-left"></i> Histori</button>
+				<button data-tab="likes" class="tab-btn relative whitespace-nowrap rounded-t-lg px-3.5 py-2 text-sm text-text-sub transition"><i class="fa-solid fa-heart"></i> Like</button>
+				<button data-tab="saved" class="tab-btn relative whitespace-nowrap rounded-t-lg px-3.5 py-2 text-sm text-text-sub transition"><i class="fa-solid fa-bookmark"></i> Simpan</button>
+				<button data-tab="stats" class="tab-btn relative whitespace-nowrap rounded-t-lg px-3.5 py-2 text-sm text-text-sub transition"><i class="fa-solid fa-chart-column"></i> Grafik</button>
+				<button data-tab="data" class="tab-btn relative whitespace-nowrap rounded-t-lg px-3.5 py-2 text-sm text-text-sub transition"><i class="fa-solid fa-database"></i> Data</button>
 			</div>
 
-			<div class="tab-panels">
-				<div class="tab-panel active" data-panel="history" id="panelHistory">
-					<p class="empty-msg">Belum ada histori.</p>
+			<div class="px-5 pb-6 pt-4">
+				<div data-panel="history" class="tab-panel active animate-fadeSlide" id="panelHistory">
+					<p class="py-10 text-center text-sm text-text-sub">Belum ada histori.</p>
 				</div>
-				<div class="tab-panel" data-panel="likes" id="panelLikes">
-					<p class="empty-msg">Belum ada yang di-like.</p>
+				<div data-panel="likes" class="tab-panel hidden animate-fadeSlide" id="panelLikes">
+					<p class="py-10 text-center text-sm text-text-sub">Belum ada yang di-like.</p>
 				</div>
-				<div class="tab-panel" data-panel="saved" id="panelSaved">
-					<p class="empty-msg">Belum ada yang disimpan.</p>
+				<div data-panel="saved" class="tab-panel hidden animate-fadeSlide" id="panelSaved">
+					<p class="py-10 text-center text-sm text-text-sub">Belum ada yang disimpan.</p>
 				</div>
-				<div class="tab-panel" data-panel="stats" id="panelStats">
-					<canvas id="statsChart" width="400" height="200"></canvas>
+				<div data-panel="stats" class="tab-panel hidden animate-fadeSlide" id="panelStats">
+					<canvas id="statsChart" width="400" height="200" class="w-full"></canvas>
 				</div>
-				<div class="tab-panel" data-panel="data" id="panelData">
-					<div class="data-actions">
-						<button class="btn-secondary" id="btnExportData">
+				<div data-panel="data" class="tab-panel hidden animate-fadeSlide" id="panelData">
+					<div class="flex flex-col gap-2.5">
+						<button id="btnExportData" class="rounded-lg bg-white/5 px-4 py-2.5 text-sm font-semibold text-text-main transition active:scale-95">
 							<i class="fa-solid fa-file-export"></i> Export Data
 						</button>
-						<label class="btn-secondary" for="importDataInput">
+						<label for="importDataInput" class="cursor-pointer rounded-lg bg-white/5 px-4 py-2.5 text-center text-sm font-semibold text-text-main transition active:scale-95">
 							<i class="fa-solid fa-file-import"></i> Import Data
 						</label>
 						<input type="file" id="importDataInput" accept="application/json" hidden>
-						<button class="btn-danger" id="btnDeleteData">
+						<button id="btnDeleteData" class="rounded-lg bg-red-500/15 px-4 py-2.5 text-sm font-semibold text-red-400 transition active:scale-95">
 							<i class="fa-solid fa-trash"></i> Hapus Semua Data
 						</button>
 					</div>
@@ -207,57 +330,58 @@
 	<!-- ============================================================ -->
 	<!-- MODAL SETTINGS                                               -->
 	<!-- ============================================================ -->
-	<div class="modal-overlay hidden" id="modalSettings">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h2><i class="fa-solid fa-gear"></i> Pengaturan</h2>
-				<button class="modal-close" data-close="modalSettings">
+	<div id="modalSettings" class="modal-overlay fixed inset-0 z-[200] hidden items-center justify-center bg-black/70 p-4 backdrop-blur-sm animate-fadeIn">
+		<div class="max-h-[90vh] w-full max-w-[520px] overflow-y-auto rounded-xl bg-secondary shadow-2xl animate-slideUp">
+
+			<div class="sticky top-0 z-[2] flex items-center justify-between border-b border-white/10 bg-secondary px-5 py-4">
+				<h2 class="text-lg font-semibold"><i class="fa-solid fa-gear"></i> Pengaturan</h2>
+				<button data-close="modalSettings" class="rounded-md px-2.5 py-1 transition hover:bg-white/10">
 					<i class="fa-solid fa-xmark"></i>
 				</button>
 			</div>
 
-			<div class="tabs" data-tabs="settings">
-				<button class="tab-btn active" data-tab="appearance"><i class="fa-solid fa-palette"></i> Tampilan</button>
-				<button class="tab-btn" data-tab="playback"><i class="fa-solid fa-sliders"></i> Pemutaran</button>
-				<button class="tab-btn" data-tab="data"><i class="fa-solid fa-database"></i> Data</button>
+			<div class="flex gap-1 overflow-x-auto px-4 pt-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" data-tabs="settings">
+				<button data-tab="appearance" class="tab-btn active relative whitespace-nowrap rounded-t-lg px-3.5 py-2 text-sm text-text-sub transition"><i class="fa-solid fa-palette"></i> Tampilan</button>
+				<button data-tab="playback" class="tab-btn relative whitespace-nowrap rounded-t-lg px-3.5 py-2 text-sm text-text-sub transition"><i class="fa-solid fa-sliders"></i> Pemutaran</button>
+				<button data-tab="data" class="tab-btn relative whitespace-nowrap rounded-t-lg px-3.5 py-2 text-sm text-text-sub transition"><i class="fa-solid fa-database"></i> Data</button>
 			</div>
 
-			<div class="tab-panels">
+			<div class="px-5 pb-6 pt-4">
 				<!-- Tampilan -->
-				<div class="tab-panel active" data-panel="appearance">
-					<div class="setting-row">
-						<label class="form-label">Tema</label>
-						<div class="select-wrapper">
-							<select id="settingTheme" class="form-input">
+				<div data-panel="appearance" class="tab-panel active animate-fadeSlide">
+					<div class="mb-4">
+						<label class="mb-1.5 block text-xs text-text-sub">Tema</label>
+						<div class="relative">
+							<select id="settingTheme" class="w-full appearance-none rounded-lg border border-white/10 bg-card py-2.5 pl-3.5 pr-10 text-sm text-text-main outline-none focus:border-accent">
 								<option value="dark">Gelap</option>
 								<option value="light">Terang</option>
 								<option value="amoled">AMOLED</option>
 							</select>
-							<i class="fa-solid fa-chevron-down select-arrow"></i>
+							<i class="fa-solid fa-chevron-down pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-text-sub"></i>
 						</div>
 					</div>
 
-					<div class="setting-row">
-						<label class="form-label">Warna Aksen (kalem & glossy)</label>
-						<div class="accent-swatches" id="accentSwatches">
-							<button class="accent-swatch" data-color="#7c8fb8" style="--sw:#7c8fb8"></button>
-							<button class="accent-swatch" data-color="#8fa88c" style="--sw:#8fa88c"></button>
-							<button class="accent-swatch" data-color="#b89a7c" style="--sw:#b89a7c"></button>
-							<button class="accent-swatch" data-color="#a88cb8" style="--sw:#a88cb8"></button>
-							<button class="accent-swatch" data-color="#8ca8b8" style="--sw:#8ca8b8"></button>
-							<button class="accent-swatch" data-color="#b88c9a" style="--sw:#b88c9a"></button>
+					<div class="mb-4">
+						<label class="mb-1.5 block text-xs text-text-sub">Warna Aksen (kalem & glossy)</label>
+						<div id="accentSwatches" class="flex flex-wrap gap-2.5">
+							<button class="accent-swatch h-8 w-8 rounded-full border-2 border-transparent transition hover:scale-110" data-color="#7c8fb8" style="--sw:#7c8fb8"></button>
+							<button class="accent-swatch h-8 w-8 rounded-full border-2 border-transparent transition hover:scale-110" data-color="#8fa88c" style="--sw:#8fa88c"></button>
+							<button class="accent-swatch h-8 w-8 rounded-full border-2 border-transparent transition hover:scale-110" data-color="#b89a7c" style="--sw:#b89a7c"></button>
+							<button class="accent-swatch h-8 w-8 rounded-full border-2 border-transparent transition hover:scale-110" data-color="#a88cb8" style="--sw:#a88cb8"></button>
+							<button class="accent-swatch h-8 w-8 rounded-full border-2 border-transparent transition hover:scale-110" data-color="#8ca8b8" style="--sw:#8ca8b8"></button>
+							<button class="accent-swatch h-8 w-8 rounded-full border-2 border-transparent transition hover:scale-110" data-color="#b88c9a" style="--sw:#b88c9a"></button>
 						</div>
 					</div>
 
-					<div class="setting-row">
-						<label class="form-label">Ukuran Font <span id="fontSizeVal">16px</span></label>
-						<input type="range" id="settingFontSize" min="12" max="22" value="16" class="form-range">
+					<div class="mb-4">
+						<label class="mb-1.5 block text-xs text-text-sub">Ukuran Font <span id="fontSizeVal" class="text-text-main">16px</span></label>
+						<input type="range" id="settingFontSize" min="12" max="22" value="16" class="range-slider w-full">
 					</div>
 
-					<div class="setting-row">
-						<label class="form-label">Jenis Font</label>
-						<div class="select-wrapper">
-							<select id="settingFontFamily" class="form-input">
+					<div class="mb-4">
+						<label class="mb-1.5 block text-xs text-text-sub">Jenis Font</label>
+						<div class="relative">
+							<select id="settingFontFamily" class="w-full appearance-none rounded-lg border border-white/10 bg-card py-2.5 pl-3.5 pr-10 text-sm text-text-main outline-none focus:border-accent">
 								<option value="system-ui, sans-serif">System Default</option>
 								<option value="'Segoe UI', sans-serif">Segoe UI</option>
 								<option value="'Roboto', sans-serif">Roboto</option>
@@ -265,64 +389,63 @@
 								<option value="'Courier New', monospace">Courier New</option>
 								<option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
 							</select>
-							<i class="fa-solid fa-chevron-down select-arrow"></i>
+							<i class="fa-solid fa-chevron-down pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-text-sub"></i>
 						</div>
 					</div>
 
-					<div class="setting-row">
-						<label class="form-label">Ketebalan Font <span id="fontWeightVal">400</span></label>
-						<input type="range" id="settingFontWeight" min="300" max="800" step="100" value="400" class="form-range">
+					<div class="mb-4">
+						<label class="mb-1.5 block text-xs text-text-sub">Ketebalan Font <span id="fontWeightVal" class="text-text-main">400</span></label>
+						<input type="range" id="settingFontWeight" min="300" max="800" step="100" value="400" class="range-slider w-full">
 					</div>
 
-					<div class="setting-row switch-row">
-						<label class="form-label">Animasi</label>
-						<label class="switch">
-							<input type="checkbox" id="settingAnimations" checked>
-							<span class="slider"></span>
+					<div class="mb-4 flex items-center justify-between">
+						<label class="text-xs text-text-sub">Animasi</label>
+						<label class="toggle-switch relative inline-block h-6 w-11 shrink-0">
+							<input type="checkbox" id="settingAnimations" checked class="absolute h-0 w-0 opacity-0">
+							<span class="slider absolute inset-0 cursor-pointer rounded-full bg-white/15 transition"></span>
 						</label>
 					</div>
 
-					<div class="setting-row switch-row">
-						<label class="form-label">Efek Suara</label>
-						<label class="switch">
-							<input type="checkbox" id="settingSound">
-							<span class="slider"></span>
+					<div class="mb-4 flex items-center justify-between">
+						<label class="text-xs text-text-sub">Efek Suara</label>
+						<label class="toggle-switch relative inline-block h-6 w-11 shrink-0">
+							<input type="checkbox" id="settingSound" class="absolute h-0 w-0 opacity-0">
+							<span class="slider absolute inset-0 cursor-pointer rounded-full bg-white/15 transition"></span>
 						</label>
 					</div>
 
-					<div class="setting-row switch-row">
-						<label class="form-label">Efek Getar</label>
-						<label class="switch">
-							<input type="checkbox" id="settingVibration">
-							<span class="slider"></span>
+					<div class="mb-4 flex items-center justify-between">
+						<label class="text-xs text-text-sub">Efek Getar</label>
+						<label class="toggle-switch relative inline-block h-6 w-11 shrink-0">
+							<input type="checkbox" id="settingVibration" class="absolute h-0 w-0 opacity-0">
+							<span class="slider absolute inset-0 cursor-pointer rounded-full bg-white/15 transition"></span>
 						</label>
 					</div>
 				</div>
 
 				<!-- Pemutaran -->
-				<div class="tab-panel" data-panel="playback">
-					<div class="setting-row">
-						<label class="form-label">Volume <span id="volumeVal">100%</span></label>
-						<input type="range" id="settingVolume" min="0" max="100" value="100" class="form-range">
+				<div data-panel="playback" class="tab-panel hidden animate-fadeSlide">
+					<div class="mb-4">
+						<label class="mb-1.5 block text-xs text-text-sub">Volume <span id="volumeVal" class="text-text-main">100%</span></label>
+						<input type="range" id="settingVolume" min="0" max="100" value="100" class="range-slider w-full">
 					</div>
-
-					<div class="setting-row">
-						<label class="form-label">Kecerahan <span id="brightnessVal">100%</span></label>
-						<input type="range" id="settingBrightness" min="50" max="100" value="100" class="form-range">
+					<div class="mb-4">
+						<label class="mb-1.5 block text-xs text-text-sub">Kecerahan <span id="brightnessVal" class="text-text-main">100%</span></label>
+						<input type="range" id="settingBrightness" min="50" max="100" value="100" class="range-slider w-full">
 					</div>
 				</div>
 
 				<!-- Data -->
-				<div class="tab-panel" data-panel="data">
-					<div class="data-actions">
-						<button class="btn-secondary" id="btnExportSettings">
+				<div data-panel="data" class="tab-panel hidden animate-fadeSlide">
+					<div class="flex flex-col gap-2.5">
+						<button id="btnExportSettings" class="rounded-lg bg-white/5 px-4 py-2.5 text-sm font-semibold text-text-main transition active:scale-95">
 							<i class="fa-solid fa-file-export"></i> Export
 						</button>
-						<label class="btn-secondary" for="importSettingsInput">
+						<label for="importSettingsInput" class="cursor-pointer rounded-lg bg-white/5 px-4 py-2.5 text-center text-sm font-semibold text-text-main transition active:scale-95">
 							<i class="fa-solid fa-file-import"></i> Import
 						</label>
 						<input type="file" id="importSettingsInput" accept="application/json" hidden>
-						<button class="btn-danger" id="btnDeleteSettings">
+						<button id="btnDeleteSettings" class="rounded-lg bg-red-500/15 px-4 py-2.5 text-sm font-semibold text-red-400 transition active:scale-95">
 							<i class="fa-solid fa-trash"></i> Hapus Data
 						</button>
 					</div>
