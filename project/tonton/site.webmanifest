@@ -2,7 +2,7 @@
 	"name": "Tonton",
 	"short_name": "Tonton",
 	"description": "Custom YouTube Player & Streamer",
-	"start_url": "/tonton.html",
+	"start_url": "../tonton.html",
 	"display": "standalone",
 	"orientation": "portrait",
 	"background_color": "#060b16",
