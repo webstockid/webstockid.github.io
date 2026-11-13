@@ -250,10 +250,6 @@
 					
 					<!-- Judul Video -->
 					<div>
-						<div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-accent-subtle text-accent text-[10px] sm:text-[11px] font-semibold mb-2">
-							<i class="fa-solid fa-circle-play"></i>
-							<span>Informasi Video</span>
-						</div>
 						<h1 id="videoTitle" class="font-bold text-base sm:text-xl md:text-[22px] leading-snug tracking-tight break-words">
 							Siap memutar video
 						</h1>
@@ -266,7 +262,6 @@
 						<div class="flex items-center gap-3 min-w-0">
 							<img id="channelAvatar" src="https://placehold.co/100x100/1e293b/ffffff?text=C" alt="Channel Avatar" class="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover shadow-md border-2 border-accent/40 shrink-0">
 							<div class="min-w-0 flex-1">
-								<div class="text-[10px] uppercase tracking-wider ui-text-subtle font-semibold">Pengunggah</div>
 								<div class="flex items-center gap-1.5 mt-0.5">
 									<span id="channelName" class="font-bold text-sm sm:text-base truncate">Channel YouTube</span>
 									<i class="fa-solid fa-circle-check text-sky-400 text-xs shrink-0" title="Terverifikasi"></i>
@@ -299,11 +294,6 @@
 							<button onclick="app.downloadAction('mp3')" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md shadow-emerald-600/20 transition-all">
 								<i class="fa-solid fa-music text-xs"></i>
 								<span>Unduh MP3</span>
-							</button>
-
-							<button onclick="app.toggleTheaterMode()" class="flex items-center gap-2 px-3 py-2 rounded-xl ui-sub-bg border ui-border text-xs font-medium hover:border-accent transition-all" title="Mode Bioskop">
-								<i class="fa-solid fa-expand text-xs" id="theaterIcon"></i>
-								<span class="hidden sm:inline">Bioskop</span>
 							</button>
 						</div>
 					</div>
