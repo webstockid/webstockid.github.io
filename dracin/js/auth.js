@@ -1,5 +1,5 @@
 // ============================================================
-// auth.js — Login opsional, hanya untuk menandai pemilik histori
+// auth.js — Login opsional
 // ============================================================
 
 const KEY = 'dracin_user_session';
@@ -13,10 +13,7 @@ export function getSession() {
 }
 
 export function setSession(data) {
-	localStorage.setItem(KEY, JSON.stringify({
-		...data,
-		loginAt: Date.now(),
-	}));
+	localStorage.setItem(KEY, JSON.stringify({ ...data, loginAt: Date.now() }));
 }
 
 export function clearSession() {

@@ -1,39 +1,41 @@
 // ============================================================
-// ui.js — Render komponen UI (versi Font Awesome)
+// ui.js — Render komponen UI dengan Tailwind utility classes
 // ============================================================
 
 const appEl = document.getElementById('app');
 const loadingEl = document.getElementById('loadingIndicator');
 
 export function showLoading() {
+	if (!loadingEl) return;
 	loadingEl.classList.remove('hidden');
 	loadingEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memuat...';
 }
 
 export function hideLoading() {
+	if (!loadingEl) return;
 	loadingEl.classList.add('hidden');
 }
 
 export function showError(message) {
-	loadingEl.classList.add('hidden');
+	hideLoading();
 	appEl.innerHTML = `
-		<div class="error-msg">
+		<div class="py-10 text-center text-text-sub">
 			<i class="fa-solid fa-triangle-exclamation"></i> ${message}
 		</div>
 	`;
 }
 
 export function showEmpty(message = 'Tidak ada drama ditemukan.') {
-	loadingEl.classList.add('hidden');
+	hideLoading();
 	appEl.innerHTML = `
-		<div class="empty-msg">
+		<div class="py-10 text-center text-sm text-text-sub">
 			<i class="fa-regular fa-face-frown"></i> ${message}
 		</div>
 	`;
 }
 
 export function renderDramaList(dramas, title = '') {
-	loadingEl.classList.add('hidden');
+	hideLoading();
 
 	if (!dramas || dramas.length === 0) {
 		showEmpty();
@@ -43,11 +45,20 @@ export function renderDramaList(dramas, title = '') {
 	const cardsHtml = dramas
 		.map(
 			(drama) => `
-		<div class="drama-card" data-id="${drama.id}" data-title="${escapeHtml(drama.title)}">
-			<img src="${drama.poster || fallbackPoster()}" alt="${escapeHtml(drama.title)}" loading="lazy">
-			<div class="drama-card-info">
-				<div class="drama-card-title">${escapeHtml(drama.title)}</div>
-				<div class="drama-card-meta">
+		<div
+			class="drama-card cursor-pointer overflow-hidden rounded-xl bg-card shadow-lg transition hover:-translate-y-1 hover:shadow-2xl active:scale-[0.97]"
+			data-id="${drama.id}"
+			data-title="${escapeHtml(drama.title)}"
+		>
+			<img
+				src="${drama.poster || fallbackPoster()}"
+				alt="${escapeHtml(drama.title)}"
+				loading="lazy"
+				class="aspect-[3/4] w-full bg-[#2a2a3a] object-cover"
+			>
+			<div class="px-2.5 py-2">
+				<div class="truncate text-[0.85rem] font-semibold">${escapeHtml(drama.title)}</div>
+				<div class="mt-0.5 text-xs text-text-sub">
 					<i class="fa-solid fa-list-ol"></i>
 					${drama.episodes ? drama.episodes + ' episode' : '—'}
 				</div>
@@ -58,8 +69,10 @@ export function renderDramaList(dramas, title = '') {
 		.join('');
 
 	appEl.innerHTML = `
-		${title ? `<h2 class="section-title"><i class="fa-solid fa-fire"></i> ${escapeHtml(title)}</h2>` : ''}
-		<div class="drama-grid">${cardsHtml}</div>
+		${title ? `<h2 class="mb-3 mt-6 text-lg font-bold first:mt-0"><i class="fa-solid fa-fire"></i> ${escapeHtml(title)}</h2>` : ''}
+		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
+			${cardsHtml}
+		</div>
 	`;
 
 	appEl.querySelectorAll('.drama-card').forEach((card) => {

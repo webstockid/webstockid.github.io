@@ -1,5 +1,5 @@
 // ============================================================
-// storage.js — Wrapper localStorage. Gampang dimigrasi ke IndexedDB.
+// storage.js — Wrapper localStorage
 // ============================================================
 
 const KEYS = {
@@ -9,15 +9,10 @@ const KEYS = {
 
 const MAX_HISTORY = 50;
 
-// ----- Histori -----
 export function saveToHistory(drama) {
 	const history = getHistory();
-	// Hapus duplikat, lalu taruh di depan
 	const filtered = history.filter((item) => item.id !== drama.id);
-	filtered.unshift({
-		...drama,
-		watchedAt: Date.now(),
-	});
+	filtered.unshift({ ...drama, watchedAt: Date.now() });
 	localStorage.setItem(KEYS.HISTORY, JSON.stringify(filtered.slice(0, MAX_HISTORY)));
 }
 
@@ -33,7 +28,6 @@ export function clearHistory() {
 	localStorage.removeItem(KEYS.HISTORY);
 }
 
-// ----- Pengaturan -----
 export function saveSettings(settings) {
 	const current = getSettings();
 	localStorage.setItem(KEYS.SETTINGS, JSON.stringify({ ...current, ...settings }));

@@ -36,31 +36,18 @@ export function getSetting(key) {
 	return current[key];
 }
 
-// ---------- Terapkan ke DOM ----------
 function applySettings(s) {
-	// Ukuran & jenis font
 	document.documentElement.style.fontSize = s.fontSize + 'px';
 	document.body.style.fontFamily = s.fontFamily;
 	document.body.style.fontWeight = s.fontWeight;
 
-	// Warna aksen
 	document.documentElement.style.setProperty('--accent', s.accent);
-	document.documentElement.style.setProperty(
-		'--accent-hover',
-		shadeColor(s.accent, 20)
-	);
+	document.documentElement.style.setProperty('--accent-hover', shadeColor(s.accent, 20));
 
-	// Tema
 	applyTheme(s.theme);
 
-	// Animasi
 	document.body.classList.toggle('no-anim', !s.animations);
 
-	// Kecerahan layar (CSS filter)
-	document.documentElement.style.setProperty(
-		'--brightness',
-		s.brightness / 100
-	);
 	document.body.style.filter = s.brightness < 100 ? `brightness(${s.brightness / 100})` : '';
 }
 
@@ -89,7 +76,6 @@ function applyTheme(theme) {
 	}
 }
 
-// ---------- Util warna ----------
 function shadeColor(hex, percent) {
 	const num = parseInt(hex.replace('#', ''), 16);
 	const amt = Math.round(2.55 * percent);
@@ -99,7 +85,6 @@ function shadeColor(hex, percent) {
 	return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
 }
 
-// ---------- Efek suara & getar ----------
 export function playClickSound() {
 	if (!current.sound) return;
 	try {

@@ -6,16 +6,15 @@
 const CONFIG = {
 	baseUrl: 'https://api.hoshiyomi.my.id/api',
 	apiKey: 'ISI_API_KEY_KAMU_DI_SINI', // Ganti dengan key dari @dramaboxplusbot
-	platform: 'iqiyi', // 'iqiyi' atau 'wetv' untuk drama China
+	platform: 'iqiyi', // 'iqiyi' atau 'wetv'
 	lang: 'id',
 	timeout: 15000,
 };
 
 async function request(endpoint, params = {}) {
 	const url = new URL(`${CONFIG.baseUrl}/${CONFIG.platform}${endpoint}`);
-
-	// Parameter default: bahasa Indonesia
 	url.searchParams.append('lang', CONFIG.lang);
+
 	Object.keys(params).forEach((key) => {
 		if (params[key] !== undefined && params[key] !== null) {
 			url.searchParams.append(key, params[key]);
@@ -40,8 +39,6 @@ async function request(endpoint, params = {}) {
 		console.log('[API] Status:', response.status);
 
 		if (!response.ok) {
-			const errorText = await response.text();
-			console.error('[API] Error body:', errorText);
 			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 		}
 
@@ -58,31 +55,24 @@ async function request(endpoint, params = {}) {
 	}
 }
 
-// ----- Trending -----
 export async function getTrending(page = 1) {
 	const data = await request('/trending', { page });
 	return normalizeList(data);
 }
 
-// ----- Search -----
 export async function searchDramas(query, page = 1) {
 	if (!query || query.trim().length < 2) return [];
 	const data = await request('/search', { q: query.trim(), page });
 	return normalizeList(data);
 }
 
-// ----- Detail -----
 export async function getDramaDetail(id) {
 	const data = await request('/detail', { id });
 	return data?.data || data;
 }
 
-// ----- Semua episode + URL video -----
 export async function getEpisodes(id) {
-	// Endpoint /allepisode mengembalikan episode + video URL
 	const data = await request('/allepisode', { id });
-
-	// Hoshiyomi biasanya mengembalikan { items: [...] } atau { data: [...] }
 	const items = data?.items || data?.data || data?.episodes || [];
 
 	if (!Array.isArray(items)) return [];
@@ -94,9 +84,7 @@ export async function getEpisodes(id) {
 	}));
 }
 
-// ----- Normalizer -----
 function normalizeList(raw) {
-	// Hoshiyomi: { items: [...] } (berdasarkan dokumentasi)
 	const items = raw?.items || raw?.data || raw?.results || [];
 
 	if (!Array.isArray(items)) {

@@ -1,6 +1,5 @@
 // ============================================================
-// app.js — Entry point. Merangkai API, UI, player, profile,
-// settings, dan auth. Tidak ada logika render di sini.
+// app.js — Entry point. Orkestrasi semua modul.
 // ============================================================
 
 import * as api from './api.js';
@@ -15,7 +14,6 @@ const searchInput = document.getElementById('searchInput');
 const playerModal = document.getElementById('playerModal');
 const videoPlayer = document.getElementById('videoPlayer');
 const btnClosePlayer = document.getElementById('btnClosePlayer');
-const playerInfo = document.getElementById('playerInfo');
 const btnProfile = document.getElementById('btnProfile');
 const btnSettings = document.getElementById('btnSettings');
 const modalProfile = document.getElementById('modalProfile');
@@ -70,11 +68,9 @@ searchInput.addEventListener('input', () => {
 
 // ---------- Modal setup ----------
 function setupModals() {
-	// Tombol buka
 	btnProfile.addEventListener('click', () => openModal(modalProfile));
 	btnSettings.addEventListener('click', () => openModal(modalSettings));
 
-	// Tutup via tombol X
 	document.querySelectorAll('[data-close]').forEach((btn) => {
 		btn.addEventListener('click', () => {
 			const target = document.getElementById(btn.dataset.close);
@@ -82,7 +78,6 @@ function setupModals() {
 		});
 	});
 
-	// Klik backdrop
 	[modalProfile, modalSettings].forEach((modal) => {
 		modal.addEventListener('click', (e) => {
 			if (e.target === modal) closeModal(modal);
@@ -93,10 +88,10 @@ function setupModals() {
 function openModal(modal) {
 	if (!modal) return;
 	modal.classList.remove('hidden');
+	modal.classList.add('flex');
 	settings.playClickSound();
 	settings.vibrate(10);
 
-	// Re-render panel sesuai tab aktif
 	const activeTab = modal.querySelector('.tab-btn.active');
 	if (activeTab) {
 		const tabName = activeTab.dataset.tab;
@@ -107,26 +102,26 @@ function openModal(modal) {
 function closeModal(modal) {
 	if (!modal) return;
 	modal.classList.add('hidden');
+	modal.classList.remove('flex');
 }
 
 // ---------- Tab navigation generik ----------
 function setupTabs() {
-	document.querySelectorAll('.tabs').forEach((tabGroup) => {
+	document.querySelectorAll('[data-tabs]').forEach((tabGroup) => {
 		tabGroup.querySelectorAll('.tab-btn').forEach((btn) => {
 			btn.addEventListener('click', () => {
 				const tabName = btn.dataset.tab;
-				const parentModal = tabGroup.closest('.modal-content');
+				const parentModal = tabGroup.closest('.modal-overlay');
 
-				// Update status tab button
 				tabGroup.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
 				btn.classList.add('active');
 
-				// Tampilkan panel yang sesuai
 				parentModal.querySelectorAll('.tab-panel').forEach((panel) => {
-					panel.classList.toggle('active', panel.dataset.panel === tabName);
+					const isActive = panel.dataset.panel === tabName;
+					panel.classList.toggle('hidden', !isActive);
+					panel.classList.toggle('active', isActive);
 				});
 
-				// Render konten jika perlu
 				if (parentModal.id === 'modalProfile') {
 					profile.renderProfilePanel(tabName);
 				}
@@ -145,14 +140,9 @@ function setupProfile() {
 	const avatarImg = document.getElementById('profileAvatar');
 	const avatarUpload = document.getElementById('avatarUpload');
 
-	// Load data awal
-	const savedName = localStorage.getItem('dracin_profile_name') || '';
-	nameInput.value = savedName;
+	nameInput.value = localStorage.getItem('dracin_profile_name') || '';
+	avatarImg.src = profile.getAvatar() || defaultAvatarDataUrl();
 
-	const savedAvatar = profile.getAvatar();
-	avatarImg.src = savedAvatar || defaultAvatarDataUrl();
-
-	// Simpan nama
 	btnSaveName.addEventListener('click', () => {
 		localStorage.setItem('dracin_profile_name', nameInput.value.trim());
 		settings.playClickSound();
@@ -163,7 +153,6 @@ function setupProfile() {
 		}, 1500);
 	});
 
-	// Upload avatar
 	avatarUpload.addEventListener('change', (e) => {
 		const file = e.target.files[0];
 		if (!file) return;
@@ -175,7 +164,6 @@ function setupProfile() {
 		reader.readAsDataURL(file);
 	});
 
-	// Export / Import / Hapus
 	document.getElementById('btnExportData').addEventListener('click', () => {
 		profile.exportAllData();
 	});
@@ -210,14 +198,10 @@ function defaultAvatarDataUrl() {
 
 // ---------- Settings modal ----------
 function setupSettings() {
-	// Tema
 	const themeSel = document.getElementById('settingTheme');
 	themeSel.value = settings.getSetting('theme');
-	themeSel.addEventListener('change', () => {
-		settings.updateSetting('theme', themeSel.value);
-	});
+	themeSel.addEventListener('change', () => settings.updateSetting('theme', themeSel.value));
 
-	// Warna aksen
 	const swatches = document.querySelectorAll('.accent-swatch');
 	swatches.forEach((sw) => {
 		sw.classList.toggle('selected', sw.dataset.color === settings.getSetting('accent'));
@@ -228,7 +212,6 @@ function setupSettings() {
 		});
 	});
 
-	// Ukuran font
 	const fontSize = document.getElementById('settingFontSize');
 	const fontSizeVal = document.getElementById('fontSizeVal');
 	fontSize.value = settings.getSetting('fontSize');
@@ -238,14 +221,10 @@ function setupSettings() {
 		settings.updateSetting('fontSize', Number(fontSize.value));
 	});
 
-	// Jenis font
 	const fontFamily = document.getElementById('settingFontFamily');
 	fontFamily.value = settings.getSetting('fontFamily');
-	fontFamily.addEventListener('change', () => {
-		settings.updateSetting('fontFamily', fontFamily.value);
-	});
+	fontFamily.addEventListener('change', () => settings.updateSetting('fontFamily', fontFamily.value));
 
-	// Ketebalan font
 	const fontWeight = document.getElementById('settingFontWeight');
 	const fontWeightVal = document.getElementById('fontWeightVal');
 	fontWeight.value = settings.getSetting('fontWeight');
@@ -255,16 +234,13 @@ function setupSettings() {
 		settings.updateSetting('fontWeight', Number(fontWeight.value));
 	});
 
-	// Toggles
 	bindToggle('settingAnimations', 'animations');
 	bindToggle('settingSound', 'sound');
 	bindToggle('settingVibration', 'vibration');
 
-	// Volume & brightness
 	bindRange('settingVolume', 'volume', 'volumeVal', '%');
 	bindRange('settingBrightness', 'brightness', 'brightnessVal', '%');
 
-	// Export / Import / Delete settings
 	document.getElementById('btnExportSettings').addEventListener('click', () => {
 		profile.exportAllData();
 	});
@@ -295,9 +271,7 @@ function setupSettings() {
 function bindToggle(id, key) {
 	const el = document.getElementById(id);
 	el.checked = !!settings.getSetting(key);
-	el.addEventListener('change', () => {
-		settings.updateSetting(key, el.checked);
-	});
+	el.addEventListener('change', () => settings.updateSetting(key, el.checked));
 }
 
 function bindRange(id, key, valId, suffix = '') {
@@ -321,7 +295,6 @@ function setupPlayerControls() {
 		if (e.target === playerModal) player.closePlayer(videoPlayer, playerModal);
 	});
 
-	// Like & save
 	document.getElementById('btnLike').addEventListener('click', () => {
 		if (!currentDrama) return;
 		const liked = profile.toggleLike(currentDrama);
@@ -338,7 +311,6 @@ function setupPlayerControls() {
 		settings.vibrate(15);
 	});
 
-	// Prev/next episode
 	document.getElementById('btnPrevEp').addEventListener('click', () => {
 		if (currentEpIndex > 0) playEpisode(currentEpIndex - 1);
 	});
@@ -375,16 +347,15 @@ window.addEventListener('dramaSelected', async (event) => {
 		currentEpisodes = episodes;
 		currentEpIndex = 0;
 
-		// Update UI info drama
 		document.getElementById('playerDramaTitle').textContent = title;
 		document.getElementById('playerEpisodeCount').textContent = episodes.length;
 		updateLikeButton(profile.isLiked(id));
 		updateSaveButton(profile.isSaved(id));
 		renderEpisodeList();
 
-		// Mainkan episode pertama
 		playEpisode(0);
 		playerModal.classList.remove('hidden');
+		playerModal.classList.add('flex');
 	} catch (err) {
 		console.error('[App] Gagal memuat episode:', err);
 		alert('Gagal memuat episode: ' + err.message);
@@ -407,9 +378,12 @@ function playEpisode(index) {
 	document.getElementById('btnPrevEp').disabled = index === 0;
 	document.getElementById('btnNextEp').disabled = index === currentEpisodes.length - 1;
 
-	// Highlight chip aktif
 	document.querySelectorAll('.episode-chip').forEach((chip, i) => {
-		chip.classList.toggle('active', i === index);
+		const isActive = i === index;
+		chip.classList.toggle('bg-accent', isActive);
+		chip.classList.toggle('text-white', isActive);
+		chip.classList.toggle('bg-white/5', !isActive);
+		chip.classList.toggle('hover:bg-white/10', !isActive);
 	});
 }
 
@@ -418,7 +392,12 @@ function renderEpisodeList() {
 	list.innerHTML = currentEpisodes
 		.map(
 			(ep, i) => `
-		<button class="episode-chip ${i === 0 ? 'active' : ''}" data-index="${i}">
+		<button
+			class="episode-chip shrink-0 whitespace-nowrap rounded-lg px-3.5 py-2 text-xs transition ${
+				i === 0 ? 'bg-accent text-white' : 'bg-white/5 hover:bg-white/10'
+			}"
+			data-index="${i}"
+		>
 			Episode ${i + 1}
 		</button>
 	`

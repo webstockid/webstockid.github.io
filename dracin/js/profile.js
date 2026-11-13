@@ -1,6 +1,5 @@
 // ============================================================
-// profile.js — Logika modal profile (nama, avatar, histori,
-// like, simpan, grafik, export/import/hapus)
+// profile.js — Logika modal profile
 // ============================================================
 
 import * as storage from './storage.js';
@@ -9,7 +8,6 @@ const KEY_AVATAR = 'dracin_avatar';
 const KEY_LIKES = 'dracin_likes';
 const KEY_SAVED = 'dracin_saved';
 
-// ---------- Data helpers ----------
 export function getLikes() {
 	try {
 		return JSON.parse(localStorage.getItem(KEY_LIKES) || '[]');
@@ -64,7 +62,6 @@ export function isSaved(id) {
 	return getSaved().some((d) => d.id === id);
 }
 
-// ---------- Render panel tab ----------
 export function renderProfilePanel(tab) {
 	const history = storage.getHistory();
 	const likes = getLikes();
@@ -88,7 +85,7 @@ export function renderProfilePanel(tab) {
 	if (!el) return;
 
 	if (conf.data.length === 0) {
-		el.innerHTML = `<p class="empty-msg">${conf.empty}</p>`;
+		el.innerHTML = `<p class="py-10 text-center text-sm text-text-sub">${conf.empty}</p>`;
 		return;
 	}
 
@@ -106,12 +103,10 @@ export function renderProfilePanel(tab) {
 		.join('');
 }
 
-// ---------- Grafik canvas sederhana ----------
 function renderStatsChart(history, likes, saved) {
 	const canvas = document.getElementById('statsChart');
 	if (!canvas) return;
 
-	// Sesuaikan resolusi agar tajam di retina
 	const dpr = window.devicePixelRatio || 1;
 	const cssW = canvas.clientWidth || 400;
 	const cssH = 200;
@@ -138,14 +133,18 @@ function renderStatsChart(history, likes, saved) {
 		const x = gap + i * (barW + gap);
 		const y = cssH - 40 - barH;
 
-		// Gradient glossy
 		const grad = ctx.createLinearGradient(0, y, 0, y + barH);
 		grad.addColorStop(0, d.color);
 		grad.addColorStop(1, d.color + '88');
 		ctx.fillStyle = grad;
-		ctx.beginPath();
-		ctx.roundRect(x, y, barW, barH, [8, 8, 0, 0]);
-		ctx.fill();
+
+		if (ctx.roundRect) {
+			ctx.beginPath();
+			ctx.roundRect(x, y, barW, barH, [8, 8, 0, 0]);
+			ctx.fill();
+		} else {
+			ctx.fillRect(x, y, barW, barH);
+		}
 
 		ctx.fillStyle = '#f0f0f5';
 		ctx.font = '600 12px sans-serif';
@@ -158,7 +157,6 @@ function renderStatsChart(history, likes, saved) {
 	});
 }
 
-// ---------- Avatar ----------
 export function getAvatar() {
 	return localStorage.getItem(KEY_AVATAR) || '';
 }
@@ -167,7 +165,6 @@ export function setAvatar(dataUrl) {
 	localStorage.setItem(KEY_AVATAR, dataUrl);
 }
 
-// ---------- Export / Import / Hapus ----------
 export function exportAllData() {
 	const bundle = {
 		version: 1,
@@ -208,7 +205,6 @@ export function deleteAllData() {
 	localStorage.removeItem('dracin_profile_name');
 }
 
-// ---------- Helper ----------
 function escapeHtml(text) {
 	const div = document.createElement('div');
 	div.textContent = text;
