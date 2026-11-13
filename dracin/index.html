@@ -4,34 +4,338 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>Dracin Stream</title>
+
+	<!-- Font Awesome 6 (ikon) -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 	<link rel="stylesheet" href="css/base.css">
 	<link rel="stylesheet" href="css/layout.css">
 	<link rel="stylesheet" href="css/components.css">
+	<link rel="stylesheet" href="css/modal.css">
+	<link rel="stylesheet" href="css/forms.css">
 </head>
 <body>
+
+	<!-- ============================================================ -->
+	<!-- HEADER                                                       -->
+	<!-- ============================================================ -->
 	<header class="app-header">
-		<h1 class="logo">Dracin<span>Stream</span></h1>
+		<h1 class="logo"><i class="fa-solid fa-clapperboard"></i> Dracin<span>Stream</span></h1>
+
 		<div class="search-box">
+			<i class="fa-solid fa-magnifying-glass search-icon"></i>
 			<input type="search" id="searchInput" placeholder="Cari drama China..." autocomplete="off">
+		</div>
+
+		<div class="header-actions">
+			<button class="icon-btn" id="btnProfile" aria-label="Profile">
+				<i class="fa-solid fa-user"></i>
+			</button>
+			<button class="icon-btn" id="btnSettings" aria-label="Pengaturan">
+				<i class="fa-solid fa-gear"></i>
+			</button>
 		</div>
 	</header>
 
+	<!-- ============================================================ -->
+	<!-- MAIN                                                         -->
+	<!-- ============================================================ -->
 	<main id="app">
-		<!-- Konten dirender oleh ui.js -->
-		<div class="loading" id="loadingIndicator">Memuat...</div>
+		<div class="loading" id="loadingIndicator">
+			<i class="fa-solid fa-spinner fa-spin"></i> Memuat...
+		</div>
 	</main>
 
-	<!-- Modal Player -->
+	<!-- ============================================================ -->
+	<!-- PLAYER MODAL                                                 -->
+	<!-- ============================================================ -->
 	<div class="player-modal hidden" id="playerModal">
 		<div class="player-container">
-			<button class="btn-close-player" id="btnClosePlayer">✕</button>
+
+			<!-- Toolbar melayang di atas video -->
+			<div class="player-toolbar">
+				<div class="player-search-wrapper">
+					<i class="fa-solid fa-magnifying-glass"></i>
+					<input type="search" id="playerSearchInput" placeholder="Cari dalam drama..." class="player-search">
+				</div>
+				<div class="select-wrapper">
+					<select id="playerCategorySelect" class="player-select">
+						<option value="">Semua Kategori</option>
+						<option value="romance">Romance</option>
+						<option value="historical">Historical</option>
+						<option value="modern">Modern</option>
+						<option value="fantasy">Fantasy</option>
+						<option value="thriller">Thriller</option>
+					</select>
+					<i class="fa-solid fa-chevron-down select-arrow"></i>
+				</div>
+				<div class="select-wrapper">
+					<select id="playerFilterSelect" class="player-select">
+						<option value="latest">Terbaru</option>
+						<option value="popular">Populer</option>
+						<option value="rating">Rating</option>
+					</select>
+					<i class="fa-solid fa-chevron-down select-arrow"></i>
+				</div>
+			</div>
+
 			<video id="videoPlayer" controls playsinline></video>
-			<div class="player-info" id="playerInfo"></div>
+
+			<!-- Info drama -->
+			<div class="player-drama-info" id="playerDramaInfo">
+				<h2 class="drama-title" id="playerDramaTitle">—</h2>
+
+				<div class="drama-meta-row">
+					<span class="meta-item"><i class="fa-solid fa-list-ol"></i> <span id="playerEpisodeCount">0</span> Episode</span>
+					<span class="meta-item"><i class="fa-solid fa-masks-theater"></i> <span id="playerGenre">—</span></span>
+					<span class="meta-item"><i class="fa-solid fa-clock"></i> <span id="playerDuration">—</span></span>
+					<span class="meta-item"><i class="fa-solid fa-eye"></i> <span id="playerViews">0</span> tayangan</span>
+				</div>
+
+				<div class="drama-actions-row">
+					<button class="action-btn" id="btnLike">
+						<i class="fa-regular fa-heart"></i>
+						<span class="action-label">Like</span>
+					</button>
+					<button class="action-btn" id="btnSave">
+						<i class="fa-regular fa-bookmark"></i>
+						<span class="action-label">Simpan</span>
+					</button>
+					<div class="episode-nav">
+						<button class="nav-btn" id="btnPrevEp" disabled>
+							<i class="fa-solid fa-backward-step"></i> Sebelumnya
+						</button>
+						<button class="nav-btn" id="btnNextEp" disabled>
+							Selanjutnya <i class="fa-solid fa-forward-step"></i>
+						</button>
+					</div>
+				</div>
+
+				<p class="drama-description" id="playerDescription">—</p>
+			</div>
+
+			<!-- Episode lain -->
+			<div class="episode-list-wrapper">
+				<h3 class="section-title-small">
+					<i class="fa-solid fa-layer-group"></i> Episode Lain
+				</h3>
+				<div class="episode-list" id="episodeList"></div>
+			</div>
+
+			<!-- Drama relevan -->
+			<div class="related-wrapper">
+				<h3 class="section-title-small">
+					<i class="fa-solid fa-fire"></i> Drama Relevan
+				</h3>
+				<div class="drama-grid" id="relatedGrid"></div>
+			</div>
+
+			<button class="btn-close-player" id="btnClosePlayer" aria-label="Tutup">
+				<i class="fa-solid fa-xmark"></i>
+			</button>
 		</div>
 	</div>
 
-	<!-- Player script (hls.js dari CDN, opsional jika API beri M3U8) -->
+	<!-- ============================================================ -->
+	<!-- MODAL PROFILE                                                -->
+	<!-- ============================================================ -->
+	<div class="modal-overlay hidden" id="modalProfile">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2><i class="fa-solid fa-user"></i> Profile</h2>
+				<button class="modal-close" data-close="modalProfile">
+					<i class="fa-solid fa-xmark"></i>
+				</button>
+			</div>
+
+			<div class="profile-top">
+				<div class="avatar-wrapper">
+					<img id="profileAvatar" class="avatar-img" src="" alt="Avatar">
+					<label for="avatarUpload" class="avatar-upload-label">
+						<i class="fa-solid fa-camera"></i>
+					</label>
+					<input type="file" id="avatarUpload" accept="image/*" hidden>
+				</div>
+				<div class="profile-name-wrapper">
+					<label class="form-label">Nama</label>
+					<input type="text" id="profileNameInput" class="form-input" placeholder="Nama kamu">
+					<button class="btn-primary" id="btnSaveProfileName">
+						<i class="fa-solid fa-check"></i> Simpan Nama
+					</button>
+				</div>
+			</div>
+
+			<div class="tabs" data-tabs="profile">
+				<button class="tab-btn active" data-tab="history"><i class="fa-solid fa-clock-rotate-left"></i> Histori</button>
+				<button class="tab-btn" data-tab="likes"><i class="fa-solid fa-heart"></i> Like</button>
+				<button class="tab-btn" data-tab="saved"><i class="fa-solid fa-bookmark"></i> Simpan</button>
+				<button class="tab-btn" data-tab="stats"><i class="fa-solid fa-chart-column"></i> Grafik</button>
+				<button class="tab-btn" data-tab="data"><i class="fa-solid fa-database"></i> Data</button>
+			</div>
+
+			<div class="tab-panels">
+				<div class="tab-panel active" data-panel="history" id="panelHistory">
+					<p class="empty-msg">Belum ada histori.</p>
+				</div>
+				<div class="tab-panel" data-panel="likes" id="panelLikes">
+					<p class="empty-msg">Belum ada yang di-like.</p>
+				</div>
+				<div class="tab-panel" data-panel="saved" id="panelSaved">
+					<p class="empty-msg">Belum ada yang disimpan.</p>
+				</div>
+				<div class="tab-panel" data-panel="stats" id="panelStats">
+					<canvas id="statsChart" width="400" height="200"></canvas>
+				</div>
+				<div class="tab-panel" data-panel="data" id="panelData">
+					<div class="data-actions">
+						<button class="btn-secondary" id="btnExportData">
+							<i class="fa-solid fa-file-export"></i> Export Data
+						</button>
+						<label class="btn-secondary" for="importDataInput">
+							<i class="fa-solid fa-file-import"></i> Import Data
+						</label>
+						<input type="file" id="importDataInput" accept="application/json" hidden>
+						<button class="btn-danger" id="btnDeleteData">
+							<i class="fa-solid fa-trash"></i> Hapus Semua Data
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- ============================================================ -->
+	<!-- MODAL SETTINGS                                               -->
+	<!-- ============================================================ -->
+	<div class="modal-overlay hidden" id="modalSettings">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2><i class="fa-solid fa-gear"></i> Pengaturan</h2>
+				<button class="modal-close" data-close="modalSettings">
+					<i class="fa-solid fa-xmark"></i>
+				</button>
+			</div>
+
+			<div class="tabs" data-tabs="settings">
+				<button class="tab-btn active" data-tab="appearance"><i class="fa-solid fa-palette"></i> Tampilan</button>
+				<button class="tab-btn" data-tab="playback"><i class="fa-solid fa-sliders"></i> Pemutaran</button>
+				<button class="tab-btn" data-tab="data"><i class="fa-solid fa-database"></i> Data</button>
+			</div>
+
+			<div class="tab-panels">
+				<!-- Tampilan -->
+				<div class="tab-panel active" data-panel="appearance">
+					<div class="setting-row">
+						<label class="form-label">Tema</label>
+						<div class="select-wrapper">
+							<select id="settingTheme" class="form-input">
+								<option value="dark">Gelap</option>
+								<option value="light">Terang</option>
+								<option value="amoled">AMOLED</option>
+							</select>
+							<i class="fa-solid fa-chevron-down select-arrow"></i>
+						</div>
+					</div>
+
+					<div class="setting-row">
+						<label class="form-label">Warna Aksen (kalem & glossy)</label>
+						<div class="accent-swatches" id="accentSwatches">
+							<button class="accent-swatch" data-color="#7c8fb8" style="--sw:#7c8fb8"></button>
+							<button class="accent-swatch" data-color="#8fa88c" style="--sw:#8fa88c"></button>
+							<button class="accent-swatch" data-color="#b89a7c" style="--sw:#b89a7c"></button>
+							<button class="accent-swatch" data-color="#a88cb8" style="--sw:#a88cb8"></button>
+							<button class="accent-swatch" data-color="#8ca8b8" style="--sw:#8ca8b8"></button>
+							<button class="accent-swatch" data-color="#b88c9a" style="--sw:#b88c9a"></button>
+						</div>
+					</div>
+
+					<div class="setting-row">
+						<label class="form-label">Ukuran Font <span id="fontSizeVal">16px</span></label>
+						<input type="range" id="settingFontSize" min="12" max="22" value="16" class="form-range">
+					</div>
+
+					<div class="setting-row">
+						<label class="form-label">Jenis Font</label>
+						<div class="select-wrapper">
+							<select id="settingFontFamily" class="form-input">
+								<option value="system-ui, sans-serif">System Default</option>
+								<option value="'Segoe UI', sans-serif">Segoe UI</option>
+								<option value="'Roboto', sans-serif">Roboto</option>
+								<option value="'Georgia', serif">Georgia</option>
+								<option value="'Courier New', monospace">Courier New</option>
+								<option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+							</select>
+							<i class="fa-solid fa-chevron-down select-arrow"></i>
+						</div>
+					</div>
+
+					<div class="setting-row">
+						<label class="form-label">Ketebalan Font <span id="fontWeightVal">400</span></label>
+						<input type="range" id="settingFontWeight" min="300" max="800" step="100" value="400" class="form-range">
+					</div>
+
+					<div class="setting-row switch-row">
+						<label class="form-label">Animasi</label>
+						<label class="switch">
+							<input type="checkbox" id="settingAnimations" checked>
+							<span class="slider"></span>
+						</label>
+					</div>
+
+					<div class="setting-row switch-row">
+						<label class="form-label">Efek Suara</label>
+						<label class="switch">
+							<input type="checkbox" id="settingSound">
+							<span class="slider"></span>
+						</label>
+					</div>
+
+					<div class="setting-row switch-row">
+						<label class="form-label">Efek Getar</label>
+						<label class="switch">
+							<input type="checkbox" id="settingVibration">
+							<span class="slider"></span>
+						</label>
+					</div>
+				</div>
+
+				<!-- Pemutaran -->
+				<div class="tab-panel" data-panel="playback">
+					<div class="setting-row">
+						<label class="form-label">Volume <span id="volumeVal">100%</span></label>
+						<input type="range" id="settingVolume" min="0" max="100" value="100" class="form-range">
+					</div>
+
+					<div class="setting-row">
+						<label class="form-label">Kecerahan <span id="brightnessVal">100%</span></label>
+						<input type="range" id="settingBrightness" min="50" max="100" value="100" class="form-range">
+					</div>
+				</div>
+
+				<!-- Data -->
+				<div class="tab-panel" data-panel="data">
+					<div class="data-actions">
+						<button class="btn-secondary" id="btnExportSettings">
+							<i class="fa-solid fa-file-export"></i> Export
+						</button>
+						<label class="btn-secondary" for="importSettingsInput">
+							<i class="fa-solid fa-file-import"></i> Import
+						</label>
+						<input type="file" id="importSettingsInput" accept="application/json" hidden>
+						<button class="btn-danger" id="btnDeleteSettings">
+							<i class="fa-solid fa-trash"></i> Hapus Data
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- ============================================================ -->
+	<!-- SCRIPT                                                       -->
+	<!-- ============================================================ -->
 	<script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
 	<script type="module" src="js/app.js"></script>
+
 </body>
 </html>
