@@ -2,7 +2,7 @@
 	"name": "ArthaPulse Pro",
 	"short_name": "ArthaPulse",
 	"description": "Mobile Financial Hub & Pocket Manager",
-	"start_url": "/arthapulsepro.html",
+	"start_url": "../arthapulsepro.html",
 	"display": "standalone",
 	"orientation": "portrait",
 	"background_color": "#060b16",
