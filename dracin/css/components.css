@@ -1,0 +1,125 @@
+/* Card Drama */
+.drama-card {
+	background: var(--bg-card);
+	border-radius: var(--radius);
+	overflow: hidden;
+	cursor: pointer;
+	transition: transform 0.2s, box-shadow 0.2s;
+	box-shadow: var(--shadow);
+}
+
+.drama-card:active {
+	transform: scale(0.97);
+}
+
+.drama-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
+
+.drama-card img {
+	width: 100%;
+	aspect-ratio: 3 / 4;
+	object-fit: cover;
+	background: #2a2a3a;
+}
+
+.drama-card-info {
+	padding: 8px 10px;
+}
+
+.drama-card-title {
+	font-size: 0.85rem;
+	font-weight: 600;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.drama-card-meta {
+	font-size: 0.75rem;
+	color: var(--text-secondary);
+	margin-top: 2px;
+}
+
+/* Loading */
+.loading {
+	text-align: center;
+	padding: 40px;
+	color: var(--text-secondary);
+}
+
+/* Player Modal */
+.player-modal {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.92);
+	z-index: 100;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px;
+}
+
+.player-modal.hidden {
+	display: none;
+}
+
+.player-container {
+	position: relative;
+	width: 100%;
+	max-width: 900px;
+	background: #000;
+	border-radius: var(--radius);
+	overflow: hidden;
+}
+
+.player-container video {
+	width: 100%;
+	max-height: 80vh;
+	display: block;
+}
+
+.btn-close-player {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	z-index: 5;
+	background: rgba(0, 0, 0, 0.6);
+	color: #fff;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	font-size: 1.1rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.player-info {
+	padding: 10px 14px;
+	font-size: 0.85rem;
+	color: var(--text-secondary);
+	background: var(--bg-secondary);
+}
+
+/* Section Title */
+.section-title {
+	font-size: 1.1rem;
+	font-weight: 700;
+	margin-bottom: 12px;
+	margin-top: 24px;
+}
+
+.section-title:first-child {
+	margin-top: 0;
+}
+
+/* Error / Empty */
+.error-msg,
+.empty-msg {
+	text-align: center;
+	padding: 40px 16px;
+	color: var(--text-secondary);
+	font-size: 0.9rem;
+}
