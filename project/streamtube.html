@@ -27,10 +27,10 @@
 	<style>
 		/* Dynamic Design Tokens */
 		:root {
-			--accent-color: #3b82f6; 
-			--accent-hover: #2563eb;
-			--accent-light: rgba(59, 130, 246, 0.15);
-			--accent-glow: rgba(59, 130, 246, 0.35);
+			--accent-color: #5b9bd5;
+			--accent-hover: #4785be;
+			--accent-light: rgba(91, 155, 213, 0.15);
+			--accent-glow: rgba(91, 155, 213, 0.35);
 			--base-font-size: 14px;
 			--app-font-family: 'Poppins', sans-serif;
 			--app-font-weight: 400;
@@ -204,7 +204,7 @@
 				<!-- Account & Settings Buttons -->
 				<div class="flex items-center gap-2 shrink-0">
 					<button onclick="app.openModal('accountModal')" class="flex items-center gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-full ui-card border text-xs sm:text-sm font-medium hover:border-accent transition-colors">
-						<img id="navAvatarImg" src="https://placehold.co/100x100/3b82f6/ffffff?text=U" alt="Profile" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover">
+						<img id="navAvatarImg" src="https://placehold.co/100x100/5b9bd5/ffffff?text=U" alt="Profile" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover">
 						<span class="hidden md:inline max-w-[110px] truncate" id="navAccountName">Akun</span>
 					</button>
 					<button onclick="app.openModal('settingsModal')" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-card border flex items-center justify-center hover:border-accent transition-colors" title="Pengaturan">
@@ -258,32 +258,31 @@
 					<!-- Kartu Pengunggah (Channel) + Tombol Aksi Utama -->
 					<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 pt-1 border-t ui-border">
 						
-						<!-- Identitas Pengunggah -->
+						<!-- Identitas Pengunggah & Tanggal Upload -->
 						<div class="flex items-center gap-3 min-w-0">
 							<img id="channelAvatar" src="https://placehold.co/100x100/1e293b/ffffff?text=C" alt="Channel Avatar" class="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover shadow-md border-2 border-accent/40 shrink-0">
 							<div class="min-w-0 flex-1">
-								<div class="flex items-center gap-1.5 mt-0.5">
+								<div class="flex items-center gap-1.5">
 									<span id="channelName" class="font-bold text-sm sm:text-base truncate">Channel YouTube</span>
 									<i class="fa-solid fa-circle-check text-sky-400 text-xs shrink-0" title="Terverifikasi"></i>
 								</div>
-								<div class="text-[11px] ui-text-subtle mt-0.5 flex items-center gap-1.5">
-									<i class="fa-solid fa-users text-[10px] text-accent"></i>
-									<span id="channelSubs">100K Subscriber</span>
+								<div class="text-xs ui-text-subtle mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+									<span id="metaDate" class="whitespace-nowrap">-</span>
+									<span class="opacity-50">•</span>
+									<span class="inline-flex items-center gap-1 whitespace-nowrap">
+										<i class="fa-solid fa-users text-[10px] text-accent"></i>
+										<span id="channelSubs" class="whitespace-nowrap">100K Subscriber</span>
+									</span>
 								</div>
 							</div>
 						</div>
 
-						<!-- Baris Tombol Aksi (Suka, Bagikan, Unduh MP4, Unduh MP3, Bioskop) -->
+						<!-- Baris Tombol Aksi (Suka, Unduh MP4, Unduh MP3, Bagikan) -->
 						<div class="flex flex-wrap items-center gap-2">
 							<button id="btnLike" onclick="app.toggleLike()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl ui-sub-bg border ui-border text-xs font-semibold hover:border-rose-500/60 transition-all">
 								<i class="fa-solid fa-thumbs-up text-xs" id="iconLike"></i>
 								<span>Suka</span>
-								<span id="countLikeBtn" class="px-1.5 py-0.5 rounded-md bg-black/20 font-mono text-[11px]">0</span>
-							</button>
-
-							<button onclick="app.shareCurrentVideo()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl ui-sub-bg border ui-border text-xs font-semibold hover:border-accent transition-all">
-								<i class="fa-solid fa-share-nodes text-xs text-accent"></i>
-								<span>Bagikan</span>
+								<span id="countLikeBtn" class="px-1.5 py-0.5 rounded-md bg-black/20 font-mono text-[11px] whitespace-nowrap">0</span>
 							</button>
 
 							<button onclick="app.downloadAction('mp4')" class="flex items-center gap-2 px-3.5 py-2 rounded-xl btn-accent text-xs font-semibold transition-all">
@@ -295,59 +294,34 @@
 								<i class="fa-solid fa-music text-xs"></i>
 								<span>Unduh MP3</span>
 							</button>
+
+							<button onclick="app.shareCurrentVideo()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl ui-sub-bg border ui-border text-xs font-semibold hover:border-accent transition-all">
+								<i class="fa-solid fa-share-nodes text-xs text-accent"></i>
+								<span>Bagikan</span>
+							</button>
 						</div>
 					</div>
 
-					<!-- Grid Statistik Detail Video (Views, Tanggal Upload, Like, Komen, Durasi) -->
-					<div id="videoStatsBar" class="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-2.5">
-						<div class="ui-sub-bg border ui-border rounded-xl px-3 py-2.5 flex items-center gap-2.5">
-							<div class="w-8 h-8 rounded-lg bg-blue-500/15 text-blue-400 flex items-center justify-center shrink-0">
-								<i class="fa-solid fa-eye text-xs"></i>
-							</div>
-							<div class="min-w-0">
-								<div class="text-[10px] ui-text-subtle">Kali Dilihat</div>
-								<div class="font-bold text-xs sm:text-sm truncate" id="metaViews">0</div>
-							</div>
+					<!-- Pil Statistik Ringkas Video (Kali Dilihat, Total Like, Komentar, Durasi) -->
+					<div id="videoStatsBar" class="flex flex-wrap items-center gap-2">
+						<div class="ui-sub-bg border ui-border rounded-full px-2.5 py-1 inline-flex items-center gap-1.5 text-xs" title="Kali Dilihat">
+							<i class="fa-solid fa-eye text-blue-400 text-[11px] shrink-0"></i>
+							<span class="font-semibold whitespace-nowrap" id="metaViews">0</span>
 						</div>
 
-						<div class="ui-sub-bg border ui-border rounded-xl px-3 py-2.5 flex items-center gap-2.5">
-							<div class="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-400 flex items-center justify-center shrink-0">
-								<i class="fa-solid fa-calendar-days text-xs"></i>
-							</div>
-							<div class="min-w-0">
-								<div class="text-[10px] ui-text-subtle">Tanggal Upload</div>
-								<div class="font-bold text-xs sm:text-sm truncate" id="metaDate">-</div>
-							</div>
+						<div class="ui-sub-bg border ui-border rounded-full px-2.5 py-1 inline-flex items-center gap-1.5 text-xs" title="Total Like">
+							<i class="fa-solid fa-heart text-rose-400 text-[11px] shrink-0"></i>
+							<span class="font-semibold whitespace-nowrap" id="metaLikes">0</span>
 						</div>
 
-						<div class="ui-sub-bg border ui-border rounded-xl px-3 py-2.5 flex items-center gap-2.5">
-							<div class="w-8 h-8 rounded-lg bg-rose-500/15 text-rose-400 flex items-center justify-center shrink-0">
-								<i class="fa-solid fa-heart text-xs"></i>
-							</div>
-							<div class="min-w-0">
-								<div class="text-[10px] ui-text-subtle">Total Like</div>
-								<div class="font-bold text-xs sm:text-sm truncate" id="metaLikes">0</div>
-							</div>
+						<div class="ui-sub-bg border ui-border rounded-full px-2.5 py-1 inline-flex items-center gap-1.5 text-xs" title="Komentar">
+							<i class="fa-solid fa-comments text-indigo-400 text-[11px] shrink-0"></i>
+							<span class="font-semibold whitespace-nowrap" id="metaComments">0</span>
 						</div>
 
-						<div class="ui-sub-bg border ui-border rounded-xl px-3 py-2.5 flex items-center gap-2.5">
-							<div class="w-8 h-8 rounded-lg bg-indigo-500/15 text-indigo-400 flex items-center justify-center shrink-0">
-								<i class="fa-solid fa-comments text-xs"></i>
-							</div>
-							<div class="min-w-0">
-								<div class="text-[10px] ui-text-subtle">Komentar</div>
-								<div class="font-bold text-xs sm:text-sm truncate" id="metaComments">0</div>
-							</div>
-						</div>
-
-						<div class="col-span-2 sm:col-span-1 ui-sub-bg border ui-border rounded-xl px-3 py-2.5 flex items-center gap-2.5">
-							<div class="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-400 flex items-center justify-center shrink-0">
-								<i class="fa-solid fa-clock text-xs"></i>
-							</div>
-							<div class="min-w-0">
-								<div class="text-[10px] ui-text-subtle">Durasi</div>
-								<div class="font-bold text-xs sm:text-sm font-mono truncate" id="metaDuration">--:--</div>
-							</div>
+						<div class="ui-sub-bg border ui-border rounded-full px-2.5 py-1 inline-flex items-center gap-1.5 text-xs" title="Durasi">
+							<i class="fa-solid fa-clock text-emerald-400 text-[11px] shrink-0"></i>
+							<span class="font-semibold font-mono whitespace-nowrap" id="metaDuration">--:--</span>
 						</div>
 					</div>
 
@@ -391,7 +365,7 @@
 			<section class="mt-3 sm:mt-5 px-3 sm:px-0">
 				<div class="flex items-center justify-between mb-3 sm:mb-4 px-1">
 					<h2 id="sectionTitle" class="text-sm sm:text-lg font-semibold flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-accent"></i> Rekomendasi Video</h2>
-					<span id="resultCount" class="text-xs ui-text-subtle"></span>
+					<span id="resultCount" class="text-xs ui-text-subtle whitespace-nowrap"></span>
 				</div>
 				<div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"></div>
 			</section>
@@ -408,7 +382,7 @@
 		</button>
 		
 		<!-- Exact Rewind 10s -->
-		<button onclick="app.seekRelative(-10)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold" title="Mundur 10 Detik">
+		<button onclick="app.seekRelative(-10)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold whitespace-nowrap" title="Mundur 10 Detik">
 			<i class="fa-solid fa-rotate-left text-[11px] mr-1"></i>10s
 		</button>
 
@@ -418,7 +392,7 @@
 		</button>
 
 		<!-- Exact Forward 10s -->
-		<button onclick="app.seekRelative(10)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold" title="Maju 10 Detik">
+		<button onclick="app.seekRelative(10)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold whitespace-nowrap" title="Maju 10 Detik">
 			10s<i class="fa-solid fa-rotate-right text-[11px] ml-1"></i>
 		</button>
 
@@ -432,13 +406,13 @@
 		<!-- Repeat Mode -->
 		<button onclick="app.toggleRepeatMode()" id="btnBottomRepeat" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 hover:text-accent transition-all text-xs font-medium" title="Mode Pengulangan">
 			<i class="fa-solid fa-repeat text-xs sm:text-sm" id="repeatIcon"></i>
-			<span id="repeatBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700">Off</span>
+			<span id="repeatBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 whitespace-nowrap">Off</span>
 		</button>
 
 		<!-- Autoplay Toggle -->
 		<button onclick="app.toggleAutoplayMode()" id="btnBottomAutoplay" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-md transition-all hover:brightness-110" title="Auto Play Berikutnya">
 			<i class="fa-solid fa-circle-play text-xs sm:text-sm" id="autoplayIcon"></i>
-			<span id="autoplayBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 border border-indigo-400/30">ON</span>
+			<span id="autoplayBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 border border-indigo-400/30 whitespace-nowrap">ON</span>
 		</button>
 	</div>
 
@@ -469,7 +443,7 @@
 					<!-- Avatar & Profile Identity -->
 					<div class="px-4 pb-4 pt-0 relative z-20 flex flex-col sm:flex-row items-center sm:items-end gap-3 -mt-9 sm:-mt-11">
 						<div class="relative group shrink-0">
-							<img id="profileAvatar" src="https://placehold.co/100x100/3b82f6/ffffff?text=U" alt="Avatar" class="w-18 h-18 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-slate-900 shadow-xl bg-slate-900" style="width: 4.75rem; height: 4.75rem;">
+							<img id="profileAvatar" src="https://placehold.co/100x100/5b9bd5/ffffff?text=U" alt="Avatar" class="w-18 h-18 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-slate-900 shadow-xl bg-slate-900" style="width: 4.75rem; height: 4.75rem;">
 							<button type="button" onclick="document.getElementById('avatarFileInput').click()" class="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity cursor-pointer" title="Ubah Foto Profil">
 								<i class="fa-solid fa-camera text-sm"></i>
 							</button>
@@ -487,7 +461,7 @@
 								<button type="button" onclick="app.saveEditedName()" class="px-2.5 py-1 rounded-lg btn-accent text-xs font-semibold">Simpan</button>
 								<button type="button" onclick="app.cancelEditName()" class="px-2 py-1 rounded-lg ui-card border text-xs">Batal</button>
 							</div>
-							<div id="accAge" class="text-xs ui-text-subtle mt-0.5">Umur Akun: 0 Hari</div>
+							<div id="accAge" class="text-xs ui-text-subtle mt-0.5 whitespace-nowrap">Umur Akun: 0 Hari</div>
 						</div>
 					</div>
 				</div>
@@ -497,28 +471,28 @@
 				<input type="file" id="coverFileInput" class="hidden" accept="image/*" onchange="app.handleCoverUpload(event)">
 
 				<!-- Quick Stats -->
-				<div class="grid grid-cols-4 gap-2 text-center">
+				<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
 					<div class="p-2.5 ui-sub-bg rounded-xl border ui-border">
-						<div class="font-bold text-accent text-sm sm:text-base" id="statWatch">0</div>
+						<div class="font-bold text-accent text-sm sm:text-base whitespace-nowrap" id="statWatch">0</div>
 						<div class="text-[10px] ui-text-subtle">Tontonan</div>
 					</div>
 					<div class="p-2.5 ui-sub-bg rounded-xl border ui-border">
-						<div class="font-bold text-rose-500 text-sm sm:text-base" id="statLike">0</div>
+						<div class="font-bold text-rose-500 text-sm sm:text-base whitespace-nowrap" id="statLike">0</div>
 						<div class="text-[10px] ui-text-subtle">Disukai</div>
 					</div>
 					<div class="p-2.5 ui-sub-bg rounded-xl border ui-border">
-						<div class="font-bold text-teal-500 text-sm sm:text-base" id="statDownload">0</div>
+						<div class="font-bold text-teal-500 text-sm sm:text-base whitespace-nowrap" id="statDownload">0</div>
 						<div class="text-[10px] ui-text-subtle">Unduhan</div>
 					</div>
 					<div class="p-2.5 ui-sub-bg rounded-xl border ui-border">
-						<div class="font-bold text-amber-500 text-sm sm:text-base" id="statDays">0d</div>
+						<div class="font-bold text-amber-500 text-sm sm:text-base whitespace-nowrap" id="statDays">0d</div>
 						<div class="text-[10px] ui-text-subtle">Aktif</div>
 					</div>
 				</div>
 
 				<!-- ENLARGED & PROPORTIONAL 7-DAY WATCH STATISTICS GRAPH -->
 				<div class="p-4 ui-sub-bg border ui-border rounded-2xl space-y-3">
-					<div class="flex items-center justify-between gap-2">
+					<div class="flex flex-wrap items-center justify-between gap-2">
 						<div>
 							<h4 class="font-bold text-xs sm:text-sm flex items-center gap-1.5">
 								<i class="fa-solid fa-chart-column text-accent"></i>
@@ -526,7 +500,7 @@
 							</h4>
 							<p class="text-[10px] ui-text-subtle mt-0.5">Statistik jumlah video yang diputar setiap hari</p>
 						</div>
-						<span id="chartTodaySummary" class="px-2.5 py-1 rounded-full bg-accent-subtle text-accent text-[11px] font-bold font-mono shrink-0">Hari ini: 0 video</span>
+						<span id="chartTodaySummary" class="px-2.5 py-1 rounded-full bg-accent-subtle text-accent text-[11px] font-bold font-mono whitespace-nowrap">Hari ini: 0 video</span>
 					</div>
 					<div id="watchStatsChartContainer" class="w-full h-52 sm:h-60 pt-1"></div>
 				</div>
@@ -534,13 +508,13 @@
 				<!-- Animated Tab Navigation -->
 				<div class="flex border-b ui-border text-xs overflow-x-auto no-scrollbar mt-2">
 					<button type="button" onclick="app.switchAccTab('watch')" id="tabWatch" class="py-2 px-3 border-b-2 border-accent text-accent font-medium whitespace-nowrap flex items-center gap-1.5 transition-all">
-						Riwayat (<span id="countWatch">0</span>)
+						Riwayat (<span id="countWatch" class="whitespace-nowrap">0</span>)
 					</button>
 					<button type="button" onclick="app.switchAccTab('like')" id="tabLike" class="py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5 transition-all">
-						Disukai (<span id="countLike">0</span>)
+						Disukai (<span id="countLike" class="whitespace-nowrap">0</span>)
 					</button>
 					<button type="button" onclick="app.switchAccTab('download')" id="tabDownload" class="py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5 transition-all">
-						Unduhan (<span id="countDownload">0</span>)
+						Unduhan (<span id="countDownload" class="whitespace-nowrap">0</span>)
 					</button>
 				</div>
 				<!-- Tab List Content -->
@@ -641,20 +615,20 @@
 						</button>
 					</div>
 
-					<!-- Accent Palette -->
+					<!-- Accent Palette (Merah Kalem, Kuning Kalem, Hijau Kalem, Biru Kalem, Ungu Kalem, Oren Kalem, Kustom) -->
 					<div class="space-y-1.5 pt-1 border-t ui-border">
 						<div class="flex items-center justify-between">
 							<span class="text-[11px] font-medium ui-text-subtle">Warna Aksen Utama</span>
-							<span class="text-[10px] font-mono text-accent uppercase" id="accentHexLabel">#3B82F6</span>
+							<span class="text-[10px] font-mono text-accent uppercase whitespace-nowrap" id="accentHexLabel">#5B9BD5</span>
 						</div>
 						<div class="grid grid-cols-7 gap-2" id="accentColorPalette">
-							<button type="button" onclick="app.updateAccentColor('#ff0000')" data-color="#ff0000" class="accent-btn h-9 rounded-xl bg-[#ff0000] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Merah"></button>
-							<button type="button" onclick="app.updateAccentColor('#10b981')" data-color="#10b981" class="accent-btn h-9 rounded-xl bg-[#10b981] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Emerald"></button>
-							<button type="button" onclick="app.updateAccentColor('#3b82f6')" data-color="#3b82f6" class="accent-btn h-9 rounded-xl bg-[#3b82f6] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Biru"></button>
-							<button type="button" onclick="app.updateAccentColor('#f97316')" data-color="#f97316" class="accent-btn h-9 rounded-xl bg-[#f97316] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Oranye"></button>
-							<button type="button" onclick="app.updateAccentColor('#8b5cf6')" data-color="#8b5cf6" class="accent-btn h-9 rounded-xl bg-[#8b5cf6] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Ungu"></button>
-							<button type="button" onclick="app.updateAccentColor('#ec4899')" data-color="#ec4899" class="accent-btn h-9 rounded-xl bg-[#ec4899] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Pink"></button>
-							<label class="accent-btn h-9 rounded-xl bg-gradient-to-br from-teal-400 via-blue-500 to-indigo-500 shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center cursor-pointer" title="Warna Kustom">
+							<button type="button" onclick="app.updateAccentColor('#e06c75')" data-color="#e06c75" class="accent-btn h-9 rounded-xl bg-[#e06c75] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Merah Kalem"></button>
+							<button type="button" onclick="app.updateAccentColor('#e5c07b')" data-color="#e5c07b" class="accent-btn h-9 rounded-xl bg-[#e5c07b] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Kuning Kalem"></button>
+							<button type="button" onclick="app.updateAccentColor('#68b984')" data-color="#68b984" class="accent-btn h-9 rounded-xl bg-[#68b984] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Hijau Kalem"></button>
+							<button type="button" onclick="app.updateAccentColor('#5b9bd5')" data-color="#5b9bd5" class="accent-btn h-9 rounded-xl bg-[#5b9bd5] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Biru Kalem"></button>
+							<button type="button" onclick="app.updateAccentColor('#9b7ede')" data-color="#9b7ede" class="accent-btn h-9 rounded-xl bg-[#9b7ede] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Ungu Kalem"></button>
+							<button type="button" onclick="app.updateAccentColor('#e08e55')" data-color="#e08e55" class="accent-btn h-9 rounded-xl bg-[#e08e55] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Oren Kalem"></button>
+							<label class="accent-btn h-9 rounded-xl bg-gradient-to-br from-rose-400 via-emerald-400 to-indigo-400 shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center cursor-pointer" title="Kustom">
 								<i class="fa-solid fa-eye-dropper text-white text-xs"></i>
 								<input type="color" onchange="app.updateAccentColor(this.value)" id="accentColorInput" class="hidden">
 							</label>
@@ -679,13 +653,13 @@
 							<div class="font-bold text-sm truncate mt-0.5">StreamTube Pemutar Video HD</div>
 							<div class="text-xs ui-text-subtle truncate">Teks nyaman dibaca di berbagai ukuran layar.</div>
 						</div>
-						<span class="px-2.5 py-1 rounded-lg bg-accent-subtle text-accent font-mono text-xs font-bold shrink-0" id="fontSizeVal">14px</span>
+						<span class="px-2.5 py-1 rounded-lg bg-accent-subtle text-accent font-mono text-xs font-bold shrink-0 whitespace-nowrap" id="fontSizeVal">14px</span>
 					</div>
 					
 					<div>
 						<div class="flex justify-between items-center mb-1.5">
 							<label class="font-medium text-xs">Skala Ukuran Font</label>
-							<span class="text-[10px] ui-text-subtle">12px — 18px</span>
+							<span class="text-[10px] ui-text-subtle whitespace-nowrap">12px — 18px</span>
 						</div>
 						<div class="flex items-center gap-3">
 							<span class="text-[11px] font-bold ui-text-subtle">A-</span>
@@ -731,14 +705,14 @@
 						<div class="ui-card border rounded-xl p-3 space-y-2">
 							<div class="flex justify-between items-center">
 								<span class="font-medium text-xs flex items-center gap-1.5"><i class="fa-solid fa-volume-high text-accent"></i> Volume</span>
-								<span id="volumeVal" class="font-mono text-accent text-xs font-bold">100%</span>
+								<span id="volumeVal" class="font-mono text-accent text-xs font-bold whitespace-nowrap">100%</span>
 							</div>
 							<input type="range" id="volumeSlider" min="0" max="100" value="100" oninput="app.setVolume(this.value)" class="w-full cursor-pointer">
 						</div>
 						<div class="ui-card border rounded-xl p-3 space-y-2">
 							<div class="flex justify-between items-center">
 								<span class="font-medium text-xs flex items-center gap-1.5"><i class="fa-solid fa-sun text-amber-400"></i> Brightness</span>
-								<span id="brightnessVal" class="font-mono text-accent text-xs font-bold">100%</span>
+								<span id="brightnessVal" class="font-mono text-accent text-xs font-bold whitespace-nowrap">100%</span>
 							</div>
 							<input type="range" id="brightnessSlider" min="50" max="150" value="100" oninput="app.setBrightness(this.value)" class="w-full cursor-pointer">
 						</div>
@@ -770,27 +744,27 @@
 							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 border ui-border">
 								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(0, this.value)" class="eq-slider">
 								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium">60Hz</span>
-								<span id="eqVal0" class="text-[9px] font-mono text-accent font-bold">0dB</span>
+								<span id="eqVal0" class="text-[9px] font-mono text-accent font-bold whitespace-nowrap">0dB</span>
 							</div>
 							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 border ui-border">
 								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(1, this.value)" class="eq-slider">
 								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium">230Hz</span>
-								<span id="eqVal1" class="text-[9px] font-mono text-accent font-bold">0dB</span>
+								<span id="eqVal1" class="text-[9px] font-mono text-accent font-bold whitespace-nowrap">0dB</span>
 							</div>
 							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 border ui-border">
 								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(2, this.value)" class="eq-slider">
 								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium">910Hz</span>
-								<span id="eqVal2" class="text-[9px] font-mono text-accent font-bold">0dB</span>
+								<span id="eqVal2" class="text-[9px] font-mono text-accent font-bold whitespace-nowrap">0dB</span>
 							</div>
 							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 border ui-border">
 								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(3, this.value)" class="eq-slider">
 								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium">4kHz</span>
-								<span id="eqVal3" class="text-[9px] font-mono text-accent font-bold">0dB</span>
+								<span id="eqVal3" class="text-[9px] font-mono text-accent font-bold whitespace-nowrap">0dB</span>
 							</div>
 							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 border ui-border">
 								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(4, this.value)" class="eq-slider">
 								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium">14kHz</span>
-								<span id="eqVal4" class="text-[9px] font-mono text-accent font-bold">0dB</span>
+								<span id="eqVal4" class="text-[9px] font-mono text-accent font-bold whitespace-nowrap">0dB</span>
 							</div>
 						</div>
 					</div>
@@ -822,7 +796,7 @@
 							<div class="flex items-center gap-2.5">
 								<i class="fa-solid fa-hand-pointer text-accent text-xs w-4 text-center"></i>
 								<div>
-									<div class="font-semibold text-xs">Getar Haptic 300ms</div>
+									<div class="font-semibold text-xs">Getar Haptic 100ms</div>
 									<div class="text-[10px] ui-text-subtle">Umpan balik getar pada perangkat seluler</div>
 								</div>
 							</div>
@@ -935,7 +909,7 @@
 					fontSize: 14,
 					fontFamily: "Poppins",
 					fontWeight: "400", 
-					accentColor: "#3b82f6",
+					accentColor: "#5b9bd5",
 					volume: 100,
 					brightness: 100,
 					audioMode: "stereo", 
@@ -1159,11 +1133,11 @@
 					card.innerHTML = `
 						<div class="relative aspect-video bg-black overflow-hidden">
 							<img src="${v.thumb}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="${v.title.replace(/"/g, '&quot;')}">
-							<div class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded font-mono flex items-center gap-1 backdrop-blur-md border border-white/10"><i class="fa-solid fa-clock text-[9px]"></i> ${v.durationFormatted}</div>
+							<div class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded font-mono flex items-center gap-1 backdrop-blur-md border border-white/10 whitespace-nowrap"><i class="fa-solid fa-clock text-[9px]"></i> ${v.durationFormatted}</div>
 						</div>
 						<div class="p-3 flex-1 flex flex-col justify-between">
 							<h3 class="font-medium text-xs sm:text-sm line-clamp-2 leading-snug group-hover:text-accent transition-colors">${v.title}</h3>
-							<div class="mt-2 text-[11px] ui-text-subtle"><p class="font-medium truncate flex items-center gap-1"><i class="fa-solid fa-circle-user text-[10px]"></i> ${v.channel}</p><div class="flex justify-between mt-1"><span>${this.formatNumber(v.views)}x ditonton</span><span>${v.date}</span></div></div>
+							<div class="mt-2 text-[11px] ui-text-subtle"><p class="font-medium truncate flex items-center gap-1"><i class="fa-solid fa-circle-user text-[10px]"></i> ${v.channel}</p><div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 mt-1"><span class="whitespace-nowrap">${this.formatNumber(v.views)}x ditonton</span><span class="whitespace-nowrap">${v.date}</span></div></div>
 						</div>
 					`;
 					grid.appendChild(card);
@@ -1422,15 +1396,15 @@
 				if (repeatBadge && repeatBtn) {
 					if (this.repeatMode === 'one') {
 						repeatBadge.innerText = '1x';
-						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-amber-500/30 text-amber-300 border border-amber-400/50';
+						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-amber-500/30 text-amber-300 border border-amber-400/50 whitespace-nowrap';
 						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-amber-600 text-white flex items-center gap-1.5 text-xs shadow-md";
 					} else if (this.repeatMode === 'all') {
 						repeatBadge.innerText = 'ALL';
-						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-teal-500/30 text-teal-300 border border-teal-400/50';
+						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-teal-500/30 text-teal-300 border border-teal-400/50 whitespace-nowrap';
 						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-teal-600 text-white flex items-center gap-1.5 text-xs shadow-md";
 					} else {
 						repeatBadge.innerText = 'OFF';
-						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
+						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap';
 						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 transition-all text-xs";
 					}
 				}
@@ -1440,11 +1414,11 @@
 				if (autoBadge && autoBtn) {
 					if (this.isAutoplay) {
 						autoBadge.innerText = 'ON';
-						autoBadge.className = 'font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 text-indigo-200 border border-indigo-400/30';
+						autoBadge.className = 'font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 text-indigo-200 border border-indigo-400/30 whitespace-nowrap';
 						autoBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs shadow-md";
 					} else {
 						autoBadge.innerText = 'OFF';
-						autoBadge.className = 'font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
+						autoBadge.className = 'font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap';
 						autoBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 transition-all text-xs";
 					}
 				}
@@ -1600,7 +1574,7 @@
 			},
 
 			updateAvatarUI() {
-				const avatarSrc = this.state.user.avatar || `https://placehold.co/100x100/3b82f6/ffffff?text=U`;
+				const avatarSrc = this.state.user.avatar || `https://placehold.co/100x100/5b9bd5/ffffff?text=U`;
 				const avatarEl = document.getElementById('profileAvatar');
 				const navAvatarEl = document.getElementById('navAvatarImg');
 				if (avatarEl) avatarEl.src = avatarSrc;
@@ -1800,7 +1774,7 @@
 					} else {
 						el.innerHTML = `<img src="${thumbUrl}" class="w-16 h-10 object-cover rounded-lg shrink-0 border ui-border">
 										<div class="truncate flex-1"><div class="font-medium truncate">${item.title}</div><div class="text-[10px] ui-text-subtle">${item.type} • ${item.downloadedAt}</div></div>
-										<span class="px-2 py-0.5 bg-emerald-950/80 text-emerald-400 rounded font-mono border border-emerald-800/50 shrink-0">Selesai</span>`;
+										<span class="px-2 py-0.5 bg-emerald-950/80 text-emerald-400 rounded font-mono border border-emerald-800/50 shrink-0 whitespace-nowrap">Selesai</span>`;
 					}
 					container.appendChild(el);
 				});
@@ -1956,7 +1930,7 @@
 				document.getElementById('fontFamilySelect').value = s.fontFamily || 'Poppins';
 				this.updateFontWeight(s.fontWeight || '400', false);
 				document.getElementById('fontWeightSelect').value = s.fontWeight || '400';
-				this.updateAccentColor(s.accentColor || '#3b82f6', false);
+				this.updateAccentColor(s.accentColor || '#5b9bd5', false);
 				this.setVolume(s.volume !== undefined ? s.volume : 100, false);
 				document.getElementById('volumeSlider').value = s.volume !== undefined ? s.volume : 100;
 				this.setBrightness(s.brightness || 100, false);
@@ -2149,7 +2123,7 @@
 			triggerHaptic() {
 				if (!this.state.settings.hapticEnabled) return;
 				try {
-					if ('vibrate' in navigator) navigator.vibrate(300);
+					if ('vibrate' in navigator) navigator.vibrate(100);
 				} catch (e) {}
 			},
 

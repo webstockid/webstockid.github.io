@@ -43,11 +43,11 @@
 
 	<style>
 		:root {
-			--app-accent: #06b6d4;
-			--app-accent-hover: #0891b2;
-			--app-accent-light: rgba(6, 182, 212, 0.14);
-			--app-accent-border: rgba(6, 182, 212, 0.32);
-			--app-accent-text: #22d3ee;
+			--app-accent: #3b82f6;
+			--app-accent-hover: #2563eb;
+			--app-accent-light: rgba(59, 130, 246, 0.14);
+			--app-accent-border: rgba(59, 130, 246, 0.32);
+			--app-accent-text: #60a5fa;
 			--app-font-family: 'Plus Jakarta Sans';
 			--app-font-weight: 400;
 			--app-font-weight-bold: 600;
@@ -92,10 +92,15 @@
 			font-weight: var(--app-font-weight-bold, 600) !important;
 		}
 
-		/* Tabular Figures for Clean Financial Numbers */
+		/* Tabular Figures & Full Display (Never Ellipsis / Never Cut Off Numbers) */
 		.num-tabular,
 		.font-mono {
 			font-variant-numeric: tabular-nums;
+			overflow: visible !important;
+			text-overflow: unset !important;
+			white-space: normal !important;
+			word-break: break-word;
+			overflow-wrap: anywhere;
 		}
 
 		/* Custom Minimalist Scrollbar */
@@ -124,7 +129,7 @@
 		.accent-text { color: var(--app-accent-text) !important; }
 		.accent-border { border-color: var(--app-accent-border) !important; }
 
-		/* Fintech Surface Styling (Clean, Crisp, Anti-AI-Slop) */
+		/* Fintech Surface Styling */
 		.glass-card {
 			background: rgba(15, 23, 42, 0.92);
 			backdrop-filter: blur(10px);
@@ -261,7 +266,7 @@
 			<div onclick="openProfileModal()" class="flex items-center gap-3 cursor-pointer group min-w-0">
 				<div class="relative shrink-0">
 					<div id="header-avatar-container" class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden group-hover:border-cyan-500 transition">
-						<img src="arthapulse/logo.png" alt="Profil" class="w-full h-full object-cover">
+						<img src="arthapulse/logo.png" alt="Profil" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/80x80/0f172a/60a5fa?text=AP'">
 					</div>
 					<span id="header-status-dot" class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-slate-950"></span>
 				</div>
@@ -281,15 +286,11 @@
 					<i class="fa-solid fa-bell text-xs" id="header-bell-icon"></i>
 					<span id="inbox-unread-badge" class="hidden absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full border-2 border-slate-950 num-tabular">0</span>
 				</button>
-				<button onclick="openTxModal()" title="Tambah Transaksi Baru" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl accent-bg accent-bg-hover text-slate-950 font-bold text-xs transition active:scale-95">
-					<i class="fa-solid fa-plus text-[11px]"></i>
-					<span>Catat</span>
-				</button>
 			</div>
 		</header>
 
 		<!-- APP MAIN SCROLLABLE CONTENT -->
-		<main class="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-24">
+		<main class="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-32">
 
 			<!-- TAB 1: BERANDA / DASHBOARD OVERVIEW -->
 			<div id="tab-content-dashboard" class="space-y-4 animate-tab">
@@ -299,41 +300,41 @@
 					<!-- Net Balance -->
 					<div class="col-span-2 glass-card p-4 rounded-2xl relative overflow-hidden">
 						<div class="flex justify-between items-start gap-3">
-							<div class="min-w-0">
+							<div class="min-w-0 flex-1">
 								<p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Total Saldo Utama</p>
-								<h3 id="stat-balance" class="text-2xl font-extrabold text-slate-100 mt-1 num-tabular truncate">Rp 0</h3>
+								<h3 id="stat-balance" class="text-2xl font-extrabold text-slate-100 mt-1 num-tabular leading-tight">Rp 0</h3>
 							</div>
 							<div class="w-9 h-9 bg-slate-900 rounded-xl accent-text border border-slate-800 flex items-center justify-center shrink-0">
 								<i class="fa-solid fa-wallet text-sm"></i>
 							</div>
 						</div>
-						<div class="flex items-center justify-between mt-3.5 pt-2.5 border-t border-slate-800/80 text-[10px] text-slate-400">
+						<div class="flex flex-wrap items-center justify-between gap-2 mt-3.5 pt-2.5 border-t border-slate-800/80 text-[10px] text-slate-400">
 							<span>Savings Rate: <strong id="stat-savings-rate-badge" class="text-emerald-400 num-tabular font-bold">0%</strong></span>
 							<span>Dana Di Kantong: <strong id="stat-pockets-total-badge" class="text-indigo-400 num-tabular font-bold">Rp 0</strong></span>
 						</div>
 					</div>
 
 					<!-- Income Summary -->
-					<div class="glass-card p-3.5 rounded-2xl">
+					<div class="glass-card p-3.5 rounded-2xl min-w-0">
 						<div class="flex items-center justify-between mb-1">
 							<span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Pemasukan</span>
-							<div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
+							<div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center shrink-0">
 								<i class="fa-solid fa-hand-holding-dollar text-xs"></i>
 							</div>
 						</div>
-						<h4 id="stat-income" class="text-base font-bold text-emerald-400 mt-1 num-tabular truncate">Rp 0</h4>
+						<h4 id="stat-income" class="text-base font-bold text-emerald-400 mt-1 num-tabular leading-snug">Rp 0</h4>
 						<p class="text-[10px] text-slate-400 mt-1"><span id="stat-income-count" class="font-bold text-slate-300 num-tabular">0</span> Transaksi</p>
 					</div>
 
 					<!-- Expense Summary -->
-					<div class="glass-card p-3.5 rounded-2xl">
+					<div class="glass-card p-3.5 rounded-2xl min-w-0">
 						<div class="flex items-center justify-between mb-1">
 							<span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Pengeluaran</span>
-							<div class="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center justify-center">
+							<div class="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center justify-center shrink-0">
 								<i class="fa-solid fa-cart-shopping text-xs"></i>
 							</div>
 						</div>
-						<h4 id="stat-expense" class="text-base font-bold text-rose-400 mt-1 num-tabular truncate">Rp 0</h4>
+						<h4 id="stat-expense" class="text-base font-bold text-rose-400 mt-1 num-tabular leading-snug">Rp 0</h4>
 						<p class="text-[10px] text-slate-400 mt-1"><span id="stat-expense-count" class="font-bold text-slate-300 num-tabular">0</span> Transaksi</p>
 					</div>
 				</section>
@@ -345,24 +346,24 @@
 							<i class="fa-solid fa-bullseye text-xs text-amber-400"></i>
 							<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Anggaran Bulan Ini</h3>
 						</div>
-						<span id="budget-badge-status" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
+						<span id="budget-badge-status" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5 shrink-0">
 							<span id="budget-badge-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
 							<span id="budget-badge-text">Aman</span>
 						</span>
 					</div>
 
 					<div class="grid grid-cols-3 gap-2 text-center">
-						<div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+						<div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 min-w-0">
 							<p class="text-[9px] text-slate-400">Batas Max</p>
-							<p id="budget-display-limit" class="text-xs font-bold text-slate-200 mt-0.5 num-tabular truncate">Rp 0</p>
+							<p id="budget-display-limit" class="text-xs font-bold text-slate-200 mt-0.5 num-tabular leading-snug">Rp 0</p>
 						</div>
-						<div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+						<div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 min-w-0">
 							<p class="text-[9px] text-slate-400">Terpakai</p>
-							<p id="budget-display-used" class="text-xs font-bold text-rose-400 mt-0.5 num-tabular truncate">Rp 0</p>
+							<p id="budget-display-used" class="text-xs font-bold text-rose-400 mt-0.5 num-tabular leading-snug">Rp 0</p>
 						</div>
-						<div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+						<div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 min-w-0">
 							<p class="text-[9px] text-slate-400">Sisa Anggaran</p>
-							<p id="budget-display-remaining" class="text-xs font-bold text-emerald-400 mt-0.5 num-tabular truncate">Rp 0</p>
+							<p id="budget-display-remaining" class="text-xs font-bold text-emerald-400 mt-0.5 num-tabular leading-snug">Rp 0</p>
 						</div>
 					</div>
 
@@ -385,7 +386,7 @@
 							<i class="fa-solid fa-heart-pulse text-xs accent-text"></i>
 							<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Kesehatan Keuangan</h3>
 						</div>
-						<span id="health-status-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+						<span id="health-status-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
 							<span id="health-status-text">Sehat</span>
 						</span>
 					</div>
@@ -416,7 +417,7 @@
 							<i class="fa-solid fa-receipt text-xs accent-text"></i>
 							<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Transaksi Terakhir</h3>
 						</div>
-						<button onclick="switchTab('transactions')" class="text-[11px] accent-text font-semibold hover:underline flex items-center gap-1">
+						<button onclick="switchTab('transactions')" class="text-[11px] accent-text font-semibold hover:underline flex items-center gap-1 shrink-0">
 							Lihat Semua <i class="fa-solid fa-chevron-right text-[9px]"></i>
 						</button>
 					</div>
@@ -434,7 +435,7 @@
 						<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
 							<i class="fa-solid fa-filter text-[11px] accent-text"></i> Cari & Filter Histori
 						</h3>
-						<button onclick="exportToCSV()" class="text-[10px] font-semibold bg-slate-900 hover:bg-slate-800 text-emerald-400 px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5 transition">
+						<button onclick="exportToCSV()" class="text-[10px] font-semibold bg-slate-900 hover:bg-slate-800 text-emerald-400 px-2.5 py-1.5 rounded-lg border border-slate-800 flex items-center gap-1.5 transition shrink-0">
 							<i class="fa-solid fa-file-csv text-xs"></i> Unduh CSV
 						</button>
 					</div>
@@ -492,9 +493,9 @@
 
 				<!-- Pocket Summary Header -->
 				<section class="glass-card p-4 rounded-2xl flex items-center justify-between gap-3">
-					<div class="min-w-0">
+					<div class="min-w-0 flex-1">
 						<p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Total Dana Di Kantong</p>
-						<h3 id="pockets-total-amount" class="text-xl font-extrabold text-indigo-400 mt-0.5 num-tabular truncate">Rp 0</h3>
+						<h3 id="pockets-total-amount" class="text-xl font-extrabold text-indigo-400 mt-0.5 num-tabular leading-snug">Rp 0</h3>
 						<p class="text-[10px] text-slate-400 mt-0.5"><span id="pockets-count" class="font-bold num-tabular">0</span> Kantong Terdaftar</p>
 					</div>
 					<button onclick="openPocketModal()" class="px-3.5 py-2 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-bold text-xs rounded-xl transition flex items-center gap-1.5 shrink-0 active:scale-95">
@@ -534,21 +535,21 @@
 
 				<!-- Recap Financial Summary Cards -->
 				<section class="grid grid-cols-2 gap-2.5 text-center">
-					<div class="glass-card p-3 rounded-xl">
+					<div class="glass-card p-3 rounded-xl min-w-0">
 						<p class="text-[9px] text-slate-400 uppercase">Pemasukan Periode Ini</p>
-						<p id="recap-stat-income" class="text-sm font-bold text-emerald-400 mt-0.5 num-tabular">Rp 0</p>
+						<p id="recap-stat-income" class="text-sm font-bold text-emerald-400 mt-0.5 num-tabular leading-snug">Rp 0</p>
 					</div>
-					<div class="glass-card p-3 rounded-xl">
+					<div class="glass-card p-3 rounded-xl min-w-0">
 						<p class="text-[9px] text-slate-400 uppercase">Pengeluaran Periode Ini</p>
-						<p id="recap-stat-expense" class="text-sm font-bold text-rose-400 mt-0.5 num-tabular">Rp 0</p>
+						<p id="recap-stat-expense" class="text-sm font-bold text-rose-400 mt-0.5 num-tabular leading-snug">Rp 0</p>
 					</div>
-					<div class="glass-card p-3 rounded-xl">
+					<div class="glass-card p-3 rounded-xl min-w-0">
 						<p class="text-[9px] text-slate-400 uppercase">Net Cashflow</p>
-						<p id="recap-stat-net" class="text-sm font-bold accent-text mt-0.5 num-tabular">Rp 0</p>
+						<p id="recap-stat-net" class="text-sm font-bold accent-text mt-0.5 num-tabular leading-snug">Rp 0</p>
 					</div>
-					<div class="glass-card p-3 rounded-xl">
+					<div class="glass-card p-3 rounded-xl min-w-0">
 						<p class="text-[9px] text-slate-400 uppercase">Rata-Rata Harian</p>
-						<p id="recap-stat-avg" class="text-sm font-bold text-amber-400 mt-0.5 num-tabular">Rp 0</p>
+						<p id="recap-stat-avg" class="text-sm font-bold text-amber-400 mt-0.5 num-tabular leading-snug">Rp 0</p>
 					</div>
 				</section>
 
@@ -584,7 +585,7 @@
 							<i class="fa-solid fa-calculator text-xs accent-text"></i>
 							<h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Suite Kalkulator Keuangan</h3>
 						</div>
-						<button onclick="saveToolsStateManual()" class="px-2.5 py-1 text-[10px] font-bold accent-bg-light accent-text accent-border border rounded-lg flex items-center gap-1.5 transition">
+						<button onclick="saveToolsStateManual()" class="px-2.5 py-1 text-[10px] font-bold accent-bg-light accent-text accent-border border rounded-lg flex items-center gap-1.5 transition shrink-0">
 							<i class="fa-solid fa-floppy-disk text-[11px]"></i> Simpan Hasil
 						</button>
 					</div>
@@ -645,11 +646,11 @@
 
 						<div id="avg-result-box" class="hidden p-3.5 bg-slate-900 border border-slate-800 rounded-xl space-y-2 text-xs">
 							<div class="grid grid-cols-2 gap-2 text-center pb-2 border-b border-slate-800">
-								<div>
+								<div class="min-w-0">
 									<p class="text-[9px] text-slate-400">Total Lot Gabungan</p>
 									<p id="avg-res-total-lots" class="text-sm font-bold text-slate-200 num-tabular">0 Lot</p>
 								</div>
-								<div>
+								<div class="min-w-0">
 									<p class="text-[9px] text-slate-400">Total Modal Investasi</p>
 									<p id="avg-res-total-capital" class="text-sm font-bold text-slate-200 num-tabular">Rp 0</p>
 								</div>
@@ -675,21 +676,21 @@
 						<button onclick="calculate503020Split()" class="w-full py-2.5 bg-violet-500 hover:bg-violet-400 text-slate-950 text-xs font-bold rounded-xl transition">Hitung Pembagian Anggaran</button>
 						
 						<div id="split-result-box" class="hidden space-y-2 pt-1">
-							<div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center">
+							<div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 flex flex-wrap justify-between items-center gap-2">
 								<div>
 									<p class="text-[11px] font-bold text-slate-200">50% Kebutuhan Pokok</p>
 									<p class="text-[9px] text-slate-400">Makan, Tagihan, Sewa, Bensin</p>
 								</div>
 								<p id="split-needs-val" class="text-xs font-bold text-rose-400 num-tabular">Rp 0</p>
 							</div>
-							<div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center">
+							<div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 flex flex-wrap justify-between items-center gap-2">
 								<div>
 									<p class="text-[11px] font-bold text-slate-200">30% Keinginan & Gaya Hidup</p>
 									<p class="text-[9px] text-slate-400">Hiburan, Belanja, Hobi</p>
 								</div>
 								<p id="split-wants-val" class="text-xs font-bold text-amber-400 num-tabular">Rp 0</p>
 							</div>
-							<div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center">
+							<div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800 flex flex-wrap justify-between items-center gap-2">
 								<div>
 									<p class="text-[11px] font-bold text-slate-200">20% Tabungan & Investasi</p>
 									<p class="text-[9px] text-slate-400">Dana Darurat, Reksadana, Utang</p>
@@ -778,8 +779,8 @@
 						<div class="space-y-2">
 							<span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Kalkulator Ringkas</span>
 							<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-right">
-								<div id="calc-history" class="text-[10px] text-slate-500 h-4 overflow-hidden num-tabular"></div>
-								<div id="calc-screen" class="text-2xl font-bold accent-text truncate num-tabular">0</div>
+								<div id="calc-history" class="text-[10px] text-slate-500 min-h-[1rem] num-tabular"></div>
+								<div id="calc-screen" class="text-2xl font-bold accent-text num-tabular leading-tight">0</div>
 							</div>
 
 							<div class="grid grid-cols-4 gap-2 text-xs font-bold">
@@ -847,9 +848,9 @@
 					</div>
 					<div class="flex items-center gap-3">
 						<div id="settings-avatar-container" class="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center overflow-hidden shrink-0">
-							<img src="arthapulse/logo.png" alt="Profil" class="w-full h-full object-cover">
+							<img src="arthapulse/logo.png" alt="Profil" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/80x80/0f172a/60a5fa?text=AP'">
 						</div>
-						<div class="truncate">
+						<div class="min-w-0 flex-1">
 							<p id="settings-user-name" class="text-sm font-bold text-slate-100 truncate">Pengguna ArthaPulse</p>
 							<p id="settings-user-phone" class="text-xs text-slate-400 num-tabular mt-0.5">0812-3456-7890</p>
 						</div>
@@ -878,16 +879,31 @@
 					</h3>
 					
 					<div class="space-y-3">
-						<!-- Accent Color Picker Swatches -->
+						<!-- Accent Color Picker Swatches (7 Ordered Choices: Merah Kalem, Kuning Kalem, Hijau Kalem, Biru Kalem, Ungu Kalem, Oren Kalem, Kostum) -->
 						<div>
 							<label class="block text-[10px] font-medium text-slate-400 mb-1.5">Pilih Warna Aksen Utama</label>
-							<div class="grid grid-cols-6 gap-2 p-2 bg-slate-900 rounded-xl border border-slate-800">
-								<button type="button" onclick="setAccentColor('teal')" title="Cyber Teal" class="h-7 rounded-lg bg-cyan-500 hover:scale-105 transition flex items-center justify-center text-slate-950 font-bold text-xs" id="accent-swatch-teal"><i class="fa-solid fa-check"></i></button>
-								<button type="button" onclick="setAccentColor('emerald')" title="Emerald Green" class="h-7 rounded-lg bg-emerald-500 hover:scale-105 transition flex items-center justify-center text-slate-950 font-bold text-xs" id="accent-swatch-emerald"></button>
-								<button type="button" onclick="setAccentColor('violet')" title="Royal Violet" class="h-7 rounded-lg bg-violet-500 hover:scale-105 transition flex items-center justify-center text-slate-950 font-bold text-xs" id="accent-swatch-violet"></button>
-								<button type="button" onclick="setAccentColor('blue')" title="Ocean Blue" class="h-7 rounded-lg bg-blue-500 hover:scale-105 transition flex items-center justify-center text-slate-950 font-bold text-xs" id="accent-swatch-blue"></button>
-								<button type="button" onclick="setAccentColor('amber')" title="Sunset Amber" class="h-7 rounded-lg bg-amber-500 hover:scale-105 transition flex items-center justify-center text-slate-950 font-bold text-xs" id="accent-swatch-amber"></button>
-								<button type="button" onclick="setAccentColor('rose')" title="Crimson Rose" class="h-7 rounded-lg bg-rose-500 hover:scale-105 transition flex items-center justify-center text-slate-950 font-bold text-xs" id="accent-swatch-rose"></button>
+							<div class="grid grid-cols-7 gap-1.5 p-2 bg-slate-900 rounded-xl border border-slate-800">
+								<!-- 1. Merah Kalem -->
+								<button type="button" onclick="setAccentColor('calm-red')" title="Merah Kalem" style="background-color: #e06c75;" class="h-8 rounded-lg hover:scale-105 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-sm" id="accent-swatch-calm-red"></button>
+								<!-- 2. Kuning Kalem -->
+								<button type="button" onclick="setAccentColor('calm-yellow')" title="Kuning Kalem" style="background-color: #e5c07b;" class="h-8 rounded-lg hover:scale-105 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-sm" id="accent-swatch-calm-yellow"></button>
+								<!-- 3. Hijau Kalem -->
+								<button type="button" onclick="setAccentColor('calm-green')" title="Hijau Kalem" style="background-color: #6bcb8b;" class="h-8 rounded-lg hover:scale-105 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-sm" id="accent-swatch-calm-green"></button>
+								<!-- 4. Biru Kalem -->
+								<button type="button" onclick="setAccentColor('calm-blue')" title="Biru Kalem" style="background-color: #61afef;" class="h-8 rounded-lg hover:scale-105 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-sm" id="accent-swatch-calm-blue"><i class="fa-solid fa-check"></i></button>
+								<!-- 5. Ungu Kalem -->
+								<button type="button" onclick="setAccentColor('calm-purple')" title="Ungu Kalem" style="background-color: #b48ead;" class="h-8 rounded-lg hover:scale-105 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-sm" id="accent-swatch-calm-purple"></button>
+								<!-- 6. Oren Kalem -->
+								<button type="button" onclick="setAccentColor('calm-orange')" title="Oren Kalem" style="background-color: #e08e6d;" class="h-8 rounded-lg hover:scale-105 transition flex items-center justify-center text-slate-950 font-bold text-xs shadow-sm" id="accent-swatch-calm-orange"></button>
+								<!-- 7. Kostum -->
+								<label title="Warna Kostum" id="accent-swatch-custom" class="relative h-8 rounded-lg hover:scale-105 transition flex items-center justify-center text-white font-bold text-xs cursor-pointer overflow-hidden border border-slate-600 shadow-sm" style="background: conic-gradient(from 90deg, #e06c75, #e5c07b, #6bcb8b, #61afef, #b48ead, #e08e6d, #e06c75);">
+									<input type="color" id="custom-accent-picker" value="#61afef" oninput="setCustomAccentColor(this.value)" onchange="setCustomAccentColor(this.value, true)" class="opacity-0 absolute inset-0 w-full h-full cursor-pointer">
+									<span id="accent-swatch-custom-icon" class="drop-shadow"><i class="fa-solid fa-eye-dropper text-[11px]"></i></span>
+								</label>
+							</div>
+							<div class="flex items-center justify-between text-[9px] text-slate-400 mt-1 px-0.5">
+								<span>Urutan: Merah • Kuning • Hijau • Biru • Ungu • Oren • Kostum</span>
+								<span id="accent-active-label" class="font-bold accent-text">Biru Kalem</span>
 							</div>
 						</div>
 
@@ -902,7 +918,7 @@
 							</select>
 						</div>
 
-						<!-- Font Family Select (6 New Modern Matching Fonts) -->
+						<!-- Font Family Select (6 Modern Matching Fonts) -->
 						<div>
 							<label class="block text-[10px] font-medium text-slate-400 mb-1">Jenis Font Aplikasi (Semua Teks & Angka)</label>
 							<select id="setting-font-family" onchange="applyCustomTheme()" class="custom-select input-glow w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
@@ -915,7 +931,7 @@
 							</select>
 						</div>
 
-						<!-- Font Weight Radio Option (Applies to Text & Numbers) -->
+						<!-- Font Weight Radio Option -->
 						<div>
 							<label class="block text-[10px] font-medium text-slate-400 mb-1.5">Ketebalan Font (Teks & Angka Keuangan)</label>
 							<div class="grid grid-cols-4 gap-1 p-1 bg-slate-900 rounded-xl border border-slate-800 text-center">
@@ -989,10 +1005,10 @@
 
 						<div class="flex items-center justify-between pt-2.5 border-t border-slate-800/60">
 							<div>
-								<p class="text-xs font-medium text-slate-200">Getar Haptic (200ms)</p>
+								<p class="text-xs font-medium text-slate-200">Getar Haptic (100ms)</p>
 								<p class="text-[10px] text-slate-400">Umpan balik getaran saat aksi & navigasi</p>
 							</div>
-							<button id="btn-toggle-haptic" onclick="toggleHapticState()" class="px-3 py-1.5 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 rounded-xl transition">
+							<button id="btn-toggle-haptic" onclick="toggleHapticState()" class="px-3 py-1.5 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 rounded-xl transition shrink-0">
 								Getar: Aktif
 							</button>
 						</div>
@@ -1002,7 +1018,7 @@
 								<p class="text-xs font-medium text-slate-200">Efek Suara (Audio FX)</p>
 								<p id="settings-sound-status" class="text-[10px] text-slate-400">Suara tombol & aksi</p>
 							</div>
-							<button id="btn-toggle-sound" onclick="toggleSoundFxState()" class="px-3 py-1.5 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 rounded-xl transition">
+							<button id="btn-toggle-sound" onclick="toggleSoundFxState()" class="px-3 py-1.5 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 rounded-xl transition shrink-0">
 								Suara: Aktif
 							</button>
 						</div>
@@ -1039,6 +1055,14 @@
 
 		</main>
 
+		<!-- FLOATING ACTION BUTTON (+ Catat) POJOK KANAN BAWAH -->
+		<div class="fixed bottom-20 right-4 sm:absolute sm:bottom-20 sm:right-4 z-40">
+			<button onclick="openTxModal()" title="Tambah Transaksi Baru" class="flex items-center gap-2 px-4 py-3 rounded-2xl accent-bg accent-bg-hover text-slate-950 font-bold text-xs shadow-xl shadow-slate-950/60 border border-white/15 transition-all hover:scale-105 active:scale-95">
+				<i class="fa-solid fa-plus text-xs"></i>
+				<span>Catat</span>
+			</button>
+		</div>
+
 		<!-- 2. FIXED BOTTOM NAVIGATION BAR (6 MENU ITEMS) -->
 		<nav class="fixed bottom-0 left-0 right-0 z-40 max-w-lg mx-auto glass-nav px-1.5 py-2 flex items-center justify-between rounded-t-2xl sm:absolute sm:bottom-0">
 			<button id="nav-btn-dashboard" onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 p-1 accent-text transition w-1/6 font-bold">
@@ -1070,8 +1094,8 @@
 	</div>
 
 	<!-- MODAL: KOTAK MASUK & NOTIFIKASI (INBOX MODAL) -->
-	<div id="inbox-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
-		<div class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl relative animate-modal max-h-[85vh] flex flex-col space-y-3">
+	<div id="inbox-modal" onclick="handleModalBackdropClick(event, closeInboxModal)" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
+		<div onclick="event.stopPropagation()" class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl relative animate-modal max-h-[85vh] flex flex-col space-y-3">
 			<div class="flex items-center justify-between pb-3 border-b border-slate-800 shrink-0">
 				<div class="flex items-center gap-2">
 					<i class="fa-solid fa-bell text-xs accent-text"></i>
@@ -1106,8 +1130,8 @@
 	</div>
 
 	<!-- MODAL: EDIT USER PROFILE -->
-	<div id="profile-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden animate-backdrop">
-		<div class="glass-card w-full max-w-xs rounded-2xl p-5 shadow-2xl relative animate-modal">
+	<div id="profile-modal" onclick="handleModalBackdropClick(event, closeProfileModal)" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden animate-backdrop">
+		<div onclick="event.stopPropagation()" class="glass-card w-full max-w-xs rounded-2xl p-5 shadow-2xl relative animate-modal">
 			<div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
 				<div class="flex items-center gap-2">
 					<i class="fa-solid fa-user-pen text-xs accent-text"></i>
@@ -1122,7 +1146,7 @@
 				<div class="text-center">
 					<div class="relative w-16 h-16 mx-auto mb-2">
 						<div id="modal-avatar-preview" class="w-full h-full rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center overflow-hidden">
-							<img src="arthapulse/logo.png" alt="Profil" class="w-full h-full object-cover">
+							<img src="arthapulse/logo.png" alt="Profil" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/80x80/0f172a/60a5fa?text=AP'">
 						</div>
 						<button type="button" onclick="document.getElementById('profile-photo-input').click()" class="absolute bottom-0 right-0 w-6 h-6 rounded-full accent-bg text-slate-950 flex items-center justify-center shadow-md transition">
 							<i class="fa-solid fa-camera text-[10px]"></i>
@@ -1151,8 +1175,8 @@
 	</div>
 
 	<!-- MODAL: CATEGORY MANAGER -->
-	<div id="category-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
-		<div class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl relative animate-modal max-h-[88vh] overflow-y-auto space-y-4">
+	<div id="category-modal" onclick="handleModalBackdropClick(event, closeCategoryManagerModal)" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
+		<div onclick="event.stopPropagation()" class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl relative animate-modal max-h-[88vh] overflow-y-auto space-y-4">
 			<div class="flex items-center justify-between pb-3 border-b border-slate-800">
 				<div class="flex items-center gap-2">
 					<i class="fa-solid fa-layer-group text-xs text-indigo-400"></i>
@@ -1196,8 +1220,8 @@
 	</div>
 
 	<!-- MODAL: ADD / EDIT TRANSACTION -->
-	<div id="tx-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
-		<div class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl relative animate-modal max-h-[90vh] overflow-y-auto">
+	<div id="tx-modal" onclick="handleModalBackdropClick(event, closeTxModal)" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
+		<div onclick="event.stopPropagation()" class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl relative animate-modal max-h-[90vh] overflow-y-auto">
 			<div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
 				<div class="flex items-center gap-2">
 					<i class="fa-solid fa-circle-plus text-xs accent-text"></i>
@@ -1260,8 +1284,8 @@
 	</div>
 
 	<!-- MODAL: CREATE / EDIT POCKET -->
-	<div id="pocket-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
-		<div class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl relative animate-modal max-h-[90vh] overflow-y-auto">
+	<div id="pocket-modal" onclick="handleModalBackdropClick(event, closePocketModal)" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
+		<div onclick="event.stopPropagation()" class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl relative animate-modal max-h-[90vh] overflow-y-auto">
 			<div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
 				<div class="flex items-center gap-2">
 					<i class="fa-solid fa-wallet text-xs text-indigo-400"></i>
@@ -1305,8 +1329,8 @@
 	</div>
 
 	<!-- MODAL: POCKET MUTATION (DEPOSIT / WITHDRAW / TRANSFER) -->
-	<div id="pocket-mutation-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden animate-backdrop">
-		<div class="glass-card w-full max-w-xs rounded-2xl p-5 shadow-2xl relative animate-modal">
+	<div id="pocket-mutation-modal" onclick="handleModalBackdropClick(event, closePocketMutationModal)" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden animate-backdrop">
+		<div onclick="event.stopPropagation()" class="glass-card w-full max-w-xs rounded-2xl p-5 shadow-2xl relative animate-modal">
 			<div class="flex items-center justify-between pb-2.5 border-b border-slate-800 mb-3">
 				<h3 id="mutation-modal-title" class="text-xs font-bold text-slate-200 uppercase truncate pr-2">Setor / Tarik / Transfer</h3>
 				<button onclick="closePocketMutationModal()" class="text-slate-400 hover:text-slate-200 p-1">
@@ -1349,8 +1373,8 @@
 	</div>
 
 	<!-- MODAL: POCKET MUTATION HISTORY -->
-	<div id="pocket-history-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
-		<div class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl relative animate-modal max-h-[82vh] flex flex-col space-y-3">
+	<div id="pocket-history-modal" onclick="handleModalBackdropClick(event, closePocketHistoryModal)" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden animate-backdrop">
+		<div onclick="event.stopPropagation()" class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl relative animate-modal max-h-[82vh] flex flex-col space-y-3">
 			<div class="flex items-center justify-between pb-3 border-b border-slate-800 shrink-0">
 				<div class="flex items-center gap-2">
 					<i class="fa-solid fa-clock-rotate-left text-xs text-indigo-400"></i>
@@ -1365,8 +1389,8 @@
 	</div>
 
 	<!-- MODAL: CONFIRMATION DIALOG -->
-	<div id="confirm-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden animate-backdrop">
-		<div class="glass-card w-full max-w-xs rounded-2xl p-5 shadow-2xl text-center animate-modal">
+	<div id="confirm-modal" onclick="handleModalBackdropClick(event, () => closeConfirmModal(false))" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden animate-backdrop">
+		<div onclick="event.stopPropagation()" class="glass-card w-full max-w-xs rounded-2xl p-5 shadow-2xl text-center animate-modal">
 			<div class="w-10 h-10 rounded-full bg-rose-500/10 border border-rose-500/25 text-rose-400 flex items-center justify-center mx-auto mb-3">
 				<i class="fa-solid fa-triangle-exclamation text-sm"></i>
 			</div>
@@ -1405,13 +1429,56 @@
 			'Space Grotesk'
 		];
 
+		// 6 Calm Palettes (Ordered: Merah Kalem, Kuning Kalem, Hijau Kalem, Biru Kalem, Ungu Kalem, Oren Kalem) + Custom
 		const ACCENT_PALETTES = {
-			teal: { main: '#06b6d4', hover: '#0891b2', light: 'rgba(6, 182, 212, 0.14)', border: 'rgba(6, 182, 212, 0.32)', text: '#22d3ee' },
-			emerald: { main: '#10b981', hover: '#059669', light: 'rgba(16, 185, 129, 0.14)', border: 'rgba(16, 185, 129, 0.32)', text: '#34d399' },
-			violet: { main: '#8b5cf6', hover: '#7c3aed', light: 'rgba(139, 92, 246, 0.14)', border: 'rgba(139, 92, 246, 0.32)', text: '#a78bfa' },
-			blue: { main: '#3b82f6', hover: '#2563eb', light: 'rgba(59, 130, 246, 0.14)', border: 'rgba(59, 130, 246, 0.32)', text: '#60a5fa' },
-			amber: { main: '#f59e0b', hover: '#d97706', light: 'rgba(245, 158, 11, 0.14)', border: 'rgba(245, 158, 11, 0.32)', text: '#fbbf24' },
-			rose: { main: '#f43f5e', hover: '#e11d48', light: 'rgba(244, 63, 94, 0.14)', border: 'rgba(244, 63, 94, 0.32)', text: '#fb7185' }
+			'calm-red': {
+				label: 'Merah Kalem',
+				main: '#e06c75',
+				hover: '#c9565f',
+				light: 'rgba(224, 108, 117, 0.15)',
+				border: 'rgba(224, 108, 117, 0.34)',
+				text: '#ea868e'
+			},
+			'calm-yellow': {
+				label: 'Kuning Kalem',
+				main: '#e5c07b',
+				hover: '#d4ac62',
+				light: 'rgba(229, 192, 123, 0.15)',
+				border: 'rgba(229, 192, 123, 0.34)',
+				text: '#edd096'
+			},
+			'calm-green': {
+				label: 'Hijau Kalem',
+				main: '#6bcb8b',
+				hover: '#53b674',
+				light: 'rgba(107, 203, 139, 0.15)',
+				border: 'rgba(107, 203, 139, 0.34)',
+				text: '#88d9a3'
+			},
+			'calm-blue': {
+				label: 'Biru Kalem',
+				main: '#61afef',
+				hover: '#4799dc',
+				light: 'rgba(97, 175, 239, 0.15)',
+				border: 'rgba(97, 175, 239, 0.34)',
+				text: '#7ec0f5'
+			},
+			'calm-purple': {
+				label: 'Ungu Kalem',
+				main: '#b48ead',
+				hover: '#9e7697',
+				light: 'rgba(180, 142, 173, 0.15)',
+				border: 'rgba(180, 142, 173, 0.34)',
+				text: '#c7a7c1'
+			},
+			'calm-orange': {
+				label: 'Oren Kalem',
+				main: '#e08e6d',
+				hover: '#cc7856',
+				light: 'rgba(224, 142, 109, 0.15)',
+				border: 'rgba(224, 142, 109, 0.34)',
+				text: '#eba68a'
+			}
 		};
 
 		const STANDARD_ICON_LIST = [
@@ -1500,7 +1567,8 @@
 
 		let themeSettings = {
 			themeMode: 'dark-slate',
-			accentColor: 'teal',
+			accentColor: 'calm-blue',
+			customAccentHex: '#61afef',
 			fontFamily: 'Plus Jakarta Sans',
 			fontSize: 15,
 			fontWeight: '400'
@@ -1525,13 +1593,22 @@
 		let calcNewInput = true;
 
 		// ==========================================
-		// 2. HAPTIC FEEDBACK (200ms), SOUND & HELPERS
+		// 2. MODAL BACKDROP CLICK HELPER
 		// ==========================================
-		function triggerHaptic(duration = 200) {
+		function handleModalBackdropClick(event, closeFn) {
+			if (event.target === event.currentTarget && typeof closeFn === 'function') {
+				closeFn();
+			}
+		}
+
+		// ==========================================
+		// 3. HAPTIC FEEDBACK (100ms), SOUND & HELPERS
+		// ==========================================
+		function triggerHaptic(duration = 100) {
 			if (appSettings.hapticEnabled === false) return;
 			try {
 				if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-					navigator.vibrate(duration);
+					navigator.vibrate(100);
 				}
 			} catch (e) {}
 		}
@@ -1633,7 +1710,7 @@
 		}
 
 		// ==========================================
-		// 3. INBOX & NOTIFICATION LOGGING ENGINE
+		// 4. INBOX & NOTIFICATION LOGGING ENGINE
 		// ==========================================
 		function addInboxMessage(title, message, type = 'info') {
 			const newMsg = {
@@ -1668,19 +1745,19 @@
 		}
 
 		function openInboxModal() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			playSoundFX('click');
 			renderInboxList();
 			document.getElementById('inbox-modal').classList.remove('hidden');
 		}
 
 		function closeInboxModal() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('inbox-modal').classList.add('hidden');
 		}
 
 		function setInboxFilter(filter) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			currentInboxFilter = filter;
 			['all', 'unread', 'warning'].forEach(f => {
 				const btn = document.getElementById(`inbox-filter-${f}`);
@@ -1752,7 +1829,7 @@
 		}
 
 		function deleteInboxItem(id) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			inbox = inbox.filter(i => i.id !== id);
 			saveAppState();
 			renderInboxList();
@@ -1760,7 +1837,7 @@
 		}
 
 		function toggleReadInboxItem(id) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const idx = inbox.findIndex(i => i.id === id);
 			if (idx !== -1) {
 				inbox[idx].read = !inbox[idx].read;
@@ -1770,7 +1847,7 @@
 		}
 
 		function markAllInboxRead() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			inbox.forEach(i => i.read = true);
 			saveAppState();
 			renderInboxList();
@@ -1779,7 +1856,7 @@
 
 		function clearAllInbox() {
 			if (inbox.length === 0) return;
-			triggerHaptic(200);
+			triggerHaptic(100);
 			openConfirmModal('Hapus Kotak Masuk', 'Apakah Anda yakin ingin menghapus seluruh histori kotak masuk?', (confirmed) => {
 				if (confirmed) {
 					inbox = [];
@@ -1791,20 +1868,82 @@
 		}
 
 		// ==========================================
-		// 4. ACCENT COLOR ENGINE
+		// 5. ACCENT COLOR ENGINE (6 CALM COLORS + CUSTOM)
 		// ==========================================
+		function hexToRgb(hex) {
+			const clean = hex.replace('#', '').trim();
+			const bigint = parseInt(clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean, 16);
+			const r = (bigint >> 16) & 255;
+			const g = (bigint >> 8) & 255;
+			const b = bigint & 255;
+			return { r, g, b };
+		}
+
+		function adjustHexBrightness(hex, amount) {
+			const { r, g, b } = hexToRgb(hex);
+			const nr = Math.max(0, Math.min(255, r + amount));
+			const ng = Math.max(0, Math.min(255, g + amount));
+			const nb = Math.max(0, Math.min(255, b + amount));
+			return '#' + [nr, ng, nb].map(x => x.toString(16).padStart(2, '0')).join('');
+		}
+
+		function buildCustomPalette(hex) {
+			const safeHex = /^#[0-9A-Fa-f]{6}$/.test(hex) ? hex : '#61afef';
+			const { r, g, b } = hexToRgb(safeHex);
+			return {
+				label: `Kostum (${safeHex.toUpperCase()})`,
+				main: safeHex,
+				hover: adjustHexBrightness(safeHex, -18),
+				light: `rgba(${r}, ${g}, ${b}, 0.15)`,
+				border: `rgba(${r}, ${g}, ${b}, 0.34)`,
+				text: adjustHexBrightness(safeHex, 22)
+			};
+		}
+
 		function setAccentColor(colorKey) {
-			triggerHaptic(200);
-			if (!ACCENT_PALETTES[colorKey]) colorKey = 'teal';
+			triggerHaptic(100);
+			if (colorKey !== 'custom' && !ACCENT_PALETTES[colorKey]) {
+				colorKey = 'calm-blue';
+			}
 			themeSettings.accentColor = colorKey;
 			saveAppState();
 			applyAccentStyles();
-			showToast(`Warna aksen diubah ke ${colorKey.toUpperCase()}`, 'success');
+			const label = colorKey === 'custom'
+				? buildCustomPalette(themeSettings.customAccentHex).label
+				: ACCENT_PALETTES[colorKey].label;
+			showToast(`Warna aksen: ${label}`, 'success');
+		}
+
+		function setCustomAccentColor(hexValue, notify = false) {
+			themeSettings.accentColor = 'custom';
+			themeSettings.customAccentHex = hexValue;
+			saveAppState();
+			applyAccentStyles();
+			if (notify) {
+				triggerHaptic(100);
+				showToast(`Warna kostum diterapkan (${hexValue.toUpperCase()})`, 'success');
+			}
 		}
 
 		function applyAccentStyles() {
-			const colorKey = themeSettings.accentColor || 'teal';
-			const pal = ACCENT_PALETTES[colorKey] || ACCENT_PALETTES.teal;
+			const legacyMap = {
+				teal: 'calm-blue',
+				emerald: 'calm-green',
+				violet: 'calm-purple',
+				blue: 'calm-blue',
+				amber: 'calm-yellow',
+				rose: 'calm-red'
+			};
+
+			let colorKey = themeSettings.accentColor || 'calm-blue';
+			if (legacyMap[colorKey]) {
+				colorKey = legacyMap[colorKey];
+				themeSettings.accentColor = colorKey;
+			}
+
+			const pal = colorKey === 'custom'
+				? buildCustomPalette(themeSettings.customAccentHex || '#61afef')
+				: (ACCENT_PALETTES[colorKey] || ACCENT_PALETTES['calm-blue']);
 
 			const root = document.documentElement;
 			root.style.setProperty('--app-accent', pal.main);
@@ -1815,12 +1954,40 @@
 
 			Object.keys(ACCENT_PALETTES).forEach(k => {
 				const btn = document.getElementById(`accent-swatch-${k}`);
-				if (btn) btn.innerHTML = k === colorKey ? '<i class="fa-solid fa-check"></i>' : '';
+				if (btn) {
+					btn.innerHTML = k === colorKey ? '<i class="fa-solid fa-check"></i>' : '';
+					btn.style.outline = k === colorKey ? '2px solid #ffffff' : 'none';
+					btn.style.outlineOffset = '1px';
+				}
 			});
+
+			const customSwatch = document.getElementById('accent-swatch-custom');
+			const customIcon = document.getElementById('accent-swatch-custom-icon');
+			const customPicker = document.getElementById('custom-accent-picker');
+			const activeLabel = document.getElementById('accent-active-label');
+
+			if (customPicker && themeSettings.customAccentHex) {
+				customPicker.value = themeSettings.customAccentHex;
+			}
+			if (customSwatch && customIcon) {
+				if (colorKey === 'custom') {
+					customSwatch.style.background = themeSettings.customAccentHex || '#61afef';
+					customSwatch.style.outline = '2px solid #ffffff';
+					customSwatch.style.outlineOffset = '1px';
+					customIcon.innerHTML = '<i class="fa-solid fa-check text-slate-950"></i>';
+				} else {
+					customSwatch.style.background = 'conic-gradient(from 90deg, #e06c75, #e5c07b, #6bcb8b, #61afef, #b48ead, #e08e6d, #e06c75)';
+					customSwatch.style.outline = 'none';
+					customIcon.innerHTML = '<i class="fa-solid fa-eye-dropper text-[11px] text-white"></i>';
+				}
+			}
+			if (activeLabel) {
+				activeLabel.textContent = pal.label;
+			}
 		}
 
 		// ==========================================
-		// 5. STORAGE & STATE PERSISTENCE ENGINE
+		// 6. STORAGE & STATE PERSISTENCE ENGINE
 		// ==========================================
 		function loadAppState() {
 			try {
@@ -1913,10 +2080,10 @@
 		}
 
 		// ==========================================
-		// 6. NOTIFICATION, HAPTIC & SOUND FX ENGINE
+		// 7. NOTIFICATION, HAPTIC & SOUND FX ENGINE
 		// ==========================================
 		function toggleNotificationState() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			if (!appSettings.notificationEnabled) {
 				if ("Notification" in window) {
 					Notification.requestPermission().then(perm => {
@@ -1943,7 +2110,7 @@
 		}
 
 		function testPushNotification() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			if (appSettings.notificationEnabled) {
 				sendBrowserNotification('Tes Notifikasi ArthaPulse', 'Sistem notifikasi berjalan lancar!');
 				showToast('Push notification uji coba dikirim', 'success');
@@ -1955,13 +2122,13 @@
 		function toggleHapticState() {
 			appSettings.hapticEnabled = !appSettings.hapticEnabled;
 			saveAppState();
-			if (appSettings.hapticEnabled) triggerHaptic(200);
+			if (appSettings.hapticEnabled) triggerHaptic(100);
 			updateNotificationUI();
-			showToast(`Getar Haptic (200ms): ${appSettings.hapticEnabled ? 'Aktif' : 'Nonaktif'}`, 'info');
+			showToast(`Getar Haptic (100ms): ${appSettings.hapticEnabled ? 'Aktif' : 'Nonaktif'}`, 'info');
 		}
 
 		function toggleSoundFxState() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			appSettings.soundFxEnabled = !appSettings.soundFxEnabled;
 			saveAppState();
 			updateNotificationUI();
@@ -1992,16 +2159,16 @@
 				const isHaptic = appSettings.hapticEnabled !== false;
 				btnHaptic.textContent = `Getar: ${isHaptic ? 'Aktif' : 'Nonaktif'}`;
 				btnHaptic.className = isHaptic
-					? 'px-3 py-1.5 text-xs font-bold bg-slate-900 text-emerald-400 border border-slate-800 rounded-xl transition'
-					: 'px-3 py-1.5 text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 rounded-xl transition';
+					? 'px-3 py-1.5 text-xs font-bold bg-slate-900 text-emerald-400 border border-slate-800 rounded-xl transition shrink-0'
+					: 'px-3 py-1.5 text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 rounded-xl transition shrink-0';
 			}
 
 			const btnSound = document.getElementById('btn-toggle-sound');
 			if (btnSound) {
 				btnSound.textContent = `Suara: ${appSettings.soundFxEnabled ? 'Aktif' : 'Nonaktif'}`;
 				btnSound.className = appSettings.soundFxEnabled 
-					? 'px-3 py-1.5 text-xs font-bold bg-slate-900 text-emerald-400 border border-slate-800 rounded-xl transition'
-					: 'px-3 py-1.5 text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 rounded-xl transition';
+					? 'px-3 py-1.5 text-xs font-bold bg-slate-900 text-emerald-400 border border-slate-800 rounded-xl transition shrink-0'
+					: 'px-3 py-1.5 text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 rounded-xl transition shrink-0';
 			}
 
 			updateInboxBadgeUI();
@@ -2016,7 +2183,7 @@
 		}
 
 		// ==========================================
-		// 7. PROFILE ENGINE
+		// 8. PROFILE ENGINE
 		// ==========================================
 		function updateProfileHeaderUI() {
 			const nameElem = document.getElementById('header-user-name');
@@ -2035,11 +2202,11 @@
 
 			avatarContainer.innerHTML = userProfile.photo
 				? `<img src="${userProfile.photo}" class="w-full h-full object-cover">`
-				: `<img src="arthapulse/logo.png" alt="Profil" class="w-full h-full object-cover">`;
+				: `<img src="arthapulse/logo.png" alt="Profil" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/80x80/0f172a/60a5fa?text=AP'">`;
 
 			settingsAvatarContainer.innerHTML = userProfile.photo
 				? `<img src="${userProfile.photo}" class="w-full h-full object-cover">`
-				: `<img src="arthapulse/logo.png" alt="Profil" class="w-full h-full object-cover">`;
+				: `<img src="arthapulse/logo.png" alt="Profil" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/80x80/0f172a/60a5fa?text=AP'">`;
 
 			document.getElementById('settings-user-name').textContent = userProfile.name || 'Pengguna ArthaPulse';
 			document.getElementById('settings-user-phone').textContent = userProfile.phone || 'Belum diisi';
@@ -2048,20 +2215,20 @@
 		}
 
 		function openProfileModal() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('profile-name-input').value = userProfile.name || '';
 			document.getElementById('profile-phone-input').value = userProfile.phone || '';
 
 			const modalAvatar = document.getElementById('modal-avatar-preview');
 			modalAvatar.innerHTML = userProfile.photo
 				? `<img src="${userProfile.photo}" class="w-full h-full object-cover">`
-				: `<img src="arthapulse/logo.png" alt="Profil" class="w-full h-full object-cover">`;
+				: `<img src="arthapulse/logo.png" alt="Profil" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/80x80/0f172a/60a5fa?text=AP'">`;
 
 			document.getElementById('profile-modal').classList.remove('hidden');
 		}
 
 		function closeProfileModal() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('profile-modal').classList.add('hidden');
 		}
 
@@ -2079,7 +2246,7 @@
 
 		function handleSaveProfile(e) {
 			e.preventDefault();
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const name = document.getElementById('profile-name-input').value.trim();
 			const phone = document.getElementById('profile-phone-input').value.trim();
 
@@ -2094,10 +2261,10 @@
 		}
 
 		// ==========================================
-		// 8. CATEGORIES MANAGER ENGINE
+		// 9. CATEGORIES MANAGER ENGINE
 		// ==========================================
 		function openCategoryManagerModal() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('cat-edit-id').value = '';
 			document.getElementById('cat-name-input').value = '';
 			document.getElementById('cat-selected-icon').value = 'box-open';
@@ -2110,7 +2277,7 @@
 		}
 
 		function closeCategoryManagerModal() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('category-modal').classList.add('hidden');
 		}
 
@@ -2126,7 +2293,7 @@
 		}
 
 		function selectCategoryIcon(ic) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('cat-selected-icon').value = ic;
 			customCatImageTemp = '';
 			document.getElementById('cat-image-status').textContent = 'Ikon dipilih: ' + ic;
@@ -2147,7 +2314,7 @@
 
 		function handleSaveCustomCategory(e) {
 			e.preventDefault();
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const id = document.getElementById('cat-edit-id').value;
 			const name = document.getElementById('cat-name-input').value.trim();
 			const icon = normalizeFA6Icon(document.getElementById('cat-selected-icon').value);
@@ -2183,7 +2350,7 @@
 		}
 
 		function editCategory(id) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const cat = userCategories.find(c => c.id === id);
 			if (!cat) return;
 
@@ -2220,7 +2387,7 @@
 		}
 
 		function deleteCategory(id) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			if (userCategories.length <= 1) {
 				showToast('Minimal harus menyisakan 1 kategori', 'warning');
 				return;
@@ -2233,7 +2400,7 @@
 		}
 
 		// ==========================================
-		// 9. THEME & UNIVERSAL FONT CUSTOMIZATION ENGINE
+		// 10. THEME & UNIVERSAL FONT CUSTOMIZATION ENGINE
 		// ==========================================
 		function applyCustomTheme() {
 			const mode = document.getElementById('setting-theme-mode').value;
@@ -2317,10 +2484,10 @@
 		}
 
 		// ==========================================
-		// 10. NAVIGATION & TAB SWITCHER ENGINE
+		// 11. NAVIGATION & TAB SWITCHER ENGINE
 		// ==========================================
 		function switchTab(tabId) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			playSoundFX('click');
 			const tabs = ['dashboard', 'transactions', 'pockets', 'recap', 'tools', 'settings'];
 			
@@ -2353,7 +2520,7 @@
 		}
 
 		// ==========================================
-		// 11. DASHBOARD & RECENT TRANSACTIONS
+		// 12. DASHBOARD & RECENT TRANSACTIONS
 		// ==========================================
 		function updateDashboard() {
 			let totalInc = 0;
@@ -2409,17 +2576,17 @@
 
 				if (percent >= 100) {
 					progressBar.className = "h-full rounded-full bg-rose-500 transition-all duration-500 ease-out";
-					badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center gap-1.5";
+					badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center gap-1.5 shrink-0";
 					badgeDot.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
 					badgeText.textContent = "Melebihi Limit";
 				} else if (percent >= 80) {
 					progressBar.className = "h-full rounded-full bg-amber-400 transition-all duration-500 ease-out";
-					badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1.5";
+					badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1.5 shrink-0";
 					badgeDot.className = "w-1.5 h-1.5 rounded-full bg-amber-400";
 					badgeText.textContent = "Waspada 80%";
 				} else {
 					progressBar.className = "h-full rounded-full bg-emerald-400 transition-all duration-500 ease-out";
-					badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5";
+					badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5 shrink-0";
 					badgeDot.className = "w-1.5 h-1.5 rounded-full bg-emerald-400";
 					badgeText.textContent = "Aman";
 				}
@@ -2427,7 +2594,7 @@
 				document.getElementById('budget-display-remaining').textContent = '∞';
 				document.getElementById('budget-progress-percent').textContent = '0%';
 				document.getElementById('budget-progress-bar').style.width = '0%';
-				badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1.5";
+				badgeStatus.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1.5 shrink-0";
 				badgeDot.className = "w-1.5 h-1.5 rounded-full bg-slate-400";
 				badgeText.textContent = "Nonaktif";
 			}
@@ -2444,7 +2611,7 @@
 			if (income === 0 && expense === 0) {
 				document.getElementById('health-score-num').textContent = '50';
 				document.getElementById('health-score-circle').setAttribute('stroke-dasharray', '50, 100');
-				badge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700";
+				badge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 shrink-0";
 				text.textContent = "Belum Ada Data";
 				container.innerHTML = `
 					<p class="text-[10px] text-slate-400 leading-snug flex items-start gap-1.5">
@@ -2493,16 +2660,16 @@
 			scoreCircle.setAttribute('stroke-dasharray', `${score}, 100`);
 
 			if (score >= 80) {
-				badge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+				badge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0";
 				text.textContent = "Sangat Prima";
 			} else if (score >= 60) {
-				badge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold accent-bg-light accent-text accent-border border";
+				badge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold accent-bg-light accent-text accent-border border shrink-0";
 				text.textContent = "Sehat";
 			} else if (score >= 40) {
-				badge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20";
+				badge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 shrink-0";
 				text.textContent = "Perlu Perhatian";
 			} else {
-				badge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20";
+				badge.className = "px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20 shrink-0";
 				text.textContent = "Kritis";
 			}
 
@@ -2534,14 +2701,14 @@
 				const badgeLabel = isInc ? 'Pemasukan' : 'Pengeluaran';
 
 				return `
-					<div class="p-3 bg-slate-900/90 hover:bg-slate-900 rounded-2xl border border-slate-800/90 flex items-center justify-between gap-3 transition">
-						<div class="flex items-center gap-3 overflow-hidden">
+					<div class="p-3 bg-slate-900/90 hover:bg-slate-900 rounded-2xl border border-slate-800/90 flex items-center justify-between gap-2.5 transition">
+						<div class="flex items-center gap-2.5 min-w-0 flex-1">
 							<div class="w-10 h-10 rounded-xl ${badgeBg} border flex items-center justify-center shrink-0">
 								${renderCategoryIconHTML(t.category, isInc ? 'text-sm text-emerald-400' : 'text-sm text-rose-400')}
 							</div>
-							<div class="truncate">
-								<div class="flex items-center gap-1.5">
-									<h4 class="text-xs font-bold text-slate-100 truncate">${t.notes || t.category}</h4>
+							<div class="min-w-0 flex-1">
+								<div class="flex flex-wrap items-center gap-1.5">
+									<h4 class="text-xs font-bold text-slate-100 break-words">${t.notes || t.category}</h4>
 									<span class="px-1.5 py-0.2 rounded-full text-[8px] font-bold border ${badgeBg} shrink-0">${badgeLabel}</span>
 								</div>
 								<p class="text-[10px] text-slate-400 mt-0.5">${t.category} • <span class="num-tabular text-slate-500">${t.date}</span></p>
@@ -2567,7 +2734,7 @@
 		}
 
 		// ==========================================
-		// 12. TRANSACTIONS ENGINE
+		// 13. TRANSACTIONS ENGINE
 		// ==========================================
 		function toggleCustomDateFilter() {
 			const period = document.getElementById('filter-period').value;
@@ -2641,18 +2808,18 @@
 
 			container.innerHTML = filtered.map(t => `
 				<div class="glass-card p-3 rounded-2xl flex items-center justify-between gap-2.5 hover:border-slate-700 transition">
-					<div class="flex items-center gap-3 overflow-hidden">
+					<div class="flex items-center gap-2.5 min-w-0 flex-1">
 						<div class="w-9 h-9 rounded-xl ${t.type === 'income' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} shrink-0 flex items-center justify-center">
 							${renderCategoryIconHTML(t.category, t.type === 'income' ? 'text-sm text-emerald-400' : 'text-sm text-rose-400')}
 						</div>
-						<div class="truncate">
-							<h4 class="text-xs font-bold text-slate-100 truncate">${t.notes || t.category}</h4>
+						<div class="min-w-0 flex-1">
+							<h4 class="text-xs font-bold text-slate-100 break-words">${t.notes || t.category}</h4>
 							<p class="text-[10px] text-slate-400 mt-0.5">${t.category} • <span class="num-tabular">${t.date}</span></p>
 						</div>
 					</div>
 
-					<div class="flex items-center gap-2.5 shrink-0">
-						<span class="text-xs font-bold num-tabular ${t.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}">
+					<div class="flex flex-col items-end gap-1 shrink-0">
+						<span class="text-xs font-bold num-tabular text-right ${t.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}">
 							${t.type === 'income' ? '+' : '-'}${formatIDR(t.amount)}
 						</span>
 						<div class="flex items-center gap-1">
@@ -2669,10 +2836,10 @@
 		}
 
 		// ==========================================
-		// 13. TRANSACTION MODAL HANDLERS
+		// 14. TRANSACTION MODAL HANDLERS
 		// ==========================================
 		function openTxModal() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('tx-id').value = '';
 			document.getElementById('form-title').textContent = 'Tambah Transaksi';
 			document.getElementById('submit-btn-text').textContent = 'Simpan Catatan';
@@ -2685,12 +2852,12 @@
 		}
 
 		function closeTxModal() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('tx-modal').classList.add('hidden');
 		}
 
 		function setType(type) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('tx-type').value = type;
 			const btnInc = document.getElementById('btn-type-income');
 			const btnExp = document.getElementById('btn-type-expense');
@@ -2703,7 +2870,6 @@
 				btnInc.className = "py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 text-slate-400 hover:text-slate-200";
 			}
 
-			// Smart default category selection when creating a new transaction
 			const isNewTx = !document.getElementById('tx-id').value;
 			if (isNewTx) {
 				const selectTx = document.getElementById('tx-category');
@@ -2717,7 +2883,7 @@
 
 		function handleSaveTransaction(e) {
 			e.preventDefault();
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const id = document.getElementById('tx-id').value;
 			const type = document.getElementById('tx-type').value;
 			const amount = parseDotNumber(document.getElementById('tx-amount').value);
@@ -2773,7 +2939,7 @@
 		}
 
 		function editTransaction(id) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const t = transactions.find(item => item.id === id);
 			if (!t) return;
 
@@ -2790,7 +2956,7 @@
 		}
 
 		function deleteTransaction(id) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			openConfirmModal('Hapus Transaksi', 'Apakah Anda yakin ingin menghapus catatan transaksi ini?', (confirmed) => {
 				if (confirmed) {
 					transactions = transactions.filter(t => t.id !== id);
@@ -2803,7 +2969,7 @@
 		}
 
 		// ==========================================
-		// 14. KANTONG (POCKETS) ENGINE WITH TRANSFER & HISTORY
+		// 15. KANTONG (POCKETS) ENGINE WITH TRANSFER & HISTORY
 		// ==========================================
 		function renderPockets() {
 			const container = document.getElementById('pockets-grid-container');
@@ -2828,20 +2994,18 @@
 				const percent = p.target > 0 ? Math.min(100, Math.round((p.balance / p.target) * 100)) : 100;
 				return `
 					<div class="glass-card p-4 rounded-2xl space-y-3">
-						<div class="flex items-center justify-between gap-2">
-							<div class="flex items-center gap-2.5 min-w-0">
-								<div class="w-9 h-9 bg-slate-900 text-indigo-400 rounded-xl border border-slate-800 flex items-center justify-center shrink-0">
+						<!-- Baris Atas: Nama Kantong di kiri, Ikon Riwayat, Edit & Hapus di kanan -->
+						<div class="flex items-start justify-between gap-2">
+							<div class="flex items-start gap-2.5 min-w-0 flex-1">
+								<div class="w-9 h-9 bg-slate-900 text-indigo-400 rounded-xl border border-slate-800 flex items-center justify-center shrink-0 mt-0.5">
 									<i class="fa-solid fa-folder-closed text-xs"></i>
 								</div>
-								<div class="truncate">
-									<h4 class="text-xs font-bold text-slate-100 truncate">${p.name}</h4>
-									<p class="text-[9px] text-slate-400 num-tabular">Target: ${formatIDR(p.target)}</p>
+								<div class="min-w-0 flex-1">
+									<h4 class="text-xs font-bold text-slate-100 break-words leading-snug">${p.name}</h4>
+									<p class="text-[10px] text-slate-400 num-tabular mt-0.5">Target: ${formatIDR(p.target)}</p>
 								</div>
 							</div>
 							<div class="flex items-center gap-1 shrink-0">
-								<button onclick="openPocketMutationModal('${p.id}')" class="px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-indigo-400 border border-slate-800 text-[10px] font-bold rounded-lg transition">
-									Setor / Tarik / Transfer
-								</button>
 								<button onclick="openPocketHistoryModal('${p.id}')" title="Riwayat Mutasi" class="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-indigo-400 transition">
 									<i class="fa-solid fa-clock-rotate-left text-xs"></i>
 								</button>
@@ -2854,10 +3018,19 @@
 							</div>
 						</div>
 
+						<!-- Baris Kedua: Tombol Setor / Tarik / Transfer tepat di bawah Nama Kantong -->
 						<div>
-							<div class="flex justify-between items-baseline mb-1">
+							<button onclick="openPocketMutationModal('${p.id}')" class="w-full py-2 px-3 bg-slate-900 hover:bg-slate-800 text-indigo-400 border border-slate-800 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2 active:scale-[0.99]">
+								<i class="fa-solid fa-right-left text-[11px]"></i>
+								<span>Setor / Tarik / Transfer</span>
+							</button>
+						</div>
+
+						<!-- Baris Saldo & Progress Bar -->
+						<div>
+							<div class="flex justify-between items-baseline gap-2 mb-1">
 								<span class="text-sm font-extrabold text-slate-100 num-tabular">${formatIDR(p.balance)}</span>
-								<span class="text-[10px] num-tabular font-bold text-indigo-400">${percent}%</span>
+								<span class="text-[10px] num-tabular font-bold text-indigo-400 shrink-0">${percent}%</span>
 							</div>
 							<div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
 								<div class="h-full bg-indigo-500 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
@@ -2869,7 +3042,7 @@
 		}
 
 		function openPocketModal() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('pocket-id').value = '';
 			document.getElementById('pocket-modal-title').textContent = 'Kantong Simpanan Baru';
 			document.getElementById('pocket-name').value = '';
@@ -2879,13 +3052,13 @@
 		}
 
 		function closePocketModal() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('pocket-modal').classList.add('hidden');
 		}
 
 		function handleSavePocket(e) {
 			e.preventDefault();
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const id = document.getElementById('pocket-id').value;
 			const name = document.getElementById('pocket-name').value.trim();
 			const target = parseDotNumber(document.getElementById('pocket-target').value);
@@ -2920,7 +3093,7 @@
 		}
 
 		function editPocket(id) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const p = pockets.find(item => item.id === id);
 			if (!p) return;
 
@@ -2933,7 +3106,7 @@
 		}
 
 		function deletePocket(id) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			openConfirmModal('Hapus Kantong', 'Apakah Anda yakin ingin menghapus kantong ini beserta catatannya?', (confirmed) => {
 				if (confirmed) {
 					pockets = pockets.filter(p => p.id !== id);
@@ -2946,7 +3119,7 @@
 		}
 
 		function openPocketMutationModal(id) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const p = pockets.find(item => item.id === id);
 			if (!p) return;
 
@@ -2966,12 +3139,12 @@
 		}
 
 		function closePocketMutationModal() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('pocket-mutation-modal').classList.add('hidden');
 		}
 
 		function setMutationType(type) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('mutation-type').value = type;
 			const btnDep = document.getElementById('btn-mut-dep');
 			const btnWd = document.getElementById('btn-mut-wd');
@@ -2991,7 +3164,7 @@
 
 		function handlePocketMutationSubmit(e) {
 			e.preventDefault();
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const id = document.getElementById('mutation-pocket-id').value;
 			const type = document.getElementById('mutation-type').value;
 			const amount = parseDotNumber(document.getElementById('mutation-amount').value);
@@ -3071,7 +3244,7 @@
 		}
 
 		function openPocketHistoryModal(id) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const p = pockets.find(item => item.id === id);
 			if (!p) return;
 
@@ -3097,9 +3270,9 @@
 					};
 					return `
 						<div class="p-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between gap-2.5 text-xs">
-							<div class="truncate">
+							<div class="min-w-0 flex-1">
 								<span class="text-[10px] font-bold uppercase ${isIncoming ? 'text-emerald-400' : 'text-rose-400'}">${labelMap[h.type] || h.type}</span>
-								<p class="text-slate-200 font-medium truncate mt-0.5">${h.note || '-'}</p>
+								<p class="text-slate-200 font-medium break-words mt-0.5">${h.note || '-'}</p>
 								<p class="text-[10px] text-slate-500 num-tabular mt-0.5">${h.date || ''}</p>
 							</div>
 							<span class="num-tabular font-bold shrink-0 ${isIncoming ? 'text-emerald-400' : 'text-rose-400'}">
@@ -3114,15 +3287,15 @@
 		}
 
 		function closePocketHistoryModal() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('pocket-history-modal').classList.add('hidden');
 		}
 
 		// ==========================================
-		// 15. REKAP & PRECISION ANALYTICS ENGINE
+		// 16. REKAP & PRECISION ANALYTICS ENGINE
 		// ==========================================
 		function setRecapType(type, withHaptic = true) {
-			if (withHaptic) triggerHaptic(200);
+			if (withHaptic) triggerHaptic(100);
 			currentRecapType = type;
 			saveAppState();
 
@@ -3211,8 +3384,8 @@
 			const data = Object.values(catMap);
 
 			const colors = [
-				'#06b6d4', '#f43f5e', '#10b981', '#f59e0b', '#8b5cf6',
-				'#3b82f6', '#ec4899', '#14b8a6', '#84cc16', '#a855f7'
+				'#61afef', '#e06c75', '#6bcb8b', '#e5c07b', '#b48ead',
+				'#e08e6d', '#ec4899', '#14b8a6', '#84cc16', '#a855f7'
 			];
 
 			if (recapExpenseChartInstance) recapExpenseChartInstance.destroy();
@@ -3257,7 +3430,7 @@
 
 				return `
 					<div class="space-y-1">
-						<div class="flex justify-between items-center text-[10px]">
+						<div class="flex flex-wrap justify-between items-center gap-1 text-[10px]">
 							<span class="text-slate-300 font-medium flex items-center gap-1.5">
 								${renderCategoryIconHTML(cat, 'text-[11px] text-slate-400')} ${cat}
 							</span>
@@ -3271,7 +3444,6 @@
 			}).join('');
 		}
 
-		// Non-overlapping Contiguous Date Buckets Trend Chart
 		function renderRecapTrendChart(days) {
 			const ctx = document.getElementById('recapTrendChart').getContext('2d');
 			
@@ -3321,13 +3493,13 @@
 						{
 							label: 'Pemasukan',
 							data: incData,
-							backgroundColor: 'rgba(16, 185, 129, 0.78)',
+							backgroundColor: 'rgba(107, 203, 139, 0.82)',
 							borderRadius: 5
 						},
 						{
 							label: 'Pengeluaran',
 							data: expData,
-							backgroundColor: 'rgba(244, 63, 94, 0.78)',
+							backgroundColor: 'rgba(224, 108, 117, 0.82)',
 							borderRadius: 5
 						}
 					]
@@ -3364,10 +3536,10 @@
 		}
 
 		// ==========================================
-		// 16. FINANCIAL TOOLS ENGINE
+		// 17. FINANCIAL TOOLS ENGINE
 		// ==========================================
 		function switchCalcSubTab(tabNum) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			playSoundFX('click');
 			for (let i = 1; i <= 6; i++) {
 				const btn = document.getElementById(`calc-tab-${i}`);
@@ -3423,7 +3595,7 @@
 		}
 
 		function saveToolsStateManual() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			saveToolsStateAuto();
 			showToast('Hasil & masukan kalkulator berhasil disimpan', 'success');
 		}
@@ -3461,7 +3633,7 @@
 		}
 
 		function calculateStockAveraging() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const lot1 = Number(document.getElementById('avg-lot1').value) || 0;
 			const price1 = parseDotNumber(document.getElementById('avg-price1').value);
 			const lot2 = Number(document.getElementById('avg-lot2').value) || 0;
@@ -3513,7 +3685,7 @@
 		}
 
 		function calculate503020Split() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const income = parseDotNumber(document.getElementById('split-income-input').value);
 			if (income <= 0) {
 				showToast('Masukkan total pemasukan bulanan', 'warning');
@@ -3532,7 +3704,7 @@
 		}
 
 		function applySplitToBudgetLimit() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const income = parseDotNumber(document.getElementById('split-income-input').value);
 			if (income > 0) {
 				budgetLimit = Math.round(income * 0.5);
@@ -3543,7 +3715,7 @@
 		}
 
 		function calculateEmergencyFund() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const exp = parseDotNumber(document.getElementById('ef-monthly-exp').value);
 			const mult = Number(document.getElementById('ef-profile').value);
 
@@ -3559,7 +3731,7 @@
 		}
 
 		function calculateInvestmentGrowth() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const P = parseDotNumber(document.getElementById('inv-initial').value);
 			const PMT = parseDotNumber(document.getElementById('inv-monthly').value);
 			const rate = Number(document.getElementById('inv-rate').value) / 100 / 12;
@@ -3587,7 +3759,7 @@
 		}
 
 		function calculateSavingsPlan() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const target = parseDotNumber(document.getElementById('plan-target-amount').value);
 			const months = Number(document.getElementById('plan-target-months').value);
 
@@ -3606,7 +3778,7 @@
 		}
 
 		function calcNum(num) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			playSoundFX('click');
 			if (calcNewInput) {
 				calcScreenVal = num === '.' ? '0.' : num;
@@ -3620,7 +3792,7 @@
 		}
 
 		function calcOp(op) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			playSoundFX('click');
 			if (calcScreenVal === 'Error') calcScreenVal = '0';
 			calcHistoryVal += ` ${calcScreenVal} ${op}`;
@@ -3629,7 +3801,7 @@
 		}
 
 		function calcClear() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			playSoundFX('click');
 			calcScreenVal = '0';
 			calcHistoryVal = '';
@@ -3639,7 +3811,7 @@
 		}
 
 		function calcDel() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			playSoundFX('click');
 			if (calcScreenVal === 'Error') {
 				calcClear();
@@ -3655,7 +3827,7 @@
 		}
 
 		function calcEquals() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			playSoundFX('click');
 			try {
 				const rawExpr = `${calcHistoryVal} ${calcScreenVal}`
@@ -3687,7 +3859,7 @@
 		}
 
 		function applyCalcToForm() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const val = parseDotNumber(calcScreenVal);
 			if (val > 0) {
 				openTxModal();
@@ -3717,11 +3889,11 @@
 		}
 
 		// ==========================================
-		// 17. 100% COMPLETE BACKUP & RESET HANDLERS
+		// 18. 100% COMPLETE BACKUP & RESET HANDLERS
 		// ==========================================
 		function handleSaveBudget(e) {
 			e.preventDefault();
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const val = parseDotNumber(document.getElementById('settings-budget-input').value);
 			budgetLimit = val;
 			saveAppState();
@@ -3731,7 +3903,7 @@
 		}
 
 		function exportToCSV() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			let csv = 'ID,Jenis,Nominal,Kategori,Tanggal,Catatan\n';
 			transactions.forEach(t => {
 				csv += `"${t.id}","${t.type}","${t.amount}","${t.category}","${t.date}","${(t.notes || '').replace(/"/g, '""')}"\n`;
@@ -3751,7 +3923,7 @@
 		}
 
 		function exportToJSON() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			const data = {
 				transactions,
 				budgetLimit,
@@ -3763,7 +3935,7 @@
 				appSettings,
 				toolsState: localStorage.getItem(TOOLS_STATE_KEY) ? JSON.parse(localStorage.getItem(TOOLS_STATE_KEY)) : null,
 				exportDate: new Date().toISOString(),
-				version: '6.6'
+				version: '6.7'
 			};
 			const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
 			const url = URL.createObjectURL(blob);
@@ -3815,7 +3987,7 @@
 						renderTransactions();
 						renderPockets();
 						restoreToolsCalculatorState();
-						triggerHaptic(200);
+						triggerHaptic(100);
 						showToast('Cadangan JSON 100% lengkap berhasil diimpor!', 'success');
 						addInboxMessage('Impor Cadangan Sukses', 'Seluruh data transaksi, kantong, profil, & pengaturan berhasil dipulihkan.', 'system');
 					} else {
@@ -3829,7 +4001,7 @@
 		}
 
 		function confirmResetData() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			openConfirmModal('Reset Ke Data Sampel', 'Apakah Anda yakin ingin mengembalikan data ke sampel awal Rupiah?', (confirmed) => {
 				if (confirmed) {
 					transactions = INITIAL_DUMMY_DATA;
@@ -3850,7 +4022,7 @@
 		}
 
 		function confirmClearAllData() {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			openConfirmModal('Reset / Hapus Semua Data', 'Apakah Anda yakin ingin menghapus SELURUH data? Tindakan ini akan mengosongkan aplikasi secara total.', (confirmed) => {
 				if (confirmed) {
 					transactions = [];
@@ -3883,7 +4055,7 @@
 		}
 
 		function openConfirmModal(title, msg, callback) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('confirm-title').textContent = title;
 			document.getElementById('confirm-message').textContent = msg;
 			confirmCallback = callback;
@@ -3891,14 +4063,14 @@
 		}
 
 		function closeConfirmModal(result) {
-			triggerHaptic(200);
+			triggerHaptic(100);
 			document.getElementById('confirm-modal').classList.add('hidden');
 			if (confirmCallback) confirmCallback(result);
 			confirmCallback = null;
 		}
 
 		// ==========================================
-		// 18. WINDOW STORAGE SYNC & INITIALIZATION
+		// 19. WINDOW STORAGE SYNC & INITIALIZATION
 		// ==========================================
 		window.addEventListener('storage', function() {
 			loadAppState();
@@ -3939,7 +4111,5 @@
 			});
 		}
 	</script>
-</body>
-</html>
 </body>
 </html>
