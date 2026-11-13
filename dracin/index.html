@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>Dracin Stream</title>
+	<link rel="stylesheet" href="css/base.css">
+	<link rel="stylesheet" href="css/layout.css">
+	<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+	<header class="app-header">
+		<h1 class="logo">Dracin<span>Stream</span></h1>
+		<div class="search-box">
+			<input type="search" id="searchInput" placeholder="Cari drama China..." autocomplete="off">
+		</div>
+	</header>
+
+	<main id="app">
+		<!-- Konten dirender oleh ui.js -->
+		<div class="loading" id="loadingIndicator">Memuat...</div>
+	</main>
+
+	<!-- Modal Player -->
+	<div class="player-modal hidden" id="playerModal">
+		<div class="player-container">
+			<button class="btn-close-player" id="btnClosePlayer">✕</button>
+			<video id="videoPlayer" controls playsinline></video>
+			<div class="player-info" id="playerInfo"></div>
+		</div>
+	</div>
+
+	<!-- Player script (hls.js dari CDN, opsional jika API beri M3U8) -->
+	<script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
+	<script type="module" src="js/app.js"></script>
+</body>
+</html>
