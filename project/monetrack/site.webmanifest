@@ -2,7 +2,7 @@
 	"name": "Monetrack",
 	"short_name": "Monetrack",
 	"description": "Mobile Financial Hub & Pocket Manager",
-	"start_url": "/monetrack.html",
+	"start_url": "../monetrack.html",
 	"display": "standalone",
 	"orientation": "portrait",
 	"background_color": "#060b16",
