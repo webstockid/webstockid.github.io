@@ -12,6 +12,10 @@
 		<meta property="og:title" content="Stock ID Screener #Andaimology">
 		<meta property="og:description" content="Alat Screening Saham yang dilengkapi AI dan Analisa Teknikal">
 		<meta property="og:type" content="website">
+			
+		<link rel="apple-touch-icon" sizes="180x180" href="stockid_gambar/apple-touch-icon.png">
+		<link rel="manifest" href="manifest.json">
+		<meta name="theme-color" content="#0b0f19">
 		
 		<script src="https://cdn.tailwindcss.com"></script>
 		<script src="https://unpkg.com/lucide@latest"></script>
@@ -2128,7 +2132,7 @@
 		<script>
 			if ('serviceWorker' in navigator) {
 				window.addEventListener('load', function() {
-					navigator.serviceWorker.register('sw.js').then(function(registration) {
+					navigator.serviceWorker.register('sw_screener.js').then(function(registration) {
 						console.log('SW Notification registered successfully');
 					}).catch(function(error) {
 						console.log('SW registration failed:', error);

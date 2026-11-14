@@ -5994,6 +5994,79 @@ document.addEventListener("DOMContentLoaded", () => {
 	observer.observe(document.body, { childList: true, subtree: true });
 });
 
+// Nyalakan bulatan angka/titik pada ikon aplikasi yang terinstal
+function setWhaleAppBadge(count = 1) {
+	if ('setAppBadge' in navigator) {
+		navigator.setAppBadge(count).catch(() => {});
+	}
+}
+
+// Hapus bulatan saat pengguna kembali membuka / fokus ke aplikasi
+function clearWhaleAppBadge() {
+	if ('clearAppBadge' in navigator) {
+		navigator.clearAppBadge().catch(() => {});
+	}
+}
+
+document.addEventListener('visibilitychange', () => {
+	if (document.visibilityState === 'visible') {
+		clearWhaleAppBadge();
+	}
+});
+
+// ============================================================
+// INTEGRASI SERVICE WORKER (APP BADGE & PUSH NOTIFICATION)
+// ============================================================
+let unreadWhaleCount = 0;
+
+function notifyWhaleToServiceWorker(ticker, title, message) {
+	unreadWhaleCount++;
+
+	// 1. Update bulatan notif langsung jika browser mendukung navigator.setAppBadge
+	if ('setAppBadge' in navigator) {
+		navigator.setAppBadge(unreadWhaleCount).catch(() => {});
+	}
+
+	// 2. Kirim sinyal ke sw.js untuk menyalakan badge & memunculkan notif sistem
+	if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+		navigator.serviceWorker.controller.postMessage({
+			type: document.hidden ? 'SHOW_NOTIFICATION' : 'SET_BADGE',
+			title: title || `🐋 Whale Detected: $${ticker}`,
+			body: message || `Terdeteksi lonjakan volume & akumulasi pada $${ticker}.`,
+			badgeCount: unreadWhaleCount,
+			ticker: ticker,
+			tag: `whale-${ticker}`,
+			url: './screener_ok_5.html'
+		});
+	}
+}
+
+// Hapus bulatan notif otomatis saat user membuka kembali layar aplikasi
+document.addEventListener('visibilitychange', () => {
+	if (document.visibilityState === 'visible') {
+		unreadWhaleCount = 0;
+		if ('clearAppBadge' in navigator) {
+			navigator.clearAppBadge().catch(() => {});
+		}
+		if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+			navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_BADGE' });
+		}
+	}
+});
+
+// Tangkap pesan dari sw.js jika user mengetuk notifikasi untuk langsung membuka chart emiten
+if ('serviceWorker' in navigator) {
+	navigator.serviceWorker.addEventListener('message', (event) => {
+		if (event.data && event.data.type === 'OPEN_TICKER' && event.data.ticker) {
+			const searchInput = document.getElementById('stockSearch');
+			if (searchInput && typeof searchStock === 'function') {
+				searchInput.value = event.data.ticker;
+				searchStock();
+			}
+		}
+	});
+}
+
 // ANTI LAG
 /*function processScreenerAntiLag(stockList, processFn, onComplete) {
 	const BATCH_SIZE = 20; 
