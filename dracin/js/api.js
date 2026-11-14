@@ -6,7 +6,7 @@
 const CONFIG = {
 	baseUrl: 'https://api.hoshiyomi.my.id/api',
 	apiKey: 'HOSHIYOMI-FREE-e5a2146a', // Ganti dengan key dari @dramaboxplusbot
-	platform: 'iqiyi', // 'iqiyi' atau 'wetv'
+	platform: 'wetv', // 'iqiyi' atau 'wetv'
 	lang: 'id',
 	timeout: 15000,
 };
