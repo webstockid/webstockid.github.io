@@ -6036,7 +6036,7 @@ function notifyWhaleToServiceWorker(ticker, title, message) {
 			badgeCount: unreadWhaleCount,
 			ticker: ticker,
 			tag: `whale-${ticker}`,
-			url: './screener_ok.html'
+			url: 'screener_ok.html'
 		});
 	}
 }

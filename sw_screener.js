@@ -3,18 +3,17 @@
 // ============================================================
 
 const CACHE_NAME = 'stockid-screener-v2.08';
-const DEFAULT_URL = './screener_ok.html';
-const DEFAULT_ICON = './stockid_gambar/192x192.png';
-const FALLBACK_ICON = './stockid_gambar/512x512.png';
+const DEFAULT_URL = 'screener_ok.html';
+const DEFAULT_ICON = 'stockid_gambar/192x192.png';
+const FALLBACK_ICON = 'stockid_gambar/512x512.png';
 
 // Daftar file inti agar aplikasi tetap bisa diinstal & dimuat cepat
 const CORE_ASSETS = [
-	'./',
-	'./screener_ok.html',
-	'./manifest.json',
-	'./app.js',
-	'./ticker.js',
-	'./stockid_gambar/192x192.png'
+	'screener_ok.html',
+	'manifest.json',
+	'app.js',
+	'ticker.js',
+	'stockid_gambar/192x192.png'
 ];
 
 // 1. INSTALL: Menyimpan aset inti secara aman tanpa gagal jika ikon tambahan belum dibuat

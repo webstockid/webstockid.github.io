@@ -2,7 +2,7 @@
   "name": "Stock ID Screener",
   "short_name": "Stock ID",
   "description": "Alat Screening Saham yang dilengkapi AI dan Analisa Teknikal",
-  "start_url": "/screener_ok.html",
+  "start_url": "screener_ok.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
