@@ -19,56 +19,111 @@
 	<!-- FontAwesome 6 CDN -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 	
-	<!-- Google Fonts -->
+	<!-- Google Fonts: 6 New Distinct Fonts (DM Sans, Nunito, Space Grotesk, Rubik, Manrope, Sora) -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Manrope:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=Rubik:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 	
 	<style>
 		/* Dynamic Design Tokens */
 		:root {
 			--accent-color: #5b9bd5;
 			--accent-hover: #4785be;
-			--accent-light: rgba(91, 155, 213, 0.15);
-			--accent-glow: rgba(91, 155, 213, 0.35);
+			--accent-light: rgba(91, 155, 213, 0.14);
+			--accent-glow: rgba(91, 155, 213, 0.20);
 			--base-font-size: 14px;
-			--app-font-family: 'Poppins', sans-serif;
-			--app-font-weight: 400;
+			--app-font-family: 'DM Sans', sans-serif;
+			--fw-base: 400;
+			--fw-medium: 500;
+			--fw-semibold: 600;
+			--fw-bold: 700;
 			--player-brightness: 100%;
+			--ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 		}
 
 		html {
 			font-size: var(--base-font-size);
+			scroll-behavior: smooth;
 		}
 
 		body {
 			font-family: var(--app-font-family);
 			font-size: 1rem;
-			font-weight: var(--app-font-weight);
-			transition: background-color 0.3s ease, color 0.3s ease;
+			font-weight: var(--fw-base);
+			transition: background-color 0.35s var(--ease-smooth), color 0.35s var(--ease-smooth);
 		}
+
+		/* Global Font Family & Dynamic Font Weight Override Across All Text & Numbers (Excluding Icons) */
+		body *:not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.fas):not(.far):not(.fab):not(i),
+		input, select, option, textarea, button, svg text {
+			font-family: var(--app-font-family) !important;
+		}
+
+		.font-mono {
+			font-family: var(--app-font-family) !important;
+			font-variant-numeric: tabular-nums;
+		}
+
+		/* Dynamic Weight Propagation */
+		body, p, span, div, a, li, input, select, option, textarea {
+			font-weight: var(--fw-base);
+		}
+		.font-normal { font-weight: var(--fw-base) !important; }
+		.font-medium { font-weight: var(--fw-medium) !important; }
+		.font-semibold { font-weight: var(--fw-semibold) !important; }
+		.font-bold, h1, h2, h3, h4 { font-weight: var(--fw-bold) !important; }
+
+		/* Responsive Rem-Based Text Utilities so 10px-22px Scales Everything Cleanly */
+		.text-\[9px\], .text-\[9\.5px\] { font-size: 0.68rem !important; }
+		.text-\[10px\] { font-size: 0.72rem !important; }
+		.text-\[11px\] { font-size: 0.78rem !important; }
+		.text-xs { font-size: 0.85rem !important; line-height: 1.45 !important; }
+		.text-\[13px\] { font-size: 0.92rem !important; line-height: 1.55 !important; }
+		.text-sm { font-size: 1rem !important; line-height: 1.5 !important; }
+		.text-base { font-size: 1.12rem !important; line-height: 1.45 !important; }
+		.text-lg { font-size: 1.25rem !important; line-height: 1.4 !important; }
+		.text-xl { font-size: 1.4rem !important; line-height: 1.35 !important; }
+		.text-\[22px\] { font-size: 1.5rem !important; line-height: 1.35 !important; }
 
 		/* Theme Base Styles */
 		body.theme-dark { background-color: #020617; color: #f8fafc; }
 		body.theme-slate { background-color: #0f172a; color: #f8fafc; }
 		body.theme-light { background-color: #f8fafc; color: #0f172a; }
 
-		/* Dynamic Theme Utility Elements */
-		body.theme-dark .ui-nav { background-color: rgba(2, 6, 23, 0.94); border-color: #1e293b; }
-		body.theme-slate .ui-nav { background-color: rgba(15, 23, 42, 0.94); border-color: #334155; }
-		body.theme-light .ui-nav { background-color: rgba(255, 255, 255, 0.94); border-color: #e2e8f0; }
+		/* Dynamic Theme Utility Elements (Refined Subtle Shadows) */
+		body.theme-dark .ui-nav { background-color: rgba(2, 6, 23, 0.94); border-color: #1e293b; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28); }
+		body.theme-slate .ui-nav { background-color: rgba(15, 23, 42, 0.94); border-color: #334155; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.22); }
+		body.theme-light .ui-nav { background-color: rgba(255, 255, 255, 0.94); border-color: #e2e8f0; box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04); }
 
-		body.theme-dark .ui-card { background-color: #0f172a; border-color: #1e293b; color: #f8fafc; }
-		body.theme-slate .ui-card { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
-		body.theme-light .ui-card { background-color: #ffffff; border-color: #e2e8f0; color: #1e293b; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04); }
+		body.theme-dark .ui-card { background-color: #0f172a; border-color: #1e293b; color: #f8fafc; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22); }
+		body.theme-slate .ui-card { background-color: #1e293b; border-color: #334155; color: #f8fafc; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18); }
+		body.theme-light .ui-card { background-color: #ffffff; border-color: #e2e8f0; color: #1e293b; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03); }
 
-		body.theme-dark .ui-modal { background-color: #0f172a; border-color: #1e293b; color: #f8fafc; }
-		body.theme-slate .ui-modal { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
-		body.theme-light .ui-modal { background-color: #ffffff; border-color: #cbd5e1; color: #0f172a; }
+		body.theme-dark .ui-modal { background-color: #0f172a; border-color: #1e293b; color: #f8fafc; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.42); }
+		body.theme-slate .ui-modal { background-color: #1e293b; border-color: #334155; color: #f8fafc; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.36); }
+		body.theme-light .ui-modal { background-color: #ffffff; border-color: #cbd5e1; color: #0f172a; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12); }
 
 		body.theme-dark .ui-input { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
 		body.theme-slate .ui-input { background-color: #334155; border-color: #475569; color: #f8fafc; }
 		body.theme-light .ui-input { background-color: #f1f5f9; border-color: #cbd5e1; color: #0f172a; }
+
+		/* Smooth Input, Select & Option Interactions */
+		input, select, textarea {
+			transition: border-color 0.28s var(--ease-smooth), background-color 0.28s var(--ease-smooth), box-shadow 0.28s var(--ease-smooth), transform 0.22s var(--ease-smooth);
+		}
+		input:focus, select:focus, textarea:focus {
+			box-shadow: 0 0 0 3px var(--accent-light);
+		}
+		select {
+			cursor: pointer;
+		}
+		select option {
+			padding: 8px 12px;
+			transition: background-color 0.2s ease, color 0.2s ease;
+		}
+		body.theme-dark select option { background-color: #0f172a; color: #f8fafc; }
+		body.theme-slate select option { background-color: #1e293b; color: #f8fafc; }
+		body.theme-light select option { background-color: #ffffff; color: #0f172a; }
 
 		body.theme-dark .ui-sub-bg { background-color: #020617; }
 		body.theme-slate .ui-sub-bg { background-color: #0f172a; }
@@ -86,77 +141,115 @@
 		body.theme-slate .ui-text-subtle { color: #94a3b8; }
 		body.theme-light .ui-text-subtle { color: #64748b; }
 
-		/* Glossy Dynamic Accent Button */
+		/* Softened Glossy Dynamic Accent Button */
 		.btn-accent {
 			background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
 			color: #ffffff !important;
-			box-shadow: 0 4px 14px var(--accent-glow);
+			box-shadow: 0 2px 8px var(--accent-glow);
 			position: relative;
 			overflow: hidden;
+			transition: transform 0.25s var(--ease-smooth), filter 0.25s var(--ease-smooth), box-shadow 0.25s var(--ease-smooth);
 		}
 		.btn-accent > * { position: relative; z-index: 10; }
 		.btn-accent::after {
 			content: ''; position: absolute; top: 0; left: 0; right: 0; height: 45%;
-			background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
+			background: linear-gradient(to bottom, rgba(255, 255, 255, 0.20), rgba(255, 255, 255, 0));
 			pointer-events: none; border-radius: inherit;
 		}
-		.btn-accent:hover { filter: brightness(1.08); box-shadow: 0 6px 18px var(--accent-glow); }
+		.btn-accent:hover { filter: brightness(1.06); box-shadow: 0 4px 12px var(--accent-glow); }
 		
 		.text-accent { color: var(--accent-color); }
 		.border-accent { border-color: var(--accent-color) !important; }
 		.bg-accent-subtle { background-color: var(--accent-light); }
 
-		/* Sliders & Switches */
+		/* Softened Glows on Sliders & Switches */
 		input[type="range"] { accent-color: var(--accent-color) !important; }
-		input[type="range"]::-webkit-slider-thumb { background-color: var(--accent-color) !important; box-shadow: 0 0 10px var(--accent-glow); }
+		input[type="range"]::-webkit-slider-thumb { background-color: var(--accent-color) !important; box-shadow: 0 0 5px var(--accent-glow); }
 		.eq-slider { -webkit-appearance: slider-vertical; width: 24px; height: 92px; }
 
 		.custom-switch { position: relative; display: inline-block; width: 46px; height: 26px; shrink: 0; }
 		.custom-switch input { opacity: 0; width: 0; height: 0; }
 		.switch-slider {
 			position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-			background-color: #475569; transition: .3s; border-radius: 26px; border: 1px solid rgba(255,255,255,0.12);
+			background-color: #475569; transition: background-color 0.32s var(--ease-smooth), box-shadow 0.32s var(--ease-smooth);
+			border-radius: 26px; border: 1px solid rgba(255,255,255,0.12);
 		}
 		.switch-slider:before {
 			position: absolute; content: ""; height: 20px; width: 20px; left: 2px; bottom: 2px;
-			background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+			background-color: white; transition: transform 0.32s var(--ease-smooth); border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 		}
-		input:checked + .switch-slider { background-color: var(--accent-color); box-shadow: 0 0 12px var(--accent-glow); }
+		input:checked + .switch-slider { background-color: var(--accent-color); box-shadow: 0 0 7px var(--accent-glow); }
 		input:checked + .switch-slider:before { transform: translateX(20px); }
 
-		/* Animations */
-		@keyframes modalIn { 0% { opacity: 0; transform: scale(0.94) translateY(-10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-		@keyframes modalOut { 0% { opacity: 1; transform: scale(1) translateY(0); } 100% { opacity: 0; transform: scale(0.94) translateY(-10px); } }
-		@keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
-		@keyframes backdropOut { from { opacity: 1; } to { opacity: 0; } }
-		@keyframes tabFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+		/* Refined Smooth Animations (Tabs, Modals, Popups, Toasts) */
+		@keyframes modalIn {
+			0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+			100% { opacity: 1; transform: scale(1) translateY(0); }
+		}
+		@keyframes modalOut {
+			0% { opacity: 1; transform: scale(1) translateY(0); }
+			100% { opacity: 0; transform: scale(0.96) translateY(8px); }
+		}
+		@keyframes backdropIn {
+			from { opacity: 0; }
+			to { opacity: 1; }
+		}
+		@keyframes backdropOut {
+			from { opacity: 1; }
+			to { opacity: 0; }
+		}
+		@keyframes tabFadeIn {
+			0% { opacity: 0; transform: translateY(8px) scale(0.99); }
+			100% { opacity: 1; transform: translateY(0) scale(1); }
+		}
+		@keyframes popupIn {
+			0% { opacity: 0; transform: translateY(-6px) scale(0.98); }
+			100% { opacity: 1; transform: translateY(0) scale(1); }
+		}
+		@keyframes popupOut {
+			0% { opacity: 1; transform: translateY(0) scale(1); }
+			100% { opacity: 0; transform: translateY(-4px) scale(0.98); }
+		}
 
-		.modal-anim-in { animation: modalIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-		.modal-anim-out { animation: modalOut 0.18s ease-in forwards; }
-		.backdrop-anim-in { animation: backdropIn 0.2s forwards; }
-		.backdrop-anim-out { animation: backdropOut 0.18s forwards; }
-		.tab-anim-in { animation: tabFadeIn 0.28s ease-out forwards; }
+		.modal-anim-in { animation: modalIn 0.32s var(--ease-smooth) forwards; }
+		.modal-anim-out { animation: modalOut 0.22s var(--ease-smooth) forwards; }
+		.backdrop-anim-in { animation: backdropIn 0.28s var(--ease-smooth) forwards; }
+		.backdrop-anim-out { animation: backdropOut 0.22s var(--ease-smooth) forwards; }
+		.tab-anim-in { animation: tabFadeIn 0.34s var(--ease-smooth) forwards; }
+		.popup-anim-in { animation: popupIn 0.24s var(--ease-smooth) forwards; }
+		.popup-anim-out { animation: popupOut 0.18s var(--ease-smooth) forwards; }
+
+		/* Smooth Toast Transition */
+		#toast {
+			transform: translateY(14px) scale(0.96);
+			transition: opacity 0.32s var(--ease-smooth), transform 0.32s var(--ease-smooth);
+			box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
+		}
+		#toast.toast-visible {
+			opacity: 1 !important;
+			transform: translateY(0) scale(1);
+		}
 
 		/* Scrollbars & Specific Elements */
 		.no-scrollbar::-webkit-scrollbar { display: none; }
 		.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 		::-webkit-scrollbar { width: 6px; height: 6px; }
 		::-webkit-scrollbar-track { background: transparent; }
-		::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 9999px; }
+		::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.28); border-radius: 9999px; }
 
 		.aspect-video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
 		.aspect-video-container iframe, .aspect-video-container .hero-placeholder {
 			position: absolute; top: 0; left: 0; width: 100%; height: 100%;
 		}
-		#playerWrapper { filter: brightness(var(--player-brightness)); transition: filter 0.2s ease, max-width 0.3s ease; }
+		#playerWrapper { filter: brightness(var(--player-brightness)); transition: filter 0.25s ease, max-width 0.35s var(--ease-smooth); }
 		.profile-cover-box { background-size: cover; background-position: center; background-repeat: no-repeat; }
 
-		/* Video Description Expandable Without Any Clipping */
+		/* Video Description Expandable Without Any Ellipsis or Clipping */
 		#videoDescContent {
-			max-height: 4.6rem;
+			max-height: 4.8rem;
 			overflow: hidden;
 			position: relative;
-			transition: all 0.25s ease;
+			transition: max-height 0.35s var(--ease-smooth);
 		}
 		#videoDescContent.expanded {
 			max-height: none;
@@ -170,44 +263,44 @@
 		<!-- ==========================================
 		     1. SPACIOUS TOP FIXED NAVIGATION BAR
 		     ========================================== -->
-		<header id="navbar" class="fixed top-0 left-0 right-0 z-40 ui-nav backdrop-blur-md border-b px-3 sm:px-6 py-3 sm:py-3.5 transition-all">
-			<div class="max-w-6xl mx-auto flex items-center justify-between gap-3 sm:gap-4">
+		<header id="navbar" class="fixed top-0 left-0 right-0 z-40 ui-nav backdrop-blur-md border-b px-3 sm:px-6 py-2.5 sm:py-3 transition-all">
+			<div class="max-w-6xl mx-auto flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4">
 				
-				<!-- Brand Logo -->
+				<!-- Brand Logo (No Ellipsis / Wrapping Friendly) -->
 				<div class="flex items-center gap-2 cursor-pointer shrink-0" onclick="app.resetHome()">
-					<div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shadow-md overflow-hidden bg-accent-subtle border ui-border">
+					<div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shadow-sm overflow-hidden bg-accent-subtle border ui-border shrink-0">
 						<img src="streamtube/logo.png" alt="StreamTube Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover">
 						<span class="hidden w-full h-full btn-accent items-center justify-center text-white text-xs"><i class="fa-solid fa-play"></i></span>
 					</div>
-					<span class="font-bold text-sm sm:text-base md:text-lg tracking-tight whitespace-nowrap">Stream <span class="text-accent">Tube</span></span>
+					<span class="font-bold text-sm sm:text-base md:text-lg tracking-tight whitespace-normal break-words leading-tight">Stream <span class="text-accent">Tube</span></span>
 				</div>
 
 				<!-- Search Input -->
-				<div class="flex-1 max-w-xs sm:max-w-md md:max-w-xl relative">
+				<div class="order-3 sm:order-2 w-full sm:flex-1 sm:max-w-md md:max-w-xl relative">
 					<form onsubmit="app.handleSearch(event)" class="relative flex items-center" autocomplete="off">
-						<input type="text" id="searchInput" placeholder="Cari video di YouTube..." oninput="app.handleSearchInput(this.value)" onfocus="app.showSearchSuggestions()" onblur="app.hideSearchSuggestions()" class="w-full ui-input text-xs sm:text-sm rounded-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2 sm:py-2.5 border focus:outline-none focus:border-accent transition-all shadow-inner"/>
+						<input type="text" id="searchInput" placeholder="Cari video di YouTube..." oninput="app.handleSearchInput(this.value)" onfocus="app.showSearchSuggestions()" onblur="app.hideSearchSuggestions()" class="w-full ui-input text-xs sm:text-sm rounded-full pl-9 sm:pl-10 pr-10 sm:pr-11 py-2 sm:py-2.5 border focus:outline-none focus:border-accent shadow-inner"/>
 						<i class="fa-solid fa-magnifying-glass ui-text-subtle absolute left-3 sm:left-3.5 pointer-events-none text-xs sm:text-sm"></i>
 						<button type="submit" aria-label="Cari" class="absolute right-1.5 p-1.5 rounded-full btn-accent text-white hover:scale-105 transition-transform flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7">
 							<i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i>
 						</button>
 					</form>
 					<!-- Search Suggestions -->
-					<div id="searchSuggestions" class="absolute top-full left-0 right-0 mt-1.5 ui-modal border rounded-2xl shadow-2xl py-2 hidden z-50 overflow-hidden text-xs transition-all">
-						<div class="px-3.5 py-1.5 flex items-center justify-between text-[11px] ui-text-subtle border-b ui-border mb-1">
-							<span class="font-semibold flex items-center gap-1.5"><i class="fa-solid fa-clock-rotate-left text-accent"></i> Riwayat Pencarian</span>
-							<button type="button" onmousedown="app.clearSearchHistory(event)" class="hover:text-rose-400 transition-colors text-[10px]"><i class="fa-solid fa-trash-can mr-1"></i>Hapus Semua</button>
+					<div id="searchSuggestions" class="absolute top-full left-0 right-0 mt-1.5 ui-modal border rounded-2xl py-2 hidden z-50 overflow-hidden text-xs">
+						<div class="px-3.5 py-1.5 flex flex-wrap items-center justify-between gap-2 text-[11px] ui-text-subtle border-b ui-border mb-1">
+							<span class="font-semibold flex items-center gap-1.5 break-words"><i class="fa-solid fa-clock-rotate-left text-accent"></i> Riwayat Pencarian</span>
+							<button type="button" onmousedown="app.clearSearchHistory(event)" class="hover:text-rose-400 transition-colors text-[10px] whitespace-normal"><i class="fa-solid fa-trash-can mr-1"></i>Hapus Semua</button>
 						</div>
 						<div id="suggestionList" class="max-h-56 overflow-y-auto"></div>
 					</div>
 				</div>
 
-				<!-- Account & Settings Buttons -->
-				<div class="flex items-center gap-2 shrink-0">
-					<button onclick="app.openModal('accountModal')" class="flex items-center gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-full ui-card border text-xs sm:text-sm font-medium hover:border-accent transition-colors">
-						<img id="navAvatarImg" src="https://placehold.co/100x100/5b9bd5/ffffff?text=U" alt="Profile" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover">
-						<span class="hidden md:inline max-w-[110px] truncate" id="navAccountName">Akun</span>
+				<!-- Account & Settings Buttons (Full Text Visible Without Ellipsis) -->
+				<div class="order-2 sm:order-3 flex items-center gap-2 shrink-0">
+					<button onclick="app.openModal('accountModal')" class="flex items-center gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-full ui-card border text-xs sm:text-sm font-medium hover:border-accent transition-all">
+						<img id="navAvatarImg" src="https://placehold.co/100x100/5b9bd5/ffffff?text=U" alt="Profile" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover shrink-0">
+						<span class="hidden md:inline max-w-[160px] whitespace-normal break-words text-left leading-tight" id="navAccountName">Akun</span>
 					</button>
-					<button onclick="app.openModal('settingsModal')" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-card border flex items-center justify-center hover:border-accent transition-colors" title="Pengaturan">
+					<button onclick="app.openModal('settingsModal')" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-card border flex items-center justify-center hover:border-accent transition-all shrink-0" title="Pengaturan">
 						<i class="fa-solid fa-sliders text-xs sm:text-sm"></i>
 					</button>
 				</div>
@@ -215,22 +308,22 @@
 		</header>
 
 		<!-- Main Content -->
-		<main class="pt-14 sm:pt-20 max-w-6xl mx-auto px-0 sm:px-4 pb-28">
+		<main class="pt-28 sm:pt-20 max-w-6xl mx-auto px-0 sm:px-4 pb-28">
 
 			<!-- ==========================================
 			     2A. STICKY VIDEO PLAYER CONTAINER ONLY
 			     ========================================== -->
-			<section id="stickyVideoContainer" class="sticky top-14 sm:top-16 z-30 ui-sub-bg pt-0 sm:pt-1 pb-1 sm:pb-2 transition-all duration-300">
+			<section id="stickyVideoContainer" class="sticky top-28 sm:top-16 z-30 ui-sub-bg pt-0 sm:pt-1 pb-1 sm:pb-2 transition-all duration-300">
 				<div id="playerWrapper" class="w-full mx-auto transition-all duration-300">
-					<div class="w-full bg-black shadow-2xl border-b sm:border ui-border aspect-video-container relative sm:rounded-2xl sm:overflow-hidden">
+					<div class="w-full bg-black shadow-lg border-b sm:border ui-border aspect-video-container relative sm:rounded-2xl sm:overflow-hidden">
 						<div id="heroPlaceholder" class="hero-placeholder flex flex-col items-center justify-center p-4 sm:p-6 text-center bg-gradient-to-br from-slate-900 via-slate-950 to-black text-slate-200 relative overflow-hidden">
 							<img id="heroBgThumb" src="" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20 blur-sm hidden">
 							<div class="relative z-10 flex flex-col items-center">
-								<div class="w-14 h-14 sm:w-20 sm:h-20 rounded-full btn-accent flex items-center justify-center shadow-xl mb-3 sm:mb-4 group cursor-pointer hover:scale-110 transition-transform" onclick="app.playFirstAvailable()">
+								<div class="w-14 h-14 sm:w-20 sm:h-20 rounded-full btn-accent flex items-center justify-center shadow-md mb-3 sm:mb-4 group cursor-pointer hover:scale-105 transition-transform" onclick="app.playFirstAvailable()">
 									<i class="fa-solid fa-play text-lg sm:text-2xl text-white ml-1"></i>
 								</div>
-								<h3 id="heroTitle" class="text-sm sm:text-xl font-bold tracking-tight mb-1 max-w-lg px-2">Selamat Datang di StreamTube</h3>
-								<p id="heroSub" class="text-xs sm:text-sm text-slate-400 max-w-md px-2">Pilih salah satu video dari daftar di bawah atau klik tombol untuk memutar video.</p>
+								<h3 id="heroTitle" class="text-sm sm:text-xl font-bold tracking-tight mb-1 max-w-lg px-2 break-words">Selamat Datang di StreamTube</h3>
+								<p id="heroSub" class="text-xs sm:text-sm text-slate-400 max-w-md px-2 break-words">Pilih salah satu video dari daftar di bawah atau klik tombol untuk memutar video.</p>
 							</div>
 						</div>
 						<!-- Real YouTube Player -->
@@ -243,35 +336,35 @@
 			</section>
 
 			<!-- ==========================================
-			     2B. REDESIGNED COMPLETE VIDEO INFORMATION CARD
+			     2B. COMPLETE VIDEO INFORMATION CARD (NO ELLIPSIS)
 			     ========================================== -->
 			<section id="videoMeta" class="w-full mt-2 sm:mt-3 px-3 sm:px-0">
 				<div class="ui-card border rounded-2xl p-4 sm:p-5 space-y-4 transition-all">
 					
 					<!-- Judul Video -->
 					<div>
-						<h1 id="videoTitle" class="font-bold text-base sm:text-xl md:text-[22px] leading-snug tracking-tight break-words">
+						<h1 id="videoTitle" class="font-bold text-base sm:text-xl md:text-[22px] leading-snug tracking-tight break-words whitespace-normal">
 							Siap memutar video
 						</h1>
 					</div>
 
 					<!-- Kartu Pengunggah (Channel) + Tombol Aksi Utama -->
-					<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 pt-1 border-t ui-border">
+					<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 pt-2 border-t ui-border">
 						
 						<!-- Identitas Pengunggah & Tanggal Upload -->
-						<div class="flex items-center gap-3 min-w-0">
-							<img id="channelAvatar" src="https://placehold.co/100x100/1e293b/ffffff?text=C" alt="Channel Avatar" class="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover shadow-md border-2 border-accent/40 shrink-0">
+						<div class="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+							<img id="channelAvatar" src="https://placehold.co/100x100/1e293b/ffffff?text=C" alt="Channel Avatar" class="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover shadow-sm border-2 border-accent/40 shrink-0">
 							<div class="min-w-0 flex-1">
-								<div class="flex items-center gap-1.5">
-									<span id="channelName" class="font-bold text-sm sm:text-base truncate">Channel YouTube</span>
+								<div class="flex flex-wrap items-center gap-1.5">
+									<span id="channelName" class="font-bold text-sm sm:text-base break-words whitespace-normal">Channel YouTube</span>
 									<i class="fa-solid fa-circle-check text-sky-400 text-xs shrink-0" title="Terverifikasi"></i>
 								</div>
-								<div class="text-xs ui-text-subtle mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-									<span id="metaDate" class="whitespace-nowrap">-</span>
+								<div class="text-xs ui-text-subtle mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+									<span id="metaDate" class="break-words">-</span>
 									<span class="opacity-50">•</span>
-									<span class="inline-flex items-center gap-1 whitespace-nowrap">
-										<i class="fa-solid fa-users text-[10px] text-accent"></i>
-										<span id="channelSubs" class="whitespace-nowrap">100K Subscriber</span>
+									<span class="inline-flex items-center gap-1 break-words">
+										<i class="fa-solid fa-users text-[10px] text-accent shrink-0"></i>
+										<span id="channelSubs" class="break-words">100K Subscriber</span>
 									</span>
 								</div>
 							</div>
@@ -282,7 +375,7 @@
 							<button id="btnLike" onclick="app.toggleLike()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl ui-sub-bg border ui-border text-xs font-semibold hover:border-rose-500/60 transition-all">
 								<i class="fa-solid fa-thumbs-up text-xs" id="iconLike"></i>
 								<span>Suka</span>
-								<span id="countLikeBtn" class="px-1.5 py-0.5 rounded-md bg-black/20 font-mono text-[11px] whitespace-nowrap">0</span>
+								<span id="countLikeBtn" class="px-1.5 py-0.5 rounded-md bg-black/20 font-mono text-[11px]">0</span>
 							</button>
 
 							<button onclick="app.downloadAction('mp4')" class="flex items-center gap-2 px-3.5 py-2 rounded-xl btn-accent text-xs font-semibold transition-all">
@@ -290,7 +383,7 @@
 								<span>Unduh MP4</span>
 							</button>
 
-							<button onclick="app.downloadAction('mp3')" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md shadow-emerald-600/20 transition-all">
+							<button onclick="app.downloadAction('mp3')" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-sm transition-all">
 								<i class="fa-solid fa-music text-xs"></i>
 								<span>Unduh MP3</span>
 							</button>
@@ -304,30 +397,30 @@
 
 					<!-- Pil Statistik Ringkas Video (Kali Dilihat, Total Like, Komentar, Durasi) -->
 					<div id="videoStatsBar" class="flex flex-wrap items-center gap-2">
-						<div class="ui-sub-bg border ui-border rounded-full px-2.5 py-1 inline-flex items-center gap-1.5 text-xs" title="Kali Dilihat">
+						<div class="ui-sub-bg border ui-border rounded-full px-3 py-1 inline-flex items-center gap-1.5 text-xs" title="Kali Dilihat">
 							<i class="fa-solid fa-eye text-blue-400 text-[11px] shrink-0"></i>
-							<span class="font-semibold whitespace-nowrap" id="metaViews">0</span>
+							<span class="font-semibold break-words" id="metaViews">0</span>
 						</div>
 
-						<div class="ui-sub-bg border ui-border rounded-full px-2.5 py-1 inline-flex items-center gap-1.5 text-xs" title="Total Like">
+						<div class="ui-sub-bg border ui-border rounded-full px-3 py-1 inline-flex items-center gap-1.5 text-xs" title="Total Like">
 							<i class="fa-solid fa-heart text-rose-400 text-[11px] shrink-0"></i>
-							<span class="font-semibold whitespace-nowrap" id="metaLikes">0</span>
+							<span class="font-semibold break-words" id="metaLikes">0</span>
 						</div>
 
-						<div class="ui-sub-bg border ui-border rounded-full px-2.5 py-1 inline-flex items-center gap-1.5 text-xs" title="Komentar">
+						<div class="ui-sub-bg border ui-border rounded-full px-3 py-1 inline-flex items-center gap-1.5 text-xs" title="Komentar">
 							<i class="fa-solid fa-comments text-indigo-400 text-[11px] shrink-0"></i>
-							<span class="font-semibold whitespace-nowrap" id="metaComments">0</span>
+							<span class="font-semibold break-words" id="metaComments">0</span>
 						</div>
 
-						<div class="ui-sub-bg border ui-border rounded-full px-2.5 py-1 inline-flex items-center gap-1.5 text-xs" title="Durasi">
+						<div class="ui-sub-bg border ui-border rounded-full px-3 py-1 inline-flex items-center gap-1.5 text-xs" title="Durasi">
 							<i class="fa-solid fa-clock text-emerald-400 text-[11px] shrink-0"></i>
-							<span class="font-semibold font-mono whitespace-nowrap" id="metaDuration">--:--</span>
+							<span class="font-semibold font-mono break-words" id="metaDuration">--:--</span>
 						</div>
 					</div>
 
-					<!-- Kotak Deskripsi Video Utuh (Tanpa Pemotongan) -->
+					<!-- Kotak Deskripsi Video Utuh (Tanpa Pemotongan / Ellipsis) -->
 					<div class="ui-sub-bg border ui-border rounded-xl p-3.5 sm:p-4 space-y-2.5">
-						<div class="flex items-center justify-between gap-2">
+						<div class="flex flex-wrap items-center justify-between gap-2">
 							<span class="font-semibold text-xs flex items-center gap-1.5">
 								<i class="fa-solid fa-align-left text-accent"></i>
 								<span>Deskripsi Video</span>
@@ -342,9 +435,9 @@
 							Pilih video dari rekomendasi untuk menampilkan informasi lengkap dan deskripsi.
 						</div>
 
-						<div class="pt-1 border-t ui-border flex items-center justify-between">
+						<div class="pt-1.5 border-t ui-border flex items-center justify-between">
 							<button type="button" id="toggleDescBtn" onclick="app.toggleDescription()" class="inline-flex items-center gap-1.5 font-bold text-xs text-accent hover:underline transition-all py-0.5">
-								<span>Selengkapnya...</span>
+								<span>Tampilkan Semua</span>
 								<i class="fa-solid fa-chevron-down text-[10px]"></i>
 							</button>
 						</div>
@@ -353,19 +446,19 @@
 			</section>
 
 			<!-- ==========================================
-			     2C. CATEGORY PILLS BAR
+			     2C. CATEGORY PILLS BAR (FLEX WRAP / NO ELLIPSIS)
 			     ========================================== -->
 			<section id="categoryMeta" class="w-full max-w-6xl mx-auto mt-3 sm:mt-4 px-3 sm:px-0">
-				<div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1 text-xs" id="categoryContainer"></div>
+				<div class="flex flex-wrap items-center gap-1.5 sm:gap-2 py-1 text-xs" id="categoryContainer"></div>
 			</section>
 
 			<!-- ==========================================
 			     3. RECOMMENDATIONS GRID
 			     ========================================== -->
 			<section class="mt-3 sm:mt-5 px-3 sm:px-0">
-				<div class="flex items-center justify-between mb-3 sm:mb-4 px-1">
-					<h2 id="sectionTitle" class="text-sm sm:text-lg font-semibold flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-accent"></i> Rekomendasi Video</h2>
-					<span id="resultCount" class="text-xs ui-text-subtle whitespace-nowrap"></span>
+				<div class="flex flex-wrap items-center justify-between gap-2 mb-3 sm:mb-4 px-1">
+					<h2 id="sectionTitle" class="text-sm sm:text-lg font-semibold flex items-center gap-2 break-words"><i class="fa-solid fa-wand-magic-sparkles text-accent"></i> Rekomendasi Video</h2>
+					<span id="resultCount" class="text-xs ui-text-subtle"></span>
 				</div>
 				<div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"></div>
 			</section>
@@ -375,93 +468,93 @@
 	<!-- ==========================================
 	     4. FLOATING FIXED BOTTOM PLAYER CONTROL BAR
 	     ========================================== -->
-	<div id="bottomPlayerBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 ui-card border rounded-full shadow-2xl px-4 sm:px-6 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3.5 transition-all duration-500 ease-in-out backdrop-blur-xl max-w-[96vw] sm:max-w-none">
+	<div id="bottomPlayerBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 ui-card border rounded-3xl sm:rounded-full shadow-lg px-3.5 sm:px-6 py-2 sm:py-2.5 flex flex-wrap sm:flex-nowrap items-center justify-center gap-1.5 sm:gap-3 transition-all duration-500 backdrop-blur-xl max-w-[96vw] sm:max-w-none">
 		<!-- Prev Video -->
-		<button onclick="app.playPrevVideo()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95" title="Video Sebelumnya">
-			<i class="fa-solid fa-backward-step text-sm"></i>
+		<button onclick="app.playPrevVideo()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95" title="Video Sebelumnya">
+			<i class="fa-solid fa-backward-step text-xs sm:text-sm"></i>
 		</button>
 		
 		<!-- Exact Rewind 10s -->
-		<button onclick="app.seekRelative(-10)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold whitespace-nowrap" title="Mundur 10 Detik">
+		<button onclick="app.seekRelative(-10)" class="px-2.5 h-8 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold" title="Mundur 10 Detik">
 			<i class="fa-solid fa-rotate-left text-[11px] mr-1"></i>10s
 		</button>
 
 		<!-- Play / Pause -->
-		<button onclick="app.togglePlayPause()" id="btnBottomPlay" class="w-11 h-11 sm:w-12 sm:h-12 rounded-full btn-accent flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-95 transition-all" title="Play / Pause">
-			<i class="fa-solid fa-play text-sm sm:text-lg ml-0.5" id="bottomPlayIcon"></i>
+		<button onclick="app.togglePlayPause()" id="btnBottomPlay" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full btn-accent flex items-center justify-center text-white shadow-sm hover:scale-105 active:scale-95 transition-all" title="Play / Pause">
+			<i class="fa-solid fa-play text-sm sm:text-base ml-0.5" id="bottomPlayIcon"></i>
 		</button>
 
 		<!-- Exact Forward 10s -->
-		<button onclick="app.seekRelative(10)" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold whitespace-nowrap" title="Maju 10 Detik">
+		<button onclick="app.seekRelative(10)" class="px-2.5 h-8 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold" title="Maju 10 Detik">
 			10s<i class="fa-solid fa-rotate-right text-[11px] ml-1"></i>
 		</button>
 
 		<!-- Next Video -->
-		<button onclick="app.playNextVideo()" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95" title="Video Selanjutnya">
-			<i class="fa-solid fa-forward-step text-sm"></i>
+		<button onclick="app.playNextVideo()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95" title="Video Selanjutnya">
+			<i class="fa-solid fa-forward-step text-xs sm:text-sm"></i>
 		</button>
 
-		<div class="h-6 w-[1px] bg-slate-700/50 mx-1 sm:mx-1.5"></div>
+		<div class="hidden sm:block h-6 w-[1px] bg-slate-700/40 mx-1"></div>
 
 		<!-- Repeat Mode -->
-		<button onclick="app.toggleRepeatMode()" id="btnBottomRepeat" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 hover:text-accent transition-all text-xs font-medium" title="Mode Pengulangan">
+		<button onclick="app.toggleRepeatMode()" id="btnBottomRepeat" class="px-3 py-1.5 rounded-full ui-hover-bg flex items-center gap-1.5 hover:text-accent transition-all text-xs font-medium" title="Mode Pengulangan">
 			<i class="fa-solid fa-repeat text-xs sm:text-sm" id="repeatIcon"></i>
-			<span id="repeatBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 whitespace-nowrap">Off</span>
+			<span id="repeatBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700">Off</span>
 		</button>
 
 		<!-- Autoplay Toggle -->
-		<button onclick="app.toggleAutoplayMode()" id="btnBottomAutoplay" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-md transition-all hover:brightness-110" title="Auto Play Berikutnya">
+		<button onclick="app.toggleAutoplayMode()" id="btnBottomAutoplay" class="px-3 py-1.5 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-sm transition-all hover:brightness-110" title="Auto Play Berikutnya">
 			<i class="fa-solid fa-circle-play text-xs sm:text-sm" id="autoplayIcon"></i>
-			<span id="autoplayBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 border border-indigo-400/30 whitespace-nowrap">ON</span>
+			<span id="autoplayBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 border border-indigo-400/30">ON</span>
 		</button>
 	</div>
 
 	<!-- ==========================================
-	     5. MODAL: PROFILE & ACCOUNT (FIXED COVER & LARGE CHART)
+	     5. MODAL: PROFILE & ACCOUNT (NO ELLIPSIS)
 	     ========================================== -->
-	<div id="accountModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm hidden">
-		<div class="ui-modal border rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
+	<div id="accountModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm hidden">
+		<div class="ui-modal border rounded-2xl w-full max-w-xl overflow-hidden flex flex-col max-h-[92vh]">
 			
 			<div class="flex items-center justify-between p-4 border-b ui-border">
-				<h3 class="font-bold flex items-center gap-2 text-sm sm:text-base"><i class="fa-solid fa-circle-user text-accent"></i> Profil Akun</h3>
-				<button type="button" onclick="app.closeModal('accountModal')" class="w-8 h-8 rounded-xl ui-text-subtle ui-hover-bg flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-base"></i></button>
+				<h3 class="font-bold flex items-center gap-2 text-sm sm:text-base break-words"><i class="fa-solid fa-circle-user text-accent"></i> Profil Akun</h3>
+				<button type="button" onclick="app.closeModal('accountModal')" class="w-8 h-8 rounded-xl ui-text-subtle ui-hover-bg flex items-center justify-center transition-colors shrink-0"><i class="fa-solid fa-xmark text-base"></i></button>
 			</div>
 
 			<div class="p-4 overflow-y-auto space-y-4 text-xs sm:text-sm">
 				
 				<!-- Cover & Avatar Card -->
-				<div class="ui-sub-bg border ui-border rounded-2xl overflow-hidden shadow-md">
-					<!-- Cover Area with High Z-Index Upload Button -->
+				<div class="ui-sub-bg border ui-border rounded-2xl overflow-hidden shadow-sm">
+					<!-- Cover Area -->
 					<div id="profileCoverBox" class="w-full h-32 sm:h-40 profile-cover-box relative group p-3" style="background-image: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);">
-						<div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none"></div>
-						<button type="button" onclick="document.getElementById('coverFileInput').click()" class="relative z-30 ml-auto bg-black/75 hover:bg-black text-white text-xs font-medium px-3 py-1.5 rounded-xl backdrop-blur-md border border-white/25 flex items-center gap-2 transition-all shadow-lg cursor-pointer active:scale-95" title="Unggah Foto Sampul">
+						<div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/15 pointer-events-none"></div>
+						<button type="button" onclick="document.getElementById('coverFileInput').click()" class="relative z-30 ml-auto bg-black/70 hover:bg-black text-white text-xs font-medium px-3 py-1.5 rounded-xl backdrop-blur-md border border-white/20 flex items-center gap-2 transition-all shadow-sm cursor-pointer active:scale-95" title="Unggah Foto Sampul">
 							<i class="fa-solid fa-camera text-xs text-accent"></i>
 							<span>Ubah Sampul</span>
 						</button>
 					</div>
 
-					<!-- Avatar & Profile Identity -->
+					<!-- Avatar & Profile Identity (No Truncation) -->
 					<div class="px-4 pb-4 pt-0 relative z-20 flex flex-col sm:flex-row items-center sm:items-end gap-3 -mt-9 sm:-mt-11">
 						<div class="relative group shrink-0">
-							<img id="profileAvatar" src="https://placehold.co/100x100/5b9bd5/ffffff?text=U" alt="Avatar" class="w-18 h-18 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-slate-900 shadow-xl bg-slate-900" style="width: 4.75rem; height: 4.75rem;">
+							<img id="profileAvatar" src="https://placehold.co/100x100/5b9bd5/ffffff?text=U" alt="Avatar" class="rounded-full object-cover border-4 border-slate-900 shadow-md bg-slate-900" style="width: 4.75rem; height: 4.75rem;">
 							<button type="button" onclick="document.getElementById('avatarFileInput').click()" class="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity cursor-pointer" title="Ubah Foto Profil">
 								<i class="fa-solid fa-camera text-sm"></i>
 							</button>
 						</div>
 						<div class="flex-1 text-center sm:text-left min-w-0 w-full">
-							<div id="accNameDisplay" class="flex items-center justify-center sm:justify-start gap-2">
-								<span id="accName" class="font-bold text-base sm:text-lg truncate">Pengguna StreamTube</span>
-								<button type="button" onclick="app.editName()" class="p-1.5 rounded-lg ui-text-subtle hover:text-accent ui-hover-bg transition-colors" title="Edit Nama">
+							<div id="accNameDisplay" class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+								<span id="accName" class="font-bold text-base sm:text-lg break-words whitespace-normal">Pengguna StreamTube</span>
+								<button type="button" onclick="app.editName()" class="p-1.5 rounded-lg ui-text-subtle hover:text-accent ui-hover-bg transition-colors shrink-0" title="Edit Nama">
 									<i class="fa-solid fa-pen-to-square text-xs"></i>
 								</button>
 							</div>
 							<!-- Inline Name Editor -->
-							<div id="accNameEditForm" class="hidden items-center justify-center sm:justify-start gap-1.5 mt-1">
-								<input type="text" id="accNameInput" maxlength="32" class="ui-input border rounded-lg px-2.5 py-1 text-xs font-medium focus:outline-none focus:border-accent w-44" placeholder="Nama baru...">
+							<div id="accNameEditForm" class="hidden flex-wrap items-center justify-center sm:justify-start gap-1.5 mt-1">
+								<input type="text" id="accNameInput" maxlength="32" class="ui-input border rounded-lg px-2.5 py-1 text-xs font-medium focus:outline-none focus:border-accent w-48" placeholder="Nama baru...">
 								<button type="button" onclick="app.saveEditedName()" class="px-2.5 py-1 rounded-lg btn-accent text-xs font-semibold">Simpan</button>
-								<button type="button" onclick="app.cancelEditName()" class="px-2 py-1 rounded-lg ui-card border text-xs">Batal</button>
+								<button type="button" onclick="app.cancelEditName()" class="px-2.5 py-1 rounded-lg ui-card border text-xs">Batal</button>
 							</div>
-							<div id="accAge" class="text-xs ui-text-subtle mt-0.5 whitespace-nowrap">Umur Akun: 0 Hari</div>
+							<div id="accAge" class="text-xs ui-text-subtle mt-0.5 break-words">Umur Akun: 0 Hari</div>
 						</div>
 					</div>
 				</div>
@@ -473,60 +566,60 @@
 				<!-- Quick Stats -->
 				<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
 					<div class="p-2.5 ui-sub-bg rounded-xl border ui-border">
-						<div class="font-bold text-accent text-sm sm:text-base whitespace-nowrap" id="statWatch">0</div>
-						<div class="text-[10px] ui-text-subtle">Tontonan</div>
+						<div class="font-bold text-accent text-sm sm:text-base break-words" id="statWatch">0</div>
+						<div class="text-[10px] ui-text-subtle break-words">Tontonan</div>
 					</div>
 					<div class="p-2.5 ui-sub-bg rounded-xl border ui-border">
-						<div class="font-bold text-rose-500 text-sm sm:text-base whitespace-nowrap" id="statLike">0</div>
-						<div class="text-[10px] ui-text-subtle">Disukai</div>
+						<div class="font-bold text-rose-500 text-sm sm:text-base break-words" id="statLike">0</div>
+						<div class="text-[10px] ui-text-subtle break-words">Disukai</div>
 					</div>
 					<div class="p-2.5 ui-sub-bg rounded-xl border ui-border">
-						<div class="font-bold text-teal-500 text-sm sm:text-base whitespace-nowrap" id="statDownload">0</div>
-						<div class="text-[10px] ui-text-subtle">Unduhan</div>
+						<div class="font-bold text-teal-500 text-sm sm:text-base break-words" id="statDownload">0</div>
+						<div class="text-[10px] ui-text-subtle break-words">Unduhan</div>
 					</div>
 					<div class="p-2.5 ui-sub-bg rounded-xl border ui-border">
-						<div class="font-bold text-amber-500 text-sm sm:text-base whitespace-nowrap" id="statDays">0d</div>
-						<div class="text-[10px] ui-text-subtle">Aktif</div>
+						<div class="font-bold text-amber-500 text-sm sm:text-base break-words" id="statDays">0d</div>
+						<div class="text-[10px] ui-text-subtle break-words">Aktif</div>
 					</div>
 				</div>
 
-				<!-- ENLARGED & PROPORTIONAL 7-DAY WATCH STATISTICS GRAPH -->
+				<!-- 7-DAY WATCH STATISTICS GRAPH -->
 				<div class="p-4 ui-sub-bg border ui-border rounded-2xl space-y-3">
 					<div class="flex flex-wrap items-center justify-between gap-2">
 						<div>
-							<h4 class="font-bold text-xs sm:text-sm flex items-center gap-1.5">
+							<h4 class="font-bold text-xs sm:text-sm flex items-center gap-1.5 break-words">
 								<i class="fa-solid fa-chart-column text-accent"></i>
 								<span>Grafik Tontonan (7 Hari Terakhir)</span>
 							</h4>
-							<p class="text-[10px] ui-text-subtle mt-0.5">Statistik jumlah video yang diputar setiap hari</p>
+							<p class="text-[10px] ui-text-subtle mt-0.5 break-words">Statistik jumlah video yang diputar setiap hari</p>
 						</div>
-						<span id="chartTodaySummary" class="px-2.5 py-1 rounded-full bg-accent-subtle text-accent text-[11px] font-bold font-mono whitespace-nowrap">Hari ini: 0 video</span>
+						<span id="chartTodaySummary" class="px-2.5 py-1 rounded-full bg-accent-subtle text-accent text-[11px] font-bold font-mono">Hari ini: 0 video</span>
 					</div>
 					<div id="watchStatsChartContainer" class="w-full h-52 sm:h-60 pt-1"></div>
 				</div>
 
-				<!-- Animated Tab Navigation -->
-				<div class="flex border-b ui-border text-xs overflow-x-auto no-scrollbar mt-2">
-					<button type="button" onclick="app.switchAccTab('watch')" id="tabWatch" class="py-2 px-3 border-b-2 border-accent text-accent font-medium whitespace-nowrap flex items-center gap-1.5 transition-all">
-						Riwayat (<span id="countWatch" class="whitespace-nowrap">0</span>)
+				<!-- Animated Tab Navigation (Wrapping / No Ellipsis) -->
+				<div class="flex flex-wrap border-b ui-border text-xs mt-2 gap-1">
+					<button type="button" onclick="app.switchAccTab('watch')" id="tabWatch" class="py-2 px-3 border-b-2 border-accent text-accent font-medium flex items-center gap-1.5 transition-all">
+						Riwayat (<span id="countWatch">0</span>)
 					</button>
-					<button type="button" onclick="app.switchAccTab('like')" id="tabLike" class="py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5 transition-all">
-						Disukai (<span id="countLike" class="whitespace-nowrap">0</span>)
+					<button type="button" onclick="app.switchAccTab('like')" id="tabLike" class="py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium flex items-center gap-1.5 transition-all">
+						Disukai (<span id="countLike">0</span>)
 					</button>
-					<button type="button" onclick="app.switchAccTab('download')" id="tabDownload" class="py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5 transition-all">
-						Unduhan (<span id="countDownload" class="whitespace-nowrap">0</span>)
+					<button type="button" onclick="app.switchAccTab('download')" id="tabDownload" class="py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium flex items-center gap-1.5 transition-all">
+						Unduhan (<span id="countDownload">0</span>)
 					</button>
 				</div>
 				<!-- Tab List Content -->
-				<div id="accList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+				<div id="accList" class="space-y-2 max-h-52 overflow-y-auto pr-1"></div>
 			</div>
 
 			<!-- Export/Import Actions -->
-			<div class="p-3.5 border-t ui-border ui-sub-bg flex justify-between gap-2">
-				<button type="button" onclick="app.exportHistory()" class="px-3.5 py-2 text-xs font-medium rounded-xl ui-card border hover:border-accent flex items-center gap-1.5 transition-colors">
+			<div class="p-3.5 border-t ui-border ui-sub-bg flex flex-wrap justify-between gap-2">
+				<button type="button" onclick="app.exportHistory()" class="px-3.5 py-2 text-xs font-medium rounded-xl ui-card border hover:border-accent flex items-center gap-1.5 transition-all">
 					<i class="fa-solid fa-file-export text-accent"></i> Ekspor JSON
 				</button>
-				<button type="button" onclick="app.triggerImport()" class="px-3.5 py-2 text-xs font-medium rounded-xl ui-card border hover:border-accent flex items-center gap-1.5 transition-colors">
+				<button type="button" onclick="app.triggerImport()" class="px-3.5 py-2 text-xs font-medium rounded-xl ui-card border hover:border-accent flex items-center gap-1.5 transition-all">
 					<i class="fa-solid fa-file-import text-accent"></i> Impor JSON
 				</button>
 			</div>
@@ -534,34 +627,34 @@
 	</div>
 
 	<!-- ==========================================
-	     6. MODAL: CLEAN & MODERN SETTINGS (ALL OPTIONS PRESERVED)
+	     6. MODAL: SETTINGS (CIRCULAR ACCENTS, 10px-22px, 6 NEW FONTS)
 	     ========================================== -->
-	<div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm hidden">
-		<div class="ui-modal border rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+	<div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm hidden">
+		<div class="ui-modal border rounded-3xl w-full max-w-xl overflow-hidden flex flex-col max-h-[90vh]">
 			
 			<!-- Modern Header -->
 			<div class="px-5 py-4 border-b ui-border flex items-center justify-between gap-3">
-				<div class="flex items-center gap-3">
+				<div class="flex items-center gap-3 min-w-0">
 					<div class="w-10 h-10 rounded-2xl bg-accent-subtle text-accent flex items-center justify-center border border-accent/25 shrink-0">
 						<i class="fa-solid fa-sliders text-base"></i>
 					</div>
-					<div>
-						<h3 class="font-bold text-sm sm:text-base tracking-tight">Pengaturan Sistem</h3>
-						<p class="text-[11px] ui-text-subtle">Kustomisasi tema, tipografi, audio equalizer & sistem</p>
+					<div class="min-w-0">
+						<h3 class="font-bold text-sm sm:text-base tracking-tight break-words">Pengaturan Sistem</h3>
+						<p class="text-[11px] ui-text-subtle break-words">Kustomisasi tema, tipografi, audio equalizer & sistem</p>
 					</div>
 				</div>
-				<button type="button" onclick="app.closeModal('settingsModal')" class="w-9 h-9 rounded-xl ui-sub-bg border ui-border ui-text-subtle hover:text-accent flex items-center justify-center transition-colors">
+				<button type="button" onclick="app.closeModal('settingsModal')" class="w-9 h-9 rounded-xl ui-sub-bg border ui-border ui-text-subtle hover:text-accent flex items-center justify-center transition-colors shrink-0">
 					<i class="fa-solid fa-xmark text-base"></i>
 				</button>
 			</div>
 
-			<!-- Quick Category Filter Pills -->
-			<div class="px-5 py-2.5 border-b ui-border ui-sub-bg flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
-				<button type="button" onclick="app.filterSettingsSection('all', this)" class="settings-nav-pill px-3 py-1.5 rounded-full btn-accent font-semibold whitespace-nowrap transition-all">Semua</button>
-				<button type="button" onclick="app.filterSettingsSection('appearance', this)" class="settings-nav-pill px-3 py-1.5 rounded-full ui-card border font-medium whitespace-nowrap hover:border-accent transition-all">Tampilan</button>
-				<button type="button" onclick="app.filterSettingsSection('typography', this)" class="settings-nav-pill px-3 py-1.5 rounded-full ui-card border font-medium whitespace-nowrap hover:border-accent transition-all">Tipografi</button>
-				<button type="button" onclick="app.filterSettingsSection('audio', this)" class="settings-nav-pill px-3 py-1.5 rounded-full ui-card border font-medium whitespace-nowrap hover:border-accent transition-all">Audio & Media</button>
-				<button type="button" onclick="app.filterSettingsSection('system', this)" class="settings-nav-pill px-3 py-1.5 rounded-full ui-card border font-medium whitespace-nowrap hover:border-accent transition-all">Sistem</button>
+			<!-- Quick Category Filter Pills (Flex Wrap so Nothing Overflows or Truncates) -->
+			<div class="px-5 py-2.5 border-b ui-border ui-sub-bg flex flex-wrap items-center gap-1.5 text-xs">
+				<button type="button" onclick="app.filterSettingsSection('all', this)" class="settings-nav-pill px-3 py-1.5 rounded-full btn-accent font-semibold transition-all">Semua</button>
+				<button type="button" onclick="app.filterSettingsSection('appearance', this)" class="settings-nav-pill px-3 py-1.5 rounded-full ui-card border font-medium hover:border-accent transition-all">Tampilan</button>
+				<button type="button" onclick="app.filterSettingsSection('typography', this)" class="settings-nav-pill px-3 py-1.5 rounded-full ui-card border font-medium hover:border-accent transition-all">Tipografi</button>
+				<button type="button" onclick="app.filterSettingsSection('audio', this)" class="settings-nav-pill px-3 py-1.5 rounded-full ui-card border font-medium hover:border-accent transition-all">Audio & Media</button>
+				<button type="button" onclick="app.filterSettingsSection('system', this)" class="settings-nav-pill px-3 py-1.5 rounded-full ui-card border font-medium hover:border-accent transition-all">Sistem</button>
 			</div>
 
 			<!-- Settings Body -->
@@ -571,16 +664,16 @@
 				<div data-settings-group="appearance" class="settings-module p-4 ui-sub-bg border ui-border rounded-2xl space-y-4">
 					<div class="flex items-center justify-between">
 						<div class="flex items-center gap-2.5">
-							<span class="w-7 h-7 rounded-lg bg-accent-subtle text-accent flex items-center justify-center"><i class="fa-solid fa-palette text-xs"></i></span>
+							<span class="w-7 h-7 rounded-lg bg-accent-subtle text-accent flex items-center justify-center shrink-0"><i class="fa-solid fa-palette text-xs"></i></span>
 							<div>
-								<h4 class="font-bold text-xs sm:text-sm">Mode Tema & Warna Aksen</h4>
-								<p class="text-[10px] ui-text-subtle">Pilih suasana latar dan warna sorotan antarmuka</p>
+								<h4 class="font-bold text-xs sm:text-sm break-words">Mode Tema & Warna Aksen</h4>
+								<p class="text-[10px] ui-text-subtle break-words">Pilih suasana latar dan warna sorotan antarmuka</p>
 							</div>
 						</div>
 					</div>
 
 					<!-- Visual Theme Cards -->
-					<div class="grid grid-cols-3 gap-2.5">
+					<div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
 						<button type="button" onclick="app.setTheme('dark')" id="btnThemeDark" class="p-2.5 border rounded-2xl text-left transition-all ui-card hover:border-accent flex flex-col gap-2">
 							<div class="w-full h-8 rounded-lg bg-[#020617] border border-slate-800 p-1.5 flex items-center gap-1">
 								<span class="w-2 h-2 rounded-full bg-blue-500"></span>
@@ -615,20 +708,20 @@
 						</button>
 					</div>
 
-					<!-- Accent Palette (Merah Kalem, Kuning Kalem, Hijau Kalem, Biru Kalem, Ungu Kalem, Oren Kalem, Kustom) -->
-					<div class="space-y-1.5 pt-1 border-t ui-border">
-						<div class="flex items-center justify-between">
+					<!-- Circular Accent Palette (Bulat Penuh) -->
+					<div class="space-y-2 pt-2 border-t ui-border">
+						<div class="flex flex-wrap items-center justify-between gap-2">
 							<span class="text-[11px] font-medium ui-text-subtle">Warna Aksen Utama</span>
-							<span class="text-[10px] font-mono text-accent uppercase whitespace-nowrap" id="accentHexLabel">#5B9BD5</span>
+							<span class="text-[10px] font-mono text-accent uppercase" id="accentHexLabel">#5B9BD5</span>
 						</div>
-						<div class="grid grid-cols-7 gap-2" id="accentColorPalette">
-							<button type="button" onclick="app.updateAccentColor('#e06c75')" data-color="#e06c75" class="accent-btn h-9 rounded-xl bg-[#e06c75] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Merah Kalem"></button>
-							<button type="button" onclick="app.updateAccentColor('#e5c07b')" data-color="#e5c07b" class="accent-btn h-9 rounded-xl bg-[#e5c07b] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Kuning Kalem"></button>
-							<button type="button" onclick="app.updateAccentColor('#68b984')" data-color="#68b984" class="accent-btn h-9 rounded-xl bg-[#68b984] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Hijau Kalem"></button>
-							<button type="button" onclick="app.updateAccentColor('#5b9bd5')" data-color="#5b9bd5" class="accent-btn h-9 rounded-xl bg-[#5b9bd5] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Biru Kalem"></button>
-							<button type="button" onclick="app.updateAccentColor('#9b7ede')" data-color="#9b7ede" class="accent-btn h-9 rounded-xl bg-[#9b7ede] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Ungu Kalem"></button>
-							<button type="button" onclick="app.updateAccentColor('#e08e55')" data-color="#e08e55" class="accent-btn h-9 rounded-xl bg-[#e08e55] shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center" title="Oren Kalem"></button>
-							<label class="accent-btn h-9 rounded-xl bg-gradient-to-br from-rose-400 via-emerald-400 to-indigo-400 shadow-sm hover:scale-105 transition-transform border border-white/20 flex items-center justify-center cursor-pointer" title="Kustom">
+						<div class="flex flex-wrap items-center justify-between sm:justify-start gap-2.5 sm:gap-3.5" id="accentColorPalette">
+							<button type="button" onclick="app.updateAccentColor('#e06c75')" data-color="#e06c75" class="accent-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full aspect-square bg-[#e06c75] shadow-sm hover:scale-105 transition-all border-2 border-white/25 flex items-center justify-center shrink-0" title="Merah Kalem"></button>
+							<button type="button" onclick="app.updateAccentColor('#e5c07b')" data-color="#e5c07b" class="accent-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full aspect-square bg-[#e5c07b] shadow-sm hover:scale-105 transition-all border-2 border-white/25 flex items-center justify-center shrink-0" title="Kuning Kalem"></button>
+							<button type="button" onclick="app.updateAccentColor('#68b984')" data-color="#68b984" class="accent-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full aspect-square bg-[#68b984] shadow-sm hover:scale-105 transition-all border-2 border-white/25 flex items-center justify-center shrink-0" title="Hijau Kalem"></button>
+							<button type="button" onclick="app.updateAccentColor('#5b9bd5')" data-color="#5b9bd5" class="accent-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full aspect-square bg-[#5b9bd5] shadow-sm hover:scale-105 transition-all border-2 border-white/25 flex items-center justify-center shrink-0" title="Biru Kalem"></button>
+							<button type="button" onclick="app.updateAccentColor('#9b7ede')" data-color="#9b7ede" class="accent-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full aspect-square bg-[#9b7ede] shadow-sm hover:scale-105 transition-all border-2 border-white/25 flex items-center justify-center shrink-0" title="Ungu Kalem"></button>
+							<button type="button" onclick="app.updateAccentColor('#e08e55')" data-color="#e08e55" class="accent-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full aspect-square bg-[#e08e55] shadow-sm hover:scale-105 transition-all border-2 border-white/25 flex items-center justify-center shrink-0" title="Oren Kalem"></button>
+							<label class="accent-btn w-9 h-9 sm:w-10 sm:h-10 rounded-full aspect-square bg-gradient-to-br from-rose-400 via-emerald-400 to-indigo-400 shadow-sm hover:scale-105 transition-all border-2 border-white/25 flex items-center justify-center cursor-pointer shrink-0" title="Warna Kustom">
 								<i class="fa-solid fa-eye-dropper text-white text-xs"></i>
 								<input type="color" onchange="app.updateAccentColor(this.value)" id="accentColorInput" class="hidden">
 							</label>
@@ -636,48 +729,48 @@
 					</div>
 				</div>
 
-				<!-- Module 2: Tipografi -->
+				<!-- Module 2: Tipografi (10px-22px, Global Weight, 6 New Fonts) -->
 				<div data-settings-group="typography" class="settings-module p-4 ui-sub-bg border ui-border rounded-2xl space-y-4">
 					<div class="flex items-center gap-2.5">
-						<span class="w-7 h-7 rounded-lg bg-accent-subtle text-accent flex items-center justify-center"><i class="fa-solid fa-font text-xs"></i></span>
+						<span class="w-7 h-7 rounded-lg bg-accent-subtle text-accent flex items-center justify-center shrink-0"><i class="fa-solid fa-font text-xs"></i></span>
 						<div>
-							<h4 class="font-bold text-xs sm:text-sm">Tipografi & Keterbacaan</h4>
-							<p class="text-[10px] ui-text-subtle">Atur ukuran, jenis huruf, dan ketebalan teks</p>
+							<h4 class="font-bold text-xs sm:text-sm break-words">Tipografi & Keterbacaan</h4>
+							<p class="text-[10px] ui-text-subtle break-words">Berlaku untuk seluruh teks & angka di aplikasi</p>
 						</div>
 					</div>
 
-					<!-- Live Typography Preview Box -->
-					<div class="ui-card border rounded-xl p-3 flex items-center justify-between gap-3">
-						<div class="min-w-0">
-							<div class="text-[10px] uppercase tracking-wider text-accent font-semibold">Pratinjau Huruf</div>
-							<div class="font-bold text-sm truncate mt-0.5">StreamTube Pemutar Video HD</div>
-							<div class="text-xs ui-text-subtle truncate">Teks nyaman dibaca di berbagai ukuran layar.</div>
+					<!-- Live Typography Preview Box (No Ellipsis) -->
+					<div class="ui-card border rounded-xl p-3 flex flex-wrap items-center justify-between gap-3">
+						<div class="min-w-0 flex-1">
+							<div class="text-[10px] uppercase tracking-wider text-accent font-semibold">Pratinjau Huruf & Angka</div>
+							<div class="font-bold text-sm break-words mt-0.5">StreamTube HD 123.456 • 2026</div>
+							<div class="text-xs ui-text-subtle break-words">Teks & angka otomatis menyesuaikan jenis, ukuran, dan ketebalan.</div>
 						</div>
-						<span class="px-2.5 py-1 rounded-lg bg-accent-subtle text-accent font-mono text-xs font-bold shrink-0 whitespace-nowrap" id="fontSizeVal">14px</span>
+						<span class="px-2.5 py-1 rounded-lg bg-accent-subtle text-accent font-mono text-xs font-bold shrink-0" id="fontSizeVal">14px</span>
 					</div>
 					
 					<div>
 						<div class="flex justify-between items-center mb-1.5">
 							<label class="font-medium text-xs">Skala Ukuran Font</label>
-							<span class="text-[10px] ui-text-subtle whitespace-nowrap">12px — 18px</span>
+							<span class="text-[10px] ui-text-subtle">10px — 22px</span>
 						</div>
 						<div class="flex items-center gap-3">
-							<span class="text-[11px] font-bold ui-text-subtle">A-</span>
-							<input type="range" id="fontSizeSlider" min="12" max="18" value="14" step="1" oninput="app.updateFontSize(this.value)" class="w-full cursor-pointer">
-							<span class="text-sm font-bold ui-text-subtle">A+</span>
+							<span class="text-[11px] font-bold ui-text-subtle">10</span>
+							<input type="range" id="fontSizeSlider" min="10" max="22" value="14" step="1" oninput="app.updateFontSize(this.value)" class="w-full cursor-pointer">
+							<span class="text-sm font-bold ui-text-subtle">22</span>
 						</div>
 					</div>
 					
 					<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
 						<div>
-							<label class="block font-medium text-[11px] ui-text-subtle mb-1.5">Jenis Font</label>
+							<label class="block font-medium text-[11px] ui-text-subtle mb-1.5">Jenis Font (6 Pilihan Baru)</label>
 							<select id="fontFamilySelect" onchange="app.updateFontFamily(this.value)" class="w-full ui-input border rounded-xl px-3 py-2.5 text-xs font-medium focus:outline-none focus:border-accent">
-								<option value="Poppins">Poppins</option>
-								<option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
-								<option value="Inter">Inter</option>
-								<option value="Outfit">Outfit</option>
-								<option value="Urbanist">Urbanist</option>
-								<option value="Lexend">Lexend</option>
+								<option value="DM Sans">DM Sans</option>
+								<option value="Nunito">Nunito</option>
+								<option value="Space Grotesk">Space Grotesk</option>
+								<option value="Rubik">Rubik</option>
+								<option value="Manrope">Manrope</option>
+								<option value="Sora">Sora</option>
 							</select>
 						</div>
 						<div>
@@ -686,6 +779,7 @@
 								<option value="400">Normal (400)</option>
 								<option value="500">Medium (500)</option>
 								<option value="600">Semi-Bold (600)</option>
+								<option value="700">Bold (700)</option>
 							</select>
 						</div>
 					</div>
@@ -694,25 +788,25 @@
 				<!-- Module 3: Kontrol Media & Audio Equalizer -->
 				<div data-settings-group="audio" class="settings-module p-4 ui-sub-bg border ui-border rounded-2xl space-y-4">
 					<div class="flex items-center gap-2.5">
-						<span class="w-7 h-7 rounded-lg bg-accent-subtle text-accent flex items-center justify-center"><i class="fa-solid fa-headphones text-xs"></i></span>
+						<span class="w-7 h-7 rounded-lg bg-accent-subtle text-accent flex items-center justify-center shrink-0"><i class="fa-solid fa-headphones text-xs"></i></span>
 						<div>
-							<h4 class="font-bold text-xs sm:text-sm">Kontrol Media & Audio Equalizer</h4>
-							<p class="text-[10px] ui-text-subtle">Volume pemutar, kecerahan layar & 5-Band EQ</p>
+							<h4 class="font-bold text-xs sm:text-sm break-words">Kontrol Media & Audio Equalizer</h4>
+							<p class="text-[10px] ui-text-subtle break-words">Volume pemutar, kecerahan layar & 5-Band EQ</p>
 						</div>
 					</div>
 					
 					<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 						<div class="ui-card border rounded-xl p-3 space-y-2">
-							<div class="flex justify-between items-center">
+							<div class="flex justify-between items-center gap-2">
 								<span class="font-medium text-xs flex items-center gap-1.5"><i class="fa-solid fa-volume-high text-accent"></i> Volume</span>
-								<span id="volumeVal" class="font-mono text-accent text-xs font-bold whitespace-nowrap">100%</span>
+								<span id="volumeVal" class="font-mono text-accent text-xs font-bold">100%</span>
 							</div>
 							<input type="range" id="volumeSlider" min="0" max="100" value="100" oninput="app.setVolume(this.value)" class="w-full cursor-pointer">
 						</div>
 						<div class="ui-card border rounded-xl p-3 space-y-2">
-							<div class="flex justify-between items-center">
+							<div class="flex justify-between items-center gap-2">
 								<span class="font-medium text-xs flex items-center gap-1.5"><i class="fa-solid fa-sun text-amber-400"></i> Brightness</span>
-								<span id="brightnessVal" class="font-mono text-accent text-xs font-bold whitespace-nowrap">100%</span>
+								<span id="brightnessVal" class="font-mono text-accent text-xs font-bold">100%</span>
 							</div>
 							<input type="range" id="brightnessSlider" min="50" max="150" value="100" oninput="app.setBrightness(this.value)" class="w-full cursor-pointer">
 						</div>
@@ -730,7 +824,7 @@
 
 					<!-- 5 Band Equalizer -->
 					<div class="ui-card border rounded-2xl p-3.5 space-y-3">
-						<div class="flex items-center justify-between gap-2">
+						<div class="flex flex-wrap items-center justify-between gap-2">
 							<span class="font-semibold text-xs flex items-center gap-1.5"><i class="fa-solid fa-wave-square text-accent"></i> Audio Equalizer (5-Band)</span>
 							<select id="eqPresetSelect" onchange="app.setEqPreset(this.value)" class="ui-input border rounded-xl px-2.5 py-1 text-xs font-medium focus:outline-none focus:border-accent">
 								<option value="flat">Flat</option>
@@ -740,31 +834,31 @@
 								<option value="rock">Rock</option>
 							</select>
 						</div>
-						<div class="grid grid-cols-5 gap-2 text-center pt-1">
-							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 border ui-border">
+						<div class="grid grid-cols-5 gap-1.5 sm:gap-2 text-center pt-1">
+							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 px-1 border ui-border">
 								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(0, this.value)" class="eq-slider">
-								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium">60Hz</span>
-								<span id="eqVal0" class="text-[9px] font-mono text-accent font-bold whitespace-nowrap">0dB</span>
+								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium break-words">60Hz</span>
+								<span id="eqVal0" class="text-[9px] font-mono text-accent font-bold break-words">0dB</span>
 							</div>
-							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 border ui-border">
+							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 px-1 border ui-border">
 								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(1, this.value)" class="eq-slider">
-								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium">230Hz</span>
-								<span id="eqVal1" class="text-[9px] font-mono text-accent font-bold whitespace-nowrap">0dB</span>
+								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium break-words">230Hz</span>
+								<span id="eqVal1" class="text-[9px] font-mono text-accent font-bold break-words">0dB</span>
 							</div>
-							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 border ui-border">
+							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 px-1 border ui-border">
 								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(2, this.value)" class="eq-slider">
-								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium">910Hz</span>
-								<span id="eqVal2" class="text-[9px] font-mono text-accent font-bold whitespace-nowrap">0dB</span>
+								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium break-words">910Hz</span>
+								<span id="eqVal2" class="text-[9px] font-mono text-accent font-bold break-words">0dB</span>
 							</div>
-							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 border ui-border">
+							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 px-1 border ui-border">
 								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(3, this.value)" class="eq-slider">
-								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium">4kHz</span>
-								<span id="eqVal3" class="text-[9px] font-mono text-accent font-bold whitespace-nowrap">0dB</span>
+								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium break-words">4kHz</span>
+								<span id="eqVal3" class="text-[9px] font-mono text-accent font-bold break-words">0dB</span>
 							</div>
-							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 border ui-border">
+							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 px-1 border ui-border">
 								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(4, this.value)" class="eq-slider">
-								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium">14kHz</span>
-								<span id="eqVal4" class="text-[9px] font-mono text-accent font-bold whitespace-nowrap">0dB</span>
+								<span class="text-[10px] ui-text-subtle mt-1.5 font-medium break-words">14kHz</span>
+								<span id="eqVal4" class="text-[9px] font-mono text-accent font-bold break-words">0dB</span>
 							</div>
 						</div>
 					</div>
@@ -773,34 +867,34 @@
 				<!-- Module 4: Umpan Balik System -->
 				<div data-settings-group="system" class="settings-module p-4 ui-sub-bg border ui-border rounded-2xl space-y-3">
 					<div class="flex items-center gap-2.5">
-						<span class="w-7 h-7 rounded-lg bg-accent-subtle text-accent flex items-center justify-center"><i class="fa-solid fa-microchip text-xs"></i></span>
+						<span class="w-7 h-7 rounded-lg bg-accent-subtle text-accent flex items-center justify-center shrink-0"><i class="fa-solid fa-microchip text-xs"></i></span>
 						<div>
-							<h4 class="font-bold text-xs sm:text-sm">Umpan Balik Sistem</h4>
-							<p class="text-[10px] ui-text-subtle">Efek suara interaktif dan getaran sentuhan</p>
+							<h4 class="font-bold text-xs sm:text-sm break-words">Umpan Balik Sistem</h4>
+							<p class="text-[10px] ui-text-subtle break-words">Efek suara interaktif bervariasi dan getaran 100ms</p>
 						</div>
 					</div>
 
 					<div class="divide-y ui-border ui-card border rounded-xl px-3.5">
 						<div class="py-3 flex items-center justify-between gap-3">
-							<div class="flex items-center gap-2.5">
-								<i class="fa-solid fa-volume-high text-accent text-xs w-4 text-center"></i>
-								<div>
-									<div class="font-semibold text-xs">Sound FX (Web Audio)</div>
-									<div class="text-[10px] ui-text-subtle">Efek klik halus saat menekan tombol</div>
+							<div class="flex items-center gap-2.5 min-w-0">
+								<i class="fa-solid fa-volume-high text-accent text-xs w-4 text-center shrink-0"></i>
+								<div class="min-w-0">
+									<div class="font-semibold text-xs break-words">Sound FX Dinamis (Web Audio)</div>
+									<div class="text-[10px] ui-text-subtle break-words">Nada berbeda untuk play, like, tab, modal & notifikasi</div>
 								</div>
 							</div>
-							<label class="custom-switch"><input type="checkbox" id="soundToggle" onchange="app.toggleSound(this.checked)"><span class="switch-slider"></span></label>
+							<label class="custom-switch shrink-0"><input type="checkbox" id="soundToggle" onchange="app.toggleSound(this.checked)"><span class="switch-slider"></span></label>
 						</div>
 
 						<div class="py-3 flex items-center justify-between gap-3">
-							<div class="flex items-center gap-2.5">
-								<i class="fa-solid fa-hand-pointer text-accent text-xs w-4 text-center"></i>
-								<div>
-									<div class="font-semibold text-xs">Getar Haptic 100ms</div>
-									<div class="text-[10px] ui-text-subtle">Umpan balik getar pada perangkat seluler</div>
+							<div class="flex items-center gap-2.5 min-w-0">
+								<i class="fa-solid fa-hand-pointer text-accent text-xs w-4 text-center shrink-0"></i>
+								<div class="min-w-0">
+									<div class="font-semibold text-xs break-words">Getar Haptic 100ms</div>
+									<div class="text-[10px] ui-text-subtle break-words">Durasi getar seragam 100ms di setiap interaksi</div>
 								</div>
 							</div>
-							<label class="custom-switch"><input type="checkbox" id="hapticToggle" onchange="app.toggleHaptic(this.checked)"><span class="switch-slider"></span></label>
+							<label class="custom-switch shrink-0"><input type="checkbox" id="hapticToggle" onchange="app.toggleHaptic(this.checked)"><span class="switch-slider"></span></label>
 						</div>
 					</div>
 				</div>
@@ -813,9 +907,9 @@
 	<input type="file" id="importFileInput" class="hidden" accept=".json" onchange="app.handleImportFile(event)">
 
 	<!-- Toast Message Notification -->
-	<div id="toast" class="fixed bottom-24 right-4 z-50 bg-slate-900 text-slate-100 border border-slate-700 px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-xs transition-opacity duration-300 opacity-0 pointer-events-none">
-		<i class="fa-solid fa-circle-info text-accent" id="toastIcon"></i>
-		<span id="toastMsg">Notifikasi</span>
+	<div id="toast" class="fixed bottom-24 right-4 left-4 sm:left-auto z-50 bg-slate-900 text-slate-100 border border-slate-700 px-4 py-2.5 rounded-xl flex items-center gap-2.5 text-xs opacity-0 pointer-events-none max-w-sm ml-auto">
+		<i class="fa-solid fa-circle-info text-accent shrink-0" id="toastIcon"></i>
+		<span id="toastMsg" class="break-words whitespace-normal">Notifikasi</span>
 	</div>
 
 	<!-- ==========================================
@@ -824,11 +918,11 @@
 	<footer class="ui-card border-t pt-8 pb-6 px-4 text-xs mt-auto">
 		<div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
 			<div class="space-y-2">
-				<div class="flex items-center gap-2">
-					<div class="w-7 h-7 rounded-lg btn-accent flex items-center justify-center"><i class="fa-solid fa-play text-xs text-white"></i></div>
-					<span class="font-bold text-base">StreamTube</span>
+				<div class="flex items-center gap-2 font-bold">
+					<img src="streamtube/logo.png" alt="" width="32" height="32" class="h-8 w-8 shrink-0 rounded-xl object-contain">
+					StreamTube
 				</div>
-				<p class="ui-text-subtle leading-relaxed text-[11px]">
+				<p class="ui-text-subtle leading-relaxed text-[11px] break-words">
 					Proyek demonstrasi pemutar video YouTube kustom, bebas gangguan, dengan antarmuka dinamis dan kontrol presisi tinggi.
 				</p>
 			</div>
@@ -837,10 +931,10 @@
 			<div>
 				<h4 class="font-semibold mb-2 text-xs">Teknologi & API</h4>
 				<ul class="space-y-1.5 ui-text-subtle text-[11px]">
-					<li><i class="fa-brands fa-js text-yellow-400 w-4"></i> Vanilla JavaScript (ES6+)</li>
-					<li><i class="fa-brands fa-html5 text-orange-500 w-4"></i> HTML5 & LocalStorage</li>
-					<li><i class="fa-brands fa-css3 text-blue-400 w-4"></i> Tailwind CSS (Utility-first)</li>
-					<li><i class="fa-brands fa-youtube text-red-500 w-4"></i> YouTube Iframe API v3</li>
+					<li class="break-words"><i class="fa-brands fa-js text-yellow-400 w-4"></i> Vanilla JavaScript (ES6+)</li>
+					<li class="break-words"><i class="fa-brands fa-html5 text-orange-500 w-4"></i> HTML5 & LocalStorage</li>
+					<li class="break-words"><i class="fa-brands fa-css3 text-blue-400 w-4"></i> Tailwind CSS (Utility-first)</li>
+					<li class="break-words"><i class="fa-brands fa-youtube text-red-500 w-4"></i> YouTube Iframe API v3</li>
 				</ul>
 			</div>
 
@@ -848,15 +942,15 @@
 			<div>
 				<h4 class="font-semibold mb-2 text-xs">Logika & Arsitektur</h4>
 				<ul class="space-y-1.5 ui-text-subtle text-[11px]">
-					<li><i class="fa-solid fa-server text-emerald-400 w-4"></i> Multi-Server Fallback</li>
-					<li><i class="fa-solid fa-microchip text-teal-400 w-4"></i> Real-time Sync & Haptic</li>
-					<li><i class="fa-solid fa-music text-indigo-400 w-4"></i> Web Audio API (Sound FX)</li>
-					<li><i class="fa-solid fa-code text-slate-400 w-4"></i> Single-Page App (SPA)</li>
+					<li class="break-words"><i class="fa-solid fa-server text-emerald-400 w-4"></i> Multi-Server Fallback</li>
+					<li class="break-words"><i class="fa-solid fa-microchip text-teal-400 w-4"></i> Real-time Sync & Haptic 100ms</li>
+					<li class="break-words"><i class="fa-solid fa-music text-indigo-400 w-4"></i> Web Audio API (Multi-Tone FX)</li>
+					<li class="break-words"><i class="fa-solid fa-code text-slate-400 w-4"></i> Single-Page App (SPA)</li>
 				</ul>
 			</div>
 		</div>
 		<div class="max-w-6xl mx-auto pt-4 border-t ui-border text-center text-[11px] ui-text-subtle">
-			<p>© 2026 StreamTube App. Powered by Custom Player Engine.</p>
+			<p class="break-words">© 2026 StreamTube App. Powered by Custom Player Engine.</p>
 		</div>
 	</footer>
 
@@ -869,6 +963,14 @@
 			servers: [
 				{ type: 'yt_official', name: 'YouTube API v3' },
 				{ type: 'piped', baseUrl: 'https://pipedapi.kavin.rocks' }
+			],
+			allowedFonts: [
+				'DM Sans',
+				'Nunito',
+				'Space Grotesk',
+				'Rubik',
+				'Manrope',
+				'Sora'
 			],
 			categories: [
 				{ name: "Populer", icon: "fa-solid fa-fire text-amber-500", query: "indonesia viral trending" },
@@ -907,7 +1009,7 @@
 				settings: { 
 					theme: "dark",
 					fontSize: 14,
-					fontFamily: "Poppins",
+					fontFamily: "DM Sans",
 					fontWeight: "400", 
 					accentColor: "#5b9bd5",
 					volume: 100,
@@ -974,15 +1076,13 @@
 
 			setupScrollListener() {
 				window.addEventListener('scroll', () => {
-					// Bottom Bar Auto-Hide Logic on Scroll
 					const bBar = document.getElementById('bottomPlayerBar');
-					if (bBar) bBar.classList.add('translate-y-24', 'opacity-0');
+					if (bBar) bBar.classList.add('translate-y-28', 'opacity-0');
 
-					// Bottom Bar Reappear on Idle
 					clearTimeout(this.scrollTimeout);
 					this.scrollTimeout = setTimeout(() => {
-						if (bBar) bBar.classList.remove('translate-y-24', 'opacity-0');
-					}, 800);
+						if (bBar) bBar.classList.remove('translate-y-28', 'opacity-0');
+					}, 750);
 				});
 			},
 
@@ -1027,7 +1127,7 @@
 			// SEEK EXACT REAL-TIME LOGIC (+/- 10s)
 			seekRelative(seconds) {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('seek');
 				const iframe = document.getElementById('ytPlayer');
 				if (!iframe || !this.state.currentVideo) return;
 
@@ -1045,7 +1145,6 @@
 
 			togglePlayPause() {
 				this.triggerHaptic();
-				this.playSound();
 				const iframe = document.getElementById('ytPlayer');
 				if (!iframe || !this.state.currentVideo) {
 					if (this.fetchedVideos.length > 0) this.playVideo(this.fetchedVideos[0]);
@@ -1053,9 +1152,11 @@
 				}
 				
 				if (this.isPlaying) {
+					this.playSound('pause');
 					iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
 					this.isPlaying = false;
 				} else {
+					this.playSound('play');
 					iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
 					this.isPlaying = true;
 				}
@@ -1076,11 +1177,11 @@
 				this.categories.forEach((cat, idx) => {
 					const btn = document.createElement('button');
 					const isActive = idx === this.activeCategoryIndex;
-					btn.className = `px-3.5 py-1.5 rounded-full whitespace-nowrap transition-all text-xs flex items-center gap-1.5 shrink-0 ${isActive ? 'btn-accent text-white font-semibold' : 'ui-card border font-medium hover:border-accent'}`;
+					btn.className = `px-3.5 py-1.5 rounded-full transition-all text-xs flex items-center gap-1.5 break-words ${isActive ? 'btn-accent text-white font-semibold' : 'ui-card border font-medium hover:border-accent'}`;
 					btn.innerHTML = `<i class="${isActive ? cat.icon.replace(/text-[a-z0-9-]+/g, 'text-white') : cat.icon}"></i> <span class="inline-block ${isActive ? 'text-white opacity-100 visible' : ''}">${cat.name}</span>`;
 					btn.onclick = () => {
 						this.triggerHaptic();
-						this.playSound();
+						this.playSound('tab');
 						this.activeCategoryIndex = idx;
 						this.renderCategories();
 						document.getElementById('sectionTitle').innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-accent"></i> Kategori: ${cat.name}`;
@@ -1128,16 +1229,25 @@
 				grid.innerHTML = '';
 				videos.forEach(v => {
 					const card = document.createElement('div');
-					card.className = "ui-card border rounded-xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-all flex flex-col group shadow-sm";
+					card.className = "ui-card border rounded-xl overflow-hidden cursor-pointer hover:scale-[1.015] transition-all flex flex-col group";
 					card.onclick = () => this.playVideo(v);
 					card.innerHTML = `
 						<div class="relative aspect-video bg-black overflow-hidden">
 							<img src="${v.thumb}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="${v.title.replace(/"/g, '&quot;')}">
-							<div class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded font-mono flex items-center gap-1 backdrop-blur-md border border-white/10 whitespace-nowrap"><i class="fa-solid fa-clock text-[9px]"></i> ${v.durationFormatted}</div>
+							<div class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] px-2 py-0.5 rounded font-mono flex items-center gap-1 backdrop-blur-md border border-white/10"><i class="fa-solid fa-clock text-[9px]"></i> ${v.durationFormatted}</div>
 						</div>
-						<div class="p-3 flex-1 flex flex-col justify-between">
-							<h3 class="font-medium text-xs sm:text-sm line-clamp-2 leading-snug group-hover:text-accent transition-colors">${v.title}</h3>
-							<div class="mt-2 text-[11px] ui-text-subtle"><p class="font-medium truncate flex items-center gap-1"><i class="fa-solid fa-circle-user text-[10px]"></i> ${v.channel}</p><div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 mt-1"><span class="whitespace-nowrap">${this.formatNumber(v.views)}x ditonton</span><span class="whitespace-nowrap">${v.date}</span></div></div>
+						<div class="p-3 flex-1 flex flex-col justify-between gap-2">
+							<h3 class="font-medium text-xs sm:text-sm leading-snug break-words whitespace-normal group-hover:text-accent transition-colors">${v.title}</h3>
+							<div class="text-[11px] ui-text-subtle space-y-1">
+								<p class="font-medium flex items-start gap-1.5 break-words whitespace-normal">
+									<i class="fa-solid fa-circle-user text-[10px] mt-0.5 shrink-0"></i>
+									<span class="break-words">${v.channel}</span>
+								</p>
+								<div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5">
+									<span class="break-words">${this.formatNumber(v.views)}x ditonton</span>
+									<span class="break-words">${v.date}</span>
+								</div>
+							</div>
 						</div>
 					`;
 					grid.appendChild(card);
@@ -1166,7 +1276,7 @@
 
 			playVideo(videoObj) {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('play');
 				this.state.currentVideo = videoObj;
 				this.state.lastWatched = videoObj;
 				this.currentVideoTime = 0;
@@ -1222,7 +1332,7 @@
 
 			playNextVideo() {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('seek');
 				if (!this.fetchedVideos.length) return;
 				const idx = this.state.currentVideo ? this.fetchedVideos.findIndex(v => v.ytId === this.state.currentVideo.ytId) : -1;
 				this.playVideo(this.fetchedVideos[(idx + 1) % this.fetchedVideos.length]);
@@ -1230,7 +1340,7 @@
 			
 			playPrevVideo() {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('seek');
 				if (!this.fetchedVideos.length) return;
 				const idx = this.state.currentVideo ? this.fetchedVideos.findIndex(v => v.ytId === this.state.currentVideo.ytId) : 0;
 				this.playVideo(this.fetchedVideos[(idx - 1 + this.fetchedVideos.length) % this.fetchedVideos.length]);
@@ -1238,7 +1348,7 @@
 
 			toggleRepeatMode() {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('toggle');
 				if (this.repeatMode === 'off') this.repeatMode = 'one';
 				else if (this.repeatMode === 'one') this.repeatMode = 'all';
 				else this.repeatMode = 'off';
@@ -1248,7 +1358,7 @@
 
 			toggleAutoplayMode() {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('toggle');
 				this.isAutoplay = !this.isAutoplay;
 				this.updateBottomBarUI();
 				this.showToast(`Auto Play: ${this.isAutoplay ? 'ON' : 'OFF'}`);
@@ -1256,7 +1366,7 @@
 
 			toggleDescription() {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('tap');
 				const content = document.getElementById('videoDescContent');
 				const btn = document.getElementById('toggleDescBtn');
 				this.isDescExpanded = !this.isDescExpanded;
@@ -1265,7 +1375,7 @@
 					btn.innerHTML = '<span>Sembunyikan</span><i class="fa-solid fa-chevron-up text-[10px]"></i>';
 				} else {
 					content.classList.remove('expanded');
-					btn.innerHTML = '<span>Selengkapnya...</span><i class="fa-solid fa-chevron-down text-[10px]"></i>';
+					btn.innerHTML = '<span>Tampilkan Semua</span><i class="fa-solid fa-chevron-down text-[10px]"></i>';
 				}
 			},
 			
@@ -1274,12 +1384,12 @@
 				const content = document.getElementById('videoDescContent');
 				const btn = document.getElementById('toggleDescBtn');
 				if (content) content.classList.remove('expanded');
-				if (btn) btn.innerHTML = '<span>Selengkapnya...</span><i class="fa-solid fa-chevron-down text-[10px]"></i>';
+				if (btn) btn.innerHTML = '<span>Tampilkan Semua</span><i class="fa-solid fa-chevron-down text-[10px]"></i>';
 			},
 
 			copyDescription() {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('success');
 				const desc = document.getElementById('videoDescContent')?.innerText || '';
 				if (!desc) return;
 				const el = document.createElement('textarea');
@@ -1293,17 +1403,19 @@
 
 			toggleLike() {
 				this.triggerHaptic();
-				this.playSound();
 				if (!this.state.currentVideo) {
+					this.playSound('error');
 					this.showToast('Pilih video terlebih dahulu');
 					return;
 				}
 				const ytId = this.state.currentVideo.ytId;
 				const isLiked = !!this.state.likesMap[ytId];
 				if (isLiked) {
+					this.playSound('tap');
 					delete this.state.likesMap[ytId];
 					this.state.likedList = this.state.likedList.filter(v => v.ytId !== ytId);
 				} else {
+					this.playSound('like');
 					this.state.likesMap[ytId] = true;
 					this.state.likedList.unshift({ ...this.state.currentVideo, likedAt: new Date().toLocaleString('id-ID') });
 				}
@@ -1327,7 +1439,7 @@
 				if (metaLikes) metaLikes.innerText = formattedLikes;
 				
 				if (isLiked) {
-					btn.className = "flex items-center gap-2 px-3.5 py-2 rounded-xl bg-rose-600 text-white text-xs font-semibold shadow-md shadow-rose-600/25 transition-all";
+					btn.className = "flex items-center gap-2 px-3.5 py-2 rounded-xl bg-rose-600 text-white text-xs font-semibold shadow-sm transition-all";
 					icon.className = "fa-solid fa-heart text-xs";
 				} else {
 					btn.className = "flex items-center gap-2 px-3.5 py-2 rounded-xl ui-sub-bg border ui-border text-xs font-semibold hover:border-rose-500/60 transition-all";
@@ -1337,27 +1449,30 @@
 
 			toggleTheaterMode() {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('toggle');
 				this.isTheaterMode = !this.isTheaterMode;
 				const wrapper = document.getElementById('playerWrapper');
 				const icon = document.getElementById('theaterIcon');
 				if (this.isTheaterMode) {
 					wrapper.classList.remove('max-w-4xl');
 					wrapper.classList.add('max-w-6xl');
-					icon.className = 'fa-solid fa-compress text-xs';
+					if (icon) icon.className = 'fa-solid fa-compress text-xs';
 					this.showToast('Mode Bioskop Aktif');
 				} else {
 					wrapper.classList.remove('max-w-6xl');
 					wrapper.classList.add('max-w-4xl');
-					icon.className = 'fa-solid fa-expand text-xs';
+					if (icon) icon.className = 'fa-solid fa-expand text-xs';
 					this.showToast('Mode Bioskop Nonaktif');
 				}
 			},
 
 			shareCurrentVideo() {
 				this.triggerHaptic();
-				this.playSound();
-				if (!this.state.currentVideo) return;
+				if (!this.state.currentVideo) {
+					this.playSound('error');
+					return;
+				}
+				this.playSound('success');
 				const ytUrl = `https://www.youtube.com/watch?v=${this.state.currentVideo.ytId}`;
 				const el = document.createElement('textarea');
 				el.value = ytUrl;
@@ -1370,11 +1485,12 @@
 
 			downloadAction(type) {
 				this.triggerHaptic();
-				this.playSound();
 				if (!this.state.currentVideo) {
+					this.playSound('error');
 					this.showToast('Pilih video terlebih dahulu');
 					return;
 				}
+				this.playSound('success');
 				this.state.downloads.unshift({
 					title: this.state.currentVideo.title,
 					type: type.toUpperCase(),
@@ -1389,23 +1505,23 @@
 
 			updateBottomBarUI() {
 				const playIcon = document.getElementById('bottomPlayIcon');
-				if (playIcon) playIcon.className = this.isPlaying ? 'fa-solid fa-pause text-sm sm:text-lg' : 'fa-solid fa-play text-sm sm:text-lg ml-0.5';
+				if (playIcon) playIcon.className = this.isPlaying ? 'fa-solid fa-pause text-sm sm:text-base' : 'fa-solid fa-play text-sm sm:text-base ml-0.5';
 
 				const repeatBadge = document.getElementById('repeatBadge');
 				const repeatBtn = document.getElementById('btnBottomRepeat');
 				if (repeatBadge && repeatBtn) {
 					if (this.repeatMode === 'one') {
 						repeatBadge.innerText = '1x';
-						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-amber-500/30 text-amber-300 border border-amber-400/50 whitespace-nowrap';
-						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-amber-600 text-white flex items-center gap-1.5 text-xs shadow-md";
+						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-amber-500/30 text-amber-300 border border-amber-400/50';
+						repeatBtn.className = "px-3 py-1.5 rounded-full bg-amber-600 text-white flex items-center gap-1.5 text-xs shadow-sm transition-all";
 					} else if (this.repeatMode === 'all') {
 						repeatBadge.innerText = 'ALL';
-						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-teal-500/30 text-teal-300 border border-teal-400/50 whitespace-nowrap';
-						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-teal-600 text-white flex items-center gap-1.5 text-xs shadow-md";
+						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-teal-500/30 text-teal-300 border border-teal-400/50';
+						repeatBtn.className = "px-3 py-1.5 rounded-full bg-teal-600 text-white flex items-center gap-1.5 text-xs shadow-sm transition-all";
 					} else {
 						repeatBadge.innerText = 'OFF';
-						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap';
-						repeatBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 transition-all text-xs";
+						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
+						repeatBtn.className = "px-3 py-1.5 rounded-full ui-hover-bg flex items-center gap-1.5 transition-all text-xs";
 					}
 				}
 
@@ -1414,12 +1530,12 @@
 				if (autoBadge && autoBtn) {
 					if (this.isAutoplay) {
 						autoBadge.innerText = 'ON';
-						autoBadge.className = 'font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 text-indigo-200 border border-indigo-400/30 whitespace-nowrap';
-						autoBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs shadow-md";
+						autoBadge.className = 'font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 text-indigo-200 border border-indigo-400/30';
+						autoBtn.className = "px-3 py-1.5 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs shadow-sm transition-all";
 					} else {
 						autoBadge.innerText = 'OFF';
-						autoBadge.className = 'font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap';
-						autoBtn.className = "px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full ui-hover-bg flex items-center gap-1.5 transition-all text-xs";
+						autoBadge.className = 'font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
+						autoBtn.className = "px-3 py-1.5 rounded-full ui-hover-bg flex items-center gap-1.5 transition-all text-xs";
 					}
 				}
 			},
@@ -1428,7 +1544,7 @@
 			handleSearch(e) {
 				if (e) e.preventDefault();
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('tap');
 				const input = document.getElementById('searchInput');
 				const query = input.value.trim();
 				if (!query) return;
@@ -1449,14 +1565,21 @@
 			},
 
 			showSearchSuggestions() {
-				document.getElementById('searchSuggestions').classList.remove('hidden');
+				const popup = document.getElementById('searchSuggestions');
+				popup.classList.remove('hidden', 'popup-anim-out');
+				popup.classList.add('popup-anim-in');
 				this.renderSearchSuggestions(document.getElementById('searchInput').value);
 			},
 
 			hideSearchSuggestions() {
+				const popup = document.getElementById('searchSuggestions');
+				if (!popup || popup.classList.contains('hidden')) return;
+				popup.classList.remove('popup-anim-in');
+				popup.classList.add('popup-anim-out');
 				setTimeout(() => {
-					document.getElementById('searchSuggestions').classList.add('hidden');
-				}, 200);
+					popup.classList.add('hidden');
+					popup.classList.remove('popup-anim-out');
+				}, 180);
 			},
 			
 			renderSearchSuggestions(filterVal = '') {
@@ -1469,13 +1592,13 @@
 				}
 				filtered.forEach(item => {
 					const div = document.createElement('div');
-					div.className = "px-3.5 py-2 ui-hover-bg cursor-pointer flex items-center justify-between transition-colors";
+					div.className = "px-3.5 py-2 ui-hover-bg cursor-pointer flex items-center justify-between gap-2 transition-colors";
 					div.onmousedown = () => {
 						document.getElementById('searchInput').value = item;
 						this.handleSearch();
 					};
-					div.innerHTML = `<div class="flex items-center gap-2.5 truncate flex-1"><i class="fa-solid fa-clock-rotate-left ui-text-subtle text-[11px]"></i><span class="truncate">${item}</span></div>
-									 <button type="button" onmousedown="app.removeSearchHistoryItem(event, '${item.replace(/'/g, "\\'")}')" class="p-1 ui-text-subtle hover:text-rose-400 text-[11px]"><i class="fa-solid fa-xmark"></i></button>`;
+					div.innerHTML = `<div class="flex items-start gap-2.5 flex-1 min-w-0"><i class="fa-solid fa-clock-rotate-left ui-text-subtle text-[11px] mt-0.5 shrink-0"></i><span class="break-words whitespace-normal">${item}</span></div>
+									 <button type="button" onmousedown="app.removeSearchHistoryItem(event, '${item.replace(/'/g, "\\'")}')" class="p-1 ui-text-subtle hover:text-rose-400 text-[11px] shrink-0"><i class="fa-solid fa-xmark"></i></button>`;
 					container.appendChild(div);
 				});
 			},
@@ -1483,6 +1606,7 @@
 			removeSearchHistoryItem(e, item) {
 				e.stopPropagation();
 				e.preventDefault();
+				this.playSound('tap');
 				this.state.searchHistory = this.state.searchHistory.filter(q => q !== item);
 				this.saveState();
 				this.renderSearchSuggestions(document.getElementById('searchInput').value);
@@ -1493,6 +1617,7 @@
 					e.stopPropagation();
 					e.preventDefault();
 				}
+				this.playSound('tap');
 				this.state.searchHistory = [];
 				this.saveState();
 				this.renderSearchSuggestions('');
@@ -1500,7 +1625,7 @@
 
 			resetHome() {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('tab');
 				document.getElementById('searchInput').value = '';
 				this.selectCategory(0);
 			},
@@ -1548,8 +1673,10 @@
 					this.state.user.avatar = compressed;
 					this.saveState();
 					this.updateAvatarUI();
+					this.playSound('success');
 					this.showToast("Foto profil berhasil diperbarui!");
 				} catch (err) {
+					this.playSound('error');
 					this.showToast("Gagal memproses foto profil.");
 				} finally {
 					e.target.value = '';
@@ -1565,8 +1692,10 @@
 					this.state.user.cover = compressed;
 					this.saveState();
 					this.updateCoverUI();
+					this.playSound('success');
 					this.showToast("Foto sampul berhasil diperbarui!");
 				} catch (err) {
+					this.playSound('error');
 					this.showToast("Gagal mengunggah foto sampul.");
 				} finally {
 					e.target.value = '';
@@ -1593,7 +1722,7 @@
 
 			editName() {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('tap');
 				const displayRow = document.getElementById('accNameDisplay');
 				const editForm = document.getElementById('accNameEditForm');
 				const input = document.getElementById('accNameInput');
@@ -1615,6 +1744,7 @@
 					this.saveState();
 					document.getElementById('accName').innerText = this.state.user.name;
 					document.getElementById('navAccountName').innerText = this.state.user.name;
+					this.playSound('success');
 					this.showToast("Nama profil diperbarui!");
 				}
 				this.cancelEditName();
@@ -1653,7 +1783,7 @@
 				this.switchAccTab(this.state.activeAccTab, false);
 			},
 
-			// PROPORTIONAL, LARGE, NON-SQUISHED 7-DAY WATCH CHART
+			// PROPORTIONAL 7-DAY WATCH CHART
 			render7DayWatchChart() {
 				const container = document.getElementById('watchStatsChartContainer');
 				if (!container) return;
@@ -1700,15 +1830,10 @@
 
 					barsSvg += `
 						<g>
-							<!-- Background Track -->
 							<rect x="${x}" y="${chartTop}" width="${barWidth}" height="${chartHeight}" rx="8" fill="rgba(148, 163, 184, 0.08)" />
-							<!-- Value Bar -->
 							<rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="8" fill="${isToday ? 'url(#todayBarGrad)' : 'rgba(148, 163, 184, 0.42)'}" />
-							<!-- Count Label Above Bar -->
 							<text x="${centerX}" y="${y - 7}" text-anchor="middle" fill="${isToday ? 'var(--accent-color)' : '#94a3b8'}" font-size="11" font-weight="700">${d.count}</text>
-							<!-- Day Name -->
 							<text x="${centerX}" y="${chartBottom + 18}" text-anchor="middle" fill="${isToday ? 'var(--accent-color)' : '#94a3b8'}" font-size="11" font-weight="${isToday ? '700' : '600'}">${d.dayName}</text>
-							<!-- Short Date -->
 							<text x="${centerX}" y="${chartBottom + 32}" text-anchor="middle" fill="#64748b" font-size="9.5">${d.shortDate}</text>
 						</g>
 					`;
@@ -1723,15 +1848,14 @@
 							</linearGradient>
 						</defs>
 
-						<!-- Y-Axis Reference Gridlines & Labels -->
 						<line x1="28" y1="${chartTop}" x2="${svgWidth - 8}" y2="${chartTop}" stroke="rgba(148, 163, 184, 0.16)" stroke-dasharray="3,3" />
-						<text x="22" y="${chartTop + 4}" text-anchor="end" fill="#64748b" font-size="9.5" font-family="monospace">${maxCount}</text>
+						<text x="22" y="${chartTop + 4}" text-anchor="end" fill="#64748b" font-size="9.5">${maxCount}</text>
 
 						<line x1="28" y1="${chartTop + chartHeight / 2}" x2="${svgWidth - 8}" y2="${chartTop + chartHeight / 2}" stroke="rgba(148, 163, 184, 0.16)" stroke-dasharray="3,3" />
-						<text x="22" y="${chartTop + chartHeight / 2 + 4}" text-anchor="end" fill="#64748b" font-size="9.5" font-family="monospace">${midCount}</text>
+						<text x="22" y="${chartTop + chartHeight / 2 + 4}" text-anchor="end" fill="#64748b" font-size="9.5">${midCount}</text>
 
 						<line x1="28" y1="${chartBottom}" x2="${svgWidth - 8}" y2="${chartBottom}" stroke="rgba(148, 163, 184, 0.28)" />
-						<text x="22" y="${chartBottom + 4}" text-anchor="end" fill="#64748b" font-size="9.5" font-family="monospace">0</text>
+						<text x="22" y="${chartBottom + 4}" text-anchor="end" fill="#64748b" font-size="9.5">0</text>
 
 						${barsSvg}
 					</svg>
@@ -1741,14 +1865,14 @@
 			switchAccTab(tab, doSound = true) {
 				if (doSound) {
 					this.triggerHaptic();
-					this.playSound();
+					this.playSound('tab');
 				}
 				this.state.activeAccTab = tab;
 				['Watch', 'Like', 'Download'].forEach(t => {
 					const el = document.getElementById(`tab${t}`);
 					if (!el) return;
-					if (t.toLowerCase() === tab) el.className = "py-2 px-3 border-b-2 border-accent text-accent font-medium whitespace-nowrap flex items-center gap-1.5 transition-all";
-					else el.className = "py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium whitespace-nowrap flex items-center gap-1.5 transition-all";
+					if (t.toLowerCase() === tab) el.className = "py-2 px-3 border-b-2 border-accent text-accent font-medium flex items-center gap-1.5 transition-all";
+					else el.className = "py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium flex items-center gap-1.5 transition-all";
 				});
 
 				const container = document.getElementById('accList');
@@ -1765,16 +1889,22 @@
 
 				list.forEach(item => {
 					const el = document.createElement('div');
-					el.className = "p-2 ui-sub-bg rounded-xl border ui-border flex items-center gap-3 text-xs hover:border-accent transition-all";
+					el.className = "p-2.5 ui-sub-bg rounded-xl border ui-border flex items-start sm:items-center gap-3 text-xs hover:border-accent transition-all";
 					const thumbUrl = item.thumb || `https://placehold.co/120x68/0f172a/94a3b8?text=Video`;
 					if (tab === 'watch' || tab === 'like') {
 						el.innerHTML = `<img src="${thumbUrl}" class="w-16 h-10 object-cover rounded-lg shrink-0 border ui-border">
-										<div class="truncate flex-1"><div class="font-medium truncate">${item.title}</div><div class="text-[10px] ui-text-subtle">${item.channel} • ${item.watchedAt || item.likedAt}</div></div>
-										<button type="button" onclick="app.playVideo(${JSON.stringify(item).replace(/"/g, '&quot;')}); app.closeModal('accountModal')" class="px-2.5 py-1 btn-accent rounded-lg text-[11px] font-medium shrink-0">Putar</button>`;
+										<div class="min-w-0 flex-1 space-y-0.5">
+											<div class="font-medium break-words whitespace-normal leading-snug">${item.title}</div>
+											<div class="text-[10px] ui-text-subtle break-words whitespace-normal">${item.channel} • ${item.watchedAt || item.likedAt}</div>
+										</div>
+										<button type="button" onclick="app.playVideo(${JSON.stringify(item).replace(/"/g, '&quot;')}); app.closeModal('accountModal')" class="px-2.5 py-1.5 btn-accent rounded-lg text-[11px] font-medium shrink-0">Putar</button>`;
 					} else {
 						el.innerHTML = `<img src="${thumbUrl}" class="w-16 h-10 object-cover rounded-lg shrink-0 border ui-border">
-										<div class="truncate flex-1"><div class="font-medium truncate">${item.title}</div><div class="text-[10px] ui-text-subtle">${item.type} • ${item.downloadedAt}</div></div>
-										<span class="px-2 py-0.5 bg-emerald-950/80 text-emerald-400 rounded font-mono border border-emerald-800/50 shrink-0 whitespace-nowrap">Selesai</span>`;
+										<div class="min-w-0 flex-1 space-y-0.5">
+											<div class="font-medium break-words whitespace-normal leading-snug">${item.title}</div>
+											<div class="text-[10px] ui-text-subtle break-words whitespace-normal">${item.type} • ${item.downloadedAt}</div>
+										</div>
+										<span class="px-2 py-0.5 bg-emerald-950/80 text-emerald-400 rounded font-mono border border-emerald-800/50 shrink-0">Selesai</span>`;
 					}
 					container.appendChild(el);
 				});
@@ -1782,7 +1912,7 @@
 
 			exportHistory() {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('success');
 				const exportData = {
 					user: this.state.user,
 					history: this.state.history,
@@ -1791,7 +1921,7 @@
 					searchHistory: this.state.searchHistory,
 					dailyWatchStats: this.state.dailyWatchStats,
 					settings: this.state.settings,
-					version: "2.1"
+					version: "2.2"
 				};
 				const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData));
 				const a = document.createElement('a');
@@ -1805,7 +1935,7 @@
 
 			triggerImport() {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('tap');
 				document.getElementById('importFileInput').click();
 			},
 
@@ -1827,11 +1957,14 @@
 							this.saveState();
 							this.applySettingsUI();
 							this.renderAccountModal();
+							this.playSound('success');
 							this.showToast("Data akun berhasil diimpor!");
 						} else {
+							this.playSound('error');
 							this.showToast("Format file JSON tidak valid.");
 						}
 					} catch (err) {
+						this.playSound('error');
 						this.showToast("Gagal membaca file JSON.");
 					}
 				};
@@ -1839,19 +1972,21 @@
 				e.target.value = '';
 			},
 
-			// SETTINGS FILTER TABS
+			// SETTINGS FILTER TABS WITH SMOOTH ANIMATION
 			filterSettingsSection(group, btnEl) {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('tab');
 				document.querySelectorAll('.settings-nav-pill').forEach(pill => {
-					pill.className = "settings-nav-pill px-3 py-1.5 rounded-full ui-card border font-medium whitespace-nowrap hover:border-accent transition-all";
+					pill.className = "settings-nav-pill px-3 py-1.5 rounded-full ui-card border font-medium hover:border-accent transition-all";
 				});
 				if (btnEl) {
-					btnEl.className = "settings-nav-pill px-3 py-1.5 rounded-full btn-accent font-semibold whitespace-nowrap transition-all";
+					btnEl.className = "settings-nav-pill px-3 py-1.5 rounded-full btn-accent font-semibold transition-all";
 				}
 				document.querySelectorAll('.settings-module').forEach(mod => {
 					if (group === 'all' || mod.getAttribute('data-settings-group') === group) {
-						mod.classList.remove('hidden');
+						mod.classList.remove('hidden', 'tab-anim-in');
+						void mod.offsetWidth;
+						mod.classList.add('tab-anim-in');
 					} else {
 						mod.classList.add('hidden');
 					}
@@ -1861,7 +1996,7 @@
 			// MODAL CONTROL
 			openModal(id) {
 				this.triggerHaptic();
-				this.playSound();
+				this.playSound('modal_open');
 				const modal = document.getElementById(id);
 				const content = modal.querySelector('.ui-modal');
 				modal.classList.remove('hidden', 'backdrop-anim-out');
@@ -1873,6 +2008,7 @@
 
 			closeModal(id) {
 				this.triggerHaptic();
+				this.playSound('modal_close');
 				const modal = document.getElementById(id);
 				const content = modal.querySelector('.ui-modal');
 				modal.classList.remove('backdrop-anim-in');
@@ -1882,7 +2018,7 @@
 				setTimeout(() => {
 					modal.classList.remove('flex', 'backdrop-anim-out');
 					modal.classList.add('hidden');
-				}, 180);
+				}, 220);
 			},
 
 			// SETTINGS & UI PERSISTENCE
@@ -1924,12 +2060,19 @@
 			applySettingsUI() {
 				const s = this.state.settings;
 				this.setTheme(s.theme || 'dark', false);
-				this.updateFontSize(s.fontSize || 14, false);
-				document.getElementById('fontSizeSlider').value = s.fontSize || 14;
-				this.updateFontFamily(s.fontFamily || 'Poppins', false);
-				document.getElementById('fontFamilySelect').value = s.fontFamily || 'Poppins';
-				this.updateFontWeight(s.fontWeight || '400', false);
-				document.getElementById('fontWeightSelect').value = s.fontWeight || '400';
+				
+				const clampedSize = Math.min(22, Math.max(10, parseInt(s.fontSize) || 14));
+				this.updateFontSize(clampedSize, false);
+				document.getElementById('fontSizeSlider').value = clampedSize;
+
+				const validFont = this.allowedFonts.includes(s.fontFamily) ? s.fontFamily : 'DM Sans';
+				this.updateFontFamily(validFont, false);
+				document.getElementById('fontFamilySelect').value = validFont;
+
+				const validWeight = ['400', '500', '600', '700'].includes(String(s.fontWeight)) ? String(s.fontWeight) : '400';
+				this.updateFontWeight(validWeight, false);
+				document.getElementById('fontWeightSelect').value = validWeight;
+
 				this.updateAccentColor(s.accentColor || '#5b9bd5', false);
 				this.setVolume(s.volume !== undefined ? s.volume : 100, false);
 				document.getElementById('volumeSlider').value = s.volume !== undefined ? s.volume : 100;
@@ -1954,7 +2097,7 @@
 
 			setTheme(themeName, save = true) {
 				if (save) {
-					this.playSound();
+					this.playSound('toggle');
 					this.triggerHaptic();
 				}
 				this.state.settings.theme = themeName;
@@ -1964,9 +2107,9 @@
 					const btn = document.getElementById(`btnTheme${t.charAt(0).toUpperCase() + t.slice(1)}`);
 					if (!btn) return;
 					if (t === themeName) {
-						btn.classList.add('border-accent', 'ring-2', 'ring-blue-500/30');
+						btn.classList.add('border-accent', 'ring-2', 'ring-blue-500/20');
 					} else {
-						btn.classList.remove('border-accent', 'ring-2', 'ring-blue-500/30');
+						btn.classList.remove('border-accent', 'ring-2', 'ring-blue-500/20');
 					}
 				});
 
@@ -1976,8 +2119,8 @@
 			updateAccentColor(color, save = true) {
 				document.documentElement.style.setProperty('--accent-color', color);
 				document.documentElement.style.setProperty('--accent-hover', color + 'cc');
-				document.documentElement.style.setProperty('--accent-light', color + '25');
-				document.documentElement.style.setProperty('--accent-glow', color + '55');
+				document.documentElement.style.setProperty('--accent-light', color + '22');
+				document.documentElement.style.setProperty('--accent-glow', color + '33');
 				this.state.settings.accentColor = color;
 
 				const hexLabel = document.getElementById('accentHexLabel');
@@ -1993,16 +2136,17 @@
 					}
 				});
 				if (save) {
-					this.playSound();
+					this.playSound('toggle');
 					this.triggerHaptic();
 					this.saveState();
 				}
 			},
 
 			updateFontSize(size, save = true) {
-				document.documentElement.style.setProperty('--base-font-size', size + 'px');
-				document.getElementById('fontSizeVal').innerText = size + 'px';
-				this.state.settings.fontSize = size;
+				const numSize = Math.min(22, Math.max(10, parseInt(size) || 14));
+				document.documentElement.style.setProperty('--base-font-size', numSize + 'px');
+				document.getElementById('fontSizeVal').innerText = numSize + 'px';
+				this.state.settings.fontSize = numSize;
 				if (save) this.saveState();
 			},
 
@@ -2010,17 +2154,26 @@
 				document.documentElement.style.setProperty('--app-font-family', `'${family}', sans-serif`);
 				this.state.settings.fontFamily = family;
 				if (save) {
-					this.playSound();
+					this.playSound('toggle');
 					this.triggerHaptic();
 					this.saveState();
 				}
 			},
 
 			updateFontWeight(weight, save = true) {
-				document.documentElement.style.setProperty('--app-font-weight', weight);
-				this.state.settings.fontWeight = weight;
+				const w = parseInt(weight) || 400;
+				const fwMedium = Math.min(800, w + 100);
+				const fwSemibold = Math.min(800, w + 200);
+				const fwBold = Math.min(800, w + 300);
+
+				document.documentElement.style.setProperty('--fw-base', String(w));
+				document.documentElement.style.setProperty('--fw-medium', String(fwMedium));
+				document.documentElement.style.setProperty('--fw-semibold', String(fwSemibold));
+				document.documentElement.style.setProperty('--fw-bold', String(fwBold));
+				this.state.settings.fontWeight = String(w);
+
 				if (save) {
-					this.playSound();
+					this.playSound('toggle');
 					this.triggerHaptic();
 					this.saveState();
 				}
@@ -2054,7 +2207,7 @@
 					}
 				});
 				if (save) {
-					this.playSound();
+					this.playSound('toggle');
 					this.triggerHaptic();
 					this.saveState();
 				}
@@ -2084,7 +2237,7 @@
 					const label = document.getElementById(`eqVal${idx}`);
 					if (label) label.innerText = `${v > 0 ? '+' : ''}${v}dB`;
 				});
-				this.playSound();
+				this.playSound('toggle');
 				this.triggerHaptic();
 				this.saveState();
 			},
@@ -2092,34 +2245,102 @@
 			toggleSound(val) {
 				this.state.settings.soundEnabled = val;
 				this.saveState();
-				if (val) this.playSound();
+				if (val) this.playSound('toggle');
 			},
 
 			toggleHaptic(val) {
 				this.state.settings.hapticEnabled = val;
 				this.saveState();
-				if (val) this.triggerHaptic();
+				if (val) {
+					this.triggerHaptic();
+					this.playSound('toggle');
+				}
 			},
 
-			playSound() {
+			// VARIED WEB AUDIO API SOUND EFFECTS BY ACTION TYPE
+			playSound(type = 'tap') {
 				if (!this.state.settings.soundEnabled) return;
 				try {
 					if (!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 					if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
-					const osc = this.audioCtx.createOscillator();
-					const gain = this.audioCtx.createGain();
-					osc.type = 'sine';
-					osc.frequency.setValueAtTime(520, this.audioCtx.currentTime);
-					osc.frequency.exponentialRampToValueAtTime(260, this.audioCtx.currentTime + 0.05);
-					gain.gain.setValueAtTime(0.06, this.audioCtx.currentTime);
-					gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.05);
-					osc.connect(gain);
-					gain.connect(this.audioCtx.destination);
-					osc.start();
-					osc.stop(this.audioCtx.currentTime + 0.05);
+
+					const ctx = this.audioCtx;
+					const now = ctx.currentTime;
+
+					const playTone = (freqStart, freqEnd, duration, wave = 'sine', peakGain = 0.055, delay = 0) => {
+						const osc = ctx.createOscillator();
+						const gain = ctx.createGain();
+						osc.type = wave;
+						osc.frequency.setValueAtTime(freqStart, now + delay);
+						if (freqEnd && freqEnd !== freqStart) {
+							osc.frequency.exponentialRampToValueAtTime(freqEnd, now + delay + duration);
+						}
+						gain.gain.setValueAtTime(0.0001, now + delay);
+						gain.gain.linearRampToValueAtTime(peakGain, now + delay + 0.01);
+						gain.gain.exponentialRampToValueAtTime(0.0001, now + delay + duration);
+
+						osc.connect(gain);
+						gain.connect(ctx.destination);
+						osc.start(now + delay);
+						osc.stop(now + delay + duration + 0.01);
+					};
+
+					switch (type) {
+						case 'play':
+							// Warm ascending two-note chime
+							playTone(440, 440, 0.08, 'sine', 0.055, 0);
+							playTone(659.25, 659.25, 0.13, 'sine', 0.06, 0.06);
+							break;
+						case 'pause':
+							// Gentle descending two-note tone
+							playTone(587.33, 587.33, 0.08, 'sine', 0.05, 0);
+							playTone(440, 440, 0.12, 'sine', 0.05, 0.06);
+							break;
+						case 'seek':
+							// Crisp quick swoosh tick
+							playTone(360, 720, 0.065, 'triangle', 0.05, 0);
+							break;
+						case 'tab':
+							// Light airy pop for switching tabs/categories
+							playTone(520, 680, 0.055, 'sine', 0.045, 0);
+							break;
+						case 'like':
+							// Bright uplifting chord arpeggio
+							playTone(523.25, 523.25, 0.08, 'sine', 0.05, 0);
+							playTone(659.25, 659.25, 0.08, 'sine', 0.05, 0.045);
+							playTone(783.99, 783.99, 0.14, 'sine', 0.06, 0.09);
+							break;
+						case 'modal_open':
+							// Soft rising swell
+							playTone(340, 560, 0.11, 'sine', 0.045, 0);
+							break;
+						case 'modal_close':
+							// Soft falling settle
+							playTone(520, 310, 0.10, 'sine', 0.04, 0);
+							break;
+						case 'toggle':
+							// Tactile switch snap
+							playTone(620, 420, 0.045, 'triangle', 0.05, 0);
+							break;
+						case 'success':
+							// Pleasant confirmation double chime
+							playTone(587.33, 587.33, 0.08, 'sine', 0.05, 0);
+							playTone(880, 880, 0.15, 'sine', 0.055, 0.065);
+							break;
+						case 'error':
+							// Low subtle warning buzz
+							playTone(220, 175, 0.14, 'sawtooth', 0.035, 0);
+							break;
+						case 'tap':
+						default:
+							// Subtle clean click
+							playTone(500, 290, 0.045, 'sine', 0.045, 0);
+							break;
+					}
 				} catch (e) {}
 			},
 
+			// STRICT 100ms HAPTIC FEEDBACK
 			triggerHaptic() {
 				if (!this.state.settings.hapticEnabled) return;
 				try {
@@ -2131,10 +2352,10 @@
 				const toast = document.getElementById('toast');
 				document.getElementById('toastMsg').innerText = msg;
 				toast.classList.remove('opacity-0', 'pointer-events-none');
-				toast.classList.add('opacity-100');
+				toast.classList.add('toast-visible');
 				clearTimeout(this.toastTimeout);
 				this.toastTimeout = setTimeout(() => {
-					toast.classList.remove('opacity-100');
+					toast.classList.remove('toast-visible');
 					toast.classList.add('opacity-0', 'pointer-events-none');
 				}, 3000);
 			},

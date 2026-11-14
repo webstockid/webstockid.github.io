@@ -19,7 +19,7 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="default">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400..700&family=DM+Sans:wght@400..700&family=Outfit:wght@400..700&family=Manrope:wght@400..700&family=Lexend:wght@400..700&display=swap">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&family=Urbanist:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Onest:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<script src="https://cdn.tailwindcss.com/3.4.17"></script>
 
@@ -31,9 +31,13 @@
 			--accent: #6aa5ee;
 			--on-accent: #1f2430;
 			--accent-ink: color-mix(in srgb, var(--accent) 60%, #000);
-			--font: 'Plus Jakarta Sans', sans-serif;
+			--font: 'Figtree', sans-serif;
 			--fs: 16px;
 			--fw: 400;
+			--fw-500: 500;   /* skala ketebalan: dihitung ulang di Theme.apply mengikuti pilihan Ketebalan font */
+			--fw-600: 600;
+			--fw-700: 700;
+			--fw-800: 800;
 			--bg: #f6f7fb;
 			--surface: #ffffff;
 			--glass: rgba(255, 255, 255, .8);
@@ -69,6 +73,15 @@
 			flex-direction: column;
 		}
 		input[type="range"] { accent-color: var(--accent); }
+
+		/* Font & ketebalan pilihan berlaku untuk SEMUA teks dan angka (termasuk tombol, kolom isian, kode, dan tag <b>) */
+		button, input, select, textarea, optgroup, option, kbd, code, samp, pre { font-family: inherit; }
+		b, strong { font-weight: var(--fw-700); }
+		.font-normal { font-weight: var(--fw) !important; }
+		.font-medium { font-weight: var(--fw-500) !important; }
+		.font-semibold { font-weight: var(--fw-600) !important; }
+		.font-bold { font-weight: var(--fw-700) !important; }
+		.font-extrabold { font-weight: var(--fw-800) !important; }
 
 		/* Checkbox tampil sebagai saklar (switch), radio sebagai lingkaran bertitik; tanpa gaya bawaan browser */
 		input[type="checkbox"], input[type="radio"] { appearance: none; -webkit-appearance: none; flex-shrink: 0; margin: 0; cursor: pointer; transition: background .2s, border-color .2s, box-shadow .2s; }
@@ -106,7 +119,7 @@
 			transition: border-color .15s, box-shadow .15s;
 		}
 		.field:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
-		.btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .55rem 1.1rem; border-radius: 9999px; background: var(--chip); font-weight: 600; transition: filter .15s, transform .15s; }
+		.btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .55rem 1.1rem; border-radius: 9999px; background: var(--chip); font-weight: var(--fw-600); transition: filter .15s, transform .15s; }
 		.btn:hover { filter: brightness(.95); }
 		.btn:active { transform: scale(.97); }
 		.btn-accent { background: var(--accent); color: var(--on-accent); }
@@ -122,7 +135,7 @@
 		.btn-accent, [style*="background: var(--accent)"] { color: var(--on-accent) !important; }
 		.icon-btn { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px; transition: background .15s; }
 		.icon-btn:hover { background: var(--chip); }
-		.chip { display: inline-flex; align-items: center; gap: .35rem; padding: .25rem .7rem; border-radius: 9999px; background: var(--chip); font-size: .75rem; font-weight: 600; }
+		.chip { display: inline-flex; align-items: center; gap: .35rem; padding: .25rem .7rem; border-radius: 9999px; background: var(--chip); font-size: .75rem; font-weight: var(--fw-600); }
 		button.chip { padding: .45rem .95rem; font-size: .8rem; white-space: nowrap; transition: background .15s, color .15s; }
 		button.chip:hover { background: var(--accent); color: var(--on-accent); }
 		.icon { display: inline-block; flex-shrink: 0; line-height: 1; }
@@ -132,7 +145,7 @@
 		   ========================================================== */
 		.card img { transition: transform .3s; }
 		.card:hover img { transform: scale(1.04); }
-		.badge { position: absolute; right: .4rem; bottom: .4rem; padding: .1rem .4rem; border-radius: .4rem; background: rgba(0, 0, 0, .8); color: #fff; font-size: .7rem; font-weight: 600; }
+		.badge { position: absolute; right: .4rem; bottom: .4rem; padding: .1rem .4rem; border-radius: .4rem; background: rgba(0, 0, 0, .8); color: #fff; font-size: .7rem; font-weight: var(--fw-600); }
 		.rise { animation: rise .35s ease both; }
 		@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
 		.wrap-text { overflow-wrap: anywhere; }
@@ -169,7 +182,7 @@
 		   ========================================================== */
 		.row-stack { flex-direction: column; align-items: stretch; gap: .75rem; }
 		.about { padding: .65rem .85rem; border: 1px solid var(--line); border-radius: .875rem; background: var(--bg); }
-		.about summary { display: flex; align-items: center; gap: .5rem; list-style: none; cursor: pointer; font-size: .875rem; font-weight: 600; }
+		.about summary { display: flex; align-items: center; gap: .5rem; list-style: none; cursor: pointer; font-size: .875rem; font-weight: var(--fw-600); }
 		.about summary::-webkit-details-marker { display: none; }
 		.about-body { margin-top: .65rem; color: var(--muted); font-size: .8125rem; line-height: 1.55; }
 		.about[open] .about-body { animation: rise .25s ease both; }
@@ -191,7 +204,7 @@
 			transform: translateX(calc(var(--i) * 100%));
 			transition: transform .3s cubic-bezier(.2, .8, .2, 1);
 		}
-		.tab-btn { position: relative; z-index: 1; flex: 1; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: .3rem; padding: .45rem .2rem; border-radius: 9999px; font-size: .8125rem; font-weight: 600; white-space: nowrap; transition: color .2s; }
+		.tab-btn { position: relative; z-index: 1; flex: 1; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: .3rem; padding: .45rem .2rem; border-radius: 9999px; font-size: .8125rem; font-weight: var(--fw-600); white-space: nowrap; transition: color .2s; }
 		.tab-count { padding: 0 .4rem; border-radius: 9999px; background: color-mix(in srgb, currentColor 16%, transparent); font-size: .7rem; line-height: 1.25rem; }
 		@media (max-width: 400px) { .tab-btn .icon { display: none; } }
 		.tab-btn.is-active { color: var(--on-accent); }
@@ -234,8 +247,8 @@
 		.ctl[data-on="true"] { color: var(--accent-ink); background: color-mix(in srgb, var(--accent) 18%, transparent); }
 		.ctl-main { width: 2.75rem; height: 2.75rem; }
 		.ctl-main:hover { background-color: var(--accent); filter: brightness(1.08); }
-		.ctl-sec { position: absolute; inset: 0; display: grid; place-items: center; font-size: .5rem; font-weight: 800; pointer-events: none; }
-		.ctl-badge { position: absolute; top: 0; right: -.1rem; padding: .12rem .22rem; border-radius: 9999px; background: var(--accent); color: var(--on-accent); font-size: .5rem; font-weight: 800; line-height: 1; }
+		.ctl-sec { position: absolute; inset: 0; display: grid; place-items: center; font-size: .5rem; font-weight: var(--fw-800); pointer-events: none; }
+		.ctl-badge { position: absolute; top: 0; right: -.1rem; padding: .12rem .22rem; border-radius: 9999px; background: var(--accent); color: var(--on-accent); font-size: .5rem; font-weight: var(--fw-800); line-height: 1; }
 		.ctl-badge:empty { display: none; }
 		@media (min-width: 640px) {
 			.ctl { width: 2.5rem; height: 2.5rem; }
@@ -459,14 +472,17 @@
 		],
 		MAX_RESULTS: 24,
 		HISTORY_LIMIT: 100,
-		VIBRATE_MS: 300,      // Lama getar tiap klik (ms); hanya jalan di perangkat yang mendukung (mis. Chrome Android)
+		VIBRATE_MS: 100,      // Lama getar tiap klik (ms); hanya jalan di perangkat yang mendukung (mis. Chrome Android)
 		DOWNLOAD_API: '',     // Endpoint server unduhan milikmu, contoh: 'https://server-kamu.com/api/download'
 	};
 
-	const FONTS = ['Poppins', 'Plus Jakarta Sans', 'DM Sans', 'Outfit', 'Manrope', 'Lexend'];
-	const DEFAULT_FONT = 'Plus Jakarta Sans';
+	const FONTS = ['Figtree', 'Sora', 'Urbanist', 'Be Vietnam Pro', 'Onest', 'Bricolage Grotesque'];
+	const DEFAULT_FONT = 'Figtree';
 	// Font lama => font baru, supaya pengaturan tersimpan ikut ter-upgrade
-	const LEGACY_FONTS = { 'Inter': 'Plus Jakarta Sans', 'Nunito': 'DM Sans', 'Lora': 'Manrope', 'Space Grotesk': 'Outfit', 'JetBrains Mono': 'Lexend' };
+	const LEGACY_FONTS = {
+		'Inter': 'Figtree', 'Nunito': 'Onest', 'Lora': 'Bricolage Grotesque', 'Space Grotesk': 'Sora', 'JetBrains Mono': 'Sora',
+		'Poppins': 'Urbanist', 'Plus Jakarta Sans': 'Figtree', 'DM Sans': 'Onest', 'Outfit': 'Urbanist', 'Manrope': 'Be Vietnam Pro', 'Lexend': 'Sora',
+	};
 	const WEIGHTS = { 400: 'Normal', 500: 'Sedang', 600: 'Tebal', 700: 'Sangat tebal' };
 	const UNITS = { fontSize: 'px', volume: '%', brightness: '%', warmth: '%' }; // pengaturan angka (slider) + satuannya
 	// Semua elemen yang memicu efek getar + suara saat diklik
@@ -773,8 +789,9 @@
 				UI.renderAvatar();
 				Panel.refresh();
 				UI.toast('Foto profil diperbarui');
+				Feedback.play('success');
 			};
-			img.onerror = () => { URL.revokeObjectURL(url); UI.toast('Gambar tidak dapat dibaca'); };
+			img.onerror = () => { URL.revokeObjectURL(url); UI.toast('Gambar tidak dapat dibaca'); Feedback.play('error'); };
 			img.src = url;
 		},
 
@@ -803,8 +820,10 @@
 					UI.renderAvatar();
 					UI.renderSearches();
 					UI.toast('Data berhasil diimpor');
+					Feedback.play('success');
 				} catch {
 					UI.toast('File tidak valid');
+					Feedback.play('error');
 				}
 			};
 			reader.readAsText(file);
@@ -901,6 +920,7 @@
 			root.style.setProperty('--font', `'${s.fontFamily}', sans-serif`);
 			root.style.setProperty('--fs', `${s.fontSize}px`);
 			root.style.setProperty('--fw', s.fontWeight);
+			[500, 600, 700, 800].forEach((w) => root.style.setProperty(`--fw-${w}`, Math.min(900, Number(s.fontWeight) + w - 400)));
 			root.style.setProperty('--on-accent', this.onAccent(s.accent));
 			root.classList.toggle('no-anim', !s.animation);
 			Player.applyLight();
@@ -910,27 +930,122 @@
 	const Feedback = {
 		ctx: null,
 		last: 0,
-		tap() {
+
+		// Bank efek suara: tiap aksi punya pola nada sendiri.
+		// Format nada: [frekuensi Hz, mulai (detik), durasi (detik), { type: gelombang, vol: kekerasan, to: frekuensi akhir (meluncur) }]
+		SOUNDS: {
+			click: [[660, 0, 0.08]],                                                                  // klik umum
+			play: [[523, 0, 0.09, { type: 'triangle' }], [784, 0.07, 0.14, { type: 'triangle' }]],   // putar: naik
+			pause: [[659, 0, 0.09, { type: 'triangle' }], [440, 0.07, 0.14, { type: 'triangle' }]],  // jeda: turun
+			next: [[587, 0, 0.07, { type: 'square', vol: 0.025 }], [880, 0.06, 0.1, { type: 'square', vol: 0.025 }]],
+			prev: [[880, 0, 0.07, { type: 'square', vol: 0.025 }], [587, 0.06, 0.1, { type: 'square', vol: 0.025 }]],
+			forward: [[700, 0, 0.04, { type: 'triangle' }], [900, 0.05, 0.04, { type: 'triangle' }], [1100, 0.1, 0.07, { type: 'triangle' }]],
+			back: [[1100, 0, 0.04, { type: 'triangle' }], [900, 0.05, 0.04, { type: 'triangle' }], [700, 0.1, 0.07, { type: 'triangle' }]],
+			repeat: [[784, 0, 0.05, { type: 'triangle' }], [587, 0.07, 0.05, { type: 'triangle' }], [784, 0.14, 0.09, { type: 'triangle' }]],
+			on: [[587, 0, 0.06], [880, 0.06, 0.12]],                                                 // saklar aktif
+			off: [[880, 0, 0.06, { vol: 0.035 }], [587, 0.06, 0.12, { vol: 0.035 }]],               // saklar nonaktif
+			like: [[659, 0, 0.08, { type: 'triangle' }], [831, 0.07, 0.08, { type: 'triangle' }], [988, 0.14, 0.08, { type: 'triangle' }], [1319, 0.21, 0.18, { type: 'triangle' }]],
+			unlike: [[392, 0, 0.1], [294, 0.09, 0.16]],
+			share: [[400, 0, 0.16, { type: 'triangle', to: 1200 }], [1568, 0.15, 0.08, { vol: 0.03 }]],
+			download: [[1000, 0, 0.18, { to: 400 }], [330, 0.18, 0.07, { type: 'triangle' }]],
+			export: [[330, 0, 0.05, { type: 'square', vol: 0.03 }], [1318, 0.06, 0.18]],
+			import: [[1318, 0, 0.05], [330, 0.06, 0.18, { type: 'square', vol: 0.03 }]],
+			warn: [[233, 0, 0.11, { type: 'sawtooth', vol: 0.03 }], [233, 0.14, 0.11, { type: 'sawtooth', vol: 0.03 }]],
+			delete: [[500, 0, 0.22, { type: 'sawtooth', vol: 0.03, to: 110 }]],
+			confirm: [[784, 0, 0.07], [988, 0.07, 0.14]],
+			tab: [[1000, 0, 0.05, { type: 'triangle' }]],
+			select: [[700, 0, 0.09, { to: 780 }]],
+			tick: [[1200, 0, 0.03, { vol: 0.03 }]],                                                  // geser slider
+			open: [[300, 0, 0.16, { type: 'triangle', to: 600 }]],
+			close: [[600, 0, 0.14, { type: 'triangle', to: 300 }]],
+			more: [[250, 0, 0.1, { vol: 0.06, to: 500 }]],
+			up: [[900, 0, 0.04], [1350, 0.05, 0.07]],
+			chip: [[988, 0, 0.06, { type: 'triangle' }]],
+			search: [[1319, 0, 0.14], [988, 0.05, 0.14, { vol: 0.03 }]],
+			home: [[784, 0, 0.06, { type: 'triangle' }], [659, 0.06, 0.06, { type: 'triangle' }], [523, 0.12, 0.12, { type: 'triangle' }]],
+			start: [[440, 0, 0.07, { type: 'triangle' }], [659, 0.07, 0.07, { type: 'triangle' }], [880, 0.14, 0.16, { type: 'triangle' }]],
+			success: [[523, 0, 0.08], [659, 0.08, 0.08], [784, 0.16, 0.08], [1047, 0.24, 0.2]],
+			error: [[196, 0, 0.12, { type: 'square', vol: 0.03 }], [196, 0.16, 0.16, { type: 'square', vol: 0.03 }]],
+		},
+
+		// Menentukan jenis efek dari elemen yang diklik (urutan penting: yang paling spesifik lebih dulu)
+		kindOf(target) {
+			if (!target?.closest) return 'click';
+			const hit = (sel) => target.closest(sel);
+			const s = Store.data.settings;
+			if (hit('#ctlPlay')) return [1, 3].includes(Player.state) ? 'play' : 'pause';
+			if (hit('#ctlPrev')) return 'prev';
+			if (hit('#ctlNext')) return 'next';
+			if (hit('#ctlBack')) return 'back';
+			if (hit('#ctlFwd')) return 'forward';
+			if (hit('#ctlRepeat')) return 'repeat';
+			if (hit('#ctlAuto')) return s.autoNext ? 'on' : 'off';
+			const like = hit('[data-like]');
+			if (like) return like.getAttribute('aria-pressed') === 'true' ? 'unlike' : 'like'; // status sebelum diubah
+			if (hit('[data-share]')) return 'share';
+			if (hit('[data-download]')) return 'download';
+			const action = hit('[data-action]')?.dataset.action;
+			if (action === 'export') return 'export';
+			if (action === 'import') return 'import';
+			if (action === 'avatar') return 'select';
+			if (App.removals[action]) return 'warn';
+			if (hit('#confirmOk')) return hit('.btn-danger') ? 'delete' : 'confirm';
+			if (hit('#confirmDialog')) return 'close';
+			if (hit('#panelClose')) return 'close';
+			if (hit('#btnSettings, #btnAccount')) return 'open';
+			if (hit('[data-play], [data-resume]')) return 'start';
+			if (hit('[role="tab"], [data-tab]')) return 'tab';
+			if (hit('[data-accent]')) return 'select';
+			if (hit('[data-search], [data-suggest], [data-fill]')) return 'chip';
+			if (hit('#searchForm button[type="submit"]')) return 'search';
+			if (hit('#btnMore')) return 'more';
+			if (hit('#toTop')) return 'up';
+			if (hit('#logo')) return 'home';
+			// Klik pada label meneruskan klik ke input-nya; saat itu status centang belum berubah
+			const input = target.matches('input') ? target : hit('label')?.control;
+			if (input?.type === 'checkbox') return (target === input ? input.checked : !input.checked) ? 'on' : 'off';
+			if (input?.type === 'range') return 'tick';
+			if (input && ['radio', 'color'].includes(input.type)) return 'select';
+			if (hit('select')) return 'select';
+			return 'click';
+		},
+
+		tap(target) {
 			const now = Date.now();
 			if (now - this.last < 150) return; // satu klik bisa memicu beberapa event (mis. label + input)
 			this.last = now;
 			const s = Store.data.settings;
 			if (s.vibrate && navigator.vibrate) navigator.vibrate(CONFIG.VIBRATE_MS);
-			if (s.sound) this.beep();
+			let kind = 'click';
+			try { kind = this.kindOf(target); } catch { /* pakai suara klik umum */ }
+			this.play(kind);
 		},
+
+		// Efek klik umum (dipertahankan agar kode lama yang memanggil beep() tetap jalan)
 		beep() {
+			this.play('click');
+		},
+
+		// Mainkan satu efek dari bank SOUNDS (hanya bila efek suara aktif)
+		play(kind) {
+			if (!Store.data.settings.sound) return;
 			try {
 				this.ctx ||= new AudioContext();
 				if (this.ctx.state === 'suspended') this.ctx.resume();
-				const t = this.ctx.currentTime;
-				const osc = this.ctx.createOscillator();
-				const gain = this.ctx.createGain();
-				osc.frequency.value = 660;
-				gain.gain.setValueAtTime(0.05, t);
-				gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
-				osc.connect(gain).connect(this.ctx.destination);
-				osc.start(t);
-				osc.stop(t + 0.08);
+				const t0 = this.ctx.currentTime;
+				(this.SOUNDS[kind] || this.SOUNDS.click).forEach(([freq, at, dur, o = {}]) => {
+					const osc = this.ctx.createOscillator();
+					const gain = this.ctx.createGain();
+					const t = t0 + at;
+					osc.type = o.type || 'sine';
+					osc.frequency.setValueAtTime(freq, t);
+					if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + dur);
+					gain.gain.setValueAtTime(o.vol || 0.05, t);
+					gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+					osc.connect(gain).connect(this.ctx.destination);
+					osc.start(t);
+					osc.stop(t + dur);
+				});
 			} catch { /* audio tidak tersedia */ }
 		},
 	};
@@ -1862,6 +1977,7 @@
 		bindEvents() {
 			$('#searchForm').addEventListener('submit', (e) => {
 				e.preventDefault();
+				if (Date.now() - Feedback.last > 300) Feedback.play('search');
 				this.search($('#searchInput').value);
 				$('#searchInput').blur();
 			});
@@ -1922,7 +2038,7 @@
 
 			// Efek suara + getar untuk setiap tombol
 			document.addEventListener('click', (e) => {
-				if (e.target.closest(CLICKABLE)) Feedback.tap();
+				if (e.target.closest(CLICKABLE)) Feedback.tap(e.target);
 
 				const play = e.target.closest('[data-play]');
 				if (play) { Panel.close(); this.play(play.dataset.play); }

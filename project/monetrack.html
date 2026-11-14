@@ -21,7 +21,10 @@
 	<!-- Font lembut & bulat (fallback: font sistem) -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link id="font-Quicksand:wght@300;400;500;600;700" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap">
+	<link id="font-Plus+Jakarta+Sans:wght@300;400;500;600;700;800" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
+
+	<!-- Font Awesome (ikon) -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 
 	<!-- Tailwind CSS (CDN, versi dikunci) -->
 	<script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -32,13 +35,13 @@
 			darkMode: 'class',
 			theme: {
 				extend: {
-					fontFamily: { sans: ['Quicksand', 'ui-rounded', 'Segoe UI', 'system-ui', 'sans-serif'] },
+					fontFamily: { sans: ['Plus Jakarta Sans', 'ui-rounded', 'Segoe UI', 'system-ui', 'sans-serif'] },
 					colors: {
 						// stone = latar & teks mode terang (krem hangat)
 						stone: { 50: '#faf8f4', 100: '#f3f0e9', 200: '#e7e2d8', 300: '#d3ccbf', 400: '#aea697', 500: '#898173', 600: '#6a6358', 700: '#524c43', 800: '#3b372f', 900: '#27241f' },
 						// slate = latar & teks mode gelap (arang kebiruan lembut)
 						slate: { 50: '#f5f6f7', 100: '#eaedef', 200: '#d4d9de', 300: '#b4bcc4', 400: '#8a95a0', 500: '#677280', 600: '#4d5762', 700: '#38414a', 800: '#2a3138', 900: '#1f252b' },
-						// teal = aksen utama (hijau sage)
+						// teal = warna aksen aktif (mengikuti pilihan di Pengaturan > Warna aksen)
 						teal: Object.fromEntries([50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((k) => [k, `rgb(var(--ac-${k}) / <alpha-value>)`])),
 						// rose = pengeluaran / peringatan (mawar kusam)
 						rose: { 50: '#fbf1f0', 100: '#f6e2e0', 200: '#eec8c4', 300: '#e3a9a3', 400: '#d68b85', 500: '#c46e68', 600: '#a85a54', 700: '#8a4944' }
@@ -73,7 +76,7 @@
 			box-sizing: border-box;
 			--c-income: #6dbf9d;   /* warna pemasukan di grafik */
 			--c-expense: #ec9a8f;  /* warna pengeluaran di grafik */
-			--app-font: "Quicksand", ui-rounded, "Segoe UI", system-ui, sans-serif;
+			--app-font: "Plus Jakarta Sans", ui-rounded, "Segoe UI", system-ui, sans-serif;
 			--r-card: 1.5rem;
 			--ac-50: 243 247 246;
 			--ac-100: 227 237 234;
@@ -87,6 +90,9 @@
 			--ac-900: 36 61 53;
 		}
 		html { scroll-padding-top: 7rem; -webkit-tap-highlight-color: transparent; }
+		/* Teks panjang membungkus ke baris berikutnya, tidak dipotong menjadi "…" */
+		.wrap-any { overflow-wrap: anywhere; }
+		.nav-item { min-width: 0; text-align: center; overflow-wrap: anywhere; }
 		body { font-family: var(--app-font); }
 		/* ===== ANIMASI: ubah durasi / easing di sini ===== */
 		@keyframes fadeIn { from { opacity: 0; } }
@@ -150,10 +156,10 @@
 		<div class="relative mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-2 px-3 py-2.5 sm:px-6 lg:flex-nowrap">
 
 			<div class="order-1 flex min-w-0 items-center gap-2.5">
-				<span id="appLogo" class="shrink-0"></span>
+				<button id="profileBtn" class="relative grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full ring-2 ring-stone-200 transition active:scale-95 dark:ring-slate-700" title="Profil" aria-label="Profil"></button>
 				<div class="min-w-0">
-					<h1 class="truncate text-base font-extrabold leading-tight text-teal-700 dark:text-teal-300">Monetrack</h1>
-					<p id="clock" class="truncate text-[11px] leading-tight text-stone-400"></p>
+					<h1 class="wrap-any text-base font-extrabold leading-tight text-teal-700 dark:text-teal-300">Monetrack</h1>
+					<p id="clock" class="wrap-any text-[11px] leading-tight text-stone-400"></p>
 				</div>
 			</div>
 
@@ -176,16 +182,12 @@
 			<!-- Aksi cepat -->
 			<div class="order-2 ml-auto flex items-center gap-1.5 lg:order-4 lg:ml-0">
 				<button data-add class="btn-main mr-1 hidden items-center gap-1 lg:inline-flex">+ Tambah</button>
-				<button id="profileBtn" class="relative grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full ring-2 ring-stone-200 transition active:scale-95 dark:ring-slate-700" title="Profil" aria-label="Profil"></button>
 				<button id="notifBtn" class="icon-btn relative" title="Notifikasi" aria-label="Notifikasi">
 					<svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"/></svg>
 					<span id="notifBadge" class="absolute -right-1 -top-1 hidden min-w-[1.1rem] rounded-full bg-rose-500 px-1 text-[10px] font-bold leading-[1.1rem] text-white">0</span>
 				</button>
 				<button id="settingsBtn" class="icon-btn" title="Pengaturan notifikasi" aria-label="Pengaturan notifikasi">
 					<svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>
-				</button>
-				<button id="themeBtn" class="icon-btn" title="Ganti tema" aria-label="Ganti tema">
-					<svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
 				</button>
 			</div>
 
@@ -194,7 +196,7 @@
 				<div class="flex items-center justify-between gap-2 px-4 pb-2 pt-3">
 					<div class="min-w-0">
 						<h2 class="text-sm font-extrabold">Kotak Masuk</h2>
-						<p id="notifSub" class="truncate text-[11px] text-stone-400"></p>
+						<p id="notifSub" class="wrap-any text-[11px] text-stone-400"></p>
 					</div>
 					<div class="flex shrink-0 items-center gap-1">
 						<button id="notifReadAll" class="rounded-full px-2.5 py-1 text-[11px] font-bold text-teal-600 hover:bg-teal-100/60 dark:text-teal-300 dark:hover:bg-teal-500/15">Tandai dibaca</button>
@@ -227,7 +229,7 @@
 							<span id="hScore" class="absolute inset-0 flex items-center justify-center text-2xl font-bold">0</span>
 						</div>
 						<div class="min-w-0 flex-1">
-							<h2 class="font-bold">Kesehatan Keuangan</h2>
+							<h2 class="flex items-center gap-2 font-bold"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-rose-100 text-xs text-rose-500 dark:bg-rose-400/15 dark:text-rose-300"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i></span>Kesehatan Keuangan</h2>
 							<p id="hLabel" class="text-sm font-semibold"></p>
 							<label class="label mt-2" for="budgetInput">Batas pengeluaran bulanan (opsional)</label>
 							<input id="budgetInput" class="input" inputmode="numeric" placeholder="Kosongkan untuk menonaktifkan">
@@ -238,7 +240,7 @@
 				</section>
 
 				<section class="card">
-					<h2 class="mb-3 font-bold">Pengeluaran per Kategori</h2>
+					<h2 class="mb-3 flex items-center gap-2 font-bold"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-amber-100 text-xs text-amber-600 dark:bg-amber-400/15 dark:text-amber-300"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i></span>Pengeluaran per Kategori</h2>
 					<div class="flex flex-wrap items-center gap-5">
 						<svg id="donut" viewBox="0 0 36 36" class="h-32 w-32 shrink-0 -rotate-90"></svg>
 						<ul id="catList" class="min-w-[200px] flex-1 space-y-1.5 text-sm"></ul>
@@ -366,7 +368,7 @@
 				<section class="card">
 					<h2 class="mb-3 font-bold">Kalkulator Dasar</h2>
 					<div class="mb-3 rounded-2xl bg-stone-100 p-3 text-right dark:bg-slate-900/60">
-						<p id="calcPreview" class="h-4 text-xs text-stone-400"></p>
+						<p id="calcPreview" class="min-h-4 wrap-any text-xs text-stone-400"></p>
 						<p id="calcExpr" class="min-h-[1.75rem] break-all text-xl font-semibold"></p>
 					</div>
 					<div id="calcKeys" class="grid grid-cols-4 gap-2"></div>
@@ -493,6 +495,23 @@
 			'📺', '🎮', '🎬', '🎵', '💊', '🏥', '🛡️', '🎓', '📚', '🧸', '👨‍👩‍👧', '🐾', '👕', '👗', '👟', '💈', '💄', '🎨', '🏖️', '✈️',
 			'🎁', '❤️', '💳', '🏛️', '🐷', '💰', '📈', '💹', '💼', '🎉', '💻', '🏪', '↩️', '📦', '🏷️', '🧹', '🔨', '🌱', '🏋️', '🎂'
 		];
+		// Ikon lama berformat "fa:nama" (Font Awesome) tidak bisa tampil tanpa library-nya.
+		// Saat data dimuat, ikon tersebut diubah ke emoji yang setara; nama yang tidak dikenal memakai fallback.
+		const LEGACY_ICONS = {
+			plane: '✈️', airplane: '✈️', lifering: '🛟', lifebuoy: '🛟', lifesaver: '🛟', wallet: '👛', house: '🏠', home: '🏠',
+			graduationcap: '🎓', car: '🚗', gift: '🎁', mobile: '📱', mobilescreen: '📱', phone: '📱', ring: '💍', gem: '💎',
+			seedling: '🌱', leaf: '🌿', hospital: '🏥', heartpulse: '🏥', bullseye: '🎯', crosshairs: '🎯', piggybank: '🐷',
+			sackdollar: '💰', moneybill: '💵', coins: '🪙', creditcard: '💳', umbrellabeach: '🏖️', motorcycle: '🏍️',
+			laptop: '💻', shield: '🛡️', heart: '❤️', star: '⭐', briefcase: '💼', utensils: '🍜', mugsaucer: '☕', mughot: '☕',
+			cartshopping: '🛒', bus: '🚌', bolt: '💡', paw: '🐾', gamepad: '🎮', book: '📚', baby: '🧸', building: '🏢'
+		};
+		const legacyIcon = (value, fallback = null) => {
+			const m = /^fa[srb]?[:\s-]+(.+)$/i.exec(String(value || '').trim());
+			if (!m) return value;
+			const name = m[1].split(/\s+/).pop().replace(/^fa-/i, '').toLowerCase().replace(/[^a-z]/g, '');
+			return LEGACY_ICONS[name] || fallback;
+		};
+		
 		const CATEGORIES = CATEGORY_NAMES.map((name, i) => ({ name, color: name === 'Lainnya' ? '#b9bec7' : hslHex((i * 137.508) % 360, 48, 70) }));
 
 		const CONFIG = {
@@ -500,25 +519,26 @@
 			locale: 'id-ID',
 			currency: 'IDR',
 			retentionYears: 5,           // lama histori yang disimpan & ditampilkan (rekap tahunan maksimal 5 tahun)
+			vibrateMs: 100,             // durasi semua efek getar (ms)
 			notifLimit: 200,            // maksimal notifikasi yang disimpan di Kotak Masuk
 			appearance: {
 				fontSize: { min: 12, max: 22, step: 1, default: 16 },
 				legacySizes: { sm: 14, md: 16, lg: 18, xl: 20 },   // nilai lama sebelum memakai slider
 				fonts: {
-					quicksand: { label: 'Quicksand (bawaan)', stack: '"Quicksand", ui-rounded, system-ui, sans-serif', google: 'Quicksand:wght@300;400;500;600;700' },
-					comfortaa: { label: 'Comfortaa', stack: '"Comfortaa", ui-rounded, system-ui, sans-serif', google: 'Comfortaa:wght@300;400;500;600;700' },
-					rubik: { label: 'Rubik', stack: '"Rubik", system-ui, sans-serif', google: 'Rubik:wght@300;400;500;600;700;800' },
-					barlow: { label: 'Barlow', stack: '"Barlow", system-ui, sans-serif', google: 'Barlow:wght@300;400;500;600;700;800' },
-					comic: { label: 'Comic Relief', stack: '"Comic Relief", "Comic Sans MS", cursive, sans-serif', google: 'Comic+Relief:wght@400;700' },
-					fredoka: { label: 'Fredoka', stack: '"Fredoka", ui-rounded, system-ui, sans-serif', google: 'Fredoka:wght@300;400;500;600;700' }
+					jakarta: { label: 'Plus Jakarta Sans (bawaan)', stack: '"Plus Jakarta Sans", ui-rounded, system-ui, sans-serif', google: 'Plus+Jakarta+Sans:wght@300;400;500;600;700;800' },
+					outfit: { label: 'Outfit', stack: '"Outfit", ui-rounded, system-ui, sans-serif', google: 'Outfit:wght@300;400;500;600;700;800' },
+					dmsans: { label: 'DM Sans', stack: '"DM Sans", system-ui, sans-serif', google: 'DM+Sans:wght@300;400;500;600;700' },
+					manrope: { label: 'Manrope', stack: '"Manrope", system-ui, sans-serif', google: 'Manrope:wght@300;400;500;600;700;800' },
+					sora: { label: 'Sora', stack: '"Sora", system-ui, sans-serif', google: 'Sora:wght@300;400;500;600;700;800' },
+					lexend: { label: 'Lexend', stack: '"Lexend", system-ui, sans-serif', google: 'Lexend:wght@300;400;500;600;700;800' }
 				},
 				accents: [   // h = hue (0-360), s = saturasi (%)
-					{ id: 'sage', label: 'Sage', h: 162, s: 25 },
-					{ id: 'ocean', label: 'Laut', h: 205, s: 38 },
-					{ id: 'lavender', label: 'Lavender', h: 256, s: 32 },
-					{ id: 'peach', label: 'Peach', h: 22, s: 50 },
-					{ id: 'rose', label: 'Mawar', h: 340, s: 34 },
-					{ id: 'amber', label: 'Madu', h: 40, s: 48 }
+					{ id: 'red', label: 'Merah Kalem', h: 4, s: 38 },
+					{ id: 'yellow', label: 'Kuning Kalem', h: 46, s: 54 },
+					{ id: 'green', label: 'Hijau Kalem', h: 162, s: 25 },
+					{ id: 'blue', label: 'Biru Kalem', h: 210, s: 40 },
+					{ id: 'purple', label: 'Ungu Kalem', h: 262, s: 32 },
+					{ id: 'orange', label: 'Oren Kalem', h: 24, s: 52 }
 				],
 				radii: [['xl', '1.5rem', 'Bulat'], ['md', '1rem', 'Sedang'], ['sm', '0.5rem', 'Tegas']]
 			},
@@ -562,7 +582,7 @@
 			profile: null, profileSkipped: false, categoryIcons: {}, logo: null,
 			settings: {
 				alertsOn: true, warnAt: 80, device: false, sound: true, goalSave: 20, goalEmergency: 6, clickSound: true, haptics: true, logInbox: true, pocketSort: 'created',
-				fontSize: 16, fontFamily: 'quicksand', fontWeight: 'normal', accent: 'sage', accentHue: null, accentSat: null, radius: 'xl', animations: true, weekStart: 1
+				fontSize: 16, fontFamily: 'jakarta', fontWeight: 'normal', accent: 'green', accentHue: null, accentSat: null, radius: 'xl', animations: true, weekStart: 1
 			},
 			month: ymd(new Date()).slice(0, 7),
 			type: 'expense', editId: null,
@@ -599,8 +619,11 @@
 				S.goalEmergency = Math.max(1, Math.min(60, Number(S.goalEmergency) || 6));
 				['clickSound', 'haptics', 'logInbox'].forEach((k) => { S[k] = S[k] !== false; });
 				if (!['created', 'balance', 'progress', 'recent', 'name'].includes(S.pocketSort)) S.pocketSort = 'created';
-				// Migrasi: pengguna yang masih memakai font bawaan lama (Comfortaa) dipindah ke Quicksand
-				if (S.fontV !== 2) { if (S.fontFamily === 'comfortaa') S.fontFamily = 'quicksand'; S.fontV = 2; }
+				// Migrasi: font lama yang sudah diganti dipindah ke font bawaan baru
+				if (!Object.prototype.hasOwnProperty.call(CONFIG.appearance.fonts, S.fontFamily)) S.fontFamily = 'jakarta';
+				// Migrasi: id warna aksen lama dipetakan ke warna aksen baru
+				const oldAccents = { sage: 'green', ocean: 'blue', lavender: 'purple', peach: 'orange', rose: 'red', amber: 'yellow' };
+				if (Object.prototype.hasOwnProperty.call(oldAccents, S.accent)) S.accent = oldAccents[S.accent];
 			},
 			save() {
 				try {
@@ -723,6 +746,13 @@
 					['Saldo Bulan Ini', t.net, t.net >= 0 ? pos : neg],
 					['Saldo Total', all.net, all.net >= 0 ? 'text-sky-600 dark:text-sky-300' : neg]
 				];
+				// Ikon Font Awesome + warna lencana tiap kartu (urutan sama dengan items)
+				const icons = [
+					['fa-circle-arrow-down', 'bg-emerald-100 text-emerald-600 dark:bg-emerald-400/15 dark:text-emerald-300'],
+					['fa-circle-arrow-up', 'bg-rose-100 text-rose-500 dark:bg-rose-400/15 dark:text-rose-300'],
+					['fa-calendar-check', 'bg-sky-100 text-sky-600 dark:bg-sky-400/15 dark:text-sky-300'],
+					['fa-wallet', 'bg-teal-100 text-teal-700 dark:bg-teal-500/20 dark:text-teal-300']
+				];
 				$('#summary').innerHTML = items.map(([label, , cls], i) => `
 					<div class="card !p-4 ${[
 						'bg-gradient-to-br from-emerald-100/70 to-stone-50/30 dark:from-emerald-400/10 dark:to-slate-800/30',
@@ -730,8 +760,11 @@
 						'col-span-2 bg-gradient-to-br from-sky-100/70 to-stone-50/30 md:col-span-1 dark:from-sky-400/10 dark:to-slate-800/30',
 						'col-span-2 order-first bg-gradient-to-br from-teal-100/80 to-amber-50/40 md:col-span-3 dark:from-teal-500/15 dark:to-slate-800/40'
 					][i]}">
-						<p class="text-xs font-semibold text-stone-500 dark:text-slate-400">${label}</p>
-						<p data-count="${i}" class="mt-1 truncate font-extrabold ${i === 3 ? 'text-3xl' : 'text-lg sm:text-xl'} ${cls}"></p>
+						<div class="flex items-center gap-2.5">
+							<span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-base ${icons[i][1]}"><i class="fa-solid ${icons[i][0]}" aria-hidden="true"></i></span>
+							<p class="text-xs font-semibold text-stone-500 dark:text-slate-400">${label}</p>
+						</div>
+						<p data-count="${i}" class="mt-2 wrap-any font-extrabold ${i === 3 ? 'text-3xl' : 'text-lg sm:text-xl'} ${cls}"></p>
 					</div>`).join('');
 				$('#summary').querySelectorAll('[data-count]').forEach((el) => {
 					const k = el.dataset.count, v = items[k][1];
@@ -749,16 +782,16 @@
 				$('#hLabel').textContent = state.tx.length ? h.level[1] : 'Belum ada data';
 				$('#hLabel').style.color = h.level[2];
 				const bars = [
-					['save', 'Rasio tabung', `${Math.round(h.rate * 100)}% (target ${Math.round(h.goalSave * 100)}%)`, h.pSave * 100, '#6dbf9d'],
-					['limit', 'Pemakaian batas', state.budget ? `${Math.round(h.used * 100)}% dari ${fmt.format(state.budget)}` : 'Belum diatur', Math.min(h.used * 100, 100), h.used > 1 ? '#e07f76' : '#7fb8e0'],
-					['emergency', 'Dana darurat', `${h.months.toFixed(1)} bln (target ${h.goalEmg})`, h.pEmg * 100, '#a99be0']
+					['save', 'Rasio tabung', `${Math.round(h.rate * 100)}% (target ${Math.round(h.goalSave * 100)}%)`, h.pSave * 100, '#6dbf9d', 'fa-piggy-bank'],
+					['limit', 'Pemakaian batas', state.budget ? `${Math.round(h.used * 100)}% dari ${fmt.format(state.budget)}` : 'Belum diatur', Math.min(h.used * 100, 100), h.used > 1 ? '#e07f76' : '#7fb8e0', 'fa-gauge-high'],
+					['emergency', 'Dana darurat', `${h.months.toFixed(1)} bln (target ${h.goalEmg})`, h.pEmg * 100, '#a99be0', 'fa-shield-heart']
 				];
-				$('#hMetrics').innerHTML = bars.map(([kind, label, text, pct, color]) => `
+				$('#hMetrics').innerHTML = bars.map(([kind, label, text, pct, color, icon]) => `
 					<div>
 						<div class="mb-1 flex items-center justify-between gap-2 text-xs">
-							<span class="font-semibold">${label}</span>
+							<span class="flex min-w-0 items-center gap-1.5 font-semibold"><i class="fa-solid ${icon} w-4 shrink-0 text-center" style="color:${color}" aria-hidden="true"></i>${label}</span>
 							<span class="flex min-w-0 items-center gap-1.5">
-								<span class="truncate text-stone-400">${text}</span>
+								<span class="wrap-any text-right text-stone-400">${text}</span>
 								<button type="button" data-goal="${kind}" class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-stone-200/60 text-[11px] text-stone-500 transition hover:bg-stone-200 active:scale-95 dark:bg-slate-700/60 dark:text-slate-300" title="Atur ${label.toLowerCase()}" aria-label="Atur ${label}">✎</button>
 							</span>
 						</div>
@@ -787,8 +820,8 @@
 				$('#recapStats').innerHTML = stats.map(([label, val, sub, tint]) => `
 					<div class="rounded-2xl bg-gradient-to-br ${tint} to-stone-50/30 p-3 dark:to-slate-800/30">
 						<p class="text-[11px] font-semibold text-stone-500 dark:text-slate-400">${label}</p>
-						<p class="mt-0.5 truncate text-sm font-extrabold">${val}</p>
-						<p class="truncate text-[11px] text-stone-400">${sub || '&nbsp;'}</p>
+						<p class="mt-0.5 wrap-any text-sm font-extrabold">${val}</p>
+						<p class="wrap-any text-[11px] text-stone-400">${sub || '&nbsp;'}</p>
 					</div>`).join('');
 
 				// -- Tabel rekap
@@ -809,9 +842,9 @@
 				$('#catList').innerHTML = cats.length ? cats.map(([name, v]) => `
 					<li class="flex items-center gap-2">
 						${catIcon(name, 'h-7 w-7 rounded-xl text-sm')}
-						<span class="flex-1 truncate">${esc(name)}</span>
-						<span class="text-xs text-stone-400">${Math.round((v / total) * 100)}%</span>
-						<span class="font-semibold">${fmt.format(v)}</span>
+						<span class="flex-1 wrap-any">${esc(name)}</span>
+						<span class="shrink-0 text-xs text-stone-400">${Math.round((v / total) * 100)}%</span>
+						<span class="shrink-0 font-semibold">${fmt.format(v)}</span>
 					</li>`).join('') : '<li class="text-sm text-stone-400">Belum ada pengeluaran bulan ini.</li>';
 			},
 			list() {
@@ -824,10 +857,10 @@
 					<li class="flex items-center gap-3 px-1 py-2.5 ${t.id === this.lastId ? 'anim-rise' : ''}">
 						${catIcon(t.category)}
 						<div class="min-w-0 flex-1">
-							<p class="truncate text-sm font-semibold">${esc(t.category)}<span class="font-normal text-stone-400"> ${esc(t.note)}</span></p>
+							<p class="wrap-any text-sm font-semibold">${esc(t.category)}<span class="font-normal text-stone-400"> ${esc(t.note)}</span></p>
 							<p class="text-xs text-stone-400">${t.date}</p>
 						</div>
-						<span class="text-sm font-bold ${t.type === 'income' ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-500 dark:text-rose-300'}">${t.type === 'income' ? '+' : '−'}${fmt.format(t.amount)}</span>
+						<span class="shrink-0 text-sm font-bold ${t.type === 'income' ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-500 dark:text-rose-300'}">${t.type === 'income' ? '+' : '−'}${fmt.format(t.amount)}</span>
 						<button data-edit="${t.id}" class="px-1 text-stone-400 hover:text-teal-500" title="Ubah">✎</button>
 						<button data-del="${t.id}" class="px-1 text-stone-400 hover:text-rose-500" title="Hapus">✕</button>
 					</li>`).join('') : '<li class="py-8 text-center text-sm text-stone-400">Belum ada transaksi.</li>';
@@ -897,7 +930,7 @@
 				UI.lastId = item.id;
 				Store.save(); this.resetForm(); UI.renderAll();
 				Sheet.close();
-				Toast.show({ type: 'success', title: editing ? 'Transaksi diperbarui' : 'Transaksi disimpan', message: `${item.category} · ${fmt.format(item.amount)}` });
+				Toast.show({ type: 'success', sound: editing ? 'update' : item.type === 'income' ? 'deposit' : 'save', title: editing ? 'Transaksi diperbarui' : 'Transaksi disimpan', message: `${item.category} · ${fmt.format(item.amount)}` });
 				Alerts.check(item.date.slice(0, 7));
 			},
 			edit(id) {
@@ -919,7 +952,7 @@
 				if (!ok) return;
 				state.tx = state.tx.filter((t) => String(t.id) !== id);
 				Store.save(); UI.renderAll();
-				Toast.show({ type: 'info', title: 'Transaksi dihapus' });
+				Toast.show({ type: 'info', sound: 'delete', title: 'Transaksi dihapus' });
 				Alerts.check(state.month);
 			}
 		};
@@ -992,8 +1025,8 @@
 		};
 
 		const Toast = {
-			show({ type = 'info', title = '', message = '', duration = 4500 }) {
-				Feedback.toast(type);
+			show({ type = 'info', title = '', message = '', duration = 4500, sound }) {
+				Feedback.toast(type, sound);
 				const T = TYPES[type] || TYPES.info, box = $('#toasts');
 				const live = [...box.children].filter((c) => !c.dataset.out);
 				if (live.length >= 4) this.hide(live[0]);
@@ -1096,7 +1129,7 @@
 			sync(select) {
 				const o = select.options[select.selectedIndex];
 				const ico = o && o.dataset.cat ? catIcon(o.dataset.cat, 'h-6 w-6 rounded-lg text-sm') : '';
-				select._dd.btn.innerHTML = `<span class="flex min-w-0 items-center gap-2">${ico}<span class="truncate">${esc(o ? o.text : '')}</span></span>
+				select._dd.btn.innerHTML = `<span class="flex min-w-0 items-center gap-2">${ico}<span class="wrap-any">${esc(o ? o.text : '')}</span></span>
 					<svg class="h-4 w-4 shrink-0 text-stone-400 transition-transform duration-200 group-data-[open=true]:rotate-180" viewBox="0 0 20 20" fill="currentColor"><path d="M5.3 7.3a1 1 0 011.4 0L10 10.6l3.3-3.3a1 1 0 111.4 1.4l-4 4a1 1 0 01-1.4 0l-4-4a1 1 0 010-1.4z"/></svg>`;
 			},
 			refresh(select) { if (select && select._dd) this.sync(select); },
@@ -1107,7 +1140,7 @@
 				const { wrap, menu } = select._dd;
 				menu.innerHTML = [...select.options].map((o) => `
 					<li role="option" data-v="${esc(o.value)}" aria-selected="${o.selected}" class="flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 transition hover:bg-stone-100 dark:hover:bg-slate-700 ${o.selected ? 'font-semibold text-teal-600 dark:text-teal-300' : ''}">
-						<span class="flex min-w-0 items-center gap-2">${o.dataset.cat ? catIcon(o.dataset.cat, 'h-6 w-6 rounded-lg text-sm') : ''}<span class="truncate">${esc(o.text)}</span></span>${o.selected ? '<span>✓</span>' : ''}
+						<span class="flex min-w-0 items-center gap-2">${o.dataset.cat ? catIcon(o.dataset.cat, 'h-6 w-6 rounded-lg text-sm') : ''}<span class="wrap-any">${esc(o.text)}</span></span>${o.selected ? '<span>✓</span>' : ''}
 					</li>`).join('');
 				menu.classList.remove('hidden');
 				menu.classList.add('anim-pop');
@@ -1171,8 +1204,8 @@
 				state.notifs.length = Math.min(state.notifs.length, CONFIG.notifLimit);
 				Store.save();
 				if (!silent) {
-					Toast.show({ type, title, message, duration: type === 'error' ? 7000 : 4500 });
-					if (type !== 'success') Sound.play(type);
+					Toast.show({ type, title, message, duration: type === 'error' ? 7000 : 4500, sound: false });
+					if (type !== 'success') Sound.play(type); else Feedback.sfx('achieve');
 					if (device) this.device(title, message, tag);
 				}
 				NotifPanel.render();
@@ -1190,7 +1223,7 @@
 			},
 			async device(title, body, tag) {
 				if (!state.settings.device || !this.supported() || Notification.permission !== 'granted') return;
-				const opts = { body, tag, renotify: Boolean(tag), vibrate: [120, 60, 120] };
+				const opts = { body, tag, renotify: Boolean(tag), vibrate: [CONFIG.vibrateMs] };
 				try {
 					const reg = await navigator.serviceWorker?.getRegistration();
 					if (reg && reg.active) return await reg.showNotification(title, opts);
@@ -1259,7 +1292,7 @@
 									<p class="text-sm ${n.read ? 'font-semibold' : 'font-extrabold'}">${esc(n.title)}</p>
 									<span class="shrink-0 text-[10px] text-stone-400" title="${esc(new Date(n.at).toLocaleString(CONFIG.locale))}">${this.ago(n.at)}</span>
 								</div>
-								<p class="mt-0.5 text-xs text-stone-500 dark:text-slate-400 ${expanded ? '' : 'line-clamp-2'}">${esc(n.message)}</p>
+								<p class="mt-0.5 text-xs text-stone-500 dark:text-slate-400 wrap-any">${esc(n.message)}</p>
 								<div class="mt-2 flex flex-wrap items-center gap-1.5">
 									<span class="rounded-full bg-stone-200/60 px-2 py-0.5 text-[10px] font-bold text-stone-500 dark:bg-slate-700/60 dark:text-slate-300">${this.sources[n.source] || 'Sistem'}</span>
 									${n.screen ? '<button type="button" data-n-go class="rounded-full px-2 py-0.5 text-[10px] font-bold text-teal-600 hover:bg-teal-100/60 dark:text-teal-300 dark:hover:bg-teal-500/15">Lihat</button>' : ''}
@@ -1345,13 +1378,13 @@
 			box.classList.toggle('hidden', r.level === 'off');
 			if (r.level === 'off') return;
 			const S = {
-				ok: ['Aman', 'bg-teal-100 text-teal-700 dark:bg-teal-500/20 dark:text-teal-300', '#8fc1b5'],
-				warn: ['Hampir Batas', 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300', '#e8c982'],
-				over: ['Melewati Batas', 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300', '#d68b85']
+				ok: ['Aman', 'bg-teal-100 text-teal-700 dark:bg-teal-500/20 dark:text-teal-300', '#8fc1b5', 'fa-circle-check'],
+				warn: ['Hampir Batas', 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300', '#e8c982', 'fa-triangle-exclamation'],
+				over: ['Melewati Batas', 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300', '#d68b85', 'fa-circle-exclamation']
 			}[r.level];
 			box.innerHTML = `
 				<div class="card flex flex-wrap items-center gap-x-6 gap-y-2 ${r.level === 'over' ? 'anim-pulse !ring-rose-300 dark:!ring-rose-500/40' : ''}">
-					<span class="rounded-full px-3 py-1 text-xs font-bold ${S[1]}">${S[0]}</span>
+					<span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${S[1]}"><i class="fa-solid ${S[3]}" aria-hidden="true"></i>${S[0]}</span>
 					<div class="min-w-[200px] flex-1">
 						<div class="mb-1 flex justify-between text-xs"><span>Terpakai ${fmt.format(r.spent)} dari ${fmt.format(r.limit)}</span><span class="font-semibold">${Math.round(r.pct)}%</span></div>
 						<div class="h-2 overflow-hidden rounded-full bg-stone-200/70 dark:bg-slate-700"><div class="bar-x h-full rounded-full" style="width:${Math.min(r.pct, 100)}%;background:${S[2]}"></div></div>
@@ -1366,7 +1399,7 @@
 		const Appearance = {
 			// Lightness tiap tingkat warna aksen (50 = terang, 900 = gelap)
 			shades: { 50: 96, 100: 91, 200: 83, 300: 72, 400: 57, 500: 42, 600: 35, 700: 29, 800: 24, 900: 19 },
-			defaults: { fontSize: 16, fontFamily: 'quicksand', fontWeight: 'normal', accent: 'sage', accentHue: null, accentSat: null, radius: 'xl', animations: true, weekStart: 1 },
+			defaults: { fontSize: 16, fontFamily: 'jakarta', fontWeight: 'normal', accent: 'green', accentHue: null, accentSat: null, radius: 'xl', animations: true, weekStart: 1 },
 			// Ukuran font aktif (px), tetap valid walau data lama berupa teks (sm/md/lg/xl)
 			size() {
 				const s = state.settings, F = CONFIG.appearance.fontSize, legacy = CONFIG.appearance.legacySizes[s.fontSize];
@@ -1382,8 +1415,8 @@
 				Object.entries(this.shades).forEach(([k, l]) => root.style.setProperty(`--ac-${k}`, hslRgb(ac.h, ac.s * (l > 90 ? 0.9 : 1), l).join(' ')));
 				root.style.fontSize = `${this.size()}px`;
 				root.dataset.fw = s.fontWeight || 'normal';
-				if (!A.fonts[s.fontFamily]) s.fontFamily = 'quicksand';
-				const font = A.fonts[s.fontFamily] || A.fonts.quicksand;
+				if (!A.fonts[s.fontFamily]) s.fontFamily = 'jakarta';
+				const font = A.fonts[s.fontFamily] || A.fonts.jakarta;
 				this.loadFont(font);
 				root.style.setProperty('--app-font', font.stack);
 				root.style.setProperty('--r-card', (A.radii.find((r) => r[0] === s.radius) || A.radii[0])[1]);
@@ -1421,13 +1454,22 @@
 							<span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-200 peer-checked:translate-x-5"></span>
 						</span>
 					</label>`;
-				const seg = (name, items, cur, cols) => `
-					<div class="grid ${cols} gap-2" role="radiogroup">${items.map(([v, label]) => `
-						<label><input type="radio" name="${name}" value="${v}" class="peer sr-only" ${String(cur) === String(v) ? 'checked' : ''}>
-						<span class="seg !px-2 peer-checked:bg-teal-500 peer-checked:text-white peer-checked:ring-teal-500">${label}</span></label>`).join('')}
+				const pick = (id, label, items, cur) => `
+					<div>
+						<label class="label" for="${id}">${label}</label>
+						<select id="${id}" class="input">${items.map(([v, l]) => `<option value="${esc(v)}" ${String(cur) === String(v) ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
 					</div>`;
+				const group = (icon, title, body) => `
+					<section class="space-y-3.5 rounded-2xl bg-stone-100/70 p-3.5 dark:bg-slate-900/40">
+						<h4 class="flex items-center gap-2 text-sm font-extrabold"><span class="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-teal-100 text-sm dark:bg-teal-500/20">${icon}</span>${title}</h4>
+						${body}
+					</section>`;
+				const tab = ([v, label]) => `
+					<label><input type="radio" name="setTab" value="${v}" class="peer sr-only" ${v === 'look' ? 'checked' : ''}>
+					<span class="block cursor-pointer rounded-xl px-2 py-2 text-center text-sm font-semibold text-stone-500 transition peer-checked:bg-white peer-checked:text-teal-700 peer-checked:shadow-sm peer-focus-visible:ring-2 peer-focus-visible:ring-teal-400 dark:text-slate-400 dark:peer-checked:bg-slate-700 dark:peer-checked:text-teal-300">${label}</span></label>`;
+
 				const swatches = A.accents.map((a) => `
-					<label title="${a.label}"><input type="radio" name="setAccent" value="${a.id}" class="peer sr-only" ${S.accent === a.id ? 'checked' : ''}>
+					<label title="${a.label}"><input type="radio" name="setAccent" value="${a.id}" aria-label="${a.label}" class="peer sr-only" ${S.accent === a.id ? 'checked' : ''}>
 					<span class="block h-9 w-9 cursor-pointer rounded-full ring-2 ring-transparent ring-offset-2 ring-offset-stone-50 transition peer-checked:ring-stone-500 peer-focus-visible:ring-teal-400 dark:ring-offset-slate-800 dark:peer-checked:ring-slate-300" style="background:${hslHex(a.h, a.s, 52)}"></span></label>`).join('');
 				const ac = Appearance.accent();
 				const perm = !Notify.supported() ? 'Browser tidak mendukung' : { granted: 'Izin diberikan', denied: 'Diblokir di pengaturan browser', default: 'Izin belum diminta' }[Notification.permission];
@@ -1435,35 +1477,42 @@
 				Modal.open({
 					title: 'Pengaturan',
 					body: `<div class="space-y-4">
-						${seg('setTab', [['look', 'Tampilan'], ['cats', 'Kategori'], ['notif', 'Notifikasi']], 'look', 'grid-cols-3')}
+						<div class="grid grid-cols-3 gap-1 rounded-2xl bg-stone-200/60 p-1 dark:bg-slate-900/60" role="radiogroup" aria-label="Bagian pengaturan">
+							${[['look', 'Tampilan'], ['cats', 'Kategori'], ['notif', 'Notifikasi']].map(tab).join('')}
+						</div>
 
-						<div data-panel="look" class="space-y-4">
-							<div class="rounded-2xl bg-stone-100 p-3 text-sm dark:bg-slate-900/60">Contoh teks: <b>Rp 1.250.000</b> · Monetrack</div>
-							<div><p class="label">Mode tampilan</p>${seg('setMode', [['auto', 'Otomatis'], ['light', 'Terang'], ['dark', 'Gelap']], state.theme || 'auto', 'grid-cols-3')}</div>
-							<div>
-								<div class="mb-1 flex items-center justify-between"><p class="label !mb-0">Ukuran font</p><span id="setSizeVal" class="text-xs font-bold text-teal-600 dark:text-teal-300">${Appearance.size()}px</span></div>
-								<input type="range" id="setSize" min="${A.fontSize.min}" max="${A.fontSize.max}" step="${A.fontSize.step}" value="${Appearance.size()}" class="w-full accent-teal-500">
-								<div class="mt-1 flex justify-between text-[10px] text-stone-400"><span>${A.fontSize.min}px</span><span>${Math.round((A.fontSize.min + A.fontSize.max) / 2)}px</span><span>${A.fontSize.max}px</span></div>
-							</div>
-							<div><p class="label">Jenis font</p>${seg('setFont', Object.entries(A.fonts).map(([id, f]) => [id, f.label]), S.fontFamily, 'grid-cols-2')}</div>
-							<div><p class="label">Ketebalan font</p>${seg('setWeight', [['light', 'Light'], ['normal', 'Normal'], ['bold', 'Bold']], S.fontWeight || 'normal', 'grid-cols-3')}</div>
-							<div>
-								<p class="label">Warna aksen</p>
-								<div class="flex flex-wrap items-center gap-3">${swatches}
-									<label class="flex items-center gap-2 text-xs font-semibold text-stone-500 dark:text-slate-400">
-										<input type="color" id="setCustom" value="${hslHex(ac.h, ac.s, 46)}" class="h-9 w-9 cursor-pointer rounded-full border-0 bg-transparent p-0">Kustom
-									</label>
+						<div data-panel="look" class="space-y-3">
+							<div class="rounded-2xl bg-gradient-to-br from-teal-100/70 to-stone-50/30 p-3 text-sm dark:from-teal-500/15 dark:to-slate-800/30">Contoh teks: <b>Rp 1.250.000</b> · Monetrack</div>
+							${group('🎨', 'Tema & warna', `
+								${pick('setMode', 'Mode tampilan', [['auto', 'Otomatis'], ['light', 'Terang'], ['dark', 'Gelap']], state.theme || 'auto')}
+								<div>
+									<p class="label">Warna aksen</p>
+									<div class="flex flex-wrap items-center gap-3">${swatches}
+										<label class="flex items-center gap-2 text-xs font-semibold text-stone-500 dark:text-slate-400">
+											<input type="color" id="setCustom" value="${hslHex(ac.h, ac.s, 46)}" class="h-9 w-9 cursor-pointer rounded-full border-0 bg-transparent p-0 ${S.accent === 'custom' ? 'ring-2 ring-stone-500 ring-offset-2 ring-offset-stone-50 dark:ring-slate-300 dark:ring-offset-slate-800' : ''}">Kustom
+										</label>
+									</div>
 								</div>
-							</div>
-							<div><p class="label">Logo aplikasi</p><div class="flex items-center gap-3"><div id="setLogoPrev"></div><button type="button" data-logo class="btn-soft text-xs">Ganti Logo</button></div></div>
-							<div><p class="label">Sudut kartu</p>${seg('setRadius', A.radii.map(([id, , label]) => [id, label]), S.radius, 'grid-cols-3')}</div>
-							<div><p class="label">Awal minggu (rekap mingguan)</p>${seg('setWeek', [[1, 'Senin'], [0, 'Minggu']], S.weekStart, 'grid-cols-2')}</div>
-							${sw('setAnim', 'Animasi', 'Efek gerak pada grafik, popup, dan transisi.', S.animations)}
-							<div class="space-y-3 rounded-2xl bg-stone-100/70 p-3 dark:bg-slate-900/40">
-								<p class="label !mb-0">Efek interaksi</p>
-								${sw('setClick', 'Efek klik', 'Bunyi klik lembut saat menekan tombol.', S.clickSound)}
-								${sw('setHaptic', 'Getar', 'Getaran halus saat menekan tombol dan saat ada peringatan (di HP yang mendukung).', S.haptics)}
-							</div>
+								<div>
+									<p class="label">Logo aplikasi</p>
+									<div class="flex items-center gap-3"><div id="setLogoPrev"></div><button type="button" data-logo class="btn-soft text-xs">Ganti Logo</button></div>
+									<p class="mt-1.5 text-[11px] text-stone-400">Tampil di tombol profil (kiri atas) saat belum ada foto profil.</p>
+								</div>`)}
+							${group('🔤', 'Teks', `
+								<div>
+									<div class="mb-1 flex items-center justify-between gap-2"><p class="label !mb-0">Ukuran font</p><span id="setSizeVal" class="text-xs font-bold text-teal-600 dark:text-teal-300">${Appearance.size()}px</span></div>
+									<input type="range" id="setSize" min="${A.fontSize.min}" max="${A.fontSize.max}" step="${A.fontSize.step}" value="${Appearance.size()}" class="w-full accent-teal-500">
+									<div class="mt-1 flex justify-between text-[10px] text-stone-400"><span>${A.fontSize.min}px</span><span>${Math.round((A.fontSize.min + A.fontSize.max) / 2)}px</span><span>${A.fontSize.max}px</span></div>
+								</div>
+								${pick('setFont', 'Jenis font', Object.entries(A.fonts).map(([id, f]) => [id, f.label]), S.fontFamily)}
+								${pick('setWeight', 'Ketebalan font', [['light', 'Light'], ['normal', 'Normal'], ['bold', 'Bold']], S.fontWeight || 'normal')}`)}
+							${group('📐', 'Tata letak', `
+								${pick('setRadius', 'Sudut kartu', A.radii.map(([id, , label]) => [id, label]), S.radius)}
+								${pick('setWeek', 'Awal minggu (rekap mingguan)', [[1, 'Senin'], [0, 'Minggu']], S.weekStart)}
+								${sw('setAnim', 'Animasi', 'Efek gerak pada grafik, popup, dan transisi.', S.animations)}`)}
+							${group('🔊', 'Efek interaksi', `
+								${sw('setClick', 'Efek klik & suara aksi', 'Bunyi klik, plus nada berbeda untuk tiap aksi seperti simpan, hapus, setor, tarik, dan ekspor.', S.clickSound)}
+								${sw('setHaptic', 'Getar', 'Getaran 100 ms saat menekan tombol dan saat ada peringatan (di HP yang mendukung).', S.haptics)}`)}
 							<button type="button" data-reset-look class="btn-soft w-full">Kembalikan Tampilan Bawaan</button>
 						</div>
 
@@ -1473,17 +1522,24 @@
 							<button type="button" data-cat-reset class="btn-soft w-full">Kembalikan Semua Ikon Bawaan</button>
 						</div>
 
-						<div data-panel="notif" class="hidden space-y-4">
-							${sw('sAlerts', 'Peringatan batas pengeluaran', 'Beri tahu saat pengeluaran mendekati atau melewati batas.', S.alertsOn)}
-							<div><p class="label">Peringatkan saat terpakai</p>${seg('warnAt', [[70, '70%'], [80, '80%'], [90, '90%']], S.warnAt, 'grid-cols-3')}</div>
-							${sw('sDevice', 'Notifikasi ke perangkat', perm, S.device)}
-							${sw('sSound', 'Suara notifikasi', 'Nada lembut saat ada peringatan.', S.sound)}
-							${sw('sLog', 'Catat aktivitas di Kotak Masuk', 'Simpan riwayat cadangan, impor, dan target kantong tercapai di Kotak Masuk.', S.logInbox)}
+						<div data-panel="notif" class="hidden space-y-3">
+							${group('⚠️', 'Peringatan batas', `
+								${sw('sAlerts', 'Peringatan batas pengeluaran', 'Beri tahu saat pengeluaran mendekati atau melewati batas.', S.alertsOn)}
+								${pick('warnAt', 'Peringatkan saat terpakai', [[70, '70%'], [80, '80%'], [90, '90%']], S.warnAt)}`)}
+							${group('📲', 'Pengiriman', `
+								${sw('sDevice', 'Notifikasi ke perangkat', perm, S.device)}
+								${sw('sSound', 'Suara notifikasi', 'Nada lembut saat ada peringatan.', S.sound)}`)}
+							${group('📥', 'Kotak masuk', sw('sLog', 'Catat aktivitas di Kotak Masuk', 'Simpan riwayat cadangan, impor, dan target kantong tercapai di Kotak Masuk.', S.logInbox))}
 							<p class="text-xs text-stone-400">Batas pengeluaran diatur di kartu Kesehatan Keuangan (menu Beranda).</p>
 						</div>
+
 					</div>`,
 					actions: '<button data-test class="btn-soft hidden">Kirim Uji</button><button data-ok autofocus class="btn-main">Selesai</button>',
 					onOpen: (el, close) => {
+						el.querySelectorAll('select').forEach((s) => Dropdown.init(s));   // dropdown kustom untuk semua opsi pilihan
+						// Cincin penanda pada pemilih warna kustom saat warna kustom sedang aktif
+						const customRing = ['ring-2', 'ring-stone-500', 'ring-offset-2', 'ring-offset-stone-50', 'dark:ring-slate-300', 'dark:ring-offset-slate-800'];
+						const markCustom = (on) => customRing.forEach((c) => el.querySelector('#setCustom').classList.toggle(c, on));
 						const show = (tab) => {
 							el.querySelectorAll('[data-panel]').forEach((p) => p.classList.toggle('hidden', p.dataset.panel !== tab));
 							el.querySelector('[data-test]').classList.toggle('hidden', tab !== 'notif');
@@ -1496,7 +1552,7 @@
 								case 'setSize': S.fontSize = Number(v); el.querySelector('#setSizeVal').textContent = `${v}px`; break;
 								case 'setWeight': S.fontWeight = v; break;
 								case 'setFont': S.fontFamily = v; break;
-								case 'setAccent': S.accent = v; break;
+								case 'setAccent': S.accent = v; markCustom(false); break;
 								case 'setRadius': S.radius = v; break;
 								case 'setWeek': S.weekStart = Number(v); UI.charts(); break;
 								case 'setAnim': S.animations = t.checked; break;
@@ -1504,8 +1560,8 @@
 								case 'warnAt': S.warnAt = Number(v); UI.limit(); break;
 								case 'sSound': S.sound = t.checked; if (t.checked) Sound.play('warning'); break;
 								case 'sLog': S.logInbox = t.checked; break;
-								case 'setClick': S.clickSound = t.checked; if (t.checked) Feedback.tap('primary'); break;
-								case 'setHaptic': S.haptics = t.checked; if (t.checked) Feedback.haptic([20, 40, 20]); break;
+								case 'setClick': S.clickSound = t.checked; if (t.checked) Feedback.sfx('on'); break;
+								case 'setHaptic': S.haptics = t.checked; if (t.checked) Feedback.haptic(CONFIG.vibrateMs); break;
 								case 'sDevice': {
 									const ok = t.checked ? await Notify.enableDevice() : false;
 									t.checked = ok;
@@ -1527,6 +1583,7 @@
 						el.querySelector('#setCustom').addEventListener('input', (e) => {
 							const c = Appearance.fromHex(e.target.value);
 							Object.assign(S, { accent: 'custom', accentHue: c.h, accentSat: c.s });
+							markCustom(true);
 							el.querySelectorAll('[name="setAccent"]').forEach((r) => { r.checked = false; });
 							Appearance.apply();
 							Store.save();
@@ -1536,7 +1593,7 @@
 							state.theme = null;
 							UI.applyTheme(); Appearance.apply(); Store.save(); UI.charts();
 							close();
-							Toast.show({ type: 'success', title: 'Tampilan dikembalikan ke bawaan' });
+							Toast.show({ type: 'success', sound: 'restore', title: 'Tampilan dikembalikan ke bawaan' });
 						};
 						el.querySelector('[data-test]').onclick = () => Notify.push({ type: 'info', title: 'Notifikasi uji', message: 'Jika kamu melihat ini, notifikasi berfungsi.', device: true, tag: 'test' });
 						el.querySelector('[data-ok]').onclick = close;
@@ -1544,7 +1601,7 @@
 							el.querySelector('#setCatList').innerHTML = CATEGORY_NAMES.map((n) => `
 								<li class="flex items-center gap-3 py-2">
 									${catIcon(n)}
-									<span class="min-w-0 flex-1 truncate text-sm font-semibold">${esc(n)}</span>
+									<span class="min-w-0 flex-1 wrap-any text-sm font-semibold">${esc(n)}</span>
 									<button type="button" data-cat-edit="${esc(n)}" class="btn-soft !px-3 !py-1.5 text-xs">Ubah</button>
 								</li>`).join('');
 						};
@@ -1558,7 +1615,7 @@
 							if (!ok) return;
 							state.categoryIcons = {};
 							Store.save(); UI.renderAll(); Dropdown.refreshAll(); drawCats();
-							Toast.show({ type: 'success', title: 'Ikon dikembalikan ke bawaan' });
+							Toast.show({ type: 'success', sound: 'restore', title: 'Ikon dikembalikan ke bawaan' });
 						};
 						drawCats();
 						const drawLogo = () => { el.querySelector('#setLogoPrev').innerHTML = Logo.html(state.logo, 'h-12 w-12 rounded-2xl text-xl'); };
@@ -1805,7 +1862,7 @@
 						el.querySelector('[data-copy]').onclick = async () => {
 							try {
 								await navigator.clipboard.writeText(text);
-								Toast.show({ type: 'success', title: 'Hasil disalin' });
+								Toast.show({ type: 'success', sound: 'copy', title: 'Hasil disalin' });
 							} catch (err) {
 								Toast.show({ type: 'warning', title: 'Tidak bisa menyalin', message: 'Browser memblokir akses clipboard.' });
 							}
@@ -1834,7 +1891,7 @@
 					...state.tx.slice().sort((a, b) => a.date.localeCompare(b.date))
 						.map((t) => [t.date, t.type === 'income' ? 'Pemasukan' : 'Pengeluaran', t.category, t.amount, t.note])];
 				this.download(`keuangan-${ymd(new Date())}.csv`, '\ufeff' + rows.map((r) => r.map(q).join(',')).join('\n'), 'text/csv');
-				Toast.show({ type: 'success', title: 'Ekspor CSV dibuat', message: `${state.tx.length} transaksi diekspor.` });
+				Toast.show({ type: 'success', sound: 'export', title: 'Ekspor CSV dibuat', message: `${state.tx.length} transaksi diekspor.` });
 				Notify.log('Ekspor transaksi dibuat', `${state.tx.length} transaksi diekspor ke file CSV.`);
 			},
 			// Rekap ringkas (bulanan, tahunan, kantong) yang ikut disimpan di file cadangan
@@ -1872,7 +1929,7 @@
 			json() {
 				const summary = `${state.tx.length} transaksi, ${state.pockets.length} kantong, ${state.pocketTx.length} catatan kantong, dan ${state.notifs.length} notifikasi.`;
 				this.download(`monetrack-backup-${ymd(new Date())}.json`, JSON.stringify(this.backup(), null, '\t'), 'application/json');
-				Toast.show({ type: 'success', title: 'Cadangan lengkap dibuat', message: summary });
+				Toast.show({ type: 'success', sound: 'export', title: 'Cadangan lengkap dibuat', message: summary });
 				Notify.log('Cadangan lengkap dibuat', `${summary} Termasuk profil, pengaturan, dan rekap.`, { type: 'success' });
 			},
 			recapCsv() {
@@ -1884,7 +1941,7 @@
 					['Kantong', 'Nama', 'Saldo', 'Total Setoran', 'Total Penarikan', 'Jumlah Catatan'],
 					...r.pockets.map((p) => ['Kantong', p.name, p.balance, p.deposited, p.withdrawn, p.entries])];
 				this.download(`monetrack-rekap-${ymd(new Date())}.csv`, '\ufeff' + rows.map((x) => x.map(q).join(',')).join('\n'), 'text/csv');
-				Toast.show({ type: 'success', title: 'Ekspor rekap dibuat', message: `${r.monthly.length} bulan, ${r.yearly.length} tahun, ${r.pockets.length} kantong.` });
+				Toast.show({ type: 'success', sound: 'export', title: 'Ekspor rekap dibuat', message: `${r.monthly.length} bulan, ${r.yearly.length} tahun, ${r.pockets.length} kantong.` });
 				Notify.log('Ekspor rekap dibuat', `${r.monthly.length} bulan dan ${r.yearly.length} tahun rekap transaksi, serta ${r.pockets.length} kantong.`);
 			},
 			import(file) {
@@ -1974,7 +2031,7 @@
 				$('#budgetInput').value = state.budget ? num.format(state.budget) : '';
 				Store.save(); Appearance.apply(); UI.applyTheme(); UI.recapControls(); UI.renderAll(); Dropdown.refreshAll();
 				const note = skipped ? ` ${skipped} transaksi dilewati (lebih dari ${CONFIG.retentionYears} tahun).` : '';
-				Toast.show({ type: 'success', title: 'Impor selesai', message: summary + note });
+				Toast.show({ type: 'success', sound: 'restore', title: 'Impor selesai', message: summary + note });
 				Notify.log('Impor cadangan selesai', summary + note, { type: 'success' });
 				Alerts.check(ymd(new Date()).slice(0, 7));
 			},
@@ -2001,7 +2058,7 @@
 				if (!state.budget) state.budget = 4000000;
 				$('#budgetInput').value = num.format(state.budget);
 				Store.save(); UI.renderAll();
-				Toast.show({ type: 'success', title: 'Contoh data dimuat', message: '3 bulan transaksi contoh ditambahkan.' });
+				Toast.show({ type: 'success', sound: 'restore', title: 'Contoh data dimuat', message: '3 bulan transaksi contoh ditambahkan.' });
 				Alerts.check(ymd(now).slice(0, 7));
 			},
 			async prune() {
@@ -2011,7 +2068,7 @@
 				if (!ok) return;
 				state.tx = state.tx.filter((t) => t.date >= cutoff);
 				Store.save(); UI.renderAll();
-				Toast.show({ type: 'success', title: 'Histori dibersihkan', message: `${old.length} transaksi dihapus.` });
+				Toast.show({ type: 'success', sound: 'clear', title: 'Histori dibersihkan', message: `${old.length} transaksi dihapus.` });
 				Notify.log('Histori lama dibersihkan', `${old.length} transaksi lebih dari ${CONFIG.retentionYears} tahun dihapus.`, { type: 'warning' });
 			},
 			async reset() {
@@ -2020,7 +2077,7 @@
 				state.tx = []; state.budget = 0; state.alertLog = {}; state.pockets = []; state.pocketTx = [];
 				$('#budgetInput').value = '';
 				Store.save(); UI.renderAll();
-				Toast.show({ type: 'info', title: 'Semua data dihapus' });
+				Toast.show({ type: 'info', sound: 'clear', title: 'Semua data dihapus' });
 				Notify.log('Semua data dihapus', 'Transaksi, kantong, dan batas pengeluaran telah dikosongkan.', { type: 'warning' });
 			}
 		};
@@ -2125,7 +2182,7 @@
 			// Membersihkan data dari storage / file impor
 			sanitize(pockets, entries) {
 				const ps = (Array.isArray(pockets) ? pockets : []).filter((p) => p && p.id && p.name).map((p) => ({
-					id: p.id, name: String(p.name).slice(0, 40), icon: String(p.icon || this.icons[0]),
+					id: p.id, name: String(p.name).slice(0, 40), icon: String(legacyIcon(p.icon || this.icons[0], this.icons[0])),
 					color: /^#[0-9a-f]{6}$/i.test(p.color) ? p.color : this.colors[0], target: Number(p.target) > 0 ? Number(p.target) : 0
 				}));
 				const ids = new Set(ps.map((p) => p.id));
@@ -2178,11 +2235,11 @@
 				const reached = targets.filter((p) => this.balance(p.id) >= p.target).length, overall = tSum ? (tHave / tSum) * 100 : 0;
 
 				// -- Ringkasan: saldo total + progres target keseluruhan
-				const tile = (label, val, tone) => `<div class="rounded-2xl bg-white/60 p-2.5 dark:bg-slate-900/30"><p class="text-[10px] font-semibold text-stone-500 dark:text-slate-400">${label}</p><p class="truncate text-sm font-extrabold ${tone}">${val}</p></div>`;
+				const tile = (label, val, tone) => `<div class="rounded-2xl bg-white/60 p-2.5 dark:bg-slate-900/30"><p class="text-[10px] font-semibold text-stone-500 dark:text-slate-400">${label}</p><p class="wrap-any text-sm font-extrabold ${tone}">${val}</p></div>`;
 				$('#pocketSummary').innerHTML = `
 					<div class="card relative overflow-hidden lg:col-span-2" style="background-image:linear-gradient(135deg, rgb(var(--ac-200) / .55), transparent 70%)">
 						<p class="text-xs font-semibold text-stone-500 dark:text-slate-400">Total Saldo Kantong</p>
-						<p class="mt-1 truncate text-3xl font-extrabold sm:text-4xl">${fmt.format(total)}</p>
+						<p class="mt-1 wrap-any text-3xl font-extrabold sm:text-4xl">${fmt.format(total)}</p>
 						<p class="text-xs text-stone-500 dark:text-slate-400">dari ${n} kantong</p>
 						<div class="mt-4 grid grid-cols-3 gap-2">
 							${tile(`Setoran ${monthLabel(m, 'short', true)}`, fmt.format(inn), 'text-emerald-600 dark:text-emerald-300')}
@@ -2209,21 +2266,21 @@
 				// -- Kartu kantong
 				$('#pocketGrid').innerHTML = n ? this.sorted().map((p) => {
 					const es = this.entries(p.id), bal = this.balance(p.id), last = this.last(p.id), eta = this.eta(p, bal), done = p.target && bal >= p.target;
-					const tl = (label, val, tone) => `<div class="rounded-2xl bg-white/60 px-3 py-2 dark:bg-slate-900/30"><p class="text-[10px] font-semibold text-stone-500 dark:text-slate-400">${label}</p><p class="truncate text-sm font-extrabold ${tone}">${val}</p></div>`;
+					const tl = (label, val, tone) => `<div class="rounded-2xl bg-white/60 px-3 py-2 dark:bg-slate-900/30"><p class="text-[10px] font-semibold text-stone-500 dark:text-slate-400">${label}</p><p class="wrap-any text-sm font-extrabold ${tone}">${val}</p></div>`;
 					return `
 						<article class="card relative overflow-hidden !p-4" style="background-image:linear-gradient(135deg, ${p.color}44, transparent 60%)">
 							<div class="flex items-start gap-3">
 								<span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-2xl shadow-sm" style="background:${p.color}">${esc(p.icon)}</span>
 								<div class="min-w-0 flex-1">
-									<p class="truncate font-extrabold leading-tight">${esc(p.name)}</p>
-									<p class="truncate text-[11px] text-stone-500 dark:text-slate-400">${last ? `Terakhir ${last.date} · ${last.type === 'in' ? '+' : '−'}${fmt.format(last.amount)}` : 'Belum ada catatan'}</p>
+									<p class="wrap-any font-extrabold leading-tight">${esc(p.name)}</p>
+									<p class="wrap-any text-[11px] text-stone-500 dark:text-slate-400">${last ? `Terakhir ${last.date} · ${last.type === 'in' ? '+' : '−'}${fmt.format(last.amount)}` : 'Belum ada catatan'}</p>
 								</div>
 								<button data-pk-edit="${p.id}" class="icon-btn !h-8 !w-8 text-sm" title="Ubah kantong" aria-label="Ubah kantong">✎</button>
 							</div>
 							<div class="mt-4 flex items-end justify-between gap-3">
 								<div class="min-w-0">
 									<p class="text-[10px] font-semibold uppercase tracking-wide text-stone-500 dark:text-slate-400">Saldo</p>
-									<p class="truncate text-2xl font-extrabold">${fmt.format(bal)}</p>
+									<p class="wrap-any text-2xl font-extrabold">${fmt.format(bal)}</p>
 								</div>
 								${p.target ? this.ring(this.pct(p), p.color) : ''}
 							</div>
@@ -2258,7 +2315,7 @@
 					<li class="flex items-center gap-2.5">
 						<span class="grid h-8 w-8 shrink-0 place-items-center rounded-xl text-base" style="background:${i.color}">${esc(i.icon)}</span>
 						<div class="min-w-0 flex-1">
-							<div class="flex items-baseline justify-between gap-2 text-sm"><span class="truncate font-semibold">${esc(i.name)}</span><b>${fmt.format(i.value)}</b></div>
+							<div class="flex items-baseline justify-between gap-2 text-sm"><span class="wrap-any font-semibold">${esc(i.name)}</span><b>${fmt.format(i.value)}</b></div>
 							<div class="mt-1 h-1.5 overflow-hidden rounded-full bg-stone-200/70 dark:bg-slate-700"><div class="bar-x h-full rounded-full" style="width:${(i.value / sumItems) * 100}%;background:${i.color}"></div></div>
 						</div>
 						<span class="w-9 text-right text-xs text-stone-400">${Math.round((i.value / sumItems) * 100)}%</span>
@@ -2313,10 +2370,10 @@
 						<li class="flex items-center gap-3 px-1 py-2.5">
 							<span class="grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-lg" style="background:${p.color}88">${esc(p.icon)}</span>
 							<div class="min-w-0 flex-1">
-								<p class="truncate text-sm font-semibold">${esc(p.name)}<span class="font-normal text-stone-400"> ${esc(e.note)}</span></p>
+								<p class="wrap-any text-sm font-semibold">${esc(p.name)}<span class="font-normal text-stone-400"> ${esc(e.note)}</span></p>
 								<p class="text-xs text-stone-400">${inn ? 'Setoran' : 'Penarikan'} · ${e.date}</p>
 							</div>
-							<span class="text-sm font-bold tabular-nums ${inn ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-500 dark:text-rose-300'}">${inn ? '+' : '−'}${fmt.format(e.amount)}</span>
+							<span class="shrink-0 text-sm font-bold tabular-nums ${inn ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-500 dark:text-rose-300'}">${inn ? '+' : '−'}${fmt.format(e.amount)}</span>
 							<button data-pe-edit="${e.id}" class="px-1 text-stone-400 hover:text-teal-500" title="Ubah">✎</button>
 							<button data-pe-del="${e.id}" class="px-1 text-stone-400 hover:text-rose-500" title="Hapus">✕</button>
 						</li>`;
@@ -2367,7 +2424,7 @@
 								if (init > 0) state.pocketTx.push({ id: uid(), pocketId: created.id, type: 'in', amount: init, date: ymd(new Date()), note: 'Saldo awal' });
 							}
 							Store.save(); this.render(); close();
-							Toast.show({ type: 'success', title: p ? 'Kantong diperbarui' : 'Kantong dibuat', message: name });
+							Toast.show({ type: 'success', sound: p ? 'update' : 'save', title: p ? 'Kantong diperbarui' : 'Kantong dibuat', message: name });
 						};
 						const del = el.querySelector('[data-del]');
 						if (del) del.onclick = async () => {
@@ -2376,7 +2433,7 @@
 							state.pockets = state.pockets.filter((x) => x.id !== p.id);
 							state.pocketTx = state.pocketTx.filter((e) => e.pocketId !== p.id);
 							Store.save(); this.render(); close();
-							Toast.show({ type: 'info', title: 'Kantong dihapus' });
+							Toast.show({ type: 'info', sound: 'delete', title: 'Kantong dihapus' });
 						};
 					}
 				});
@@ -2419,7 +2476,7 @@
 							const item = { id: entry ? entry.id : uid(), pocketId: p.id, type: t, amount, date, note: el.querySelector('#pk_note').value.trim() };
 							state.pocketTx = entry ? state.pocketTx.map((x) => (x.id === item.id ? item : x)) : [...state.pocketTx, item];
 							Store.save(); this.render(); close();
-							Toast.show({ type: 'success', title: t === 'in' ? 'Setoran dicatat' : 'Penarikan dicatat', message: `${p.name} · ${fmt.format(amount)}` });
+							Toast.show({ type: 'success', sound: t === 'in' ? 'deposit' : 'withdraw', title: t === 'in' ? 'Setoran dicatat' : 'Penarikan dicatat', message: `${p.name} · ${fmt.format(amount)}` });
 							if (p.target && before < p.target && this.balance(p.id) >= p.target) {
 								Notify.push({ type: 'success', title: 'Target kantong tercapai', message: `Kantong "${p.name}" sudah mencapai target ${fmt.format(p.target)}.`, source: 'pocket', screen: 'pockets' });
 							}
@@ -2438,7 +2495,7 @@
 				if (!ok) return;
 				state.pocketTx = state.pocketTx.filter((x) => x.id !== e.id);
 				Store.save(); this.render();
-				Toast.show({ type: 'info', title: 'Catatan dihapus' });
+				Toast.show({ type: 'info', sound: 'delete', title: 'Catatan dihapus' });
 			},
 			csv() {
 				if (!state.pocketTx.length) return Toast.show({ type: 'info', title: 'Belum ada catatan kantong' });
@@ -2447,7 +2504,7 @@
 					...state.pocketTx.slice().sort((a, b) => a.date.localeCompare(b.date))
 						.map((e) => [e.date, this.get(e.pocketId).name, e.type === 'in' ? 'Setoran' : 'Penarikan', e.amount, e.note])];
 				Data.download(`kantong-${ymd(new Date())}.csv`, '\ufeff' + rows.map((r) => r.map(q).join(',')).join('\n'), 'text/csv');
-				Toast.show({ type: 'success', title: 'Ekspor CSV kantong dibuat', message: `${state.pocketTx.length} catatan diekspor.` });
+				Toast.show({ type: 'success', sound: 'export', title: 'Ekspor CSV kantong dibuat', message: `${state.pocketTx.length} catatan diekspor.` });
 			}
 		};
 
@@ -2503,7 +2560,12 @@
 			},
 			render() {
 				const p = state.profile, g = $('#greeting'), btn = $('#profileBtn');
-				btn.innerHTML = this.avatar(p);
+				// Tombol profil di pojok kiri atas: foto profil jika ada, jika tidak memakai logo aplikasi
+				const photo = Boolean(p && p.photo);
+				btn.innerHTML = photo ? this.avatar(p) : Logo.html(state.logo, 'h-full w-full rounded-[inherit] text-lg');
+				btn.classList.toggle('rounded-full', photo);
+				btn.classList.toggle('rounded-2xl', !photo);
+
 				btn.title = p && p.name ? `Profil: ${p.name}` : 'Masuk / Profil';
 				const show = Boolean(p && p.name.trim());
 				g.classList.toggle('hidden', !show);
@@ -2511,7 +2573,7 @@
 				if (!show) return;
 				const hour = new Date().getHours(), hello = hour < 11 ? 'Selamat pagi' : hour < 15 ? 'Selamat siang' : hour < 18 ? 'Selamat sore' : 'Selamat malam';
 				g.innerHTML = `${this.avatar(p, 'h-11 w-11', 'text-base')}
-					<div class="min-w-0"><p class="text-xs text-stone-500 dark:text-slate-400">${hello}</p><p class="truncate text-lg font-extrabold">${esc(p.name.trim().split(/\s+/)[0])}</p></div>`;
+					<div class="min-w-0"><p class="text-xs text-stone-500 dark:text-slate-400">${hello}</p><p class="wrap-any text-lg font-extrabold">${esc(p.name.trim().split(/\s+/)[0])}</p></div>`;
 			},
 			// welcome = true: tampil sebagai layar masuk saat pertama kali membuka aplikasi
 			open({ welcome = false } = {}) {
@@ -2565,7 +2627,7 @@
 							state.profileSkipped = !state.profile;
 							Store.save(); this.render(); close();
 							Toast.show(state.profile
-								? { type: 'success', title: welcome ? `Selamat datang${next.name ? ', ' + next.name.split(/\s+/)[0] : ''}!` : 'Profil diperbarui' }
+								? { type: 'success', sound: welcome ? 'achieve' : 'update', title: welcome ? `Selamat datang${next.name ? ', ' + next.name.split(/\s+/)[0] : ''}!` : 'Profil diperbarui' }
 								: { type: 'info', title: 'Profil dikosongkan' });
 						};
 						const out = el.querySelector('[data-logout]');
@@ -2576,7 +2638,7 @@
 							state.profile = null;
 							state.profileSkipped = false;
 							Store.save(); this.render(); close();
-							Toast.show({ type: 'info', title: 'Kamu sudah keluar', message: 'Isi profil lagi kapan saja lewat ikon di pojok kanan atas.' });
+							Toast.show({ type: 'info', title: 'Kamu sudah keluar', message: 'Isi profil lagi kapan saja lewat ikon di pojok kiri atas.' });
 						};
 						draw();
 					}
@@ -2592,7 +2654,9 @@
 			sanitize(obj) {
 				const out = {};
 				Object.entries(obj && typeof obj === 'object' ? obj : {}).forEach(([k, v]) => {
-					if (v && ((v.type === 'emoji' && typeof v.value === 'string' && v.value.length <= 16) || (v.type === 'image' && /^data:image\//.test(v.value)))) out[k] = { type: v.type, value: v.value };
+					const emoji = v && v.type === 'emoji' && typeof v.value === 'string' ? legacyIcon(v.value) : null;
+					if (emoji && emoji.length <= 16) out[k] = { type: 'emoji', value: emoji };
+					else if (v && v.type === 'image' && /^data:image\//.test(v.value)) out[k] = { type: 'image', value: v.value };
 				});
 				return out;
 			},
@@ -2605,7 +2669,7 @@
 					title: 'Ikon Kategori',
 					body: `<div class="space-y-4">
 						<div class="flex items-center gap-4"><div id="ci_preview" class="shrink-0"></div>
-							<div class="min-w-0"><p class="truncate font-bold">${esc(name)}</p><p class="text-xs text-stone-400">Pilih ikon di bawah atau unggah gambar sendiri.</p></div></div>
+							<div class="min-w-0"><p class="wrap-any font-bold">${esc(name)}</p><p class="text-xs text-stone-400">Pilih ikon di bawah atau unggah gambar sendiri.</p></div></div>
 						<div id="ci_grid" class="grid grid-cols-6 gap-2 sm:grid-cols-8"></div>
 						<div class="flex flex-wrap gap-2">
 							<button type="button" data-upload class="btn-soft text-xs">Unggah Gambar</button>
@@ -2634,7 +2698,7 @@
 							if (same(sel, this.base(name))) delete state.categoryIcons[name]; else state.categoryIcons[name] = sel;
 							Store.save(); UI.renderAll(); Dropdown.refreshAll(); close();
 							if (onDone) onDone();
-							Toast.show({ type: 'success', title: 'Ikon kategori disimpan', message: name });
+							Toast.show({ type: 'success', sound: 'update', title: 'Ikon kategori disimpan', message: name });
 						};
 						draw();
 					}
@@ -2673,7 +2737,7 @@
 							}
 							Store.save(); UI.health(); UI.limit(); close();
 							if (kind === 'limit') Alerts.check(state.month);
-							Toast.show({ type: 'success', title: 'Target disimpan', message: kind === 'limit' && !v ? 'Batas pengeluaran dinonaktifkan.' : d.title });
+							Toast.show({ type: 'success', sound: 'update', title: 'Target disimpan', message: kind === 'limit' && !v ? 'Batas pengeluaran dinonaktifkan.' : d.title });
 						};
 						input.addEventListener('input', () => { if (d.money) formatInput(input); });
 						el.querySelectorAll('[data-q]').forEach((b) => { b.onclick = () => { input.value = d.money ? num.format(Number(b.dataset.q)) : b.dataset.q; }; });
@@ -2699,22 +2763,65 @@
 		 * ===================================================== */
 		const Feedback = {
 			last: 0,
-			// Bunyi klik lembut (disintesis, tanpa file audio)
+			// Nada klik per jenis elemen: f = frekuensi awal, to = frekuensi akhir (Hz), v = volume
+			clicks: {
+				tap: { f: 1200, to: 700, v: 0.05 },
+				primary: { f: 880, to: 520, v: 0.09 },
+				nav: { f: 740, to: 590, v: 0.06 },
+				select: { f: 900, to: 1250, v: 0.05 },
+				danger: { f: 440, to: 250, v: 0.08 }
+			},
+			// Efek suara per aksi. Tiap nada: f = frekuensi, to = frekuensi akhir, t = jeda mulai (detik), d = durasi, v = volume, w = gelombang
+			tones: {
+				save: [{ f: 523, d: 0.14 }, { f: 784, t: 0.1, d: 0.26 }],
+				update: [{ f: 587, d: 0.12, w: 'triangle' }, { f: 698, t: 0.09, d: 0.18, w: 'triangle' }],
+				deposit: [{ f: 988, d: 0.08, w: 'square', v: 0.04 }, { f: 1319, t: 0.08, d: 0.28, w: 'square', v: 0.04 }],
+				withdraw: [{ f: 1319, d: 0.08, w: 'square', v: 0.04 }, { f: 880, t: 0.08, d: 0.26, w: 'square', v: 0.04 }],
+				delete: [{ f: 330, to: 150, d: 0.22, w: 'triangle', v: 0.1 }],
+				clear: [{ f: 392, d: 0.12, w: 'triangle' }, { f: 294, t: 0.11, d: 0.12, w: 'triangle' }, { f: 196, t: 0.22, d: 0.24, w: 'triangle' }],
+				restore: [{ f: 392, d: 0.1 }, { f: 494, t: 0.09, d: 0.1 }, { f: 587, t: 0.18, d: 0.1 }, { f: 784, t: 0.27, d: 0.26 }],
+				export: [{ f: 420, to: 1100, d: 0.22, w: 'triangle', v: 0.07 }],
+				copy: [{ f: 1568, d: 0.05, v: 0.06 }, { f: 2093, t: 0.06, d: 0.08, v: 0.06 }],
+				achieve: [{ f: 523, d: 0.14 }, { f: 659, t: 0.09, d: 0.14 }, { f: 784, t: 0.18, d: 0.14 }, { f: 1047, t: 0.27, d: 0.36 }],
+				error: [{ f: 233, d: 0.12, w: 'square', v: 0.035 }, { f: 175, t: 0.13, d: 0.2, w: 'square', v: 0.035 }],
+				warning: [{ f: 587, d: 0.1, v: 0.07 }, { f: 587, t: 0.15, d: 0.1, v: 0.07 }],
+				info: [{ f: 740, d: 0.2, v: 0.07 }],
+				on: [{ f: 600, d: 0.06, v: 0.06 }, { f: 900, t: 0.06, d: 0.1, v: 0.06 }],
+				off: [{ f: 900, d: 0.06, v: 0.06 }, { f: 600, t: 0.06, d: 0.1, v: 0.06 }]
+			},
+			ctx() {
+				const c = Sound.ctx = Sound.ctx || new (window.AudioContext || window.webkitAudioContext)();
+				if (c.state === 'suspended') c.resume();
+				return c;
+			},
+			// Memainkan satu nada sintesis (tanpa file audio)
+			note(ctx, { f, to, t = 0, d = 0.1, v = 0.08, w = 'sine' }) {
+				const s = ctx.currentTime + t, o = ctx.createOscillator(), g = ctx.createGain();
+				o.type = w;
+				o.frequency.setValueAtTime(f, s);
+				if (to) o.frequency.exponentialRampToValueAtTime(to, s + d);
+				g.gain.setValueAtTime(0.0001, s);
+				g.gain.exponentialRampToValueAtTime(v, s + 0.006);
+				g.gain.exponentialRampToValueAtTime(0.0001, s + d);
+				o.connect(g).connect(ctx.destination);
+				o.start(s);
+				o.stop(s + d + 0.02);
+			},
+			// Bunyi klik lembut; nadanya mengikuti jenis elemen
 			click(kind = 'tap') {
 				if (!state.settings.clickSound) return;
 				try {
-					const ctx = Sound.ctx = Sound.ctx || new (window.AudioContext || window.webkitAudioContext)();
-					if (ctx.state === 'suspended') ctx.resume();
-					const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain(), main = kind === 'primary';
-					o.type = 'sine';
-					o.frequency.setValueAtTime(main ? 880 : 1200, t);
-					o.frequency.exponentialRampToValueAtTime(main ? 520 : 700, t + 0.04);
-					g.gain.setValueAtTime(0.0001, t);
-					g.gain.exponentialRampToValueAtTime(main ? 0.09 : 0.05, t + 0.004);
-					g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
-					o.connect(g).connect(ctx.destination);
-					o.start(t);
-					o.stop(t + 0.07);
+					const k = this.clicks[kind] || this.clicks.tap;
+					this.note(this.ctx(), { f: k.f, to: k.to, d: 0.06, v: k.v });
+				} catch (e) { /* audio tidak tersedia */ }
+			},
+			// Nada khusus untuk satu aksi (simpan, hapus, setor, tarik, ekspor, dll.)
+			sfx(name) {
+				const seq = this.tones[name];
+				if (!seq || !state.settings.clickSound) return;
+				try {
+					const ctx = this.ctx();
+					seq.forEach((n) => this.note(ctx, n));
 				} catch (e) { /* audio tidak tersedia */ }
 			},
 			haptic(pattern) {
@@ -2722,26 +2829,43 @@
 			},
 			tap(kind = 'tap') {
 				this.click(kind);
-				this.haptic(kind === 'primary' ? 16 : 8);
+				this.haptic(CONFIG.vibrateMs);
 			},
-			// Getar mengikuti jenis notifikasi
-			toast(type) { this.haptic({ error: [120, 60, 120], warning: [70], success: [14] }[type]); },
+			// Getar & suara mengikuti jenis notifikasi; sound = nama nada khusus, atau false untuk tanpa suara
+			toast(type, sound) {
+				if (['error', 'warning', 'success'].includes(type)) this.haptic(CONFIG.vibrateMs);
+				if (sound !== false) this.sfx(sound || type);
+			},
+			kindOf(el) {
+				if (el.matches('[data-nav]')) return 'nav';
+				if (el.matches('[data-del], [data-pe-del], [data-n-del], .btn-danger')) return 'danger';
+				if (el.matches('[role="option"]')) return 'select';
+				return el.matches('.btn-main, #fab, [data-add]') ? 'primary' : 'tap';
+			},
 			bind() {
 				document.addEventListener('click', (e) => {
 					const el = e.target.closest('button, a, summary, [data-nav], [data-add], label, [role="option"], select, input[type="range"]');
-					if (!el || el.disabled || (el.matches('label') && !el.querySelector('input'))) return;
+					if (!el || el.disabled || (el.matches('label') && (!el.querySelector('input') || el.querySelector('input[type="checkbox"]')))) return;
 					const now = performance.now();
 					if (now - this.last < 70) return;   // label memicu klik ganda; cukup satu efek
 					this.last = now;
-					this.tap(el.matches('.btn-main, #fab, [data-add]') ? 'primary' : 'tap');
+					this.tap(this.kindOf(el));
+				}, true);
+				// Sakelar: nada naik saat dinyalakan, turun saat dimatikan
+				document.addEventListener('change', (e) => {
+					if (!e.target.matches('input[type="checkbox"]')) return;
+					this.sfx(e.target.checked ? 'on' : 'off');
+					this.haptic(CONFIG.vibrateMs);
 				}, true);
 			}
 		};
+		Feedback.tones.success = Feedback.tones.save;
 
 		const Logo = {
 			icons: ['💰', '🪙', '💳', '🏦', '📊', '📈', '💵', '👛', '🧾', '💎', '🌿', '⭐', '🚀', '🦉', '🐷', '🛡️', '🎯', '🔒', '🌈', '🍀'],
 			sanitize(l) {
-				if (l && l.type === 'emoji' && typeof l.value === 'string' && l.value.length <= 16) return { type: 'emoji', value: l.value };
+				const emoji = l && l.type === 'emoji' && typeof l.value === 'string' ? legacyIcon(l.value) : null;
+				if (emoji && emoji.length <= 16) return { type: 'emoji', value: emoji };
 				if (l && l.type === 'image' && /^data:image\//.test(l.value)) return { type: 'image', value: l.value };
 				return null;
 			},
@@ -2765,7 +2889,7 @@
 				return 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>${inner}</svg>`);
 			},
 			apply() {
-				$('#appLogo').innerHTML = this.html(state.logo);
+				Profile.render();   // tombol profil memakai logo bila belum ada foto
 				const link = document.getElementById('appIcon');
 				if (link) link.href = this.favicon();
 			},
@@ -2804,7 +2928,7 @@
 							state.logo = sel;
 							Store.save(); this.apply(); close();
 							if (onDone) onDone();
-							Toast.show({ type: 'success', title: 'Logo disimpan' });
+							Toast.show({ type: 'success', sound: 'update', title: 'Logo disimpan' });
 						};
 						draw();
 					}
@@ -2932,7 +3056,6 @@
 				state.view = r.value;
 				Store.save(); UI.recapControls(); UI.charts();
 			}));
-			$('#themeBtn').addEventListener('click', () => { state.theme = document.documentElement.classList.contains('dark') ? 'light' : 'dark'; Store.save(); UI.applyTheme(); });
 
 			// Batas pengeluaran (cek alert setelah berhenti mengetik)
 			let limitTimer;
@@ -2943,7 +3066,7 @@
 				limitTimer = setTimeout(() => Alerts.check(state.month), 900);
 			});
 			$('#budgetInput').addEventListener('change', () => Toast.show(state.budget
-				? { type: 'success', title: 'Batas pengeluaran disimpan', message: `${fmt.format(state.budget)} per bulan.` }
+				? { type: 'success', sound: 'update', title: 'Batas pengeluaran disimpan', message: `${fmt.format(state.budget)} per bulan.` }
 				: { type: 'info', title: 'Batas pengeluaran dinonaktifkan' }));
 
 			// Notifikasi & pengaturan
