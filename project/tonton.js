@@ -1,7 +1,7 @@
 const CACHE_NAME = 'tonton-cache-v1';
 const urlsToCache = [
 	'tonton.html',
-	'tonton/logo.png',
+	'tonton/tonton.png',
 	'tonton/site.webmanifest'
 ];
 

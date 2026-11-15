@@ -119,6 +119,24 @@
 			transition: border-color .15s, box-shadow .15s;
 		}
 		.field:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+
+		/* Dropdown kustom (Pengaturan): menggantikan tampilan <select> bawaan browser */
+		.dd { position: relative; flex-shrink: 0; }
+		.dd-btn { display: inline-flex; align-items: center; justify-content: space-between; gap: .6rem; min-width: 9.5rem; padding: .5rem .65rem .5rem .9rem; border-radius: .8rem; background: var(--chip); border: 1px solid var(--line); color: var(--text); font-size: .875rem; font-weight: var(--fw-600); text-align: left; cursor: pointer; transition: border-color .15s, box-shadow .15s, background .15s; }
+		.dd-btn:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+		.dd-btn:focus-visible, .dd[data-open="true"] .dd-btn { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+		.dd-content { display: inline-flex; align-items: center; gap: .5rem; min-width: 0; }
+		.dd-text { white-space: nowrap; }
+		.dd-chev { display: inline-flex; color: var(--muted); transition: transform .2s; }
+		.dd[data-open="true"] .dd-chev { transform: rotate(180deg); }
+		.dd-menu { position: absolute; right: 0; top: calc(100% + .4rem); z-index: 30; min-width: 100%; width: max-content; max-width: min(18rem, 80vw); padding: .3rem; border-radius: 1rem; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(-4px) scale(.97); transform-origin: top right; transition: opacity .15s, transform .15s, visibility 0s linear .15s; }
+		.dd[data-open="true"] .dd-menu { opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition: opacity .15s, transform .15s, visibility 0s; }
+		.dd[data-up="true"] .dd-menu { top: auto; bottom: calc(100% + .4rem); transform-origin: bottom right; }
+		.dd-option { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: .9rem; padding: .55rem .7rem; border: 0; border-radius: .65rem; background: transparent; color: var(--text); font-size: .875rem; text-align: left; cursor: pointer; transition: background .12s; }
+		.dd-option:hover, .dd-option:focus-visible { outline: none; background: var(--chip); }
+		.dd-option[aria-selected="true"] { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent-ink); }
+		.dd-check { display: inline-flex; }
+		.dd-option[aria-selected="false"] .dd-check { opacity: 0; }
 		.btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .55rem 1.1rem; border-radius: 9999px; background: var(--chip); font-weight: var(--fw-600); transition: filter .15s, transform .15s; }
 		.btn:hover { filter: brightness(.95); }
 		.btn:active { transform: scale(.97); }
@@ -541,6 +559,8 @@
 		'film': 'film',
 		'tag': 'tag',
 		'sun': 'sun',
+		'system': 'circle-half',
+		'check': 'check-lg',
 		'type': 'type',
 		'font': 'fonts',
 		'bold': 'type-bold',
@@ -1001,6 +1021,8 @@
 			if (hit('#btnMore')) return 'more';
 			if (hit('#toTop')) return 'up';
 			if (hit('#logo')) return 'home';
+			if (hit('.dd-option')) return 'select';
+			if (hit('.dd-btn')) return 'open';
 			// Klik pada label meneruskan klik ke input-nya; saat itu status centang belum berubah
 			const input = target.matches('input') ? target : hit('label')?.control;
 			if (input?.type === 'checkbox') return (target === input ? input.checked : !input.checked) ? 'on' : 'off';
@@ -1404,6 +1426,93 @@
 	};
 
 	/* ==============================================================
+	   5b. DROPDOWN KUSTOM (dipakai di Pengaturan)
+	   <select data-set> tersembunyi tetap menjadi sumber nilai: memilih opsi mengisi select lalu memicu event "input",
+	   sehingga alur penyimpanan pengaturan yang sudah ada (App.setSetting) tidak berubah.
+	   ============================================================== */
+	const Dropdown = {
+		// options: [[nilai, label, { icon, style }]]; style = gaya pratinjau opsi (mis. font-family untuk daftar font)
+		html(key, label, options, current) {
+			const cur = options.find(([v]) => String(v) === String(current)) || options[0];
+			const content = ([, text, o = {}]) => `<span class="dd-content">${o.icon ? icon(o.icon, 15) : ''}<span class="dd-text"${o.style ? ` style="${o.style}"` : ''}>${text}</span></span>`;
+			return `
+				<div class="dd">
+					<button type="button" class="dd-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="${label}">
+						<span class="dd-current">${content(cur)}</span><span class="dd-chev">${icon('chevron-down', 13)}</span>
+					</button>
+					<div class="dd-menu" role="listbox" aria-label="${label}">
+						${options.map((o) => `<button type="button" class="dd-option" role="option" tabindex="-1" data-value="${Fmt.esc(o[0])}" aria-selected="${String(o[0]) === String(cur[0])}">${content(o)}<span class="dd-check">${icon('check', 15)}</span></button>`).join('')}
+					</div>
+					<select hidden tabindex="-1" aria-hidden="true" data-set="${key}">${options.map(([v, text]) => `<option value="${Fmt.esc(v)}" ${String(v) === String(cur[0]) ? 'selected' : ''}>${text}</option>`).join('')}</select>
+				</div>`;
+		},
+
+		// Buka/tutup satu dropdown (force: true/false); buka ke atas bila ruang di bawah tidak cukup
+		toggle(dd, force) {
+			const open = force ?? dd.dataset.open !== 'true';
+			if (open) this.closeAll(dd);
+			dd.dataset.open = String(open);
+			dd.querySelector('.dd-btn').setAttribute('aria-expanded', String(open));
+			if (!open) return;
+			const rect = dd.getBoundingClientRect();
+			const need = dd.querySelector('.dd-menu').offsetHeight + 12;
+			const below = window.innerHeight - rect.bottom;
+			dd.dataset.up = String(below < need && rect.top > below);
+			dd.querySelector('.dd-option[aria-selected="true"]')?.focus({ preventScroll: true });
+		},
+
+		closeAll(except) {
+			document.querySelectorAll('.dd[data-open="true"]').forEach((dd) => { if (dd !== except) this.toggle(dd, false); });
+		},
+
+		// Pilih opsi: isi select tersembunyi, picu event "input", lalu segarkan tampilan tombol
+		choose(option) {
+			const dd = option.closest('.dd');
+			const select = dd.querySelector('select');
+			if (select.value !== option.dataset.value) {
+				select.value = option.dataset.value;
+				select.dispatchEvent(new Event('input', { bubbles: true }));
+				dd.querySelector('.dd-current').innerHTML = option.querySelector('.dd-content').outerHTML;
+				dd.querySelectorAll('.dd-option').forEach((o) => o.setAttribute('aria-selected', String(o === option)));
+			}
+			this.toggle(dd, false);
+			dd.querySelector('.dd-btn').focus({ preventScroll: true });
+		},
+
+		// Keyboard: Esc menutup dropdown (bukan panel), panah/Home/End berpindah opsi, Tab menutup
+		onKey(e) {
+			const opened = document.querySelector('.dd[data-open="true"]');
+			if (e.key === 'Escape' && opened) {
+				e.stopPropagation();
+				e.preventDefault();
+				this.toggle(opened, false);
+				opened.querySelector('.dd-btn').focus({ preventScroll: true });
+				return;
+			}
+			if (e.key === 'Tab') return this.closeAll();
+			const dd = e.target.closest?.('.dd');
+			if (!dd || !['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return;
+			e.preventDefault();
+			if (dd.dataset.open !== 'true') return this.toggle(dd, true);
+			const items = [...dd.querySelectorAll('.dd-option')];
+			const i = items.indexOf(document.activeElement);
+			const next = { Home: 0, End: items.length - 1, ArrowDown: Math.min(items.length - 1, i + 1), ArrowUp: Math.max(0, i - 1) }[e.key];
+			items[next].focus({ preventScroll: true });
+		},
+
+		init() {
+			document.addEventListener('click', (e) => {
+				const option = e.target.closest('.dd-option');
+				if (option) return this.choose(option);
+				const btn = e.target.closest('.dd-btn');
+				if (btn) return this.toggle(btn.closest('.dd'));
+				if (!e.target.closest('.dd-menu')) this.closeAll();
+			});
+			document.addEventListener('keydown', (e) => this.onKey(e), true);
+		},
+	};
+
+	/* ==============================================================
 	   6. PANEL (Akun & Pengaturan)
 	   ============================================================== */
 	const Panel = {
@@ -1589,7 +1698,6 @@
 
 		settings() {
 			const s = Store.data.settings;
-			const opts = (list, current) => list.map(([v, label]) => `<option value="${v}" ${String(v) === String(current) ? 'selected' : ''}>${label}</option>`).join('');
 			const active = s.accent.toLowerCase();
 			const section = (title) => `<h3 class="muted pb-1 pt-5 text-xs font-semibold uppercase tracking-wide">${title}</h3>`;
 			const toggle = (key, label, ic) => `
@@ -1598,16 +1706,16 @@
 			return `
 				${section('Tampilan')}
 				<div class="row"><span class="flex items-center gap-2">${icon('sun')}Mode</span>
-					<select class="field w-auto" data-set="mode">${opts([['system', 'Ikuti sistem'], ['light', 'Terang'], ['dark', 'Gelap']], s.mode)}</select></div>
+					${Dropdown.html('mode', 'Mode', [['system', 'Ikuti sistem', { icon: 'system' }], ['light', 'Terang', { icon: 'sun' }], ['dark', 'Gelap', { icon: 'moon' }]], s.mode)}</div>
 
 				<div class="row"><span class="flex items-center gap-2">${icon('type')}Ukuran font <b id="val-fontSize">${s.fontSize}px</b></span>
 					<input type="range" min="12" max="24" step="1" value="${s.fontSize}" data-set="fontSize" class="w-40"></div>
 
 				<div class="row"><span class="flex items-center gap-2">${icon('font')}Jenis font</span>
-					<select class="field w-auto" data-set="fontFamily">${opts(FONTS.map((f) => [f, f]), s.fontFamily)}</select></div>
+					${Dropdown.html('fontFamily', 'Jenis font', FONTS.map((f) => [f, f, { style: `font-family: '${f}', sans-serif` }]), s.fontFamily)}</div>
 
 				<div class="row"><span class="flex items-center gap-2">${icon('bold')}Ketebalan font</span>
-					<select class="field w-auto" data-set="fontWeight">${opts(Object.entries(WEIGHTS), s.fontWeight)}</select></div>
+					${Dropdown.html('fontWeight', 'Ketebalan font', Object.entries(WEIGHTS).map(([w, name]) => [w, name, { style: `font-weight: ${w}` }]), s.fontWeight)}</div>
 
 				<div class="row row-stack">
 					<span class="flex items-center gap-2">${icon('palette')}Warna aksen</span>
@@ -1672,6 +1780,7 @@
 			matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => Theme.apply());
 			this.bindLayout();
 			this.bindEvents();
+			Dropdown.init();
 			this.renderChips();
 			UI.hydrateIcons();
 			Controls.init();

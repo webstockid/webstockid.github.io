@@ -19,10 +19,10 @@
 	<!-- FontAwesome 6 CDN -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 	
-	<!-- Google Fonts: 6 New Distinct Fonts (DM Sans, Nunito, Space Grotesk, Rubik, Manrope, Sora) -->
+	<!-- Google Fonts: 6 Modern Distinct Fonts (Plus Jakarta Sans, Outfit, Poppins, Lexend, Urbanist, Be Vietnam Pro) -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Manrope:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=Rubik:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Lexend:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 	
 	<style>
 		/* Dynamic Design Tokens */
@@ -32,7 +32,7 @@
 			--accent-light: rgba(91, 155, 213, 0.14);
 			--accent-glow: rgba(91, 155, 213, 0.20);
 			--base-font-size: 14px;
-			--app-font-family: 'DM Sans', sans-serif;
+			--app-font-family: 'Plus Jakarta Sans', sans-serif;
 			--fw-base: 400;
 			--fw-medium: 500;
 			--fw-semibold: 600;
@@ -53,9 +53,9 @@
 			transition: background-color 0.35s var(--ease-smooth), color 0.35s var(--ease-smooth);
 		}
 
-		/* Global Font Family & Dynamic Font Weight Override Across All Text & Numbers (Excluding Icons) */
-		body *:not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.fas):not(.far):not(.fab):not(i),
-		input, select, option, textarea, button, svg text {
+		/* Global Font Family & Dynamic Font Weight Override Across All Text & Numbers (Excluding Icons & Custom Font Preview Items) */
+		body *:not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.fas):not(.far):not(.fab):not(.fa):not(i):not(.font-sample-preview),
+		input, select, option, textarea, button:not(.font-sample-preview), svg text, svg tspan {
 			font-family: var(--app-font-family) !important;
 		}
 
@@ -64,14 +64,14 @@
 			font-variant-numeric: tabular-nums;
 		}
 
-		/* Dynamic Weight Propagation */
-		body, p, span, div, a, li, input, select, option, textarea {
+		/* Dynamic Weight Propagation Across All Text & Numerals */
+		html, body, p, span:not(.weight-sample-preview), div, a, li, label, input, select, option, textarea, button, td, th, svg text, svg tspan {
 			font-weight: var(--fw-base);
 		}
 		.font-normal { font-weight: var(--fw-base) !important; }
 		.font-medium { font-weight: var(--fw-medium) !important; }
 		.font-semibold { font-weight: var(--fw-semibold) !important; }
-		.font-bold, h1, h2, h3, h4 { font-weight: var(--fw-bold) !important; }
+		.font-bold, strong, b, h1, h2, h3, h4, h5, h6 { font-weight: var(--fw-bold) !important; }
 
 		/* Responsive Rem-Based Text Utilities so 10px-22px Scales Everything Cleanly */
 		.text-\[9px\], .text-\[9\.5px\] { font-size: 0.68rem !important; }
@@ -107,23 +107,100 @@
 		body.theme-slate .ui-input { background-color: #334155; border-color: #475569; color: #f8fafc; }
 		body.theme-light .ui-input { background-color: #f1f5f9; border-color: #cbd5e1; color: #0f172a; }
 
-		/* Smooth Input, Select & Option Interactions */
-		input, select, textarea {
+		/* Smooth Input & Textarea Interactions */
+		input, textarea {
 			transition: border-color 0.28s var(--ease-smooth), background-color 0.28s var(--ease-smooth), box-shadow 0.28s var(--ease-smooth), transform 0.22s var(--ease-smooth);
 		}
-		input:focus, select:focus, textarea:focus {
+		input:focus, textarea:focus {
 			box-shadow: 0 0 0 3px var(--accent-light);
 		}
-		select {
+
+		/* ==========================================
+		   MODERN CUSTOM DROPDOWN (.st-dropdown)
+		   ========================================== */
+		.st-dropdown {
+			position: relative;
+			width: 100%;
+		}
+		.st-dropdown-trigger {
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 0.625rem;
+			padding: 0.55rem 0.8rem;
+			border-radius: 0.85rem;
+			border-width: 1px;
+			text-align: left;
 			cursor: pointer;
+			transition: border-color 0.25s var(--ease-smooth), background-color 0.25s var(--ease-smooth), box-shadow 0.25s var(--ease-smooth), transform 0.18s var(--ease-smooth);
 		}
-		select option {
-			padding: 8px 12px;
-			transition: background-color 0.2s ease, color 0.2s ease;
+		.st-dropdown-trigger:hover {
+			border-color: var(--accent-color);
 		}
-		body.theme-dark select option { background-color: #0f172a; color: #f8fafc; }
-		body.theme-slate select option { background-color: #1e293b; color: #f8fafc; }
-		body.theme-light select option { background-color: #ffffff; color: #0f172a; }
+		.st-dropdown.is-open .st-dropdown-trigger {
+			border-color: var(--accent-color);
+			box-shadow: 0 0 0 3px var(--accent-light);
+		}
+		.st-dropdown-chevron {
+			transition: transform 0.28s var(--ease-smooth), color 0.25s var(--ease-smooth);
+		}
+		.st-dropdown.is-open .st-dropdown-chevron {
+			transform: rotate(180deg);
+			color: var(--accent-color);
+		}
+		.st-dropdown-menu {
+			position: absolute;
+			top: calc(100% + 0.4rem);
+			left: 0;
+			right: 0;
+			z-index: 60;
+			border-radius: 1rem;
+			border-width: 1px;
+			padding: 0.35rem;
+			max-height: 15.5rem;
+			overflow-y: auto;
+			backdrop-filter: blur(16px);
+			transform-origin: top center;
+		}
+		body.theme-dark .st-dropdown-menu {
+			background-color: rgba(15, 23, 42, 0.98);
+			border-color: #334155;
+			box-shadow: 0 14px 34px rgba(0, 0, 0, 0.58);
+		}
+		body.theme-slate .st-dropdown-menu {
+			background-color: rgba(30, 41, 59, 0.98);
+			border-color: #475569;
+			box-shadow: 0 14px 34px rgba(0, 0, 0, 0.48);
+		}
+		body.theme-light .st-dropdown-menu {
+			background-color: rgba(255, 255, 255, 0.98);
+			border-color: #cbd5e1;
+			box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
+		}
+		.st-dropdown-item {
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 0.5rem;
+			padding: 0.55rem 0.7rem;
+			border-radius: 0.7rem;
+			text-align: left;
+			cursor: pointer;
+			transition: background-color 0.2s var(--ease-smooth), color 0.2s var(--ease-smooth), transform 0.15s var(--ease-smooth);
+		}
+		.st-dropdown-item + .st-dropdown-item {
+			margin-top: 0.15rem;
+		}
+		body.theme-dark .st-dropdown-item:hover { background-color: rgba(255, 255, 255, 0.06); }
+		body.theme-slate .st-dropdown-item:hover { background-color: rgba(255, 255, 255, 0.08); }
+		body.theme-light .st-dropdown-item:hover { background-color: rgba(15, 23, 42, 0.05); }
+
+		.st-dropdown-item.is-selected {
+			background-color: var(--accent-light) !important;
+			color: var(--accent-color) !important;
+		}
 
 		body.theme-dark .ui-sub-bg { background-color: #020617; }
 		body.theme-slate .ui-sub-bg { background-color: #0f172a; }
@@ -627,7 +704,7 @@
 	</div>
 
 	<!-- ==========================================
-	     6. MODAL: SETTINGS (CIRCULAR ACCENTS, 10px-22px, 6 NEW FONTS)
+	     6. MODAL: SETTINGS (CUSTOM MODERN DROPDOWNS)
 	     ========================================== -->
 	<div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm hidden">
 		<div class="ui-modal border rounded-3xl w-full max-w-xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -658,7 +735,7 @@
 			</div>
 
 			<!-- Settings Body -->
-			<div class="p-4 sm:p-5 overflow-y-auto space-y-4 text-xs sm:text-sm">
+			<div class="p-4 sm:p-5 overflow-y-auto space-y-4 text-xs sm:text-sm" id="settingsModalBody">
 				
 				<!-- Module 1: Mode Tema & Aksen -->
 				<div data-settings-group="appearance" class="settings-module p-4 ui-sub-bg border ui-border rounded-2xl space-y-4">
@@ -729,7 +806,7 @@
 					</div>
 				</div>
 
-				<!-- Module 2: Tipografi (10px-22px, Global Weight, 6 New Fonts) -->
+				<!-- Module 2: Tipografi (10px-22px, Global Weight, 6 New Fonts dengan Custom Modern Dropdown) -->
 				<div data-settings-group="typography" class="settings-module p-4 ui-sub-bg border ui-border rounded-2xl space-y-4">
 					<div class="flex items-center gap-2.5">
 						<span class="w-7 h-7 rounded-lg bg-accent-subtle text-accent flex items-center justify-center shrink-0"><i class="fa-solid fa-font text-xs"></i></span>
@@ -761,26 +838,44 @@
 						</div>
 					</div>
 					
+					<!-- Custom Modern Dropdowns: Jenis Font & Ketebalan Font -->
 					<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+						<!-- Jenis Font Dropdown -->
 						<div>
-							<label class="block font-medium text-[11px] ui-text-subtle mb-1.5">Jenis Font (6 Pilihan Baru)</label>
-							<select id="fontFamilySelect" onchange="app.updateFontFamily(this.value)" class="w-full ui-input border rounded-xl px-3 py-2.5 text-xs font-medium focus:outline-none focus:border-accent">
-								<option value="DM Sans">DM Sans</option>
-								<option value="Nunito">Nunito</option>
-								<option value="Space Grotesk">Space Grotesk</option>
-								<option value="Rubik">Rubik</option>
-								<option value="Manrope">Manrope</option>
-								<option value="Sora">Sora</option>
-							</select>
+							<label class="block font-medium text-[11px] ui-text-subtle mb-1.5">Jenis Font (6 Pilihan Modern)</label>
+							<div class="st-dropdown" id="fontFamilyDropdown">
+								<button type="button" onclick="app.toggleDropdown('fontFamilyDropdown', event)" aria-haspopup="listbox" aria-expanded="false" class="st-dropdown-trigger ui-card border">
+									<div class="flex items-center gap-2.5 min-w-0 flex-1">
+										<span class="w-7 h-7 rounded-lg bg-accent-subtle text-accent flex items-center justify-center text-[11px] font-bold shrink-0">Aa</span>
+										<div class="min-w-0 flex-1">
+											<div id="fontFamilyDropdownLabel" class="font-semibold text-xs break-words leading-tight">Plus Jakarta Sans</div>
+											<div id="fontFamilyDropdownSub" class="text-[10px] ui-text-subtle break-words leading-tight">Modern Geometric</div>
+										</div>
+									</div>
+									<i class="fa-solid fa-chevron-down text-[11px] ui-text-subtle st-dropdown-chevron shrink-0"></i>
+								</button>
+								<div id="fontFamilyDropdownMenu" role="listbox" class="st-dropdown-menu hidden"></div>
+							</div>
 						</div>
+
+						<!-- Ketebalan Font Dropdown -->
 						<div>
 							<label class="block font-medium text-[11px] ui-text-subtle mb-1.5">Ketebalan Font</label>
-							<select id="fontWeightSelect" onchange="app.updateFontWeight(this.value)" class="w-full ui-input border rounded-xl px-3 py-2.5 text-xs font-medium focus:outline-none focus:border-accent">
-								<option value="400">Normal (400)</option>
-								<option value="500">Medium (500)</option>
-								<option value="600">Semi-Bold (600)</option>
-								<option value="700">Bold (700)</option>
-							</select>
+							<div class="st-dropdown" id="fontWeightDropdown">
+								<button type="button" onclick="app.toggleDropdown('fontWeightDropdown', event)" aria-haspopup="listbox" aria-expanded="false" class="st-dropdown-trigger ui-card border">
+									<div class="flex items-center gap-2.5 min-w-0 flex-1">
+										<span class="w-7 h-7 rounded-lg bg-accent-subtle text-accent flex items-center justify-center text-[11px] font-bold shrink-0">
+											<i class="fa-solid fa-bold text-[10px]"></i>
+										</span>
+										<div class="min-w-0 flex-1">
+											<div id="fontWeightDropdownLabel" class="font-semibold text-xs break-words leading-tight">Normal (400)</div>
+											<div id="fontWeightDropdownSub" class="text-[10px] ui-text-subtle break-words leading-tight">Bobot Standar Seimbang</div>
+										</div>
+									</div>
+									<i class="fa-solid fa-chevron-down text-[11px] ui-text-subtle st-dropdown-chevron shrink-0"></i>
+								</button>
+								<div id="fontWeightDropdownMenu" role="listbox" class="st-dropdown-menu hidden"></div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -822,18 +917,32 @@
 						</div>
 					</div>
 
-					<!-- 5 Band Equalizer -->
+					<!-- 5 Band Equalizer dengan Custom Modern Dropdown -->
 					<div class="ui-card border rounded-2xl p-3.5 space-y-3">
-						<div class="flex flex-wrap items-center justify-between gap-2">
-							<span class="font-semibold text-xs flex items-center gap-1.5"><i class="fa-solid fa-wave-square text-accent"></i> Audio Equalizer (5-Band)</span>
-							<select id="eqPresetSelect" onchange="app.setEqPreset(this.value)" class="ui-input border rounded-xl px-2.5 py-1 text-xs font-medium focus:outline-none focus:border-accent">
-								<option value="flat">Flat</option>
-								<option value="bass">Bass Boost</option>
-								<option value="treble">Treble Boost</option>
-								<option value="vocal">Vocal Clarity</option>
-								<option value="rock">Rock</option>
-							</select>
+						<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+							<span class="font-semibold text-xs flex items-center gap-1.5 shrink-0">
+								<i class="fa-solid fa-wave-square text-accent"></i>
+								<span>Audio Equalizer (5-Band)</span>
+							</span>
+
+							<!-- Custom Modern Dropdown: EQ Preset -->
+							<div class="st-dropdown sm:w-56" id="eqPresetDropdown">
+								<button type="button" onclick="app.toggleDropdown('eqPresetDropdown', event)" aria-haspopup="listbox" aria-expanded="false" class="st-dropdown-trigger ui-sub-bg border ui-border py-1.5 px-2.5">
+									<div class="flex items-center gap-2 min-w-0 flex-1">
+										<span class="w-6 h-6 rounded-lg bg-accent-subtle text-accent flex items-center justify-center text-[10px] shrink-0">
+											<i class="fa-solid fa-sliders"></i>
+										</span>
+										<div class="min-w-0 flex-1">
+											<div id="eqPresetDropdownLabel" class="font-semibold text-xs break-words leading-tight">Flat</div>
+											<div id="eqPresetDropdownSub" class="text-[9.5px] ui-text-subtle break-words leading-tight">0dB • Netral</div>
+										</div>
+									</div>
+									<i class="fa-solid fa-chevron-down text-[10px] ui-text-subtle st-dropdown-chevron shrink-0"></i>
+								</button>
+								<div id="eqPresetDropdownMenu" role="listbox" class="st-dropdown-menu hidden"></div>
+							</div>
 						</div>
+
 						<div class="grid grid-cols-5 gap-1.5 sm:gap-2 text-center pt-1">
 							<div class="flex flex-col items-center ui-sub-bg rounded-xl py-2 px-1 border ui-border">
 								<input type="range" min="-12" max="12" value="0" oninput="app.updateEqBand(0, this.value)" class="eq-slider">
@@ -870,7 +979,7 @@
 						<span class="w-7 h-7 rounded-lg bg-accent-subtle text-accent flex items-center justify-center shrink-0"><i class="fa-solid fa-microchip text-xs"></i></span>
 						<div>
 							<h4 class="font-bold text-xs sm:text-sm break-words">Umpan Balik Sistem</h4>
-							<p class="text-[10px] ui-text-subtle break-words">Efek suara interaktif bervariasi dan getaran 100ms</p>
+							<p class="text-[10px] ui-text-subtle break-words">Efek suara interaktif bervariasi di setiap aksi & getaran 100ms</p>
 						</div>
 					</div>
 
@@ -880,7 +989,7 @@
 								<i class="fa-solid fa-volume-high text-accent text-xs w-4 text-center shrink-0"></i>
 								<div class="min-w-0">
 									<div class="font-semibold text-xs break-words">Sound FX Dinamis (Web Audio)</div>
-									<div class="text-[10px] ui-text-subtle break-words">Nada berbeda untuk play, like, tab, modal & notifikasi</div>
+									<div class="text-[10px] ui-text-subtle break-words">Nada unik berbeda untuk setiap aksi kontrol, navigasi & sistem</div>
 								</div>
 							</div>
 							<label class="custom-switch shrink-0"><input type="checkbox" id="soundToggle" onchange="app.toggleSound(this.checked)"><span class="switch-slider"></span></label>
@@ -965,13 +1074,34 @@
 				{ type: 'piped', baseUrl: 'https://pipedapi.kavin.rocks' }
 			],
 			allowedFonts: [
-				'DM Sans',
-				'Nunito',
-				'Space Grotesk',
-				'Rubik',
-				'Manrope',
-				'Sora'
+				'Plus Jakarta Sans',
+				'Outfit',
+				'Poppins',
+				'Lexend',
+				'Urbanist',
+				'Be Vietnam Pro'
 			],
+			fontOptions: [
+				{ value: 'Plus Jakarta Sans', label: 'Plus Jakarta Sans', desc: 'Modern Geometric • Default' },
+				{ value: 'Outfit', label: 'Outfit', desc: 'Clean Contemporary Sans' },
+				{ value: 'Poppins', label: 'Poppins', desc: 'Rounded Friendly Letterform' },
+				{ value: 'Lexend', label: 'Lexend', desc: 'High Reading Comfort' },
+				{ value: 'Urbanist', label: 'Urbanist', desc: 'Sleek Minimalist Neo-Grotesque' },
+				{ value: 'Be Vietnam Pro', label: 'Be Vietnam Pro', desc: 'Sharp & Crisp Proportion' }
+			],
+			weightOptions: [
+				{ value: '400', label: 'Normal (400)', desc: 'Bobot Standar Seimbang', badge: '400' },
+				{ value: '500', label: 'Medium (500)', desc: 'Sedikit Lebih Tegas', badge: '500' },
+				{ value: '600', label: 'Semi-Bold (600)', desc: 'Kontras Tinggi & Rapi', badge: '600' },
+				{ value: '700', label: 'Bold (700)', desc: 'Tebal Maksimal & Jelas', badge: '700' }
+			],
+			eqPresetsData: {
+				flat: { label: 'Flat', desc: '0dB • Netral & Alami', icon: 'fa-solid fa-minus', bands: [0, 0, 0, 0, 0] },
+				bass: { label: 'Bass Boost', desc: '+6dB • Dentuman Rendah', icon: 'fa-solid fa-drum', bands: [6, 4, 0, -1, -2] },
+				treble: { label: 'Treble Boost', desc: '+6dB • Detail Vokal & Simbal', icon: 'fa-solid fa-sparkles', bands: [-2, -1, 0, 4, 6] },
+				vocal: { label: 'Vocal Clarity', desc: '+5dB Mid • Dialog Jernih', icon: 'fa-solid fa-microphone-lines', bands: [-2, 2, 5, 2, -1] },
+				rock: { label: 'Rock', desc: 'V-Shape • Dinamis & Bertenaga', icon: 'fa-solid fa-guitar', bands: [5, 3, -1, 3, 5] }
+			},
 			categories: [
 				{ name: "Populer", icon: "fa-solid fa-fire text-amber-500", query: "indonesia viral trending" },
 				{ name: "Musik", icon: "fa-solid fa-music text-pink-500", query: "indonesia musik populer" },
@@ -991,6 +1121,10 @@
 			timeTicker: null,
 			scrollTimeout: null,
 			audioCtx: null,
+			audioCompressor: null,
+			audioMasterGain: null,
+			lastSliderSoundTime: 0,
+			openDropdownId: null,
 			
 			repeatMode: 'off', // 'off', 'one', 'all'
 			isAutoplay: true,
@@ -1009,7 +1143,7 @@
 				settings: { 
 					theme: "dark",
 					fontSize: 14,
-					fontFamily: "DM Sans",
+					fontFamily: "Plus Jakarta Sans",
 					fontWeight: "400", 
 					accentColor: "#5b9bd5",
 					volume: 100,
@@ -1025,6 +1159,7 @@
 			init() {
 				this.loadLocalStorage();
 				this.cleanOldStats();
+				this.setupDropdownGlobalListeners();
 				this.applySettingsUI();
 				this.renderCategories();
 				this.setupScrollListener();
@@ -1033,6 +1168,216 @@
 				if (this.state.lastWatched) this.restoreLastWatched(this.state.lastWatched);
 				this.searchYouTube(this.categories[0].query, false);
 				this.updateBottomBarUI();
+			},
+
+			// ==========================================
+			// MODERN CUSTOM DROPDOWN ENGINE
+			// ==========================================
+			setupDropdownGlobalListeners() {
+				document.addEventListener('click', (e) => {
+					if (this.openDropdownId && !e.target.closest('.st-dropdown')) {
+						this.closeAllDropdowns(true);
+					}
+				});
+
+				document.addEventListener('keydown', (e) => {
+					if (e.key === 'Escape') {
+						if (this.openDropdownId) {
+							e.stopPropagation();
+							this.closeAllDropdowns(true);
+						} else {
+							const settingsModal = document.getElementById('settingsModal');
+							const accountModal = document.getElementById('accountModal');
+							if (settingsModal && !settingsModal.classList.contains('hidden')) {
+								this.closeModal('settingsModal');
+							} else if (accountModal && !accountModal.classList.contains('hidden')) {
+								this.closeModal('accountModal');
+							}
+						}
+					}
+				});
+			},
+
+			toggleDropdown(dropdownId, e) {
+				if (e) e.stopPropagation();
+				this.triggerHaptic();
+				const target = document.getElementById(dropdownId);
+				if (!target) return;
+
+				const isCurrentlyOpen = target.classList.contains('is-open');
+				this.closeAllDropdowns(false);
+
+				if (!isCurrentlyOpen) {
+					const menu = target.querySelector('.st-dropdown-menu');
+					const trigger = target.querySelector('.st-dropdown-trigger');
+					target.classList.add('is-open');
+					if (trigger) trigger.setAttribute('aria-expanded', 'true');
+					if (menu) {
+						menu.classList.remove('hidden', 'popup-anim-out');
+						menu.classList.add('popup-anim-in');
+						setTimeout(() => {
+							menu.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+						}, 40);
+					}
+					this.openDropdownId = dropdownId;
+					this.playSound('dropdown_open');
+				} else {
+					this.playSound('dropdown_close');
+				}
+			},
+
+			closeAllDropdowns(withSound = false) {
+				if (!this.openDropdownId) return;
+				document.querySelectorAll('.st-dropdown.is-open').forEach(dd => {
+					dd.classList.remove('is-open');
+					const trigger = dd.querySelector('.st-dropdown-trigger');
+					const menu = dd.querySelector('.st-dropdown-menu');
+					if (trigger) trigger.setAttribute('aria-expanded', 'false');
+					if (menu && !menu.classList.contains('hidden')) {
+						menu.classList.remove('popup-anim-in');
+						menu.classList.add('popup-anim-out');
+						setTimeout(() => {
+							menu.classList.add('hidden');
+							menu.classList.remove('popup-anim-out');
+						}, 160);
+					}
+				});
+				this.openDropdownId = null;
+				if (withSound) this.playSound('dropdown_close');
+			},
+
+			renderFontFamilyDropdown(selectedFont) {
+				const menu = document.getElementById('fontFamilyDropdownMenu');
+				const labelEl = document.getElementById('fontFamilyDropdownLabel');
+				const subEl = document.getElementById('fontFamilyDropdownSub');
+				if (!menu) return;
+
+				const currentOpt = this.fontOptions.find(o => o.value === selectedFont) || this.fontOptions[0];
+				if (labelEl) {
+					labelEl.innerText = currentOpt.label;
+					labelEl.style.fontFamily = `'${currentOpt.value}', sans-serif`;
+				}
+				if (subEl) subEl.innerText = currentOpt.desc;
+
+				menu.innerHTML = '';
+				this.fontOptions.forEach(opt => {
+					const isSelected = opt.value === currentOpt.value;
+					const item = document.createElement('button');
+					item.type = 'button';
+					item.setAttribute('role', 'option');
+					item.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+					item.className = `st-dropdown-item ${isSelected ? 'is-selected' : ''}`;
+					item.onclick = (e) => {
+						e.stopPropagation();
+						this.closeAllDropdowns(false);
+						this.updateFontFamily(opt.value, true);
+					};
+					item.innerHTML = `
+						<div class="min-w-0 flex-1">
+							<div class="font-sample-preview text-xs font-semibold break-words leading-snug" style="font-family: '${opt.value}', sans-serif !important;">${opt.label}</div>
+							<div class="text-[10px] ui-text-subtle break-words leading-tight mt-0.5">${opt.desc}</div>
+						</div>
+						<div class="flex items-center gap-2 shrink-0">
+							<span class="font-sample-preview text-xs px-2 py-0.5 rounded-md ui-sub-bg border ui-border opacity-85" style="font-family: '${opt.value}', sans-serif !important;">Ag 123</span>
+							${isSelected ? '<i class="fa-solid fa-check text-accent text-xs"></i>' : '<span class="w-3"></span>'}
+						</div>
+					`;
+					menu.appendChild(item);
+				});
+			},
+
+			renderFontWeightDropdown(selectedWeight) {
+				const menu = document.getElementById('fontWeightDropdownMenu');
+				const labelEl = document.getElementById('fontWeightDropdownLabel');
+				const subEl = document.getElementById('fontWeightDropdownSub');
+				if (!menu) return;
+
+				const wStr = String(selectedWeight);
+				const currentOpt = this.weightOptions.find(o => o.value === wStr) || this.weightOptions[0];
+				if (labelEl) labelEl.innerText = currentOpt.label;
+				if (subEl) subEl.innerText = currentOpt.desc;
+
+				menu.innerHTML = '';
+				this.weightOptions.forEach(opt => {
+					const isSelected = opt.value === currentOpt.value;
+					const item = document.createElement('button');
+					item.type = 'button';
+					item.setAttribute('role', 'option');
+					item.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+					item.className = `st-dropdown-item ${isSelected ? 'is-selected' : ''}`;
+					item.onclick = (e) => {
+						e.stopPropagation();
+						this.closeAllDropdowns(false);
+						this.updateFontWeight(opt.value, true);
+					};
+					item.innerHTML = `
+						<div class="min-w-0 flex-1">
+							<div class="text-xs break-words leading-snug">
+								<span class="weight-sample-preview" style="font-weight: ${opt.value} !important;">${opt.label}</span>
+							</div>
+							<div class="text-[10px] ui-text-subtle break-words leading-tight mt-0.5">${opt.desc}</div>
+						</div>
+						<div class="flex items-center gap-2 shrink-0">
+							<span class="weight-sample-preview text-[10px] font-mono px-2 py-0.5 rounded-md ui-sub-bg border ui-border" style="font-weight: ${opt.value} !important;">${opt.badge}</span>
+							${isSelected ? '<i class="fa-solid fa-check text-accent text-xs"></i>' : '<span class="w-3"></span>'}
+						</div>
+					`;
+					menu.appendChild(item);
+				});
+			},
+
+			detectMatchingEqPreset(bands) {
+				if (!Array.isArray(bands) || bands.length !== 5) return 'flat';
+				for (const [key, data] of Object.entries(this.eqPresetsData)) {
+					if (data.bands.every((val, i) => Number(bands[i]) === val)) {
+						return key;
+					}
+				}
+				return 'custom';
+			},
+
+			renderEqPresetDropdown(activeKey) {
+				const menu = document.getElementById('eqPresetDropdownMenu');
+				const labelEl = document.getElementById('eqPresetDropdownLabel');
+				const subEl = document.getElementById('eqPresetDropdownSub');
+				if (!menu) return;
+
+				if (activeKey === 'custom') {
+					if (labelEl) labelEl.innerText = 'Custom';
+					if (subEl) subEl.innerText = 'Penyesuaian Manual 5-Band';
+				} else {
+					const currentData = this.eqPresetsData[activeKey] || this.eqPresetsData.flat;
+					if (labelEl) labelEl.innerText = currentData.label;
+					if (subEl) subEl.innerText = currentData.desc;
+				}
+
+				menu.innerHTML = '';
+				Object.entries(this.eqPresetsData).forEach(([key, data]) => {
+					const isSelected = key === activeKey;
+					const item = document.createElement('button');
+					item.type = 'button';
+					item.setAttribute('role', 'option');
+					item.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+					item.className = `st-dropdown-item ${isSelected ? 'is-selected' : ''}`;
+					item.onclick = (e) => {
+						e.stopPropagation();
+						this.closeAllDropdowns(false);
+						this.setEqPreset(key);
+					};
+					item.innerHTML = `
+						<div class="flex items-center gap-2.5 min-w-0 flex-1">
+							<span class="w-6 h-6 rounded-lg ui-sub-bg border ui-border flex items-center justify-center text-[10px] ${isSelected ? 'text-accent border-accent/40' : 'ui-text-subtle'} shrink-0">
+								<i class="${data.icon}"></i>
+							</span>
+							<div class="min-w-0 flex-1">
+								<div class="text-xs font-semibold break-words leading-snug">${data.label}</div>
+								<div class="text-[10px] ui-text-subtle break-words leading-tight">${data.desc}</div>
+							</div>
+						</div>
+						${isSelected ? '<i class="fa-solid fa-check text-accent text-xs shrink-0"></i>' : '<span class="w-3 shrink-0"></span>'}
+					`;
+					menu.appendChild(item);
+				});
 			},
 
 			cleanOldStats() {
@@ -1127,7 +1472,7 @@
 			// SEEK EXACT REAL-TIME LOGIC (+/- 10s)
 			seekRelative(seconds) {
 				this.triggerHaptic();
-				this.playSound('seek');
+				this.playSound(seconds > 0 ? 'seek_forward' : 'seek_back');
 				const iframe = document.getElementById('ytPlayer');
 				if (!iframe || !this.state.currentVideo) return;
 
@@ -1147,7 +1492,7 @@
 				this.triggerHaptic();
 				const iframe = document.getElementById('ytPlayer');
 				if (!iframe || !this.state.currentVideo) {
-					if (this.fetchedVideos.length > 0) this.playVideo(this.fetchedVideos[0]);
+					if (this.fetchedVideos.length > 0) this.playVideo(this.fetchedVideos[0], 'play');
 					return;
 				}
 				
@@ -1181,7 +1526,7 @@
 					btn.innerHTML = `<i class="${isActive ? cat.icon.replace(/text-[a-z0-9-]+/g, 'text-white') : cat.icon}"></i> <span class="inline-block ${isActive ? 'text-white opacity-100 visible' : ''}">${cat.name}</span>`;
 					btn.onclick = () => {
 						this.triggerHaptic();
-						this.playSound('tab');
+						this.playSound('category');
 						this.activeCategoryIndex = idx;
 						this.renderCategories();
 						document.getElementById('sectionTitle').innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-accent"></i> Kategori: ${cat.name}`;
@@ -1230,7 +1575,7 @@
 				videos.forEach(v => {
 					const card = document.createElement('div');
 					card.className = "ui-card border rounded-xl overflow-hidden cursor-pointer hover:scale-[1.015] transition-all flex flex-col group";
-					card.onclick = () => this.playVideo(v);
+					card.onclick = () => this.playVideo(v, 'video_select');
 					card.innerHTML = `
 						<div class="relative aspect-video bg-black overflow-hidden">
 							<img src="${v.thumb}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="${v.title.replace(/"/g, '&quot;')}">
@@ -1256,8 +1601,8 @@
 			},
 
 			playFirstAvailable() {
-				if (this.state.currentVideo) this.playVideo(this.state.currentVideo);
-				else if (this.fetchedVideos.length > 0) this.playVideo(this.fetchedVideos[0]);
+				if (this.state.currentVideo) this.playVideo(this.state.currentVideo, 'play');
+				else if (this.fetchedVideos.length > 0) this.playVideo(this.fetchedVideos[0], 'play');
 			},
 
 			restoreLastWatched(videoObj) {
@@ -1274,9 +1619,9 @@
 				this.updateLikeButtonUI();
 			},
 
-			playVideo(videoObj) {
+			playVideo(videoObj, soundType = 'play') {
 				this.triggerHaptic();
-				this.playSound('play');
+				if (soundType) this.playSound(soundType);
 				this.state.currentVideo = videoObj;
 				this.state.lastWatched = videoObj;
 				this.currentVideoTime = 0;
@@ -1307,6 +1652,13 @@
 				}, 1500);
 			},
 
+			playFromList(tab, index) {
+				const list = (tab === 'watch') ? this.state.history : this.state.likedList;
+				if (!list || !list[index]) return;
+				this.playVideo(list[index], 'video_select');
+				this.closeModal('accountModal');
+			},
+
 			populateVideoMetadataUI(videoObj) {
 				document.getElementById('videoTitle').innerText = videoObj.title;
 				document.getElementById('channelName').innerText = videoObj.channel;
@@ -1331,24 +1683,20 @@
 			},
 
 			playNextVideo() {
-				this.triggerHaptic();
-				this.playSound('seek');
 				if (!this.fetchedVideos.length) return;
 				const idx = this.state.currentVideo ? this.fetchedVideos.findIndex(v => v.ytId === this.state.currentVideo.ytId) : -1;
-				this.playVideo(this.fetchedVideos[(idx + 1) % this.fetchedVideos.length]);
+				this.playVideo(this.fetchedVideos[(idx + 1) % this.fetchedVideos.length], 'next');
 			},
 			
 			playPrevVideo() {
-				this.triggerHaptic();
-				this.playSound('seek');
 				if (!this.fetchedVideos.length) return;
 				const idx = this.state.currentVideo ? this.fetchedVideos.findIndex(v => v.ytId === this.state.currentVideo.ytId) : 0;
-				this.playVideo(this.fetchedVideos[(idx - 1 + this.fetchedVideos.length) % this.fetchedVideos.length]);
+				this.playVideo(this.fetchedVideos[(idx - 1 + this.fetchedVideos.length) % this.fetchedVideos.length], 'prev');
 			},
 
 			toggleRepeatMode() {
 				this.triggerHaptic();
-				this.playSound('toggle');
+				this.playSound('repeat');
 				if (this.repeatMode === 'off') this.repeatMode = 'one';
 				else if (this.repeatMode === 'one') this.repeatMode = 'all';
 				else this.repeatMode = 'off';
@@ -1358,7 +1706,7 @@
 
 			toggleAutoplayMode() {
 				this.triggerHaptic();
-				this.playSound('toggle');
+				this.playSound('autoplay');
 				this.isAutoplay = !this.isAutoplay;
 				this.updateBottomBarUI();
 				this.showToast(`Auto Play: ${this.isAutoplay ? 'ON' : 'OFF'}`);
@@ -1366,14 +1714,15 @@
 
 			toggleDescription() {
 				this.triggerHaptic();
-				this.playSound('tap');
 				const content = document.getElementById('videoDescContent');
 				const btn = document.getElementById('toggleDescBtn');
 				this.isDescExpanded = !this.isDescExpanded;
 				if (this.isDescExpanded) {
+					this.playSound('expand');
 					content.classList.add('expanded');
 					btn.innerHTML = '<span>Sembunyikan</span><i class="fa-solid fa-chevron-up text-[10px]"></i>';
 				} else {
+					this.playSound('collapse');
 					content.classList.remove('expanded');
 					btn.innerHTML = '<span>Tampilkan Semua</span><i class="fa-solid fa-chevron-down text-[10px]"></i>';
 				}
@@ -1389,7 +1738,7 @@
 
 			copyDescription() {
 				this.triggerHaptic();
-				this.playSound('success');
+				this.playSound('copy');
 				const desc = document.getElementById('videoDescContent')?.innerText || '';
 				if (!desc) return;
 				const el = document.createElement('textarea');
@@ -1411,7 +1760,7 @@
 				const ytId = this.state.currentVideo.ytId;
 				const isLiked = !!this.state.likesMap[ytId];
 				if (isLiked) {
-					this.playSound('tap');
+					this.playSound('unlike');
 					delete this.state.likesMap[ytId];
 					this.state.likedList = this.state.likedList.filter(v => v.ytId !== ytId);
 				} else {
@@ -1449,8 +1798,8 @@
 
 			toggleTheaterMode() {
 				this.triggerHaptic();
-				this.playSound('toggle');
 				this.isTheaterMode = !this.isTheaterMode;
+				this.playSound(this.isTheaterMode ? 'toggle_on' : 'toggle_off');
 				const wrapper = document.getElementById('playerWrapper');
 				const icon = document.getElementById('theaterIcon');
 				if (this.isTheaterMode) {
@@ -1472,7 +1821,7 @@
 					this.playSound('error');
 					return;
 				}
-				this.playSound('success');
+				this.playSound('copy');
 				const ytUrl = `https://www.youtube.com/watch?v=${this.state.currentVideo.ytId}`;
 				const el = document.createElement('textarea');
 				el.value = ytUrl;
@@ -1490,7 +1839,7 @@
 					this.showToast('Pilih video terlebih dahulu');
 					return;
 				}
-				this.playSound('success');
+				this.playSound('download');
 				this.state.downloads.unshift({
 					title: this.state.currentVideo.title,
 					type: type.toUpperCase(),
@@ -1544,7 +1893,7 @@
 			handleSearch(e) {
 				if (e) e.preventDefault();
 				this.triggerHaptic();
-				this.playSound('tap');
+				this.playSound('search');
 				const input = document.getElementById('searchInput');
 				const query = input.value.trim();
 				if (!query) return;
@@ -1585,12 +1934,16 @@
 			renderSearchSuggestions(filterVal = '') {
 				const container = document.getElementById('suggestionList');
 				container.innerHTML = '';
-				const filtered = this.state.searchHistory.filter(item => item.toLowerCase().includes(filterVal.toLowerCase().trim()));
-				if (filtered.length === 0) {
+				const lowerFilter = filterVal.toLowerCase().trim();
+				const indexed = this.state.searchHistory
+					.map((item, idx) => ({ item, idx }))
+					.filter(entry => entry.item.toLowerCase().includes(lowerFilter));
+
+				if (indexed.length === 0) {
 					container.innerHTML = `<div class="px-4 py-3 text-center text-slate-500 text-[11px]">Belum ada riwayat pencarian.</div>`;
 					return;
 				}
-				filtered.forEach(item => {
+				indexed.forEach(({ item, idx }) => {
 					const div = document.createElement('div');
 					div.className = "px-3.5 py-2 ui-hover-bg cursor-pointer flex items-center justify-between gap-2 transition-colors";
 					div.onmousedown = () => {
@@ -1598,18 +1951,21 @@
 						this.handleSearch();
 					};
 					div.innerHTML = `<div class="flex items-start gap-2.5 flex-1 min-w-0"><i class="fa-solid fa-clock-rotate-left ui-text-subtle text-[11px] mt-0.5 shrink-0"></i><span class="break-words whitespace-normal">${item}</span></div>
-									 <button type="button" onmousedown="app.removeSearchHistoryItem(event, '${item.replace(/'/g, "\\'")}')" class="p-1 ui-text-subtle hover:text-rose-400 text-[11px] shrink-0"><i class="fa-solid fa-xmark"></i></button>`;
+									 <button type="button" onmousedown="app.removeSearchHistoryByIndex(event, ${idx})" class="p-1 ui-text-subtle hover:text-rose-400 text-[11px] shrink-0"><i class="fa-solid fa-xmark"></i></button>`;
 					container.appendChild(div);
 				});
 			},
 
-			removeSearchHistoryItem(e, item) {
+			removeSearchHistoryByIndex(e, index) {
 				e.stopPropagation();
 				e.preventDefault();
-				this.playSound('tap');
-				this.state.searchHistory = this.state.searchHistory.filter(q => q !== item);
-				this.saveState();
-				this.renderSearchSuggestions(document.getElementById('searchInput').value);
+				this.triggerHaptic();
+				this.playSound('delete');
+				if (index >= 0 && index < this.state.searchHistory.length) {
+					this.state.searchHistory.splice(index, 1);
+					this.saveState();
+					this.renderSearchSuggestions(document.getElementById('searchInput').value);
+				}
 			},
 
 			clearSearchHistory(e) {
@@ -1617,7 +1973,8 @@
 					e.stopPropagation();
 					e.preventDefault();
 				}
-				this.playSound('tap');
+				this.triggerHaptic();
+				this.playSound('delete');
 				this.state.searchHistory = [];
 				this.saveState();
 				this.renderSearchSuggestions('');
@@ -1625,7 +1982,7 @@
 
 			resetHome() {
 				this.triggerHaptic();
-				this.playSound('tab');
+				this.playSound('home');
 				document.getElementById('searchInput').value = '';
 				this.selectCategory(0);
 			},
@@ -1673,7 +2030,7 @@
 					this.state.user.avatar = compressed;
 					this.saveState();
 					this.updateAvatarUI();
-					this.playSound('success');
+					this.playSound('upload');
 					this.showToast("Foto profil berhasil diperbarui!");
 				} catch (err) {
 					this.playSound('error');
@@ -1692,7 +2049,7 @@
 					this.state.user.cover = compressed;
 					this.saveState();
 					this.updateCoverUI();
-					this.playSound('success');
+					this.playSound('upload');
 					this.showToast("Foto sampul berhasil diperbarui!");
 				} catch (err) {
 					this.playSound('error');
@@ -1783,7 +2140,7 @@
 				this.switchAccTab(this.state.activeAccTab, false);
 			},
 
-			// PROPORTIONAL 7-DAY WATCH CHART
+			// PROPORTIONAL 7-DAY WATCH CHART (FOLLOWS SELECTED FONT & WEIGHT)
 			render7DayWatchChart() {
 				const container = document.getElementById('watchStatsChartContainer');
 				if (!container) return;
@@ -1832,9 +2189,9 @@
 						<g>
 							<rect x="${x}" y="${chartTop}" width="${barWidth}" height="${chartHeight}" rx="8" fill="rgba(148, 163, 184, 0.08)" />
 							<rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="8" fill="${isToday ? 'url(#todayBarGrad)' : 'rgba(148, 163, 184, 0.42)'}" />
-							<text x="${centerX}" y="${y - 7}" text-anchor="middle" fill="${isToday ? 'var(--accent-color)' : '#94a3b8'}" font-size="11" font-weight="700">${d.count}</text>
-							<text x="${centerX}" y="${chartBottom + 18}" text-anchor="middle" fill="${isToday ? 'var(--accent-color)' : '#94a3b8'}" font-size="11" font-weight="${isToday ? '700' : '600'}">${d.dayName}</text>
-							<text x="${centerX}" y="${chartBottom + 32}" text-anchor="middle" fill="#64748b" font-size="9.5">${d.shortDate}</text>
+							<text x="${centerX}" y="${y - 7}" text-anchor="middle" fill="${isToday ? 'var(--accent-color)' : '#94a3b8'}" font-size="11" style="font-weight: var(--fw-bold);">${d.count}</text>
+							<text x="${centerX}" y="${chartBottom + 18}" text-anchor="middle" fill="${isToday ? 'var(--accent-color)' : '#94a3b8'}" font-size="11" style="font-weight: ${isToday ? 'var(--fw-bold)' : 'var(--fw-semibold)'};">${d.dayName}</text>
+							<text x="${centerX}" y="${chartBottom + 32}" text-anchor="middle" fill="#64748b" font-size="9.5" style="font-weight: var(--fw-base);">${d.shortDate}</text>
 						</g>
 					`;
 				});
@@ -1849,13 +2206,13 @@
 						</defs>
 
 						<line x1="28" y1="${chartTop}" x2="${svgWidth - 8}" y2="${chartTop}" stroke="rgba(148, 163, 184, 0.16)" stroke-dasharray="3,3" />
-						<text x="22" y="${chartTop + 4}" text-anchor="end" fill="#64748b" font-size="9.5">${maxCount}</text>
+						<text x="22" y="${chartTop + 4}" text-anchor="end" fill="#64748b" font-size="9.5" style="font-weight: var(--fw-base);">${maxCount}</text>
 
 						<line x1="28" y1="${chartTop + chartHeight / 2}" x2="${svgWidth - 8}" y2="${chartTop + chartHeight / 2}" stroke="rgba(148, 163, 184, 0.16)" stroke-dasharray="3,3" />
-						<text x="22" y="${chartTop + chartHeight / 2 + 4}" text-anchor="end" fill="#64748b" font-size="9.5">${midCount}</text>
+						<text x="22" y="${chartTop + chartHeight / 2 + 4}" text-anchor="end" fill="#64748b" font-size="9.5" style="font-weight: var(--fw-base);">${midCount}</text>
 
 						<line x1="28" y1="${chartBottom}" x2="${svgWidth - 8}" y2="${chartBottom}" stroke="rgba(148, 163, 184, 0.28)" />
-						<text x="22" y="${chartBottom + 4}" text-anchor="end" fill="#64748b" font-size="9.5">0</text>
+						<text x="22" y="${chartBottom + 4}" text-anchor="end" fill="#64748b" font-size="9.5" style="font-weight: var(--fw-base);">0</text>
 
 						${barsSvg}
 					</svg>
@@ -1887,7 +2244,7 @@
 					return;
 				}
 
-				list.forEach(item => {
+				list.forEach((item, idx) => {
 					const el = document.createElement('div');
 					el.className = "p-2.5 ui-sub-bg rounded-xl border ui-border flex items-start sm:items-center gap-3 text-xs hover:border-accent transition-all";
 					const thumbUrl = item.thumb || `https://placehold.co/120x68/0f172a/94a3b8?text=Video`;
@@ -1897,7 +2254,7 @@
 											<div class="font-medium break-words whitespace-normal leading-snug">${item.title}</div>
 											<div class="text-[10px] ui-text-subtle break-words whitespace-normal">${item.channel} • ${item.watchedAt || item.likedAt}</div>
 										</div>
-										<button type="button" onclick="app.playVideo(${JSON.stringify(item).replace(/"/g, '&quot;')}); app.closeModal('accountModal')" class="px-2.5 py-1.5 btn-accent rounded-lg text-[11px] font-medium shrink-0">Putar</button>`;
+										<button type="button" onclick="app.playFromList('${tab}', ${idx})" class="px-2.5 py-1.5 btn-accent rounded-lg text-[11px] font-medium shrink-0">Putar</button>`;
 					} else {
 						el.innerHTML = `<img src="${thumbUrl}" class="w-16 h-10 object-cover rounded-lg shrink-0 border ui-border">
 										<div class="min-w-0 flex-1 space-y-0.5">
@@ -1921,7 +2278,7 @@
 					searchHistory: this.state.searchHistory,
 					dailyWatchStats: this.state.dailyWatchStats,
 					settings: this.state.settings,
-					version: "2.2"
+					version: "2.4"
 				};
 				const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData));
 				const a = document.createElement('a');
@@ -1953,7 +2310,9 @@
 							this.state.downloads = imported.downloads || [];
 							this.state.searchHistory = imported.searchHistory || []; 
 							if (imported.dailyWatchStats) this.state.dailyWatchStats = imported.dailyWatchStats;
-							if (imported.settings) this.state.settings = imported.settings;
+							if (imported.settings) {
+								this.state.settings = Object.assign({}, this.state.settings, imported.settings);
+							}
 							this.saveState();
 							this.applySettingsUI();
 							this.renderAccountModal();
@@ -1976,6 +2335,7 @@
 			filterSettingsSection(group, btnEl) {
 				this.triggerHaptic();
 				this.playSound('tab');
+				this.closeAllDropdowns(false);
 				document.querySelectorAll('.settings-nav-pill').forEach(pill => {
 					pill.className = "settings-nav-pill px-3 py-1.5 rounded-full ui-card border font-medium hover:border-accent transition-all";
 				});
@@ -1997,6 +2357,7 @@
 			openModal(id) {
 				this.triggerHaptic();
 				this.playSound('modal_open');
+				this.closeAllDropdowns(false);
 				const modal = document.getElementById(id);
 				const content = modal.querySelector('.ui-modal');
 				modal.classList.remove('hidden', 'backdrop-anim-out');
@@ -2009,6 +2370,7 @@
 			closeModal(id) {
 				this.triggerHaptic();
 				this.playSound('modal_close');
+				this.closeAllDropdowns(false);
 				const modal = document.getElementById(id);
 				const content = modal.querySelector('.ui-modal');
 				modal.classList.remove('backdrop-anim-in');
@@ -2065,13 +2427,11 @@
 				this.updateFontSize(clampedSize, false);
 				document.getElementById('fontSizeSlider').value = clampedSize;
 
-				const validFont = this.allowedFonts.includes(s.fontFamily) ? s.fontFamily : 'DM Sans';
+				const validFont = this.allowedFonts.includes(s.fontFamily) ? s.fontFamily : 'Plus Jakarta Sans';
 				this.updateFontFamily(validFont, false);
-				document.getElementById('fontFamilySelect').value = validFont;
 
 				const validWeight = ['400', '500', '600', '700'].includes(String(s.fontWeight)) ? String(s.fontWeight) : '400';
 				this.updateFontWeight(validWeight, false);
-				document.getElementById('fontWeightSelect').value = validWeight;
 
 				this.updateAccentColor(s.accentColor || '#5b9bd5', false);
 				this.setVolume(s.volume !== undefined ? s.volume : 100, false);
@@ -2087,7 +2447,12 @@
 						const label = document.getElementById(`eqVal${idx}`);
 						if (label) label.innerText = `${v > 0 ? '+' : ''}${v}dB`;
 					});
+					const matchedPreset = this.detectMatchingEqPreset(s.eqBands);
+					this.renderEqPresetDropdown(matchedPreset);
+				} else {
+					this.renderEqPresetDropdown('flat');
 				}
+
 				document.getElementById('soundToggle').checked = !!s.soundEnabled;
 				document.getElementById('hapticToggle').checked = !!s.hapticEnabled;
 				document.getElementById('navAccountName').innerText = this.state.user.name || 'Akun';
@@ -2097,7 +2462,7 @@
 
 			setTheme(themeName, save = true) {
 				if (save) {
-					this.playSound('toggle');
+					this.playSound('theme');
 					this.triggerHaptic();
 				}
 				this.state.settings.theme = themeName;
@@ -2136,7 +2501,7 @@
 					}
 				});
 				if (save) {
-					this.playSound('toggle');
+					this.playSound('accent');
 					this.triggerHaptic();
 					this.saveState();
 				}
@@ -2147,14 +2512,18 @@
 				document.documentElement.style.setProperty('--base-font-size', numSize + 'px');
 				document.getElementById('fontSizeVal').innerText = numSize + 'px';
 				this.state.settings.fontSize = numSize;
-				if (save) this.saveState();
+				if (save) {
+					this.playSound('slider');
+					this.saveState();
+				}
 			},
 
 			updateFontFamily(family, save = true) {
 				document.documentElement.style.setProperty('--app-font-family', `'${family}', sans-serif`);
 				this.state.settings.fontFamily = family;
+				this.renderFontFamilyDropdown(family);
 				if (save) {
-					this.playSound('toggle');
+					this.playSound('font_change');
 					this.triggerHaptic();
 					this.saveState();
 				}
@@ -2171,9 +2540,10 @@
 				document.documentElement.style.setProperty('--fw-semibold', String(fwSemibold));
 				document.documentElement.style.setProperty('--fw-bold', String(fwBold));
 				this.state.settings.fontWeight = String(w);
+				this.renderFontWeightDropdown(String(w));
 
 				if (save) {
-					this.playSound('toggle');
+					this.playSound('font_change');
 					this.triggerHaptic();
 					this.saveState();
 				}
@@ -2186,14 +2556,20 @@
 				if (iframe && iframe.contentWindow) {
 					iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [parseInt(val)] }), '*');
 				}
-				if (save) this.saveState();
+				if (save) {
+					this.playSound('slider');
+					this.saveState();
+				}
 			},
 
 			setBrightness(val, save = true) {
 				this.state.settings.brightness = val;
 				document.getElementById('brightnessVal').innerText = `${val}%`;
 				document.documentElement.style.setProperty('--player-brightness', `${val}%`);
-				if (save) this.saveState();
+				if (save) {
+					this.playSound('slider');
+					this.saveState();
+				}
 			},
 
 			setAudioMode(mode, save = true) {
@@ -2207,7 +2583,7 @@
 					}
 				});
 				if (save) {
-					this.playSound('toggle');
+					this.playSound('audio_mode');
 					this.triggerHaptic();
 					this.saveState();
 				}
@@ -2218,18 +2594,15 @@
 				this.state.settings.eqBands[index] = val;
 				const label = document.getElementById(`eqVal${index}`);
 				if (label) label.innerText = `${val > 0 ? '+' : ''}${val}dB`;
+				const matchedPreset = this.detectMatchingEqPreset(this.state.settings.eqBands);
+				this.renderEqPresetDropdown(matchedPreset);
+				this.playSound('slider');
 				this.saveState();
 			},
 
 			setEqPreset(preset) {
-				const presets = {
-					flat: [0, 0, 0, 0, 0],
-					bass: [6, 4, 0, -1, -2],
-					treble: [-2, -1, 0, 4, 6],
-					vocal: [-2, 2, 5, 2, -1],
-					rock: [5, 3, -1, 3, 5]
-				};
-				const bands = presets[preset] || presets.flat;
+				const presetObj = this.eqPresetsData[preset] || this.eqPresetsData.flat;
+				const bands = presetObj.bands;
 				this.state.settings.eqBands = [...bands];
 				bands.forEach((v, idx) => {
 					const el = document.querySelectorAll('.eq-slider')[idx];
@@ -2237,7 +2610,8 @@
 					const label = document.getElementById(`eqVal${idx}`);
 					if (label) label.innerText = `${v > 0 ? '+' : ''}${v}dB`;
 				});
-				this.playSound('toggle');
+				this.renderEqPresetDropdown(preset);
+				this.playSound('eq_preset');
 				this.triggerHaptic();
 				this.saveState();
 			},
@@ -2245,7 +2619,7 @@
 			toggleSound(val) {
 				this.state.settings.soundEnabled = val;
 				this.saveState();
-				if (val) this.playSound('toggle');
+				if (val) this.playSound('toggle_on');
 			},
 
 			toggleHaptic(val) {
@@ -2253,21 +2627,51 @@
 				this.saveState();
 				if (val) {
 					this.triggerHaptic();
-					this.playSound('toggle');
+					this.playSound('toggle_on');
+				} else {
+					this.playSound('toggle_off');
 				}
 			},
 
-			// VARIED WEB AUDIO API SOUND EFFECTS BY ACTION TYPE
+			// =========================================================================
+			// ENHANCED & VARIED WEB AUDIO API SOUND EFFECTS (BOOSTED GAIN + COMPRESSOR)
+			// =========================================================================
+			ensureAudioPipeline() {
+				if (!this.audioCtx) {
+					this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+				}
+				if (this.audioCtx.state === 'suspended') {
+					this.audioCtx.resume();
+				}
+				if (!this.audioCompressor) {
+					this.audioCompressor = this.audioCtx.createDynamicsCompressor();
+					this.audioCompressor.threshold.setValueAtTime(-16, this.audioCtx.currentTime);
+					this.audioCompressor.knee.setValueAtTime(18, this.audioCtx.currentTime);
+					this.audioCompressor.ratio.setValueAtTime(6, this.audioCtx.currentTime);
+					this.audioCompressor.attack.setValueAtTime(0.004, this.audioCtx.currentTime);
+					this.audioCompressor.release.setValueAtTime(0.14, this.audioCtx.currentTime);
+
+					this.audioMasterGain = this.audioCtx.createGain();
+					this.audioMasterGain.gain.setValueAtTime(1.35, this.audioCtx.currentTime);
+
+					this.audioCompressor.connect(this.audioMasterGain);
+					this.audioMasterGain.connect(this.audioCtx.destination);
+				}
+			},
+
 			playSound(type = 'tap') {
 				if (!this.state.settings.soundEnabled) return;
+				if (type === 'slider') {
+					const nowMs = Date.now();
+					if (nowMs - this.lastSliderSoundTime < 65) return;
+					this.lastSliderSoundTime = nowMs;
+				}
 				try {
-					if (!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-					if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
-
+					this.ensureAudioPipeline();
 					const ctx = this.audioCtx;
 					const now = ctx.currentTime;
 
-					const playTone = (freqStart, freqEnd, duration, wave = 'sine', peakGain = 0.055, delay = 0) => {
+					const playTone = (freqStart, freqEnd, duration, wave = 'sine', peakGain = 0.115, delay = 0) => {
 						const osc = ctx.createOscillator();
 						const gain = ctx.createGain();
 						osc.type = wave;
@@ -2280,61 +2684,183 @@
 						gain.gain.exponentialRampToValueAtTime(0.0001, now + delay + duration);
 
 						osc.connect(gain);
-						gain.connect(ctx.destination);
+						gain.connect(this.audioCompressor);
 						osc.start(now + delay);
-						osc.stop(now + delay + duration + 0.01);
+						osc.stop(now + delay + duration + 0.015);
 					};
 
 					switch (type) {
 						case 'play':
-							// Warm ascending two-note chime
-							playTone(440, 440, 0.08, 'sine', 0.055, 0);
-							playTone(659.25, 659.25, 0.13, 'sine', 0.06, 0.06);
+							// Warm ascending two-note major fifth chime
+							playTone(440, 440, 0.09, 'sine', 0.125, 0);
+							playTone(659.25, 659.25, 0.15, 'sine', 0.135, 0.065);
 							break;
 						case 'pause':
-							// Gentle descending two-note tone
-							playTone(587.33, 587.33, 0.08, 'sine', 0.05, 0);
-							playTone(440, 440, 0.12, 'sine', 0.05, 0.06);
+							// Gentle descending two-note pause cadence
+							playTone(587.33, 587.33, 0.085, 'sine', 0.115, 0);
+							playTone(440, 440, 0.13, 'sine', 0.115, 0.06);
 							break;
-						case 'seek':
-							// Crisp quick swoosh tick
-							playTone(360, 720, 0.065, 'triangle', 0.05, 0);
+						case 'video_select':
+							// Crisp upbeat selection plink for clicking a video card
+							playTone(523.25, 523.25, 0.065, 'triangle', 0.115, 0);
+							playTone(783.99, 783.99, 0.11, 'sine', 0.125, 0.05);
+							break;
+						case 'next':
+							// Energetic forward triple-step skip
+							playTone(523.25, 659.25, 0.055, 'triangle', 0.115, 0);
+							playTone(659.25, 880, 0.08, 'triangle', 0.125, 0.048);
+							break;
+						case 'prev':
+							// Energetic backward double-step skip
+							playTone(659.25, 523.25, 0.055, 'triangle', 0.115, 0);
+							playTone(523.25, 392, 0.08, 'triangle', 0.125, 0.048);
+							break;
+						case 'seek_forward':
+							// Quick upward aerodynamic sweep (+10s)
+							playTone(420, 880, 0.075, 'triangle', 0.12, 0);
+							break;
+						case 'seek_back':
+							// Quick downward aerodynamic sweep (-10s)
+							playTone(780, 360, 0.075, 'triangle', 0.12, 0);
+							break;
+						case 'repeat':
+							// Circular loop 3-note pulse
+							playTone(523.25, 523.25, 0.055, 'sine', 0.105, 0);
+							playTone(659.25, 659.25, 0.055, 'sine', 0.11, 0.05);
+							playTone(523.25, 523.25, 0.075, 'sine', 0.105, 0.10);
+							break;
+						case 'autoplay':
+							// Futuristic automation dual-pulse
+							playTone(493.88, 493.88, 0.06, 'triangle', 0.11, 0);
+							playTone(739.99, 739.99, 0.095, 'sine', 0.12, 0.055);
+							break;
+						case 'category':
+							// Crisp melodic plink for category pills
+							playTone(587.33, 880, 0.07, 'sine', 0.11, 0);
+							break;
+						case 'home':
+							// Warm welcoming 3-note home cadence
+							playTone(659.25, 659.25, 0.065, 'sine', 0.11, 0);
+							playTone(523.25, 523.25, 0.065, 'sine', 0.11, 0.055);
+							playTone(392.00, 392.00, 0.12, 'sine', 0.12, 0.11);
 							break;
 						case 'tab':
-							// Light airy pop for switching tabs/categories
-							playTone(520, 680, 0.055, 'sine', 0.045, 0);
+							// Light airy pop for switching modal or filter tabs
+							playTone(500, 680, 0.055, 'sine', 0.10, 0);
+							break;
+						case 'dropdown_open':
+							// Smooth rising unfurl tone when opening custom dropdown
+							playTone(390, 650, 0.075, 'sine', 0.105, 0);
+							break;
+						case 'dropdown_close':
+							// Smooth falling settle tone when closing custom dropdown
+							playTone(600, 360, 0.065, 'sine', 0.095, 0);
+							break;
+						case 'font_change':
+							// Crisp typographic crystal double-tap
+							playTone(720, 720, 0.04, 'sine', 0.10, 0);
+							playTone(960, 960, 0.065, 'triangle', 0.11, 0.042);
+							break;
+						case 'audio_mode':
+							// Spatial dual-channel harmonic shift
+							playTone(440, 554.37, 0.07, 'triangle', 0.11, 0);
+							playTone(659.25, 659.25, 0.09, 'sine', 0.115, 0.05);
+							break;
+						case 'eq_preset':
+							// 3-band harmonic sweep for EQ preset selection
+							playTone(330, 330, 0.05, 'triangle', 0.10, 0);
+							playTone(493.88, 493.88, 0.05, 'triangle', 0.105, 0.042);
+							playTone(739.99, 739.99, 0.085, 'sine', 0.115, 0.084);
 							break;
 						case 'like':
-							// Bright uplifting chord arpeggio
-							playTone(523.25, 523.25, 0.08, 'sine', 0.05, 0);
-							playTone(659.25, 659.25, 0.08, 'sine', 0.05, 0.045);
-							playTone(783.99, 783.99, 0.14, 'sine', 0.06, 0.09);
+							// Bright uplifting 4-note chord arpeggio
+							playTone(523.25, 523.25, 0.07, 'sine', 0.11, 0);
+							playTone(659.25, 659.25, 0.07, 'sine', 0.11, 0.042);
+							playTone(783.99, 783.99, 0.08, 'sine', 0.12, 0.084);
+							playTone(1046.50, 1046.50, 0.14, 'sine', 0.13, 0.126);
+							break;
+						case 'unlike':
+							// Soft muted downward release
+							playTone(440, 311.13, 0.085, 'sine', 0.095, 0);
 							break;
 						case 'modal_open':
-							// Soft rising swell
-							playTone(340, 560, 0.11, 'sine', 0.045, 0);
+							// Soft rising harmonic swell
+							playTone(320, 580, 0.115, 'sine', 0.105, 0);
 							break;
 						case 'modal_close':
 							// Soft falling settle
-							playTone(520, 310, 0.10, 'sine', 0.04, 0);
+							playTone(540, 300, 0.105, 'sine', 0.095, 0);
 							break;
-						case 'toggle':
-							// Tactile switch snap
-							playTone(620, 420, 0.045, 'triangle', 0.05, 0);
+						case 'theme':
+							// Resonant dual-harmonic shimmer for theme mode
+							playTone(440, 554.37, 0.095, 'sine', 0.10, 0);
+							playTone(659.25, 830.61, 0.115, 'sine', 0.095, 0.038);
+							break;
+						case 'accent':
+							// Sparkling high-tone trio for accent color swatch
+							playTone(587.33, 587.33, 0.055, 'sine', 0.095, 0);
+							playTone(880, 880, 0.065, 'sine', 0.105, 0.04);
+							playTone(1174.66, 1174.66, 0.09, 'sine', 0.11, 0.08);
+							break;
+						case 'toggle_on':
+							// Positive ascending switch snap
+							playTone(480, 780, 0.055, 'triangle', 0.115, 0);
+							break;
+						case 'toggle_off':
+							// Calm descending switch snap
+							playTone(700, 410, 0.055, 'triangle', 0.105, 0);
+							break;
+						case 'slider':
+							// Crisp tactile micro-tick while dragging range sliders
+							playTone(820, 720, 0.028, 'sine', 0.068, 0);
+							break;
+						case 'search':
+							// Expressive discovery ping
+							playTone(560, 920, 0.085, 'sine', 0.115, 0);
+							break;
+						case 'download':
+							// Encouraging rising triple cascade
+							playTone(440, 440, 0.065, 'sine', 0.11, 0);
+							playTone(554.37, 554.37, 0.065, 'sine', 0.115, 0.05);
+							playTone(880, 880, 0.14, 'sine', 0.13, 0.10);
+							break;
+						case 'copy':
+							// Sharp clipboard double-tick
+							playTone(760, 760, 0.045, 'sine', 0.10, 0);
+							playTone(1046.50, 1046.50, 0.065, 'sine', 0.11, 0.045);
+							break;
+						case 'delete':
+							// Distinct low sweep down for clearing history
+							playTone(410, 195, 0.095, 'triangle', 0.11, 0);
+							break;
+						case 'expand':
+							// Gentle accordion lift
+							playTone(420, 580, 0.065, 'sine', 0.095, 0);
+							break;
+						case 'collapse':
+							// Gentle accordion fold
+							playTone(580, 420, 0.065, 'sine', 0.095, 0);
+							break;
+						case 'upload':
+							// Progressive uplifting triad on avatar/cover upload
+							playTone(440, 440, 0.06, 'sine', 0.11, 0);
+							playTone(659.25, 659.25, 0.06, 'sine', 0.115, 0.05);
+							playTone(880, 880, 0.12, 'sine', 0.125, 0.10);
 							break;
 						case 'success':
 							// Pleasant confirmation double chime
-							playTone(587.33, 587.33, 0.08, 'sine', 0.05, 0);
-							playTone(880, 880, 0.15, 'sine', 0.055, 0.065);
+							playTone(587.33, 587.33, 0.08, 'sine', 0.115, 0);
+							playTone(880, 880, 0.15, 'sine', 0.125, 0.065);
 							break;
 						case 'error':
-							// Low subtle warning buzz
-							playTone(220, 175, 0.14, 'sawtooth', 0.035, 0);
+							// Polite low dual warning tone
+							playTone(230, 185, 0.11, 'sawtooth', 0.08, 0);
+							playTone(195, 160, 0.12, 'sawtooth', 0.075, 0.09);
 							break;
 						case 'tap':
 						default:
-							// Subtle clean click
-							playTone(500, 290, 0.045, 'sine', 0.045, 0);
+							// Clean tactile click
+							playTone(520, 320, 0.048, 'sine', 0.105, 0);
 							break;
 					}
 				} catch (e) {}
