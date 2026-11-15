@@ -19,10 +19,10 @@
 	<!-- FontAwesome 6 CDN -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 	
-	<!-- Google Fonts: 6 Modern Distinct Fonts (Plus Jakarta Sans, Outfit, Poppins, Lexend, Urbanist, Be Vietnam Pro) -->
+	<!-- Google Fonts: 6 Modern Distinct Fonts (Manrope, Sora, DM Sans, Figtree, Onest, Albert Sans) -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Lexend:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Figtree:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Onest:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 	
 	<style>
 		/* Dynamic Design Tokens */
@@ -32,7 +32,7 @@
 			--accent-light: rgba(91, 155, 213, 0.14);
 			--accent-glow: rgba(91, 155, 213, 0.20);
 			--base-font-size: 14px;
-			--app-font-family: 'Plus Jakarta Sans', sans-serif;
+			--app-font-family: 'Manrope', sans-serif;
 			--fw-base: 400;
 			--fw-medium: 500;
 			--fw-semibold: 600;
@@ -526,7 +526,15 @@
 			     2C. CATEGORY PILLS BAR (FLEX WRAP / NO ELLIPSIS)
 			     ========================================== -->
 			<section id="categoryMeta" class="w-full max-w-6xl mx-auto mt-3 sm:mt-4 px-3 sm:px-0">
-				<div class="flex flex-wrap items-center gap-1.5 sm:gap-2 py-1 text-xs" id="categoryContainer"></div>
+				<div class="flex items-center gap-1.5 sm:gap-2">
+					<button type="button" id="categoryPrevBtn" onclick="app.scrollCategories(-1)" aria-label="Geser kategori ke kiri" class="hidden sm:flex w-8 h-8 rounded-full ui-card border items-center justify-center shrink-0 hover:border-accent transition-all active:scale-95">
+						<i class="fa-solid fa-chevron-left text-[11px]"></i>
+					</button>
+					<div class="relative flex flex-nowrap items-center gap-1.5 sm:gap-2 py-1 text-xs flex-1 min-w-0 overflow-x-auto no-scrollbar select-none" id="categoryContainer"></div>
+					<button type="button" id="categoryNextBtn" onclick="app.scrollCategories(1)" aria-label="Geser kategori ke kanan" class="hidden sm:flex w-8 h-8 rounded-full ui-card border items-center justify-center shrink-0 hover:border-accent transition-all active:scale-95">
+						<i class="fa-solid fa-chevron-right text-[11px]"></i>
+					</button>
+				</div>
 			</section>
 
 			<!-- ==========================================
@@ -545,93 +553,101 @@
 	<!-- ==========================================
 	     4. FLOATING FIXED BOTTOM PLAYER CONTROL BAR
 	     ========================================== -->
-	<div id="bottomPlayerBar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 ui-card border rounded-3xl sm:rounded-full shadow-lg px-3.5 sm:px-6 py-2 sm:py-2.5 flex flex-wrap sm:flex-nowrap items-center justify-center gap-1.5 sm:gap-3 transition-all duration-500 backdrop-blur-xl max-w-[96vw] sm:max-w-none">
-		<!-- Prev Video -->
-		<button onclick="app.playPrevVideo()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95" title="Video Sebelumnya">
-			<i class="fa-solid fa-backward-step text-xs sm:text-sm"></i>
-		</button>
-		
-		<!-- Exact Rewind 10s -->
-		<button onclick="app.seekRelative(-10)" class="px-2.5 h-8 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold" title="Mundur 10 Detik">
-			<i class="fa-solid fa-rotate-left text-[11px] mr-1"></i>10s
-		</button>
+	<div id="bottomPlayerBar" class="fixed bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-40 ui-card border rounded-3xl sm:rounded-full shadow-lg px-3 sm:px-6 py-2 sm:py-2.5 flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-4 gap-y-1.5 transition-all duration-500 backdrop-blur-xl w-[96vw] max-w-3xl">
+		<!-- Transport Group -->
+		<div class="flex items-center justify-center gap-1 sm:gap-2 grow">
+			<!-- Prev Video -->
+			<button onclick="app.playPrevVideo()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 shrink-0" title="Video Sebelumnya">
+				<i class="fa-solid fa-backward-step text-xs sm:text-sm"></i>
+			</button>
 
-		<!-- Play / Pause -->
-		<button onclick="app.togglePlayPause()" id="btnBottomPlay" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full btn-accent flex items-center justify-center text-white shadow-sm hover:scale-105 active:scale-95 transition-all" title="Play / Pause">
-			<i class="fa-solid fa-play text-sm sm:text-base ml-0.5" id="bottomPlayIcon"></i>
-		</button>
+			<!-- Exact Rewind 10s -->
+			<button onclick="app.seekRelative(-10)" class="px-2 sm:px-2.5 h-8 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold shrink-0 whitespace-nowrap" title="Mundur 10 Detik">
+				<i class="fa-solid fa-rotate-left text-[11px] mr-1"></i>10s
+			</button>
 
-		<!-- Exact Forward 10s -->
-		<button onclick="app.seekRelative(10)" class="px-2.5 h-8 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold" title="Maju 10 Detik">
-			10s<i class="fa-solid fa-rotate-right text-[11px] ml-1"></i>
-		</button>
+			<!-- Play / Pause -->
+			<button onclick="app.togglePlayPause()" id="btnBottomPlay" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full btn-accent flex items-center justify-center text-white shadow-sm hover:scale-105 active:scale-95 transition-all shrink-0" title="Play / Pause">
+				<i class="fa-solid fa-play text-sm sm:text-base ml-0.5" id="bottomPlayIcon"></i>
+			</button>
 
-		<!-- Next Video -->
-		<button onclick="app.playNextVideo()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95" title="Video Selanjutnya">
-			<i class="fa-solid fa-forward-step text-xs sm:text-sm"></i>
-		</button>
+			<!-- Exact Forward 10s -->
+			<button onclick="app.seekRelative(10)" class="px-2 sm:px-2.5 h-8 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 text-xs font-mono font-bold shrink-0 whitespace-nowrap" title="Maju 10 Detik">
+				10s<i class="fa-solid fa-rotate-right text-[11px] ml-1"></i>
+			</button>
 
-		<div class="hidden sm:block h-6 w-[1px] bg-slate-700/40 mx-1"></div>
+			<!-- Next Video -->
+			<button onclick="app.playNextVideo()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full ui-hover-bg flex items-center justify-center hover:text-accent transition-all hover:scale-105 active:scale-95 shrink-0" title="Video Selanjutnya">
+				<i class="fa-solid fa-forward-step text-xs sm:text-sm"></i>
+			</button>
+		</div>
 
-		<!-- Repeat Mode -->
-		<button onclick="app.toggleRepeatMode()" id="btnBottomRepeat" class="px-3 py-1.5 rounded-full ui-hover-bg flex items-center gap-1.5 hover:text-accent transition-all text-xs font-medium" title="Mode Pengulangan">
-			<i class="fa-solid fa-repeat text-xs sm:text-sm" id="repeatIcon"></i>
-			<span id="repeatBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700">Off</span>
-		</button>
+		<div class="hidden md:block h-6 w-[1px] bg-slate-700/40"></div>
 
-		<!-- Autoplay Toggle -->
-		<button onclick="app.toggleAutoplayMode()" id="btnBottomAutoplay" class="px-3 py-1.5 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-sm transition-all hover:brightness-110" title="Auto Play Berikutnya">
-			<i class="fa-solid fa-circle-play text-xs sm:text-sm" id="autoplayIcon"></i>
-			<span id="autoplayBadge" class="font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 border border-indigo-400/30">ON</span>
-		</button>
+		<!-- Mode Group -->
+		<div class="flex items-center justify-center gap-1.5 sm:gap-2 grow">
+			<!-- Repeat Mode -->
+			<button onclick="app.toggleRepeatMode()" id="btnBottomRepeat" class="px-2.5 sm:px-3 py-1.5 rounded-full ui-hover-bg flex items-center gap-1.5 hover:text-accent transition-all text-xs font-medium shrink-0 whitespace-nowrap" title="Mode Pengulangan">
+				<i class="fa-solid fa-repeat text-xs sm:text-sm" id="repeatIcon"></i>
+				<span id="repeatBadge" class="font-mono text-center inline-block min-w-[2.2rem] text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700">Off</span>
+			</button>
+
+			<!-- Autoplay Toggle -->
+			<button onclick="app.toggleAutoplayMode()" id="btnBottomAutoplay" class="px-2.5 sm:px-3 py-1.5 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs font-medium shadow-sm transition-all hover:brightness-110 shrink-0 whitespace-nowrap" title="Auto Play Berikutnya">
+				<i class="fa-solid fa-circle-play text-xs sm:text-sm" id="autoplayIcon"></i>
+				<span id="autoplayBadge" class="font-mono text-center inline-block min-w-[2.2rem] text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 border border-indigo-400/30">ON</span>
+			</button>
+		</div>
 	</div>
 
 	<!-- ==========================================
 	     5. MODAL: PROFILE & ACCOUNT (NO ELLIPSIS)
 	     ========================================== -->
 	<div id="accountModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm hidden">
-		<div class="ui-modal border rounded-2xl w-full max-w-xl overflow-hidden flex flex-col max-h-[92vh]">
-			
-			<div class="flex items-center justify-between p-4 border-b ui-border">
+		<div class="ui-modal border rounded-3xl w-full max-w-xl overflow-hidden flex flex-col max-h-[92vh]">
+
+			<!-- Header -->
+			<div class="flex items-center justify-between px-5 py-3.5 border-b ui-border">
 				<h3 class="font-bold flex items-center gap-2 text-sm sm:text-base break-words"><i class="fa-solid fa-circle-user text-accent"></i> Profil Akun</h3>
 				<button type="button" onclick="app.closeModal('accountModal')" class="w-8 h-8 rounded-xl ui-text-subtle ui-hover-bg flex items-center justify-center transition-colors shrink-0"><i class="fa-solid fa-xmark text-base"></i></button>
 			</div>
 
-			<div class="p-4 overflow-y-auto space-y-4 text-xs sm:text-sm">
-				
-				<!-- Cover & Avatar Card -->
-				<div class="ui-sub-bg border ui-border rounded-2xl overflow-hidden shadow-sm">
-					<!-- Cover Area -->
-					<div id="profileCoverBox" class="w-full h-32 sm:h-40 profile-cover-box relative group p-3" style="background-image: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);">
-						<div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/15 pointer-events-none"></div>
-						<button type="button" onclick="document.getElementById('coverFileInput').click()" class="relative z-30 ml-auto bg-black/70 hover:bg-black text-white text-xs font-medium px-3 py-1.5 rounded-xl backdrop-blur-md border border-white/20 flex items-center gap-2 transition-all shadow-sm cursor-pointer active:scale-95" title="Unggah Foto Sampul">
-							<i class="fa-solid fa-camera text-xs text-accent"></i>
+			<div class="p-4 overflow-y-auto space-y-3 text-xs sm:text-sm">
+
+				<!-- Cover, Avatar & Identity -->
+				<div class="ui-sub-bg border ui-border rounded-2xl overflow-hidden">
+					<div id="profileCoverBox" class="w-full h-24 sm:h-32 profile-cover-box relative p-2.5 flex items-start justify-end" style="background-image: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%);">
+						<div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none"></div>
+						<button type="button" onclick="document.getElementById('coverFileInput').click()" class="relative z-30 bg-black/60 hover:bg-black/80 text-white text-[11px] font-medium px-2.5 py-1.5 rounded-full backdrop-blur-md border border-white/20 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95" title="Unggah Foto Sampul">
+							<i class="fa-solid fa-camera text-[11px] text-accent"></i>
 							<span>Ubah Sampul</span>
 						</button>
 					</div>
 
-					<!-- Avatar & Profile Identity (No Truncation) -->
-					<div class="px-4 pb-4 pt-0 relative z-20 flex flex-col sm:flex-row items-center sm:items-end gap-3 -mt-9 sm:-mt-11">
-						<div class="relative group shrink-0">
-							<img id="profileAvatar" src="https://placehold.co/100x100/5b9bd5/ffffff?text=U" alt="Avatar" class="rounded-full object-cover border-4 border-slate-900 shadow-md bg-slate-900" style="width: 4.75rem; height: 4.75rem;">
-							<button type="button" onclick="document.getElementById('avatarFileInput').click()" class="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity cursor-pointer" title="Ubah Foto Profil">
-								<i class="fa-solid fa-camera text-sm"></i>
-							</button>
-						</div>
-						<div class="flex-1 text-center sm:text-left min-w-0 w-full">
-							<div id="accNameDisplay" class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-								<span id="accName" class="font-bold text-base sm:text-lg break-words whitespace-normal">Pengguna StreamTube</span>
+					<div class="px-4 pb-4 relative z-20 flex items-end gap-3 -mt-8">
+						<button type="button" onclick="document.getElementById('avatarFileInput').click()" class="relative shrink-0 rounded-full" title="Ubah Foto Profil">
+							<img id="profileAvatar" src="https://placehold.co/100x100/5b9bd5/ffffff?text=U" alt="Avatar" class="rounded-full object-cover border-4 border-slate-900 shadow-md bg-slate-900" style="width: 4.25rem; height: 4.25rem;">
+							<span class="absolute bottom-0 right-0 w-6 h-6 rounded-full btn-accent flex items-center justify-center border-2 border-slate-900">
+								<i class="fa-solid fa-camera text-[10px]"></i>
+							</span>
+						</button>
+						<div class="flex-1 min-w-0 pb-0.5">
+							<div id="accNameDisplay" class="flex flex-wrap items-center gap-1.5">
+								<span id="accName" class="font-bold text-base sm:text-lg break-words whitespace-normal leading-tight">Pengguna StreamTube</span>
 								<button type="button" onclick="app.editName()" class="p-1.5 rounded-lg ui-text-subtle hover:text-accent ui-hover-bg transition-colors shrink-0" title="Edit Nama">
 									<i class="fa-solid fa-pen-to-square text-xs"></i>
 								</button>
 							</div>
 							<!-- Inline Name Editor -->
-							<div id="accNameEditForm" class="hidden flex-wrap items-center justify-center sm:justify-start gap-1.5 mt-1">
-								<input type="text" id="accNameInput" maxlength="32" class="ui-input border rounded-lg px-2.5 py-1 text-xs font-medium focus:outline-none focus:border-accent w-48" placeholder="Nama baru...">
+							<div id="accNameEditForm" class="hidden flex-wrap items-center gap-1.5 mt-1">
+								<input type="text" id="accNameInput" maxlength="32" class="ui-input border rounded-lg px-2.5 py-1 text-xs font-medium focus:outline-none focus:border-accent w-40 sm:w-48" placeholder="Nama baru...">
 								<button type="button" onclick="app.saveEditedName()" class="px-2.5 py-1 rounded-lg btn-accent text-xs font-semibold">Simpan</button>
 								<button type="button" onclick="app.cancelEditName()" class="px-2.5 py-1 rounded-lg ui-card border text-xs">Batal</button>
 							</div>
-							<div id="accAge" class="text-xs ui-text-subtle mt-0.5 break-words">Umur Akun: 0 Hari</div>
+							<div class="flex items-center gap-1.5 mt-0.5 ui-text-subtle">
+								<i class="fa-regular fa-calendar text-[10px]"></i>
+								<span id="accAge" class="text-xs break-words">Umur Akun: 0 Hari</span>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -641,27 +657,27 @@
 				<input type="file" id="coverFileInput" class="hidden" accept="image/*" onchange="app.handleCoverUpload(event)">
 
 				<!-- Quick Stats -->
-				<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-					<div class="p-2.5 ui-sub-bg rounded-xl border ui-border">
+				<div class="ui-sub-bg border ui-border rounded-2xl grid grid-cols-4 py-3 text-center">
+					<div class="px-1">
 						<div class="font-bold text-accent text-sm sm:text-base break-words" id="statWatch">0</div>
 						<div class="text-[10px] ui-text-subtle break-words">Tontonan</div>
 					</div>
-					<div class="p-2.5 ui-sub-bg rounded-xl border ui-border">
+					<div class="px-1 border-l ui-border">
 						<div class="font-bold text-rose-500 text-sm sm:text-base break-words" id="statLike">0</div>
 						<div class="text-[10px] ui-text-subtle break-words">Disukai</div>
 					</div>
-					<div class="p-2.5 ui-sub-bg rounded-xl border ui-border">
+					<div class="px-1 border-l ui-border">
 						<div class="font-bold text-teal-500 text-sm sm:text-base break-words" id="statDownload">0</div>
 						<div class="text-[10px] ui-text-subtle break-words">Unduhan</div>
 					</div>
-					<div class="p-2.5 ui-sub-bg rounded-xl border ui-border">
+					<div class="px-1 border-l ui-border">
 						<div class="font-bold text-amber-500 text-sm sm:text-base break-words" id="statDays">0d</div>
 						<div class="text-[10px] ui-text-subtle break-words">Aktif</div>
 					</div>
 				</div>
 
 				<!-- 7-DAY WATCH STATISTICS GRAPH -->
-				<div class="p-4 ui-sub-bg border ui-border rounded-2xl space-y-3">
+				<div class="p-3.5 ui-sub-bg border ui-border rounded-2xl space-y-2">
 					<div class="flex flex-wrap items-center justify-between gap-2">
 						<div>
 							<h4 class="font-bold text-xs sm:text-sm flex items-center gap-1.5 break-words">
@@ -672,18 +688,18 @@
 						</div>
 						<span id="chartTodaySummary" class="px-2.5 py-1 rounded-full bg-accent-subtle text-accent text-[11px] font-bold font-mono">Hari ini: 0 video</span>
 					</div>
-					<div id="watchStatsChartContainer" class="w-full h-52 sm:h-60 pt-1"></div>
+					<div id="watchStatsChartContainer" class="w-full h-48 sm:h-56 pt-1"></div>
 				</div>
 
-				<!-- Animated Tab Navigation (Wrapping / No Ellipsis) -->
-				<div class="flex flex-wrap border-b ui-border text-xs mt-2 gap-1">
-					<button type="button" onclick="app.switchAccTab('watch')" id="tabWatch" class="py-2 px-3 border-b-2 border-accent text-accent font-medium flex items-center gap-1.5 transition-all">
+				<!-- Segmented Tab Navigation -->
+				<div class="flex p-1 gap-1 ui-sub-bg border ui-border rounded-2xl text-xs">
+					<button type="button" onclick="app.switchAccTab('watch')" id="tabWatch" class="flex-1 py-2 px-3 rounded-xl btn-accent font-semibold flex items-center justify-center gap-1.5 transition-all">
 						Riwayat (<span id="countWatch">0</span>)
 					</button>
-					<button type="button" onclick="app.switchAccTab('like')" id="tabLike" class="py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium flex items-center gap-1.5 transition-all">
+					<button type="button" onclick="app.switchAccTab('like')" id="tabLike" class="flex-1 py-2 px-3 rounded-xl ui-text-subtle font-medium flex items-center justify-center gap-1.5 transition-all hover:text-accent">
 						Disukai (<span id="countLike">0</span>)
 					</button>
-					<button type="button" onclick="app.switchAccTab('download')" id="tabDownload" class="py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium flex items-center gap-1.5 transition-all">
+					<button type="button" onclick="app.switchAccTab('download')" id="tabDownload" class="flex-1 py-2 px-3 rounded-xl ui-text-subtle font-medium flex items-center justify-center gap-1.5 transition-all hover:text-accent">
 						Unduhan (<span id="countDownload">0</span>)
 					</button>
 				</div>
@@ -692,11 +708,11 @@
 			</div>
 
 			<!-- Export/Import Actions -->
-			<div class="p-3.5 border-t ui-border ui-sub-bg flex flex-wrap justify-between gap-2">
-				<button type="button" onclick="app.exportHistory()" class="px-3.5 py-2 text-xs font-medium rounded-xl ui-card border hover:border-accent flex items-center gap-1.5 transition-all">
+			<div class="px-4 py-3 border-t ui-border flex gap-2">
+				<button type="button" onclick="app.exportHistory()" class="flex-1 px-3.5 py-2 text-xs font-medium rounded-xl ui-card border hover:border-accent flex items-center justify-center gap-1.5 transition-all">
 					<i class="fa-solid fa-file-export text-accent"></i> Ekspor JSON
 				</button>
-				<button type="button" onclick="app.triggerImport()" class="px-3.5 py-2 text-xs font-medium rounded-xl ui-card border hover:border-accent flex items-center gap-1.5 transition-all">
+				<button type="button" onclick="app.triggerImport()" class="flex-1 px-3.5 py-2 text-xs font-medium rounded-xl ui-card border hover:border-accent flex items-center justify-center gap-1.5 transition-all">
 					<i class="fa-solid fa-file-import text-accent"></i> Impor JSON
 				</button>
 			</div>
@@ -848,8 +864,8 @@
 									<div class="flex items-center gap-2.5 min-w-0 flex-1">
 										<span class="w-7 h-7 rounded-lg bg-accent-subtle text-accent flex items-center justify-center text-[11px] font-bold shrink-0">Aa</span>
 										<div class="min-w-0 flex-1">
-											<div id="fontFamilyDropdownLabel" class="font-semibold text-xs break-words leading-tight">Plus Jakarta Sans</div>
-											<div id="fontFamilyDropdownSub" class="text-[10px] ui-text-subtle break-words leading-tight">Modern Geometric</div>
+											<div id="fontFamilyDropdownLabel" class="font-semibold text-xs break-words leading-tight">Manrope</div>
+											<div id="fontFamilyDropdownSub" class="text-[10px] ui-text-subtle break-words leading-tight">Modern Geometric • Default</div>
 										</div>
 									</div>
 									<i class="fa-solid fa-chevron-down text-[11px] ui-text-subtle st-dropdown-chevron shrink-0"></i>
@@ -1074,20 +1090,20 @@
 				{ type: 'piped', baseUrl: 'https://pipedapi.kavin.rocks' }
 			],
 			allowedFonts: [
-				'Plus Jakarta Sans',
-				'Outfit',
-				'Poppins',
-				'Lexend',
-				'Urbanist',
-				'Be Vietnam Pro'
+				'Manrope',
+				'Sora',
+				'DM Sans',
+				'Figtree',
+				'Onest',
+				'Albert Sans'
 			],
 			fontOptions: [
-				{ value: 'Plus Jakarta Sans', label: 'Plus Jakarta Sans', desc: 'Modern Geometric • Default' },
-				{ value: 'Outfit', label: 'Outfit', desc: 'Clean Contemporary Sans' },
-				{ value: 'Poppins', label: 'Poppins', desc: 'Rounded Friendly Letterform' },
-				{ value: 'Lexend', label: 'Lexend', desc: 'High Reading Comfort' },
-				{ value: 'Urbanist', label: 'Urbanist', desc: 'Sleek Minimalist Neo-Grotesque' },
-				{ value: 'Be Vietnam Pro', label: 'Be Vietnam Pro', desc: 'Sharp & Crisp Proportion' }
+				{ value: 'Manrope', label: 'Manrope', desc: 'Modern Geometric • Default' },
+				{ value: 'Sora', label: 'Sora', desc: 'Futuristic Tech Geometric' },
+				{ value: 'DM Sans', label: 'DM Sans', desc: 'Low-Contrast Clean Geometric' },
+				{ value: 'Figtree', label: 'Figtree', desc: 'Friendly Versatile Sans' },
+				{ value: 'Onest', label: 'Onest', desc: 'Neutral Contemporary Grotesque' },
+				{ value: 'Albert Sans', label: 'Albert Sans', desc: 'Elegant Compact Grotesque' }
 			],
 			weightOptions: [
 				{ value: '400', label: 'Normal (400)', desc: 'Bobot Standar Seimbang', badge: '400' },
@@ -1109,7 +1125,29 @@
 				{ name: "Teknologi", icon: "fa-solid fa-laptop text-blue-400", query: "teknologi gadget indonesia" },
 				{ name: "Berita", icon: "fa-solid fa-newspaper text-emerald-400", query: "berita indonesia terkini" },
 				{ name: "Kuliner", icon: "fa-solid fa-utensils text-rose-400", query: "kuliner resep makanan indonesia" },
-				{ name: "Podcast", icon: "fa-solid fa-podcast text-red-400", query: "podcast indonesia populer" }
+				{ name: "Podcast", icon: "fa-solid fa-podcast text-red-400", query: "podcast indonesia populer" },
+				{ name: "Film & Trailer", icon: "fa-solid fa-film text-purple-400", query: "trailer film indonesia terbaru" },
+				{ name: "Olahraga", icon: "fa-solid fa-trophy text-yellow-400", query: "highlight olahraga indonesia" },
+				{ name: "Sepak Bola", icon: "fa-solid fa-futbol text-green-400", query: "highlight sepak bola liga indonesia" },
+				{ name: "Edukasi", icon: "fa-solid fa-graduation-cap text-sky-400", query: "tutorial belajar edukasi indonesia" },
+				{ name: "Komedi", icon: "fa-solid fa-face-laugh-beam text-amber-400", query: "komedi lucu stand up indonesia" },
+				{ name: "Vlog", icon: "fa-solid fa-camera-retro text-fuchsia-400", query: "vlog harian indonesia" },
+				{ name: "Otomotif", icon: "fa-solid fa-car-side text-orange-400", query: "review mobil motor indonesia" },
+				{ name: "Travel", icon: "fa-solid fa-plane-departure text-cyan-400", query: "wisata travel indonesia" },
+				{ name: "Sains", icon: "fa-solid fa-flask text-teal-400", query: "sains fakta unik indonesia" },
+				{ name: "Anime", icon: "fa-solid fa-dragon text-rose-400", query: "anime sub indo" },
+				{ name: "Fashion & Kecantikan", icon: "fa-solid fa-shirt text-pink-400", query: "tutorial makeup fashion indonesia" },
+				{ name: "Kesehatan", icon: "fa-solid fa-heart-pulse text-red-400", query: "tips kesehatan hidup sehat" },
+				{ name: "Bisnis & Keuangan", icon: "fa-solid fa-chart-line text-emerald-400", query: "bisnis investasi keuangan indonesia" },
+				{ name: "DIY & Kerajinan", icon: "fa-solid fa-hammer text-lime-400", query: "diy kerajinan tangan kreatif" },
+				{ name: "Hewan", icon: "fa-solid fa-paw text-amber-500", query: "hewan lucu satwa" },
+				{ name: "Religi", icon: "fa-solid fa-mosque text-green-500", query: "ceramah religi indonesia" },
+				{ name: "Anak-anak", icon: "fa-solid fa-puzzle-piece text-yellow-400", query: "lagu edukasi anak indonesia" },
+				{ name: "Dokumenter", icon: "fa-solid fa-earth-asia text-blue-500", query: "dokumenter indonesia" },
+				{ name: "Live Streaming", icon: "fa-solid fa-tower-broadcast text-red-500", query: "live streaming indonesia" },
+				{ name: "Motivasi", icon: "fa-solid fa-lightbulb text-yellow-300", query: "motivasi inspirasi indonesia" },
+				{ name: "Sejarah", icon: "fa-solid fa-landmark text-stone-400", query: "sejarah indonesia dunia" },
+				{ name: "Horor", icon: "fa-solid fa-ghost text-violet-400", query: "cerita horor misteri indonesia" }
 			],
 
 			activeCategoryIndex: 0,
@@ -1143,7 +1181,7 @@
 				settings: { 
 					theme: "dark",
 					fontSize: 14,
-					fontFamily: "Plus Jakarta Sans",
+					fontFamily: "Manrope",
 					fontWeight: "400", 
 					accentColor: "#5b9bd5",
 					volume: 100,
@@ -1162,6 +1200,7 @@
 				this.setupDropdownGlobalListeners();
 				this.applySettingsUI();
 				this.renderCategories();
+				this.setupCategoryScroller();
 				this.setupScrollListener();
 				this.setupIframeMessageListener();
 				
@@ -1518,21 +1557,103 @@
 
 			renderCategories() {
 				const container = document.getElementById('categoryContainer');
+				const previousScroll = container.scrollLeft;
+				let activeBtn = null;
 				container.innerHTML = '';
 				this.categories.forEach((cat, idx) => {
 					const btn = document.createElement('button');
 					const isActive = idx === this.activeCategoryIndex;
-					btn.className = `px-3.5 py-1.5 rounded-full transition-all text-xs flex items-center gap-1.5 break-words ${isActive ? 'btn-accent text-white font-semibold' : 'ui-card border font-medium hover:border-accent'}`;
+					if (isActive) activeBtn = btn;
+					btn.className = `px-3.5 py-1.5 rounded-full transition-all text-xs flex items-center gap-1.5 shrink-0 whitespace-nowrap ${isActive ? 'btn-accent text-white font-semibold' : 'ui-card border font-medium hover:border-accent'}`;
 					btn.innerHTML = `<i class="${isActive ? cat.icon.replace(/text-[a-z0-9-]+/g, 'text-white') : cat.icon}"></i> <span class="inline-block ${isActive ? 'text-white opacity-100 visible' : ''}">${cat.name}</span>`;
 					btn.onclick = () => {
 						this.triggerHaptic();
-						this.playSound('category');
+						this.playSound('category', idx);
 						this.activeCategoryIndex = idx;
 						this.renderCategories();
 						document.getElementById('sectionTitle').innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-accent"></i> Kategori: ${cat.name}`;
 						this.searchYouTube(cat.query);
 					};
 					container.appendChild(btn);
+				});
+
+				container.scrollLeft = previousScroll;
+				if (activeBtn) {
+					const btnLeft = activeBtn.offsetLeft;
+					const btnRight = btnLeft + activeBtn.offsetWidth;
+					if (btnLeft < container.scrollLeft) {
+						container.scrollLeft = Math.max(0, btnLeft - 8);
+					} else if (btnRight > container.scrollLeft + container.clientWidth) {
+						container.scrollLeft = btnRight - container.clientWidth + 8;
+					}
+				}
+				this.updateCategoryArrows();
+			},
+
+			setupCategoryScroller() {
+				const container = document.getElementById('categoryContainer');
+				if (!container) return;
+
+				container.addEventListener('scroll', () => this.updateCategoryArrows(), { passive: true });
+				window.addEventListener('resize', () => this.updateCategoryArrows());
+
+				// Mouse drag-to-scroll (touch devices already swipe natively)
+				let isPressed = false;
+				let hasMoved = false;
+				let startX = 0;
+				let startScroll = 0;
+
+				container.addEventListener('mousedown', (e) => {
+					isPressed = true;
+					hasMoved = false;
+					startX = e.pageX;
+					startScroll = container.scrollLeft;
+				});
+				window.addEventListener('mousemove', (e) => {
+					if (!isPressed) return;
+					const dx = e.pageX - startX;
+					if (Math.abs(dx) > 5) hasMoved = true;
+					if (hasMoved) container.scrollLeft = startScroll - dx;
+				});
+				window.addEventListener('mouseup', () => {
+					isPressed = false;
+				});
+				container.addEventListener('click', (e) => {
+					if (hasMoved) {
+						e.stopPropagation();
+						e.preventDefault();
+						hasMoved = false;
+					}
+				}, true);
+
+				this.updateCategoryArrows();
+			},
+
+			scrollCategories(direction) {
+				const container = document.getElementById('categoryContainer');
+				if (!container) return;
+				this.triggerHaptic();
+				this.playSound('scroll');
+				const amount = Math.max(160, Math.round(container.clientWidth * 0.7)) * direction;
+				container.scrollBy({ left: amount, behavior: 'smooth' });
+			},
+
+			updateCategoryArrows() {
+				const container = document.getElementById('categoryContainer');
+				const prevBtn = document.getElementById('categoryPrevBtn');
+				const nextBtn = document.getElementById('categoryNextBtn');
+				if (!container) return;
+				const maxScroll = container.scrollWidth - container.clientWidth;
+				const noOverflow = maxScroll <= 2;
+				const states = [
+					[prevBtn, noOverflow || container.scrollLeft <= 2],
+					[nextBtn, noOverflow || container.scrollLeft >= maxScroll - 2]
+				];
+				states.forEach(([btn, disabled]) => {
+					if (!btn) return;
+					btn.disabled = disabled;
+					btn.classList.toggle('opacity-30', disabled);
+					btn.classList.toggle('pointer-events-none', disabled);
 				});
 			},
 
@@ -1696,18 +1817,18 @@
 
 			toggleRepeatMode() {
 				this.triggerHaptic();
-				this.playSound('repeat');
 				if (this.repeatMode === 'off') this.repeatMode = 'one';
 				else if (this.repeatMode === 'one') this.repeatMode = 'all';
 				else this.repeatMode = 'off';
+				this.playSound('repeat_' + this.repeatMode);
 				this.updateBottomBarUI();
 				this.showToast(`Mode Pengulangan: ${this.repeatMode.toUpperCase()}`);
 			},
 
 			toggleAutoplayMode() {
 				this.triggerHaptic();
-				this.playSound('autoplay');
 				this.isAutoplay = !this.isAutoplay;
+				this.playSound(this.isAutoplay ? 'autoplay_on' : 'autoplay_off');
 				this.updateBottomBarUI();
 				this.showToast(`Auto Play: ${this.isAutoplay ? 'ON' : 'OFF'}`);
 			},
@@ -1799,7 +1920,7 @@
 			toggleTheaterMode() {
 				this.triggerHaptic();
 				this.isTheaterMode = !this.isTheaterMode;
-				this.playSound(this.isTheaterMode ? 'toggle_on' : 'toggle_off');
+				this.playSound(this.isTheaterMode ? 'theater_on' : 'theater_off');
 				const wrapper = document.getElementById('playerWrapper');
 				const icon = document.getElementById('theaterIcon');
 				if (this.isTheaterMode) {
@@ -1821,7 +1942,7 @@
 					this.playSound('error');
 					return;
 				}
-				this.playSound('copy');
+				this.playSound('share');
 				const ytUrl = `https://www.youtube.com/watch?v=${this.state.currentVideo.ytId}`;
 				const el = document.createElement('textarea');
 				el.value = ytUrl;
@@ -1839,7 +1960,7 @@
 					this.showToast('Pilih video terlebih dahulu');
 					return;
 				}
-				this.playSound('download');
+				this.playSound(type === 'mp3' ? 'download_audio' : 'download');
 				this.state.downloads.unshift({
 					title: this.state.currentVideo.title,
 					type: type.toUpperCase(),
@@ -1861,16 +1982,16 @@
 				if (repeatBadge && repeatBtn) {
 					if (this.repeatMode === 'one') {
 						repeatBadge.innerText = '1x';
-						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-amber-500/30 text-amber-300 border border-amber-400/50';
-						repeatBtn.className = "px-3 py-1.5 rounded-full bg-amber-600 text-white flex items-center gap-1.5 text-xs shadow-sm transition-all";
+						repeatBadge.className = 'font-mono text-center inline-block min-w-[2.2rem] text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-amber-500/30 text-amber-300 border border-amber-400/50';
+						repeatBtn.className = "px-2.5 sm:px-3 py-1.5 shrink-0 whitespace-nowrap rounded-full bg-amber-600 text-white flex items-center gap-1.5 text-xs shadow-sm transition-all";
 					} else if (this.repeatMode === 'all') {
 						repeatBadge.innerText = 'ALL';
-						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-teal-500/30 text-teal-300 border border-teal-400/50';
-						repeatBtn.className = "px-3 py-1.5 rounded-full bg-teal-600 text-white flex items-center gap-1.5 text-xs shadow-sm transition-all";
+						repeatBadge.className = 'font-mono text-center inline-block min-w-[2.2rem] text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-teal-500/30 text-teal-300 border border-teal-400/50';
+						repeatBtn.className = "px-2.5 sm:px-3 py-1.5 shrink-0 whitespace-nowrap rounded-full bg-teal-600 text-white flex items-center gap-1.5 text-xs shadow-sm transition-all";
 					} else {
 						repeatBadge.innerText = 'OFF';
-						repeatBadge.className = 'font-mono text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
-						repeatBtn.className = "px-3 py-1.5 rounded-full ui-hover-bg flex items-center gap-1.5 transition-all text-xs";
+						repeatBadge.className = 'font-mono text-center inline-block min-w-[2.2rem] text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
+						repeatBtn.className = "px-2.5 sm:px-3 py-1.5 shrink-0 whitespace-nowrap rounded-full ui-hover-bg flex items-center gap-1.5 transition-all text-xs";
 					}
 				}
 
@@ -1879,12 +2000,12 @@
 				if (autoBadge && autoBtn) {
 					if (this.isAutoplay) {
 						autoBadge.innerText = 'ON';
-						autoBadge.className = 'font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 text-indigo-200 border border-indigo-400/30';
-						autoBtn.className = "px-3 py-1.5 rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs shadow-sm transition-all";
+						autoBadge.className = 'font-mono text-center inline-block min-w-[2.2rem] text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-950/60 text-indigo-200 border border-indigo-400/30';
+						autoBtn.className = "px-2.5 sm:px-3 py-1.5 shrink-0 whitespace-nowrap rounded-full bg-indigo-600 text-white flex items-center gap-1.5 text-xs shadow-sm transition-all";
 					} else {
 						autoBadge.innerText = 'OFF';
-						autoBadge.className = 'font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
-						autoBtn.className = "px-3 py-1.5 rounded-full ui-hover-bg flex items-center gap-1.5 transition-all text-xs";
+						autoBadge.className = 'font-mono text-center inline-block min-w-[2.2rem] text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
+						autoBtn.className = "px-2.5 sm:px-3 py-1.5 shrink-0 whitespace-nowrap rounded-full ui-hover-bg flex items-center gap-1.5 transition-all text-xs";
 					}
 				}
 			},
@@ -1974,7 +2095,7 @@
 					e.preventDefault();
 				}
 				this.triggerHaptic();
-				this.playSound('delete');
+				this.playSound('clear_all');
 				this.state.searchHistory = [];
 				this.saveState();
 				this.renderSearchSuggestions('');
@@ -2049,7 +2170,7 @@
 					this.state.user.cover = compressed;
 					this.saveState();
 					this.updateCoverUI();
-					this.playSound('upload');
+					this.playSound('upload_cover');
 					this.showToast("Foto sampul berhasil diperbarui!");
 				} catch (err) {
 					this.playSound('error');
@@ -2079,7 +2200,7 @@
 
 			editName() {
 				this.triggerHaptic();
-				this.playSound('tap');
+				this.playSound('edit');
 				const displayRow = document.getElementById('accNameDisplay');
 				const editForm = document.getElementById('accNameEditForm');
 				const input = document.getElementById('accNameInput');
@@ -2101,7 +2222,7 @@
 					this.saveState();
 					document.getElementById('accName').innerText = this.state.user.name;
 					document.getElementById('navAccountName').innerText = this.state.user.name;
-					this.playSound('success');
+					this.playSound('save');
 					this.showToast("Nama profil diperbarui!");
 				}
 				this.cancelEditName();
@@ -2222,14 +2343,14 @@
 			switchAccTab(tab, doSound = true) {
 				if (doSound) {
 					this.triggerHaptic();
-					this.playSound('tab');
+					this.playSound('acc_' + tab);
 				}
 				this.state.activeAccTab = tab;
 				['Watch', 'Like', 'Download'].forEach(t => {
 					const el = document.getElementById(`tab${t}`);
 					if (!el) return;
-					if (t.toLowerCase() === tab) el.className = "py-2 px-3 border-b-2 border-accent text-accent font-medium flex items-center gap-1.5 transition-all";
-					else el.className = "py-2 px-3 border-b-2 border-transparent ui-text-subtle font-medium flex items-center gap-1.5 transition-all";
+					if (t.toLowerCase() === tab) el.className = "flex-1 py-2 px-3 rounded-xl btn-accent font-semibold flex items-center justify-center gap-1.5 transition-all";
+					else el.className = "flex-1 py-2 px-3 rounded-xl ui-text-subtle font-medium flex items-center justify-center gap-1.5 transition-all hover:text-accent";
 				});
 
 				const container = document.getElementById('accList');
@@ -2269,7 +2390,7 @@
 
 			exportHistory() {
 				this.triggerHaptic();
-				this.playSound('success');
+				this.playSound('export');
 				const exportData = {
 					user: this.state.user,
 					history: this.state.history,
@@ -2292,7 +2413,7 @@
 
 			triggerImport() {
 				this.triggerHaptic();
-				this.playSound('tap');
+				this.playSound('import');
 				document.getElementById('importFileInput').click();
 			},
 
@@ -2316,7 +2437,7 @@
 							this.saveState();
 							this.applySettingsUI();
 							this.renderAccountModal();
-							this.playSound('success');
+							this.playSound('import_done');
 							this.showToast("Data akun berhasil diimpor!");
 						} else {
 							this.playSound('error');
@@ -2356,7 +2477,7 @@
 			// MODAL CONTROL
 			openModal(id) {
 				this.triggerHaptic();
-				this.playSound('modal_open');
+				this.playSound(id === 'settingsModal' ? 'settings_open' : 'modal_open');
 				this.closeAllDropdowns(false);
 				const modal = document.getElementById(id);
 				const content = modal.querySelector('.ui-modal');
@@ -2369,7 +2490,7 @@
 
 			closeModal(id) {
 				this.triggerHaptic();
-				this.playSound('modal_close');
+				this.playSound(id === 'settingsModal' ? 'settings_close' : 'modal_close');
 				this.closeAllDropdowns(false);
 				const modal = document.getElementById(id);
 				const content = modal.querySelector('.ui-modal');
@@ -2427,7 +2548,7 @@
 				this.updateFontSize(clampedSize, false);
 				document.getElementById('fontSizeSlider').value = clampedSize;
 
-				const validFont = this.allowedFonts.includes(s.fontFamily) ? s.fontFamily : 'Plus Jakarta Sans';
+				const validFont = this.allowedFonts.includes(s.fontFamily) ? s.fontFamily : 'Manrope';
 				this.updateFontFamily(validFont, false);
 
 				const validWeight = ['400', '500', '600', '700'].includes(String(s.fontWeight)) ? String(s.fontWeight) : '400';
@@ -2543,7 +2664,7 @@
 				this.renderFontWeightDropdown(String(w));
 
 				if (save) {
-					this.playSound('font_change');
+					this.playSound('font_weight');
 					this.triggerHaptic();
 					this.saveState();
 				}
@@ -2557,7 +2678,7 @@
 					iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [parseInt(val)] }), '*');
 				}
 				if (save) {
-					this.playSound('slider');
+					this.playSound('slider_volume');
 					this.saveState();
 				}
 			},
@@ -2567,7 +2688,7 @@
 				document.getElementById('brightnessVal').innerText = `${val}%`;
 				document.documentElement.style.setProperty('--player-brightness', `${val}%`);
 				if (save) {
-					this.playSound('slider');
+					this.playSound('slider_brightness');
 					this.saveState();
 				}
 			},
@@ -2596,7 +2717,7 @@
 				if (label) label.innerText = `${val > 0 ? '+' : ''}${val}dB`;
 				const matchedPreset = this.detectMatchingEqPreset(this.state.settings.eqBands);
 				this.renderEqPresetDropdown(matchedPreset);
-				this.playSound('slider');
+				this.playSound('slider_eq');
 				this.saveState();
 			},
 
@@ -2627,9 +2748,9 @@
 				this.saveState();
 				if (val) {
 					this.triggerHaptic();
-					this.playSound('toggle_on');
+					this.playSound('haptic_on');
 				} else {
-					this.playSound('toggle_off');
+					this.playSound('haptic_off');
 				}
 			},
 
@@ -2659,9 +2780,9 @@
 				}
 			},
 
-			playSound(type = 'tap') {
+			playSound(type = 'tap', variant = 0) {
 				if (!this.state.settings.soundEnabled) return;
-				if (type === 'slider') {
+				if (type === 'slider' || type.indexOf('slider_') === 0) {
 					const nowMs = Date.now();
 					if (nowMs - this.lastSliderSoundTime < 65) return;
 					this.lastSliderSoundTime = nowMs;
@@ -2687,6 +2808,32 @@
 						gain.connect(this.audioCompressor);
 						osc.start(now + delay);
 						osc.stop(now + delay + duration + 0.015);
+					};
+
+					const playNoise = (duration, filterFreq, filterType = 'bandpass', peakGain = 0.07, delay = 0, q = 1) => {
+						const sampleCount = Math.max(1, Math.floor(ctx.sampleRate * duration));
+						const buffer = ctx.createBuffer(1, sampleCount, ctx.sampleRate);
+						const data = buffer.getChannelData(0);
+						for (let i = 0; i < sampleCount; i++) data[i] = Math.random() * 2 - 1;
+
+						const source = ctx.createBufferSource();
+						source.buffer = buffer;
+
+						const filter = ctx.createBiquadFilter();
+						filter.type = filterType;
+						filter.frequency.setValueAtTime(filterFreq, now + delay);
+						filter.Q.setValueAtTime(q, now + delay);
+
+						const gain = ctx.createGain();
+						gain.gain.setValueAtTime(0.0001, now + delay);
+						gain.gain.linearRampToValueAtTime(peakGain, now + delay + 0.006);
+						gain.gain.exponentialRampToValueAtTime(0.0001, now + delay + duration);
+
+						source.connect(filter);
+						filter.connect(gain);
+						gain.connect(this.audioCompressor);
+						source.start(now + delay);
+						source.stop(now + delay + duration + 0.015);
 					};
 
 					switch (type) {
@@ -2734,10 +2881,13 @@
 							playTone(493.88, 493.88, 0.06, 'triangle', 0.11, 0);
 							playTone(739.99, 739.99, 0.095, 'sine', 0.12, 0.055);
 							break;
-						case 'category':
-							// Crisp melodic plink for category pills
-							playTone(587.33, 880, 0.07, 'sine', 0.11, 0);
+						case 'category': {
+							// Crisp melodic plink for category pills (pitch follows pill position)
+							const categoryScale = [523.25, 587.33, 659.25, 783.99, 880, 1046.50];
+							const categoryNote = categoryScale[Math.abs(parseInt(variant) || 0) % categoryScale.length];
+							playTone(categoryNote * 0.8, categoryNote, 0.075, 'sine', 0.11, 0);
 							break;
+						}
 						case 'home':
 							// Warm welcoming 3-note home cadence
 							playTone(659.25, 659.25, 0.065, 'sine', 0.11, 0);
@@ -2856,6 +3006,155 @@
 							// Polite low dual warning tone
 							playTone(230, 185, 0.11, 'sawtooth', 0.08, 0);
 							playTone(195, 160, 0.12, 'sawtooth', 0.075, 0.09);
+							break;
+						case 'repeat_off':
+							// Soft descending release when repeat is switched off
+							playTone(659.25, 440, 0.07, 'sine', 0.10, 0);
+							playTone(440, 330, 0.09, 'sine', 0.095, 0.055);
+							break;
+						case 'repeat_one':
+							// Single bell ping with octave shimmer for repeat-one
+							playTone(698.46, 698.46, 0.07, 'triangle', 0.115, 0);
+							playTone(1396.91, 1396.91, 0.11, 'sine', 0.07, 0.02);
+							break;
+						case 'repeat_all':
+							// Rising four-step loop for repeat-all
+							playTone(523.25, 523.25, 0.045, 'triangle', 0.105, 0);
+							playTone(659.25, 659.25, 0.045, 'triangle', 0.108, 0.04);
+							playTone(783.99, 783.99, 0.045, 'triangle', 0.112, 0.08);
+							playTone(1046.50, 1046.50, 0.09, 'sine', 0.12, 0.12);
+							break;
+						case 'autoplay_on':
+							// Futuristic power-up for autoplay on
+							playTone(493.88, 493.88, 0.06, 'triangle', 0.11, 0);
+							playTone(739.99, 987.77, 0.10, 'sine', 0.12, 0.055);
+							break;
+						case 'autoplay_off':
+							// Power-down sweep for autoplay off
+							playTone(739.99, 739.99, 0.06, 'triangle', 0.105, 0);
+							playTone(493.88, 349.23, 0.10, 'sine', 0.105, 0.055);
+							break;
+						case 'share':
+							// Airy whoosh with a rising send tone
+							playNoise(0.14, 2600, 'bandpass', 0.07, 0, 2.5);
+							playTone(660, 990, 0.10, 'triangle', 0.10, 0.03);
+							playTone(990, 1320, 0.09, 'sine', 0.09, 0.10);
+							break;
+						case 'theater_on':
+							// Curtain-opening swell for cinema mode
+							playTone(220, 330, 0.14, 'sawtooth', 0.04, 0);
+							playTone(330, 495, 0.16, 'triangle', 0.09, 0.05);
+							playTone(495, 660, 0.12, 'sine', 0.10, 0.12);
+							break;
+						case 'theater_off':
+							// Curtain-closing fall for cinema mode
+							playTone(660, 440, 0.12, 'triangle', 0.095, 0);
+							playTone(440, 247, 0.16, 'sine', 0.095, 0.06);
+							break;
+						case 'haptic_on':
+							// Buzzy double pulse that ends in a bright tick
+							playTone(180, 180, 0.04, 'square', 0.05, 0);
+							playTone(240, 240, 0.04, 'square', 0.05, 0.05);
+							playTone(360, 360, 0.06, 'triangle', 0.09, 0.10);
+							break;
+						case 'haptic_off':
+							// Short buzz that fades away
+							playTone(300, 300, 0.04, 'square', 0.045, 0);
+							playTone(200, 160, 0.07, 'triangle', 0.09, 0.05);
+							break;
+						case 'clear_all':
+							// Sweeping wipe for clearing the whole history
+							playNoise(0.16, 900, 'lowpass', 0.09, 0, 0.8);
+							playTone(520, 140, 0.18, 'triangle', 0.10, 0);
+							break;
+						case 'upload_cover':
+							// Wide four-step cascade for cover upload
+							playTone(392, 392, 0.06, 'sine', 0.11, 0);
+							playTone(523.25, 523.25, 0.06, 'sine', 0.115, 0.05);
+							playTone(659.25, 659.25, 0.06, 'sine', 0.12, 0.10);
+							playTone(1046.50, 1046.50, 0.14, 'triangle', 0.12, 0.15);
+							break;
+						case 'edit':
+							// Pencil scratch for editing the profile name
+							playNoise(0.05, 4200, 'highpass', 0.05, 0, 0.7);
+							playTone(880, 1175, 0.05, 'triangle', 0.09, 0.02);
+							break;
+						case 'save':
+							// Confident save chime
+							playTone(698.46, 698.46, 0.05, 'triangle', 0.11, 0);
+							playTone(1046.50, 1046.50, 0.13, 'sine', 0.125, 0.05);
+							break;
+						case 'export':
+							// Outgoing data swoosh
+							playTone(392, 392, 0.05, 'sine', 0.105, 0);
+							playTone(587.33, 880, 0.09, 'triangle', 0.115, 0.05);
+							playNoise(0.10, 3000, 'bandpass', 0.04, 0.05, 2);
+							break;
+						case 'import':
+							// Incoming data drop
+							playTone(880, 587.33, 0.09, 'triangle', 0.115, 0);
+							playTone(440, 440, 0.10, 'sine', 0.115, 0.07);
+							break;
+						case 'import_done':
+							// Four-note completion sparkle
+							playTone(440, 440, 0.05, 'sine', 0.10, 0);
+							playTone(659.25, 659.25, 0.05, 'sine', 0.105, 0.045);
+							playTone(880, 880, 0.05, 'sine', 0.11, 0.09);
+							playTone(1318.51, 1318.51, 0.13, 'triangle', 0.115, 0.135);
+							break;
+						case 'acc_watch':
+							// History tab
+							playTone(440, 587.33, 0.06, 'triangle', 0.10, 0);
+							break;
+						case 'acc_like':
+							// Liked tab
+							playTone(659.25, 880, 0.05, 'sine', 0.10, 0);
+							playTone(880, 1108.73, 0.06, 'sine', 0.095, 0.04);
+							break;
+						case 'acc_download':
+							// Download tab
+							playTone(523.25, 392, 0.06, 'triangle', 0.10, 0);
+							playTone(392, 330, 0.06, 'sine', 0.095, 0.04);
+							break;
+						case 'settings_open':
+							// Mechanical rising unlock for the settings panel
+							playTone(260, 520, 0.12, 'triangle', 0.10, 0);
+							playTone(520, 780, 0.10, 'sine', 0.095, 0.06);
+							break;
+						case 'settings_close':
+							// Mechanical falling lock for the settings panel
+							playTone(700, 350, 0.11, 'triangle', 0.095, 0);
+							playTone(350, 260, 0.09, 'sine', 0.09, 0.06);
+							break;
+						case 'slider_volume':
+							// Warm low tick for the volume slider
+							playTone(440, 470, 0.03, 'triangle', 0.07, 0);
+							break;
+						case 'slider_brightness':
+							// Bright high tick for the brightness slider
+							playTone(1040, 1120, 0.03, 'sine', 0.06, 0);
+							break;
+						case 'slider_eq':
+							// Double click for the equalizer bands
+							playTone(560, 520, 0.03, 'square', 0.04, 0);
+							playTone(840, 800, 0.02, 'sine', 0.045, 0.02);
+							break;
+						case 'font_weight':
+							// Low thump with a crisp tick for font weight
+							playTone(260, 200, 0.06, 'triangle', 0.11, 0);
+							playTone(780, 780, 0.05, 'sine', 0.095, 0.045);
+							break;
+						case 'download_audio':
+							// Brighter four-step cascade for MP3 downloads
+							playTone(659.25, 659.25, 0.06, 'sine', 0.11, 0);
+							playTone(830.61, 830.61, 0.06, 'sine', 0.115, 0.05);
+							playTone(987.77, 987.77, 0.06, 'triangle', 0.12, 0.10);
+							playTone(1318.51, 1318.51, 0.12, 'sine', 0.12, 0.15);
+							break;
+						case 'scroll':
+							// Soft swipe for the category scroll arrows
+							playNoise(0.07, 3200, 'bandpass', 0.05, 0, 1.5);
+							playTone(700, 900, 0.04, 'sine', 0.06, 0.01);
 							break;
 						case 'tap':
 						default:

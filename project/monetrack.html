@@ -21,7 +21,7 @@
 	<!-- Font lembut & bulat (fallback: font sistem) -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link id="font-Plus+Jakarta+Sans:wght@300;400;500;600;700;800" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
+	<link id="font-Figtree:wght@300;400;500;600;700;800" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap">
 
 	<!-- Font Awesome (ikon) -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -35,7 +35,7 @@
 			darkMode: 'class',
 			theme: {
 				extend: {
-					fontFamily: { sans: ['Plus Jakarta Sans', 'ui-rounded', 'Segoe UI', 'system-ui', 'sans-serif'] },
+					fontFamily: { sans: ['Figtree', 'ui-rounded', 'Segoe UI', 'system-ui', 'sans-serif'] },
 					colors: {
 						// stone = latar & teks mode terang (krem hangat)
 						stone: { 50: '#faf8f4', 100: '#f3f0e9', 200: '#e7e2d8', 300: '#d3ccbf', 400: '#aea697', 500: '#898173', 600: '#6a6358', 700: '#524c43', 800: '#3b372f', 900: '#27241f' },
@@ -76,7 +76,7 @@
 			box-sizing: border-box;
 			--c-income: #6dbf9d;   /* warna pemasukan di grafik */
 			--c-expense: #ec9a8f;  /* warna pengeluaran di grafik */
-			--app-font: "Plus Jakarta Sans", ui-rounded, "Segoe UI", system-ui, sans-serif;
+			--app-font: "Figtree", ui-rounded, "Segoe UI", system-ui, sans-serif;
 			--r-card: 1.5rem;
 			--ac-50: 243 247 246;
 			--ac-100: 227 237 234;
@@ -525,12 +525,12 @@
 				fontSize: { min: 12, max: 22, step: 1, default: 16 },
 				legacySizes: { sm: 14, md: 16, lg: 18, xl: 20 },   // nilai lama sebelum memakai slider
 				fonts: {
-					jakarta: { label: 'Plus Jakarta Sans (bawaan)', stack: '"Plus Jakarta Sans", ui-rounded, system-ui, sans-serif', google: 'Plus+Jakarta+Sans:wght@300;400;500;600;700;800' },
-					outfit: { label: 'Outfit', stack: '"Outfit", ui-rounded, system-ui, sans-serif', google: 'Outfit:wght@300;400;500;600;700;800' },
-					dmsans: { label: 'DM Sans', stack: '"DM Sans", system-ui, sans-serif', google: 'DM+Sans:wght@300;400;500;600;700' },
-					manrope: { label: 'Manrope', stack: '"Manrope", system-ui, sans-serif', google: 'Manrope:wght@300;400;500;600;700;800' },
-					sora: { label: 'Sora', stack: '"Sora", system-ui, sans-serif', google: 'Sora:wght@300;400;500;600;700;800' },
-					lexend: { label: 'Lexend', stack: '"Lexend", system-ui, sans-serif', google: 'Lexend:wght@300;400;500;600;700;800' }
+					figtree: { label: 'Figtree (bawaan)', stack: '"Figtree", ui-rounded, system-ui, sans-serif', google: 'Figtree:wght@300;400;500;600;700;800' },
+					urbanist: { label: 'Urbanist', stack: '"Urbanist", ui-rounded, system-ui, sans-serif', google: 'Urbanist:wght@300;400;500;600;700;800' },
+					onest: { label: 'Onest', stack: '"Onest", system-ui, sans-serif', google: 'Onest:wght@300;400;500;600;700;800' },
+					bricolage: { label: 'Bricolage Grotesque', stack: '"Bricolage Grotesque", system-ui, sans-serif', google: 'Bricolage+Grotesque:wght@300;400;500;600;700;800' },
+					geist: { label: 'Geist', stack: '"Geist", system-ui, sans-serif', google: 'Geist:wght@300;400;500;600;700;800' },
+					hanken: { label: 'Hanken Grotesk', stack: '"Hanken Grotesk", system-ui, sans-serif', google: 'Hanken+Grotesk:wght@300;400;500;600;700;800' }
 				},
 				accents: [   // h = hue (0-360), s = saturasi (%)
 					{ id: 'red', label: 'Merah Kalem', h: 4, s: 38 },
@@ -582,7 +582,7 @@
 			profile: null, profileSkipped: false, categoryIcons: {}, logo: null,
 			settings: {
 				alertsOn: true, warnAt: 80, device: false, sound: true, goalSave: 20, goalEmergency: 6, clickSound: true, haptics: true, logInbox: true, pocketSort: 'created',
-				fontSize: 16, fontFamily: 'jakarta', fontWeight: 'normal', accent: 'green', accentHue: null, accentSat: null, radius: 'xl', animations: true, weekStart: 1
+				fontSize: 16, fontFamily: 'figtree', fontWeight: 'normal', accent: 'green', accentHue: null, accentSat: null, radius: 'xl', animations: true, weekStart: 1
 			},
 			month: ymd(new Date()).slice(0, 7),
 			type: 'expense', editId: null,
@@ -620,7 +620,7 @@
 				['clickSound', 'haptics', 'logInbox'].forEach((k) => { S[k] = S[k] !== false; });
 				if (!['created', 'balance', 'progress', 'recent', 'name'].includes(S.pocketSort)) S.pocketSort = 'created';
 				// Migrasi: font lama yang sudah diganti dipindah ke font bawaan baru
-				if (!Object.prototype.hasOwnProperty.call(CONFIG.appearance.fonts, S.fontFamily)) S.fontFamily = 'jakarta';
+				if (!Object.prototype.hasOwnProperty.call(CONFIG.appearance.fonts, S.fontFamily)) S.fontFamily = 'figtree';
 				// Migrasi: id warna aksen lama dipetakan ke warna aksen baru
 				const oldAccents = { sage: 'green', ocean: 'blue', lavender: 'purple', peach: 'orange', rose: 'red', amber: 'yellow' };
 				if (Object.prototype.hasOwnProperty.call(oldAccents, S.accent)) S.accent = oldAccents[S.accent];
@@ -633,7 +633,7 @@
 					// Biasanya penyimpanan penuh (mis. karena banyak gambar) atau diblokir browser
 					if (!this.warned) {
 						this.warned = true;
-						Toast.show({ type: 'error', title: 'Penyimpanan penuh', message: 'Data terbaru tidak bisa disimpan. Kecilkan gambar atau hapus data lama.', duration: 7000 });
+						Toast.show({ type: 'error', sound: 'fail', title: 'Penyimpanan penuh', message: 'Data terbaru tidak bisa disimpan. Kecilkan gambar atau hapus data lama.', duration: 7000 });
 					}
 					return false;
 				}
@@ -917,7 +917,7 @@
 				const amount = digits($('#fAmount').value);
 				if (amount <= 0) {
 					Anim.shake($('#fAmount'));
-					Toast.show({ type: 'error', title: 'Jumlah belum diisi', message: 'Masukkan nominal lebih dari 0.' });
+					Toast.show({ type: 'error', sound: 'invalid', title: 'Jumlah belum diisi', message: 'Masukkan nominal lebih dari 0.' });
 					return $('#fAmount').focus();
 				}
 				const editing = Boolean(state.editId);
@@ -1232,7 +1232,7 @@
 			},
 			async enableDevice() {
 				if (!this.supported()) {
-					Toast.show({ type: 'error', title: 'Tidak didukung', message: 'Browser ini belum mendukung notifikasi perangkat.' });
+					Toast.show({ type: 'error', sound: 'denied', title: 'Tidak didukung', message: 'Browser ini belum mendukung notifikasi perangkat.' });
 					return false;
 				}
 				let perm = Notification.permission;
@@ -1399,7 +1399,7 @@
 		const Appearance = {
 			// Lightness tiap tingkat warna aksen (50 = terang, 900 = gelap)
 			shades: { 50: 96, 100: 91, 200: 83, 300: 72, 400: 57, 500: 42, 600: 35, 700: 29, 800: 24, 900: 19 },
-			defaults: { fontSize: 16, fontFamily: 'jakarta', fontWeight: 'normal', accent: 'green', accentHue: null, accentSat: null, radius: 'xl', animations: true, weekStart: 1 },
+			defaults: { fontSize: 16, fontFamily: 'figtree', fontWeight: 'normal', accent: 'green', accentHue: null, accentSat: null, radius: 'xl', animations: true, weekStart: 1 },
 			// Ukuran font aktif (px), tetap valid walau data lama berupa teks (sm/md/lg/xl)
 			size() {
 				const s = state.settings, F = CONFIG.appearance.fontSize, legacy = CONFIG.appearance.legacySizes[s.fontSize];
@@ -1415,8 +1415,8 @@
 				Object.entries(this.shades).forEach(([k, l]) => root.style.setProperty(`--ac-${k}`, hslRgb(ac.h, ac.s * (l > 90 ? 0.9 : 1), l).join(' ')));
 				root.style.fontSize = `${this.size()}px`;
 				root.dataset.fw = s.fontWeight || 'normal';
-				if (!A.fonts[s.fontFamily]) s.fontFamily = 'jakarta';
-				const font = A.fonts[s.fontFamily] || A.fonts.jakarta;
+				if (!A.fonts[s.fontFamily]) s.fontFamily = 'figtree';
+				const font = A.fonts[s.fontFamily] || A.fonts.figtree;
 				this.loadFont(font);
 				root.style.setProperty('--app-font', font.stack);
 				root.style.setProperty('--r-card', (A.radii.find((r) => r[0] === s.radius) || A.radii[0])[1]);
@@ -1593,7 +1593,7 @@
 							state.theme = null;
 							UI.applyTheme(); Appearance.apply(); Store.save(); UI.charts();
 							close();
-							Toast.show({ type: 'success', sound: 'restore', title: 'Tampilan dikembalikan ke bawaan' });
+							Toast.show({ type: 'success', sound: 'resetUi', title: 'Tampilan dikembalikan ke bawaan' });
 						};
 						el.querySelector('[data-test]').onclick = () => Notify.push({ type: 'info', title: 'Notifikasi uji', message: 'Jika kamu melihat ini, notifikasi berfungsi.', device: true, tag: 'test' });
 						el.querySelector('[data-ok]').onclick = close;
@@ -1615,7 +1615,7 @@
 							if (!ok) return;
 							state.categoryIcons = {};
 							Store.save(); UI.renderAll(); Dropdown.refreshAll(); drawCats();
-							Toast.show({ type: 'success', sound: 'restore', title: 'Ikon dikembalikan ke bawaan' });
+							Toast.show({ type: 'success', sound: 'resetIcons', title: 'Ikon dikembalikan ke bawaan' });
 						};
 						drawCats();
 						const drawLogo = () => { el.querySelector('#setLogoPrev').innerHTML = Logo.html(state.logo, 'h-12 w-12 rounded-2xl text-xl'); };
@@ -1929,7 +1929,7 @@
 			json() {
 				const summary = `${state.tx.length} transaksi, ${state.pockets.length} kantong, ${state.pocketTx.length} catatan kantong, dan ${state.notifs.length} notifikasi.`;
 				this.download(`monetrack-backup-${ymd(new Date())}.json`, JSON.stringify(this.backup(), null, '\t'), 'application/json');
-				Toast.show({ type: 'success', sound: 'export', title: 'Cadangan lengkap dibuat', message: summary });
+				Toast.show({ type: 'success', sound: 'exportBackup', title: 'Cadangan lengkap dibuat', message: summary });
 				Notify.log('Cadangan lengkap dibuat', `${summary} Termasuk profil, pengaturan, dan rekap.`, { type: 'success' });
 			},
 			recapCsv() {
@@ -1941,7 +1941,7 @@
 					['Kantong', 'Nama', 'Saldo', 'Total Setoran', 'Total Penarikan', 'Jumlah Catatan'],
 					...r.pockets.map((p) => ['Kantong', p.name, p.balance, p.deposited, p.withdrawn, p.entries])];
 				this.download(`monetrack-rekap-${ymd(new Date())}.csv`, '\ufeff' + rows.map((x) => x.map(q).join(',')).join('\n'), 'text/csv');
-				Toast.show({ type: 'success', sound: 'export', title: 'Ekspor rekap dibuat', message: `${r.monthly.length} bulan, ${r.yearly.length} tahun, ${r.pockets.length} kantong.` });
+				Toast.show({ type: 'success', sound: 'exportRecap', title: 'Ekspor rekap dibuat', message: `${r.monthly.length} bulan, ${r.yearly.length} tahun, ${r.pockets.length} kantong.` });
 				Notify.log('Ekspor rekap dibuat', `${r.monthly.length} bulan dan ${r.yearly.length} tahun rekap transaksi, serta ${r.pockets.length} kantong.`);
 			},
 			import(file) {
@@ -1950,7 +1950,7 @@
 					let d = null;
 					try { d = JSON.parse(reader.result); } catch (err) { /* file bukan JSON */ }
 					const known = d && typeof d === 'object' && ['tx', 'pockets', 'pocketTx', 'notifs', 'profile'].some((k) => k in d);
-					if (!known) return Toast.show({ type: 'error', title: 'File tidak valid', message: 'Pastikan file adalah cadangan JSON dari Monetrack.' });
+					if (!known) return Toast.show({ type: 'error', sound: 'fail', title: 'File tidak valid', message: 'Pastikan file adalah cadangan JSON dari Monetrack.' });
 					this.importPreview(d);
 				};
 				reader.readAsText(file);
@@ -2058,7 +2058,7 @@
 				if (!state.budget) state.budget = 4000000;
 				$('#budgetInput').value = num.format(state.budget);
 				Store.save(); UI.renderAll();
-				Toast.show({ type: 'success', sound: 'restore', title: 'Contoh data dimuat', message: '3 bulan transaksi contoh ditambahkan.' });
+				Toast.show({ type: 'success', sound: 'sample', title: 'Contoh data dimuat', message: '3 bulan transaksi contoh ditambahkan.' });
 				Alerts.check(ymd(now).slice(0, 7));
 			},
 			async prune() {
@@ -2077,7 +2077,7 @@
 				state.tx = []; state.budget = 0; state.alertLog = {}; state.pockets = []; state.pocketTx = [];
 				$('#budgetInput').value = '';
 				Store.save(); UI.renderAll();
-				Toast.show({ type: 'info', sound: 'clear', title: 'Semua data dihapus' });
+				Toast.show({ type: 'info', sound: 'wipe', title: 'Semua data dihapus' });
 				Notify.log('Semua data dihapus', 'Transaksi, kantong, dan batas pengeluaran telah dikosongkan.', { type: 'warning' });
 			}
 		};
@@ -2408,7 +2408,7 @@
 							const name = el.querySelector('#pk_name').value.trim();
 							if (!name) {
 								Anim.shake(el.querySelector('#pk_name'));
-								Toast.show({ type: 'error', title: 'Nama kantong belum diisi' });
+								Toast.show({ type: 'error', sound: 'invalid', title: 'Nama kantong belum diisi' });
 								return;
 							}
 							const data = {
@@ -2424,7 +2424,7 @@
 								if (init > 0) state.pocketTx.push({ id: uid(), pocketId: created.id, type: 'in', amount: init, date: ymd(new Date()), note: 'Saldo awal' });
 							}
 							Store.save(); this.render(); close();
-							Toast.show({ type: 'success', sound: p ? 'update' : 'save', title: p ? 'Kantong diperbarui' : 'Kantong dibuat', message: name });
+							Toast.show({ type: 'success', sound: p ? 'pocketEdit' : 'pocketNew', title: p ? 'Kantong diperbarui' : 'Kantong dibuat', message: name });
 						};
 						const del = el.querySelector('[data-del]');
 						if (del) del.onclick = async () => {
@@ -2433,7 +2433,7 @@
 							state.pockets = state.pockets.filter((x) => x.id !== p.id);
 							state.pocketTx = state.pocketTx.filter((e) => e.pocketId !== p.id);
 							Store.save(); this.render(); close();
-							Toast.show({ type: 'info', sound: 'delete', title: 'Kantong dihapus' });
+							Toast.show({ type: 'info', sound: 'pocketDelete', title: 'Kantong dihapus' });
 						};
 					}
 				});
@@ -2464,19 +2464,19 @@
 							const t = el.querySelector('[name="pkType"]:checked').value;
 							if (amount <= 0 || !date) {
 								Anim.shake(el.querySelector(amount <= 0 ? '#pk_amt' : '#pk_date'));
-								Toast.show({ type: 'error', title: amount <= 0 ? 'Jumlah belum diisi' : 'Tanggal belum diisi' });
+								Toast.show({ type: 'error', sound: 'invalid', title: amount <= 0 ? 'Jumlah belum diisi' : 'Tanggal belum diisi' });
 								return;
 							}
 							if (avail + (t === 'in' ? amount : -amount) < 0) {
 								Anim.shake(el.querySelector('#pk_amt'));
-								Toast.show({ type: 'error', title: 'Saldo kantong tidak cukup', message: `Saldo tersedia ${fmt.format(avail)}.` });
+								Toast.show({ type: 'error', sound: 'denied', title: 'Saldo kantong tidak cukup', message: `Saldo tersedia ${fmt.format(avail)}.` });
 								return;
 							}
 							const before = this.balance(p.id);
 							const item = { id: entry ? entry.id : uid(), pocketId: p.id, type: t, amount, date, note: el.querySelector('#pk_note').value.trim() };
 							state.pocketTx = entry ? state.pocketTx.map((x) => (x.id === item.id ? item : x)) : [...state.pocketTx, item];
 							Store.save(); this.render(); close();
-							Toast.show({ type: 'success', sound: t === 'in' ? 'deposit' : 'withdraw', title: t === 'in' ? 'Setoran dicatat' : 'Penarikan dicatat', message: `${p.name} · ${fmt.format(amount)}` });
+							Toast.show({ type: 'success', sound: t === 'in' ? 'pocketIn' : 'pocketOut', title: t === 'in' ? 'Setoran dicatat' : 'Penarikan dicatat', message: `${p.name} · ${fmt.format(amount)}` });
 							if (p.target && before < p.target && this.balance(p.id) >= p.target) {
 								Notify.push({ type: 'success', title: 'Target kantong tercapai', message: `Kantong "${p.name}" sudah mencapai target ${fmt.format(p.target)}.`, source: 'pocket', screen: 'pockets' });
 							}
@@ -2488,14 +2488,14 @@
 				const e = state.pocketTx.find((x) => String(x.id) === String(id));
 				if (!e) return;
 				if (e.type === 'in' && this.balance(e.pocketId) - e.amount < 0) {
-					Toast.show({ type: 'error', title: 'Tidak bisa dihapus', message: 'Saldo kantong akan menjadi minus. Hapus catatan penarikan terkait terlebih dahulu.' });
+					Toast.show({ type: 'error', sound: 'denied', title: 'Tidak bisa dihapus', message: 'Saldo kantong akan menjadi minus. Hapus catatan penarikan terkait terlebih dahulu.' });
 					return;
 				}
 				const ok = await Modal.confirm({ title: 'Hapus catatan?', message: 'Catatan ini akan dihapus permanen dan saldo kantong dihitung ulang.', confirmText: 'Hapus', danger: true });
 				if (!ok) return;
 				state.pocketTx = state.pocketTx.filter((x) => x.id !== e.id);
 				Store.save(); this.render();
-				Toast.show({ type: 'info', sound: 'delete', title: 'Catatan dihapus' });
+				Toast.show({ type: 'info', sound: 'noteDelete', title: 'Catatan dihapus' });
 			},
 			csv() {
 				if (!state.pocketTx.length) return Toast.show({ type: 'info', title: 'Belum ada catatan kantong' });
@@ -2504,7 +2504,7 @@
 					...state.pocketTx.slice().sort((a, b) => a.date.localeCompare(b.date))
 						.map((e) => [e.date, this.get(e.pocketId).name, e.type === 'in' ? 'Setoran' : 'Penarikan', e.amount, e.note])];
 				Data.download(`kantong-${ymd(new Date())}.csv`, '\ufeff' + rows.map((r) => r.map(q).join(',')).join('\n'), 'text/csv');
-				Toast.show({ type: 'success', sound: 'export', title: 'Ekspor CSV kantong dibuat', message: `${state.pocketTx.length} catatan diekspor.` });
+				Toast.show({ type: 'success', sound: 'exportPocket', title: 'Ekspor CSV kantong dibuat', message: `${state.pocketTx.length} catatan diekspor.` });
 			}
 		};
 
@@ -2608,7 +2608,7 @@
 						el.querySelector('[data-photo]').onclick = async () => {
 							const file = await Img.pick();
 							if (!file) return;
-							try { draft.photo = await Img.toDataURL(file, 160, 'image/webp'); draw(); } catch (err) { Toast.show({ type: 'error', title: 'Foto tidak bisa dipakai', message: err.message }); }
+							try { draft.photo = await Img.toDataURL(file, 160, 'image/webp'); draw(); } catch (err) { Toast.show({ type: 'error', sound: 'fail', title: 'Foto tidak bisa dipakai', message: err.message }); }
 						};
 						el.querySelector('[data-photo-del]').onclick = () => { draft.photo = ''; draw(); };
 						const skip = el.querySelector('[data-skip]');
@@ -2619,7 +2619,7 @@
 							const next = { name: name.value.trim(), phone: phone.value.trim(), photo: draft.photo };
 							if (!this.phoneOk(next.phone)) {
 								Anim.shake(phone);
-								Toast.show({ type: 'error', title: 'Nomor telepon tidak valid', message: 'Gunakan 8 sampai 15 digit, boleh diawali tanda +.' });
+								Toast.show({ type: 'error', sound: 'invalid', title: 'Nomor telepon tidak valid', message: 'Gunakan 8 sampai 15 digit, boleh diawali tanda +.' });
 								return;
 							}
 							done = true;
@@ -2627,8 +2627,8 @@
 							state.profileSkipped = !state.profile;
 							Store.save(); this.render(); close();
 							Toast.show(state.profile
-								? { type: 'success', sound: welcome ? 'achieve' : 'update', title: welcome ? `Selamat datang${next.name ? ', ' + next.name.split(/\s+/)[0] : ''}!` : 'Profil diperbarui' }
-								: { type: 'info', title: 'Profil dikosongkan' });
+								? { type: 'success', sound: welcome ? 'welcome' : 'profile', title: welcome ? `Selamat datang${next.name ? ', ' + next.name.split(/\s+/)[0] : ''}!` : 'Profil diperbarui' }
+								: { type: 'info', sound: 'logout', title: 'Profil dikosongkan' });
 						};
 						const out = el.querySelector('[data-logout]');
 						if (out) out.onclick = async () => {
@@ -2638,7 +2638,7 @@
 							state.profile = null;
 							state.profileSkipped = false;
 							Store.save(); this.render(); close();
-							Toast.show({ type: 'info', title: 'Kamu sudah keluar', message: 'Isi profil lagi kapan saja lewat ikon di pojok kiri atas.' });
+							Toast.show({ type: 'info', sound: 'logout', title: 'Kamu sudah keluar', message: 'Isi profil lagi kapan saja lewat ikon di pojok kiri atas.' });
 						};
 						draw();
 					}
@@ -2690,7 +2690,7 @@
 						el.querySelector('[data-upload]').onclick = async () => {
 							const file = await Img.pick();
 							if (!file) return;
-							try { sel = { type: 'image', value: await Img.toDataURL(file, 96, 'image/png') }; draw(); } catch (err) { Toast.show({ type: 'error', title: 'Gambar tidak bisa dipakai', message: err.message }); }
+							try { sel = { type: 'image', value: await Img.toDataURL(file, 96, 'image/png') }; draw(); } catch (err) { Toast.show({ type: 'error', sound: 'fail', title: 'Gambar tidak bisa dipakai', message: err.message }); }
 						};
 						el.querySelector('[data-default]').onclick = () => { sel = this.base(name); draw(); };
 						el.querySelector('[data-cancel]').onclick = close;
@@ -2698,7 +2698,7 @@
 							if (same(sel, this.base(name))) delete state.categoryIcons[name]; else state.categoryIcons[name] = sel;
 							Store.save(); UI.renderAll(); Dropdown.refreshAll(); close();
 							if (onDone) onDone();
-							Toast.show({ type: 'success', sound: 'update', title: 'Ikon kategori disimpan', message: name });
+							Toast.show({ type: 'success', sound: 'icon', title: 'Ikon kategori disimpan', message: name });
 						};
 						draw();
 					}
@@ -2737,7 +2737,7 @@
 							}
 							Store.save(); UI.health(); UI.limit(); close();
 							if (kind === 'limit') Alerts.check(state.month);
-							Toast.show({ type: 'success', sound: 'update', title: 'Target disimpan', message: kind === 'limit' && !v ? 'Batas pengeluaran dinonaktifkan.' : d.title });
+							Toast.show({ type: 'success', sound: 'goal', title: 'Target disimpan', message: kind === 'limit' && !v ? 'Batas pengeluaran dinonaktifkan.' : d.title });
 						};
 						input.addEventListener('input', () => { if (d.money) formatInput(input); });
 						el.querySelectorAll('[data-q]').forEach((b) => { b.onclick = () => { input.value = d.money ? num.format(Number(b.dataset.q)) : b.dataset.q; }; });
@@ -2747,7 +2747,7 @@
 							const v = d.money ? digits(input.value) : parseFloat(String(input.value).replace(',', '.'));
 							if (!d.money && !(v >= d.min && v <= d.max)) {
 								Anim.shake(input);
-								Toast.show({ type: 'error', title: 'Nilai tidak valid', message: `Isi angka ${d.min} sampai ${d.max} (${d.unit}).` });
+								Toast.show({ type: 'error', sound: 'invalid', title: 'Nilai tidak valid', message: `Isi angka ${d.min} sampai ${d.max} (${d.unit}).` });
 								return;
 							}
 							apply(v);
@@ -2769,7 +2769,9 @@
 				primary: { f: 880, to: 520, v: 0.09 },
 				nav: { f: 740, to: 590, v: 0.06 },
 				select: { f: 900, to: 1250, v: 0.05 },
-				danger: { f: 440, to: 250, v: 0.08 }
+				danger: { f: 440, to: 250, v: 0.08 },
+				tab: { f: 1000, to: 860, v: 0.05 },
+				fab: { f: 660, to: 990, v: 0.1 }
 			},
 			// Efek suara per aksi. Tiap nada: f = frekuensi, to = frekuensi akhir, t = jeda mulai (detik), d = durasi, v = volume, w = gelombang
 			tones: {
@@ -2787,7 +2789,34 @@
 				warning: [{ f: 587, d: 0.1, v: 0.07 }, { f: 587, t: 0.15, d: 0.1, v: 0.07 }],
 				info: [{ f: 740, d: 0.2, v: 0.07 }],
 				on: [{ f: 600, d: 0.06, v: 0.06 }, { f: 900, t: 0.06, d: 0.1, v: 0.06 }],
-				off: [{ f: 900, d: 0.06, v: 0.06 }, { f: 600, t: 0.06, d: 0.1, v: 0.06 }]
+				off: [{ f: 900, d: 0.06, v: 0.06 }, { f: 600, t: 0.06, d: 0.1, v: 0.06 }],
+				// Kantong
+				pocketNew: [{ f: 659, d: 0.1, w: 'triangle' }, { f: 880, t: 0.08, d: 0.1, w: 'triangle' }, { f: 1175, t: 0.16, d: 0.24, w: 'triangle' }],
+				pocketEdit: [{ f: 622, d: 0.08 }, { f: 622, t: 0.09, d: 0.08 }, { f: 831, t: 0.18, d: 0.18 }],
+				pocketDelete: [{ f: 262, to: 110, d: 0.26, w: 'sawtooth', v: 0.035 }],
+				pocketIn: [{ f: 784, d: 0.07, w: 'triangle', v: 0.09 }, { f: 1047, t: 0.07, d: 0.07, w: 'triangle', v: 0.09 }, { f: 1568, t: 0.14, d: 0.26, w: 'triangle', v: 0.08 }],
+				pocketOut: [{ f: 1568, d: 0.07, w: 'triangle', v: 0.09 }, { f: 1047, t: 0.07, d: 0.07, w: 'triangle', v: 0.09 }, { f: 784, t: 0.14, d: 0.26, w: 'triangle', v: 0.08 }],
+				noteDelete: [{ f: 520, to: 300, d: 0.1, w: 'triangle', v: 0.08 }, { f: 300, to: 180, t: 0.1, d: 0.14, w: 'triangle', v: 0.08 }],
+				// Ekspor (tiap jenis berbeda)
+				exportBackup: [{ f: 330, to: 660, d: 0.14, w: 'sawtooth', v: 0.03 }, { f: 660, to: 1320, t: 0.14, d: 0.2, w: 'sawtooth', v: 0.03 }],
+				exportRecap: [{ f: 1047, d: 0.07, v: 0.06 }, { f: 1319, t: 0.07, d: 0.07, v: 0.06 }, { f: 1568, t: 0.14, d: 0.07, v: 0.06 }, { f: 2093, t: 0.21, d: 0.22, v: 0.06 }],
+				exportPocket: [{ f: 880, to: 1480, d: 0.12, w: 'triangle', v: 0.07 }, { f: 1480, to: 1175, t: 0.13, d: 0.16, w: 'triangle', v: 0.06 }],
+				// Data & pengaturan
+				sample: [{ f: 523, d: 0.07 }, { f: 659, t: 0.07, d: 0.07 }, { f: 523, t: 0.14, d: 0.07 }, { f: 784, t: 0.21, d: 0.07 }, { f: 1047, t: 0.28, d: 0.22 }],
+				resetUi: [{ f: 880, to: 440, d: 0.18, w: 'triangle', v: 0.07 }, { f: 440, to: 660, t: 0.18, d: 0.16, w: 'triangle', v: 0.07 }],
+				resetIcons: [{ f: 700, d: 0.06, w: 'square', v: 0.03 }, { f: 560, t: 0.07, d: 0.06, w: 'square', v: 0.03 }, { f: 700, t: 0.14, d: 0.12, w: 'square', v: 0.03 }],
+				wipe: [{ f: 294, d: 0.14, w: 'sawtooth', v: 0.04 }, { f: 220, t: 0.13, d: 0.16, w: 'sawtooth', v: 0.04 }, { f: 147, t: 0.28, d: 0.34, w: 'sawtooth', v: 0.04 }],
+				profile: [{ f: 698, d: 0.1 }, { f: 880, t: 0.1, d: 0.22 }],
+				welcome: [{ f: 392, d: 0.12 }, { f: 523, t: 0.1, d: 0.12 }, { f: 659, t: 0.2, d: 0.12 }, { f: 784, t: 0.3, d: 0.12 }, { f: 1047, t: 0.4, d: 0.4 }],
+				logout: [{ f: 784, d: 0.1, w: 'triangle' }, { f: 587, t: 0.1, d: 0.1, w: 'triangle' }, { f: 392, t: 0.2, d: 0.22, w: 'triangle' }],
+				icon: [{ f: 1000, to: 1500, d: 0.07, v: 0.07 }, { f: 1500, t: 0.08, d: 0.12, v: 0.06 }],
+				goal: [{ f: 523, d: 0.1, w: 'triangle' }, { f: 659, t: 0.1, d: 0.1, w: 'triangle' }, { f: 784, t: 0.2, d: 0.1, w: 'triangle' }, { f: 784, t: 0.32, d: 0.24, w: 'triangle' }],
+				budget: [{ f: 466, d: 0.1, w: 'triangle' }, { f: 698, t: 0.1, d: 0.2, w: 'triangle' }],
+				logo: [{ f: 1175, d: 0.06, v: 0.06 }, { f: 1568, t: 0.07, d: 0.06, v: 0.06 }, { f: 1175, t: 0.14, d: 0.14, v: 0.06 }],
+				// Kesalahan (tiap jenis berbeda)
+				invalid: [{ f: 330, d: 0.09, w: 'square', v: 0.03 }, { f: 330, t: 0.12, d: 0.09, w: 'square', v: 0.03 }],
+				denied: [{ f: 196, to: 147, d: 0.28, w: 'sawtooth', v: 0.035 }],
+				fail: [{ f: 277, d: 0.1, w: 'square', v: 0.035 }, { f: 233, t: 0.11, d: 0.1, w: 'square', v: 0.035 }, { f: 185, t: 0.22, d: 0.2, w: 'square', v: 0.035 }]
 			},
 			ctx() {
 				const c = Sound.ctx = Sound.ctx || new (window.AudioContext || window.webkitAudioContext)();
@@ -2837,6 +2866,8 @@
 				if (sound !== false) this.sfx(sound || type);
 			},
 			kindOf(el) {
+				if (el.matches('#fab')) return 'fab';
+				if (el.matches('[data-ntab], [data-ptype]')) return 'tab';
 				if (el.matches('[data-nav]')) return 'nav';
 				if (el.matches('[data-del], [data-pe-del], [data-n-del], .btn-danger')) return 'danger';
 				if (el.matches('[role="option"]')) return 'select';
@@ -2920,7 +2951,7 @@
 						el.querySelector('[data-upload]').onclick = async () => {
 							const file = await Img.pick();
 							if (!file) return;
-							try { sel = { type: 'image', value: await Img.toDataURL(file, 128, 'image/png') }; draw(); } catch (err) { Toast.show({ type: 'error', title: 'Gambar tidak bisa dipakai', message: err.message }); }
+							try { sel = { type: 'image', value: await Img.toDataURL(file, 128, 'image/png') }; draw(); } catch (err) { Toast.show({ type: 'error', sound: 'fail', title: 'Gambar tidak bisa dipakai', message: err.message }); }
 						};
 						el.querySelector('[data-default]').onclick = () => { sel = null; draw(); };
 						el.querySelector('[data-cancel]').onclick = close;
@@ -2928,7 +2959,7 @@
 							state.logo = sel;
 							Store.save(); this.apply(); close();
 							if (onDone) onDone();
-							Toast.show({ type: 'success', sound: 'update', title: 'Logo disimpan' });
+							Toast.show({ type: 'success', sound: 'logo', title: 'Logo disimpan' });
 						};
 						draw();
 					}
@@ -3066,8 +3097,8 @@
 				limitTimer = setTimeout(() => Alerts.check(state.month), 900);
 			});
 			$('#budgetInput').addEventListener('change', () => Toast.show(state.budget
-				? { type: 'success', sound: 'update', title: 'Batas pengeluaran disimpan', message: `${fmt.format(state.budget)} per bulan.` }
-				: { type: 'info', title: 'Batas pengeluaran dinonaktifkan' }));
+				? { type: 'success', sound: 'budget', title: 'Batas pengeluaran disimpan', message: `${fmt.format(state.budget)} per bulan.` }
+				: { type: 'info', sound: 'off', title: 'Batas pengeluaran dinonaktifkan' }));
 
 			// Notifikasi & pengaturan
 			$('#notifBtn').addEventListener('click', () => NotifPanel.toggle());

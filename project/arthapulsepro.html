@@ -32,10 +32,10 @@
 		}
 	</script>
 
-	<!-- Google Fonts: Plus Jakarta Sans (Default), Inter, Outfit, Sora, Manrope, Space Grotesk -->
+	<!-- Google Fonts: Albert Sans (Default), Red Hat Display, Onest, Bricolage Grotesque, Geist, Urbanist -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:wght@300;400;500;600;700;800&family=Geist:wght@300;400;500;600;700;800&family=Onest:wght@300;400;500;600;700;800&family=Red+Hat+Display:wght@300;400;500;600;700;800&family=Urbanist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 	<!-- Font Awesome 6.5.2 & Chart.js CDN -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -48,7 +48,7 @@
 			--app-accent-light: rgba(59, 130, 246, 0.14);
 			--app-accent-border: rgba(59, 130, 246, 0.32);
 			--app-accent-text: #60a5fa;
-			--app-font-family: 'Plus Jakarta Sans';
+			--app-font-family: 'Albert Sans';
 			--app-font-weight: 400;
 			--app-font-weight-bold: 600;
 		}
@@ -249,6 +249,138 @@
 			background-color: #0f172a;
 			color: #f1f5f9;
 			padding: 8px;
+		}
+		/* Custom Modern Dropdown (pengganti select/option bawaan; <select> asli disembunyikan sebagai sumber data) */
+		.cd-wrap {
+			position: relative;
+		}
+		.cd-native {
+			position: absolute !important;
+			width: 1px !important;
+			height: 1px !important;
+			opacity: 0 !important;
+			overflow: hidden !important;
+			clip: rect(0 0 0 0) !important;
+			pointer-events: none !important;
+		}
+		.cd-trigger {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 0.5rem;
+			width: 100%;
+			text-align: left;
+		}
+		.cd-label {
+			flex: 1 1 auto;
+			min-width: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.cd-label.is-empty {
+			color: #64748b;
+		}
+		.cd-chev {
+			flex-shrink: 0;
+			font-size: 10px;
+			color: #94a3b8;
+			transition: transform 0.2s ease, color 0.2s ease;
+		}
+		.cd-wrap.is-open .cd-chev {
+			transform: rotate(180deg);
+			color: var(--app-accent-text);
+		}
+		.cd-wrap.is-open .cd-trigger {
+			border-color: var(--app-accent);
+			box-shadow: 0 0 0 2px var(--app-accent-light);
+		}
+		.cd-panel {
+			position: fixed;
+			z-index: 9999;
+			box-sizing: border-box;
+			max-height: 240px;
+			overflow-y: auto;
+			overscroll-behavior: contain;
+			padding: 4px;
+			border-radius: 14px;
+			background: rgba(15, 23, 42, 0.98);
+			border: 1px solid rgba(51, 65, 85, 0.75);
+			box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.6);
+			backdrop-filter: blur(12px);
+			transform-origin: top center;
+			animation: cdPopDown 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+		}
+		.cd-panel.is-up {
+			transform-origin: bottom center;
+			animation-name: cdPopUp;
+		}
+		@keyframes cdPopDown {
+			from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+			to { opacity: 1; transform: translateY(0) scale(1); }
+		}
+		@keyframes cdPopUp {
+			from { opacity: 0; transform: translateY(6px) scale(0.97); }
+			to { opacity: 1; transform: translateY(0) scale(1); }
+		}
+		.cd-item {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 8px;
+			padding: 8px 10px;
+			border-radius: 10px;
+			font-size: 12px;
+			line-height: 1.35;
+			color: #cbd5e1;
+			cursor: pointer;
+			user-select: none;
+			-webkit-tap-highlight-color: transparent;
+			transition: background-color 0.12s ease, color 0.12s ease;
+		}
+		.cd-item + .cd-item {
+			margin-top: 2px;
+		}
+		.cd-item:hover,
+		.cd-item.is-active {
+			background: rgba(148, 163, 184, 0.14);
+			color: #f1f5f9;
+		}
+		.cd-item.is-selected {
+			background: var(--app-accent-light);
+			color: var(--app-accent-text);
+			font-weight: var(--app-font-weight-bold, 600) !important;
+		}
+		.cd-check {
+			flex-shrink: 0;
+			font-size: 10px;
+			opacity: 0;
+		}
+		.cd-item.is-selected .cd-check {
+			opacity: 1;
+		}
+		.cd-empty {
+			padding: 10px;
+			font-size: 12px;
+			color: #64748b;
+			text-align: center;
+		}
+		body.soft-light-mode .cd-panel {
+			background: rgba(255, 255, 255, 0.98);
+			border-color: #cbd5e1;
+			box-shadow: 0 18px 40px -14px rgba(15, 23, 42, 0.25);
+		}
+		body.soft-light-mode .cd-item {
+			color: #334155;
+		}
+		body.soft-light-mode .cd-item:hover,
+		body.soft-light-mode .cd-item.is-active {
+			background: #f1f5f9;
+			color: #0f172a;
+		}
+		body.soft-light-mode .cd-item.is-selected {
+			background: var(--app-accent-light);
+			color: var(--app-accent-text);
 		}
 	</style>
 </head>
@@ -922,12 +1054,12 @@
 						<div>
 							<label class="block text-[10px] font-medium text-slate-400 mb-1">Jenis Font Aplikasi (Semua Teks & Angka)</label>
 							<select id="setting-font-family" onchange="applyCustomTheme()" class="custom-select input-glow w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2">
-								<option value="Plus Jakarta Sans" selected>Plus Jakarta Sans (Modern Fintech - Bawaan)</option>
-								<option value="Inter">Inter (Clean Swiss UI)</option>
-								<option value="Outfit">Outfit (Geometric & Modern)</option>
-								<option value="Sora">Sora (Tech & Sleek)</option>
-								<option value="Manrope">Manrope (Corporate & Crisp)</option>
-								<option value="Space Grotesk">Space Grotesk (Editorial & Sharp Numbers)</option>
+								<option value="Albert Sans" selected>Albert Sans (Modern Fintech - Bawaan)</option>
+								<option value="Red Hat Display">Red Hat Display (Bold & Friendly)</option>
+								<option value="Onest">Onest (Neutral & Clear)</option>
+								<option value="Bricolage Grotesque">Bricolage Grotesque (Expressive & Editorial)</option>
+								<option value="Geist">Geist (Precise & Technical)</option>
+								<option value="Urbanist">Urbanist (Smooth & Geometric)</option>
 							</select>
 						</div>
 
@@ -1421,12 +1553,12 @@
 		const INBOX_KEY = 'arthapulse_inbox_v6';
 
 		const VALID_FONTS = [
-			'Plus Jakarta Sans',
-			'Inter',
-			'Outfit',
-			'Sora',
-			'Manrope',
-			'Space Grotesk'
+			'Albert Sans',
+			'Red Hat Display',
+			'Onest',
+			'Bricolage Grotesque',
+			'Geist',
+			'Urbanist'
 		];
 
 		// 6 Calm Palettes (Ordered: Merah Kalem, Kuning Kalem, Hijau Kalem, Biru Kalem, Ungu Kalem, Oren Kalem) + Custom
@@ -1569,7 +1701,7 @@
 			themeMode: 'dark-slate',
 			accentColor: 'calm-blue',
 			customAccentHex: '#61afef',
-			fontFamily: 'Plus Jakarta Sans',
+			fontFamily: 'Albert Sans',
 			fontSize: 15,
 			fontWeight: '400'
 		};
@@ -1613,32 +1745,105 @@
 			} catch (e) {}
 		}
 
+		// Pustaka nada: tiap aksi punya karakter bunyi sendiri.
+		// f = frekuensi (Hz), to = frekuensi akhir, t = jeda mulai (detik), d = durasi, v = volume, w = jenis gelombang
+		const SOUND_LIBRARY = {
+			// Antarmuka & navigasi
+			click: [{ f: 600, to: 800, d: 0.05, v: 0.08 }],
+			tab: [{ f: 520, to: 700, d: 0.06, v: 0.07, w: 'triangle' }],
+			subtab: [{ f: 880, to: 660, d: 0.05, v: 0.06, w: 'triangle' }],
+			inbox: [{ f: 988, d: 0.07, v: 0.06 }, { f: 1319, t: 0.07, d: 0.1, v: 0.06 }],
+			inboxToggle: [{ f: 740, d: 0.05, v: 0.06, w: 'triangle' }],
+			dropOpen: [{ f: 700, to: 950, d: 0.06, v: 0.05 }],
+			dropSelect: [{ f: 1000, d: 0.04, v: 0.06 }, { f: 1500, t: 0.04, d: 0.07, v: 0.05 }],
+			dropClose: [{ f: 850, to: 600, d: 0.05, v: 0.04 }],
+			// Kalkulator
+			key: [{ f: 900, to: 700, d: 0.035, v: 0.06 }],
+			op: [{ f: 520, d: 0.06, v: 0.03, w: 'square' }],
+			clear: [{ f: 700, to: 300, d: 0.12, v: 0.07, w: 'triangle' }],
+			del: [{ f: 440, to: 330, d: 0.05, v: 0.06, w: 'triangle' }],
+			equals: [{ f: 660, d: 0.07, v: 0.07 }, { f: 880, t: 0.07, d: 0.07, v: 0.07 }, { f: 1175, t: 0.14, d: 0.14, v: 0.07 }],
+			// Jenis notifikasi umum
+			success: [{ f: 523.25, d: 0.1, v: 0.1 }, { f: 659.25, t: 0.08, d: 0.16, v: 0.1 }],
+			info: [{ f: 740, d: 0.14, v: 0.07 }],
+			warning: [{ f: 587, d: 0.09, v: 0.07 }, { f: 587, t: 0.13, d: 0.09, v: 0.07 }],
+			error: [{ f: 233, d: 0.12, v: 0.035, w: 'square' }, { f: 175, t: 0.13, d: 0.2, v: 0.035, w: 'square' }],
+			// Transaksi
+			txSave: [{ f: 523, d: 0.1, v: 0.09 }, { f: 659, t: 0.08, d: 0.1, v: 0.09 }, { f: 1047, t: 0.16, d: 0.24, v: 0.09 }],
+			txUpdate: [{ f: 587, d: 0.1, v: 0.08, w: 'triangle' }, { f: 698, t: 0.08, d: 0.16, v: 0.08, w: 'triangle' }],
+			txDelete: [{ f: 330, to: 150, d: 0.22, v: 0.1, w: 'triangle' }],
+			// Kantong
+			pocketNew: [{ f: 659, d: 0.09, v: 0.09, w: 'triangle' }, { f: 880, t: 0.08, d: 0.09, v: 0.09, w: 'triangle' }, { f: 1175, t: 0.16, d: 0.22, v: 0.09, w: 'triangle' }],
+			pocketUpdate: [{ f: 622, d: 0.08, v: 0.08 }, { f: 622, t: 0.09, d: 0.08, v: 0.08 }, { f: 831, t: 0.18, d: 0.16, v: 0.08 }],
+			pocketDelete: [{ f: 262, to: 110, d: 0.26, v: 0.04, w: 'sawtooth' }],
+			deposit: [{ f: 988, d: 0.08, v: 0.04, w: 'square' }, { f: 1319, t: 0.08, d: 0.26, v: 0.04, w: 'square' }],
+			withdraw: [{ f: 1319, d: 0.08, v: 0.04, w: 'square' }, { f: 880, t: 0.08, d: 0.26, v: 0.04, w: 'square' }],
+			transfer: [{ f: 660, to: 990, d: 0.1, v: 0.07, w: 'triangle' }, { f: 990, to: 660, t: 0.11, d: 0.12, v: 0.07, w: 'triangle' }],
+			// Kategori, profil, tampilan
+			catAdd: [{ f: 784, d: 0.07, v: 0.08, w: 'triangle' }, { f: 1047, t: 0.07, d: 0.12, v: 0.08, w: 'triangle' }],
+			catUpdate: [{ f: 831, to: 988, d: 0.1, v: 0.07, w: 'triangle' }],
+			catDelete: [{ f: 520, to: 300, d: 0.1, v: 0.08, w: 'triangle' }, { f: 300, to: 180, t: 0.1, d: 0.14, v: 0.08, w: 'triangle' }],
+			profile: [{ f: 698, d: 0.1, v: 0.08 }, { f: 880, t: 0.1, d: 0.2, v: 0.08 }],
+			accent: [{ f: 1000, to: 1500, d: 0.07, v: 0.07 }, { f: 1500, t: 0.08, d: 0.12, v: 0.06 }],
+			// Kalkulator keuangan & anggaran
+			calcSave: [{ f: 466, d: 0.1, v: 0.08, w: 'triangle' }, { f: 698, t: 0.1, d: 0.2, v: 0.08, w: 'triangle' }],
+			calcCopy: [{ f: 1568, d: 0.05, v: 0.06 }, { f: 2093, t: 0.06, d: 0.08, v: 0.06 }],
+			budget: [{ f: 392, d: 0.1, v: 0.08, w: 'triangle' }, { f: 523, t: 0.09, d: 0.1, v: 0.08, w: 'triangle' }, { f: 784, t: 0.18, d: 0.2, v: 0.08, w: 'triangle' }],
+			// Pengaturan & notifikasi
+			toggleOn: [{ f: 600, d: 0.06, v: 0.06 }, { f: 900, t: 0.06, d: 0.1, v: 0.06 }],
+			toggleOff: [{ f: 900, d: 0.06, v: 0.06 }, { f: 600, t: 0.06, d: 0.1, v: 0.06 }],
+			notifOn: [{ f: 880, d: 0.1, v: 0.08 }, { f: 1175, t: 0.1, d: 0.1, v: 0.08 }, { f: 1760, t: 0.2, d: 0.3, v: 0.07 }],
+			notifTest: [{ f: 1047, d: 0.08, v: 0.07 }, { f: 1047, t: 0.14, d: 0.08, v: 0.07 }, { f: 1319, t: 0.26, d: 0.2, v: 0.07 }],
+			inboxRead: [{ f: 784, to: 1175, d: 0.1, v: 0.06, w: 'triangle' }],
+			inboxDelete: [{ f: 480, to: 260, d: 0.12, v: 0.07, w: 'triangle' }],
+			inboxClear: [{ f: 392, d: 0.1, v: 0.07, w: 'triangle' }, { f: 294, t: 0.1, d: 0.1, v: 0.07, w: 'triangle' }, { f: 196, t: 0.2, d: 0.22, v: 0.07, w: 'triangle' }],
+			// Ekspor, impor & data
+			exportCsv: [{ f: 420, to: 1100, d: 0.22, v: 0.07, w: 'triangle' }],
+			exportJson: [{ f: 330, to: 660, d: 0.14, v: 0.03, w: 'sawtooth' }, { f: 660, to: 1320, t: 0.14, d: 0.2, v: 0.03, w: 'sawtooth' }],
+			importJson: [{ f: 392, d: 0.1, v: 0.08 }, { f: 494, t: 0.09, d: 0.1, v: 0.08 }, { f: 587, t: 0.18, d: 0.1, v: 0.08 }, { f: 784, t: 0.27, d: 0.26, v: 0.08 }],
+			sample: [{ f: 523, d: 0.07, v: 0.08 }, { f: 659, t: 0.07, d: 0.07, v: 0.08 }, { f: 523, t: 0.14, d: 0.07, v: 0.08 }, { f: 784, t: 0.21, d: 0.07, v: 0.08 }, { f: 1047, t: 0.28, d: 0.22, v: 0.08 }],
+			wipe: [{ f: 294, d: 0.14, v: 0.04, w: 'sawtooth' }, { f: 220, t: 0.13, d: 0.16, v: 0.04, w: 'sawtooth' }, { f: 147, t: 0.28, d: 0.34, v: 0.04, w: 'sawtooth' }],
+			// Kesalahan & validasi (tiap jenis berbeda)
+			invalid: [{ f: 330, d: 0.09, v: 0.03, w: 'square' }, { f: 330, t: 0.12, d: 0.09, v: 0.03, w: 'square' }],
+			denied: [{ f: 196, to: 147, d: 0.28, v: 0.035, w: 'sawtooth' }],
+			fail: [{ f: 277, d: 0.1, v: 0.035, w: 'square' }, { f: 233, t: 0.11, d: 0.1, v: 0.035, w: 'square' }, { f: 185, t: 0.22, d: 0.2, v: 0.035, w: 'square' }]
+		};
+
+		// Nada bawaan toast bila pemanggil tidak menyebut nada khusus
+		const TOAST_DEFAULT_SOUNDS = { success: 'success', info: 'info', warning: 'warning', danger: 'error' };
+
+		// Satu AudioContext dipakai bersama agar tidak membuat konteks baru di setiap bunyi
+		let sharedAudioCtx = null;
+
+		function getAudioContext() {
+			const AudioCtx = window.AudioContext || window.webkitAudioContext;
+			if (!AudioCtx) return null;
+			if (!sharedAudioCtx) sharedAudioCtx = new AudioCtx();
+			if (sharedAudioCtx.state === 'suspended') sharedAudioCtx.resume();
+			return sharedAudioCtx;
+		}
+
 		function playSoundFX(type = 'click') {
 			if (!appSettings.soundFxEnabled) return;
 			try {
-				const AudioCtx = window.AudioContext || window.webkitAudioContext;
-				if (!AudioCtx) return;
-				const ctx = new AudioCtx();
-				const osc = ctx.createOscillator();
-				const gain = ctx.createGain();
-				osc.connect(gain);
-				gain.connect(ctx.destination);
-				
-				if (type === 'click') {
-					osc.frequency.setValueAtTime(600, ctx.currentTime);
-					osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.05);
-					gain.gain.setValueAtTime(0.08, ctx.currentTime);
-					gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-					osc.start();
-					osc.stop(ctx.currentTime + 0.05);
-				} else if (type === 'success') {
-					osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-					osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.08);
-					gain.gain.setValueAtTime(0.1, ctx.currentTime);
-					gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
-					osc.start();
-					osc.stop(ctx.currentTime + 0.2);
-				}
+				const ctx = getAudioContext();
+				if (!ctx) return;
+				const tones = SOUND_LIBRARY[type] || SOUND_LIBRARY.click;
+				tones.forEach(({ f, to, t = 0, d = 0.1, v = 0.08, w = 'sine' }) => {
+					const start = ctx.currentTime + t;
+					const osc = ctx.createOscillator();
+					const gain = ctx.createGain();
+					osc.type = w;
+					osc.frequency.setValueAtTime(f, start);
+					if (to) osc.frequency.exponentialRampToValueAtTime(to, start + d);
+					gain.gain.setValueAtTime(0.0001, start);
+					gain.gain.exponentialRampToValueAtTime(v, start + 0.006);
+					gain.gain.exponentialRampToValueAtTime(0.0001, start + d);
+					osc.connect(gain);
+					gain.connect(ctx.destination);
+					osc.start(start);
+					osc.stop(start + d + 0.02);
+				});
 			} catch (e) {}
 		}
 
@@ -1662,8 +1867,8 @@
 			return clean ? parseInt(clean, 10) : 0;
 		}
 
-		function showToast(message, type = 'info') {
-			playSoundFX('click');
+		function showToast(message, type = 'info', sound = null) {
+			playSoundFX(sound || TOAST_DEFAULT_SOUNDS[type] || 'click');
 			const container = document.getElementById('toast-container');
 			const toast = document.createElement('div');
 
@@ -1746,7 +1951,7 @@
 
 		function openInboxModal() {
 			triggerHaptic(100);
-			playSoundFX('click');
+			playSoundFX('inbox');
 			renderInboxList();
 			document.getElementById('inbox-modal').classList.remove('hidden');
 		}
@@ -1833,11 +2038,12 @@
 			inbox = inbox.filter(i => i.id !== id);
 			saveAppState();
 			renderInboxList();
-			showToast('Notifikasi dihapus', 'info');
+			showToast('Notifikasi dihapus', 'info', 'inboxDelete');
 		}
 
 		function toggleReadInboxItem(id) {
 			triggerHaptic(100);
+			playSoundFX('inboxToggle');
 			const idx = inbox.findIndex(i => i.id === id);
 			if (idx !== -1) {
 				inbox[idx].read = !inbox[idx].read;
@@ -1851,7 +2057,7 @@
 			inbox.forEach(i => i.read = true);
 			saveAppState();
 			renderInboxList();
-			showToast('Semua notifikasi ditandai dibaca', 'success');
+			showToast('Semua notifikasi ditandai dibaca', 'success', 'inboxRead');
 		}
 
 		function clearAllInbox() {
@@ -1862,7 +2068,7 @@
 					inbox = [];
 					saveAppState();
 					renderInboxList();
-					showToast('Kotak masuk berhasil dibersihkan', 'info');
+					showToast('Kotak masuk berhasil dibersihkan', 'info', 'inboxClear');
 				}
 			});
 		}
@@ -1911,7 +2117,7 @@
 			const label = colorKey === 'custom'
 				? buildCustomPalette(themeSettings.customAccentHex).label
 				: ACCENT_PALETTES[colorKey].label;
-			showToast(`Warna aksen: ${label}`, 'success');
+			showToast(`Warna aksen: ${label}`, 'success', 'accent');
 		}
 
 		function setCustomAccentColor(hexValue, notify = false) {
@@ -1921,7 +2127,7 @@
 			applyAccentStyles();
 			if (notify) {
 				triggerHaptic(100);
-				showToast(`Warna kostum diterapkan (${hexValue.toUpperCase()})`, 'success');
+				showToast(`Warna kostum diterapkan (${hexValue.toUpperCase()})`, 'success', 'accent');
 			}
 		}
 
@@ -2002,7 +2208,7 @@
 					themeSettings = Object.assign(themeSettings, JSON.parse(tmData));
 				}
 				if (!VALID_FONTS.includes(themeSettings.fontFamily)) {
-					themeSettings.fontFamily = 'Plus Jakarta Sans';
+					themeSettings.fontFamily = 'Albert Sans';
 				}
 
 				const pkData = localStorage.getItem(POCKETS_KEY);
@@ -2091,21 +2297,21 @@
 							appSettings.notificationEnabled = true;
 							saveAppState();
 							updateNotificationUI();
-							showToast('Notifikasi peranti diaktifkan & tersimpan', 'success');
+							showToast('Notifikasi peranti diaktifkan & tersimpan', 'success', 'notifOn');
 							sendBrowserNotification('ArthaPulse Pro', 'Notifikasi berhasil diaktifkan secara permanen!');
 							addInboxMessage('Push Notification Aktif', 'Notifikasi perangkat browser berhasil dihubungkan.', 'system');
 						} else {
-							showToast('Izin notifikasi ditolak oleh browser', 'warning');
+							showToast('Izin notifikasi ditolak oleh browser', 'warning', 'denied');
 						}
 					});
 				} else {
-					showToast('Browser ini tidak mendukung fitur Notification', 'warning');
+					showToast('Browser ini tidak mendukung fitur Notification', 'warning', 'denied');
 				}
 			} else {
 				appSettings.notificationEnabled = false;
 				saveAppState();
 				updateNotificationUI();
-				showToast('Notifikasi peranti dinonaktifkan', 'info');
+				showToast('Notifikasi peranti dinonaktifkan', 'info', 'toggleOff');
 			}
 		}
 
@@ -2113,9 +2319,9 @@
 			triggerHaptic(100);
 			if (appSettings.notificationEnabled) {
 				sendBrowserNotification('Tes Notifikasi ArthaPulse', 'Sistem notifikasi berjalan lancar!');
-				showToast('Push notification uji coba dikirim', 'success');
+				showToast('Push notification uji coba dikirim', 'success', 'notifTest');
 			} else {
-				showToast('Aktifkan notifikasi terlebih dahulu', 'warning');
+				showToast('Aktifkan notifikasi terlebih dahulu', 'warning', 'invalid');
 			}
 		}
 
@@ -2124,7 +2330,7 @@
 			saveAppState();
 			if (appSettings.hapticEnabled) triggerHaptic(100);
 			updateNotificationUI();
-			showToast(`Getar Haptic (100ms): ${appSettings.hapticEnabled ? 'Aktif' : 'Nonaktif'}`, 'info');
+			showToast(`Getar Haptic (100ms): ${appSettings.hapticEnabled ? 'Aktif' : 'Nonaktif'}`, 'info', appSettings.hapticEnabled ? 'toggleOn' : 'toggleOff');
 		}
 
 		function toggleSoundFxState() {
@@ -2132,7 +2338,7 @@
 			appSettings.soundFxEnabled = !appSettings.soundFxEnabled;
 			saveAppState();
 			updateNotificationUI();
-			showToast(`Efek Suara Audio FX: ${appSettings.soundFxEnabled ? 'Aktif' : 'Nonaktif'}`, 'info');
+			showToast(`Efek Suara Audio FX: ${appSettings.soundFxEnabled ? 'Aktif' : 'Nonaktif'}`, 'info', appSettings.soundFxEnabled ? 'toggleOn' : 'toggleOff');
 		}
 
 		function updateNotificationUI() {
@@ -2179,6 +2385,307 @@
 				try {
 					new Notification(title, { body });
 				} catch(e) {}
+			}
+		}
+
+		// ==========================================
+		// 7B. CUSTOM MODERN DROPDOWN ENGINE (pengganti select/option bawaan)
+		// ==========================================
+		// <select> asli tetap ada di DOM (disembunyikan) sebagai sumber data, sehingga seluruh logika lama
+		// (.value, onchange, pengisian <option> lewat innerHTML) tetap berjalan; hanya tampilannya yang diganti.
+		const CD_LAYOUT_TOKENS = /^(col-span-|w-|flex-|shrink|grow|min-w-|max-w-|self-|order-)/;
+		const CD_VALUE_DESC = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
+		const CD_INDEX_DESC = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'selectedIndex');
+		const cdRegistry = new Map();
+		let cdActive = null;
+
+		function initCustomDropdowns() {
+			document.querySelectorAll('select.custom-select').forEach(enhanceSelectDropdown);
+
+			// Tutup saat klik/sentuh di luar dropdown
+			document.addEventListener('pointerdown', (e) => {
+				if (!cdActive) return;
+				if (cdActive.panel.contains(e.target) || cdActive.wrap.contains(e.target)) return;
+				closeCustomDropdown(true);
+			}, true);
+
+			// Tutup dengan tombol Escape
+			document.addEventListener('keydown', (e) => {
+				if (!cdActive || e.key !== 'Escape') return;
+				e.preventDefault();
+				const trigger = cdActive.trigger;
+				closeCustomDropdown(true);
+				trigger.focus({ preventScroll: true });
+			});
+
+			// Posisi panel mengikuti trigger saat layar diubah ukurannya atau digulir
+			window.addEventListener('resize', () => {
+				if (cdActive) positionDropdownPanel(cdActive);
+			});
+			window.addEventListener('scroll', (e) => {
+				if (!cdActive || cdActive.panel.contains(e.target)) return;
+				positionDropdownPanel(cdActive);
+			}, true);
+		}
+
+		function enhanceSelectDropdown(select) {
+			if (cdRegistry.has(select)) return;
+
+			// Kelas tata letak (lebar, col-span, dll.) pindah ke pembungkus; kelas tampilan dipakai tombol
+			const tokens = select.className.split(/\s+/).filter(Boolean);
+			const layoutTokens = tokens.filter(t => CD_LAYOUT_TOKENS.test(t));
+			const styleTokens = tokens.filter(t => t !== 'custom-select' && !CD_LAYOUT_TOKENS.test(t));
+
+			const wrap = document.createElement('div');
+			wrap.className = `cd-wrap ${layoutTokens.join(' ')}`.trim();
+
+			const trigger = document.createElement('button');
+			trigger.type = 'button';
+			trigger.className = `cd-trigger ${styleTokens.join(' ')}`.trim();
+			trigger.setAttribute('role', 'combobox');
+			trigger.setAttribute('aria-haspopup', 'listbox');
+			trigger.setAttribute('aria-expanded', 'false');
+			trigger.innerHTML = '<span class="cd-label"></span><i class="fa-solid fa-chevron-down cd-chev" aria-hidden="true"></i>';
+
+			select.parentNode.insertBefore(wrap, select);
+			wrap.appendChild(trigger);
+			wrap.appendChild(select);
+			select.classList.add('cd-native');
+			select.tabIndex = -1;
+			select.setAttribute('aria-hidden', 'true');
+
+			const inst = {
+				select,
+				wrap,
+				trigger,
+				label: trigger.querySelector('.cd-label'),
+				panel: null,
+				activeIndex: -1,
+				swallowKeyup: false,
+				fontPreview: select.id === 'setting-font-family'
+			};
+			cdRegistry.set(select, inst);
+
+			// Perubahan .value / .selectedIndex lewat kode ikut memperbarui tampilan dropdown
+			Object.defineProperty(select, 'value', {
+				configurable: true,
+				get() { return CD_VALUE_DESC.get.call(this); },
+				set(v) { CD_VALUE_DESC.set.call(this, v); syncDropdownUI(inst); }
+			});
+			Object.defineProperty(select, 'selectedIndex', {
+				configurable: true,
+				get() { return CD_INDEX_DESC.get.call(this); },
+				set(v) { CD_INDEX_DESC.set.call(this, v); syncDropdownUI(inst); }
+			});
+
+			// Daftar <option> yang diisi ulang lewat innerHTML ikut tersinkron
+			new MutationObserver(() => syncDropdownUI(inst)).observe(select, {
+				childList: true,
+				subtree: true,
+				characterData: true,
+				attributes: true,
+				attributeFilter: ['selected', 'disabled']
+			});
+
+			trigger.addEventListener('click', () => openCustomDropdown(inst));
+			trigger.addEventListener('keydown', (e) => handleDropdownKeydown(e, inst));
+			trigger.addEventListener('keyup', (e) => {
+				if (inst.swallowKeyup && e.key === ' ') e.preventDefault();
+				inst.swallowKeyup = false;
+			});
+
+			refreshDropdownLabel(inst);
+		}
+
+		function refreshDropdownLabel(inst) {
+			const sel = inst.select;
+			const opt = sel.options[sel.selectedIndex];
+			inst.label.textContent = opt ? opt.textContent : (sel.options.length ? 'Pilih opsi' : 'Tidak ada pilihan');
+			inst.label.classList.toggle('is-empty', !opt);
+		}
+
+		function syncDropdownUI(inst) {
+			refreshDropdownLabel(inst);
+			if (cdActive === inst) buildDropdownItems(inst);
+		}
+
+		function buildDropdownItems(inst) {
+			const panel = inst.panel;
+			const options = Array.from(inst.select.options);
+			panel.innerHTML = '';
+
+			if (!options.length) {
+				const empty = document.createElement('div');
+				empty.className = 'cd-empty';
+				empty.textContent = 'Tidak ada pilihan';
+				panel.appendChild(empty);
+				return;
+			}
+
+			options.forEach((opt, i) => {
+				const item = document.createElement('div');
+				item.className = `cd-item${opt.selected ? ' is-selected' : ''}`;
+				item.dataset.index = String(i);
+				item.setAttribute('role', 'option');
+				item.setAttribute('aria-selected', opt.selected ? 'true' : 'false');
+
+				const text = document.createElement('span');
+				text.className = 'cd-item-text';
+				text.textContent = opt.textContent;
+				// Dropdown jenis font menampilkan tiap nama font dengan huruf aslinya
+				if (inst.fontPreview) text.style.setProperty('font-family', `'${opt.value}', sans-serif`, 'important');
+
+				const check = document.createElement('i');
+				check.className = 'fa-solid fa-check cd-check';
+				check.setAttribute('aria-hidden', 'true');
+
+				item.appendChild(text);
+				item.appendChild(check);
+				item.addEventListener('mouseenter', () => setDropdownActive(inst, i, false));
+				item.addEventListener('click', () => chooseDropdownOption(inst, i));
+				panel.appendChild(item);
+			});
+
+			if (inst.activeIndex >= 0) setDropdownActive(inst, Math.min(inst.activeIndex, options.length - 1), false);
+		}
+
+		function openCustomDropdown(inst) {
+			if (cdActive === inst) {
+				closeCustomDropdown(true);
+				return;
+			}
+			closeCustomDropdown();
+			if (!inst.select.options.length) return;
+
+			const panel = document.createElement('div');
+			panel.className = 'cd-panel';
+			panel.setAttribute('role', 'listbox');
+			inst.panel = panel;
+			inst.activeIndex = Math.max(0, inst.select.selectedIndex);
+			buildDropdownItems(inst);
+			document.body.appendChild(panel);
+
+			cdActive = inst;
+			inst.wrap.classList.add('is-open');
+			inst.trigger.setAttribute('aria-expanded', 'true');
+			positionDropdownPanel(inst);
+			setDropdownActive(inst, inst.activeIndex, true);
+
+			triggerHaptic(100);
+			playSoundFX('dropOpen');
+		}
+
+		function closeCustomDropdown(withSound = false) {
+			if (!cdActive) return;
+			const inst = cdActive;
+			cdActive = null;
+			if (inst.panel) inst.panel.remove();
+			inst.panel = null;
+			inst.wrap.classList.remove('is-open');
+			inst.trigger.setAttribute('aria-expanded', 'false');
+			if (withSound) playSoundFX('dropClose');
+		}
+
+		function positionDropdownPanel(inst) {
+			const panel = inst.panel;
+			const rect = inst.trigger.getBoundingClientRect();
+			if (!panel || !rect.width || !rect.height) {
+				closeCustomDropdown();
+				return;
+			}
+
+			const gap = 6;
+			const margin = 8;
+			const vw = window.innerWidth;
+			const vh = window.innerHeight;
+
+			panel.style.width = rect.width >= 170 ? `${rect.width}px` : 'max-content';
+			panel.style.minWidth = `${Math.max(rect.width, 170)}px`;
+			panel.style.maxWidth = `${vw - margin * 2}px`;
+			panel.style.maxHeight = '240px';
+
+			const naturalHeight = panel.offsetHeight;
+			const panelWidth = panel.offsetWidth;
+			const spaceBelow = vh - rect.bottom - margin - gap;
+			const spaceAbove = rect.top - margin - gap;
+			const openUp = naturalHeight > spaceBelow && spaceAbove > spaceBelow;
+			const maxHeight = Math.max(120, Math.min(240, openUp ? spaceAbove : spaceBelow));
+			const height = Math.min(naturalHeight, maxHeight);
+
+			panel.style.maxHeight = `${maxHeight}px`;
+			panel.style.top = `${openUp ? rect.top - gap - height : rect.bottom + gap}px`;
+			panel.style.left = `${Math.max(margin, Math.min(rect.left, vw - margin - panelWidth))}px`;
+			panel.classList.toggle('is-up', openUp);
+		}
+
+		function setDropdownActive(inst, index, scroll = true) {
+			if (!inst.panel) return;
+			inst.activeIndex = index;
+			let activeEl = null;
+			inst.panel.querySelectorAll('.cd-item').forEach(el => {
+				const isActive = Number(el.dataset.index) === index;
+				el.classList.toggle('is-active', isActive);
+				if (isActive) activeEl = el;
+			});
+			if (scroll && activeEl) {
+				const panel = inst.panel;
+				const top = activeEl.offsetTop;
+				const bottom = top + activeEl.offsetHeight;
+				if (top < panel.scrollTop) panel.scrollTop = Math.max(0, top - 4);
+				else if (bottom > panel.scrollTop + panel.clientHeight) panel.scrollTop = bottom - panel.clientHeight + 4;
+			}
+		}
+
+		function chooseDropdownOption(inst, index) {
+			const sel = inst.select;
+			if (!sel.options[index]) return;
+			const changed = sel.selectedIndex !== index;
+
+			sel.selectedIndex = index;
+			closeCustomDropdown();
+			refreshDropdownLabel(inst);
+			inst.trigger.focus({ preventScroll: true });
+
+			triggerHaptic(100);
+			playSoundFX('dropSelect');
+
+			if (changed) {
+				sel.dispatchEvent(new Event('input', { bubbles: true }));
+				sel.dispatchEvent(new Event('change', { bubbles: true }));
+			}
+		}
+
+		function handleDropdownKeydown(e, inst) {
+			const count = inst.select.options.length;
+
+			if (cdActive !== inst) {
+				if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+					e.preventDefault();
+					openCustomDropdown(inst);
+				}
+				return;
+			}
+
+			if (!count) return;
+
+			if (e.key === 'ArrowDown') {
+				e.preventDefault();
+				setDropdownActive(inst, (inst.activeIndex + 1) % count);
+			} else if (e.key === 'ArrowUp') {
+				e.preventDefault();
+				setDropdownActive(inst, (inst.activeIndex - 1 + count) % count);
+			} else if (e.key === 'Home') {
+				e.preventDefault();
+				setDropdownActive(inst, 0);
+			} else if (e.key === 'End') {
+				e.preventDefault();
+				setDropdownActive(inst, count - 1);
+			} else if (e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				inst.swallowKeyup = true;
+				chooseDropdownOption(inst, inst.activeIndex);
+			} else if (e.key === 'Tab') {
+				closeCustomDropdown();
 			}
 		}
 
@@ -2256,7 +2763,7 @@
 			saveAppState();
 			updateProfileHeaderUI();
 			closeProfileModal();
-			showToast('Profil pengguna berhasil diperbarui', 'success');
+			showToast('Profil pengguna berhasil diperbarui', 'success', 'profile');
 			addInboxMessage('Profil Diperbarui', `Informasi pengguna diperbarui untuk ${userProfile.name}.`, 'system');
 		}
 
@@ -2327,7 +2834,7 @@
 					userCategories[idx].name = name;
 					userCategories[idx].icon = icon;
 					if (customCatImageTemp) userCategories[idx].image = customCatImageTemp;
-					showToast('Kategori berhasil diperbarui', 'success');
+					showToast('Kategori berhasil diperbarui', 'success', 'catUpdate');
 				}
 			} else {
 				userCategories.push({
@@ -2336,7 +2843,7 @@
 					icon,
 					image: customCatImageTemp
 				});
-				showToast('Kategori baru ditambahkan', 'success');
+				showToast('Kategori baru ditambahkan', 'success', 'catAdd');
 				addInboxMessage('Kategori Baru', `Kategori ${name} ditambahkan.`, 'info');
 			}
 
@@ -2389,14 +2896,14 @@
 		function deleteCategory(id) {
 			triggerHaptic(100);
 			if (userCategories.length <= 1) {
-				showToast('Minimal harus menyisakan 1 kategori', 'warning');
+				showToast('Minimal harus menyisakan 1 kategori', 'warning', 'denied');
 				return;
 			}
 			userCategories = userCategories.filter(c => c.id !== id);
 			saveAppState();
 			populateCategoryDropdowns();
 			renderCategoryManagerList();
-			showToast('Kategori dihapus', 'info');
+			showToast('Kategori dihapus', 'info', 'catDelete');
 		}
 
 		// ==========================================
@@ -2405,7 +2912,7 @@
 		function applyCustomTheme() {
 			const mode = document.getElementById('setting-theme-mode').value;
 			const fontSelect = document.getElementById('setting-font-family');
-			const font = VALID_FONTS.includes(fontSelect.value) ? fontSelect.value : 'Plus Jakarta Sans';
+			const font = VALID_FONTS.includes(fontSelect.value) ? fontSelect.value : 'Albert Sans';
 			const size = document.getElementById('setting-font-size').value;
 			
 			let weight = '400';
@@ -2471,7 +2978,7 @@
 
 		function syncSettingsUI() {
 			document.getElementById('setting-theme-mode').value = themeSettings.themeMode || 'dark-slate';
-			const validFont = VALID_FONTS.includes(themeSettings.fontFamily) ? themeSettings.fontFamily : 'Plus Jakarta Sans';
+			const validFont = VALID_FONTS.includes(themeSettings.fontFamily) ? themeSettings.fontFamily : 'Albert Sans';
 			document.getElementById('setting-font-family').value = validFont;
 			document.getElementById('setting-font-size').value = themeSettings.fontSize || 15;
 
@@ -2488,7 +2995,7 @@
 		// ==========================================
 		function switchTab(tabId) {
 			triggerHaptic(100);
-			playSoundFX('click');
+			playSoundFX('tab');
 			const tabs = ['dashboard', 'transactions', 'pockets', 'recap', 'tools', 'settings'];
 			
 			tabs.forEach(t => {
@@ -2892,7 +3399,7 @@
 			const notes = document.getElementById('tx-notes').value;
 
 			if (amount <= 0) {
-				showToast('Nominal harus lebih dari Rp 0', 'warning');
+				showToast('Nominal harus lebih dari Rp 0', 'warning', 'invalid');
 				return;
 			}
 
@@ -2900,7 +3407,7 @@
 				const idx = transactions.findIndex(t => t.id === id);
 				if (idx !== -1) {
 					transactions[idx] = { id, type, amount, category, date, notes };
-					showToast('Transaksi berhasil diperbarui', 'success');
+					showToast('Transaksi berhasil diperbarui', 'success', 'txUpdate');
 					addInboxMessage('Transaksi Diperbarui', `${category}: ${formatIDR(amount)}`, 'transaction');
 				}
 			} else {
@@ -2913,8 +3420,7 @@
 					notes
 				};
 				transactions.unshift(newTx);
-				showToast('Catatan transaksi baru disimpan', 'success');
-				playSoundFX('success');
+				showToast('Catatan transaksi baru disimpan', 'success', 'txSave');
 				addInboxMessage('Transaksi Baru Dicatat', `${type === 'income' ? 'Pemasukan' : 'Pengeluaran'} ${category}: ${formatIDR(amount)}`, 'transaction');
 			}
 
@@ -2963,7 +3469,7 @@
 					saveAppState();
 					updateDashboard();
 					renderTransactions();
-					showToast('Catatan transaksi telah dihapus', 'info');
+					showToast('Catatan transaksi telah dihapus', 'info', 'txDelete');
 				}
 			});
 		}
@@ -3072,7 +3578,7 @@
 					pockets[idx].name = name;
 					pockets[idx].target = target;
 					pockets[idx].balance = balance;
-					showToast('Kantong berhasil diperbarui', 'success');
+					showToast('Kantong berhasil diperbarui', 'success', 'pocketUpdate');
 				}
 			} else {
 				pockets.push({
@@ -3082,7 +3588,7 @@
 					balance,
 					history: balance > 0 ? [{ date: getFormattedDate(0), type: 'DEPOSIT', amount: balance, note: 'Saldo awal kantong' }] : []
 				});
-				showToast('Kantong simpanan baru dibuat', 'success');
+				showToast('Kantong simpanan baru dibuat', 'success', 'pocketNew');
 				addInboxMessage('Kantong Dibuat', `Kantong ${name} dibuat dengan target ${formatIDR(target)}.`, 'info');
 			}
 
@@ -3113,7 +3619,7 @@
 					saveAppState();
 					renderPockets();
 					updateDashboard();
-					showToast('Kantong telah dihapus', 'info');
+					showToast('Kantong telah dihapus', 'info', 'pocketDelete');
 				}
 			});
 		}
@@ -3171,7 +3677,7 @@
 			const note = document.getElementById('mutation-note').value.trim();
 
 			if (amount <= 0) {
-				showToast('Nominal mutasi harus lebih dari Rp 0', 'warning');
+				showToast('Nominal mutasi harus lebih dari Rp 0', 'warning', 'invalid');
 				return;
 			}
 
@@ -3191,7 +3697,7 @@
 					addInboxMessage('Setor Kantong', `Setor ${formatIDR(amount)} ke ${pockets[idx].name}.`, 'info');
 				} else if (type === 'WITHDRAW') {
 					if (pockets[idx].balance < amount) {
-						showToast('Saldo kantong tidak mencukupi untuk penarikan ini', 'warning');
+						showToast('Saldo kantong tidak mencukupi untuk penarikan ini', 'warning', 'denied');
 						return;
 					}
 					pockets[idx].balance -= amount;
@@ -3205,14 +3711,14 @@
 				} else if (type === 'TRANSFER') {
 					const targetId = document.getElementById('mutation-target-pocket-id').value;
 					if (!targetId) {
-						showToast('Pilih kantong tujuan transfer', 'warning');
+						showToast('Pilih kantong tujuan transfer', 'warning', 'invalid');
 						return;
 					}
 					const targetIdx = pockets.findIndex(p => p.id === targetId);
 					if (targetIdx === -1) return;
 
 					if (pockets[idx].balance < amount) {
-						showToast('Saldo kantong asal tidak mencukupi', 'warning');
+						showToast('Saldo kantong asal tidak mencukupi', 'warning', 'denied');
 						return;
 					}
 
@@ -3239,7 +3745,7 @@
 				closePocketMutationModal();
 				renderPockets();
 				updateDashboard();
-				showToast('Eksekusi mutasi berhasil disimpan', 'success');
+				showToast('Eksekusi mutasi berhasil disimpan', 'success', type === 'DEPOSIT' ? 'deposit' : type === 'WITHDRAW' ? 'withdraw' : 'transfer');
 			}
 		}
 
@@ -3540,7 +4046,7 @@
 		// ==========================================
 		function switchCalcSubTab(tabNum) {
 			triggerHaptic(100);
-			playSoundFX('click');
+			playSoundFX('subtab');
 			for (let i = 1; i <= 6; i++) {
 				const btn = document.getElementById(`calc-tab-${i}`);
 				const content = document.getElementById(`calc-subcontent-${i}`);
@@ -3597,7 +4103,7 @@
 		function saveToolsStateManual() {
 			triggerHaptic(100);
 			saveToolsStateAuto();
-			showToast('Hasil & masukan kalkulator berhasil disimpan', 'success');
+			showToast('Hasil & masukan kalkulator berhasil disimpan', 'success', 'calcSave');
 		}
 
 		function restoreToolsCalculatorState() {
@@ -3641,7 +4147,7 @@
 			const targetPrice = parseDotNumber(document.getElementById('avg-target-price').value);
 
 			if (lot1 <= 0 || price1 <= 0) {
-				showToast('Masukkan lot & harga awal secara valid', 'warning');
+				showToast('Masukkan lot & harga awal secara valid', 'warning', 'invalid');
 				return;
 			}
 
@@ -3688,7 +4194,7 @@
 			triggerHaptic(100);
 			const income = parseDotNumber(document.getElementById('split-income-input').value);
 			if (income <= 0) {
-				showToast('Masukkan total pemasukan bulanan', 'warning');
+				showToast('Masukkan total pemasukan bulanan', 'warning', 'invalid');
 				return;
 			}
 
@@ -3710,7 +4216,7 @@
 				budgetLimit = Math.round(income * 0.5);
 				saveAppState();
 				updateDashboard();
-				showToast(`Batas anggaran diset ke ${formatIDR(budgetLimit)} (50% Pokok)`, 'success');
+				showToast(`Batas anggaran diset ke ${formatIDR(budgetLimit)} (50% Pokok)`, 'success', 'budget');
 			}
 		}
 
@@ -3720,7 +4226,7 @@
 			const mult = Number(document.getElementById('ef-profile').value);
 
 			if (exp <= 0) {
-				showToast('Masukkan pengeluaran rutin bulanan', 'warning');
+				showToast('Masukkan pengeluaran rutin bulanan', 'warning', 'invalid');
 				return;
 			}
 
@@ -3739,7 +4245,7 @@
 			const n = years * 12;
 
 			if (years <= 0) {
-				showToast('Masukkan jangka waktu tahun secara valid', 'warning');
+				showToast('Masukkan jangka waktu tahun secara valid', 'warning', 'invalid');
 				return;
 			}
 
@@ -3764,7 +4270,7 @@
 			const months = Number(document.getElementById('plan-target-months').value);
 
 			if (target <= 0 || months <= 0) {
-				showToast('Masukkan target nominal & bulan secara valid', 'warning');
+				showToast('Masukkan target nominal & bulan secara valid', 'warning', 'invalid');
 				return;
 			}
 
@@ -3779,7 +4285,7 @@
 
 		function calcNum(num) {
 			triggerHaptic(100);
-			playSoundFX('click');
+			playSoundFX('key');
 			if (calcNewInput) {
 				calcScreenVal = num === '.' ? '0.' : num;
 				calcNewInput = false;
@@ -3793,7 +4299,7 @@
 
 		function calcOp(op) {
 			triggerHaptic(100);
-			playSoundFX('click');
+			playSoundFX('op');
 			if (calcScreenVal === 'Error') calcScreenVal = '0';
 			calcHistoryVal += ` ${calcScreenVal} ${op}`;
 			document.getElementById('calc-history').textContent = calcHistoryVal.trim();
@@ -3802,7 +4308,7 @@
 
 		function calcClear() {
 			triggerHaptic(100);
-			playSoundFX('click');
+			playSoundFX('clear');
 			calcScreenVal = '0';
 			calcHistoryVal = '';
 			calcNewInput = true;
@@ -3812,7 +4318,7 @@
 
 		function calcDel() {
 			triggerHaptic(100);
-			playSoundFX('click');
+			playSoundFX('del');
 			if (calcScreenVal === 'Error') {
 				calcClear();
 				return;
@@ -3828,7 +4334,7 @@
 
 		function calcEquals() {
 			triggerHaptic(100);
-			playSoundFX('click');
+			playSoundFX('equals');
 			try {
 				const rawExpr = `${calcHistoryVal} ${calcScreenVal}`
 					.replace(/×/g, '*')
@@ -3864,9 +4370,9 @@
 			if (val > 0) {
 				openTxModal();
 				document.getElementById('tx-amount').value = toDotFormat(val);
-				showToast('Nominal dari kalkulator disalin ke form', 'success');
+				showToast('Nominal dari kalkulator disalin ke form', 'success', 'calcCopy');
 			} else {
-				showToast('Nominal kalkulator masih Rp 0', 'warning');
+				showToast('Nominal kalkulator masih Rp 0', 'warning', 'invalid');
 			}
 		}
 
@@ -3898,7 +4404,7 @@
 			budgetLimit = val;
 			saveAppState();
 			updateDashboard();
-			showToast('Batas anggaran bulanan disimpan', 'success');
+			showToast('Batas anggaran bulanan disimpan', 'success', 'budget');
 			addInboxMessage('Anggaran Diubah', `Batas anggaran bulanan sebesar ${formatIDR(budgetLimit)}.`, 'info');
 		}
 
@@ -3918,7 +4424,7 @@
 			a.click();
 			document.body.removeChild(a);
 			setTimeout(() => URL.revokeObjectURL(url), 1000);
-			showToast('Berhasil mengunduh berkas CSV', 'success');
+			showToast('Berhasil mengunduh berkas CSV', 'success', 'exportCsv');
 			addInboxMessage('Ekspor CSV', 'Data transaksi telah diunduh dalam format CSV.', 'system');
 		}
 
@@ -3946,7 +4452,7 @@
 			a.click();
 			document.body.removeChild(a);
 			setTimeout(() => URL.revokeObjectURL(url), 1000);
-			showToast('Berhasil mengunduh cadangan JSON 100% lengkap', 'success');
+			showToast('Berhasil mengunduh cadangan JSON 100% lengkap', 'success', 'exportJson');
 			addInboxMessage('Cadangan Diunduh', 'Cadangan data 100% lengkap berhasil diunduh.', 'system');
 		}
 
@@ -3965,7 +4471,7 @@
 						if (parsed.themeSettings) {
 							themeSettings = Object.assign(themeSettings, parsed.themeSettings);
 							if (!VALID_FONTS.includes(themeSettings.fontFamily)) {
-								themeSettings.fontFamily = 'Plus Jakarta Sans';
+								themeSettings.fontFamily = 'Albert Sans';
 							}
 						}
 						if (parsed.userProfile) userProfile = parsed.userProfile;
@@ -3988,13 +4494,13 @@
 						renderPockets();
 						restoreToolsCalculatorState();
 						triggerHaptic(100);
-						showToast('Cadangan JSON 100% lengkap berhasil diimpor!', 'success');
+						showToast('Cadangan JSON 100% lengkap berhasil diimpor!', 'success', 'importJson');
 						addInboxMessage('Impor Cadangan Sukses', 'Seluruh data transaksi, kantong, profil, & pengaturan berhasil dipulihkan.', 'system');
 					} else {
-						showToast('Format berkas JSON tidak valid', 'danger');
+						showToast('Format berkas JSON tidak valid', 'danger', 'fail');
 					}
 				} catch (err) {
-					showToast('Gagal membaca berkas JSON', 'danger');
+					showToast('Gagal membaca berkas JSON', 'danger', 'fail');
 				}
 			};
 			reader.readAsText(file);
@@ -4016,7 +4522,7 @@
 					updateDashboard();
 					renderTransactions();
 					renderPockets();
-					showToast('Data di-reset ke sampel awal', 'info');
+					showToast('Data di-reset ke sampel awal', 'info', 'sample');
 				}
 			});
 		}
@@ -4049,7 +4555,7 @@
 					updateDashboard();
 					renderTransactions();
 					renderPockets();
-					showToast('Seluruh data berhasil dihapus & dikosongkan', 'danger');
+					showToast('Seluruh data berhasil dihapus & dikosongkan', 'danger', 'wipe');
 				}
 			});
 		}
@@ -4084,6 +4590,7 @@
 		});
 
 		document.addEventListener('DOMContentLoaded', function() {
+			initCustomDropdowns();
 			loadAppState();
 			populateCategoryDropdowns();
 			initLiveDotInputs();
