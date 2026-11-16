@@ -1,0 +1,3997 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Berkat Elektronik — Spesialis Pro Audio &amp; Komponen Elektronik</title>
+	<!-- Google Fonts: Plus Jakarta Sans + 6 Font Pilihan -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=Nunito+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<!-- Tailwind CSS CDN -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	<style>
+		/* ==========================================================================
+		   1. DESIGN TOKENS & PALET WARNA KALEM (MODE KALEM TERANG, HANGAT & GELAP)
+		   ========================================================================== */
+		:root {
+			--bg-page: #F4F6F4;
+			--bg-surface: #FFFFFF;
+			--bg-elevated: #EDF1EE;
+			--bg-subtle: #E2E8E4;
+			--text-primary: #1F2A24;
+			--text-secondary: #526259;
+			--text-muted: #7B8B82;
+			--border-color: #D7E0DA;
+			--accent-primary: #4A7C59;
+			--accent-hover: #3B6548;
+			--accent-soft: rgba(74, 124, 89, 0.15);
+			--accent-gradient: linear-gradient(135deg, #5C946D 0%, #3F6E4E 100%);
+			--accent-contrast: #FFFFFF;
+			--shadow-soft: 0 10px 28px -8px rgba(31, 42, 36, 0.08);
+			--shadow-modal: 0 24px 48px -12px rgba(20, 30, 24, 0.22);
+			--font-family: 'Plus Jakarta Sans', sans-serif;
+			--font-weight-base: 400;
+			--anim-speed: 0.34s;
+			--ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
+		}
+
+		/* Mode Kalem Gelap (Calm Dark) */
+		html[data-theme="dark"] {
+			--bg-page: #131816;
+			--bg-surface: #1B221F;
+			--bg-elevated: #232C28;
+			--bg-subtle: #2C3732;
+			--text-primary: #E7ECE9;
+			--text-secondary: #A8B5AE;
+			--text-muted: #78877F;
+			--border-color: #2E3A34;
+			--accent-soft: rgba(105, 168, 126, 0.16);
+			--shadow-soft: 0 12px 30px -8px rgba(0, 0, 0, 0.38);
+			--shadow-modal: 0 24px 54px -12px rgba(0, 0, 0, 0.65);
+		}
+
+		/* Mode Hangat Kalem (Warm Sand) */
+		html[data-theme="warm"] {
+			--bg-page: #F6F3EE;
+			--bg-surface: #FCFBF8;
+			--bg-elevated: #EFEAE1;
+			--bg-subtle: #E5DED2;
+			--text-primary: #2D2924;
+			--text-secondary: #625B52;
+			--text-muted: #8C8377;
+			--border-color: #DDD5C7;
+			--shadow-soft: 0 10px 28px -8px rgba(45, 41, 36, 0.08);
+			--shadow-modal: 0 24px 48px -12px rgba(45, 41, 36, 0.22);
+		}
+
+		/* Nonaktifkan Animasi jika pengguna mematikan sakelar animasi */
+		html.no-animations *,
+		html.no-animations *::before,
+		html.no-animations *::after {
+			animation-duration: 0.001ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.001ms !important;
+		}
+
+		body {
+			background-color: var(--bg-page);
+			color: var(--text-primary);
+			font-family: var(--font-family);
+			font-weight: var(--font-weight-base);
+			transition: background-color 0.3s ease, color 0.3s ease;
+			overflow-x: hidden;
+		}
+
+		/* Kelas Utilitas Berbasis CSS Variables */
+		.theme-surface {
+			background-color: var(--bg-surface);
+			border-color: var(--border-color);
+			box-shadow: var(--shadow-soft);
+		}
+
+		.theme-elevated {
+			background-color: var(--bg-elevated);
+			border-color: var(--border-color);
+		}
+
+		.theme-subtle {
+			background-color: var(--bg-subtle);
+		}
+
+		.theme-border {
+			border-color: var(--border-color);
+		}
+
+		.theme-text-primary {
+			color: var(--text-primary);
+		}
+
+		.theme-text-secondary {
+			color: var(--text-secondary);
+		}
+
+		.theme-text-muted {
+			color: var(--text-muted);
+		}
+
+		.accent-bg {
+			background: var(--accent-gradient, var(--accent-primary));
+			color: var(--accent-contrast);
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.34), 0 4px 12px -3px var(--accent-soft);
+			transition: filter 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+		}
+
+		.accent-bg:hover {
+			filter: brightness(1.05);
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42), 0 6px 16px -3px var(--accent-soft);
+		}
+
+		.accent-soft-bg {
+			background-color: var(--accent-soft);
+			color: var(--accent-primary);
+		}
+
+		.accent-text {
+			color: var(--accent-primary);
+		}
+
+		.accent-border {
+			border-color: var(--accent-primary);
+		}
+
+		/* ==========================================================================
+		   2. ANIMASI HALUS (MODAL, TAB, CARD REVEAL, SLIDER & TOAST)
+		   ========================================================================== */
+		@keyframes fadeSlideUp {
+			from {
+				opacity: 0;
+				transform: translateY(16px) scale(0.98);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0) scale(1);
+			}
+		}
+
+		@keyframes tabContentFade {
+			from {
+				opacity: 0;
+				transform: translateY(8px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		@keyframes cardReveal {
+			from {
+				opacity: 0;
+				transform: translateY(14px) scale(0.985);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0) scale(1);
+			}
+		}
+
+		@keyframes toastSlideIn {
+			from {
+				opacity: 0;
+				transform: translateX(18px) scale(0.96);
+			}
+			to {
+				opacity: 1;
+				transform: translateX(0) scale(1);
+			}
+		}
+
+		@keyframes heroProgress {
+			from {
+				width: 0%;
+			}
+			to {
+				width: 100%;
+			}
+		}
+
+		.animate-modal-enter {
+			animation: fadeSlideUp var(--anim-speed) var(--ease-calm) forwards;
+		}
+
+		.animate-tab-enter {
+			animation: tabContentFade var(--anim-speed) var(--ease-calm) forwards;
+		}
+
+		.animate-card-enter {
+			opacity: 0;
+			animation: cardReveal 0.42s var(--ease-calm) forwards;
+		}
+
+		.animate-toast-enter {
+			animation: toastSlideIn 0.32s var(--ease-calm) forwards;
+		}
+
+		.hero-progress-active {
+			animation: heroProgress 5s linear forwards;
+		}
+
+		/* Fixed Header Glassmorphism saat halaman di-scroll */
+		#main-sticky-header.is-scrolled {
+			box-shadow: 0 10px 30px -10px rgba(20, 30, 24, 0.14);
+		}
+
+		/* Pembatas Deskripsi Kartu Produk (Max-Height + Ellipsis) */
+		.product-desc-clamp {
+			max-height: 2.85rem;
+			line-height: 1.425rem;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		/* Custom Scrollbar Kalem */
+		::-webkit-scrollbar {
+			width: 7px;
+			height: 7px;
+		}
+
+		::-webkit-scrollbar-track {
+			background: transparent;
+		}
+
+		::-webkit-scrollbar-thumb {
+			background: var(--border-color);
+			border-radius: 9999px;
+		}
+
+		::-webkit-scrollbar-thumb:hover {
+			background: var(--text-muted);
+		}
+	</style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-950">
+
+	<!-- ==========================================================================
+	     TOAST NOTIFICATION CONTAINER (PENGGANTI ALERT BAWAAN)
+	     ========================================================================== -->
+	<div id="toast-container" aria-live="polite" class="fixed top-20 right-4 z-[100] flex flex-col gap-2.5 max-w-sm w-[calc(100vw-2rem)] pointer-events-none"></div>
+
+	<!-- ==========================================================================
+	     FIXED FLOATING HEADER: NAMA TOKO, PENCARIAN, KERANJANG, PENGATURAN, PROFILE
+	     ========================================================================== -->
+	<header id="main-sticky-header" class="sticky top-0 z-40 w-full border-b theme-surface/95 backdrop-blur-md transition-all duration-300">
+		<!-- Bilah Informasi Jam Operasional & Alamat Toko -->
+		<div class="border-b theme-border theme-elevated">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex flex-wrap items-center justify-between gap-2 text-[11px] theme-text-secondary">
+				<div class="flex items-center gap-2 truncate">
+					<svg class="w-3.5 h-3.5 accent-text shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+						<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+						<circle cx="12" cy="10" r="3"></circle>
+					</svg>
+					<span class="truncate">Jl. Raya Merdeka No.35, RT.002/RW.001, Cimone Jaya, Kec. Karawaci, Kota Tangerang 15114</span>
+				</div>
+				<div id="header-availability-bar" class="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
+					<!-- Diisi otomatis oleh StoreAvailability -->
+				</div>
+			</div>
+		</div>
+
+		<!-- Bar Utama Header Melayang -->
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5">
+			<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+				<!-- Nama Toko & Logo (Proporsi Presisi Anti-Gepeng) -->
+				<div class="flex items-center justify-between gap-3">
+					<a href="#top" id="brand-home-btn" class="flex items-center gap-3 group focus:outline-none min-w-0">
+						<div class="w-10 h-10 sm:w-11 sm:h-11 aspect-square rounded-2xl accent-bg flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+							<svg class="w-5 h-5 sm:w-6 sm:h-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<line x1="4" y1="21" x2="4" y2="14"></line>
+								<line x1="4" y1="10" x2="4" y2="3"></line>
+								<line x1="12" y1="21" x2="12" y2="12"></line>
+								<line x1="12" y1="8" x2="12" y2="3"></line>
+								<line x1="20" y1="21" x2="20" y2="16"></line>
+								<line x1="20" y1="12" x2="20" y2="3"></line>
+								<line x1="1" y1="14" x2="7" y2="14"></line>
+								<line x1="9" y1="8" x2="15" y2="8"></line>
+								<line x1="17" y1="16" x2="23" y2="16"></line>
+							</svg>
+						</div>
+						<h1 class="text-lg sm:text-xl font-bold tracking-tight theme-text-primary leading-none truncate">
+							Berkat Elektronik
+						</h1>
+					</a>
+
+					<!-- Tombol Aksi Mobile: Bulat Sama Rata (Keranjang, Pengaturan, Profil) -->
+					<div class="flex items-center gap-2 lg:hidden shrink-0">
+						<button type="button" data-open-modal="cart" title="Keranjang Belanja" aria-label="Buka Keranjang" class="relative w-10 h-10 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition">
+							<svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+								<circle cx="9" cy="21" r="1"></circle>
+								<circle cx="20" cy="21" r="1"></circle>
+								<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+							</svg>
+							<span class="cart-badge-count absolute -top-1 -right-1 min-w-[19px] h-[19px] px-1 rounded-full accent-bg text-[10px] font-bold flex items-center justify-center leading-none">0</span>
+						</button>
+						<button type="button" data-open-modal="settings" title="Pengaturan" aria-label="Pengaturan" class="w-10 h-10 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition">
+							<svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+								<circle cx="12" cy="12" r="3"></circle>
+								<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+							</svg>
+						</button>
+						<button type="button" data-open-modal="profile" title="Profil Pengguna" aria-label="Profil Pengguna" class="w-10 h-10 aspect-square rounded-full border theme-subtle p-0.5 overflow-hidden flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition">
+							<img id="header-avatar-mobile" src="https://placehold.co/80x80/4A7C59/FFFFFF?text=BE" alt="Avatar" class="w-full h-full rounded-full object-cover aspect-square">
+						</button>
+					</div>
+				</div>
+
+				<!-- Kolom Pencarian Lengkap (Nama, Merk, Harga, Kategori, Deskripsi) -->
+				<div class="relative flex-1 max-w-2xl">
+					<div class="relative flex items-center">
+						<span class="absolute left-3.5 theme-text-muted pointer-events-none">
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+								<circle cx="11" cy="11" r="8"></circle>
+								<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+							</svg>
+						</span>
+						<input
+							type="text"
+							id="global-search-input"
+							autocomplete="off"
+							placeholder="Cari nama produk, merk (TOA, Yamaha, Ashley), kategori, harga, atau deskripsi..."
+							class="w-full pl-10 pr-24 py-2 rounded-2xl border theme-elevated theme-text-primary placeholder:opacity-60 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30 transition"
+						>
+						<button
+							type="button"
+							id="clear-search-btn"
+							title="Bersihkan pencarian"
+							class="hidden absolute right-16 p-1 rounded-lg theme-text-muted hover:theme-text-primary transition"
+						>
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+								<line x1="18" y1="6" x2="6" y2="18"></line>
+								<line x1="6" y1="6" x2="18" y2="18"></line>
+							</svg>
+						</button>
+						<button
+							type="button"
+							id="execute-search-btn"
+							class="absolute right-1.5 px-3 py-1 rounded-xl accent-bg text-xs font-medium shadow-sm active:scale-95"
+						>
+							Cari
+						</button>
+					</div>
+
+					<!-- Popover Riwayat Pencarian Cepat -->
+					<div id="search-history-popover" class="hidden absolute left-0 right-0 top-full mt-2 p-3 rounded-2xl border theme-surface z-50 animate-modal-enter">
+						<div class="flex items-center justify-between mb-2">
+							<span class="text-xs font-semibold theme-text-secondary">Riwayat Pencarian Terakhir</span>
+							<button type="button" id="popover-clear-history" class="text-[11px] accent-text hover:underline">Hapus Riwayat</button>
+						</div>
+						<div id="search-history-chips" class="flex flex-wrap gap-1.5"></div>
+					</div>
+				</div>
+
+				<!-- Tombol Aksi Desktop: Bulat & Sama Rata (Keranjang, Pengaturan, Profil) -->
+				<div class="hidden lg:flex items-center gap-2.5 shrink-0">
+					<button type="button" data-open-modal="cart" title="Keranjang Belanja" aria-label="Keranjang Belanja" class="relative w-11 h-11 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition">
+						<svg class="w-5 h-5 accent-text shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+							<circle cx="9" cy="21" r="1"></circle>
+							<circle cx="20" cy="21" r="1"></circle>
+							<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+						</svg>
+						<span class="cart-badge-count absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full accent-bg text-[11px] font-bold flex items-center justify-center leading-none">0</span>
+					</button>
+
+					<button type="button" data-open-modal="settings" title="Pengaturan Tampilan" aria-label="Pengaturan Tampilan" class="w-11 h-11 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition">
+						<svg class="w-5 h-5 accent-text shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+							<circle cx="12" cy="12" r="3"></circle>
+							<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+						</svg>
+					</button>
+
+					<button type="button" data-open-modal="profile" title="Profil Pengguna" aria-label="Profil Pengguna" class="w-11 h-11 aspect-square rounded-full border theme-subtle p-0.5 overflow-hidden flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition">
+						<img id="header-avatar-desktop" src="https://placehold.co/80x80/4A7C59/FFFFFF?text=BE" alt="Profil" class="w-full h-full rounded-full object-cover aspect-square">
+					</button>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- ==========================================================================
+	     HERO BANNER FULL LANDSCAPE (4 FOTO BERGANTI 5 DETIK, TIDAK FIXED MELAYANG)
+	     ========================================================================== -->
+	<section aria-label="Galeri Produk & Toko" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-5">
+		<div class="relative w-full rounded-3xl overflow-hidden border theme-border shadow-sm group">
+			<div id="hero-slider-track" class="relative w-full h-[210px] sm:h-[290px] md:h-[360px] lg:h-[400px]">
+				<!-- Slide diisi dinamis oleh JS -->
+			</div>
+
+			<!-- Tombol Navigasi Kiri & Kanan -->
+			<button type="button" id="hero-prev-btn" aria-label="Slide Sebelumnya" class="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/35 hover:bg-black/55 text-white backdrop-blur-sm flex items-center justify-center opacity-80 sm:opacity-0 group-hover:opacity-100 transition">
+				<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+					<polyline points="15 18 9 12 15 6"></polyline>
+				</svg>
+			</button>
+			<button type="button" id="hero-next-btn" aria-label="Slide Berikutnya" class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/35 hover:bg-black/55 text-white backdrop-blur-sm flex items-center justify-center opacity-80 sm:opacity-0 group-hover:opacity-100 transition">
+				<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+					<polyline points="9 18 15 12 9 6"></polyline>
+				</svg>
+			</button>
+
+			<!-- Indikator Slide (4 Titik) -->
+			<div id="hero-indicators" class="absolute bottom-3.5 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10 bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full"></div>
+
+			<!-- Garis Progres 5 Detik -->
+			<div class="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+				<div id="hero-progress-bar" class="h-full accent-bg hero-progress-active"></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ==========================================================================
+	     MAIN BODY SECTION: KATEGORI, FILTER CUSTOM, & KATALOG / HASIL PENCARIAN
+	     ========================================================================== -->
+	<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+
+		<!-- Banner Peringatan Protokol file:// jika dibuka langsung tanpa server -->
+		<div id="file-protocol-notice" class="hidden theme-surface border accent-border rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+			<div class="space-y-1">
+				<h3 class="text-xs sm:text-sm font-bold theme-text-primary flex items-center gap-2">
+					<span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+					<span>Mode File Lokal Terdeteksi (<code class="font-mono">file://</code>)</span>
+				</h3>
+				<p class="text-xs theme-text-secondary leading-relaxed">
+					Browser memblokir pembacaan otomatis <code class="font-mono font-semibold">produk/produk-toa.json</code> saat dibuka langsung tanpa server lokal (Live Server). Klik tombol di samping untuk memuat file JSON produk secara manual:
+				</p>
+			</div>
+			<button type="button" data-action="load-product-json" class="px-4 py-2.5 rounded-2xl accent-bg text-xs font-bold shrink-0 shadow-xs active:scale-95">
+				Muat File JSON Produk
+			</button>
+		</div>
+
+		<!-- 1. KATEGORI ELEKTRONIK -->
+		<section aria-label="Kategori Produk" class="space-y-3">
+			<div class="flex items-center justify-between">
+				<h2 class="text-base sm:text-lg font-bold theme-text-primary">Kategori Elektronik</h2>
+				<span id="active-category-label" class="text-xs font-medium accent-text">Menampilkan: Semua Kategori</span>
+			</div>
+			<div id="category-pills-container" class="flex items-center gap-2 overflow-x-auto pb-2">
+				<!-- Tombol kategori dirender dinamis oleh JS -->
+			</div>
+		</section>
+
+		<!-- 2. FILTER & PENGURUTAN (CUSTOM DROPDOWN - TANPA SELECT BAWAAN) -->
+		<section aria-label="Filter Produk" class="theme-surface border rounded-3xl p-4 sm:p-5 space-y-4">
+			<div class="flex flex-wrap items-center justify-between gap-2">
+				<div class="flex items-center gap-2">
+					<svg class="w-4 h-4 accent-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+						<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+					</svg>
+					<h3 class="text-sm font-semibold theme-text-primary">Filter &amp; Urutkan Katalog</h3>
+				</div>
+				<button type="button" id="reset-filters-btn" class="text-xs font-medium accent-text hover:underline px-2.5 py-1 rounded-xl accent-soft-bg transition">
+					Reset Semua Filter
+				</button>
+			</div>
+
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+				<!-- Custom Dropdown: Kategori -->
+				<div class="space-y-1">
+					<label class="block text-xs font-medium theme-text-secondary">Kategori</label>
+					<div id="dropdown-filter-category" class="relative"></div>
+				</div>
+
+				<!-- Custom Dropdown: Merk -->
+				<div class="space-y-1">
+					<label class="block text-xs font-medium theme-text-secondary">Merk / Brand</label>
+					<div id="dropdown-filter-brand" class="relative"></div>
+				</div>
+
+				<!-- Custom Dropdown: Rentang Harga -->
+				<div class="space-y-1">
+					<label class="block text-xs font-medium theme-text-secondary">Rentang Harga</label>
+					<div id="dropdown-filter-price" class="relative"></div>
+				</div>
+
+				<!-- Custom Dropdown: Urutkan A-Z / Harga -->
+				<div class="space-y-1">
+					<label class="block text-xs font-medium theme-text-secondary">Urutkan (A–Z / Harga)</label>
+					<div id="dropdown-filter-sort" class="relative"></div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 3. HASIL PENCARIAN & GRID KATALOG PRODUK -->
+		<section aria-label="Daftar Produk" class="space-y-4">
+			<div class="flex flex-wrap items-center justify-between gap-2">
+				<div>
+					<h2 id="catalog-heading" class="text-lg sm:text-xl font-bold theme-text-primary">Katalog Produk Pilihan</h2>
+					<p id="catalog-subtext" class="text-xs sm:text-sm theme-text-secondary">Klik kartu produk untuk melihat spesifikasi dan deskripsi lengkap.</p>
+				</div>
+				<span id="product-count-badge" class="px-3 py-1 rounded-full text-xs font-semibold accent-soft-bg">
+					0 Produk
+				</span>
+			</div>
+
+			<!-- Grid Produk -->
+			<div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+				<!-- Kartu produk dirender dinamis oleh JS -->
+			</div>
+
+			<!-- Empty State Pencarian -->
+			<div id="empty-products-state" class="hidden theme-surface border rounded-3xl p-10 text-center space-y-3">
+				<div class="w-14 h-14 mx-auto rounded-2xl accent-soft-bg flex items-center justify-center">
+					<svg class="w-7 h-7 accent-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+						<circle cx="11" cy="11" r="8"></circle>
+						<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+					</svg>
+				</div>
+				<h3 class="text-base font-bold theme-text-primary">Produk Tidak Ditemukan</h3>
+				<p class="text-xs sm:text-sm theme-text-secondary max-w-md mx-auto">
+					Tidak ada barang elektronik yang cocok dengan kata kunci atau filter Anda. Coba ubah kata kunci pencarian atau reset filter.
+				</p>
+				<button type="button" id="empty-reset-btn" class="px-4 py-2 rounded-xl accent-bg text-xs font-semibold shadow-sm">
+					Tampilkan Semua Produk
+				</button>
+			</div>
+		</section>
+	</main>
+
+	<!-- ==========================================================================
+	     FOOTER SECTION (RAPI, KALEM & INFORMATIF TENTANG TOKO & CARA KERJA)
+	     ========================================================================== -->
+	<footer class="border-t theme-surface mt-14">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+				<!-- Kolom 1: Profil & Alamat Lengkap Toko -->
+				<div class="space-y-3">
+					<div class="flex items-center gap-2.5">
+						<div class="w-9 h-9 rounded-xl accent-bg flex items-center justify-center shadow-xs">
+							<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<line x1="4" y1="21" x2="4" y2="14"></line>
+								<line x1="4" y1="10" x2="4" y2="3"></line>
+								<line x1="12" y1="21" x2="12" y2="12"></line>
+								<line x1="12" y1="8" x2="12" y2="3"></line>
+								<line x1="20" y1="21" x2="20" y2="16"></line>
+								<line x1="20" y1="12" x2="20" y2="3"></line>
+								<line x1="1" y1="14" x2="7" y2="14"></line>
+								<line x1="9" y1="8" x2="15" y2="8"></line>
+								<line x1="17" y1="16" x2="23" y2="16"></line>
+							</svg>
+						</div>
+						<div>
+							<h3 class="text-base font-bold theme-text-primary">Berkat Elektronik</h3>
+							<span class="text-[11px] theme-text-muted">Spesialis Pro Audio &amp; Komponen</span>
+						</div>
+					</div>
+					<p class="text-xs theme-text-secondary leading-relaxed">
+						Menyediakan perangkat audio profesional, mixer, power amplifier, speaker, crossover, equalizer, hingga komponen elektronika rakitan berkualitas untuk wilayah Tangerang.
+					</p>
+					<div class="p-3 rounded-2xl border theme-elevated text-xs space-y-1">
+						<span class="font-semibold theme-text-primary block">Alamat Toko Fisik:</span>
+						<p class="theme-text-secondary leading-relaxed">
+							Jl. Raya Merdeka No.35, RT.002/RW.001, Cimone Jaya, Kec. Karawaci, Kota Tangerang, Banten 15114
+						</p>
+					</div>
+				</div>
+
+				<!-- Kolom 2: Jam Operasional & Ketersediaan Layanan -->
+				<div class="space-y-3">
+					<h4 class="text-xs font-bold uppercase tracking-wider theme-text-primary">Jam Operasional &amp; Ketersediaan</h4>
+					<div class="space-y-2.5 text-xs">
+						<div class="p-3 rounded-2xl border theme-elevated space-y-1">
+							<div class="flex items-center justify-between">
+								<span class="font-semibold theme-text-primary">Toko Fisik (Offline)</span>
+								<span id="footer-store-badge" class="px-2 py-0.5 rounded-full text-[10px] font-semibold accent-soft-bg">Senin–Sabtu</span>
+							</div>
+							<p class="theme-text-secondary">Senin – Sabtu: <strong>09.00 – 17.00 WIB</strong></p>
+							<p class="theme-text-muted text-[11px]">Hari Minggu &amp; Libur Nasional Tutup</p>
+						</div>
+
+						<div class="p-3 rounded-2xl border theme-elevated space-y-1">
+							<div class="flex items-center justify-between">
+								<span class="font-semibold theme-text-primary">Layanan Online &amp; Pengiriman</span>
+								<span id="footer-online-badge" class="px-2 py-0.5 rounded-full text-[10px] font-semibold accent-soft-bg">Senin–Sabtu</span>
+							</div>
+							<p class="theme-text-secondary">Senin – Sabtu: <strong>10.00 – 15.00 WIB</strong></p>
+							<p class="theme-text-muted text-[11px]">Order di luar jam online diproses pada hari kerja berikutnya</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Kolom 3: Cara Kerja Pemesanan -->
+				<div class="space-y-3">
+					<h4 class="text-xs font-bold uppercase tracking-wider theme-text-primary">Cara Kerja Pemesanan</h4>
+					<ol class="space-y-2.5 text-xs theme-text-secondary">
+						<li class="flex items-start gap-2.5">
+							<span class="w-5 h-5 rounded-full accent-bg text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+							<span><strong class="theme-text-primary">Pilih Barang:</strong> Cari produk audio/komponen, masukkan ke keranjang, lalu klik <em>Beli Sekarang</em>.</span>
+						</li>
+						<li class="flex items-start gap-2.5">
+							<span class="w-5 h-5 rounded-full accent-bg text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+							<span><strong class="theme-text-primary">Hitung Ongkir Otomatis:</strong> Berlaku khusus Tangerang Kota &amp; Kab. radius <strong>0–30 KM</strong> dari Cimone Jaya (Rp 10.000 / 5 KM + layanan Rp 15.000).</span>
+						</li>
+						<li class="flex items-start gap-2.5">
+							<span class="w-5 h-5 rounded-full accent-bg text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+							<span><strong class="theme-text-primary">Transfer &amp; Unggah Bukti:</strong> Bayar ke rekening resmi toko (GoPay, DANA, atau Bank Jago) lalu unggah foto bukti transfer.</span>
+						</li>
+						<li class="flex items-start gap-2.5">
+							<span class="w-5 h-5 rounded-full accent-bg text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">4</span>
+							<span><strong class="theme-text-primary">Konfirmasi WhatsApp:</strong> Rincian pesanan lengkap langsung terkirim ke WA Admin <strong>0895-2930-5947</strong>.</span>
+						</li>
+					</ol>
+				</div>
+
+				<!-- Kolom 4: Pembayaran Resmi & Kontak -->
+				<div class="space-y-3">
+					<h4 class="text-xs font-bold uppercase tracking-wider theme-text-primary">Pembayaran Resmi &amp; Kontak</h4>
+					<div class="p-3 rounded-2xl border theme-elevated space-y-2 text-xs">
+						<p class="font-semibold theme-text-primary">Tujuan Transfer Resmi (a.n. Berkat Elektronik):</p>
+						<ul class="space-y-1.5 theme-text-secondary">
+							<li class="flex items-center justify-between">
+								<span>• GoPay</span>
+								<strong class="theme-text-primary font-mono">089529305947</strong>
+							</li>
+							<li class="flex items-center justify-between">
+								<span>• DANA</span>
+								<strong class="theme-text-primary font-mono">089529305947</strong>
+							</li>
+							<li class="flex items-center justify-between">
+								<span>• Bank Jago</span>
+								<strong class="theme-text-primary font-mono">12345678</strong>
+							</li>
+						</ul>
+					</div>
+
+					<div>
+						<span class="text-[11px] theme-text-muted block mb-2">Mendukung Transfer dari Bank &amp; E-Wallet:</span>
+						<div id="footer-payment-badges" class="flex flex-wrap gap-1.5">
+							<!-- Diisi otomatis oleh JS dengan ikon Bank/E-Wallet -->
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Bottom Bar Footer -->
+			<div class="pt-6 border-t theme-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs theme-text-muted">
+				<p>&copy; 2026 <strong class="theme-text-primary">Berkat Elektronik</strong> • Cimone Jaya, Karawaci, Kota Tangerang. Seluruh hak cipta dilindungi.</p>
+				<p>WhatsApp Konfirmasi Resmi: <strong class="theme-text-primary">0895-2930-5947</strong></p>
+			</div>
+		</div>
+	</footer>
+
+	<!-- ==========================================================================
+	     MODAL 1: DETAIL PRODUK LENGKAP (SAAT CARD / FOTO PRODUK DIKLIK)
+	     ========================================================================== -->
+	<div id="modal-product-detail" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+		<div class="theme-surface border rounded-3xl max-w-3xl w-full overflow-hidden animate-modal-enter my-auto" style="box-shadow: var(--shadow-modal);">
+			<div id="product-detail-content">
+				<!-- Diisi dinamis saat produk diklik -->
+			</div>
+		</div>
+	</div>
+
+	<!-- ==========================================================================
+	     MODAL 2: KERANJANG BELANJA (TAMBAH KUANTITI, HAPUS, BELI)
+	     ========================================================================== -->
+	<div id="modal-cart" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+		<div class="theme-surface border rounded-3xl max-w-2xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[90vh]" style="box-shadow: var(--shadow-modal);">
+			<!-- Header Modal Keranjang -->
+			<div class="px-6 py-4 border-b theme-border flex items-center justify-between">
+				<div class="flex items-center gap-2.5">
+					<span class="w-9 h-9 rounded-xl accent-soft-bg flex items-center justify-center">
+						<svg class="w-5 h-5 accent-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+							<circle cx="9" cy="21" r="1"></circle>
+							<circle cx="20" cy="21" r="1"></circle>
+							<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+						</svg>
+					</span>
+					<div>
+						<h2 class="text-base sm:text-lg font-bold theme-text-primary">Keranjang Belanja</h2>
+						<p class="text-xs theme-text-secondary">Atur jumlah barang sebelum melanjutkan ke pembayaran</p>
+					</div>
+				</div>
+				<button type="button" data-close-modal="cart" aria-label="Tutup Keranjang" class="p-2 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary transition">
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+						<line x1="18" y1="6" x2="6" y2="18"></line>
+						<line x1="6" y1="6" x2="18" y2="18"></line>
+					</svg>
+				</button>
+			</div>
+
+			<!-- Daftar Barang di Keranjang -->
+			<div id="cart-items-list" class="p-6 overflow-y-auto space-y-3 flex-1">
+				<!-- Dirender dinamis -->
+			</div>
+
+			<!-- Footer Keranjang -->
+			<div id="cart-modal-footer" class="px-6 py-4 border-t theme-border theme-elevated flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+				<div>
+					<span class="text-xs theme-text-secondary block">Subtotal Belanja</span>
+					<span id="cart-subtotal-display" class="text-lg font-bold accent-text">Rp 0</span>
+				</div>
+				<div class="flex items-center gap-2">
+					<button type="button" id="clear-cart-btn" class="px-3.5 py-2.5 rounded-xl border theme-border theme-text-secondary hover:text-rose-600 text-xs font-semibold transition">
+						Kosongkan
+					</button>
+					<button type="button" id="proceed-checkout-btn" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl accent-bg text-sm font-semibold shadow-sm flex items-center justify-center gap-2 active:scale-95">
+						<span>Beli Sekarang</span>
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+							<line x1="5" y1="12" x2="19" y2="12"></line>
+							<polyline points="12 5 19 12 12 19"></polyline>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- ==========================================================================
+	     MODAL 3: FORM PEMBAYARAN, ONGKOS KIRIM (CIMONE JAYA) & WHATSAPP
+	     ========================================================================== -->
+	<div id="modal-checkout" class="hidden fixed inset-0 z-50 bg-black/55 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+		<div class="theme-surface border rounded-3xl max-w-4xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[92vh]" style="box-shadow: var(--shadow-modal);">
+			<!-- Header Checkout -->
+			<div class="px-6 py-4 border-b theme-border flex flex-wrap items-center justify-between gap-3">
+				<div>
+					<h2 class="text-lg font-bold theme-text-primary">Formulir Pembayaran &amp; Pengiriman</h2>
+					<p class="text-xs theme-text-secondary">Asal Pengiriman: <strong class="theme-text-primary">Jl. Raya Merdeka No.35, Cimone Jaya, Kec. Karawaci, Kota Tangerang</strong> (Radius 0–30 KM)</p>
+				</div>
+				<div class="flex items-center gap-2">
+					<button type="button" id="sync-profile-to-checkout-btn" class="px-3 py-1.5 rounded-xl accent-soft-bg text-xs font-medium hover:opacity-85 transition">
+						Tarik Data Profile
+					</button>
+					<button type="button" data-close-modal="checkout" aria-label="Tutup Checkout" class="p-2 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary transition">
+						<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+							<line x1="18" y1="6" x2="6" y2="18"></line>
+							<line x1="6" y1="6" x2="18" y2="18"></line>
+						</svg>
+					</button>
+				</div>
+			</div>
+
+			<!-- Banner Informasi Jam Layanan Online di Checkout -->
+			<div id="checkout-availability-notice" class="px-6 py-2.5 border-b theme-border theme-elevated flex flex-wrap items-center justify-between gap-2 text-xs">
+				<!-- Diisi otomatis oleh StoreAvailability -->
+			</div>
+
+			<!-- Body Checkout -->
+			<form id="checkout-form" novalidate class="p-6 overflow-y-auto flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
+				<!-- Kolom Kiri: Data Pembeli, Wilayah Tangerang, Bank & Bukti Bayar (7 Kolom) -->
+				<div class="lg:col-span-7 space-y-4">
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+						<div>
+							<label for="checkout-name" class="block text-xs font-semibold theme-text-secondary mb-1">Nama Lengkap *</label>
+							<input type="text" id="checkout-name" required placeholder="Masukkan nama lengkap penerima" class="w-full px-3.5 py-2.5 rounded-xl border theme-elevated theme-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30">
+						</div>
+						<div>
+							<label for="checkout-phone" class="block text-xs font-semibold theme-text-secondary mb-1">Nomor Telepon / WhatsApp *</label>
+							<input type="tel" id="checkout-phone" required placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 rounded-xl border theme-elevated theme-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30">
+						</div>
+					</div>
+
+					<!-- Wilayah & Kecamatan Tangerang (Kalkulator Jarak 0-30 KM dari Cimone Jaya) -->
+					<div class="p-4 rounded-2xl border theme-elevated space-y-3">
+						<div class="flex flex-wrap items-center justify-between gap-2">
+							<span class="text-xs font-bold theme-text-primary">Area Tujuan Pengiriman (Khusus Tangerang)</span>
+							<span id="shipping-distance-pill" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold accent-soft-bg">
+								Jarak: 0 KM
+							</span>
+						</div>
+
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+							<div>
+								<label class="block text-xs font-medium theme-text-secondary mb-1">Kota / Kabupaten *</label>
+								<div id="dropdown-checkout-region" class="relative"></div>
+							</div>
+							<div>
+								<label class="block text-xs font-medium theme-text-secondary mb-1">Kecamatan Tujuan *</label>
+								<div id="dropdown-checkout-district" class="relative"></div>
+							</div>
+						</div>
+
+						<div>
+							<label for="checkout-address" class="block text-xs font-medium theme-text-secondary mb-1">Detail Alamat Rumah (Jalan, RT/RW, Patokan) *</label>
+							<textarea id="checkout-address" rows="2" required placeholder="Contoh: Jl. Merdeka No. 12, RT 02/RW 04, dekat Masjid..." class="w-full px-3.5 py-2 rounded-xl border theme-surface theme-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30"></textarea>
+						</div>
+
+						<!-- Info Status Radius & Ongkos Kirim -->
+						<div id="shipping-status-box" class="p-3 rounded-xl border theme-surface text-xs space-y-1">
+							<!-- Diisi dinamis oleh kalkulator jarak -->
+						</div>
+					</div>
+
+					<!-- Bank Pembayaran & Upload Bukti Transfer -->
+					<div class="p-4 rounded-2xl border theme-elevated space-y-3">
+						<div>
+							<label class="block text-xs font-semibold theme-text-secondary mb-1">Metode Bank / E-Wallet Pembayaran Anda *</label>
+							<div id="dropdown-checkout-bank" class="relative"></div>
+						</div>
+
+						<!-- Daftar Rekening & E-Wallet Tujuan Resmi Toko (GoPay, DANA, Bank Jago) -->
+						<div class="space-y-2">
+							<span class="text-[11px] font-semibold theme-text-secondary block">Tujuan Transfer Resmi Berkat Elektronik (Klik Salin):</span>
+							<div id="official-payment-destinations" class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+								<!-- Dirender dinamis dengan ikon Bank Jago, GoPay, dan DANA -->
+							</div>
+						</div>
+
+						<!-- Custom File Upload Dropzone untuk Foto Bukti Pembayaran -->
+						<div>
+							<label class="block text-xs font-semibold theme-text-secondary mb-1">Foto Bukti Pembayaran *</label>
+							<input type="file" id="checkout-proof-input" accept="image/*" class="hidden">
+							<div id="checkout-proof-dropzone" role="button" tabindex="0" class="border-2 border-dashed theme-border hover:accent-border rounded-2xl p-4 text-center cursor-pointer transition theme-surface">
+								<div id="proof-placeholder-view" class="space-y-1.5">
+									<svg class="w-7 h-7 mx-auto accent-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+										<polyline points="17 8 12 3 7 8"></polyline>
+										<line x1="12" y1="3" x2="12" y2="15"></line>
+									</svg>
+									<p class="text-xs font-semibold theme-text-primary">Klik untuk unggah foto bukti transfer</p>
+									<p class="text-[11px] theme-text-muted">Mendukung JPG, PNG, WEBP (Maks. 5MB)</p>
+								</div>
+								<div id="proof-preview-view" class="hidden flex items-center gap-3 text-left">
+									<img id="proof-preview-img" src="" alt="Preview Bukti Bayar" class="w-16 h-16 rounded-xl object-cover border theme-border">
+									<div class="flex-1 min-w-0">
+										<p id="proof-file-name" class="text-xs font-semibold theme-text-primary truncate">bukti.jpg</p>
+										<span class="text-[11px] accent-text font-medium">Foto bukti siap dikirim • Klik untuk ganti</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Kolom Kanan: Ringkasan Barang & Rincian Biaya (5 Kolom) -->
+				<div class="lg:col-span-5 flex flex-col justify-between p-4 rounded-2xl border theme-elevated space-y-4">
+					<div class="space-y-3">
+						<div class="flex items-center justify-between border-b theme-border pb-2">
+							<h3 class="text-sm font-bold theme-text-primary">Ringkasan Barang Dibeli</h3>
+							<span id="checkout-item-count-badge" class="text-[11px] font-medium theme-text-muted">0 barang</span>
+						</div>
+						<div id="checkout-items-summary" class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+							<!-- Daftar item checkout beserta tombol hapus dirender dinamis -->
+						</div>
+					</div>
+
+					<div class="space-y-3 pt-3 border-t theme-border">
+						<div class="space-y-1.5 text-xs">
+							<div class="flex justify-between theme-text-secondary">
+								<span>Subtotal Produk</span>
+								<span id="checkout-subtotal" class="font-medium theme-text-primary">Rp 0</span>
+							</div>
+							<div class="flex justify-between theme-text-secondary">
+								<span>Biaya Layanan</span>
+								<span id="checkout-service-fee" class="font-medium theme-text-primary">Rp 15.000</span>
+							</div>
+							<div class="flex justify-between theme-text-secondary">
+								<span id="checkout-shipping-label">Ongkos Kirim (0 KM)</span>
+								<span id="checkout-shipping-fee" class="font-medium theme-text-primary">Rp 10.000</span>
+							</div>
+						</div>
+
+						<div class="pt-2.5 border-t theme-border flex items-center justify-between">
+							<span class="text-sm font-bold theme-text-primary">Total Pembayaran</span>
+							<span id="checkout-grand-total" class="text-lg font-bold accent-text">Rp 0</span>
+						</div>
+
+						<button type="submit" id="submit-whatsapp-order-btn" class="w-full py-3 px-4 rounded-2xl accent-bg text-sm font-bold shadow-md flex items-center justify-center gap-2 active:scale-95">
+							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+								<path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z"/>
+							</svg>
+							<span>Kirim Pesanan &amp; Bukti ke WhatsApp</span>
+						</button>
+						<p class="text-[11px] text-center theme-text-muted">
+							Tujuan WhatsApp: <strong>0895-2930-5947</strong> (Berkat Elektronik)
+						</p>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- ==========================================================================
+	     MODAL 4: PENGATURAN TAMPILAN, FONT, SUARA, GETAR & EXPORT/IMPORT
+	     ========================================================================== -->
+	<div id="modal-settings" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+		<div class="theme-surface border rounded-3xl max-w-2xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[90vh]" style="box-shadow: var(--shadow-modal);">
+			<div class="px-6 py-4 border-b theme-border flex items-center justify-between">
+				<div>
+					<h2 class="text-lg font-bold theme-text-primary">Pengaturan Aplikasi</h2>
+					<p class="text-xs theme-text-secondary">Sesuaikan kenyamanan visual, tipografi, efek suara, dan cadangan data</p>
+				</div>
+				<button type="button" data-close-modal="settings" aria-label="Tutup Pengaturan" class="p-2 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary transition">
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+						<line x1="18" y1="6" x2="6" y2="18"></line>
+						<line x1="6" y1="6" x2="18" y2="18"></line>
+					</svg>
+				</button>
+			</div>
+
+			<div class="p-6 overflow-y-auto space-y-5">
+				<!-- Mode Tampilan Kalem -->
+				<div class="space-y-2">
+					<label class="block text-xs font-bold theme-text-primary">Mode Tampilan (Nuansa Kalem)</label>
+					<div id="settings-theme-options" class="grid grid-cols-3 gap-2.5">
+						<button type="button" data-setting-theme="light" class="p-3 rounded-2xl border text-xs font-semibold text-center transition">
+							Kalem Terang
+						</button>
+						<button type="button" data-setting-theme="warm" class="p-3 rounded-2xl border text-xs font-semibold text-center transition">
+							Hangat Kalem
+						</button>
+						<button type="button" data-setting-theme="dark" class="p-3 rounded-2xl border text-xs font-semibold text-center transition">
+							Kalem Gelap
+						</button>
+					</div>
+				</div>
+
+				<!-- Warna Aksen Kalem Glossy -->
+				<div class="space-y-2">
+					<label class="block text-xs font-bold theme-text-primary">Warna Aksen (Kalem &amp; Glossy)</label>
+					<div id="settings-accent-options" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+						<!-- Dirender oleh JS -->
+					</div>
+				</div>
+
+				<!-- Ukuran, Jenis & Ketebalan Font -->
+				<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+					<div class="space-y-1.5">
+						<label class="block text-xs font-bold theme-text-primary">Ukuran Font</label>
+						<div id="settings-fontsize-options" class="grid grid-cols-3 gap-1.5">
+							<button type="button" data-setting-fontsize="14px" class="py-2 rounded-xl border text-xs font-medium">Kecil</button>
+							<button type="button" data-setting-fontsize="16px" class="py-2 rounded-xl border text-xs font-medium">Normal</button>
+							<button type="button" data-setting-fontsize="18px" class="py-2 rounded-xl border text-xs font-medium">Besar</button>
+						</div>
+					</div>
+
+					<div class="space-y-1.5">
+						<label class="block text-xs font-bold theme-text-primary">Jenis Font</label>
+						<div id="dropdown-settings-fontfamily" class="relative"></div>
+					</div>
+
+					<div class="space-y-1.5">
+						<label class="block text-xs font-bold theme-text-primary">Ketebalan Font</label>
+						<div id="dropdown-settings-fontweight" class="relative"></div>
+					</div>
+				</div>
+
+				<!-- Toggle Animasi, Efek Suara & Getar -->
+				<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+					<button type="button" id="toggle-anim-btn" class="p-3.5 rounded-2xl border theme-elevated flex items-center justify-between text-xs font-semibold">
+						<span>Animasi UI</span>
+						<span id="status-anim-pill" class="px-2 py-0.5 rounded-full accent-bg text-[11px]">Aktif</span>
+					</button>
+
+					<button type="button" id="toggle-sound-btn" class="p-3.5 rounded-2xl border theme-elevated flex items-center justify-between text-xs font-semibold">
+						<span>Efek Suara</span>
+						<span id="status-sound-pill" class="px-2 py-0.5 rounded-full accent-bg text-[11px]">Aktif</span>
+					</button>
+
+					<button type="button" id="toggle-vibrate-btn" class="p-3.5 rounded-2xl border theme-elevated flex items-center justify-between text-xs font-semibold">
+						<span>Efek Getar</span>
+						<span id="status-vibrate-pill" class="px-2 py-0.5 rounded-full accent-bg text-[11px]">Aktif</span>
+					</button>
+				</div>
+
+				<!-- Export, Import Data & Muat Katalog JSON Produk -->
+				<div class="p-4 rounded-2xl border theme-elevated space-y-2.5">
+					<h3 class="text-xs font-bold theme-text-primary">Database Produk JSON &amp; Cadangan Data</h3>
+					<p class="text-[11px] theme-text-secondary">
+						Otomatis membaca <code class="font-mono font-semibold">produk/produk-toa.json</code> saat dijalankan lewat server lokal, atau muat langsung file JSON produk Anda di sini:
+					</p>
+					<div class="flex flex-wrap gap-2">
+						<button type="button" data-action="load-product-json" class="px-3.5 py-2 rounded-xl accent-bg text-xs font-semibold shadow-xs">
+							Muat File JSON Produk
+						</button>
+						<button type="button" data-action="export-data" class="px-3.5 py-2 rounded-xl border theme-surface theme-text-primary text-xs font-semibold hover:opacity-85">
+							Export Cadangan (.json)
+						</button>
+						<button type="button" data-action="import-data" class="px-3.5 py-2 rounded-xl border theme-surface theme-text-primary text-xs font-semibold hover:opacity-85">
+							Import Cadangan (.json)
+						</button>
+						<button type="button" id="download-sample-product-json-btn" class="px-3.5 py-2 rounded-xl accent-soft-bg text-xs font-semibold hover:opacity-85">
+							Unduh Template JSON
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- ==========================================================================
+	     MODAL 5: PROFILE PENGGUNA & RIWAYAT (SUKA, BELANJA, PENCARIAN, KERANJANG)
+	     ========================================================================== -->
+	<div id="modal-profile" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+		<div class="theme-surface border rounded-3xl max-w-3xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[92vh]" style="box-shadow: var(--shadow-modal);">
+			<!-- Header Profile -->
+			<div class="px-6 py-4 border-b theme-border flex items-center justify-between">
+				<div>
+					<h2 class="text-lg font-bold theme-text-primary">Profil &amp; Aktivitas Saya</h2>
+					<p class="text-xs theme-text-secondary">Data diri otomatis terhubung ke formulir pembayaran</p>
+				</div>
+				<button type="button" data-close-modal="profile" aria-label="Tutup Profile" class="p-2 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary transition">
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+						<line x1="18" y1="6" x2="6" y2="18"></line>
+						<line x1="6" y1="6" x2="18" y2="18"></line>
+					</svg>
+				</button>
+			</div>
+
+			<!-- Tab Navigasi Profile dengan Animasi -->
+			<div class="px-6 pt-3 border-b theme-border theme-elevated flex items-center gap-1.5 overflow-x-auto">
+				<button type="button" data-profile-tab="biodata" class="profile-tab-btn px-3.5 py-2.5 rounded-t-xl text-xs font-semibold border-b-2 transition whitespace-nowrap">
+					Data Diri &amp; Bank
+				</button>
+				<button type="button" data-profile-tab="likes" class="profile-tab-btn px-3.5 py-2.5 rounded-t-xl text-xs font-semibold border-b-2 transition whitespace-nowrap">
+					Riwayat Suka (<span id="profile-likes-count">0</span>)
+				</button>
+				<button type="button" data-profile-tab="orders" class="profile-tab-btn px-3.5 py-2.5 rounded-t-xl text-xs font-semibold border-b-2 transition whitespace-nowrap">
+					Riwayat Belanja (<span id="profile-orders-count">0</span>)
+				</button>
+				<button type="button" data-profile-tab="searches" class="profile-tab-btn px-3.5 py-2.5 rounded-t-xl text-xs font-semibold border-b-2 transition whitespace-nowrap">
+					Riwayat Pencarian
+				</button>
+				<button type="button" data-profile-tab="cart" class="profile-tab-btn px-3.5 py-2.5 rounded-t-xl text-xs font-semibold border-b-2 transition whitespace-nowrap">
+					Keranjang (<span class="cart-badge-count">0</span>)
+				</button>
+			</div>
+
+			<!-- Konten Tab Profile -->
+			<div id="profile-tab-content" class="p-6 overflow-y-auto flex-1 animate-tab-enter">
+				<!-- Konten tab dirender dinamis oleh JS -->
+			</div>
+
+			<!-- Footer Profile (Export & Import) -->
+			<div class="px-6 py-3.5 border-t theme-border theme-elevated flex flex-wrap items-center justify-between gap-2">
+				<span class="text-[11px] theme-text-secondary">Simpan cadangan akun &amp; riwayat Anda:</span>
+				<div class="flex items-center gap-2">
+					<button type="button" data-action="export-data" class="px-3 py-1.5 rounded-xl accent-soft-bg text-xs font-semibold hover:opacity-85">
+						Export Profile &amp; Data
+					</button>
+					<button type="button" data-action="import-data" class="px-3 py-1.5 rounded-xl border theme-surface theme-text-primary text-xs font-semibold hover:opacity-85">
+						Import Data
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Input Tersembunyi untuk Import JSON Global & Load JSON Produk -->
+	<input type="file" id="global-import-json-input" accept="application/json,.json" class="hidden">
+	<input type="file" id="load-product-json-input" accept="application/json,.json" multiple class="hidden">
+
+	<!-- ==========================================================================
+	     JAVASCRIPT MODULAR (STATE, KATALOG, CUSTOM DROPDOWN, ONGKIR & WHATSAPP)
+	     ========================================================================== -->
+	<script>
+		'use strict';
+
+		/* ==========================================================================
+		   1. KONFIGURASI TOKO, KOORDINAT TANGERANG, BANK/E-WALLET & JAM OPERASIONAL
+		   ========================================================================== */
+		const STORE_CONFIG = {
+			storeName: 'Berkat Elektronik',
+			storageKey: 'berkat_elektronik_v3_state',
+			originName: 'Jl. Raya Merdeka No.35, RT.002/RW.001, Cimone Jaya, Kec. Karawaci, Kota Tangerang, Banten 15114',
+			originCoords: { lat: -6.1856, lng: 106.6127 },
+			roadDistanceMultiplier: 1.28,
+			maxRadiusKm: 30,
+			shippingStepKm: 5,
+			shippingRatePerStep: 10000,
+			serviceFee: 15000,
+			whatsappNumber: '6289529305947',
+			officialDestinations: [
+				{ id: 'GoPay', name: 'GoPay', holder: 'Berkat Elektronik', accountNumber: '089529305947' },
+				{ id: 'DANA', name: 'DANA', holder: 'Berkat Elektronik', accountNumber: '089529305947' },
+				{ id: 'Bank Jago', name: 'Bank Jago', holder: 'Berkat Elektronik', accountNumber: '12345678' }
+			]
+		};
+
+		/* Data Kecamatan Tangerang Kota & Tangerang Kabupaten beserta koordinat untuk kalkulasi jarak dari Cimone Jaya */
+		const TANGERANG_LOCATIONS = {
+			'Tangerang Kota': [
+				{ name: 'Karawaci (Cimone Jaya)', lat: -6.1856, lng: 106.6127 },
+				{ name: 'Cibodas', lat: -6.2028, lng: 106.6052 },
+				{ name: 'Periuk', lat: -6.1654, lng: 106.5948 },
+				{ name: 'Tangerang (Pusat Kota)', lat: -6.1783, lng: 106.6319 },
+				{ name: 'Jatiuwung', lat: -6.1972, lng: 106.5744 },
+				{ name: 'Neglasari', lat: -6.1422, lng: 106.6285 },
+				{ name: 'Batuceper', lat: -6.1539, lng: 106.6582 },
+				{ name: 'Benda', lat: -6.1158, lng: 106.6789 },
+				{ name: 'Cipondoh', lat: -6.1889, lng: 106.6745 },
+				{ name: 'Pinang', lat: -6.2248, lng: 106.6798 },
+				{ name: 'Karang Tengah', lat: -6.2165, lng: 106.7112 },
+				{ name: 'Ciledug', lat: -6.2351, lng: 106.7068 },
+				{ name: 'Larangan', lat: -6.2442, lng: 106.7265 }
+			],
+			'Tangerang Kabupaten': [
+				{ name: 'Kelapa Dua (Gading Serpong)', lat: -6.2421, lng: 106.6258 },
+				{ name: 'Curug', lat: -6.2564, lng: 106.5642 },
+				{ name: 'Pasar Kemis', lat: -6.1635, lng: 106.5284 },
+				{ name: 'Cikupa', lat: -6.2312, lng: 106.5125 },
+				{ name: 'Panongan (Citra Raya)', lat: -6.2718, lng: 106.5245 },
+				{ name: 'Legok', lat: -6.2985, lng: 106.5824 },
+				{ name: 'Pagedangan (BSD)', lat: -6.2952, lng: 106.6368 },
+				{ name: 'Cisauk', lat: -6.3228, lng: 106.6415 },
+				{ name: 'Sepatan', lat: -6.1182, lng: 106.5784 },
+				{ name: 'Sepatan Timur', lat: -6.1225, lng: 106.6054 },
+				{ name: 'Rajeg', lat: -6.1145, lng: 106.5268 },
+				{ name: 'Sindang Jaya', lat: -6.1785, lng: 106.4892 },
+				{ name: 'Teluknaga', lat: -6.0785, lng: 106.6382 },
+				{ name: 'Kosambi', lat: -6.0895, lng: 106.6884 },
+				{ name: 'Pakuhaji', lat: -6.0642, lng: 106.5812 },
+				{ name: 'Sukadiri', lat: -6.0782, lng: 106.5345 },
+				{ name: 'Tigaraksa', lat: -6.2645, lng: 106.4682 },
+				{ name: 'Balaraja', lat: -6.2015, lng: 106.4585 },
+				{ name: 'Jambe', lat: -6.3245, lng: 106.4865 },
+				{ name: 'Mauk (Luar Radius >30 KM)', lat: -6.0612, lng: 106.4825 },
+				{ name: 'Cisoka (Luar Radius >30 KM)', lat: -6.2685, lng: 106.4182 },
+				{ name: 'Solear (Luar Radius >30 KM)', lat: -6.3125, lng: 106.4128 },
+				{ name: 'Jayanti (Luar Radius >30 KM)', lat: -6.1982, lng: 106.3985 },
+				{ name: 'Kresek (Luar Radius >30 KM)', lat: -6.1342, lng: 106.3845 },
+				{ name: 'Kronjo (Luar Radius >30 KM)', lat: -6.0745, lng: 106.4185 }
+			]
+		};
+
+		/* 13 Pilihan Bank & E-Wallet Lengkap */
+		const PAYMENT_PROVIDERS = [
+			{ id: 'Bank Jago', label: 'Bank Jago', type: 'Bank Digital', bg: '#F59E0B', fg: '#1F2937', code: 'JG' },
+			{ id: 'GoPay', label: 'GoPay', type: 'E-Wallet', bg: '#00AED6', fg: '#FFFFFF', code: 'GP' },
+			{ id: 'DANA', label: 'DANA', type: 'E-Wallet', bg: '#118EEA', fg: '#FFFFFF', code: 'DN' },
+			{ id: 'BCA', label: 'Bank BCA', type: 'Transfer Bank', bg: '#1D4ED8', fg: '#FFFFFF', code: 'BCA' },
+			{ id: 'BRI', label: 'Bank BRI', type: 'Transfer Bank', bg: '#0369A1', fg: '#FFFFFF', code: 'BRI' },
+			{ id: 'BNI', label: 'Bank BNI', type: 'Transfer Bank', bg: '#EA580C', fg: '#FFFFFF', code: 'BNI' },
+			{ id: 'Bank Mandiri', label: 'Bank Mandiri', type: 'Transfer Bank', bg: '#1E3A8A', fg: '#FACC15', code: 'MDR' },
+			{ id: 'BSI', label: 'Bank Syariah Indonesia', type: 'Transfer Bank', bg: '#0D9488', fg: '#FFFFFF', code: 'BSI' },
+			{ id: 'CIMB Niaga', label: 'CIMB Niaga', type: 'Transfer Bank', bg: '#B91C1C', fg: '#FFFFFF', code: 'CMB' },
+			{ id: 'SeaBank', label: 'SeaBank', type: 'Bank Digital', bg: '#F97316', fg: '#FFFFFF', code: 'SEA' },
+			{ id: 'OVO', label: 'OVO', type: 'E-Wallet', bg: '#6D28D9', fg: '#FFFFFF', code: 'OVO' },
+			{ id: 'ShopeePay', label: 'ShopeePay', type: 'E-Wallet', bg: '#EE4D2D', fg: '#FFFFFF', code: 'SPY' },
+			{ id: 'LinkAja', label: 'LinkAja', type: 'E-Wallet', bg: '#DC2626', fg: '#FFFFFF', code: 'LNK' }
+		];
+
+		function getPaymentIconSvg(providerId, sizeClass = 'w-6 h-6') {
+			const item = PAYMENT_PROVIDERS.find(p => p.id === providerId) || {
+				bg: '#4A7C59',
+				fg: '#FFFFFF',
+				code: 'PAY'
+			};
+			const fontSize = item.code.length >= 3 ? '9.5' : '11';
+			return `
+				<svg class="${sizeClass} aspect-square shrink-0 rounded-lg" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+					<rect width="32" height="32" rx="8" fill="${item.bg}"></rect>
+					<rect x="0.75" y="0.75" width="30.5" height="30.5" rx="7.25" stroke="white" stroke-opacity="0.28" stroke-width="1.5"></rect>
+					<text x="16" y="19.5" text-anchor="middle" fill="${item.fg}" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" font-size="${fontSize}">${item.code}</text>
+				</svg>
+			`;
+		}
+
+		/* Modul Status Ketersediaan Jam Operasional Real-Time (WIB / Asia/Jakarta) */
+		const StoreAvailability = {
+			getStatus() {
+				const now = new Date();
+				const wibString = now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+				const wibDate = new Date(wibString);
+				const day = wibDate.getDay(); // 0 = Minggu, 1..6 = Senin..Sabtu
+				const hour = wibDate.getHours();
+				const minute = wibDate.getMinutes();
+				const currentMinutes = hour * 60 + minute;
+
+				const isWorkDay = day >= 1 && day <= 6;
+				const storeOpen = isWorkDay && currentMinutes >= 9 * 60 && currentMinutes < 17 * 60;
+				const onlineOpen = isWorkDay && currentMinutes >= 10 * 60 && currentMinutes < 15 * 60;
+
+				return {
+					storeOpen,
+					onlineOpen,
+					storeLabel: storeOpen ? 'Toko Buka (09.00–17.00)' : 'Toko Tutup (Sen–Sab 09.00–17.00)',
+					onlineLabel: onlineOpen ? 'Online Aktif (10.00–15.00)' : 'Online Offline (Sen–Sab 10.00–15.00)'
+				};
+			},
+
+			renderAllIndicators() {
+				const status = this.getStatus();
+
+				const headerBar = document.getElementById('header-availability-bar');
+				if (headerBar) {
+					headerBar.innerHTML = `
+						<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-medium ${status.storeOpen ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300' : 'theme-subtle theme-text-secondary'}">
+							<span class="w-1.5 h-1.5 rounded-full ${status.storeOpen ? 'bg-emerald-500' : 'bg-slate-400'}"></span>
+							<span>${status.storeLabel}</span>
+						</span>
+						<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-medium ${status.onlineOpen ? 'bg-sky-500/15 text-sky-700 dark:text-sky-300' : 'theme-subtle theme-text-secondary'}">
+							<span class="w-1.5 h-1.5 rounded-full ${status.onlineOpen ? 'bg-sky-500' : 'bg-amber-500'}"></span>
+							<span>${status.onlineLabel} WIB</span>
+						</span>
+					`;
+				}
+
+				const checkoutNotice = document.getElementById('checkout-availability-notice');
+				if (checkoutNotice) {
+					checkoutNotice.innerHTML = `
+						<div class="flex items-center gap-2">
+							<span class="w-2 h-2 rounded-full ${status.onlineOpen ? 'bg-emerald-500' : 'bg-amber-500'} shrink-0"></span>
+							<span class="theme-text-primary font-medium">
+								${status.onlineOpen
+									? 'Layanan Online & Pengiriman sedang AKTIF (Senin–Sabtu 10.00–15.00 WIB). Pesanan langsung diproses.'
+									: 'Di luar jam layanan online (Senin–Sabtu 10.00–15.00 WIB). Pesanan tetap dapat dikirim & akan diproses pada jam operasional berikutnya.'}
+							</span>
+						</div>
+						<span class="text-[11px] font-semibold accent-text shrink-0">Toko Fisik: 09.00–17.00 WIB</span>
+					`;
+				}
+
+				const footerStoreBadge = document.getElementById('footer-store-badge');
+				if (footerStoreBadge) {
+					footerStoreBadge.textContent = status.storeOpen ? 'Buka Sekarang' : 'Tutup';
+					footerStoreBadge.className = `px-2 py-0.5 rounded-full text-[10px] font-semibold ${status.storeOpen ? 'bg-emerald-500/15 text-emerald-600' : 'accent-soft-bg'}`;
+				}
+
+				const footerOnlineBadge = document.getElementById('footer-online-badge');
+				if (footerOnlineBadge) {
+					footerOnlineBadge.textContent = status.onlineOpen ? 'Online Aktif' : 'Jadwal 10–15 WIB';
+					footerOnlineBadge.className = `px-2 py-0.5 rounded-full text-[10px] font-semibold ${status.onlineOpen ? 'bg-emerald-500/15 text-emerald-600' : 'accent-soft-bg'}`;
+				}
+			}
+		};
+
+		/* ==========================================================================
+		   2. DATA SLIDER LANDSCAPE HEADER & REPOSITORY PRODUK JSON (FOLDER produk/ & foto/)
+		   ========================================================================== */
+		const HERO_SLIDES = [
+			{
+				title: 'Berkat Elektronik — Cimone Jaya, Tangerang',
+				subtitle: 'Pusat perangkat Pro Audio, Sound System, dan Komponen Elektronik terpercaya di Jl. Raya Merdeka No.35.',
+				badge: 'Toko Resmi Tangerang',
+				image: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1600&q=80'
+			},
+			{
+				title: 'Konsol Audio Mixer Studio & Panggung',
+				subtitle: 'Pilihan mixer analog dan digital dengan preamp jernih untuk kebutuhan live event maupun rekaman.',
+				badge: 'Kategori Mixer',
+				image: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1600&q=80'
+			},
+			{
+				title: 'Power Amplifier & Manajemen Speaker',
+				subtitle: 'Tenaga besar dan stabil dengan rangkaian proteksi lengkap untuk speaker lapangan dan ruangan.',
+				badge: 'Power & Ampli',
+				image: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=1600&q=80'
+			},
+			{
+				title: 'Komponen Elektronika & Rakitan Presisi',
+				subtitle: 'Tersedia transistor final, elco, PCB, trafo toroid, hingga modul kit audio siap rakit.',
+				badge: 'Komponen Lengkap',
+				image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80'
+			}
+		];
+
+		/* Daftar file JSON di folder "produk/" (Mendukung file berisi array produk maupun 1 objek produk) */
+		const PRODUCT_JSON_FILES = [
+			'produk/produk-toa.json',
+			'produk/prd-01.json',
+			'produk/prd-02.json',
+			'produk/prd-03.json',
+			'produk/prd-04.json',
+			'produk/prd-05.json',
+			'produk/prd-06.json',
+			'produk/prd-07.json',
+			'produk/prd-08.json',
+			'produk/prd-09.json',
+			'produk/prd-10.json',
+			'produk/prd-11.json',
+			'produk/prd-12.json',
+			'produk/prd-13.json',
+			'produk/prd-14.json'
+		];
+
+		/* Data produk bawaan (menggunakan path folder "foto/" untuk produk baru & mempertahankan mock lama sebagai fallback) */
+		const DEFAULT_PRODUCTS_DATA = [
+			{
+				id: 'prd-01',
+				name: 'Yamaha MG12XU 12-Channel Analog Mixer',
+				category: 'Mixer',
+				brand: 'Yamaha',
+				price: 4850000,
+				image: 'foto/prd-01.jpg',
+				fallbackImage: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=900&q=80',
+				description: 'Mixer audio 12 channel dengan preamp mikrofon D-PRE kelas studio, efek digital SPX 24 program, kompresor 1-knob, dan antarmuka audio USB 24-bit/192kHz yang tangguh untuk acara live maupun rekaman.',
+				specs: ['12 Channel (6 Mic / 12 Line)', 'Efek Digital SPX 24 Program', 'USB Audio Interface 24-bit/192kHz', 'Phantom Power +48V']
+			},
+			{
+				id: 'prd-02',
+				name: 'Ashley SMR-8 Pro 8-Channel Audio Mixer',
+				category: 'Mixer',
+				brand: 'Ashley',
+				price: 1650000,
+				image: 'foto/prd-02.jpg',
+				fallbackImage: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=900&q=80',
+				description: 'Mixer audio 8 channel mono dengan fitur Bluetooth, pemutar MP3 USB, 99 DSP Reverb, serta 7-band stereo graphic equalizer untuk pengaturan vokal dan musik yang detail serta bebas noise.',
+				specs: ['8 Channel Mono Full', '99 DSP Digital Multi-Effect', '7-Band Stereo Graphic EQ', 'Bluetooth & USB Recording']
+			},
+			{
+				id: 'prd-03',
+				name: 'RDW FA9000 Class H Touring Power Amplifier',
+				category: 'Power',
+				brand: 'RDW',
+				price: 6900000,
+				image: 'foto/prd-03.jpg',
+				fallbackImage: 'https://images.unsplash.com/photo-1558403194-611308249627?auto=format&fit=crop&w=900&q=80',
+				description: 'Power amplifier balap kelas H dengan daya dorong tinggi untuk subwoofer 18 inci ganda. Dilengkapi sistem pendingin kipas variabel dan proteksi short-circuit, DC, serta overload.',
+				specs: ['2 x 1600 Watt @ 8 Ohm', '2 x 2400 Watt @ 4 Ohm', 'Topologi Class H Efisien', 'Trafo Toroid Tembaga Murni']
+			},
+			{
+				id: 'prd-04',
+				name: 'Ashley PA-1200 Stereo Power Amplifier',
+				category: 'Power',
+				brand: 'Ashley',
+				price: 3450000,
+				image: 'foto/prd-04.jpg',
+				fallbackImage: 'https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=900&q=80',
+				description: 'Power amplifier 2 channel yang ideal untuk speaker vokal 12 hingga 15 inci. Menghasilkan suara jernih dengan damping factor tinggi dan sirkuit soft-start agar listrik rumah tetap aman.',
+				specs: ['2 x 600 Watt @ 8 Ohm', '2 x 900 Watt @ 4 Ohm', 'Mode Stereo / Parallel / Bridge', 'Indikator Signal, Clip & Protect']
+			},
+			{
+				id: 'prd-05',
+				name: 'TOA ZA-2120 Public Address Amplifier 120W',
+				category: 'Ampli',
+				brand: 'TOA',
+				price: 2350000,
+				image: 'foto/prd-05.jpg',
+				fallbackImage: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=900&q=80',
+				description: 'Amplifier masjid, sekolah, dan gedung perkantoran berdaya 120 Watt dengan output High Impedance (100V/70V) dan Low Impedance (4-16 Ohm). Sangat awet untuk pemakaian jangka panjang.',
+				specs: ['Daya Output 120 Watt RMS', '3 Input Mic + 2 Input AUX', 'Kontrol Nada Bass & Treble', 'Dukungan AC 220V & DC 24V']
+			},
+			{
+				id: 'prd-06',
+				name: 'BMB DA-2000 Pro Digital Echo Karaoke Ampli',
+				category: 'Ampli',
+				brand: 'BMB',
+				price: 2890000,
+				image: 'foto/prd-06.jpg',
+				fallbackImage: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80',
+				description: 'Integrated karaoke amplifier dengan pemrosesan echo digital halus, 4 input mikrofon depan/belakang, serta kontrol key-changer untuk kenyamanan bernyanyi di ruang keluarga.',
+				specs: ['Output 2 x 175 Watt', 'Digital Echo & Key Control', '4 Input Mikrofon', 'Proteksi Panas Otomatis']
+			},
+			{
+				id: 'prd-07',
+				name: 'DBX 234XL Stereo 2/3-Way & Mono 4-Way Crossover',
+				category: 'Crossover',
+				brand: 'DBX',
+				price: 1150000,
+				image: 'https://images.unsplash.com/photo-1519508234439-4f23643125c1?auto=format&fit=crop&w=900&q=80',
+				fallbackImage: 'https://images.unsplash.com/photo-1519508234439-4f23643125c1?auto=format&fit=crop&w=900&q=80',
+				description: 'Crossover aktif presisi tinggi dengan filter Linkwitz-Riley 24dB/oktaf untuk memisahkan frekuensi Sub, Low, Mid, dan High secara akurat menggunakan konektor XLR balanced.',
+				specs: ['Stereo 2/3-Way atau Mono 4-Way', 'Filter Linkwitz-Riley 24dB/Oct', 'Sakelar Phase Invert per Output', 'Low Cut 40Hz Filter']
+			},
+			{
+				id: 'prd-08',
+				name: 'Behringer CX3400 Super-X Pro Active Crossover',
+				category: 'Crossover',
+				brand: 'Behringer',
+				price: 1480000,
+				image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=900&q=80',
+				fallbackImage: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=900&q=80',
+				description: 'Crossover aktif berpresisi tinggi dengan limiter independen di setiap jalur frekuensi dan fitur CD Horn EQ untuk kejernihan driver tweeter berdaya besar.',
+				specs: ['Limiter Aktif per Output', 'CD Horn Equalization', 'Konektor XLR Gold-Plated', 'Sakelar Mute Individu']
+			},
+			{
+				id: 'prd-09',
+				name: 'DBX 231s Dual Channel 31-Band Graphic Equalizer',
+				category: 'Equalizer',
+				brand: 'DBX',
+				price: 1750000,
+				image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=900&q=80',
+				fallbackImage: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=900&q=80',
+				description: 'Equalizer grafik stereo 31-band dengan pilihan rentang boost/cut ±6dB atau ±12dB, filter low-cut 50Hz, dan fader presisi 20mm untuk meredam feedback ruangan.',
+				specs: ['Dual 31-Band 1/3 Octave', 'Rentang ±6dB / ±12dB Switchable', 'Low-Cut Filter 50Hz 12dB/Oct', 'Input/Output XLR & TRS Balanced']
+			},
+			{
+				id: 'prd-10',
+				name: 'Behringer FBQ3102HD Ultragraph Pro Equalizer',
+				category: 'Equalizer',
+				brand: 'Behringer',
+				price: 1920000,
+				image: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=900&q=80',
+				fallbackImage: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=900&q=80',
+				description: 'Equalizer 31-band stereo dengan sistem deteksi feedback FBQ yang menyalakan LED pada fader frekuensi bermasalah, dilengkapi output subwoofer khusus dengan frekuensi crossover variabel.',
+				specs: ['FBQ Feedback Detection System', 'Dedicated Mono Sub Output', 'Low & High Cut Sweepable', '4580 Ultra Low-Noise Op-Amp']
+			},
+			{
+				id: 'prd-11',
+				name: 'JBL EON715 15-Inch Active PA Speaker 1300W',
+				category: 'Speaker',
+				brand: 'JBL',
+				price: 7850000,
+				image: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=900&q=80',
+				fallbackImage: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=900&q=80',
+				description: 'Speaker aktif 15 inci bertenaga 1300W Peak dengan DSP dbx bawaan, layar LCD berwarna, kontrol Bluetooth aplikasi JBL Pro Connect, dan desain kabinet ergonomis ringan.',
+				specs: ['Woofer 15 Inci Custom JBL', 'Daya 1300W Peak / 650W RMS', 'Built-in dbx DSP & Feedback Suppression', 'Bluetooth 5.0 Streaming']
+			},
+			{
+				id: 'prd-12',
+				name: 'ACR 18700 Black 18-Inch Subwoofer Component',
+				category: 'Speaker',
+				brand: 'ACR',
+				price: 1580000,
+				image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=900&q=80',
+				fallbackImage: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=900&q=80',
+				description: 'Komponen speaker subwoofer 18 inci dengan voice coil 4 inci berlapis ganda dan rangka aluminium die-cast kokoh untuk dentuman bass rendah yang padat.',
+				specs: ['Diameter 18 Inci / 8 Ohm', 'Max Power 1200 Watt', 'Voice Coil 99.2 mm (4 Inci)', 'Rangka Die-Cast Aluminium']
+			},
+			{
+				id: 'prd-13',
+				name: 'Paket Transistor Final Toshiba 2SC5200 & 2SA1943 (4 Set)',
+				category: 'Komponen',
+				brand: 'Toshiba',
+				price: 220000,
+				image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
+				fallbackImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
+				description: 'Paket 4 pasang transistor final power amplifier original lot pilihan (matched gain) untuk perakitan maupun servis power amplifier berdaya besar.',
+				specs: ['4 Pasang (8 Pcs) 2SC5200 + 2SA1943', 'Tegangan Kolektor-Emitor 230V', 'Arus Kolektor Kontinu 15A', 'Original Lot Siap Pasang']
+			},
+			{
+				id: 'prd-14',
+				name: 'Trafo Toroid 15A CT 55V Tembaga Murni + Kit PSU Elco',
+				category: 'Komponen',
+				brand: 'Berkat Pro',
+				price: 980000,
+				image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=900&q=80',
+				fallbackImage: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=900&q=80',
+				description: 'Transformator donat (toroid) 15 Ampere murni gulungan kawat tembaga grade A lengkap dengan baut dudukan dan kit rectifier 6 elco 10.000uF/100V rendah dengung.',
+				specs: ['Kapasitas 15A Murni CT 45V–55V', 'Kawat Tembaga Hellenic Grade A', 'Minim Induksi & Rendah Panas', 'Termasuk Baut & Karet Peredam']
+			}
+		];
+
+		/* Array aktif produk yang diisi dari folder "produk/*.json" dengan fallback otomatis */
+		let PRODUCTS_DATA = [...DEFAULT_PRODUCTS_DATA];
+
+		/* Repository Loader: Mendukung JSON berisi Array Produk [ {...}, {...} ] maupun Objek Tunggal {...} */
+		const ProductRepository = {
+			normalizeItem(raw) {
+				if (!raw || !raw.id || !raw.name) return null;
+				const categoryLabel = raw.category || 'Elektronik';
+				return {
+					id: String(raw.id),
+					name: String(raw.name),
+					category: String(categoryLabel),
+					brand: String(raw.brand || 'Umum'),
+					price: Number(raw.price || 0),
+					image: String(raw.image || `foto/${raw.id}.jpg`),
+					description: String(raw.description || ''),
+					specs: Array.isArray(raw.specs) ? raw.specs : [],
+					fallbackImage: raw.fallbackImage || `https://placehold.co/800x550/EBF0EC/4A7C59?text=${encodeURIComponent(categoryLabel)}`
+				};
+			},
+
+			extractItemsFromParsedJson(parsed) {
+				if (!parsed) return [];
+				if (Array.isArray(parsed)) {
+					return parsed.map(item => this.normalizeItem(item)).filter(Boolean);
+				}
+				if (Array.isArray(parsed.products)) {
+					return parsed.products.map(item => this.normalizeItem(item)).filter(Boolean);
+				}
+				const single = this.normalizeItem(parsed);
+				return single ? [single] : [];
+			},
+
+			async loadAll() {
+				const loadedMap = new Map(DEFAULT_PRODUCTS_DATA.map(item => [item.id, item]));
+				let externalCount = 0;
+
+				const tasks = PRODUCT_JSON_FILES.map(async (jsonPath) => {
+					try {
+						const res = await fetch(jsonPath, { cache: 'no-cache' });
+						if (!res.ok) return [];
+						const parsed = await res.json();
+						return this.extractItemsFromParsedJson(parsed);
+					} catch (err) {
+						return [];
+					}
+				});
+
+				const results = await Promise.all(tasks);
+				results.forEach(items => {
+					items.forEach(item => {
+						loadedMap.set(item.id, item);
+						externalCount++;
+					});
+				});
+
+				PRODUCTS_DATA = Array.from(loadedMap.values());
+
+				/* Jika dibuka lewat file:// (tanpa web server) sehingga fetch diblokir browser, tampilkan banner bantuan */
+				const fileNotice = document.getElementById('file-protocol-notice');
+				if (externalCount === 0 && window.location.protocol === 'file:' && fileNotice) {
+					fileNotice.classList.remove('hidden');
+				}
+			},
+
+			async loadFromFileList(fileList) {
+				if (!fileList || fileList.length === 0) return;
+				const loadedMap = new Map(PRODUCTS_DATA.map(item => [item.id, item]));
+				let addedCount = 0;
+
+				for (const file of Array.from(fileList)) {
+					try {
+						const text = await file.text();
+						const parsed = JSON.parse(text);
+						const extracted = this.extractItemsFromParsedJson(parsed);
+						extracted.forEach(item => {
+							loadedMap.set(item.id, item);
+							addedCount++;
+						});
+					} catch (err) {
+						Toast.show(`Gagal membaca berkas "${file.name}": format JSON tidak valid.`, 'error');
+					}
+				}
+
+				if (addedCount > 0) {
+					PRODUCTS_DATA = Array.from(loadedMap.values());
+					document.getElementById('file-protocol-notice')?.classList.add('hidden');
+					UIRenderer.refreshCatalogAndFilters();
+					SoundHaptic.feedback('success');
+					Toast.show(`${addedCount} produk dari file JSON berhasil dimuat ke katalog!`, 'success', 4000);
+				} else {
+					SoundHaptic.feedback('warning');
+					Toast.show('Tidak ada data produk valid di dalam file JSON yang dipilih.', 'warning');
+				}
+			},
+
+			downloadSampleProductJson() {
+				const sampleProduct = [
+					{
+						id: 'toa-01',
+						name: 'TOA ZA-230W Public Address Mixer Amplifier 30 Watt',
+						category: 'Ampli',
+						brand: 'TOA',
+						price: 0,
+						image: 'foto/toa-01.jpg',
+						description: 'Mixer amplifier ringkas berdaya 30 Watt RMS dengan dukungan output High Impedance (100V line) dan Low Impedance (4 Ohm).',
+						specs: [
+							'Daya Output 30 Watt RMS',
+							'3 Input Mikrofon + 2 Input AUX',
+							'Output High Impedance (100V) & Low Impedance (4 Ohm)'
+						]
+					}
+				];
+				const blob = new Blob([JSON.stringify(sampleProduct, null, '\t')], { type: 'application/json' });
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = url;
+				a.download = 'contoh-produk.json';
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+				URL.revokeObjectURL(url);
+				SoundHaptic.feedback('success');
+				Toast.show('Template contoh-produk.json berhasil diunduh!', 'success', 3800);
+			}
+		};
+
+		/* ==========================================================================
+		   3. MODUL SUARA SINTETIS BERVARIASI (WEB AUDIO API) & GETAR (HAPTIC)
+		   ========================================================================== */
+		const SoundHaptic = {
+			audioCtx: null,
+
+			initContext() {
+				if (!this.audioCtx) {
+					const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+					if (AudioContextClass) {
+						this.audioCtx = new AudioContextClass();
+					}
+				}
+				if (this.audioCtx && this.audioCtx.state === 'suspended') {
+					this.audioCtx.resume().catch(() => {});
+				}
+			},
+
+			scheduleNote(freq, startOffset, duration, type = 'sine', peakGain = 0.06, endFreq = null) {
+				if (!this.audioCtx) return;
+				const now = this.audioCtx.currentTime + startOffset;
+				const osc = this.audioCtx.createOscillator();
+				const gain = this.audioCtx.createGain();
+
+				osc.type = type;
+				osc.frequency.setValueAtTime(freq, now);
+				if (endFreq !== null) {
+					osc.frequency.exponentialRampToValueAtTime(endFreq, now + duration);
+				}
+
+				gain.gain.setValueAtTime(0.0001, now);
+				gain.gain.linearRampToValueAtTime(peakGain, now + 0.012);
+				gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+				osc.connect(gain);
+				gain.connect(this.audioCtx.destination);
+				osc.start(now);
+				osc.stop(now + duration + 0.015);
+			},
+
+			playTone(type = 'click') {
+				if (!AppState.data.settings.sound) return;
+				try {
+					this.initContext();
+					if (!this.audioCtx) return;
+
+					switch (type) {
+						case 'click':
+							this.scheduleNote(540, 0, 0.045, 'sine', 0.05, 360);
+							break;
+						case 'dropdown':
+							this.scheduleNote(460, 0, 0.04, 'triangle', 0.05, 580);
+							this.scheduleNote(640, 0.045, 0.05, 'sine', 0.045);
+							break;
+						case 'cart':
+							this.scheduleNote(523.25, 0, 0.08, 'triangle', 0.065);
+							this.scheduleNote(659.25, 0.06, 0.08, 'triangle', 0.065);
+							this.scheduleNote(783.99, 0.12, 0.14, 'sine', 0.07);
+							break;
+						case 'like':
+							this.scheduleNote(587.33, 0, 0.09, 'sine', 0.065);
+							this.scheduleNote(880.00, 0.07, 0.16, 'sine', 0.06);
+							break;
+						case 'unlike':
+							this.scheduleNote(622.25, 0, 0.08, 'sine', 0.05);
+							this.scheduleNote(415.30, 0.07, 0.13, 'sine', 0.045);
+							break;
+						case 'delete':
+							this.scheduleNote(310, 0, 0.13, 'triangle', 0.065, 165);
+							break;
+						case 'modalOpen':
+							this.scheduleNote(392.00, 0, 0.09, 'sine', 0.045, 587.33);
+							break;
+						case 'modalClose':
+							this.scheduleNote(523.25, 0, 0.08, 'sine', 0.04, 349.23);
+							break;
+						case 'copy':
+							this.scheduleNote(987.77, 0, 0.09, 'sine', 0.06);
+							this.scheduleNote(1318.51, 0.05, 0.16, 'sine', 0.05);
+							break;
+						case 'success':
+							this.scheduleNote(523.25, 0, 0.10, 'sine', 0.07);
+							this.scheduleNote(659.25, 0.08, 0.10, 'sine', 0.07);
+							this.scheduleNote(783.99, 0.16, 0.10, 'sine', 0.07);
+							this.scheduleNote(1046.50, 0.24, 0.24, 'triangle', 0.075);
+							break;
+						case 'warning':
+							this.scheduleNote(250, 0, 0.10, 'sawtooth', 0.045, 210);
+							this.scheduleNote(210, 0.12, 0.14, 'sawtooth', 0.045, 175);
+							break;
+						default:
+							this.scheduleNote(500, 0, 0.05, 'sine', 0.05, 380);
+					}
+				} catch (err) {
+					/* Abaikan jika browser memblokir autoplay audio */
+				}
+			},
+
+			vibrate(pattern = 18) {
+				if (!AppState.data.settings.vibrate) return;
+				if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+					try {
+						navigator.vibrate(pattern);
+					} catch (err) {
+						/* Abaikan pada perangkat non-haptic */
+					}
+				}
+			},
+
+			feedback(type = 'click') {
+				this.playTone(type);
+				const patterns = {
+					warning: [30, 45, 30],
+					success: [18, 28, 35],
+					delete: [25, 20],
+					cart: [15, 25, 20],
+					copy: [12, 20, 12]
+				};
+				this.vibrate(patterns[type] || 14);
+			}
+		};
+
+		/* ==========================================================================
+		   4. SISTEM TOAST NOTIFICATION (PENGGANTI ALERT & CONFIRM BAWAAN)
+		   ========================================================================== */
+		const Toast = {
+			show(message, type = 'info', duration = 3400) {
+				const container = document.getElementById('toast-container');
+				if (!container) return;
+
+				const styles = {
+					success: { badge: 'bg-emerald-600 text-white', icon: '✓' },
+					warning: { badge: 'bg-amber-500 text-white', icon: '!' },
+					error: { badge: 'bg-rose-600 text-white', icon: '✕' },
+					info: { badge: 'accent-bg', icon: 'i' }
+				};
+				const cfg = styles[type] || styles.info;
+
+				const el = document.createElement('div');
+				el.className = 'pointer-events-auto theme-surface border rounded-2xl p-3.5 shadow-lg flex items-start gap-3 animate-toast-enter';
+				el.innerHTML = `
+					<span class="w-6 h-6 rounded-full ${cfg.badge} text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">${cfg.icon}</span>
+					<p class="text-xs sm:text-sm font-medium theme-text-primary flex-1 leading-snug">${message}</p>
+					<button type="button" aria-label="Tutup Notifikasi" class="text-xs theme-text-muted hover:theme-text-primary px-1">✕</button>
+				`;
+
+				const removeToast = () => {
+					el.style.opacity = '0';
+					el.style.transform = 'translateX(16px)';
+					el.style.transition = 'all 0.22s ease';
+					setTimeout(() => el.remove(), 220);
+				};
+
+				el.querySelector('button').addEventListener('click', removeToast);
+				container.appendChild(el);
+				setTimeout(removeToast, duration);
+			}
+		};
+
+		/* ==========================================================================
+		   5. KOMPONEN CUSTOM DROPDOWN (PENGGANTI <SELECT> & <OPTION> BAWAAN)
+		   ========================================================================== */
+		class CustomDropdown {
+			constructor({ containerId, options = [], value = '', placeholder = 'Pilih...', onChange = null }) {
+				this.container = document.getElementById(containerId);
+				this.options = options;
+				this.value = value;
+				this.placeholder = placeholder;
+				this.onChange = onChange;
+				this.isOpen = false;
+				CustomDropdown.instances.push(this);
+				this.render();
+			}
+
+			setOptions(options, newValue = null) {
+				this.options = options;
+				if (newValue !== null) {
+					this.value = newValue;
+				}
+				this.render();
+			}
+
+			setValue(val, triggerCallback = false) {
+				this.value = val;
+				this.render();
+				if (triggerCallback && typeof this.onChange === 'function') {
+					this.onChange(val);
+				}
+			}
+
+			getSelectedLabel() {
+				const found = this.options.find(opt => String(opt.value) === String(this.value));
+				return found ? found.label : this.placeholder;
+			}
+
+			getSelectedOption() {
+				return this.options.find(opt => String(opt.value) === String(this.value)) || null;
+			}
+
+			render() {
+				if (!this.container) return;
+				const selectedOpt = this.getSelectedOption();
+				const selectedLabel = selectedOpt ? selectedOpt.label : this.placeholder;
+				const selectedIcon = selectedOpt && selectedOpt.iconHtml ? selectedOpt.iconHtml : '';
+
+				this.container.innerHTML = `
+					<button type="button" aria-haspopup="listbox" aria-expanded="${this.isOpen}" class="custom-dd-trigger w-full px-3.5 py-2.5 rounded-xl border theme-elevated theme-text-primary text-xs sm:text-sm font-medium flex items-center justify-between gap-2 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-emerald-600/30 transition text-left">
+						<span class="flex items-center gap-2 min-w-0">
+							${selectedIcon}
+							<span class="truncate">${selectedLabel}</span>
+						</span>
+						<svg class="w-4 h-4 theme-text-muted shrink-0 transition-transform duration-200 ${this.isOpen ? 'rotate-180' : ''}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+							<polyline points="6 9 12 15 18 9"></polyline>
+						</svg>
+					</button>
+					<div role="listbox" class="${this.isOpen ? 'block' : 'hidden'} custom-dd-menu absolute left-0 right-0 top-full mt-1.5 max-h-60 overflow-y-auto rounded-2xl border theme-surface shadow-xl z-40 p-1.5 space-y-0.5 animate-modal-enter">
+						${this.options.map(opt => {
+							const isSelected = String(opt.value) === String(this.value);
+							const iconHtml = opt.iconHtml || '';
+							return `
+								<button type="button" role="option" aria-selected="${isSelected}" data-dd-val="${String(opt.value).replace(/"/g, '&quot;')}" class="w-full px-3 py-2 rounded-xl text-left text-xs sm:text-sm flex items-center justify-between gap-2 transition ${isSelected ? 'accent-soft-bg font-semibold' : 'theme-text-primary hover:theme-subtle'}">
+									<span class="flex items-center gap-2 min-w-0">
+										${iconHtml}
+										<span class="truncate">${opt.label}</span>
+									</span>
+									${isSelected ? '<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}
+								</button>
+							`;
+						}).join('')}
+					</div>
+				`;
+
+				const triggerBtn = this.container.querySelector('.custom-dd-trigger');
+				triggerBtn.addEventListener('click', (e) => {
+					e.stopPropagation();
+					SoundHaptic.feedback('dropdown');
+					const wasOpen = this.isOpen;
+					CustomDropdown.closeAll();
+					this.isOpen = !wasOpen;
+					this.render();
+				});
+
+				this.container.querySelectorAll('[data-dd-val]').forEach(itemBtn => {
+					itemBtn.addEventListener('click', (e) => {
+						e.stopPropagation();
+						SoundHaptic.feedback('dropdown');
+						const chosenVal = itemBtn.getAttribute('data-dd-val');
+						this.value = chosenVal;
+						this.isOpen = false;
+						this.render();
+						if (typeof this.onChange === 'function') {
+							this.onChange(chosenVal);
+						}
+					});
+				});
+			}
+
+			static closeAll() {
+				CustomDropdown.instances.forEach(inst => {
+					if (inst.isOpen) {
+						inst.isOpen = false;
+						inst.render();
+					}
+				});
+			}
+		}
+		CustomDropdown.instances = [];
+		document.addEventListener('click', () => CustomDropdown.closeAll());
+
+		/* ==========================================================================
+		   6. STATE MANAGEMENT APLIKASI & LOCALSTORAGE PERSISTENCE
+		   ========================================================================== */
+		const AppState = {
+			filters: {
+				search: '',
+				category: 'Semua',
+				brand: 'Semua',
+				priceRange: 'all',
+				sort: 'default'
+			},
+
+			defaultData() {
+				return {
+					settings: {
+						theme: 'light',
+						accent: 'hijau',
+						fontSize: '16px',
+						fontFamily: "'Plus Jakarta Sans', sans-serif",
+						fontWeight: '400',
+						animations: true,
+						sound: true,
+						vibrate: true
+					},
+					profile: {
+						avatar: 'https://placehold.co/160x160/4A7C59/FFFFFF?text=BE',
+						fullName: 'Budi Santoso',
+						region: 'Tangerang Kota',
+						district: 'Karawaci (Cimone Jaya)',
+						address: 'Jl. Raya Merdeka No. 45, RT 03/RW 02, Cimone Jaya, Karawaci',
+						phone: '081288994421',
+						bank: 'Bank Jago'
+					},
+					cart: [
+						{ productId: 'prd-02', qty: 1 },
+						{ productId: 'prd-13', qty: 2 }
+					],
+					likes: ['prd-01', 'prd-11'],
+					searchHistory: ['TOA', 'Yamaha', 'Mixer 8 Channel', 'Corong', 'Spul'],
+					orderHistory: []
+				};
+			},
+
+			data: null,
+
+			init() {
+				try {
+					const raw = localStorage.getItem(STORE_CONFIG.storageKey);
+					if (raw) {
+						const parsed = JSON.parse(raw);
+						const def = this.defaultData();
+						this.data = {
+							settings: { ...def.settings, ...(parsed.settings || {}) },
+							profile: { ...def.profile, ...(parsed.profile || {}) },
+							cart: Array.isArray(parsed.cart) ? parsed.cart : def.cart,
+							likes: Array.isArray(parsed.likes) ? parsed.likes : def.likes,
+							searchHistory: Array.isArray(parsed.searchHistory) ? parsed.searchHistory : def.searchHistory,
+							orderHistory: Array.isArray(parsed.orderHistory) ? parsed.orderHistory : def.orderHistory
+						};
+					} else {
+						this.data = this.defaultData();
+						this.save();
+					}
+				} catch (err) {
+					this.data = this.defaultData();
+				}
+			},
+
+			save() {
+				try {
+					localStorage.setItem(STORE_CONFIG.storageKey, JSON.stringify(this.data));
+				} catch (err) {
+					Toast.show('Gagal menyimpan data lokal (penyimpanan penuh).', 'warning');
+				}
+			},
+
+			formatRupiah(num) {
+				const val = Number(num || 0);
+				if (val <= 0) return 'Hubungi Toko (Rp 0)';
+				return 'Rp ' + val.toLocaleString('id-ID');
+			},
+
+			getProductById(id) {
+				return PRODUCTS_DATA.find(p => p.id === id) || null;
+			},
+
+			addToCart(productId, qty = 1) {
+				const product = this.getProductById(productId);
+				if (!product) return;
+
+				const existing = this.data.cart.find(item => item.productId === productId);
+				if (existing) {
+					existing.qty += qty;
+				} else {
+					this.data.cart.push({ productId, qty });
+				}
+
+				this.save();
+				UIRenderer.updateBadges();
+				SoundHaptic.feedback('cart');
+				Toast.show(`"${product.name}" ditambahkan ke keranjang.`, 'success');
+			},
+
+			updateCartQty(productId, delta) {
+				const item = this.data.cart.find(c => c.productId === productId);
+				if (!item) return;
+
+				item.qty += delta;
+				if (item.qty <= 0) {
+					this.removeFromCart(productId);
+					return;
+				}
+
+				this.save();
+				UIRenderer.updateBadges();
+				UIRenderer.renderCartModal();
+				SoundHaptic.feedback('click');
+			},
+
+			removeFromCart(productId, refreshCheckout = false) {
+				const product = this.getProductById(productId);
+				this.data.cart = this.data.cart.filter(item => item.productId !== productId);
+				this.save();
+				UIRenderer.updateBadges();
+				UIRenderer.renderCartModal();
+				if (refreshCheckout) {
+					CheckoutController.renderSummary();
+				}
+				SoundHaptic.feedback('delete');
+				if (product) {
+					Toast.show(`"${product.name}" dihapus dari daftar belanja.`, 'info');
+				}
+			},
+
+			toggleLike(productId) {
+				const product = this.getProductById(productId);
+				if (!product) return;
+
+				const exists = this.data.likes.includes(productId);
+				if (exists) {
+					this.data.likes = this.data.likes.filter(id => id !== productId);
+					SoundHaptic.feedback('unlike');
+					Toast.show(`Dihapus dari daftar suka: ${product.name}`, 'info');
+				} else {
+					this.data.likes.unshift(productId);
+					SoundHaptic.feedback('like');
+					Toast.show(`Disukai: ${product.name}`, 'success');
+				}
+
+				this.save();
+				UIRenderer.updateBadges();
+				UIRenderer.renderProducts();
+			},
+
+			recordSearch(query) {
+				const clean = query.trim();
+				if (clean.length < 2) return;
+				this.data.searchHistory = [
+					clean,
+					...this.data.searchHistory.filter(q => q.toLowerCase() !== clean.toLowerCase())
+				].slice(0, 10);
+				this.save();
+				UIRenderer.renderSearchHistoryChips();
+			},
+
+			getFilteredProducts() {
+				const { search, category, brand, priceRange, sort } = this.filters;
+				const q = search.trim().toLowerCase();
+
+				let result = PRODUCTS_DATA.filter(item => {
+					if (category !== 'Semua' && item.category !== category) return false;
+					if (brand !== 'Semua' && item.brand !== brand) return false;
+
+					if (priceRange === 'under1m' && item.price >= 1000000) return false;
+					if (priceRange === '1to3m' && (item.price < 1000000 || item.price > 3000000)) return false;
+					if (priceRange === '3to6m' && (item.price <= 3000000 || item.price > 6000000)) return false;
+					if (priceRange === 'above6m' && item.price <= 6000000) return false;
+
+					if (q) {
+						const priceStr = String(item.price);
+						const formattedPrice = this.formatRupiah(item.price).toLowerCase();
+						const haystack = [
+							item.name,
+							item.brand,
+							item.category,
+							item.description,
+							priceStr,
+							formattedPrice
+						].join(' ').toLowerCase();
+
+						if (!haystack.includes(q)) return false;
+					}
+
+					return true;
+				});
+
+				if (sort === 'az') {
+					result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+				} else if (sort === 'za') {
+					result = [...result].sort((a, b) => b.name.localeCompare(a.name));
+				} else if (sort === 'price_asc') {
+					result = [...result].sort((a, b) => a.price - b.price);
+				} else if (sort === 'price_desc') {
+					result = [...result].sort((a, b) => b.price - a.price);
+				}
+
+				return result;
+			}
+		};
+
+		/* ==========================================================================
+		   7. KALKULATOR JARAK & ONGKOS KIRIM (CIMONE JAYA, TANGERANG 0–30 KM)
+		   ========================================================================== */
+		const ShippingCalculator = {
+			toRad(deg) {
+				return deg * (Math.PI / 180);
+			},
+
+			calculateRoadDistanceKm(lat2, lng2) {
+				const { lat: lat1, lng: lng1 } = STORE_CONFIG.originCoords;
+				const R = 6371;
+				const dLat = this.toRad(lat2 - lat1);
+				const dLng = this.toRad(lng2 - lng1);
+				const a =
+					Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+					Math.cos(this.toRad(lat1)) * Math.cos(this.toRad(lat2)) *
+					Math.sin(dLng / 2) * Math.sin(dLng / 2);
+				const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+				const straightKm = R * c;
+				const estimatedRoadKm = Math.max(1.2, straightKm * STORE_CONFIG.roadDistanceMultiplier);
+				return Math.round(estimatedRoadKm * 10) / 10;
+			},
+
+			evaluateShipping(region, districtName) {
+				if (region !== 'Tangerang Kota' && region !== 'Tangerang Kabupaten') {
+					return {
+						eligible: false,
+						distanceKm: null,
+						cost: 0,
+						brackets: 0,
+						reason: 'Maaf, Berkat Elektronik hanya melayani pengiriman untuk wilayah Tangerang Kota dan Tangerang Kabupaten.'
+					};
+				}
+
+				const list = TANGERANG_LOCATIONS[region] || [];
+				const found = list.find(d => d.name === districtName);
+				if (!found) {
+					return {
+						eligible: false,
+						distanceKm: null,
+						cost: 0,
+						brackets: 0,
+						reason: 'Silakan pilih kecamatan tujuan yang valid di Tangerang.'
+					};
+				}
+
+				const distanceKm = this.calculateRoadDistanceKm(found.lat, found.lng);
+
+				if (distanceKm > STORE_CONFIG.maxRadiusKm) {
+					return {
+						eligible: false,
+						distanceKm,
+						cost: 0,
+						brackets: 0,
+						reason: `Jarak ke ${found.name} sekitar ${distanceKm} KM. Melebihi batas maksimal radius pengiriman 0–30 KM dari Jl. Raya Merdeka No.35, Cimone Jaya, Karawaci.`
+					};
+				}
+
+				const brackets = Math.max(1, Math.ceil(distanceKm / STORE_CONFIG.shippingStepKm));
+				const cost = brackets * STORE_CONFIG.shippingRatePerStep;
+
+				return {
+					eligible: true,
+					distanceKm,
+					cost,
+					brackets,
+					reason: `Jarak tempuh ±${distanceKm} KM dari Jl. Raya Merdeka No.35 Cimone Jaya (${brackets} × 5 KM × Rp 10.000).`
+				};
+			}
+		};
+
+		/* ==========================================================================
+		   8. PENGATURAN TAMPILAN, 7 WARNA AKSEN KALEM GLOSSY, FONT & EXPORT/IMPORT JSON
+		   ========================================================================== */
+		const SettingsManager = {
+			accents: {
+				merah: {
+					label: 'Merah Kalem',
+					primary: '#B8545A',
+					hover: '#9D4349',
+					soft: 'rgba(184, 84, 90, 0.16)',
+					gradient: 'linear-gradient(135deg, #CA686E 0%, #A9484E 100%)'
+				},
+				kuning: {
+					label: 'Kuning Kalem',
+					primary: '#B88A2E',
+					hover: '#9B7222',
+					soft: 'rgba(184, 138, 46, 0.17)',
+					gradient: 'linear-gradient(135deg, #CFA03F 0%, #A97C24 100%)'
+				},
+				hijau: {
+					label: 'Hijau Kalem',
+					primary: '#4A7C59',
+					hover: '#3B6548',
+					soft: 'rgba(74, 124, 89, 0.16)',
+					gradient: 'linear-gradient(135deg, #5C946D 0%, #3F6E4E 100%)'
+				},
+				biru: {
+					label: 'Biru Kalem',
+					primary: '#437299',
+					hover: '#345B7C',
+					soft: 'rgba(67, 114, 153, 0.16)',
+					gradient: 'linear-gradient(135deg, #5687B0 0%, #3A668B 100%)'
+				},
+				oren: {
+					label: 'Oren Kalem',
+					primary: '#C46D3B',
+					hover: '#A7582B',
+					soft: 'rgba(196, 109, 59, 0.16)',
+					gradient: 'linear-gradient(135deg, #D8814E 0%, #B56030 100%)'
+				},
+				ungu: {
+					label: 'Ungu Kalem',
+					primary: '#745B96',
+					hover: '#5E487B',
+					soft: 'rgba(116, 91, 150, 0.16)',
+					gradient: 'linear-gradient(135deg, #886EAB 0%, #685089 100%)'
+				},
+				abu: {
+					label: 'Abu Kalem',
+					primary: '#59656F',
+					hover: '#454F58',
+					soft: 'rgba(89, 101, 111, 0.16)',
+					gradient: 'linear-gradient(135deg, #6D7A85 0%, #4E5962 100%)'
+				}
+			},
+
+			applyAll() {
+				const s = AppState.data.settings;
+				const root = document.documentElement;
+
+				/* Migrasi otomatis kunci aksen lama jika pengguna punya cache localStorage sebelumnya */
+				const legacyMap = {
+					sage: 'hijau',
+					olive: 'hijau',
+					ocean: 'biru',
+					terracotta: 'oren',
+					lavender: 'ungu'
+				};
+				if (legacyMap[s.accent]) {
+					s.accent = legacyMap[s.accent];
+					AppState.save();
+				}
+
+				root.setAttribute('data-theme', s.theme || 'light');
+				root.style.fontSize = s.fontSize || '16px';
+				root.style.setProperty('--font-family', s.fontFamily || "'Plus Jakarta Sans', sans-serif");
+				root.style.setProperty('--font-weight-base', s.fontWeight || '400');
+
+				const acc = this.accents[s.accent] || this.accents.hijau;
+				root.style.setProperty('--accent-primary', acc.primary);
+				root.style.setProperty('--accent-hover', acc.hover);
+				root.style.setProperty('--accent-soft', acc.soft);
+				root.style.setProperty('--accent-gradient', acc.gradient);
+
+				root.classList.toggle('no-animations', !s.animations);
+				this.syncModalControls();
+			},
+
+			syncModalControls() {
+				const s = AppState.data.settings;
+
+				document.querySelectorAll('[data-setting-theme]').forEach(btn => {
+					const active = btn.getAttribute('data-setting-theme') === s.theme;
+					btn.className = `p-3 rounded-2xl border text-xs font-semibold text-center transition ${active ? 'accent-border accent-soft-bg' : 'theme-elevated theme-text-primary'}`;
+				});
+
+				const accentWrap = document.getElementById('settings-accent-options');
+				if (accentWrap) {
+					accentWrap.innerHTML = Object.entries(this.accents).map(([key, val]) => {
+						const active = key === s.accent;
+						return `
+							<button type="button" data-setting-accent="${key}" class="flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold transition ${active ? 'accent-border accent-soft-bg' : 'theme-elevated theme-text-primary'}">
+								<span class="w-4 h-4 aspect-square rounded-full shrink-0 border border-white/40" style="background: ${val.gradient}; box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 2px 5px rgba(0,0,0,0.12);"></span>
+								<span class="truncate">${val.label}</span>
+							</button>
+						`;
+					}).join('');
+
+					accentWrap.querySelectorAll('[data-setting-accent]').forEach(btn => {
+						btn.addEventListener('click', () => {
+							AppState.data.settings.accent = btn.getAttribute('data-setting-accent');
+							AppState.save();
+							this.applyAll();
+							SoundHaptic.feedback('click');
+						});
+					});
+				}
+
+				document.querySelectorAll('[data-setting-fontsize]').forEach(btn => {
+					const active = btn.getAttribute('data-setting-fontsize') === s.fontSize;
+					btn.className = `py-2 rounded-xl border text-xs font-semibold transition ${active ? 'accent-border accent-soft-bg' : 'theme-elevated theme-text-primary'}`;
+				});
+
+				const updateTogglePill = (id, enabled) => {
+					const el = document.getElementById(id);
+					if (!el) return;
+					el.textContent = enabled ? 'Aktif' : 'Nonaktif';
+					el.className = `px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${enabled ? 'accent-bg' : 'theme-subtle theme-text-muted'}`;
+				};
+
+				updateTogglePill('status-anim-pill', s.animations);
+				updateTogglePill('status-sound-pill', s.sound);
+				updateTogglePill('status-vibrate-pill', s.vibrate);
+			},
+
+			exportData() {
+				const payload = {
+					appName: STORE_CONFIG.storeName,
+					exportedAt: new Date().toISOString(),
+					data: AppState.data
+				};
+				const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = url;
+				a.download = `berkat-elektronik-backup-${Date.now()}.json`;
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+				URL.revokeObjectURL(url);
+				SoundHaptic.feedback('success');
+				Toast.show('Data berhasil di-export ke file JSON.', 'success');
+			},
+
+			importDataFromFile(file) {
+				if (!file) return;
+				const reader = new FileReader();
+				reader.onload = (e) => {
+					try {
+						const parsed = JSON.parse(e.target.result);
+						const incoming = parsed.data ? parsed.data : parsed;
+						if (!incoming.settings && !incoming.profile) {
+							throw new Error('Struktur JSON tidak valid');
+						}
+						const def = AppState.defaultData();
+						AppState.data = {
+							settings: { ...def.settings, ...(incoming.settings || {}) },
+							profile: { ...def.profile, ...(incoming.profile || {}) },
+							cart: Array.isArray(incoming.cart) ? incoming.cart : [],
+							likes: Array.isArray(incoming.likes) ? incoming.likes : [],
+							searchHistory: Array.isArray(incoming.searchHistory) ? incoming.searchHistory : [],
+							orderHistory: Array.isArray(incoming.orderHistory) ? incoming.orderHistory : []
+						};
+						AppState.save();
+						this.applyAll();
+						UIRenderer.updateBadges();
+						UIRenderer.renderProducts();
+						UIRenderer.renderProfileModal();
+						SoundHaptic.feedback('success');
+						Toast.show('Data berhasil di-import dan dipulihkan!', 'success');
+					} catch (err) {
+						SoundHaptic.feedback('warning');
+						Toast.show('Gagal import: Format berkas JSON tidak sesuai.', 'error');
+					}
+				};
+				reader.readAsText(file);
+			}
+		};
+
+		/* ==========================================================================
+		   9. RENDERER ANTARMUKA (HERO SLIDER, PRODUK, FILTER, KERANJANG, PROFILE)
+		   ========================================================================== */
+		const UIRenderer = {
+			heroIndex: 0,
+			heroTimer: null,
+			activeProfileTab: 'biodata',
+			dropdowns: {},
+
+			init() {
+				this.initHeroSlider();
+				this.renderCategoryPills();
+				this.initFilterDropdowns();
+				this.renderProducts();
+				this.renderSearchHistoryChips();
+				this.updateBadges();
+			},
+
+			/* 9A. Hero Slider 4 Foto Landscape Otomatis 5 Detik */
+			initHeroSlider() {
+				const track = document.getElementById('hero-slider-track');
+				const indicators = document.getElementById('hero-indicators');
+				if (!track || !indicators) return;
+
+				track.innerHTML = HERO_SLIDES.map((slide, idx) => `
+					<div data-hero-slide="${idx}" class="absolute inset-0 transition-opacity duration-700 ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}">
+						<img
+							src="${slide.image}"
+							alt="${slide.title}"
+							onerror="this.onerror=null;this.src='https://placehold.co/1600x500/3B6548/FFFFFF?text=Berkat+Elektronik+Tangerang';"
+							class="w-full h-full object-cover"
+						>
+						<div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent flex items-end p-5 sm:p-8 md:p-10">
+							<div class="max-w-2xl text-white space-y-1.5 sm:space-y-2">
+								<span class="inline-block px-3 py-1 rounded-full text-[11px] font-semibold bg-white/20 backdrop-blur-md">
+									${slide.badge}
+								</span>
+								<h2 class="text-lg sm:text-2xl md:text-3xl font-bold leading-snug">
+									${slide.title}
+								</h2>
+								<p class="text-xs sm:text-sm text-white/85 line-clamp-2">
+									${slide.subtitle}
+								</p>
+							</div>
+						</div>
+					</div>
+				`).join('');
+
+				indicators.innerHTML = HERO_SLIDES.map((_, idx) => `
+					<button type="button" data-hero-dot="${idx}" aria-label="Slide ${idx + 1}" class="h-2 rounded-full transition-all ${idx === 0 ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'}"></button>
+				`).join('');
+
+				indicators.querySelectorAll('[data-hero-dot]').forEach(dot => {
+					dot.addEventListener('click', () => {
+						this.goToHeroSlide(Number(dot.getAttribute('data-hero-dot')));
+					});
+				});
+
+				document.getElementById('hero-prev-btn')?.addEventListener('click', () => {
+					const prev = (this.heroIndex - 1 + HERO_SLIDES.length) % HERO_SLIDES.length;
+					this.goToHeroSlide(prev);
+				});
+
+				document.getElementById('hero-next-btn')?.addEventListener('click', () => {
+					const next = (this.heroIndex + 1) % HERO_SLIDES.length;
+					this.goToHeroSlide(next);
+				});
+
+				this.startHeroAutoplay();
+			},
+
+			goToHeroSlide(index) {
+				this.heroIndex = index;
+				document.querySelectorAll('[data-hero-slide]').forEach((el, idx) => {
+					const active = idx === index;
+					el.classList.toggle('opacity-100', active);
+					el.classList.toggle('z-10', active);
+					el.classList.toggle('opacity-0', !active);
+					el.classList.toggle('z-0', !active);
+					el.classList.toggle('pointer-events-none', !active);
+				});
+
+				document.querySelectorAll('[data-hero-dot]').forEach((dot, idx) => {
+					dot.className = `h-2 rounded-full transition-all ${idx === index ? 'w-6 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'}`;
+				});
+
+				const bar = document.getElementById('hero-progress-bar');
+				if (bar) {
+					bar.classList.remove('hero-progress-active');
+					void bar.offsetWidth;
+					bar.classList.add('hero-progress-active');
+				}
+
+				this.startHeroAutoplay();
+			},
+
+			startHeroAutoplay() {
+				if (this.heroTimer) {
+					clearInterval(this.heroTimer);
+				}
+				this.heroTimer = setInterval(() => {
+					const next = (this.heroIndex + 1) % HERO_SLIDES.length;
+					this.goToHeroSlide(next);
+				}, 5000);
+			},
+
+			/* Daftar Kategori Dinamis (Otomatis memuat kategori baru dari JSON seperti Corong, Spul, Mic, Trafo) */
+			getAvailableCategories() {
+				const primaryCategories = ['Mixer', 'Power', 'Ampli', 'Crossover', 'Equalizer', 'Speaker', 'Komponen'];
+				const detectedCategories = Array.from(
+					new Set(
+						PRODUCTS_DATA
+							.map(item => (item.category || '').trim())
+							.filter(Boolean)
+					)
+				);
+				const extraCategories = detectedCategories.filter(cat => !primaryCategories.includes(cat));
+				return ['Semua', ...primaryCategories, ...extraCategories];
+			},
+
+			/* Daftar Merk/Brand Dinamis dari JSON */
+			getAvailableBrands() {
+				const detectedBrands = Array.from(
+					new Set(
+						PRODUCTS_DATA
+							.map(item => (item.brand || '').trim())
+							.filter(Boolean)
+					)
+				);
+				return ['Semua', ...detectedBrands];
+			},
+
+			/* Refresh Kategori, Merk & Grid setelah file JSON dimuat */
+			refreshCatalogAndFilters() {
+				const categories = this.getAvailableCategories();
+				const brands = this.getAvailableBrands();
+
+				if (this.dropdowns.category) {
+					this.dropdowns.category.setOptions(
+						categories.map(c => ({ value: c, label: c === 'Semua' ? 'Semua Kategori' : c })),
+						AppState.filters.category
+					);
+				}
+				if (this.dropdowns.brand) {
+					this.dropdowns.brand.setOptions(
+						brands.map(b => ({ value: b, label: b === 'Semua' ? 'Semua Merk' : b })),
+						AppState.filters.brand
+					);
+				}
+
+				this.renderCategoryPills();
+				this.renderProducts();
+			},
+
+			/* 9B. Kategori Produk */
+			renderCategoryPills() {
+				const categories = this.getAvailableCategories();
+				const container = document.getElementById('category-pills-container');
+				if (!container) return;
+
+				container.innerHTML = categories.map(cat => {
+					const isActive = AppState.filters.category === cat;
+					return `
+						<button type="button" data-category-pill="${cat}" class="px-4 py-2 rounded-2xl border text-xs sm:text-sm font-semibold whitespace-nowrap transition active:scale-95 ${isActive ? 'accent-bg border-transparent shadow-xs' : 'theme-surface theme-text-primary hover:opacity-85'}">
+							${cat}
+						</button>
+					`;
+				}).join('');
+
+				container.querySelectorAll('[data-category-pill]').forEach(btn => {
+					btn.addEventListener('click', () => {
+						const chosen = btn.getAttribute('data-category-pill');
+						AppState.filters.category = chosen;
+						if (this.dropdowns.category) {
+							this.dropdowns.category.setValue(chosen, false);
+						}
+						this.renderCategoryPills();
+						this.renderProducts();
+						SoundHaptic.feedback('click');
+					});
+				});
+
+				const labelEl = document.getElementById('active-category-label');
+				if (labelEl) {
+					labelEl.textContent = `Menampilkan: ${AppState.filters.category === 'Semua' ? 'Semua Kategori' : AppState.filters.category}`;
+				}
+			},
+
+			/* 9C. Inisialisasi Custom Dropdown untuk Filter & Pengaturan */
+			initFilterDropdowns() {
+				const categories = this.getAvailableCategories();
+				const brands = this.getAvailableBrands();
+
+				this.dropdowns.category = new CustomDropdown({
+					containerId: 'dropdown-filter-category',
+					value: AppState.filters.category,
+					options: categories.map(c => ({ value: c, label: c === 'Semua' ? 'Semua Kategori' : c })),
+					onChange: (val) => {
+						AppState.filters.category = val;
+						this.renderCategoryPills();
+						this.renderProducts();
+					}
+				});
+
+				this.dropdowns.brand = new CustomDropdown({
+					containerId: 'dropdown-filter-brand',
+					value: AppState.filters.brand,
+					options: brands.map(b => ({ value: b, label: b === 'Semua' ? 'Semua Merk' : b })),
+					onChange: (val) => {
+						AppState.filters.brand = val;
+						this.renderProducts();
+					}
+				});
+
+				this.dropdowns.price = new CustomDropdown({
+					containerId: 'dropdown-filter-price',
+					value: AppState.filters.priceRange,
+					options: [
+						{ value: 'all', label: 'Semua Rentang Harga' },
+						{ value: 'under1m', label: 'Di bawah Rp 1.000.000' },
+						{ value: '1to3m', label: 'Rp 1.000.000 – Rp 3.000.000' },
+						{ value: '3to6m', label: 'Rp 3.000.000 – Rp 6.000.000' },
+						{ value: 'above6m', label: 'Di atas Rp 6.000.000' }
+					],
+					onChange: (val) => {
+						AppState.filters.priceRange = val;
+						this.renderProducts();
+					}
+				});
+
+				this.dropdowns.sort = new CustomDropdown({
+					containerId: 'dropdown-filter-sort',
+					value: AppState.filters.sort,
+					options: [
+						{ value: 'default', label: 'Rekomendasi Toko' },
+						{ value: 'az', label: 'Nama Produk (A – Z)' },
+						{ value: 'za', label: 'Nama Produk (Z – A)' },
+						{ value: 'price_asc', label: 'Harga: Terendah ke Tertinggi' },
+						{ value: 'price_desc', label: 'Harga: Tertinggi ke Terendah' }
+					],
+					onChange: (val) => {
+						AppState.filters.sort = val;
+						this.renderProducts();
+					}
+				});
+
+				/* Dropdown Pengaturan: Jenis Font (Plus Jakarta Sans + 6 Font Baru) & Ketebalan Font */
+				this.dropdowns.fontFamily = new CustomDropdown({
+					containerId: 'dropdown-settings-fontfamily',
+					value: AppState.data.settings.fontFamily,
+					options: [
+						{ value: "'Plus Jakarta Sans', sans-serif", label: 'Plus Jakarta Sans (Default)' },
+						{ value: "'Inter', sans-serif", label: 'Inter Clean' },
+						{ value: "'DM Sans', sans-serif", label: 'DM Sans Geometric' },
+						{ value: "'Outfit', sans-serif", label: 'Outfit Modern' },
+						{ value: "'Nunito Sans', sans-serif", label: 'Nunito Sans Soft' },
+						{ value: "'Manrope', sans-serif", label: 'Manrope Balanced' },
+						{ value: "'Space Grotesk', sans-serif", label: 'Space Grotesk Audio' }
+					],
+					onChange: (val) => {
+						AppState.data.settings.fontFamily = val;
+						AppState.save();
+						SettingsManager.applyAll();
+					}
+				});
+
+				this.dropdowns.fontWeight = new CustomDropdown({
+					containerId: 'dropdown-settings-fontweight',
+					value: AppState.data.settings.fontWeight,
+					options: [
+						{ value: '300', label: 'Light (300)' },
+						{ value: '400', label: 'Normal (400)' },
+						{ value: '500', label: 'Medium (500)' },
+						{ value: '600', label: 'SemiBold (600)' }
+					],
+					onChange: (val) => {
+						AppState.data.settings.fontWeight = val;
+						AppState.save();
+						SettingsManager.applyAll();
+					}
+				});
+
+				/* Render Badge Metode Pembayaran di Footer */
+				const footerBadges = document.getElementById('footer-payment-badges');
+				if (footerBadges) {
+					footerBadges.innerHTML = PAYMENT_PROVIDERS.map(p => `
+						<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-xl border theme-elevated text-[11px] font-medium theme-text-primary">
+							${getPaymentIconSvg(p.id, 'w-5 h-5')}
+							<span>${p.id}</span>
+						</span>
+					`).join('');
+				}
+			},
+
+			/* 9D. Render Grid Produk & Hasil Pencarian */
+			renderProducts() {
+				const grid = document.getElementById('products-grid');
+				const emptyState = document.getElementById('empty-products-state');
+				const countBadge = document.getElementById('product-count-badge');
+				const heading = document.getElementById('catalog-heading');
+				if (!grid) return;
+
+				const products = AppState.getFilteredProducts();
+				if (countBadge) {
+					countBadge.textContent = `${products.length} Produk`;
+				}
+
+				if (heading) {
+					heading.textContent = AppState.filters.search.trim()
+						? `Hasil Pencarian untuk "${AppState.filters.search.trim()}"`
+						: 'Katalog Produk Elektronik';
+				}
+
+				if (products.length === 0) {
+					grid.innerHTML = '';
+					emptyState?.classList.remove('hidden');
+					return;
+				}
+				emptyState?.classList.add('hidden');
+
+				grid.innerHTML = products.map((product, index) => {
+					const isLiked = AppState.data.likes.includes(product.id);
+					const staggerDelay = Math.min(index * 45, 360);
+					const fallbackUrl = product.fallbackImage || `https://placehold.co/800x550/EBF0EC/4A7C59?text=${encodeURIComponent(product.category)}`;
+					return `
+						<article data-product-card="${product.id}" style="animation-delay: ${staggerDelay}ms;" class="animate-card-enter theme-surface border rounded-3xl overflow-hidden flex flex-col justify-between group hover:-translate-y-1.5 transition-all duration-300 cursor-pointer">
+							<div>
+								<!-- Gambar Produk (Mendukung folder lokal foto/ dengan fallback otomatis) -->
+								<div class="relative aspect-[16/11] w-full overflow-hidden theme-elevated">
+									<img
+										src="${product.image}"
+										alt="${product.name}"
+										loading="lazy"
+										onerror="if(this.dataset.fallbackTried!=='1'){this.dataset.fallbackTried='1';this.src='${fallbackUrl}';}else{this.onerror=null;this.src='https://placehold.co/800x550/EBF0EC/4A7C59?text=${encodeURIComponent(product.category)}';}"
+										class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+									>
+									<div class="absolute top-3 left-3 flex items-center gap-1.5">
+										<span class="px-2.5 py-1 rounded-xl text-[11px] font-semibold bg-black/55 text-white backdrop-blur-xs">
+											${product.category}
+										</span>
+										<span class="px-2.5 py-1 rounded-xl text-[11px] font-semibold bg-white/85 text-slate-800 backdrop-blur-xs">
+											${product.brand}
+										</span>
+									</div>
+
+									<!-- Tombol Suka -->
+									<button
+										type="button"
+										data-action-like="${product.id}"
+										aria-label="Sukai ${product.name}"
+										class="absolute top-3 right-3 w-9 h-9 aspect-square rounded-full bg-white/90 hover:bg-white shadow-sm flex items-center justify-center shrink-0 transition active:scale-90 ${isLiked ? 'text-rose-500' : 'text-slate-500'}"
+									>
+										<svg class="w-4 h-4 shrink-0" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+											<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+										</svg>
+									</button>
+								</div>
+
+								<!-- Informasi Produk -->
+								<div class="p-4 space-y-2">
+									<h3 class="text-sm sm:text-base font-bold theme-text-primary leading-snug line-clamp-1" title="${product.name}">
+										${product.name}
+									</h3>
+									<p class="text-base sm:text-lg font-bold accent-text">
+										${AppState.formatRupiah(product.price)}
+									</p>
+									<!-- Deskripsi dengan batasan max-height & ellipsis -->
+									<p class="text-xs theme-text-secondary product-desc-clamp">
+										${product.description}
+									</p>
+								</div>
+							</div>
+
+							<!-- Tombol Eksekusi Kartu: Beli & Keranjang -->
+							<div class="px-4 pb-4 pt-1 flex items-center gap-2">
+								<button
+									type="button"
+									data-action-buy="${product.id}"
+									class="flex-1 py-2 px-3 rounded-xl accent-bg text-xs font-semibold shadow-xs active:scale-95"
+								>
+									Beli
+								</button>
+								<button
+									type="button"
+									data-action-cart="${product.id}"
+									class="flex-1 py-2 px-3 rounded-xl border theme-elevated theme-text-primary hover:opacity-85 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition"
+								>
+									<svg class="w-3.5 h-3.5 accent-text" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+										<line x1="12" y1="5" x2="12" y2="19"></line>
+										<line x1="5" y1="12" x2="19" y2="12"></line>
+									</svg>
+									<span>Keranjang</span>
+								</button>
+							</div>
+						</article>
+					`;
+				}).join('');
+
+				/* Delegasi Klik Kartu vs Tombol Aksi */
+				grid.querySelectorAll('[data-product-card]').forEach(card => {
+					card.addEventListener('click', (e) => {
+						const likeBtn = e.target.closest('[data-action-like]');
+						const cartBtn = e.target.closest('[data-action-cart]');
+						const buyBtn = e.target.closest('[data-action-buy]');
+						const productId = card.getAttribute('data-product-card');
+
+						if (likeBtn) {
+							e.stopPropagation();
+							AppState.toggleLike(productId);
+							return;
+						}
+						if (cartBtn) {
+							e.stopPropagation();
+							AppState.addToCart(productId, 1);
+							return;
+						}
+						if (buyBtn) {
+							e.stopPropagation();
+							AppState.addToCart(productId, 1);
+							ModalManager.open('checkout');
+							return;
+						}
+
+						this.openProductDetailModal(productId);
+					});
+				});
+			},
+
+			/* 9E. Modal Detail Produk Lengkap */
+			openProductDetailModal(productId) {
+				const product = AppState.getProductById(productId);
+				const container = document.getElementById('product-detail-content');
+				if (!product || !container) return;
+
+				const isLiked = AppState.data.likes.includes(product.id);
+				const fallbackUrl = product.fallbackImage || `https://placehold.co/800x600/EBF0EC/4A7C59?text=${encodeURIComponent(product.category)}`;
+				container.innerHTML = `
+					<div class="grid grid-cols-1 md:grid-cols-2">
+						<div class="relative theme-elevated min-h-[250px] md:min-h-[380px]">
+							<img
+								src="${product.image}"
+								alt="${product.name}"
+								onerror="if(this.dataset.fallbackTried!=='1'){this.dataset.fallbackTried='1';this.src='${fallbackUrl}';}else{this.onerror=null;this.src='https://placehold.co/800x600/EBF0EC/4A7C59?text=${encodeURIComponent(product.category)}';}"
+								class="w-full h-full object-cover"
+							>
+							<button type="button" id="detail-close-mobile" class="md:hidden absolute top-3 right-3 w-9 h-9 aspect-square rounded-full bg-black/55 text-white flex items-center justify-center shrink-0">✕</button>
+						</div>
+
+						<div class="p-6 flex flex-col justify-between space-y-5">
+							<div class="space-y-3">
+								<div class="flex items-start justify-between gap-2">
+									<div class="flex flex-wrap gap-1.5">
+										<span class="px-2.5 py-1 rounded-xl text-xs font-semibold accent-soft-bg">${product.category}</span>
+										<span class="px-2.5 py-1 rounded-xl text-xs font-semibold theme-elevated theme-text-secondary">${product.brand}</span>
+									</div>
+									<button type="button" id="detail-close-desktop" class="hidden md:flex w-8 h-8 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary items-center justify-center">✕</button>
+								</div>
+
+								<h2 class="text-lg sm:text-xl font-bold theme-text-primary leading-snug">${product.name}</h2>
+								<p class="text-xl sm:text-2xl font-bold accent-text">${AppState.formatRupiah(product.price)}</p>
+
+								<div class="pt-2 border-t theme-border space-y-1.5">
+									<h4 class="text-xs font-bold uppercase tracking-wider theme-text-muted">Deskripsi Lengkap</h4>
+									<p class="text-xs sm:text-sm theme-text-secondary leading-relaxed">
+										${product.description}
+									</p>
+								</div>
+
+								<div class="pt-2 space-y-1.5">
+									<h4 class="text-xs font-bold uppercase tracking-wider theme-text-muted">Spesifikasi Utama</h4>
+									<ul class="grid grid-cols-1 gap-1.5">
+										${product.specs.map(sp => `
+											<li class="text-xs theme-text-primary flex items-center gap-2">
+												<span class="w-1.5 h-1.5 rounded-full accent-bg shrink-0"></span>
+												<span>${sp}</span>
+											</li>
+										`).join('')}
+									</ul>
+								</div>
+							</div>
+
+							<div class="pt-4 border-t theme-border flex items-center gap-2.5">
+								<button type="button" id="detail-like-btn" class="p-3 rounded-2xl border theme-elevated ${isLiked ? 'text-rose-500 border-rose-300' : 'theme-text-secondary'} transition active:scale-95" title="Sukai Produk">
+									<svg class="w-5 h-5" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+										<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+									</svg>
+								</button>
+								<button type="button" id="detail-cart-btn" class="flex-1 py-3 px-4 rounded-2xl border theme-elevated theme-text-primary text-xs sm:text-sm font-semibold hover:opacity-85 transition active:scale-95">
+									+ Keranjang
+								</button>
+								<button type="button" id="detail-buy-btn" class="flex-1 py-3 px-4 rounded-2xl accent-bg text-xs sm:text-sm font-bold shadow-sm active:scale-95">
+									Beli Sekarang
+								</button>
+							</div>
+						</div>
+					</div>
+				`;
+
+				document.getElementById('detail-close-mobile')?.addEventListener('click', () => {
+					SoundHaptic.feedback('modalClose');
+					ModalManager.close('product-detail');
+				});
+				document.getElementById('detail-close-desktop')?.addEventListener('click', () => {
+					SoundHaptic.feedback('modalClose');
+					ModalManager.close('product-detail');
+				});
+				document.getElementById('detail-like-btn')?.addEventListener('click', () => {
+					AppState.toggleLike(product.id);
+					this.openProductDetailModal(product.id);
+				});
+				document.getElementById('detail-cart-btn')?.addEventListener('click', () => {
+					AppState.addToCart(product.id, 1);
+				});
+				document.getElementById('detail-buy-btn')?.addEventListener('click', () => {
+					AppState.addToCart(product.id, 1);
+					ModalManager.close('product-detail');
+					ModalManager.open('checkout');
+				});
+
+				ModalManager.open('product-detail');
+			},
+
+			/* 9F. Render Modal Keranjang Belanja */
+			renderCartModal() {
+				const listEl = document.getElementById('cart-items-list');
+				const subtotalEl = document.getElementById('cart-subtotal-display');
+				const checkoutBtn = document.getElementById('proceed-checkout-btn');
+				if (!listEl) return;
+
+				const items = AppState.data.cart
+					.map(c => ({ ...c, product: AppState.getProductById(c.productId) }))
+					.filter(c => c.product !== null);
+
+				if (items.length === 0) {
+					listEl.innerHTML = `
+						<div class="text-center py-10 space-y-2">
+							<p class="text-sm font-bold theme-text-primary">Keranjang Belanja Kosong</p>
+							<p class="text-xs theme-text-secondary">Pilih produk elektronik favorit Anda untuk mulai berbelanja.</p>
+						</div>
+					`;
+					if (subtotalEl) subtotalEl.textContent = 'Rp 0';
+					if (checkoutBtn) {
+						checkoutBtn.disabled = true;
+						checkoutBtn.classList.add('opacity-50', 'cursor-not-allowed');
+					}
+					return;
+				}
+
+				if (checkoutBtn) {
+					checkoutBtn.disabled = false;
+					checkoutBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+				}
+
+				let subtotal = 0;
+				listEl.innerHTML = items.map(({ product, qty }) => {
+					const lineTotal = product.price * qty;
+					subtotal += lineTotal;
+					return `
+						<div class="p-3.5 rounded-2xl border theme-elevated flex items-center gap-3.5">
+							<img
+								src="${product.image}"
+								alt="${product.name}"
+								onerror="this.onerror=null;this.src='https://placehold.co/120x120/EBF0EC/4A7C59?text=Audio';"
+								class="w-16 h-16 rounded-xl object-cover shrink-0 border theme-border"
+							>
+							<div class="flex-1 min-w-0">
+								<span class="text-[11px] font-semibold accent-text">${product.brand} • ${product.category}</span>
+								<h4 class="text-xs sm:text-sm font-bold theme-text-primary truncate">${product.name}</h4>
+								<p class="text-xs theme-text-secondary">${AppState.formatRupiah(product.price)} / unit</p>
+								<p class="text-xs font-bold theme-text-primary mt-0.5">Total: ${AppState.formatRupiah(lineTotal)}</p>
+							</div>
+							<div class="flex flex-col items-end gap-2">
+								<button type="button" data-cart-remove="${product.id}" class="text-[11px] font-semibold text-rose-500 hover:underline">
+									Hapus
+								</button>
+								<div class="flex items-center gap-1.5 theme-surface border rounded-xl p-1">
+									<button type="button" data-cart-dec="${product.id}" class="w-6 h-6 rounded-lg theme-subtle text-xs font-bold flex items-center justify-center">−</button>
+									<span class="w-6 text-center text-xs font-bold">${qty}</span>
+									<button type="button" data-cart-inc="${product.id}" class="w-6 h-6 rounded-lg accent-bg text-xs font-bold flex items-center justify-center">+</button>
+								</div>
+							</div>
+						</div>
+					`;
+				}).join('');
+
+				if (subtotalEl) {
+					subtotalEl.textContent = AppState.formatRupiah(subtotal);
+				}
+
+				listEl.querySelectorAll('[data-cart-inc]').forEach(btn => {
+					btn.addEventListener('click', () => AppState.updateCartQty(btn.getAttribute('data-cart-inc'), 1));
+				});
+				listEl.querySelectorAll('[data-cart-dec]').forEach(btn => {
+					btn.addEventListener('click', () => AppState.updateCartQty(btn.getAttribute('data-cart-dec'), -1));
+				});
+				listEl.querySelectorAll('[data-cart-remove]').forEach(btn => {
+					btn.addEventListener('click', () => AppState.removeFromCart(btn.getAttribute('data-cart-remove')));
+				});
+			},
+
+			/* 9G. Update Badge Angka & Avatar Header */
+			updateBadges() {
+				const totalQty = AppState.data.cart.reduce((sum, item) => sum + item.qty, 0);
+				document.querySelectorAll('.cart-badge-count').forEach(el => {
+					el.textContent = totalQty;
+				});
+
+				const likesCountEl = document.getElementById('profile-likes-count');
+				if (likesCountEl) likesCountEl.textContent = AppState.data.likes.length;
+
+				const ordersCountEl = document.getElementById('profile-orders-count');
+				if (ordersCountEl) ordersCountEl.textContent = AppState.data.orderHistory.length;
+
+				const prof = AppState.data.profile;
+				const avDesktop = document.getElementById('header-avatar-desktop');
+				const avMobile = document.getElementById('header-avatar-mobile');
+				if (avDesktop && prof.avatar) avDesktop.src = prof.avatar;
+				if (avMobile && prof.avatar) avMobile.src = prof.avatar;
+			},
+
+			/* 9H. Chips Riwayat Pencarian di Header */
+			renderSearchHistoryChips() {
+				const container = document.getElementById('search-history-chips');
+				if (!container) return;
+
+				const history = AppState.data.searchHistory;
+				if (history.length === 0) {
+					container.innerHTML = '<span class="text-[11px] theme-text-muted">Belum ada riwayat pencarian.</span>';
+					return;
+				}
+
+				container.innerHTML = history.map(term => `
+					<button type="button" data-history-term="${term.replace(/"/g, '&quot;')}" class="px-2.5 py-1 rounded-xl theme-elevated hover:accent-soft-bg text-xs theme-text-primary transition">
+						${term}
+					</button>
+				`).join('');
+
+				container.querySelectorAll('[data-history-term]').forEach(btn => {
+					btn.addEventListener('click', () => {
+						const term = btn.getAttribute('data-history-term');
+						const input = document.getElementById('global-search-input');
+						if (input) input.value = term;
+						AppState.filters.search = term;
+						document.getElementById('clear-search-btn')?.classList.remove('hidden');
+						document.getElementById('search-history-popover')?.classList.add('hidden');
+						this.renderProducts();
+						SoundHaptic.feedback('click');
+					});
+				});
+			},
+
+			/* 9I. Modal Profile & Sub-Tab (Biodata, Suka, Belanja, Pencarian, Keranjang) */
+			renderProfileModal() {
+				this.updateBadges();
+
+				document.querySelectorAll('[data-profile-tab]').forEach(btn => {
+					const active = btn.getAttribute('data-profile-tab') === this.activeProfileTab;
+					btn.className = `profile-tab-btn px-3.5 py-2.5 rounded-t-xl text-xs font-semibold border-b-2 transition whitespace-nowrap ${active ? 'accent-border accent-text theme-surface' : 'border-transparent theme-text-secondary hover:theme-text-primary'}`;
+				});
+
+				const container = document.getElementById('profile-tab-content');
+				if (!container) return;
+
+				container.classList.remove('animate-tab-enter');
+				void container.offsetWidth;
+				container.classList.add('animate-tab-enter');
+
+				if (this.activeProfileTab === 'biodata') {
+					this.renderProfileBiodataTab(container);
+				} else if (this.activeProfileTab === 'likes') {
+					this.renderProfileLikesTab(container);
+				} else if (this.activeProfileTab === 'orders') {
+					this.renderProfileOrdersTab(container);
+				} else if (this.activeProfileTab === 'searches') {
+					this.renderProfileSearchesTab(container);
+				} else if (this.activeProfileTab === 'cart') {
+					this.renderProfileCartTab(container);
+				}
+			},
+
+			renderProfileBiodataTab(container) {
+				const p = AppState.data.profile;
+				container.innerHTML = `
+					<form id="profile-biodata-form" class="space-y-4">
+						<div class="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl border theme-elevated">
+							<img id="profile-avatar-preview" src="${p.avatar}" alt="Foto Profil" class="w-20 h-20 rounded-2xl object-cover border theme-border">
+							<div class="text-center sm:text-left space-y-1.5">
+								<h3 class="text-sm font-bold theme-text-primary">${p.fullName}</h3>
+								<p class="text-xs theme-text-secondary">Foto profil tersimpan otomatis di perangkat Anda</p>
+								<input type="file" id="profile-avatar-file" accept="image/*" class="hidden">
+								<button type="button" id="change-avatar-btn" class="px-3 py-1.5 rounded-xl accent-soft-bg text-xs font-semibold hover:opacity-85">
+									Ubah Foto Profil
+								</button>
+							</div>
+						</div>
+
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+							<div>
+								<label class="block text-xs font-semibold theme-text-secondary mb-1">Nama Lengkap</label>
+								<input type="text" id="prof-input-name" value="${p.fullName.replace(/"/g, '&quot;')}" required class="w-full px-3.5 py-2.5 rounded-xl border theme-elevated theme-text-primary text-sm">
+							</div>
+							<div>
+								<label class="block text-xs font-semibold theme-text-secondary mb-1">Nomor Telepon / WhatsApp</label>
+								<input type="tel" id="prof-input-phone" value="${p.phone.replace(/"/g, '&quot;')}" required class="w-full px-3.5 py-2.5 rounded-xl border theme-elevated theme-text-primary text-sm">
+							</div>
+						</div>
+
+						<div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+							<div>
+								<label class="block text-xs font-semibold theme-text-secondary mb-1">Wilayah Tangerang</label>
+								<div id="dropdown-profile-region" class="relative"></div>
+							</div>
+							<div>
+								<label class="block text-xs font-semibold theme-text-secondary mb-1">Kecamatan</label>
+								<div id="dropdown-profile-district" class="relative"></div>
+							</div>
+							<div>
+								<label class="block text-xs font-semibold theme-text-secondary mb-1">Jenis Bank / E-Wallet</label>
+								<div id="dropdown-profile-bank" class="relative"></div>
+							</div>
+						</div>
+
+						<div>
+							<label class="block text-xs font-semibold theme-text-secondary mb-1">Alamat Rumah Lengkap</label>
+							<textarea id="prof-input-address" rows="2" class="w-full px-3.5 py-2 rounded-xl border theme-elevated theme-text-primary text-sm">${p.address}</textarea>
+						</div>
+
+						<div class="flex justify-end">
+							<button type="submit" class="px-5 py-2.5 rounded-xl accent-bg text-xs sm:text-sm font-bold shadow-sm active:scale-95">
+								Simpan Perubahan Profile
+							</button>
+						</div>
+					</form>
+				`;
+
+				let selectedRegion = p.region || 'Tangerang Kota';
+				let selectedDistrict = p.district || 'Karawaci (Cimone Jaya)';
+				let selectedBank = p.bank || 'Bank Jago';
+				let avatarData = p.avatar;
+
+				const regionDD = new CustomDropdown({
+					containerId: 'dropdown-profile-region',
+					value: selectedRegion,
+					options: [
+						{ value: 'Tangerang Kota', label: 'Tangerang Kota' },
+						{ value: 'Tangerang Kabupaten', label: 'Tangerang Kabupaten' }
+					],
+					onChange: (val) => {
+						selectedRegion = val;
+						const list = TANGERANG_LOCATIONS[val] || [];
+						selectedDistrict = list[0]?.name || '';
+						districtDD.setOptions(list.map(d => ({ value: d.name, label: d.name })), selectedDistrict);
+					}
+				});
+
+				const districtList = TANGERANG_LOCATIONS[selectedRegion] || [];
+				const districtDD = new CustomDropdown({
+					containerId: 'dropdown-profile-district',
+					value: selectedDistrict,
+					options: districtList.map(d => ({ value: d.name, label: d.name })),
+					onChange: (val) => { selectedDistrict = val; }
+				});
+
+				new CustomDropdown({
+					containerId: 'dropdown-profile-bank',
+					value: selectedBank,
+					options: PAYMENT_PROVIDERS.map(item => ({
+						value: item.id,
+						label: `${item.label} (${item.type})`,
+						iconHtml: getPaymentIconSvg(item.id, 'w-6 h-6')
+					})),
+					onChange: (val) => { selectedBank = val; }
+				});
+
+				const fileInput = document.getElementById('profile-avatar-file');
+				document.getElementById('change-avatar-btn')?.addEventListener('click', () => fileInput?.click());
+				fileInput?.addEventListener('change', (e) => {
+					const file = e.target.files?.[0];
+					if (!file) return;
+					const reader = new FileReader();
+					reader.onload = (ev) => {
+						avatarData = ev.target.result;
+						document.getElementById('profile-avatar-preview').src = avatarData;
+						SoundHaptic.feedback('click');
+					};
+					reader.readAsDataURL(file);
+				});
+
+				document.getElementById('profile-biodata-form')?.addEventListener('submit', (e) => {
+					e.preventDefault();
+					AppState.data.profile = {
+						avatar: avatarData,
+						fullName: document.getElementById('prof-input-name').value.trim() || 'Pelanggan Berkat',
+						phone: document.getElementById('prof-input-phone').value.trim(),
+						region: selectedRegion,
+						district: selectedDistrict,
+						bank: selectedBank,
+						address: document.getElementById('prof-input-address').value.trim()
+					};
+					AppState.save();
+					this.updateBadges();
+					SoundHaptic.feedback('success');
+					Toast.show('Data profil berhasil diperbarui!', 'success');
+				});
+			},
+
+			renderProfileLikesTab(container) {
+				const likedProducts = AppState.data.likes
+					.map(id => AppState.getProductById(id))
+					.filter(Boolean);
+
+				if (likedProducts.length === 0) {
+					container.innerHTML = '<p class="text-center py-10 text-xs theme-text-secondary">Belum ada produk yang Anda sukai.</p>';
+					return;
+				}
+
+				container.innerHTML = `
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+						${likedProducts.map(prod => `
+							<div class="p-3 rounded-2xl border theme-elevated flex items-center gap-3">
+								<img src="${prod.image}" alt="${prod.name}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/EBF0EC/4A7C59?text=Audio';" class="w-14 h-14 rounded-xl object-cover shrink-0">
+								<div class="flex-1 min-w-0">
+									<h4 class="text-xs font-bold theme-text-primary truncate">${prod.name}</h4>
+									<p class="text-xs font-semibold accent-text">${AppState.formatRupiah(prod.price)}</p>
+									<div class="flex items-center gap-2 mt-1.5">
+										<button type="button" data-prof-like-cart="${prod.id}" class="px-2.5 py-1 rounded-lg accent-bg text-[11px] font-semibold">+ Keranjang</button>
+										<button type="button" data-prof-like-del="${prod.id}" class="text-[11px] text-rose-500 hover:underline">Hapus</button>
+									</div>
+								</div>
+							</div>
+						`).join('')}
+					</div>
+				`;
+
+				container.querySelectorAll('[data-prof-like-cart]').forEach(btn => {
+					btn.addEventListener('click', () => AppState.addToCart(btn.getAttribute('data-prof-like-cart'), 1));
+				});
+				container.querySelectorAll('[data-prof-like-del]').forEach(btn => {
+					btn.addEventListener('click', () => {
+						AppState.toggleLike(btn.getAttribute('data-prof-like-del'));
+						this.renderProfileModal();
+					});
+				});
+			},
+
+			renderProfileOrdersTab(container) {
+				const orders = AppState.data.orderHistory;
+				if (orders.length === 0) {
+					container.innerHTML = '<p class="text-center py-10 text-xs theme-text-secondary">Belum ada riwayat belanja. Selesaikan pesanan melalui Keranjang untuk melihat riwayat transaksi.</p>';
+					return;
+				}
+
+				container.innerHTML = `
+					<div class="space-y-3.5">
+						${orders.map(ord => `
+							<div class="p-4 rounded-2xl border theme-elevated space-y-3">
+								<div class="flex flex-wrap items-center justify-between gap-2 border-b theme-border pb-2">
+									<div>
+										<span class="text-xs font-bold accent-text">${ord.orderId}</span>
+										<span class="text-[11px] theme-text-muted ml-2">${ord.date}</span>
+									</div>
+									<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 text-[11px] font-semibold">Terkirim ke WhatsApp</span>
+								</div>
+								<div class="space-y-2">
+									${ord.items.map(it => {
+										const liveProd = AppState.getProductById(it.productId);
+										const thumbUrl = it.image || (liveProd ? liveProd.image : 'https://placehold.co/100x100/EBF0EC/4A7C59?text=Audio');
+										return `
+											<div class="flex items-center gap-3 p-2 rounded-xl border theme-surface">
+												<img src="${thumbUrl}" alt="${it.name}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/EBF0EC/4A7C59?text=Audio';" class="w-11 h-11 rounded-lg object-cover border theme-border shrink-0">
+												<div class="flex-1 min-w-0 text-xs">
+													<p class="font-semibold theme-text-primary truncate">${it.name}</p>
+													<p class="theme-text-secondary">${it.qty} unit × ${AppState.formatRupiah(it.price)}</p>
+												</div>
+												<span class="text-xs font-bold accent-text shrink-0">${AppState.formatRupiah(it.price * it.qty)}</span>
+											</div>
+										`;
+									}).join('')}
+								</div>
+								<div class="pt-2 border-t theme-border flex flex-wrap items-center justify-between gap-2 text-xs">
+									<div class="theme-text-secondary">
+										Tujuan: <strong>${ord.district}, ${ord.region}</strong> (${ord.distanceKm} KM • Ongkir ${AppState.formatRupiah(ord.shippingCost)})
+									</div>
+									<div class="font-bold theme-text-primary">
+										Total: <span class="accent-text">${AppState.formatRupiah(ord.grandTotal)}</span> (${ord.bank})
+									</div>
+								</div>
+							</div>
+						`).join('')}
+					</div>
+				`;
+			},
+
+			renderProfileSearchesTab(container) {
+				const history = AppState.data.searchHistory;
+				if (history.length === 0) {
+					container.innerHTML = '<p class="text-center py-10 text-xs theme-text-secondary">Riwayat pencarian kosong.</p>';
+					return;
+				}
+
+				container.innerHTML = `
+					<div class="space-y-3">
+						<div class="flex items-center justify-between">
+							<span class="text-xs font-semibold theme-text-secondary">Klik kata kunci untuk mencari kembali:</span>
+							<button type="button" id="prof-clear-search-btn" class="text-xs text-rose-500 hover:underline">Hapus Semua</button>
+						</div>
+						<div class="flex flex-wrap gap-2">
+							${history.map(q => `
+								<button type="button" data-prof-search-term="${q.replace(/"/g, '&quot;')}" class="px-3.5 py-2 rounded-xl border theme-elevated hover:accent-soft-bg text-xs font-medium theme-text-primary transition">
+									${q}
+								</button>
+							`).join('')}
+						</div>
+					</div>
+				`;
+
+				document.getElementById('prof-clear-search-btn')?.addEventListener('click', () => {
+					AppState.data.searchHistory = [];
+					AppState.save();
+					this.renderSearchHistoryChips();
+					this.renderProfileModal();
+					SoundHaptic.feedback('delete');
+					Toast.show('Riwayat pencarian dibersihkan.', 'info');
+				});
+
+				container.querySelectorAll('[data-prof-search-term]').forEach(btn => {
+					btn.addEventListener('click', () => {
+						const q = btn.getAttribute('data-prof-search-term');
+						const input = document.getElementById('global-search-input');
+						if (input) input.value = q;
+						AppState.filters.search = q;
+						document.getElementById('clear-search-btn')?.classList.remove('hidden');
+						ModalManager.close('profile');
+						this.renderProducts();
+						SoundHaptic.feedback('click');
+					});
+				});
+			},
+
+			renderProfileCartTab(container) {
+				const items = AppState.data.cart
+					.map(c => ({ ...c, product: AppState.getProductById(c.productId) }))
+					.filter(c => c.product !== null);
+
+				if (items.length === 0) {
+					container.innerHTML = '<p class="text-center py-10 text-xs theme-text-secondary">Keranjang belanja Anda saat ini kosong.</p>';
+					return;
+				}
+
+				const total = items.reduce((s, it) => s + it.product.price * it.qty, 0);
+				container.innerHTML = `
+					<div class="space-y-3">
+						${items.map(({ product, qty }) => `
+							<div class="p-3 rounded-2xl border theme-elevated flex items-center gap-3 text-xs">
+								<img src="${product.image}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/EBF0EC/4A7C59?text=Audio';" class="w-12 h-12 rounded-xl object-cover border theme-border shrink-0">
+								<div class="flex-1 min-w-0">
+									<span class="text-[10px] font-semibold accent-text">${product.brand} • ${product.category}</span>
+									<p class="font-bold theme-text-primary truncate">${product.name}</p>
+									<p class="theme-text-secondary">${qty} unit × ${AppState.formatRupiah(product.price)}</p>
+								</div>
+								<span class="font-bold accent-text shrink-0">${AppState.formatRupiah(product.price * qty)}</span>
+							</div>
+						`).join('')}
+						<div class="pt-3 border-t theme-border flex items-center justify-between">
+							<span class="text-sm font-bold theme-text-primary">Subtotal: ${AppState.formatRupiah(total)}</span>
+							<button type="button" id="prof-open-cart-btn" class="px-4 py-2 rounded-xl accent-bg text-xs font-semibold">Buka Keranjang &amp; Beli</button>
+						</div>
+					</div>
+				`;
+
+				document.getElementById('prof-open-cart-btn')?.addEventListener('click', () => {
+					ModalManager.close('profile');
+					ModalManager.open('cart');
+				});
+			}
+		};
+
+		/* ==========================================================================
+		   10. CONTROLLER CHECKOUT, ONGKOS KIRIM & WHATSAPP INTEGRATION
+		   ========================================================================== */
+		const CheckoutController = {
+			selectedRegion: 'Tangerang Kota',
+			selectedDistrict: 'Karawaci (Cimone Jaya)',
+			selectedBank: 'Bank Jago',
+			proofImageData: null,
+			proofFileName: '',
+			regionDropdown: null,
+			districtDropdown: null,
+			bankDropdown: null,
+
+			init() {
+				this.bindEvents();
+			},
+
+			openAndPopulate() {
+				const cartItems = AppState.data.cart
+					.map(c => ({ ...c, product: AppState.getProductById(c.productId) }))
+					.filter(c => c.product !== null);
+
+				if (cartItems.length === 0) {
+					Toast.show('Keranjang kosong! Tambahkan barang sebelum membeli.', 'warning');
+					SoundHaptic.feedback('warning');
+					return;
+				}
+
+				StoreAvailability.renderAllIndicators();
+				this.pullFromProfile(false);
+				this.renderSummary();
+			},
+
+			pullFromProfile(showToast = true) {
+				const p = AppState.data.profile;
+				document.getElementById('checkout-name').value = p.fullName || '';
+				document.getElementById('checkout-phone').value = p.phone || '';
+				document.getElementById('checkout-address').value = p.address || '';
+
+				this.selectedRegion = TANGERANG_LOCATIONS[p.region] ? p.region : 'Tangerang Kota';
+				const distList = TANGERANG_LOCATIONS[this.selectedRegion] || [];
+				const validDistrict = distList.find(d => d.name === p.district);
+				this.selectedDistrict = validDistrict ? validDistrict.name : (distList[0]?.name || '');
+				const validBank = PAYMENT_PROVIDERS.find(b => b.id === p.bank);
+				this.selectedBank = validBank ? validBank.id : 'Bank Jago';
+
+				this.initOrUpdateDropdowns();
+				this.renderOfficialDestinations();
+				this.renderSummary();
+
+				if (showToast) {
+					SoundHaptic.feedback('click');
+					Toast.show('Data diri berhasil ditarik dari Profile.', 'success');
+				}
+			},
+
+			initOrUpdateDropdowns() {
+				const regions = Object.keys(TANGERANG_LOCATIONS).map(r => ({ value: r, label: r }));
+				const districts = (TANGERANG_LOCATIONS[this.selectedRegion] || []).map(d => ({ value: d.name, label: d.name }));
+				const banks = PAYMENT_PROVIDERS.map(p => ({
+					value: p.id,
+					label: `${p.label} (${p.type})`,
+					iconHtml: getPaymentIconSvg(p.id, 'w-6 h-6')
+				}));
+
+				this.regionDropdown = new CustomDropdown({
+					containerId: 'dropdown-checkout-region',
+					value: this.selectedRegion,
+					options: regions,
+					onChange: (val) => {
+						this.selectedRegion = val;
+						const nextDistricts = TANGERANG_LOCATIONS[val] || [];
+						this.selectedDistrict = nextDistricts[0]?.name || '';
+						this.districtDropdown.setOptions(
+							nextDistricts.map(d => ({ value: d.name, label: d.name })),
+							this.selectedDistrict
+						);
+						this.renderSummary(true);
+					}
+				});
+
+				this.districtDropdown = new CustomDropdown({
+					containerId: 'dropdown-checkout-district',
+					value: this.selectedDistrict,
+					options: districts,
+					onChange: (val) => {
+						this.selectedDistrict = val;
+						this.renderSummary(true);
+					}
+				});
+
+				this.bankDropdown = new CustomDropdown({
+					containerId: 'dropdown-checkout-bank',
+					value: this.selectedBank,
+					options: banks,
+					onChange: (val) => {
+						this.selectedBank = val;
+						this.renderOfficialDestinations();
+					}
+				});
+			},
+
+			renderOfficialDestinations() {
+				const container = document.getElementById('official-payment-destinations');
+				if (!container) return;
+
+				container.innerHTML = STORE_CONFIG.officialDestinations.map(dest => {
+					const isMatched = this.selectedBank === dest.id;
+					return `
+						<div class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 ${isMatched ? 'accent-border accent-soft-bg' : 'theme-surface'}">
+							<div class="flex items-center gap-2">
+								${getPaymentIconSvg(dest.id, 'w-7 h-7')}
+								<div class="min-w-0">
+									<span class="text-xs font-bold theme-text-primary block truncate">${dest.name}</span>
+									<span class="text-[10px] theme-text-muted block truncate">a.n. ${dest.holder}</span>
+								</div>
+							</div>
+							<div class="flex items-center justify-between gap-1.5 pt-1 border-t theme-border">
+								<span class="text-xs font-mono font-bold theme-text-primary truncate">${dest.accountNumber}</span>
+								<button type="button" data-copy-dest="${dest.accountNumber}" data-copy-name="${dest.name}" class="px-2 py-1 rounded-lg accent-bg text-[10px] font-semibold shrink-0 active:scale-95">
+									Salin
+								</button>
+							</div>
+						</div>
+					`;
+				}).join('');
+
+				container.querySelectorAll('[data-copy-dest]').forEach(btn => {
+					btn.addEventListener('click', () => {
+						const accNum = btn.getAttribute('data-copy-dest');
+						const accName = btn.getAttribute('data-copy-name');
+						this.copyTextFallback(accNum, `${accName} (${accNum})`);
+					});
+				});
+			},
+
+			copyTextFallback(rawNumber, labelText) {
+				const tempInput = document.createElement('input');
+				tempInput.value = rawNumber;
+				document.body.appendChild(tempInput);
+				tempInput.select();
+				try {
+					document.execCommand('copy');
+					SoundHaptic.feedback('copy');
+					Toast.show(`Nomor tujuan ${labelText} berhasil disalin!`, 'success');
+				} catch (err) {
+					Toast.show(`Tujuan pembayaran: ${labelText}`, 'info');
+				}
+				document.body.removeChild(tempInput);
+			},
+
+			renderSummary(notifyIfOutOfRange = false) {
+				const itemsContainer = document.getElementById('checkout-items-summary');
+				const itemCountBadge = document.getElementById('checkout-item-count-badge');
+				const subtotalEl = document.getElementById('checkout-subtotal');
+				const serviceEl = document.getElementById('checkout-service-fee');
+				const shipLabelEl = document.getElementById('checkout-shipping-label');
+				const shipFeeEl = document.getElementById('checkout-shipping-fee');
+				const grandTotalEl = document.getElementById('checkout-grand-total');
+				const distPillEl = document.getElementById('shipping-distance-pill');
+				const statusBoxEl = document.getElementById('shipping-status-box');
+				const submitBtn = document.getElementById('submit-whatsapp-order-btn');
+
+				const items = AppState.data.cart
+					.map(c => ({ ...c, product: AppState.getProductById(c.productId) }))
+					.filter(c => c.product !== null);
+
+				if (items.length === 0) {
+					ModalManager.close('checkout');
+					Toast.show('Semua barang dihapus. Silakan pilih produk kembali.', 'info');
+					return;
+				}
+
+				const totalUnits = items.reduce((s, it) => s + it.qty, 0);
+				if (itemCountBadge) {
+					itemCountBadge.textContent = `${totalUnits} unit`;
+				}
+
+				let subtotal = 0;
+				if (itemsContainer) {
+					itemsContainer.innerHTML = items.map(({ product, qty }) => {
+						const line = product.price * qty;
+						subtotal += line;
+						return `
+							<div class="p-2.5 rounded-xl border theme-surface flex items-center justify-between gap-2.5 text-xs">
+								<img src="${product.image}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/80x80/EBF0EC/4A7C59?text=Audio';" class="w-10 h-10 rounded-lg object-cover border theme-border shrink-0">
+								<div class="flex-1 min-w-0">
+									<p class="font-semibold theme-text-primary truncate">${product.name}</p>
+									<span class="theme-text-muted">${qty} × ${AppState.formatRupiah(product.price)}</span>
+								</div>
+								<div class="flex items-center gap-2 shrink-0">
+									<span class="font-bold theme-text-primary">${AppState.formatRupiah(line)}</span>
+									<button type="button" data-checkout-remove="${product.id}" title="Hapus barang dari ringkasan" aria-label="Hapus ${product.name}" class="p-1.5 rounded-lg text-rose-500 hover:bg-rose-500/10 transition active:scale-90">
+										<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+											<polyline points="3 6 5 6 21 6"></polyline>
+											<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+										</svg>
+									</button>
+								</div>
+							</div>
+						`;
+					}).join('');
+
+					itemsContainer.querySelectorAll('[data-checkout-remove]').forEach(btn => {
+						btn.addEventListener('click', () => {
+							const prodId = btn.getAttribute('data-checkout-remove');
+							AppState.removeFromCart(prodId, true);
+						});
+					});
+				}
+
+				const shipEval = ShippingCalculator.evaluateShipping(this.selectedRegion, this.selectedDistrict);
+
+				if (distPillEl) {
+					if (shipEval.eligible) {
+						distPillEl.textContent = `Jarak: ±${shipEval.distanceKm} KM (Terjangkau)`;
+						distPillEl.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-600';
+					} else if (shipEval.distanceKm !== null) {
+						distPillEl.textContent = `Jarak: ±${shipEval.distanceKm} KM (Luar Radius >30 KM)`;
+						distPillEl.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/15 text-rose-600';
+					} else {
+						distPillEl.textContent = 'Di Luar Area Tangerang';
+						distPillEl.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/15 text-rose-600';
+					}
+				}
+
+				if (statusBoxEl) {
+					if (shipEval.eligible) {
+						statusBoxEl.innerHTML = `
+							<p class="font-semibold text-emerald-600 flex items-center gap-1.5">
+								<span>✓ Alamat Terjangkau Pengiriman Toko</span>
+							</p>
+							<p class="theme-text-secondary">${shipEval.reason}</p>
+							<p class="theme-text-muted">Tarif berlaku: Rp 10.000 per kelipatan 5 KM (Maks. 30 KM dari Jl. Raya Merdeka No.35 Cimone Jaya).</p>
+						`;
+					} else {
+						statusBoxEl.innerHTML = `
+							<p class="font-semibold text-rose-600">✕ Di Luar Area / Batas Radius Pengiriman (Maks. 30 KM)</p>
+							<p class="theme-text-secondary">${shipEval.reason}</p>
+						`;
+						if (notifyIfOutOfRange) {
+							SoundHaptic.feedback('warning');
+							Toast.show(shipEval.reason, 'warning', 4200);
+						}
+					}
+				}
+
+				const shippingCost = shipEval.eligible ? shipEval.cost : 0;
+				const serviceFee = STORE_CONFIG.serviceFee;
+				const grandTotal = subtotal + serviceFee + shippingCost;
+
+				if (subtotalEl) subtotalEl.textContent = AppState.formatRupiah(subtotal);
+				if (serviceEl) serviceEl.textContent = AppState.formatRupiah(serviceFee);
+				if (shipLabelEl) {
+					shipLabelEl.textContent = shipEval.eligible
+						? `Ongkos Kirim (±${shipEval.distanceKm} KM)`
+						: 'Ongkos Kirim (Tidak Terjangkau)';
+				}
+				if (shipFeeEl) {
+					shipFeeEl.textContent = shipEval.eligible ? AppState.formatRupiah(shippingCost) : '—';
+				}
+				if (grandTotalEl) {
+					grandTotalEl.textContent = AppState.formatRupiah(grandTotal);
+				}
+
+				if (submitBtn) {
+					submitBtn.disabled = !shipEval.eligible;
+					submitBtn.classList.toggle('opacity-50', !shipEval.eligible);
+					submitBtn.classList.toggle('cursor-not-allowed', !shipEval.eligible);
+				}
+			},
+
+			bindEvents() {
+				document.getElementById('sync-profile-to-checkout-btn')?.addEventListener('click', () => {
+					this.pullFromProfile(true);
+				});
+
+				/* Custom Dropzone Foto Bukti Pembayaran */
+				const dropzone = document.getElementById('checkout-proof-dropzone');
+				const fileInput = document.getElementById('checkout-proof-input');
+
+				dropzone?.addEventListener('click', () => fileInput?.click());
+				fileInput?.addEventListener('change', (e) => {
+					const file = e.target.files?.[0];
+					if (!file) return;
+
+					if (file.size > 5 * 1024 * 1024) {
+						SoundHaptic.feedback('warning');
+						Toast.show('Ukuran foto maksimal 5 MB.', 'warning');
+						return;
+					}
+
+					const reader = new FileReader();
+					reader.onload = (ev) => {
+						this.proofImageData = ev.target.result;
+						this.proofFileName = file.name;
+						document.getElementById('proof-placeholder-view')?.classList.add('hidden');
+						document.getElementById('proof-preview-view')?.classList.remove('hidden');
+						document.getElementById('proof-preview-img').src = this.proofImageData;
+						document.getElementById('proof-file-name').textContent = file.name;
+						SoundHaptic.feedback('click');
+						Toast.show('Foto bukti pembayaran berhasil diunggah.', 'success');
+					};
+					reader.readAsDataURL(file);
+				});
+
+				/* Submit Form Pembayaran ke WhatsApp */
+				document.getElementById('checkout-form')?.addEventListener('submit', (e) => {
+					e.preventDefault();
+					this.submitOrderToWhatsApp();
+				});
+			},
+
+			submitOrderToWhatsApp() {
+				const fullName = document.getElementById('checkout-name').value.trim();
+				const phone = document.getElementById('checkout-phone').value.trim();
+				const address = document.getElementById('checkout-address').value.trim();
+
+				if (!fullName || !phone || !address) {
+					SoundHaptic.feedback('warning');
+					Toast.show('Harap lengkapi Nama Lengkap, Nomor Telepon, dan Alamat Rumah.', 'warning');
+					return;
+				}
+
+				const shipEval = ShippingCalculator.evaluateShipping(this.selectedRegion, this.selectedDistrict);
+				if (!shipEval.eligible) {
+					SoundHaptic.feedback('warning');
+					Toast.show(shipEval.reason, 'error', 4200);
+					return;
+				}
+
+				if (!this.proofImageData) {
+					SoundHaptic.feedback('warning');
+					Toast.show('Silakan unggah foto bukti pembayaran terlebih dahulu.', 'warning');
+					return;
+				}
+
+				const items = AppState.data.cart
+					.map(c => ({ ...c, product: AppState.getProductById(c.productId) }))
+					.filter(c => c.product !== null);
+
+				if (items.length === 0) {
+					Toast.show('Keranjang belanja kosong.', 'warning');
+					return;
+				}
+
+				const subtotal = items.reduce((s, it) => s + it.product.price * it.qty, 0);
+				const serviceFee = STORE_CONFIG.serviceFee;
+				const shippingCost = shipEval.cost;
+				const grandTotal = subtotal + serviceFee + shippingCost;
+				const orderId = 'BE-' + Date.now().toString().slice(-6);
+				const nowStr = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+
+				/* Simpan ke Riwayat Belanja Profile (Lengkap dengan Foto Thumbnail Produk) */
+				const orderRecord = {
+					orderId,
+					date: nowStr,
+					customerName: fullName,
+					phone,
+					region: this.selectedRegion,
+					district: this.selectedDistrict,
+					address,
+					distanceKm: shipEval.distanceKm,
+					shippingCost,
+					serviceFee,
+					subtotal,
+					grandTotal,
+					bank: this.selectedBank,
+					proofFileName: this.proofFileName,
+					items: items.map(it => ({
+						productId: it.product.id,
+						name: it.product.name,
+						image: it.product.image,
+						qty: it.qty,
+						price: it.product.price
+					}))
+				};
+
+				AppState.data.orderHistory.unshift(orderRecord);
+				AppState.data.cart = [];
+				AppState.save();
+
+				UIRenderer.updateBadges();
+				UIRenderer.renderCartModal();
+
+				/* Susun Pesan WhatsApp Lengkap */
+				const itemsLines = items.map((it, idx) =>
+					`${idx + 1}. ${it.product.name} (${it.qty}x) = ${AppState.formatRupiah(it.product.price * it.qty)}`
+				).join('\n');
+
+				const waMessage = [
+					'*KONFIRMASI PESANAN & BUKTI PEMBAYARAN*',
+					`*${STORE_CONFIG.storeName}*`,
+					`Alamat Toko: ${STORE_CONFIG.originName}`,
+					`No. Pesanan: *${orderId}*`,
+					`Waktu: ${nowStr}`,
+					'',
+					'*DATA PENERIMA:*',
+					`• Nama: ${fullName}`,
+					`• No. HP/WA: ${phone}`,
+					`• Wilayah: ${this.selectedRegion} - Kec. ${this.selectedDistrict}`,
+					`• Alamat: ${address}`,
+					'',
+					'*DAFTAR BARANG DIBELI:*',
+					itemsLines,
+					'',
+					'*RINCIAN PEMBAYARAN:*',
+					`• Subtotal Produk: ${AppState.formatRupiah(subtotal)}`,
+					`• Biaya Layanan: ${AppState.formatRupiah(serviceFee)}`,
+					`• Ongkos Kirim (±${shipEval.distanceKm} KM dari Cimone Jaya): ${AppState.formatRupiah(shippingCost)}`,
+					`• *TOTAL BAYAR: ${AppState.formatRupiah(grandTotal)}*`,
+					`• Metode Pembayaran: *${this.selectedBank}*`,
+					'• Tujuan Transfer Resmi: GoPay/DANA (089529305947) / Bank Jago (12345678)',
+					`• Bukti Transfer: Terlampir (${this.proofFileName})`,
+					'',
+					'Mohon segera diproses ya Admin Berkat Elektronik. Terima kasih!'
+				].join('\n');
+
+				const waUrl = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(waMessage)}`;
+
+				SoundHaptic.feedback('success');
+				Toast.show(`Pesanan ${orderId} tersimpan! Mengarahkan ke WhatsApp toko...`, 'success', 4500);
+				ModalManager.close('checkout');
+
+				/* Reset bukti transfer untuk transaksi berikutnya */
+				this.proofImageData = null;
+				this.proofFileName = '';
+				document.getElementById('proof-placeholder-view')?.classList.remove('hidden');
+				document.getElementById('proof-preview-view')?.classList.add('hidden');
+				const fileInput = document.getElementById('checkout-proof-input');
+				if (fileInput) fileInput.value = '';
+
+				setTimeout(() => {
+					window.open(waUrl, '_blank', 'noopener,noreferrer');
+				}, 450);
+			}
+		};
+
+		/* ==========================================================================
+		   11. PENGELOLA MODAL & EVENT LISTENER UTAMA
+		   ========================================================================== */
+		const ModalManager = {
+			open(name) {
+				const modalEl = document.getElementById(`modal-${name}`);
+				if (!modalEl) return;
+
+				if (name === 'cart') UIRenderer.renderCartModal();
+				if (name === 'profile') UIRenderer.renderProfileModal();
+				if (name === 'settings') SettingsManager.syncModalControls();
+				if (name === 'checkout') CheckoutController.openAndPopulate();
+
+				modalEl.classList.remove('hidden');
+				document.body.style.overflow = 'hidden';
+				SoundHaptic.feedback('modalOpen');
+			},
+
+			close(name) {
+				const modalEl = document.getElementById(`modal-${name}`);
+				if (!modalEl) return;
+				modalEl.classList.add('hidden');
+
+				const anyOpen = Array.from(document.querySelectorAll('[id^="modal-"]')).some(m => !m.classList.contains('hidden'));
+				if (!anyOpen) {
+					document.body.style.overflow = '';
+				}
+			},
+
+			closeAll() {
+				document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));
+				document.body.style.overflow = '';
+			}
+		};
+
+		/* Inisialisasi Seluruh Event Aplikasi */
+		function bindApplicationEvents() {
+			/* Efek bayangan saat Fixed Header di-scroll */
+			const stickyHeader = document.getElementById('main-sticky-header');
+			window.addEventListener('scroll', () => {
+				if (!stickyHeader) return;
+				stickyHeader.classList.toggle('is-scrolled', window.scrollY > 12);
+			}, { passive: true });
+
+			/* Buka & Tutup Modal */
+			document.querySelectorAll('[data-open-modal]').forEach(btn => {
+				btn.addEventListener('click', () => {
+					ModalManager.open(btn.getAttribute('data-open-modal'));
+				});
+			});
+
+			document.querySelectorAll('[data-close-modal]').forEach(btn => {
+				btn.addEventListener('click', () => {
+					SoundHaptic.feedback('modalClose');
+					ModalManager.close(btn.getAttribute('data-close-modal'));
+				});
+			});
+
+			/* Klik backdrop untuk menutup modal */
+			document.querySelectorAll('[id^="modal-"]').forEach(backdrop => {
+				backdrop.addEventListener('click', (e) => {
+					if (e.target === backdrop) {
+						SoundHaptic.feedback('modalClose');
+						const name = backdrop.id.replace('modal-', '');
+						ModalManager.close(name);
+					}
+				});
+			});
+
+			/* Tutup modal dengan tombol Escape */
+			document.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape') {
+					ModalManager.closeAll();
+					CustomDropdown.closeAll();
+					document.getElementById('search-history-popover')?.classList.add('hidden');
+				}
+			});
+
+			/* Pencarian Real-Time & Riwayat Pencarian */
+			const searchInput = document.getElementById('global-search-input');
+			const clearSearchBtn = document.getElementById('clear-search-btn');
+			const executeSearchBtn = document.getElementById('execute-search-btn');
+			const historyPopover = document.getElementById('search-history-popover');
+
+			searchInput?.addEventListener('focus', () => {
+				UIRenderer.renderSearchHistoryChips();
+				historyPopover?.classList.remove('hidden');
+			});
+
+			searchInput?.addEventListener('input', (e) => {
+				const val = e.target.value;
+				AppState.filters.search = val;
+				clearSearchBtn?.classList.toggle('hidden', val.length === 0);
+				UIRenderer.renderProducts();
+			});
+
+			searchInput?.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					AppState.recordSearch(searchInput.value);
+					historyPopover?.classList.add('hidden');
+					SoundHaptic.feedback('click');
+				}
+			});
+
+			executeSearchBtn?.addEventListener('click', () => {
+				if (searchInput) {
+					AppState.recordSearch(searchInput.value);
+					UIRenderer.renderProducts();
+				}
+				historyPopover?.classList.add('hidden');
+				SoundHaptic.feedback('click');
+			});
+
+			clearSearchBtn?.addEventListener('click', () => {
+				if (searchInput) searchInput.value = '';
+				AppState.filters.search = '';
+				clearSearchBtn.classList.add('hidden');
+				UIRenderer.renderProducts();
+				SoundHaptic.feedback('click');
+			});
+
+			document.getElementById('popover-clear-history')?.addEventListener('click', () => {
+				AppState.data.searchHistory = [];
+				AppState.save();
+				UIRenderer.renderSearchHistoryChips();
+				SoundHaptic.feedback('delete');
+			});
+
+			document.addEventListener('click', (e) => {
+				if (!e.target.closest('#global-search-input') && !e.target.closest('#search-history-popover') && !e.target.closest('#execute-search-btn')) {
+					historyPopover?.classList.add('hidden');
+				}
+			});
+
+			/* Reset Filter */
+			const resetAllFilters = () => {
+				AppState.filters = {
+					search: '',
+					category: 'Semua',
+					brand: 'Semua',
+					priceRange: 'all',
+					sort: 'default'
+				};
+				if (searchInput) searchInput.value = '';
+				clearSearchBtn?.classList.add('hidden');
+				UIRenderer.dropdowns.category?.setValue('Semua', false);
+				UIRenderer.dropdowns.brand?.setValue('Semua', false);
+				UIRenderer.dropdowns.price?.setValue('all', false);
+				UIRenderer.dropdowns.sort?.setValue('default', false);
+				UIRenderer.renderCategoryPills();
+				UIRenderer.renderProducts();
+				SoundHaptic.feedback('click');
+				Toast.show('Semua filter dan pencarian telah direset.', 'info');
+			};
+
+			document.getElementById('reset-filters-btn')?.addEventListener('click', resetAllFilters);
+			document.getElementById('empty-reset-btn')?.addEventListener('click', resetAllFilters);
+
+			/* Keranjang: Kosongkan & Lanjut Checkout */
+			document.getElementById('clear-cart-btn')?.addEventListener('click', () => {
+				AppState.data.cart = [];
+				AppState.save();
+				UIRenderer.updateBadges();
+				UIRenderer.renderCartModal();
+				SoundHaptic.feedback('delete');
+				Toast.show('Keranjang belanja telah dikosongkan.', 'info');
+			});
+
+			document.getElementById('proceed-checkout-btn')?.addEventListener('click', () => {
+				ModalManager.close('cart');
+				ModalManager.open('checkout');
+			});
+
+			/* Pengaturan: Mode, Font Size, Toggles */
+			document.querySelectorAll('[data-setting-theme]').forEach(btn => {
+				btn.addEventListener('click', () => {
+					AppState.data.settings.theme = btn.getAttribute('data-setting-theme');
+					AppState.save();
+					SettingsManager.applyAll();
+					SoundHaptic.feedback('click');
+				});
+			});
+
+			document.querySelectorAll('[data-setting-fontsize]').forEach(btn => {
+				btn.addEventListener('click', () => {
+					AppState.data.settings.fontSize = btn.getAttribute('data-setting-fontsize');
+					AppState.save();
+					SettingsManager.applyAll();
+					SoundHaptic.feedback('click');
+				});
+			});
+
+			document.getElementById('toggle-anim-btn')?.addEventListener('click', () => {
+				AppState.data.settings.animations = !AppState.data.settings.animations;
+				AppState.save();
+				SettingsManager.applyAll();
+				SoundHaptic.feedback('click');
+			});
+
+			document.getElementById('toggle-sound-btn')?.addEventListener('click', () => {
+				AppState.data.settings.sound = !AppState.data.settings.sound;
+				AppState.save();
+				SettingsManager.applyAll();
+				SoundHaptic.feedback('click');
+			});
+
+			document.getElementById('toggle-vibrate-btn')?.addEventListener('click', () => {
+				AppState.data.settings.vibrate = !AppState.data.settings.vibrate;
+				AppState.save();
+				SettingsManager.applyAll();
+				SoundHaptic.feedback('click');
+			});
+
+			/* Tab Profile */
+			document.querySelectorAll('[data-profile-tab]').forEach(btn => {
+				btn.addEventListener('click', () => {
+					UIRenderer.activeProfileTab = btn.getAttribute('data-profile-tab');
+					UIRenderer.renderProfileModal();
+					SoundHaptic.feedback('click');
+				});
+			});
+
+			/* Export & Import JSON Global + Load File JSON Produk */
+			const importInput = document.getElementById('global-import-json-input');
+			const loadProductJsonInput = document.getElementById('load-product-json-input');
+
+			document.querySelectorAll('[data-action="export-data"]').forEach(btn => {
+				btn.addEventListener('click', () => SettingsManager.exportData());
+			});
+			document.querySelectorAll('[data-action="import-data"]').forEach(btn => {
+				btn.addEventListener('click', () => importInput?.click());
+			});
+			document.querySelectorAll('[data-action="load-product-json"]').forEach(btn => {
+				btn.addEventListener('click', () => loadProductJsonInput?.click());
+			});
+
+			importInput?.addEventListener('change', (e) => {
+				const file = e.target.files?.[0];
+				if (file) SettingsManager.importDataFromFile(file);
+				importInput.value = '';
+			});
+
+			loadProductJsonInput?.addEventListener('change', async (e) => {
+				if (e.target.files?.length) {
+					await ProductRepository.loadFromFileList(e.target.files);
+				}
+				loadProductJsonInput.value = '';
+			});
+
+			document.getElementById('download-sample-product-json-btn')?.addEventListener('click', () => {
+				ProductRepository.downloadSampleProductJson();
+			});
+		}
+
+		/* ==========================================================================
+		   12. BOOTSTRAP APLIKASI SAAT HALAMAN SELESAI DIMUAT
+		   ========================================================================== */
+		window.addEventListener('DOMContentLoaded', async () => {
+			AppState.init();
+			SettingsManager.applyAll();
+			StoreAvailability.renderAllIndicators();
+			setInterval(() => StoreAvailability.renderAllIndicators(), 60000);
+			await ProductRepository.loadAll();
+			UIRenderer.init();
+			CheckoutController.init();
+			bindApplicationEvents();
+		});
+	</script>
+</body>
+</html>
