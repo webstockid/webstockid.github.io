@@ -1,0 +1,546 @@
+[
+	{
+		"id": "ashley-01",
+		"name": "Ashley SM 402 4-Channel Mini Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 500000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-01.jpg",
+		"description": "Mixer audio mini 4 channel (2 Mono Mic/Line + 1 Stereo) yang ringkas dan praktis untuk kebutuhan karaoke rumahan, podcast, live streaming, maupun pengeras suara ruangan kecil. Dilengkapi efek vokal digital, pemutar MP3 USB, serta koneksi Bluetooth.",
+		"specs": [
+			"4 Channel (2 Mono Mic/Line + 1 Stereo)",
+			"Efek Digital Delay / Echo Bawaan",
+			"Bluetooth & Pemutar MP3 USB",
+			"Phantom Power +48V untuk Mic Condenser"
+		]
+	},
+	{
+		"id": "ashley-02",
+		"name": "Ashley Evolution 4 4-Channel Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 600000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-02.jpg",
+		"description": "Mixer audio 4 channel seri Evolution dengan kontrol EQ 3-band per channel dan efek reverb digital yang halus. Cocok untuk kebutuhan vokal, akustik ringan, hingga rekaman rumahan dengan konektivitas USB dan Bluetooth.",
+		"specs": [
+			"4 Channel Audio Mixer",
+			"3-Band EQ per Channel",
+			"Built-in Digital Reverb / Delay Effect",
+			"Bluetooth, USB MP3 & Phantom Power +48V"
+		]
+	},
+	{
+		"id": "ashley-03",
+		"name": "Ashley M-House 4 4-Channel Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 750000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-03.jpg",
+		"description": "Mixer audio 4 channel seri M-House dengan desain modern, preamp mikrofon berkejernihan tinggi, dan prosesor efek DSP digital. Mendukung pemutaran musik via Bluetooth maupun antarmuka audio USB.",
+		"specs": [
+			"4 Channel (2 Mono + 1 Stereo)",
+			"Prosesor Efek Digital DSP",
+			"3-Band EQ & Kontrol Gain Presisi",
+			"Bluetooth, USB Interface & Phantom Power +48V"
+		]
+	},
+	{
+		"id": "ashley-04",
+		"name": "Ashley Mix-400 4-Channel Portable Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 800000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-04.jpg",
+		"description": "Mixer audio portabel 4 channel dengan bodi ramping dan fitur 99 DSP digital effect. Dilengkapi koneksi USB soundcard untuk rekaman langsung ke komputer maupun smartphone serta streaming musik via Bluetooth.",
+		"specs": [
+			"4 Channel (2 Combo XLR/TRS + 2 Stereo)",
+			"99 DSP Digital Multi-Effect",
+			"USB Soundcard Recording & Bluetooth",
+			"Phantom Power +48V"
+		]
+	},
+	{
+		"id": "ashley-05",
+		"name": "Ashley Premium-6 6-Channel Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 900000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-05.jpg",
+		"description": "Mixer audio 6 channel (4 Mono + 1 Stereo) seri Premium yang sudah dibekali 99 DSP digital effect dan 7-band stereo graphic equalizer untuk pengaturan karakter vokal serta musik yang lebih detail.",
+		"specs": [
+			"6 Channel (4 Mono Mic/Line + 1 Stereo)",
+			"99 DSP Digital Multi-Effect",
+			"7-Band Stereo Graphic Equalizer",
+			"Bluetooth, USB MP3 Player & Recording"
+		]
+	},
+	{
+		"id": "ashley-06",
+		"name": "Ashley Samson 4 4-Channel Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 0,
+		"stock": 5,
+		"image": "foto/ashley/ashley-06.jpg",
+		"description": "Mixer audio 4 channel seri Samson dengan konstruksi bodi metal tangguh, 99 DSP digital reverb effect, serta dukungan pemutar USB MP3 dan Bluetooth untuk kebutuhan acara maupun ruang ibadah.",
+		"specs": [
+			"4 Channel Audio Mixer",
+			"99 DSP Digital Reverb Effect",
+			"3-Band EQ per Channel & Phantom Power +48V",
+			"Bluetooth & USB MP3 Player"
+		]
+	},
+	{
+		"id": "ashley-07",
+		"name": "Ashley Super M-4 +comp 4-Channel Mixer dengan Compressor",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1100000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-07.jpg",
+		"description": "Mixer audio 4 channel seri Super M-4 yang dilengkapi kenop Compressor bawaan pada channel mono untuk menjaga dinamika suara vokal agar tidak pecah saat berteriak, lengkap dengan 99 DSP dan 7-band graphic EQ.",
+		"specs": [
+			"4 Channel dengan Fitur Compressor Bawaan",
+			"99 DSP Digital Multi-Effect",
+			"7-Band Stereo Graphic Equalizer",
+			"Bluetooth, USB Soundcard & Phantom Power +48V"
+		]
+	},
+	{
+		"id": "ashley-08",
+		"name": "Ashley Super M-8 +comp 8-Channel Mixer dengan Compressor",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1450000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-08.jpg",
+		"description": "Mixer audio 8 channel seri Super M-8 yang dibekali fitur Compressor pada channel mono untuk meratakan level vokal dan instrumen, dipadukan dengan 99 DSP digital effect dan 7-band stereo graphic EQ.",
+		"specs": [
+			"8 Channel dengan Fitur Compressor Bawaan",
+			"99 DSP Digital Multi-Effect",
+			"7-Band Stereo Graphic Equalizer",
+			"Bluetooth, USB MP3 & Recording"
+		]
+	},
+	{
+		"id": "ashley-09",
+		"name": "Ashley Samson 6 6-Channel Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1000000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-09.jpg",
+		"description": "Mixer audio 6 channel seri Samson (4 Mono + 1 Stereo) dengan preamp rendah noise, 99 DSP digital effect, kontrol EQ 3-band per channel, serta pemutar musik Bluetooth dan USB.",
+		"specs": [
+			"6 Channel (4 Mono Mic/Line + 1 Stereo)",
+			"99 DSP Digital Multi-Effect",
+			"3-Band EQ & Phantom Power +48V per Channel",
+			"Bluetooth & USB MP3 Player"
+		]
+	},
+	{
+		"id": "ashley-10",
+		"name": "Ashley Samson 8 8-Channel Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1150000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-10.jpg",
+		"description": "Mixer audio 8 channel seri Samson (6 Mono + 1 Stereo) yang dirancang untuk penggunaan serbaguna di masjid, sekolah, maupun panggung hiburan. Dilengkapi 99 DSP effect dan 7-band graphic EQ.",
+		"specs": [
+			"8 Channel (6 Mono Mic/Line + 1 Stereo)",
+			"99 DSP Digital Multi-Effect",
+			"7-Band Stereo Graphic Equalizer",
+			"Bluetooth, USB MP3 & Phantom Power +48V"
+		]
+	},
+	{
+		"id": "ashley-11",
+		"name": "Ashley Onyx 8 8-Channel Full Mono Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1700000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-11.jpg",
+		"description": "Mixer audio 8 channel full mono seri Onyx dengan 99 DSP efek digital 24-bit, 7-band stereo graphic equalizer, tombol Mute & PFL per channel, serta antarmuka USB dan Bluetooth.",
+		"specs": [
+			"8 Channel Full Mono Mic/Line",
+			"99 DSP Digital Effect 24-Bit",
+			"7-Band Stereo Graphic Equalizer",
+			"Tombol Mute, PFL, Bluetooth & USB Soundcard"
+		]
+	},
+	{
+		"id": "ashley-12",
+		"name": "Ashley Marco 8 8-Channel Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1600000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-12.jpg",
+		"description": "Mixer audio 8 channel seri Marco dengan karakter suara vokal jernih, 99 DSP digital multi-effect, 7-band stereo graphic EQ, serta pemutar USB MP3 dan koneksi Bluetooth yang stabil.",
+		"specs": [
+			"8 Channel Audio Mixer",
+			"99 DSP Digital Multi-Effect",
+			"7-Band Stereo Graphic Equalizer",
+			"Bluetooth, USB Recording & Phantom Power +48V"
+		]
+	},
+	{
+		"id": "ashley-13",
+		"name": "Ashley MDX 8 8-Channel Full Mono Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1700000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-13.jpg",
+		"description": "Mixer audio 8 channel full mono seri MDX yang dilengkapi kontrol 4-band EQ pada setiap channel, prosesor efek digital DSP, 7-band graphic EQ, serta koneksi Bluetooth dan USB interface.",
+		"specs": [
+			"8 Channel Full Mono Mic/Line",
+			"4-Band EQ per Channel",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Tombol Mute, PFL, Bluetooth & USB Interface"
+		]
+	},
+	{
+		"id": "ashley-14",
+		"name": "Ashley MDX 12 12-Channel Full Mono Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 2000000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-14.jpg",
+		"description": "Mixer audio 12 channel full mono seri MDX untuk kebutuhan panggung, aula, dan event live dengan 4-band EQ per channel, efek digital DSP, 7-band stereo graphic EQ, Bluetooth, dan USB recording.",
+		"specs": [
+			"12 Channel Full Mono Mic/Line",
+			"4-Band EQ per Channel",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Bluetooth, USB Soundcard & Phantom Power +48V"
+		]
+	},
+	{
+		"id": "ashley-15",
+		"name": "Ashley Selection 12 12-Channel Full Mono Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 2250000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-15.jpg",
+		"description": "Mixer audio 12 channel full mono seri Selection dengan fitur routing profesional, 4-band EQ per channel, 199/99 DSP digital effect, 7-band graphic EQ, AUX send, serta koneksi Bluetooth dan USB.",
+		"specs": [
+			"12 Channel Full Mono Mic/Line",
+			"4-Band EQ per Channel + AUX Send",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Bluetooth, USB Recording & Tombol Mute per Channel"
+		]
+	},
+	{
+		"id": "ashley-16",
+		"name": "Ashley Selection 4 4-Channel Full Mono Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1250000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-16.jpg",
+		"description": "Mixer audio 4 channel full mono seri Selection dengan kualitas preamp profesional, 4-band EQ per channel, efek digital DSP, 7-band stereo graphic EQ, Bluetooth, dan USB audio interface.",
+		"specs": [
+			"4 Channel Full Mono Mic/Line",
+			"4-Band EQ per Channel",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Bluetooth, USB Recording & Tombol Mute"
+		]
+	},
+	{
+		"id": "ashley-17",
+		"name": "Ashley Onyx 12 12-Channel Full Mono Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1950000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-17.jpg",
+		"description": "Mixer audio 12 channel full mono seri Onyx dengan 99 DSP digital effect, 7-band stereo graphic EQ, kontrol Mute dan PFL di setiap channel, serta fitur Bluetooth dan USB MP3/PC recording.",
+		"specs": [
+			"12 Channel Full Mono Mic/Line",
+			"99 DSP Digital Effect",
+			"7-Band Stereo Graphic Equalizer",
+			"Tombol Mute, PFL, Bluetooth & USB Interface"
+		]
+	},
+	{
+		"id": "ashley-18",
+		"name": "Ashley GTA 4 4-Channel Full Mono Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1200000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-18.jpg",
+		"description": "Mixer audio 4 channel full mono seri GTA dengan bodi kokoh, fader halus presisi, 99 DSP digital reverb effect, 7-band stereo graphic EQ, serta pemutar USB MP3 dan Bluetooth.",
+		"specs": [
+			"4 Channel Full Mono Mic/Line",
+			"99 DSP Digital Reverb Effect",
+			"7-Band Stereo Graphic Equalizer",
+			"Bluetooth, USB Soundcard & Tombol Mute"
+		]
+	},
+	{
+		"id": "ashley-19",
+		"name": "Ashley GTA 6 6-Channel Full Mono Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1450000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-19.jpg",
+		"description": "Mixer audio 6 channel full mono seri GTA yang dirancang untuk keandalan tinggi pada sistem sound masjid, kafe, maupun acara live. Dilengkapi 99 DSP effect dan 7-band stereo graphic EQ.",
+		"specs": [
+			"6 Channel Full Mono Mic/Line",
+			"99 DSP Digital Reverb Effect",
+			"7-Band Stereo Graphic Equalizer",
+			"Bluetooth, USB Recording & Phantom Power +48V"
+		]
+	},
+	{
+		"id": "ashley-20",
+		"name": "Ashley GTA 8 8-Channel Full Mono Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1650000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-20.jpg",
+		"description": "Mixer audio 8 channel full mono seri GTA dengan 99 DSP digital effect, 7-band stereo graphic equalizer, tombol Mute per channel, serta koneksi Bluetooth dan USB audio interface.",
+		"specs": [
+			"8 Channel Full Mono Mic/Line",
+			"99 DSP Digital Reverb Effect",
+			"7-Band Stereo Graphic Equalizer",
+			"Bluetooth, USB Soundcard & Tombol Mute"
+		]
+	},
+	{
+		"id": "ashley-21",
+		"name": "Ashley Selection 6 6-Channel Full Mono Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1400000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-21.jpg",
+		"description": "Mixer audio 6 channel full mono seri Selection dengan pengaturan tonal 4-band EQ per channel, prosesor efek digital DSP, 7-band stereo graphic EQ, serta Bluetooth dan USB recording.",
+		"specs": [
+			"6 Channel Full Mono Mic/Line",
+			"4-Band EQ per Channel",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Bluetooth, USB Recording & Tombol Mute"
+		]
+	},
+	{
+		"id": "ashley-22",
+		"name": "Ashley Hero 8 8-Channel Full Mono Pro Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 2200000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-22.jpg",
+		"description": "Mixer profesional 8 channel full mono seri Hero dengan jalur Group 1-2, 3 AUX send, 4-band EQ dengan mid-sweep, prosesor efek digital DSP, 7-band graphic EQ, serta Bluetooth dan USB soundcard.",
+		"specs": [
+			"8 Channel Full Mono + Group 1-2 Output",
+			"4-Band EQ dengan Mid-Sweep & 3 AUX Send",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Bluetooth, USB Soundcard & Phantom Power +48V"
+		]
+	},
+	{
+		"id": "ashley-23",
+		"name": "Ashley Hero 12 12-Channel Full Mono Pro Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 2800000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-23.jpg",
+		"description": "Mixer panggung 12 channel full mono seri Hero dengan fleksibilitas routing Group 1-2 dan 3 AUX send, 4-band EQ mid-sweep, efek digital DSP, 7-band stereo graphic EQ, Bluetooth, dan USB recording.",
+		"specs": [
+			"12 Channel Full Mono + Group 1-2 Output",
+			"4-Band EQ dengan Mid-Sweep & 3 AUX Send",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Bluetooth, USB Soundcard & Tombol Mute / PFL"
+		]
+	},
+	{
+		"id": "ashley-24",
+		"name": "Ashley Hero 16 16-Channel Full Mono Pro Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 3550000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-24.jpg",
+		"description": "Mixer profesional berkapasitas besar 16 channel full mono seri Hero untuk konser, live band, dan tata suara gedung. Dilengkapi Group 1-2, 3 AUX send, 4-band EQ mid-sweep, DSP effect, dan 7-band graphic EQ.",
+		"specs": [
+			"16 Channel Full Mono + Group 1-2 Output",
+			"4-Band EQ dengan Mid-Sweep & 3 AUX Send",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Bluetooth, USB Soundcard & Tombol Mute / PFL"
+		]
+	},
+	{
+		"id": "ashley-25",
+		"name": "Ashley Premium 4 4-Channel Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 750000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-25.jpg",
+		"description": "Mixer audio 4 channel (2 Mono + 1 Stereo) seri Premium yang sudah dilengkapi 99 DSP digital effect dan 7-band stereo graphic equalizer pada harga ekonomis, lengkap dengan Bluetooth dan USB MP3.",
+		"specs": [
+			"4 Channel (2 Mono Mic/Line + 1 Stereo)",
+			"99 DSP Digital Multi-Effect",
+			"7-Band Stereo Graphic Equalizer",
+			"Bluetooth, USB MP3 & Phantom Power +48V"
+		]
+	},
+	{
+		"id": "ashley-26",
+		"name": "Ashley King Note 4 4-Channel Full Mono Premium Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1950000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-26.jpg",
+		"description": "Mixer audio kelas atas 4 channel full mono seri King Note dengan headroom luas dan preamp ultra low-noise. Dilengkapi 4-band EQ, 3 AUX send, efek digital DSP, 7-band graphic EQ, Bluetooth, dan USB soundcard.",
+		"specs": [
+			"4 Channel Full Mono High-Headroom Preamp",
+			"4-Band EQ per Channel & 3 AUX Send",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Bluetooth, USB Soundcard & Phantom Power +48V"
+		]
+	},
+	{
+		"id": "ashley-27",
+		"name": "Ashley King Note 6 6-Channel Full Mono Premium Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 2500000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-27.jpg",
+		"description": "Mixer audio profesional 6 channel full mono seri King Note dengan kualitas komponen presisi, Sub Group, 3 AUX send, 4-band EQ, efek digital DSP, 7-band graphic EQ, Bluetooth, dan USB recording.",
+		"specs": [
+			"6 Channel Full Mono + Sub Group Output",
+			"4-Band EQ per Channel & 3 AUX Send",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Bluetooth, USB Soundcard & Tombol Mute / PFL"
+		]
+	},
+	{
+		"id": "ashley-28",
+		"name": "Ashley King Note 8 8-Channel Full Mono Premium Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 3100000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-28.jpg",
+		"description": "Mixer profesional 8 channel full mono seri King Note untuk rental sound system, studio, maupun panggung live. Dibekali 4-band EQ mid-sweep, Sub Group 1-2, 3 AUX send, DSP effect, dan 7-band graphic EQ.",
+		"specs": [
+			"8 Channel Full Mono + Sub Group 1-2",
+			"4-Band EQ dengan Mid-Sweep & 3 AUX Send",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Bluetooth, USB Soundcard & Tombol Mute / PFL"
+		]
+	},
+	{
+		"id": "ashley-29",
+		"name": "Ashley King Note 12 12-Channel Full Mono Premium Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 3600000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-29.jpg",
+		"description": "Mixer konsol 12 channel full mono seri King Note dengan kejernihan suara tinggi, Sub Group 1-2, 3 AUX send, 4-band EQ mid-sweep, prosesor efek digital DSP, 7-band graphic EQ, Bluetooth, dan USB interface.",
+		"specs": [
+			"12 Channel Full Mono + Sub Group 1-2",
+			"4-Band EQ dengan Mid-Sweep & 3 AUX Send",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Bluetooth, USB Soundcard & Tombol Mute / PFL"
+		]
+	},
+	{
+		"id": "ashley-30",
+		"name": "Ashley King Note 16 16-Channel Full Mono Flagship Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 4100000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-30.jpg",
+		"description": "Mixer konsol flagship 16 channel full mono seri King Note untuk kebutuhan tata suara profesional skala besar. Dilengkapi Sub Group 1-2, 3 AUX send, 4-band EQ mid-sweep, DSP effect, 7-band graphic EQ, Bluetooth, dan USB.",
+		"specs": [
+			"16 Channel Full Mono + Sub Group 1-2",
+			"4-Band EQ dengan Mid-Sweep & 3 AUX Send",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Bluetooth, USB Soundcard & Tombol Mute / PFL"
+		]
+	},
+	{
+		"id": "ashley-31",
+		"name": "Ashley Onyx 4 4-Channel Full Mono Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1250000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-31.jpg",
+		"description": "Mixer audio 4 channel full mono seri Onyx dengan preamp bertenaga, 99 DSP digital effect 24-bit, 7-band stereo graphic equalizer, tombol Mute & PFL per channel, Bluetooth, dan USB soundcard.",
+		"specs": [
+			"4 Channel Full Mono Mic/Line",
+			"99 DSP Digital Effect 24-Bit",
+			"7-Band Stereo Graphic Equalizer",
+			"Tombol Mute, PFL, Bluetooth & USB Soundcard"
+		]
+	},
+	{
+		"id": "ashley-32",
+		"name": "Ashley MDX 4 4-Channel Full Mono Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1250000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-32.jpg",
+		"description": "Mixer audio 4 channel full mono seri MDX dengan pengaturan 4-band EQ pada setiap channel, efek digital DSP jernih, 7-band stereo graphic EQ, serta pemutar USB MP3 dan koneksi Bluetooth.",
+		"specs": [
+			"4 Channel Full Mono Mic/Line",
+			"4-Band EQ per Channel",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Tombol Mute, PFL, Bluetooth & USB Interface"
+		]
+	},
+	{
+		"id": "ashley-33",
+		"name": "Ashley MDX 6 6-Channel Full Mono Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1450000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-33.jpg",
+		"description": "Mixer audio 6 channel full mono seri MDX dengan kontrol tonal 4-band EQ per channel, prosesor efek digital DSP, 7-band stereo graphic equalizer, Bluetooth, dan antarmuka rekaman USB.",
+		"specs": [
+			"6 Channel Full Mono Mic/Line",
+			"4-Band EQ per Channel",
+			"Digital DSP Multi-Effect & 7-Band Graphic EQ",
+			"Tombol Mute, PFL, Bluetooth & USB Interface"
+		]
+	},
+	{
+		"id": "ashley-34",
+		"name": "Ashley Super M8 Biasa 8-Channel Audio Mixer",
+		"category": "Mixer",
+		"brand": "Ashley",
+		"price": 1300000,
+		"stock": 5,
+		"image": "foto/ashley/ashley-34.jpg",
+		"description": "Mixer audio 8 channel seri Super M8 versi standar (non-compressor) yang tetap dibekali 99 DSP digital multi-effect, 7-band stereo graphic equalizer, Bluetooth, serta pemutar & perekam USB.",
+		"specs": [
+			"8 Channel Audio Mixer (Versi Standar)",
+			"99 DSP Digital Multi-Effect",
+			"7-Band Stereo Graphic Equalizer",
+			"Bluetooth, USB MP3 & Phantom Power +48V"
+		]
+	}
+]
