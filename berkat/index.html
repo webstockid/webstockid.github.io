@@ -706,7 +706,7 @@
 						</li>
 						<li class="flex items-start gap-2.5">
 							<span class="w-5 h-5 rounded-full accent-bg text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
-							<span><strong class="theme-text-primary">Hitung Ongkir Otomatis:</strong> Berlaku khusus Tangerang Kota &amp; Kab. radius <strong>0–30 KM</strong> dari Cimone Jaya (Rp 10.000 / 5 KM + layanan Rp 15.000).</span>
+							<span><strong class="theme-text-primary">Hitung Ongkir Otomatis:</strong> Berlaku khusus Tangerang Kota (<strong>Rp 6.000/KM</strong>) &amp; Kab. Tangerang (<strong>Rp 8.000/KM</strong>) radius <strong>0–30 KM</strong> dari Cimone Jaya + layanan Rp 15.000.</span>
 						</li>
 						<li class="flex items-start gap-2.5">
 							<span class="w-5 h-5 rounded-full accent-bg text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
@@ -1277,8 +1277,10 @@
 			originCoords: { lat: -6.1856, lng: 106.6127 },
 			roadDistanceMultiplier: 1.28,
 			maxRadiusKm: 30,
-			shippingStepKm: 5,
-			shippingRatePerStep: 10000,
+			shippingRatePerKm: {
+				'Tangerang Kota': 6000,
+				'Tangerang Kabupaten': 8000
+			},
 			serviceFee: 15000,
 			whatsappNumber: '6289529305947',
 			officialDestinations: [
@@ -2695,15 +2697,17 @@
 					};
 				}
 
-				const brackets = Math.max(1, Math.ceil(distanceKm / STORE_CONFIG.shippingStepKm));
-				const cost = brackets * STORE_CONFIG.shippingRatePerStep;
+				const ratePerKm = STORE_CONFIG.shippingRatePerKm[region] || 6000;
+				const billedKm = Math.max(1, Math.ceil(distanceKm));
+				const cost = billedKm * ratePerKm;
 
 				return {
 					eligible: true,
 					distanceKm,
 					cost,
-					brackets,
-					reason: `Jarak tempuh ±${distanceKm} KM dari Jl. Raya Merdeka No.35 Cimone Jaya (${brackets} × 5 KM × Rp 10.000).`
+					billedKm,
+					ratePerKm,
+					reason: `Jarak tempuh ±${distanceKm} KM dari Jl. Raya Merdeka No.35 Cimone Jaya (${billedKm} KM × ${AppState.formatRupiah(ratePerKm)}/KM).`
 				};
 			}
 		};
