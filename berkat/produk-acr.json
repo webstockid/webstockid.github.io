@@ -1,0 +1,658 @@
+[
+	{
+		"id": "acr-01",
+		"name": "ACR Fabulous 8 Inch Array 2050 (250 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 450000,
+		"stock": 5,
+		"image": "foto/acr/acr-01.jpg",
+		"description": "Komponen speaker mid-low seri ACR Fabulous ukuran 8 inci tipe Array 2050 dengan daya 250 Watt. Dirancang khusus untuk kebutuhan box line array dengan reproduksi vokal yang jernih dan proyeksi suara terarah.",
+		"specs": [
+			"Seri ACR Fabulous (Line Array)",
+			"Diameter Speaker 8 Inci",
+			"Daya 250 Watt",
+			"Karakter Mid-Low Presisi"
+		]
+	},
+	{
+		"id": "acr-02",
+		"name": "ACR Fabulous 10 Inch Array 2560 (150–300 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 650000,
+		"stock": 5,
+		"image": "foto/acr/acr-02.jpg",
+		"description": "Speaker komponen 10 inci seri ACR Fabulous Array 2560 dengan kapasitas daya 150–300 Watt. Cocok untuk rakitan box line array gantung maupun monitor panggung dengan respon frekuensi menengah yang padat.",
+		"specs": [
+			"Seri ACR Fabulous (Line Array)",
+			"Diameter Speaker 10 Inci",
+			"Daya 150–300 Watt",
+			"Voice Coil 60.5 mm"
+		]
+	},
+	{
+		"id": "acr-03",
+		"name": "ACR Fabulous 10 Inch Array 6510 (300–500 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 1450000,
+		"stock": 5,
+		"image": "foto/acr/acr-03.jpg",
+		"description": "Speaker komponen 10 inci bertenaga tinggi seri ACR Fabulous Array 6510 berdaya 300–500 Watt. Dilengkapi voice coil tahan panas untuk performa stabil pada instalasi sound system lapangan.",
+		"specs": [
+			"Seri ACR Fabulous (Line Array)",
+			"Diameter Speaker 10 Inci",
+			"Daya 300–500 Watt",
+			"Voice Coil 65.5 mm"
+		]
+	},
+	{
+		"id": "acr-04",
+		"name": "ACR Fabulous 6 Inch Array 1550 (200–400 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 400000,
+		"stock": 5,
+		"image": "foto/acr/acr-04.jpg",
+		"description": "Speaker komponen ringkas 6 inci seri ACR Fabulous Array 1550 dengan daya 200–400 Watt. Ideal untuk sistem mini line array, column speaker, maupun penguat vokal jarak jauh.",
+		"specs": [
+			"Seri ACR Fabulous (Line Array)",
+			"Diameter Speaker 6 Inci",
+			"Daya 200–400 Watt",
+			"Voice Coil 49.5 mm"
+		]
+	},
+	{
+		"id": "acr-05",
+		"name": "ACR Fabulous 12 Inch Array 3060 (200–400 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 750000,
+		"stock": 5,
+		"image": "foto/acr/acr-05.jpg",
+		"description": "Speaker komponen 12 inci seri ACR Fabulous Array 3060 berdaya 200–400 Watt yang menghasilkan karakter mid-bass bertenaga dan artikulasi vokal jelas untuk sistem line array maupun PA.",
+		"specs": [
+			"Seri ACR Fabulous (Line Array)",
+			"Diameter Speaker 12 Inci",
+			"Daya 200–400 Watt",
+			"Voice Coil 60.5 mm"
+		]
+	},
+	{
+		"id": "acr-06",
+		"name": "ACR Fabulous 12 Inch PA 65125 (250–500 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 1200000,
+		"stock": 5,
+		"image": "foto/acr/acr-06.jpg",
+		"description": "Speaker Public Address (PA) 12 inci seri ACR Fabulous 65125 berdaya 250–500 Watt. Rangka kokoh dan suspensi responsif untuk kebutuhan panggung, aula, dan sound system profesional.",
+		"specs": [
+			"Seri ACR Fabulous (PA)",
+			"Diameter Speaker 12 Inci",
+			"Daya 250–500 Watt",
+			"Voice Coil 65.5 mm"
+		]
+	},
+	{
+		"id": "acr-07",
+		"name": "ACR Fabulous 12 Inch PA 75125 (300–600 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 1300000,
+		"stock": 5,
+		"image": "foto/acr/acr-07.jpg",
+		"description": "Speaker PA 12 inci seri ACR Fabulous 75125 dengan kapasitas daya 300–600 Watt dan voice coil 75.5 mm. Mampu menangani beban daya besar tanpa distorsi untuk aplikasi live sound.",
+		"specs": [
+			"Seri ACR Fabulous (PA)",
+			"Diameter Speaker 12 Inci",
+			"Daya 300–600 Watt",
+			"Voice Coil 75.5 mm"
+		]
+	},
+	{
+		"id": "acr-08",
+		"name": "ACR Fabulous 15 Inch PA 75155 (400–800 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 1750000,
+		"stock": 5,
+		"image": "foto/acr/acr-08.jpg",
+		"description": "Speaker PA 15 inci seri ACR Fabulous 75155 berdaya 400–800 Watt dengan karakter low-mid tebal dan bertenaga, cocok untuk speaker utama FOH maupun monitor panggung.",
+		"specs": [
+			"Seri ACR Fabulous (PA)",
+			"Diameter Speaker 15 Inci",
+			"Daya 400–800 Watt",
+			"Voice Coil 75.5 mm"
+		]
+	},
+	{
+		"id": "acr-09",
+		"name": "ACR Fabulous 15 Inch PA 100152 (600–1200 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 2050000,
+		"stock": 5,
+		"image": "foto/acr/acr-09.jpg",
+		"description": "Speaker PA heavy-duty 15 inci seri ACR Fabulous 100152 berdaya 600–1200 Watt dengan voice coil besar 100 mm untuk dentuman bass padat dan ketahanan kerja berat.",
+		"specs": [
+			"Seri ACR Fabulous (PA)",
+			"Diameter Speaker 15 Inci",
+			"Daya 600–1200 Watt",
+			"Voice Coil 100 mm"
+		]
+	},
+	{
+		"id": "acr-10",
+		"name": "ACR Fabulous 18 Inch PA 100182 (650–1300 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 2250000,
+		"stock": 5,
+		"image": "foto/acr/acr-10.jpg",
+		"description": "Komponen subwoofer / PA 18 inci seri ACR Fabulous 100182 berdaya 650–1300 Watt. Menghasilkan frekuensi rendah yang dalam dan bertenaga untuk sistem sound outdoor maupun indoor.",
+		"specs": [
+			"Seri ACR Fabulous (PA / Subwoofer)",
+			"Diameter Speaker 18 Inci",
+			"Daya 650–1300 Watt",
+			"Voice Coil 100 mm"
+		]
+	},
+	{
+		"id": "acr-11",
+		"name": "ACR Fabulous 18 Inch PA 113182 (750–1500 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 2600000,
+		"stock": 5,
+		"image": "foto/acr/acr-11.jpg",
+		"description": "Komponen speaker 18 inci seri ACR Fabulous 113182 berdaya 750–1500 Watt dengan voice coil 113 mm untuk performa subwoofer lapangan yang bertenaga dan tahan panas.",
+		"specs": [
+			"Seri ACR Fabulous (PA / Subwoofer)",
+			"Diameter Speaker 18 Inci",
+			"Daya 750–1500 Watt",
+			"Voice Coil 113 mm"
+		]
+	},
+	{
+		"id": "acr-12",
+		"name": "ACR Fabulous 18 Inch PA 113183 (750–1500 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 2850000,
+		"stock": 5,
+		"image": "foto/acr/acr-12.jpg",
+		"description": "Varian komponen speaker 18 inci seri ACR Fabulous 113183 dengan daya 750–1500 Watt dan voice coil 113 mm yang dirancang untuk dorongan sub-bass rendah dengan kontrol konus presisi.",
+		"specs": [
+			"Seri ACR Fabulous (PA / Subwoofer)",
+			"Diameter Speaker 18 Inci",
+			"Daya 750–1500 Watt",
+			"Voice Coil 113 mm"
+		]
+	},
+	{
+		"id": "acr-13",
+		"name": "ACR Fabulous 18 Inch PA 127187 (1100–2200 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 3400000,
+		"stock": 5,
+		"image": "foto/acr/acr-13.jpg",
+		"description": "Flagship subwoofer 18 inci seri ACR Fabulous 127187 berdaya ekstrem 1100–2200 Watt dengan voice coil raksasa 127 mm (5 inci). Pilihan utama untuk kebutuhan sound system touring dan hajatan besar.",
+		"specs": [
+			"Seri ACR Fabulous (Extreme Subwoofer)",
+			"Diameter Speaker 18 Inci",
+			"Daya 1100–2200 Watt",
+			"Voice Coil 127 mm"
+		]
+	},
+	{
+		"id": "acr-14",
+		"name": "ACR Premier 15 Inch PA 15900 (500–1000 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 0,
+		"stock": 5,
+		"image": "foto/acr/acr-14.jpg",
+		"description": "Speaker komponen profesional 15 inci seri ACR Premier PA 15900 dengan daya 500–1000 Watt. Menghasilkan suara low-mid yang lantang, bersih, dan bertenaga untuk panggung maupun ruang ibadah.",
+		"specs": [
+			"Seri ACR Premier (PA)",
+			"Diameter Speaker 15 Inci",
+			"Daya 500–1000 Watt",
+			"Karakter Low-Mid Profesional"
+		]
+	},
+	{
+		"id": "acr-15",
+		"name": "ACR Premier 18 Inch PA 18900 (650–1300 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 0,
+		"stock": 5,
+		"image": "foto/acr/acr-15.jpg",
+		"description": "Speaker subwoofer profesional 18 inci seri ACR Premier PA 18900 berdaya 650–1300 Watt dengan konstruksi rangka kokoh untuk reproduksi bass rendah yang bulat dan bertenaga.",
+		"specs": [
+			"Seri ACR Premier (PA / Subwoofer)",
+			"Diameter Speaker 18 Inci",
+			"Daya 650–1300 Watt",
+			"Rangka Kokoh Tahan Beban Berat"
+		]
+	},
+	{
+		"id": "acr-16",
+		"name": "Speaker ACR 5 Inch 5\" B (30 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 50000,
+		"stock": 5,
+		"image": "foto/acr/acr-16.jpg",
+		"description": "Speaker mini full-range ACR ukuran 5 inci model 5\" B berdaya 30 Watt dengan voice coil 14 mm. Cocok untuk speaker aktif mini, audio ruangan, maupun perangkat pengumuman ringkas.",
+		"specs": [
+			"Diameter Speaker 5 Inci",
+			"Daya 30 Watt",
+			"Voice Coil 14 mm",
+			"Tipe Full-Range Ringkas"
+		]
+	},
+	{
+		"id": "acr-17",
+		"name": "Speaker ACR 6 Inch 610 (60 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 85000,
+		"stock": 5,
+		"image": "foto/acr/acr-17.jpg",
+		"description": "Speaker komponen ACR 6 inci tipe 610 berdaya 60 Watt dengan voice coil 20.4 mm. Memberikan karakter vokal dan musik latar yang jernih untuk box speaker rakitan maupun audio mobil.",
+		"specs": [
+			"Diameter Speaker 6 Inci",
+			"Daya 60 Watt",
+			"Voice Coil 20.4 mm",
+			"Karakter Vokal & Musik Jernih"
+		]
+	},
+	{
+		"id": "acr-18",
+		"name": "Speaker ACR 6 Inch 630 (60 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 95000,
+		"stock": 5,
+		"image": "foto/acr/acr-18.jpg",
+		"description": "Speaker komponen ACR 6 inci tipe 630 berdaya 60 Watt yang dibekali voice coil lebih besar 25.5 mm untuk ketahanan daya dan kejernihan mid-range yang lebih optimal.",
+		"specs": [
+			"Diameter Speaker 6 Inci",
+			"Daya 60 Watt",
+			"Voice Coil 25.5 mm",
+			"Respon Mid-Range Optimal"
+		]
+	},
+	{
+		"id": "acr-19",
+		"name": "Speaker ACR 8 Inch 818 W (200 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 175000,
+		"stock": 5,
+		"image": "foto/acr/acr-19.jpg",
+		"description": "Speaker woofer ACR 8 inci tipe 818 W berdaya 200 Watt dengan voice coil 36 mm. Menghasilkan dentuman bass mantap untuk ukuran 8 inci pada box speaker aktif maupun pasif.",
+		"specs": [
+			"Diameter Speaker 8 Inci",
+			"Daya 200 Watt",
+			"Voice Coil 36 mm",
+			"Karakter Woofer Bertenaga"
+		]
+	},
+	{
+		"id": "acr-20",
+		"name": "Speaker ACR 8 Inch 810 DFH (30–60 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 145000,
+		"stock": 5,
+		"image": "foto/acr/acr-20.jpg",
+		"description": "Speaker full-range ACR 8 inci tipe 810 DFH berdaya 30–60 Watt dengan corong whizzer (double cone) dan voice coil 25.5 mm untuk cakupan frekuensi vokal dan treble yang luas.",
+		"specs": [
+			"Diameter Speaker 8 Inci",
+			"Daya 30–60 Watt",
+			"Voice Coil 25.5 mm",
+			"Desain Double Cone (DFH)"
+		]
+	},
+	{
+		"id": "acr-21",
+		"name": "Speaker ACR 10 Inch 1018 W (300 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 195000,
+		"stock": 5,
+		"image": "foto/acr/acr-21.jpg",
+		"description": "Speaker woofer ACR 10 inci tipe 1018 W berdaya 300 Watt dengan voice coil 36 mm. Sangat populer untuk rakitan speaker karaoke, monitor, maupun sound system rumahan bertenaga.",
+		"specs": [
+			"Diameter Speaker 10 Inci",
+			"Daya 300 Watt",
+			"Voice Coil 36 mm",
+			"Karakter Woofer Bass & Vokal"
+		]
+	},
+	{
+		"id": "acr-22",
+		"name": "Speaker ACR 10 Inch 25H100 SUWPP (400 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 210000,
+		"stock": 5,
+		"image": "foto/acr/acr-22.jpg",
+		"description": "Speaker subwoofer/woofer ACR 10 inci tipe 25H100 SUWPP berdaya 400 Watt dengan voice coil 36 mm dan konus khusus untuk menghasilkan hentakan bass yang dalam.",
+		"specs": [
+			"Diameter Speaker 10 Inci",
+			"Daya 400 Watt",
+			"Voice Coil 36 mm",
+			"Konus PP Tahan Lembap"
+		]
+	},
+	{
+		"id": "acr-23",
+		"name": "Speaker ACR 10 Inch 1018 HW New (300 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 210000,
+		"stock": 5,
+		"image": "foto/acr/acr-23.jpg",
+		"description": "Generasi terbaru speaker woofer ACR 10 inci tipe 1018 HW New berdaya 300 Watt dengan voice coil 36 mm yang menawarkan keseimbangan bass empuk dan kejernihan vokal.",
+		"specs": [
+			"Diameter Speaker 10 Inci",
+			"Daya 300 Watt",
+			"Voice Coil 36 mm",
+			"Edisi Terbaru (HW New)"
+		]
+	},
+	{
+		"id": "acr-24",
+		"name": "Speaker ACR 12 Inch 1230 Black (100–200 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 340000,
+		"stock": 5,
+		"image": "foto/acr/acr-24.jpg",
+		"description": "Speaker full-range legendaris ACR 12 inci seri 1230 Black berdaya 100–200 Watt dengan voice coil 38.5 mm. Terkenal dengan karakter vokal lantang dan sangat awet untuk masjid maupun aula.",
+		"specs": [
+			"Seri ACR Black",
+			"Diameter Speaker 12 Inci",
+			"Daya 100–200 Watt",
+			"Voice Coil 38.5 mm"
+		]
+	},
+	{
+		"id": "acr-25",
+		"name": "Speaker ACR 12 Inch 1230 MK1 Black (300 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 275000,
+		"stock": 5,
+		"image": "foto/acr/acr-25.jpg",
+		"description": "Peningkatan daya dari seri 1230, speaker ACR 12 inci 1230 MK1 Black berkapasitas 300 Watt dengan voice coil 38.5 mm untuk kebutuhan vokal dan musik panggung yang lebih bertenaga.",
+		"specs": [
+			"Seri ACR Black MK1",
+			"Diameter Speaker 12 Inci",
+			"Daya 300 Watt",
+			"Voice Coil 38.5 mm"
+		]
+	},
+	{
+		"id": "acr-26",
+		"name": "Speaker ACR 12 Inch 1238 Classic New (80–160 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 0,
+		"stock": 5,
+		"image": "foto/acr/acr-26.jpg",
+		"description": "Speaker ACR 12 inci seri 1238 Classic New berdaya 80–160 Watt dengan voice coil 36 mm. Karakter suara natural dan hangat, ideal untuk penguat vokal dan instrumen musik.",
+		"specs": [
+			"Seri ACR Classic New",
+			"Diameter Speaker 12 Inci",
+			"Daya 80–160 Watt",
+			"Voice Coil 36 mm"
+		]
+	},
+	{
+		"id": "acr-27",
+		"name": "Speaker ACR 12 Inch 1238 Woofer Pro (500 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 320000,
+		"stock": 5,
+		"image": "foto/acr/acr-27.jpg",
+		"description": "Speaker woofer bertenaga besar ACR 12 inci tipe 1238 Woofer Pro berdaya 500 Watt dengan voice coil 36 mm untuk hentakan bass kencang di ruangan maupun acara semi-outdoor.",
+		"specs": [
+			"Seri Woofer Pro",
+			"Diameter Speaker 12 Inci",
+			"Daya 500 Watt",
+			"Voice Coil 36 mm"
+		]
+	},
+	{
+		"id": "acr-28",
+		"name": "Speaker ACR 12 Inch 1240 Classic (80–160 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 0,
+		"stock": 5,
+		"image": "foto/acr/acr-28.jpg",
+		"description": "Speaker ACR 12 inci seri 1240 Classic berdaya 80–160 Watt yang dibekali voice coil 45.5 mm untuk sensitivitas tinggi dan kejernihan suara vokal jarak menengah.",
+		"specs": [
+			"Seri ACR Classic",
+			"Diameter Speaker 12 Inci",
+			"Daya 80–160 Watt",
+			"Voice Coil 45.5 mm"
+		]
+	},
+	{
+		"id": "acr-29",
+		"name": "Speaker ACR 12 Inch 1240 MK2 (400 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 400000,
+		"stock": 5,
+		"image": "foto/acr/acr-29.jpg",
+		"description": "Speaker komponen 12 inci ACR tipe 1240 MK2 berdaya 400 Watt dengan voice coil 45.5 mm. Mampu menghasilkan kombinasi mid-bass padat dan vokal lantang untuk sound system acara.",
+		"specs": [
+			"Seri ACR MK2",
+			"Diameter Speaker 12 Inci",
+			"Daya 400 Watt",
+			"Voice Coil 45.5 mm"
+		]
+	},
+	{
+		"id": "acr-30",
+		"name": "Speaker ACR 15 Inch 15500 Platinum (200–400 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 670000,
+		"stock": 5,
+		"image": "foto/acr/acr-30.jpg",
+		"description": "Speaker komponen 15 inci seri ACR 15500 Platinum berdaya 200–400 Watt dengan voice coil 60.5 mm. Pilihan andalan untuk box speaker 15 inci serbaguna dengan bass empuk dan mid jelas.",
+		"specs": [
+			"Seri ACR Platinum",
+			"Diameter Speaker 15 Inci",
+			"Daya 200–400 Watt",
+			"Voice Coil 60.5 mm"
+		]
+	},
+	{
+		"id": "acr-31",
+		"name": "Speaker ACR 15 Inch 15500 MK1 Black (500 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 460000,
+		"stock": 5,
+		"image": "foto/acr/acr-31.jpg",
+		"description": "Speaker komponen 15 inci seri ACR 15500 MK1 Black berdaya 500 Watt dengan voice coil 60.5 mm yang dirancang untuk dorongan low-mid lebih bertenaga dan tahan lama.",
+		"specs": [
+			"Seri ACR Black MK1",
+			"Diameter Speaker 15 Inci",
+			"Daya 500 Watt",
+			"Voice Coil 60.5 mm"
+		]
+	},
+	{
+		"id": "acr-32",
+		"name": "Speaker ACR 15 Inch 15600 Black (500 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 680000,
+		"stock": 5,
+		"image": "foto/acr/acr-32.jpg",
+		"description": "Speaker 15 inci favorit seri ACR 15600 Black berdaya 500 Watt dengan voice coil 60.5 mm. Terkenal tangguh untuk pemakaian outdoor maupun indoor dengan karakter bass mantap.",
+		"specs": [
+			"Seri ACR Black",
+			"Diameter Speaker 15 Inci",
+			"Daya 500 Watt",
+			"Voice Coil 60.5 mm"
+		]
+	},
+	{
+		"id": "acr-33",
+		"name": "Speaker ACR 15 Inch 1580 Classic (600 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 1050000,
+		"stock": 5,
+		"image": "foto/acr/acr-33.jpg",
+		"description": "Speaker komponen 15 inci seri ACR 1580 Classic berdaya 600 Watt yang dilengkapi voice coil besar 75.5 mm untuk performa bass rendah dan mid-low yang sangat bertenaga.",
+		"specs": [
+			"Seri ACR Classic",
+			"Diameter Speaker 15 Inci",
+			"Daya 600 Watt",
+			"Voice Coil 75.5 mm"
+		]
+	},
+	{
+		"id": "acr-34",
+		"name": "Speaker ACR 15 Inch 15600+ Black (200–400 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 685000,
+		"stock": 5,
+		"image": "foto/acr/acr-34.jpg",
+		"description": "Varian penyempurnaan seri ACR 15600+ Black ukuran 15 inci berdaya 200–400 Watt dengan voice coil 60.5 mm untuk sensitivitas tinggi pada amplifier daya menengah.",
+		"specs": [
+			"Seri ACR Black Plus",
+			"Diameter Speaker 15 Inci",
+			"Daya 200–400 Watt",
+			"Voice Coil 60.5 mm"
+		]
+	},
+	{
+		"id": "acr-35",
+		"name": "Speaker ACR 15 Inch 15400 (1800 Watt)",
+		"category": "Speaker",
+		"brand": "ACR",
+		"price": 1070000,
+		"stock": 5,
+		"image": "foto/acr/acr-35.jpg",
+		"description": "Speaker subwoofer/PA 15 inci berdaya tinggi ACR 15400 dengan kapasitas puncak 1800 Watt dan voice coil besar 100 mm untuk dentuman bass ekstrem di lapangan.",
+		"specs": [
+			"Diameter Speaker 15 Inci",
+			"Daya Maksimal 1800 Watt",
+			"Voice Coil 100 mm",
+			"Karakter Subwoofer Heavy-Duty"
+		]
+	},
+	{
+		"id": "acr-36",
+		"name": "Tweeter ACR 701 Bulat (100 Watt)",
+		"category": "Tweeter",
+		"brand": "ACR",
+		"price": 45000,
+		"stock": 5,
+		"image": "foto/acr/acr-36.jpg",
+		"description": "Tweeter frekuensi tinggi ACR model 701 berbentuk bulat (diameter ringkas) berdaya 100 Watt dengan voice coil 13.3 mm. Menghasilkan suara treble bening dan tajam untuk box speaker 2-way maupun 3-way.",
+		"specs": [
+			"Model Bulat (Round)",
+			"Daya 100 Watt",
+			"Voice Coil 13.3 mm",
+			"Reproduksi Frekuensi Tinggi Jernih"
+		]
+	},
+	{
+		"id": "acr-37",
+		"name": "Tweeter ACR 702 Bulat (100 Watt)",
+		"category": "Tweeter",
+		"brand": "ACR",
+		"price": 45000,
+		"stock": 5,
+		"image": "foto/acr/acr-37.jpg",
+		"description": "Tweeter ACR model 702 berbentuk bulat berdaya 100 Watt dengan voice coil 13.3 mm. Dirancang untuk melengkapi karakter vokal dan simbal agar terdengar detail dan bersih.",
+		"specs": [
+			"Model Bulat (Round)",
+			"Daya 100 Watt",
+			"Voice Coil 13.3 mm",
+			"Dispersi Suara Tinggi Merata"
+		]
+	},
+	{
+		"id": "acr-38",
+		"name": "Tweeter ACR PCT 2500 Kotak (200 Watt)",
+		"category": "Tweeter",
+		"brand": "ACR",
+		"price": 27500,
+		"stock": 5,
+		"image": "foto/acr/acr-38.jpg",
+		"description": "Tweeter piezo horn ACR tipe PCT 2500 berbentuk kotak berdaya 200 Watt. Memiliki sensitivitas tinggi dan daya lontar treble jauh untuk box speaker outdoor maupun panggung.",
+		"specs": [
+			"Model Kotak / Persegi",
+			"Tipe Piezo Horn Tweeter",
+			"Daya 200 Watt",
+			"Sensitivitas Tinggi & Tahan Panas"
+		]
+	},
+	{
+		"id": "acr-39",
+		"name": "Tweeter ACR PCT 6100 Kotak (75 Watt)",
+		"category": "Tweeter",
+		"brand": "ACR",
+		"price": 35000,
+		"stock": 5,
+		"image": "foto/acr/acr-39.jpg",
+		"description": "Tweeter piezo ACR tipe PCT 6100 berbentuk kotak berdaya 75 Watt. Praktis dipasang pada box speaker aktif, karaoke, maupun sound system masjid untuk memperjelas artikulasi huruf konsonan.",
+		"specs": [
+			"Model Kotak / Persegi",
+			"Tipe Piezo Tweeter",
+			"Daya 75 Watt",
+			"Pemasangan Mudah & Efisien"
+		]
+	},
+	{
+		"id": "acr-40",
+		"name": "Tweeter ACR PCT 8000 Kotak (75 Watt)",
+		"category": "Tweeter",
+		"brand": "ACR",
+		"price": 25000,
+		"stock": 5,
+		"image": "foto/acr/acr-40.jpg",
+		"description": "Tweeter piezo corong kotak ACR tipe PCT 8000 berdaya 75 Watt dengan sebaran frekuensi tinggi yang luas untuk box speaker rakitan 10 inci hingga 15 inci.",
+		"specs": [
+			"Model Kotak / Persegi",
+			"Tipe Piezo Horn Tweeter",
+			"Daya 75 Watt",
+			"Karakter Treble Lantang & Jelas"
+		]
+	},
+	{
+		"id": "acr-41",
+		"name": "Driver Tweeter ACR CD 250C1-DBF M1 (20–40 Watt)",
+		"category": "Tweeter",
+		"brand": "ACR",
+		"price": 115000,
+		"stock": 5,
+		"image": "foto/acr/acr-41.jpg",
+		"description": "Compression driver tweeter profesional ACR tipe CD 250C1-DBF M1 berdaya 20–40 Watt RMS untuk dipasangkan dengan horn tweeter pada box PA dan line array.",
+		"specs": [
+			"Tipe Compression Driver Tweeter",
+			"Daya 20–40 Watt",
+			"Kompatibel dengan Horn Tweeter PA",
+			"Artikulasi Frekuensi Tinggi Presisi"
+		]
+	}
+]

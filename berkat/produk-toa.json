@@ -1,0 +1,498 @@
+[
+	{
+		"id": "toa-01",
+		"name": "TOA ZA-230W Public Address Mixer Amplifier 30 Watt",
+		"category": "Ampli",
+		"brand": "TOA",
+		"price": 1100000,
+		"stock": 5,
+		"image": "foto/toa/toa-01.jpg",
+		"description": "Mixer amplifier ringkas berdaya 30 Watt RMS dengan dukungan output High Impedance (100V line) dan Low Impedance (4 Ohm). Sangat handal untuk kebutuhan pengeras suara mushola, ruang kelas, klinik, maupun kantor kecil.",
+		"specs": [
+			"Daya Output 30 Watt RMS",
+			"3 Input Mikrofon + 2 Input AUX",
+			"Output High Impedance (100V) & Low Impedance (4 Ohm)",
+			"Kontrol Nada Bass & Treble"
+		]
+	},
+	{
+		"id": "toa-02",
+		"name": "TOA ZA-2060 Public Address Mixer Amplifier 60 Watt",
+		"category": "Ampli",
+		"brand": "TOA",
+		"price": 2200000,
+		"stock": 5,
+		"image": "foto/toa/toa-02.jpg",
+		"description": "Mixer amplifier PA berdaya 60 Watt yang dirancang untuk operasional jangka panjang dengan tingkat distorsi rendah. Dilengkapi fitur mute prioritas pada Mic 1 serta dukungan daya listrik AC 220V maupun aki DC 24V.",
+		"specs": [
+			"Daya Output 60 Watt RMS",
+			"3 Input Mic Balanced + 2 Input AUX",
+			"Output 100V, 70V & Low Impedance 4 Ohm",
+			"Dukungan Daya AC 220V & DC 24V"
+		]
+	},
+	{
+		"id": "toa-03",
+		"name": "TOA ZA-2120 Public Address Mixer Amplifier 120 Watt",
+		"category": "Ampli",
+		"brand": "TOA",
+		"price": 2850000,
+		"stock": 5,
+		"image": "foto/toa/toa-03.jpg",
+		"description": "Amplifier standar masjid, sekolah, dan gedung bertingkat dengan daya keluaran 120 Watt RMS. Mampu mendorong beberapa unit speaker corong maupun ceiling speaker secara paralel dengan suara vokal yang jernih dan lantang.",
+		"specs": [
+			"Daya Output 120 Watt RMS",
+			"3 Input Mic + 2 Input AUX + Recording Out",
+			"Output High Impedance (100V/70V) & Low Impedance (4 Ohm)",
+			"Phantom Power pada Mic 1 & Dukungan DC 24V"
+		]
+	},
+	{
+		"id": "toa-04",
+		"name": "TOA ZA-2240 Public Address Mixer Amplifier 240 Watt",
+		"category": "Ampli",
+		"brand": "TOA",
+		"price": 4200000,
+		"stock": 5,
+		"image": "foto/toa/toa-04.jpg",
+		"description": "Mixer amplifier seri ZA berkapasitas besar 240 Watt RMS untuk instalasi tata suara area luas seperti masjid besar, pabrik, aula, dan area publik. Dilengkapi proteksi suhu serta rangkaian komponen kelas berat.",
+		"specs": [
+			"Daya Output 240 Watt RMS",
+			"3 Input Mic Balanced + 2 Input AUX",
+			"Output High Impedance (100V/70V) & Low Impedance (4 Ohm)",
+			"Trafo Output OT-224G & Dukungan DC 24V"
+		]
+	},
+	{
+		"id": "toa-05",
+		"name": "TOA ZH-5025B Horn Speaker Corong 25 Watt (Tanpa Trafo Matching)",
+		"category": "Corong",
+		"brand": "TOA",
+		"price": 700000,
+		"stock": 5,
+		"image": "foto/toa/toa-05.jpg",
+		"description": "Speaker corong luar ruangan berdaya 25 Watt tipe Low Impedance (16 Ohm) tanpa trafo matching. Cocok dihubungkan langsung ke jalur speaker impedance rendah dengan proyeksi suara jarak jauh yang tajam dan tahan cuaca.",
+		"specs": [
+			"Daya Input 25 Watt",
+			"Impedansi Rendah 16 Ohm (Non-Matching)",
+			"SPL 108 dB (1W, 1m)",
+			"Standar Ketahanan Cuaca IP65"
+		]
+	},
+	{
+		"id": "toa-06",
+		"name": "TOA ZH-5025BM Horn Speaker Corong 25 Watt (Dengan Trafo Matching)",
+		"category": "Corong",
+		"brand": "TOA",
+		"price": 850000,
+		"stock": 5,
+		"image": "foto/toa/toa-06.jpg",
+		"description": "Speaker corong 25 Watt yang sudah dilengkapi trafo matching internal untuk jalur instalasi kabel panjang 100V line. Menggunakan corong aluminium kokoh dengan baut stainless anti karat untuk pemakaian luar ruangan.",
+		"specs": [
+			"Daya Input 25 Watt",
+			"Dengan Trafo Matching (100V / 70V Line)",
+			"Selektor Daya 25W / 15W / 10W / 5W",
+			"Material Aluminium & Standar IP65"
+		]
+	},
+	{
+		"id": "toa-07",
+		"name": "TOA ZH-5050M Horn Speaker Corong 50 Watt (Dengan Trafo Matching)",
+		"category": "Corong",
+		"brand": "TOA",
+		"price": 1025000,
+		"stock": 5,
+		"image": "foto/toa/toa-07.jpg",
+		"description": "Speaker corong berdaya besar 50 Watt dengan trafo matching internal (100V line) untuk jangkauan suara maksimal di menara masjid, lapangan terbuka, maupun kawasan industri.",
+		"specs": [
+			"Daya Input 50 Watt",
+			"Dengan Trafo Matching (100V / 70V Line)",
+			"SPL Tinggi 110 dB (1W, 1m)",
+			"Corong Aluminium Diameter 500 mm (IP65)"
+		]
+	},
+	{
+		"id": "toa-08",
+		"name": "TOA ZH-615R Reflex Horn Speaker Bulat 15 Watt",
+		"category": "Corong",
+		"brand": "TOA",
+		"price": 350000,
+		"stock": 5,
+		"image": "foto/toa/toa-08.jpg",
+		"description": "Speaker corong model bulat (Round) berdaya 15 Watt dengan impedansi 8 Ohm. Ukuran ringkas dan ringan sehingga mudah dipasang pada tiang, dinding teras, maupun kendaraan operasional.",
+		"specs": [
+			"Daya Input 15 Watt",
+			"Desain Corong Bulat (Diameter 196 mm)",
+			"Impedansi 8 Ohm (Non-Matching)",
+			"SPL 110 dB & Braket Besi Kokoh"
+		]
+	},
+	{
+		"id": "toa-09",
+		"name": "TOA ZH-610S Reflex Horn Speaker Kotak 10 Watt",
+		"category": "Corong",
+		"brand": "TOA",
+		"price": 340000,
+		"stock": 5,
+		"image": "foto/toa/toa-09.jpg",
+		"description": "Speaker corong kompak berbentuk kotak (Square) berdaya 10 Watt dengan impedansi 8 Ohm. Ideal untuk area parkir, koridor, pos keamanan, dan panggilan pengumuman jarak menengah.",
+		"specs": [
+			"Daya Input 10 Watt",
+			"Desain Corong Kotak (172 x 161 mm)",
+			"Impedansi 8 Ohm (Non-Matching)",
+			"SPL 107 dB & Tahan Cuaca"
+		]
+	},
+	{
+		"id": "toa-10",
+		"name": "TOA ZS-107AS Slim Array / Column Speaker 10 Watt",
+		"category": "Speaker",
+		"brand": "TOA",
+		"price": 725000,
+		"stock": 5,
+		"image": "foto/toa/toa-10.jpg",
+		"description": "Speaker kolom ramping berdaya 10 Watt dengan susunan driver vertikal untuk menyebarkan suara secara merata ke area pendengar sekaligus mengurangi pantulan gema di dalam ruangan ibadah maupun aula.",
+		"specs": [
+			"Daya Input 10 Watt (100V Line)",
+			"Desain Ramping & Minimalis",
+			"Direktivitas Vertikal Terfokus (Minim Gema)",
+			"Termasuk Braket Pemasangan Dinding"
+		]
+	},
+	{
+		"id": "toa-11",
+		"name": "TOA ZS-207AS Slim Array / Column Speaker 20 Watt",
+		"category": "Speaker",
+		"brand": "TOA",
+		"price": 980000,
+		"stock": 5,
+		"image": "foto/toa/toa-11.jpg",
+		"description": "Speaker kolom vertikal berdaya 20 Watt untuk cakupan ruangan yang lebih panjang dan luas. Menghasilkan reproduksi vokal pidato yang sangat jelas dan natural di masjid, gereja, maupun ruang rapat.",
+		"specs": [
+			"Daya Input 20 Watt (100V Line)",
+			"Susunan Multi-Driver Vertikal Presisi",
+			"Fokus Artikulasi Vokal Tinggi",
+			"Termasuk Braket Dinding Putar"
+		]
+	},
+	{
+		"id": "toa-12",
+		"name": "TOA ZS-1030B / ZS-1030W Universal Box Speaker 30 Watt (Hitam / Putih)",
+		"category": "Speaker",
+		"brand": "TOA",
+		"price": 750000,
+		"stock": 5,
+		"image": "foto/toa/toa-12.jpg",
+		"description": "Speaker kotak 2-way berdaya 30 Watt yang tersedia dalam pilihan warna Hitam (B) dan Putih (W). Mendukung instalasi High Impedance (100V/70V) maupun Low Impedance (8 Ohm) untuk pemakaian indoor maupun semi-outdoor.",
+		"specs": [
+			"Daya Input 30 Watt RMS",
+			"Sistem Speaker 2-Way (Woofer 12 cm + Tweeter Dome)",
+			"Dukungan 100V Line & 8 Ohm Switchable",
+			"Tersedia Varian Hitam (B) & Putih (W)"
+		]
+	},
+	{
+		"id": "toa-13",
+		"name": "TOA ZS-658R Ceiling Speaker Plafon 6 Watt (6.5 Inci)",
+		"category": "Speaker",
+		"brand": "TOA",
+		"price": 220000,
+		"stock": 5,
+		"image": "foto/toa/toa-13.jpg",
+		"description": "Speaker plafon (in-ceiling) berdiameter 6.5 inci berdaya 6 Watt dengan mekanisme penjepit pegas yang praktis saat pemasangan. Menghasilkan musik latar dan suara panggilan yang halus merata di seluruh ruangan.",
+		"specs": [
+			"Daya Input 6 Watt (100V / 70V Line)",
+			"Driver Cone 16 cm (6.5 Inci)",
+			"Pemasangan Cepat dengan Spring Clamp",
+			"Grille Metal Putih Rapi & Elegan"
+		]
+	},
+	{
+		"id": "toa-14",
+		"name": "TOA ZR-2015S Shoulder Megaphone 15 Watt dengan Sirine",
+		"category": "Speaker",
+		"brand": "TOA",
+		"price": 725000,
+		"stock": 5,
+		"image": "foto/toa/toa-14.jpg",
+		"description": "Megaphone model selempang bahu berdaya 15 Watt dengan mikrofon genggam terpisah serta tombol sirine darurat. Ringan dibawa dan sangat efektif untuk koordinasi lapangan, evakuasi, maupun pemandu acara.",
+		"specs": [
+			"Daya Output 15 Watt (Maks. 23 Watt)",
+			"Dilengkapi Mikrofon Genggam & Sirine",
+			"Jangkauan Suara ±400 Meter",
+			"Menggunakan 6 Baterai Tipe C"
+		]
+	},
+	{
+		"id": "toa-15",
+		"name": "TOA ZS-F2000 Compact 2-Way Box Speaker 60 Watt",
+		"category": "Speaker",
+		"brand": "TOA",
+		"price": 0,
+		"stock": 5,
+		"image": "foto/toa/toa-15.jpg",
+		"description": "Speaker kotak 2-way berdaya 60 Watt dengan dispersi suara lebar dan respons frekuensi penuh. Cocok untuk ruang pertemuan, kafe, tempat ibadah, hingga sistem tata suara komersial berkualitas tinggi.",
+		"specs": [
+			"Daya Input 60 Watt Continuous",
+			"Woofer 20 cm (8 Inci) + High Frequency Horn",
+			"Dukungan 100V Line & Low Impedance 8 Ohm",
+			"Termasuk Braket Pemasangan Serbaguna"
+		]
+	},
+	{
+		"id": "toa-16",
+		"name": "TOA ZG-30DA Spul / Diaphragm Horn Speaker 25 Watt",
+		"category": "Spul",
+		"brand": "TOA",
+		"price": 80000,
+		"stock": 5,
+		"image": "foto/toa/toa-16.jpg",
+		"description": "Suku cadang spul (diaphragm) original TOA 25 Watt untuk mengganti kumparan suara yang putus pada speaker corong seri ZH-5025B dan ZH-5025BM agar karakter suara kembali jernih seperti baru.",
+		"specs": [
+			"Daya 25 Watt / Impedansi 16 Ohm",
+			"Kompatibel untuk TOA ZH-5025B & ZH-5025BM",
+			"Suku Cadang Original TOA",
+			"Pemasangan Presisi Tanpa Modifikasi"
+		]
+	},
+	{
+		"id": "toa-17",
+		"name": "TOA ZG-30DB Spul / Diaphragm Horn Speaker 50 Watt",
+		"category": "Spul",
+		"brand": "TOA",
+		"price": 90000,
+		"stock": 5,
+		"image": "foto/toa/toa-17.jpg",
+		"description": "Suku cadang spul (diaphragm) original TOA berdaya 50 Watt untuk penggantian kumparan speaker corong ZH-5050M. Tahan panas dan menjaga kejernihan vokal pada volume tinggi.",
+		"specs": [
+			"Daya 50 Watt / Impedansi 16 Ohm",
+			"Kompatibel untuk TOA ZH-5050M",
+			"Suku Cadang Original TOA",
+			"Material Diaphragm Tahan Panas"
+		]
+	},
+	{
+		"id": "toa-18",
+		"name": "TOA ZG-10CA Spul / Diaphragm Horn Speaker 10–15 Watt",
+		"category": "Spul",
+		"brand": "TOA",
+		"price": 80000,
+		"stock": 5,
+		"image": "foto/toa/toa-18.jpg",
+		"description": "Suku cadang spul (diaphragm) original TOA untuk speaker corong ukuran kecil dan sedang seri ZH-610S (10W) serta ZH-615R (15W).",
+		"specs": [
+			"Daya 10–15 Watt / Impedansi 8 Ohm",
+			"Kompatibel untuk TOA ZH-610S & ZH-615R",
+			"Suku Cadang Original TOA",
+			"Presisi Tinggi & Mudah Dipasang"
+		]
+	},
+	{
+		"id": "toa-19",
+		"name": "TOA ZG-60BA Spul / Diaphragm Driver Unit 60 Watt",
+		"category": "Spul",
+		"brand": "TOA",
+		"price": 75000,
+		"stock": 5,
+		"image": "foto/toa/toa-19.jpg",
+		"description": "Suku cadang spul (diaphragm) original TOA berkapasitas 50–60 Watt untuk driver unit corong besar seperti seri TU-631, TU-651, dan TU-652.",
+		"specs": [
+			"Daya 50–60 Watt / Impedansi 16 Ohm",
+			"Kompatibel untuk Driver Unit TU-631 / TU-651 / TU-652",
+			"Suku Cadang Original TOA",
+			"Ketahanan Suhu & Daya Tinggi"
+		]
+	},
+	{
+		"id": "toa-20",
+		"name": "TOA ZM-260 Dynamic Handheld Microphone",
+		"category": "Mic",
+		"brand": "TOA",
+		"price": 220000,
+		"stock": 5,
+		"image": "foto/toa/toa-20.jpg",
+		"description": "Mikrofon genggam dinamis dengan pola tangkap unidirectional yang fokus menangkap suara vokal dan meredam kebisingan sekitar. Dilengkapi kabel bawaan dan sakelar On/Off yang kokoh.",
+		"specs": [
+			"Tipe Moving Coil Dynamic (Unidirectional)",
+			"Impedansi 600 Ohm Balanced",
+			"Dilengkapi Sakelar On/Off & Kabel",
+			"Cocok untuk Pidato, Adzan & Pengumuman"
+		]
+	},
+	{
+		"id": "toa-21",
+		"name": "TOA ZM-270 Dynamic Handheld Microphone",
+		"category": "Mic",
+		"brand": "TOA",
+		"price": 270000,
+		"stock": 5,
+		"image": "foto/toa/toa-21.jpg",
+		"description": "Mikrofon kabel genggam dinamis dengan bodi logam tangguh dan respons vokal yang hangat serta jelas. Sangat populer untuk penggunaan mimbar masjid, MC acara, dan ruang rapat.",
+		"specs": [
+			"Tipe Moving Coil Dynamic (Cardioid)",
+			"Impedansi 600 Ohm Balanced",
+			"Bodi Metal Kokoh dengan Sakelar On/Off",
+			"Termasuk Kabel Mikrofon & Holder"
+		]
+	},
+	{
+		"id": "toa-22",
+		"name": "TOA ZM-320 Dynamic Handheld Microphone",
+		"category": "Mic",
+		"brand": "TOA",
+		"price": 450000,
+		"stock": 5,
+		"image": "foto/toa/toa-22.jpg",
+		"description": "Mikrofon dinamis kelas profesional dengan sensitivitas vokal tinggi dan rendah handling noise. Memberikan kejernihan suara optimal untuk pembicara maupun vokalis.",
+		"specs": [
+			"Tipe Moving Coil Dynamic (Unidirectional)",
+			"Impedansi 600 Ohm Balanced",
+			"Minim Noise Sentuhan Tangan",
+			"Dilengkapi Sakelar On/Off & Kabel"
+		]
+	},
+	{
+		"id": "toa-23",
+		"name": "TOA ZM-361-AS Clip-On / Lavalier Condenser Microphone (Mic Jepit)",
+		"category": "Mic",
+		"brand": "TOA",
+		"price": 210000,
+		"stock": 5,
+		"image": "foto/toa/toa-23.jpg",
+		"description": "Mikrofon jepit baju (clip-on / lavalier) tipe electret condenser dengan sensitivitas tinggi sehingga suara penceramah maupun imam terdengar jelas tanpa perlu memegang mikrofon.",
+		"specs": [
+			"Tipe Electret Condenser (Clip-On / Jepit)",
+			"Kabel Panjang ±7 Meter",
+			"Menggunakan 1 Baterai AA",
+			"Ideal untuk Imam Masjid, Khatib & Presenter"
+		]
+	},
+	{
+		"id": "toa-24",
+		"name": "TOA ZM-371HS-AS Headset Condenser Microphone (Mic Bando)",
+		"category": "Mic",
+		"brand": "TOA",
+		"price": 425000,
+		"stock": 5,
+		"image": "foto/toa/toa-24.jpg",
+		"description": "Mikrofon model headset / bando ringan dengan tangkai fleksibel yang menjaga posisi kapsul kondensor selalu stabil di dekat mulut meski pengguna banyak bergerak.",
+		"specs": [
+			"Tipe Electret Condenser (Headset / Bando)",
+			"Kabel Panjang ±10 Meter",
+			"Menggunakan 1 Baterai AA",
+			"Nyaman Dipakai Lama & Bebas Genggam"
+		]
+	},
+	{
+		"id": "toa-25",
+		"name": "TOA ZM-380-AS Gooseneck / Podium Meeting Microphone",
+		"category": "Mic",
+		"brand": "TOA",
+		"price": 850000,
+		"stock": 5,
+		"image": "foto/toa/toa-25.jpg",
+		"description": "Mikrofon meja / podium dengan leher angsa (gooseneck) fleksibel dan dudukan berat yang stabil. Dilengkapi tombol tekan bicara serta mendukung daya Phantom Power maupun baterai AA.",
+		"specs": [
+			"Tipe Electret Condenser Gooseneck",
+			"Dudukan Meja Kokoh dengan Sakelar Bicara",
+			"Dukungan Phantom Power (9–52V) atau Baterai AA",
+			"Cocok untuk Meja Rapat, Mimbar & Resepsionis"
+		]
+	},
+	{
+		"id": "toa-26",
+		"name": "TOA ZM-300-AS Electret Condenser Handheld Microphone",
+		"category": "Mic",
+		"brand": "TOA",
+		"price": 450000,
+		"stock": 5,
+		"image": "foto/toa/toa-26.jpg",
+		"description": "Mikrofon genggam tipe electret condenser dengan kepekaan tangkap suara jarak menengah yang jauh lebih sensitif dibanding mikrofon dinamis biasa, menghasilkan detail suara jernih dan natural.",
+		"specs": [
+			"Tipe Electret Condenser Handheld",
+			"Sensitivitas Tinggi & Detail Suara Jernih",
+			"Menggunakan 1 Baterai AA",
+			"Dilengkapi Sakelar On/Off & Kabel"
+		]
+	},
+	{
+		"id": "toa-27",
+		"name": "TOA ZT-351 Matching Transformer Original Horn Speaker",
+		"category": "Trafo",
+		"brand": "TOA",
+		"price": 280000,
+		"stock": 5,
+		"image": "foto/toa/toa-27.jpg",
+		"description": "Trafo matching original TOA untuk mengubah speaker corong impedansi rendah (16 Ohm) seperti ZH-5025B menjadi sistem High Impedance 100V line agar dapat ditarik kabel jarak jauh tanpa kehilangan daya.",
+		"specs": [
+			"Trafo Matching Original TOA (100V / 70V Line)",
+			"Selektor Tap Daya Multi-Watt",
+			"Kompatibel untuk Horn Speaker TOA",
+			"Efisiensi Tinggi & Minim Rugi Sinyal"
+		]
+	},
+	{
+		"id": "toa-28",
+		"name": "Trafo Output OT-224G 240 Watt (Untuk Amplifier TOA ZA-2240)",
+		"category": "Trafo",
+		"brand": "TOA",
+		"price": 0,
+		"stock": 5,
+		"image": "foto/toa/toa-28.jpg",
+		"description": "Transformator output (OT) berkapasitas 240 Watt khusus untuk penggantian maupun perakitan bagian output amplifier TOA ZA-2240 agar mampu menyuplai jalur speaker 100V/70V secara stabil.",
+		"specs": [
+			"Kapasitas Daya 240 Watt",
+			"Output High Impedance 100V / 70V & Low Impedance",
+			"Kompatibel untuk Seri TOA ZA-2240",
+			"Gulungan Tembaga Presisi & Rendah Panas"
+		]
+	},
+	{
+		"id": "toa-29",
+		"name": "Trafo Output OT 100 Watt Public Address",
+		"category": "Trafo",
+		"brand": "TOA",
+		"price": 0,
+		"stock": 5,
+		"image": "foto/toa/toa-29.jpg",
+		"description": "Transformator output (OT) 100 Watt untuk servis maupun perakitan power amplifier PA/masjid guna menyesuaikan impedansi amplifier ke jalur distribusi speaker 100V line.",
+		"specs": [
+			"Kapasitas Daya 100 Watt",
+			"Mendukung Jalur Output 100V / 70V Line",
+			"Cocok untuk Servis & Rakitan Ampli PA",
+			"Inti Besi Berkualitas Tinggi"
+		]
+	},
+	{
+		"id": "toa-30",
+		"name": "Trafo Output OT 130 Watt Public Address",
+		"category": "Trafo",
+		"brand": "TOA",
+		"price": 240000,
+		"stock": 5,
+		"image": "foto/toa/toa-30.jpg",
+		"description": "Transformator output (OT) berkapasitas 130 Watt dengan margin daya lebih lega untuk amplifier PA kelas 120W–130W, menjaga suara tetap jernih dan tidak pecah saat beban corong penuh.",
+		"specs": [
+			"Kapasitas Daya 130 Watt",
+			"Output 100V Line & Low Impedance",
+			"Cocok untuk Amplifier PA 120W–130W",
+			"Gulungan Rapi & Tahan Beban Kontinu"
+		]
+	},
+	{
+		"id": "toa-31",
+		"name": "Trafo Matching IT 100 Watt (Impedance Matching 100V Line)",
+		"category": "Trafo",
+		"brand": "TOA",
+		"price": 9000,
+		"stock": 5,
+		"image": "foto/toa/toa-31.jpg",
+		"description": "Transformator matching IT berkapasitas 100 Watt untuk penyesuaian impedansi pada instalasi jaringan speaker 100V line jarak jauh maupun pembagian zona audio.",
+		"specs": [
+			"Kapasitas Daya 100 Watt",
+			"Impedance Matching 100V Line",
+			"Cocok untuk Instalasi Multi-Speaker Jarak Jauh",
+			"Konstruksi Kokoh & Awet"
+		]
+	}
+]
