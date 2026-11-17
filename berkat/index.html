@@ -79,7 +79,7 @@
 			color: var(--text-primary);
 			font-family: var(--font-family);
 			font-weight: var(--font-weight-base);
-			transition: background-color 0.3s ease, color 0.3s ease;
+			transition: background-color 0.32s var(--ease-calm), color 0.32s var(--ease-calm);
 			overflow-x: hidden;
 		}
 
@@ -119,7 +119,7 @@
 			background: var(--accent-gradient, var(--accent-primary));
 			color: var(--accent-contrast);
 			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.34), 0 4px 12px -3px var(--accent-soft);
-			transition: filter 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+			transition: filter 0.22s var(--ease-calm), transform 0.18s var(--ease-calm), box-shadow 0.22s var(--ease-calm);
 		}
 
 		.accent-bg:hover {
@@ -141,16 +141,59 @@
 		}
 
 		/* ==========================================================================
-		   2. ANIMASI HALUS (MODAL, TAB, CARD REVEAL, SLIDER & TOAST)
+		   2. ANIMASI HALUS (ENTER & EXIT MODAL, POPUP, DROPDOWN, TAB, CARD & TOAST)
 		   ========================================================================== */
-		@keyframes fadeSlideUp {
+		@keyframes backdropFadeIn {
+			from { opacity: 0; }
+			to { opacity: 1; }
+		}
+
+		@keyframes backdropFadeOut {
+			from { opacity: 1; }
+			to { opacity: 0; }
+		}
+
+		@keyframes modalDialogIn {
 			from {
 				opacity: 0;
-				transform: translateY(16px) scale(0.98);
+				transform: translateY(18px) scale(0.965);
 			}
 			to {
 				opacity: 1;
 				transform: translateY(0) scale(1);
+			}
+		}
+
+		@keyframes modalDialogOut {
+			from {
+				opacity: 1;
+				transform: translateY(0) scale(1);
+			}
+			to {
+				opacity: 0;
+				transform: translateY(12px) scale(0.97);
+			}
+		}
+
+		@keyframes popoverSlideIn {
+			from {
+				opacity: 0;
+				transform: translateY(-6px) scale(0.985);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0) scale(1);
+			}
+		}
+
+		@keyframes popoverSlideOut {
+			from {
+				opacity: 1;
+				transform: translateY(0) scale(1);
+			}
+			to {
+				opacity: 0;
+				transform: translateY(-6px) scale(0.985);
 			}
 		}
 
@@ -179,7 +222,7 @@
 		@keyframes toastSlideIn {
 			from {
 				opacity: 0;
-				transform: translateX(18px) scale(0.96);
+				transform: translateX(24px) scale(0.95);
 			}
 			to {
 				opacity: 1;
@@ -187,30 +230,61 @@
 			}
 		}
 
-		@keyframes heroProgress {
+		@keyframes toastSlideOut {
 			from {
-				width: 0%;
+				opacity: 1;
+				transform: translateX(0) scale(1);
 			}
 			to {
-				width: 100%;
+				opacity: 0;
+				transform: translateX(24px) scale(0.95);
 			}
+		}
+
+		@keyframes heroProgress {
+			from { width: 0%; }
+			to { width: 100%; }
+		}
+
+		.modal-backdrop-enter {
+			animation: backdropFadeIn 0.28s var(--ease-calm) forwards;
+		}
+
+		.modal-backdrop-exit {
+			animation: backdropFadeOut 0.24s var(--ease-calm) forwards;
 		}
 
 		.animate-modal-enter {
-			animation: fadeSlideUp var(--anim-speed) var(--ease-calm) forwards;
+			animation: modalDialogIn var(--anim-speed) var(--ease-calm) forwards;
+		}
+
+		.animate-modal-exit {
+			animation: modalDialogOut 0.24s var(--ease-calm) forwards;
+		}
+
+		.animate-popover-enter {
+			animation: popoverSlideIn 0.22s var(--ease-calm) forwards;
+		}
+
+		.animate-popover-exit {
+			animation: popoverSlideOut 0.18s var(--ease-calm) forwards;
 		}
 
 		.animate-tab-enter {
-			animation: tabContentFade var(--anim-speed) var(--ease-calm) forwards;
+			animation: tabContentFade 0.3s var(--ease-calm) forwards;
 		}
 
 		.animate-card-enter {
 			opacity: 0;
-			animation: cardReveal 0.42s var(--ease-calm) forwards;
+			animation: cardReveal 0.4s var(--ease-calm) forwards;
 		}
 
 		.animate-toast-enter {
 			animation: toastSlideIn 0.32s var(--ease-calm) forwards;
+		}
+
+		.animate-toast-exit {
+			animation: toastSlideOut 0.24s var(--ease-calm) forwards;
 		}
 
 		.hero-progress-active {
@@ -258,7 +332,7 @@
 	<!-- ==========================================================================
 	     TOAST NOTIFICATION CONTAINER (PENGGANTI ALERT BAWAAN)
 	     ========================================================================== -->
-	<div id="toast-container" aria-live="polite" class="fixed top-20 right-4 z-[100] flex flex-col gap-2.5 max-w-sm w-[calc(100vw-2rem)] pointer-events-none"></div>
+	<div id="toast-container" aria-live="polite" class="fixed top-20 right-4 z-[120] flex flex-col gap-2.5 max-w-sm w-[calc(100vw-2rem)] pointer-events-none"></div>
 
 	<!-- ==========================================================================
 	     FIXED FLOATING HEADER: NAMA TOKO, PENCARIAN, KERANJANG, PENGATURAN, PROFILE
@@ -283,7 +357,7 @@
 		<!-- Bar Utama Header Melayang -->
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5">
 			<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-				<!-- Nama Toko & Logo (Proporsi Presisi Anti-Gepeng) -->
+				<!-- Nama Toko & Logo -->
 				<div class="flex items-center justify-between gap-3">
 					<a href="#top" id="brand-home-btn" class="flex items-center gap-3 group focus:outline-none min-w-0">
 						<div class="w-10 h-10 sm:w-11 sm:h-11 aspect-square rounded-2xl accent-bg flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -299,9 +373,14 @@
 								<line x1="17" y1="16" x2="23" y2="16"></line>
 							</svg>
 						</div>
-						<h1 class="text-lg sm:text-xl font-bold tracking-tight theme-text-primary leading-none truncate">
-							Berkat Elektronik
-						</h1>
+						<div class="min-w-0">
+							<h1 class="text-lg sm:text-xl font-bold tracking-tight theme-text-primary leading-none truncate">
+								Berkat Elektronik
+							</h1>
+							<p id="header-greeting-subtitle" class="text-[11px] theme-text-muted truncate mt-1">
+								Spesialis Pro Audio &amp; Komponen
+							</p>
+						</div>
 					</a>
 
 					<!-- Tombol Aksi Mobile: Bulat Sama Rata (Keranjang, Pengaturan, Profil) -->
@@ -363,7 +442,7 @@
 					</div>
 
 					<!-- Popover Riwayat Pencarian Cepat -->
-					<div id="search-history-popover" class="hidden absolute left-0 right-0 top-full mt-2 p-3 rounded-2xl border theme-surface z-50 animate-modal-enter">
+					<div id="search-history-popover" class="hidden absolute left-0 right-0 top-full mt-2 p-3 rounded-2xl border theme-surface z-50 animate-popover-enter">
 						<div class="flex items-center justify-between mb-2">
 							<span class="text-xs font-semibold theme-text-secondary">Riwayat Pencarian Terakhir</span>
 							<button type="button" id="popover-clear-history" class="text-[11px] accent-text hover:underline">Hapus Riwayat</button>
@@ -399,7 +478,7 @@
 	</header>
 
 	<!-- ==========================================================================
-	     HERO BANNER FULL LANDSCAPE (4 FOTO BERGANTI 5 DETIK, TIDAK FIXED MELAYANG)
+	     HERO BANNER FULL LANDSCAPE (4 FOTO BERGANTI 5 DETIK)
 	     ========================================================================== -->
 	<section aria-label="Galeri Produk & Toko" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-5">
 		<div class="relative w-full rounded-3xl overflow-hidden border theme-border shadow-sm group">
@@ -430,7 +509,7 @@
 	</section>
 
 	<!-- ==========================================================================
-	     MAIN BODY SECTION: KATEGORI, FILTER CUSTOM, & KATALOG / HASIL PENCARIAN
+	     MAIN BODY SECTION: KATEGORI, FILTER CUSTOM, KATALOG TOP 50 & PAGINATION
 	     ========================================================================== -->
 	<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
 
@@ -442,7 +521,7 @@
 					<span>Mode File Lokal Terdeteksi (<code class="font-mono">file://</code>)</span>
 				</h3>
 				<p class="text-xs theme-text-secondary leading-relaxed">
-					Browser memblokir pembacaan otomatis <code class="font-mono font-semibold">produk/produk-toa.json</code> saat dibuka langsung tanpa server lokal (Live Server). Klik tombol di samping untuk memuat file JSON produk beserta stoknya secara manual:
+					Browser memblokir pembacaan otomatis <code class="font-mono font-semibold">produk/produk-toa.json</code> saat dibuka langsung tanpa server lokal. Klik tombol di samping untuk memuat file JSON produk secara manual:
 				</p>
 			</div>
 			<button type="button" data-action="load-product-json" class="px-4 py-2.5 rounded-2xl accent-bg text-xs font-bold shrink-0 shadow-xs active:scale-95">
@@ -454,7 +533,7 @@
 		<section aria-label="Kategori Produk" class="space-y-3">
 			<div class="flex items-center justify-between">
 				<h2 class="text-base sm:text-lg font-bold theme-text-primary">Kategori Elektronik</h2>
-				<span id="active-category-label" class="text-xs font-medium accent-text">Menampilkan: Semua Kategori</span>
+				<span id="active-category-label" class="text-xs font-medium accent-text">Menampilkan: Top 50 Unggulan</span>
 			</div>
 			<div id="category-pills-container" class="flex items-center gap-2 overflow-x-auto pb-2">
 				<!-- Tombol kategori dirender dinamis oleh JS -->
@@ -496,22 +575,29 @@
 
 				<!-- Custom Dropdown: Urutkan A-Z / Harga -->
 				<div class="space-y-1">
-					<label class="block text-xs font-medium theme-text-secondary">Urutkan (A–Z / Harga)</label>
+					<label class="block text-xs font-medium theme-text-secondary">Urutkan (Popularitas / A–Z / Harga)</label>
 					<div id="dropdown-filter-sort" class="relative"></div>
 				</div>
 			</div>
 		</section>
 
-		<!-- 3. HASIL PENCARIAN & GRID KATALOG PRODUK -->
-		<section aria-label="Daftar Produk" class="space-y-4">
-			<div class="flex flex-wrap items-center justify-between gap-2">
-				<div>
-					<h2 id="catalog-heading" class="text-lg sm:text-xl font-bold theme-text-primary">Katalog Produk Pilihan</h2>
-					<p id="catalog-subtext" class="text-xs sm:text-sm theme-text-secondary">Klik kartu produk untuk melihat spesifikasi, ketersediaan stok, dan deskripsi lengkap.</p>
+		<!-- 3. HASIL PENCARIAN, GRID KATALOG PRODUK & PAGINATION 50 PRODUK/HALAMAN -->
+		<section id="catalog-section" aria-label="Daftar Produk" class="space-y-4">
+			<div class="flex flex-wrap items-center justify-between gap-3">
+				<div class="space-y-0.5">
+					<h2 id="catalog-heading" class="text-lg sm:text-xl font-bold theme-text-primary">50 Produk Teratas</h2>
+					<p id="catalog-subtext" class="text-xs sm:text-sm theme-text-secondary">
+						Prioritas teratas untuk Mixer, Power, Ampli, Speaker, Equalizer &amp; Crossover berdasarkan interaksi, wishlist, dan pembelian.
+					</p>
 				</div>
-				<span id="product-count-badge" class="px-3 py-1 rounded-full text-xs font-semibold accent-soft-bg">
-					0 Produk
-				</span>
+				<div class="flex flex-wrap items-center gap-2">
+					<span id="pagination-range-info" class="text-xs font-medium theme-text-secondary">
+						Menampilkan 1–50 dari 0 produk
+					</span>
+					<span id="product-count-badge" class="px-3 py-1 rounded-full text-xs font-semibold accent-soft-bg">
+						0 Produk
+					</span>
+				</div>
 			</div>
 
 			<!-- Grid Produk -->
@@ -532,9 +618,19 @@
 					Tidak ada barang elektronik yang cocok dengan kata kunci atau filter Anda. Coba ubah kata kunci pencarian atau reset filter.
 				</p>
 				<button type="button" id="empty-reset-btn" class="px-4 py-2 rounded-xl accent-bg text-xs font-semibold shadow-sm">
-					Tampilkan Semua Produk
+					Tampilkan Top 50 Produk
 				</button>
 			</div>
+
+			<!-- Bilah Pagination Bernomor Halaman (50 Produk per Halaman) -->
+			<nav id="pagination-controls" aria-label="Navigasi Halaman Produk" class="hidden theme-surface border rounded-3xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+				<p id="pagination-page-summary" class="text-xs theme-text-secondary font-medium">
+					Halaman 1 dari 1 (Maks. 50 produk per halaman)
+				</p>
+				<div id="pagination-buttons-wrap" class="flex flex-wrap items-center justify-center gap-1.5">
+					<!-- Tombol Sebelumnya, Nomor Halaman 1, 2, 3..., Berikutnya dirender dinamis -->
+				</div>
+			</nav>
 		</section>
 	</main>
 
@@ -662,10 +758,111 @@
 	</footer>
 
 	<!-- ==========================================================================
+	     MODAL 0: ONBOARDING WAJIB SAAT PERTAMA KALI HALAMAN DIBUKA
+	     ========================================================================== -->
+	<div id="modal-onboarding" class="hidden fixed inset-0 z-[90] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto modal-backdrop-enter">
+		<div class="modal-dialog-box theme-surface border rounded-3xl max-w-xl w-full overflow-hidden animate-modal-enter my-auto" style="box-shadow: var(--shadow-modal);">
+			<div class="px-6 py-5 border-b theme-border theme-elevated flex items-center gap-3.5">
+				<div class="w-11 h-11 aspect-square rounded-2xl accent-bg flex items-center justify-center shrink-0">
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+						<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+						<circle cx="12" cy="7" r="4"></circle>
+					</svg>
+				</div>
+				<div>
+					<span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold accent-soft-bg mb-1">Selamat Datang di Berkat Elektronik</span>
+					<h2 class="text-base sm:text-lg font-bold theme-text-primary leading-tight">Lengkapi Data Diri Anda Terlebih Dahulu</h2>
+					<p class="text-xs theme-text-secondary mt-0.5">Digunakan untuk menyimpan profil, riwayat belanja, dan perhitungan ongkos kirim Tangerang.</p>
+				</div>
+			</div>
+
+			<form id="onboarding-form" novalidate class="p-6 space-y-4">
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+					<div>
+						<label for="onboard-name" class="block text-xs font-semibold theme-text-secondary mb-1">Nama Lengkap <span class="text-rose-500">*</span></label>
+						<input type="text" id="onboard-name" required placeholder="Contoh: Budi Santoso" class="w-full px-3.5 py-2.5 rounded-xl border theme-elevated theme-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30">
+					</div>
+					<div>
+						<label for="onboard-phone" class="block text-xs font-semibold theme-text-secondary mb-1">Nomor Telepon / WA <span class="text-rose-500">*</span></label>
+						<input type="tel" id="onboard-phone" required placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 rounded-xl border theme-elevated theme-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30">
+					</div>
+				</div>
+
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+					<div>
+						<label class="block text-xs font-semibold theme-text-secondary mb-1">Wilayah Tangerang <span class="text-rose-500">*</span></label>
+						<div id="dropdown-onboard-region" class="relative"></div>
+					</div>
+					<div>
+						<label class="block text-xs font-semibold theme-text-secondary mb-1">Kecamatan Tujuan <span class="text-rose-500">*</span></label>
+						<div id="dropdown-onboard-district" class="relative"></div>
+					</div>
+				</div>
+
+				<!-- Bagian Opsional -->
+				<div class="pt-2 border-t theme-border space-y-3">
+					<span class="text-[11px] font-semibold theme-text-muted block">Informasi Tambahan (Opsional — Dapat Diisi Nanti di Profil)</span>
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+						<div>
+							<label for="onboard-address" class="block text-xs font-medium theme-text-secondary mb-1">Detail Alamat Rumah (Opsional)</label>
+							<input type="text" id="onboard-address" placeholder="Nama jalan, RT/RW, patokan..." class="w-full px-3.5 py-2.5 rounded-xl border theme-elevated theme-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30">
+						</div>
+						<div>
+							<label class="block text-xs font-medium theme-text-secondary mb-1">Bank / E-Wallet Utama (Opsional)</label>
+							<div id="dropdown-onboard-bank" class="relative"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
+					<button type="button" data-action="import-data" class="w-full sm:w-auto px-3.5 py-2.5 rounded-xl border theme-elevated theme-text-secondary hover:theme-text-primary text-xs font-semibold transition">
+						Sudah Punya Cadangan? Import JSON
+					</button>
+					<button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl accent-bg text-xs sm:text-sm font-bold shadow-sm active:scale-95">
+						Simpan &amp; Mulai Belanja
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- ==========================================================================
+	     MODAL KONFIRMASI KUSTOM (PENGGANTI WINDOW.CONFIRM BAWAAN)
+	     ========================================================================== -->
+	<div id="modal-confirm" class="hidden fixed inset-0 z-[110] bg-black/55 backdrop-blur-xs flex items-center justify-center p-4 modal-backdrop-enter">
+		<div class="modal-dialog-box theme-surface border rounded-3xl max-w-md w-full p-6 space-y-4 animate-modal-enter" style="box-shadow: var(--shadow-modal);">
+			<div class="flex items-start gap-3.5">
+				<div class="w-10 h-10 aspect-square rounded-2xl bg-rose-500/15 text-rose-600 flex items-center justify-center shrink-0">
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+						<polyline points="3 6 5 6 21 6"></polyline>
+						<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+						<line x1="10" y1="11" x2="10" y2="17"></line>
+						<line x1="14" y1="11" x2="14" y2="17"></line>
+					</svg>
+				</div>
+				<div class="space-y-1 flex-1 min-w-0">
+					<h3 id="confirm-dialog-title" class="text-base font-bold theme-text-primary leading-snug">Konfirmasi Penghapusan</h3>
+					<p id="confirm-dialog-message" class="text-xs sm:text-sm theme-text-secondary leading-relaxed">
+						Apakah Anda yakin ingin menghapus data ini?
+					</p>
+				</div>
+			</div>
+			<div class="pt-2 flex items-center justify-end gap-2.5">
+				<button type="button" id="confirm-dialog-cancel-btn" class="px-4 py-2.5 rounded-xl border theme-elevated theme-text-primary text-xs sm:text-sm font-semibold hover:opacity-85 transition active:scale-95">
+					Batal
+				</button>
+				<button type="button" id="confirm-dialog-accept-btn" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-bold shadow-xs transition active:scale-95">
+					Ya, Hapus
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- ==========================================================================
 	     MODAL 1: DETAIL PRODUK LENGKAP (SAAT CARD / FOTO PRODUK DIKLIK)
 	     ========================================================================== -->
-	<div id="modal-product-detail" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-		<div class="theme-surface border rounded-3xl max-w-3xl w-full overflow-hidden animate-modal-enter my-auto" style="box-shadow: var(--shadow-modal);">
+	<div id="modal-product-detail" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto modal-backdrop-enter">
+		<div class="modal-dialog-box theme-surface border rounded-3xl max-w-3xl w-full overflow-hidden animate-modal-enter my-auto" style="box-shadow: var(--shadow-modal);">
 			<div id="product-detail-content">
 				<!-- Diisi dinamis saat produk diklik -->
 			</div>
@@ -673,10 +870,10 @@
 	</div>
 
 	<!-- ==========================================================================
-	     MODAL 2: KERANJANG BELANJA (TAMBAH KUANTITI, HAPUS, BELI)
+	     MODAL 2: KERANJANG BELANJA (TAMBAH KUANTITI, HAPUS DENGAN KONFIRMASI, BELI)
 	     ========================================================================== -->
-	<div id="modal-cart" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-		<div class="theme-surface border rounded-3xl max-w-2xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[90vh]" style="box-shadow: var(--shadow-modal);">
+	<div id="modal-cart" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto modal-backdrop-enter">
+		<div class="modal-dialog-box theme-surface border rounded-3xl max-w-2xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[90vh]" style="box-shadow: var(--shadow-modal);">
 			<!-- Header Modal Keranjang -->
 			<div class="px-6 py-4 border-b theme-border flex items-center justify-between">
 				<div class="flex items-center gap-2.5">
@@ -730,8 +927,8 @@
 	<!-- ==========================================================================
 	     MODAL 3: FORM PEMBAYARAN, ONGKOS KIRIM (CIMONE JAYA) & WHATSAPP
 	     ========================================================================== -->
-	<div id="modal-checkout" class="hidden fixed inset-0 z-50 bg-black/55 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-		<div class="theme-surface border rounded-3xl max-w-4xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[92vh]" style="box-shadow: var(--shadow-modal);">
+	<div id="modal-checkout" class="hidden fixed inset-0 z-50 bg-black/55 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto modal-backdrop-enter">
+		<div class="modal-dialog-box theme-surface border rounded-3xl max-w-4xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[92vh]" style="box-shadow: var(--shadow-modal);">
 			<!-- Header Checkout -->
 			<div class="px-6 py-4 border-b theme-border flex flex-wrap items-center justify-between gap-3">
 				<div>
@@ -894,8 +1091,8 @@
 	<!-- ==========================================================================
 	     MODAL 4: PENGATURAN TAMPILAN, FONT, SUARA, GETAR & EXPORT/IMPORT
 	     ========================================================================== -->
-	<div id="modal-settings" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-		<div class="theme-surface border rounded-3xl max-w-2xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[90vh]" style="box-shadow: var(--shadow-modal);">
+	<div id="modal-settings" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto modal-backdrop-enter">
+		<div class="modal-dialog-box theme-surface border rounded-3xl max-w-2xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[90vh]" style="box-shadow: var(--shadow-modal);">
 			<div class="px-6 py-4 border-b theme-border flex items-center justify-between">
 				<div>
 					<h2 class="text-lg font-bold theme-text-primary">Pengaturan Aplikasi</h2>
@@ -915,13 +1112,13 @@
 					<label class="block text-xs font-bold theme-text-primary">Mode Tampilan (Nuansa Kalem)</label>
 					<div id="settings-theme-options" class="grid grid-cols-3 gap-2.5">
 						<button type="button" data-setting-theme="light" class="p-3 rounded-2xl border text-xs font-semibold text-center transition">
-							Kalem Terang
+							Terang
 						</button>
 						<button type="button" data-setting-theme="warm" class="p-3 rounded-2xl border text-xs font-semibold text-center transition">
-							Hangat Kalem
+							Kalem
 						</button>
 						<button type="button" data-setting-theme="dark" class="p-3 rounded-2xl border text-xs font-semibold text-center transition">
-							Kalem Gelap
+							Gelap
 						</button>
 					</div>
 				</div>
@@ -976,23 +1173,23 @@
 
 				<!-- Export, Import Data & Muat Katalog JSON Produk -->
 				<div class="p-4 rounded-2xl border theme-elevated space-y-2.5">
-					<h3 class="text-xs font-bold theme-text-primary">Database Produk &amp; Stok JSON</h3>
+					<h3 class="text-xs font-bold theme-text-primary">Cadangan Data Pengguna &amp; Database Produk JSON</h3>
 					<p class="text-[11px] theme-text-secondary">
-						Stok diatur langsung melalui properti <code class="font-mono font-semibold">"stock"</code> pada file JSON produk (<code class="font-mono">produk/produk-toa.json</code>), atau muat file JSON produk Anda secara manual di sini:
+						Simpan atau pulihkan seluruh data Profil, Riwayat Belanja, Riwayat Pencarian, Wishlist, Keranjang, dan Pengaturan Tampilan ke berkas <code class="font-mono font-semibold">.json</code>:
 					</p>
 					<div class="flex flex-wrap gap-2">
-						<button type="button" data-action="load-product-json" class="px-3.5 py-2 rounded-xl accent-bg text-xs font-semibold shadow-xs">
-							Muat File JSON Produk
-						</button>
-						<button type="button" data-action="export-data" class="px-3.5 py-2 rounded-xl border theme-surface theme-text-primary text-xs font-semibold hover:opacity-85">
-							Export Cadangan (.json)
+						<button type="button" data-action="export-data" class="px-3.5 py-2 rounded-xl accent-bg text-xs font-semibold shadow-xs">
+							Export Semua Data (.json)
 						</button>
 						<button type="button" data-action="import-data" class="px-3.5 py-2 rounded-xl border theme-surface theme-text-primary text-xs font-semibold hover:opacity-85">
 							Import Cadangan (.json)
 						</button>
-						<button type="button" id="download-sample-product-json-btn" class="px-3.5 py-2 rounded-xl accent-soft-bg text-xs font-semibold hover:opacity-85">
+						<!--<button type="button" data-action="load-product-json" class="px-3.5 py-2 rounded-xl border theme-surface theme-text-primary text-xs font-semibold hover:opacity-85">
+							Muat JSON Produk
+						</button>-->
+						<!--<button type="button" id="download-sample-product-json-btn" class="px-3.5 py-2 rounded-xl accent-soft-bg text-xs font-semibold hover:opacity-85">
 							Unduh Template JSON
-						</button>
+						</button>-->
 					</div>
 				</div>
 			</div>
@@ -1002,13 +1199,13 @@
 	<!-- ==========================================================================
 	     MODAL 5: PROFILE PENGGUNA & RIWAYAT (SUKA, BELANJA, PENCARIAN, KERANJANG)
 	     ========================================================================== -->
-	<div id="modal-profile" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-		<div class="theme-surface border rounded-3xl max-w-3xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[92vh]" style="box-shadow: var(--shadow-modal);">
+	<div id="modal-profile" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto modal-backdrop-enter">
+		<div class="modal-dialog-box theme-surface border rounded-3xl max-w-3xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[92vh]" style="box-shadow: var(--shadow-modal);">
 			<!-- Header Profile -->
 			<div class="px-6 py-4 border-b theme-border flex items-center justify-between">
 				<div>
 					<h2 class="text-lg font-bold theme-text-primary">Profil &amp; Aktivitas Saya</h2>
-					<p class="text-xs theme-text-secondary">Data diri otomatis terhubung ke formulir pembayaran</p>
+					<p class="text-xs theme-text-secondary">Data diri otomatis terhubung ke formulir pembayaran &amp; tersimpan lokal</p>
 				</div>
 				<button type="button" data-close-modal="profile" aria-label="Tutup Profile" class="p-2 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary transition">
 					<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -1044,7 +1241,7 @@
 
 			<!-- Footer Profile (Export & Import) -->
 			<div class="px-6 py-3.5 border-t theme-border theme-elevated flex flex-wrap items-center justify-between gap-2">
-				<span class="text-[11px] theme-text-secondary">Simpan cadangan akun &amp; riwayat Anda:</span>
+				<span class="text-[11px] theme-text-secondary">Simpan cadangan akun, riwayat, wishlist &amp; keranjang Anda:</span>
 				<div class="flex items-center gap-2">
 					<button type="button" data-action="export-data" class="px-3 py-1.5 rounded-xl accent-soft-bg text-xs font-semibold hover:opacity-85">
 						Export Profile &amp; Data
@@ -1062,7 +1259,7 @@
 	<input type="file" id="load-product-json-input" accept="application/json,.json" multiple class="hidden">
 
 	<!-- ==========================================================================
-	     JAVASCRIPT MODULAR (STATE, KATALOG, STOK JSON, CUSTOM DROPDOWN & WHATSAPP)
+	     JAVASCRIPT MODULAR (TOP 50 RANKING, PAGINATION 50, ONBOARDING & CONFIRM)
 	     ========================================================================== -->
 	<script>
 		'use strict';
@@ -1072,7 +1269,10 @@
 		   ========================================================================== */
 		const STORE_CONFIG = {
 			storeName: 'Berkat Elektronik',
-			storageKey: 'berkat_elektronik_v3_state',
+			storageKey: 'berkat_elektronik_v4_state',
+			itemsPerPage: 50,
+			topLimit: 50,
+			focusCategories: ['Mixer', 'Power', 'Ampli', 'Speaker', 'Equalizer', 'Crossover'],
 			originName: 'Jl. Raya Merdeka No.35, RT.002/RW.001, Cimone Jaya, Kec. Karawaci, Kota Tangerang, Banten 15114',
 			originCoords: { lat: -6.1856, lng: 106.6127 },
 			roadDistanceMultiplier: 1.28,
@@ -1173,7 +1373,7 @@
 				const now = new Date();
 				const wibString = now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
 				const wibDate = new Date(wibString);
-				const day = wibDate.getDay(); // 0 = Minggu, 1..6 = Senin..Sabtu
+				const day = wibDate.getDay();
 				const hour = wibDate.getHours();
 				const minute = wibDate.getMinutes();
 				const currentMinutes = hour * 60 + minute;
@@ -1237,7 +1437,7 @@
 		};
 
 		/* ==========================================================================
-		   2. DATA SLIDER LANDSCAPE HEADER & REPOSITORY PRODUK JSON (FOLDER produk/ & foto/)
+		   2. DATA SLIDER LANDSCAPE HEADER & REPOSITORY KATALOG PRODUK (100+ ITEM SIAP PAGINATION)
 		   ========================================================================== */
 		const HERO_SLIDES = [
 			{
@@ -1266,30 +1466,16 @@
 			}
 		];
 
-		/* Daftar file JSON di folder "produk/" maupun root (Mendukung array produk maupun 1 objek produk) */
+		/* Daftar file JSON eksternal yang didukung */
 		const PRODUCT_JSON_FILES = [
 			'produk/produk-toa.json',
 			'produk/produk-acr.json',
 			'produk/produk-ashley.json',
-			'produk-toa_2.json',
-			'produk/prd-01.json',
-			'produk/prd-02.json',
-			'produk/prd-03.json',
-			'produk/prd-04.json',
-			'produk/prd-05.json',
-			'produk/prd-06.json',
-			'produk/prd-07.json',
-			'produk/prd-08.json',
-			'produk/prd-09.json',
-			'produk/prd-10.json',
-			'produk/prd-11.json',
-			'produk/prd-12.json',
-			'produk/prd-13.json',
-			'produk/prd-14.json'
+			'produk-toa_2.json'
 		];
 
-		/* Data produk bawaan (menggunakan path folder "foto/" & stok default 5) */
-		const DEFAULT_PRODUCTS_DATA = [
+		/* 14 Produk Inti Unggulan */
+		const CORE_PRODUCTS_DATA = [
 			{
 				id: 'prd-01',
 				name: 'Yamaha MG12XU 12-Channel Analog Mixer',
@@ -1369,7 +1555,7 @@
 				brand: 'DBX',
 				price: 1150000,
 				stock: 5,
-				image: 'https://images.unsplash.com/photo-1519508234439-4f23643125c1?auto=format&fit=crop&w=900&q=80',
+				image: 'foto/prd-07.jpg',
 				fallbackImage: 'https://images.unsplash.com/photo-1519508234439-4f23643125c1?auto=format&fit=crop&w=900&q=80',
 				description: 'Crossover aktif presisi tinggi dengan filter Linkwitz-Riley 24dB/oktaf untuk memisahkan frekuensi Sub, Low, Mid, dan High secara akurat menggunakan konektor XLR balanced.',
 				specs: ['Stereo 2/3-Way atau Mono 4-Way', 'Filter Linkwitz-Riley 24dB/Oct', 'Sakelar Phase Invert per Output', 'Low Cut 40Hz Filter']
@@ -1381,7 +1567,7 @@
 				brand: 'Behringer',
 				price: 1480000,
 				stock: 5,
-				image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=900&q=80',
+				image: 'foto/prd-08.jpg',
 				fallbackImage: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=900&q=80',
 				description: 'Crossover aktif berpresisi tinggi dengan limiter independen di setiap jalur frekuensi dan fitur CD Horn EQ untuk kejernihan driver tweeter berdaya besar.',
 				specs: ['Limiter Aktif per Output', 'CD Horn Equalization', 'Konektor XLR Gold-Plated', 'Sakelar Mute Individu']
@@ -1393,7 +1579,7 @@
 				brand: 'DBX',
 				price: 1750000,
 				stock: 5,
-				image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=900&q=80',
+				image: 'foto/prd-09.jpg',
 				fallbackImage: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=900&q=80',
 				description: 'Equalizer grafik stereo 31-band dengan pilihan rentang boost/cut ±6dB atau ±12dB, filter low-cut 50Hz, dan fader presisi 20mm untuk meredam feedback ruangan.',
 				specs: ['Dual 31-Band 1/3 Octave', 'Rentang ±6dB / ±12dB Switchable', 'Low-Cut Filter 50Hz 12dB/Oct', 'Input/Output XLR & TRS Balanced']
@@ -1405,7 +1591,7 @@
 				brand: 'Behringer',
 				price: 1920000,
 				stock: 5,
-				image: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=900&q=80',
+				image: 'foto/prd-10.jpg',
 				fallbackImage: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=900&q=80',
 				description: 'Equalizer 31-band stereo dengan sistem deteksi feedback FBQ yang menyalakan LED pada fader frekuensi bermasalah, dilengkapi output subwoofer khusus dengan frekuensi crossover variabel.',
 				specs: ['FBQ Feedback Detection System', 'Dedicated Mono Sub Output', 'Low & High Cut Sweepable', '4580 Ultra Low-Noise Op-Amp']
@@ -1417,7 +1603,7 @@
 				brand: 'JBL',
 				price: 7850000,
 				stock: 5,
-				image: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=900&q=80',
+				image: 'foto/prd-11.jpg',
 				fallbackImage: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=900&q=80',
 				description: 'Speaker aktif 15 inci bertenaga 1300W Peak dengan DSP dbx bawaan, layar LCD berwarna, kontrol Bluetooth aplikasi JBL Pro Connect, dan desain kabinet ergonomis ringan.',
 				specs: ['Woofer 15 Inci Custom JBL', 'Daya 1300W Peak / 650W RMS', 'Built-in dbx DSP & Feedback Suppression', 'Bluetooth 5.0 Streaming']
@@ -1429,7 +1615,7 @@
 				brand: 'ACR',
 				price: 1580000,
 				stock: 5,
-				image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=900&q=80',
+				image: 'foto/prd-12.jpg',
 				fallbackImage: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=900&q=80',
 				description: 'Komponen speaker subwoofer 18 inci dengan voice coil 4 inci berlapis ganda dan rangka aluminium die-cast kokoh untuk dentuman bass rendah yang padat.',
 				specs: ['Diameter 18 Inci / 8 Ohm', 'Max Power 1200 Watt', 'Voice Coil 99.2 mm (4 Inci)', 'Rangka Die-Cast Aluminium']
@@ -1441,7 +1627,7 @@
 				brand: 'Toshiba',
 				price: 220000,
 				stock: 5,
-				image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
+				image: 'foto/prd-13.jpg',
 				fallbackImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
 				description: 'Paket 4 pasang transistor final power amplifier original lot pilihan (matched gain) untuk perakitan maupun servis power amplifier berdaya besar.',
 				specs: ['4 Pasang (8 Pcs) 2SC5200 + 2SA1943', 'Tegangan Kolektor-Emitor 230V', 'Arus Kolektor Kontinu 15A', 'Original Lot Siap Pasang']
@@ -1453,17 +1639,72 @@
 				brand: 'Berkat Pro',
 				price: 980000,
 				stock: 5,
-				image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=900&q=80',
+				image: 'foto/prd-14.jpg',
 				fallbackImage: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=900&q=80',
 				description: 'Transformator donat (toroid) 15 Ampere murni gulungan kawat tembaga grade A lengkap dengan baut dudukan dan kit rectifier 6 elco 10.000uF/100V rendah dengung.',
 				specs: ['Kapasitas 15A Murni CT 45V–55V', 'Kawat Tembaga Hellenic Grade A', 'Minim Induksi & Rendah Panas', 'Termasuk Baut & Karet Peredam']
 			}
 		];
 
-		/* Array aktif produk yang diisi dari folder "produk/*.json" dengan fallback otomatis */
+		/* Generator Katalog Tambahan yang Realistis agar total mencapai 115 produk (memudahkan pengujian Top 50 + Pagination 50/halaman) */
+		function buildExtendedCatalog() {
+			const templates = [
+				{ category: 'Mixer', brand: 'Yamaha', prefix: 'Yamaha MG16XU', suffix: '16-Channel Live Console', basePrice: 6450000, img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=900&q=80', desc: 'Konsol mixer live 16 channel dengan preamp D-PRE transparan, kompresor 1-knob, dan efek SPX.' },
+				{ category: 'Mixer', brand: 'Ashley', prefix: 'Ashley Hero-12', suffix: '12-Channel DSP Mixer', basePrice: 2150000, img: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=900&q=80', desc: 'Mixer analog 12 channel dengan 199 efek DSP, Bluetooth 5.0, dan rekaman langsung ke flashdisk.' },
+				{ category: 'Mixer', brand: 'Behringer', prefix: 'Behringer Xenyx QX1204USB', suffix: 'Studio & Live Mixer', basePrice: 2650000, img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=900&q=80', desc: 'Mixer audio dengan prosesor efek Klark Teknik dan kompresor kelas studio untuk vokal jernih.' },
+				{ category: 'Power', brand: 'RDW', prefix: 'RDW NR8004 MK3', suffix: '4-Channel Power Amplifier', basePrice: 8200000, img: 'https://images.unsplash.com/photo-1558403194-611308249627?auto=format&fit=crop&w=900&q=80', desc: 'Power amplifier 4 channel berdaya besar untuk kebutuhan line array dan monitor panggung.' },
+				{ category: 'Power', brand: 'Ashley', prefix: 'Ashley V4800', suffix: '2-Channel Touring Power', basePrice: 4350000, img: 'https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=900&q=80', desc: 'Power amplifier stereo dengan sistem pendingin ganda dan proteksi beban berlebih.' },
+				{ category: 'Power', brand: 'Huper', prefix: 'Huper QA2000', suffix: 'Pro Stereo Power Amp', basePrice: 5150000, img: 'https://images.unsplash.com/photo-1558403194-611308249627?auto=format&fit=crop&w=900&q=80', desc: 'Power amplifier profesional dengan respon frekuensi rata dan bass bertenaga.' },
+				{ category: 'Ampli', brand: 'TOA', prefix: 'TOA ZA-2240', suffix: 'PA Mixer Amplifier 240W', basePrice: 3650000, img: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=900&q=80', desc: 'Amplifier gedung dan masjid 240 Watt dengan jalur output 100V line dan 4-16 Ohm.' },
+				{ category: 'Ampli', brand: 'BMB', prefix: 'BMB DA-1600SE', suffix: 'Digital Karaoke Amplifier', basePrice: 2450000, img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80', desc: 'Amplifier karaoke dengan efek echo halus, kontrol nada lengkap, dan daya tahan tinggi.' },
+				{ category: 'Ampli', brand: 'Firstclass', prefix: 'Firstclass FC-A5800', suffix: 'Bluetooth Karaoke Ampli', basePrice: 1380000, img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80', desc: 'Amplifier serbaguna dengan konektivitas Bluetooth, radio FM, dan 4 input mikrofon.' },
+				{ category: 'Speaker', brand: 'JBL', prefix: 'JBL PRX915', suffix: '15-Inch Professional Powered PA', basePrice: 11200000, img: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=900&q=80', desc: 'Speaker aktif profesional 15 inci dengan amplifier Class-D 2000W Peak dan DSP layar LCD.' },
+				{ category: 'Speaker', brand: 'ACR', prefix: 'ACR Fabulous 15600', suffix: '15-Inch Mid-Low Component', basePrice: 1180000, img: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=900&q=80', desc: 'Komponen speaker 15 inci dengan karakter mid-low lantang dan daun speaker tahan lembap.' },
+				{ category: 'Speaker', brand: 'TOA', prefix: 'TOA ZH-5025BM', suffix: 'Horn Speaker Corong 25W Matching', basePrice: 685000, img: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=900&q=80', desc: 'Speaker corong TOA 25 Watt dengan trafo matching 100V untuk jangkauan suara luar ruangan jauh.' },
+				{ category: 'Equalizer', brand: 'DBX', prefix: 'DBX 1231', suffix: 'Dual 31-Band Long-Throw EQ', basePrice: 2480000, img: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=900&q=80', desc: 'Equalizer grafik dual 31-band dengan fader panjang 45mm untuk penyetelan frekuensi sangat presisi.' },
+				{ category: 'Equalizer', brand: 'Ashley', prefix: 'Ashley MQX-231', suffix: 'Dual Channel Graphic Equalizer', basePrice: 1320000, img: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=900&q=80', desc: 'Equalizer 2x31 band dengan output subwoofer terpisah dan indikator level sinyal LED.' },
+				{ category: 'Crossover', brand: 'DBX', prefix: 'DBX 223xs', suffix: 'Stereo 2-Way / Mono 3-Way Crossover', basePrice: 990000, img: 'https://images.unsplash.com/photo-1519508234439-4f23643125c1?auto=format&fit=crop&w=900&q=80', desc: 'Crossover aktif ringkas dengan filter Linkwitz-Riley 24dB/oktaf untuk sistem 2-way stereo.' },
+				{ category: 'Crossover', brand: 'Ashley', prefix: 'Ashley CX-3400', suffix: 'Active 3-Way Stereo Crossover', basePrice: 1120000, img: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=900&q=80', desc: 'Manajemen pembagi frekuensi Sub, Low, Mid, dan High dengan konektor XLR seimbang.' },
+				{ category: 'Komponen', brand: 'Toshiba', prefix: 'Kit Driver Power SOCL 506', suffix: 'Teflon + Final 4 Set Siap Pakai', basePrice: 365000, img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80', desc: 'Modul kit driver amplifier SOCL 506 fiber FR4 lengkap dengan heatsink tebal dan transistor final.' },
+				{ category: 'Komponen', brand: 'Berkat Pro', prefix: 'Elco Nichicon 10000uF 100V', suffix: 'Paket 4 Pcs Power Supply Audio', basePrice: 240000, img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=900&q=80', desc: 'Kapasitor elektrolit kapasitas penuh untuk suplai daya amplifier bebas dengung dan stabil.' },
+				{ category: 'Komponen', brand: 'Berkat Pro', prefix: 'Spul Tweeter & Voice Coil 44.4mm', suffix: 'Titanium Diaphragm Pengganti', basePrice: 85000, img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80', desc: 'Spul driver tweeter kawat tembaga pipih tahan panas untuk perbaikan speaker PA.' }
+			];
+
+			const generated = [...CORE_PRODUCTS_DATA];
+			let counter = 15;
+			for (let round = 1; round <= 6; round++) {
+				for (let i = 0; i < templates.length; i++) {
+					if (generated.length >= 115) break;
+					const tpl = templates[i];
+					const id = `prd-${String(counter).padStart(3, '0')}`;
+					const priceOffset = (round - 1) * 75000;
+					const stockVal = counter % 19 === 0 ? 0 : ((counter % 7) + 2);
+					generated.push({
+						id,
+						name: `${tpl.prefix} Seri ${round} — ${tpl.suffix}`,
+						category: tpl.category,
+						brand: tpl.brand,
+						price: tpl.basePrice + priceOffset,
+						stock: stockVal,
+						image: tpl.img,
+						fallbackImage: tpl.img,
+						description: `${tpl.desc} Varian generasi ${round} dengan standar pengujian kualitas Berkat Elektronik Tangerang.`,
+						specs: [
+							`Kategori ${tpl.category} • Brand ${tpl.brand}`,
+							`Garansi Resmi & Uji Fungsi Toko`,
+							`Ketersediaan Stok: ${stockVal > 0 ? stockVal + ' Unit' : 'Kosong'}`
+						]
+					});
+					counter++;
+				}
+			}
+			return generated;
+		}
+
+		const DEFAULT_PRODUCTS_DATA = buildExtendedCatalog();
 		let PRODUCTS_DATA = [...DEFAULT_PRODUCTS_DATA];
 
-		/* Repository Loader: Mendukung JSON berisi Array Produk [ {...}, {...} ] maupun Objek Tunggal {...} */
+		/* Repository Loader: Mendukung JSON eksternal (produk/*.json) */
 		const ProductRepository = {
 			normalizeItem(raw) {
 				if (!raw || !raw.id || !raw.name) return null;
@@ -1522,7 +1763,6 @@
 				PRODUCTS_DATA = Array.from(loadedMap.values());
 				AppState.syncCartWithStock();
 
-				/* Jika dibuka lewat file:// (tanpa web server) sehingga fetch diblokir browser, tampilkan banner bantuan */
 				const fileNotice = document.getElementById('file-protocol-notice');
 				if (externalCount === 0 && window.location.protocol === 'file:' && fileNotice) {
 					fileNotice.classList.remove('hidden');
@@ -1595,7 +1835,7 @@
 		};
 
 		/* ==========================================================================
-		   3. MODUL SUARA SINTETIS BERVARIASI (WEB AUDIO API) & GETAR (HAPTIC)
+		   3. MODUL SUARA SINTETIS (WEB AUDIO API) & GETAR (HAPTIC)
 		   ========================================================================== */
 		const SoundHaptic = {
 			audioCtx: null,
@@ -1717,7 +1957,7 @@
 		};
 
 		/* ==========================================================================
-		   4. SISTEM TOAST NOTIFICATION (PENGGANTI ALERT & CONFIRM BAWAAN)
+		   4. SISTEM TOAST NOTIFICATION HALUS (ENTER & EXIT ANIMATION)
 		   ========================================================================== */
 		const Toast = {
 			show(message, type = 'info', duration = 3400) {
@@ -1740,11 +1980,13 @@
 					<button type="button" aria-label="Tutup Notifikasi" class="text-xs theme-text-muted hover:theme-text-primary px-1">✕</button>
 				`;
 
+				let isDismissed = false;
 				const removeToast = () => {
-					el.style.opacity = '0';
-					el.style.transform = 'translateX(16px)';
-					el.style.transition = 'all 0.22s ease';
-					setTimeout(() => el.remove(), 220);
+					if (isDismissed) return;
+					isDismissed = true;
+					el.classList.remove('animate-toast-enter');
+					el.classList.add('animate-toast-exit');
+					setTimeout(() => el.remove(), 240);
 				};
 
 				el.querySelector('button').addEventListener('click', removeToast);
@@ -1754,7 +1996,45 @@
 		};
 
 		/* ==========================================================================
-		   5. KOMPONEN CUSTOM DROPDOWN (PENGGANTI <SELECT> & <OPTION> BAWAAN)
+		   5. CUSTOM CONFIRMATION MODAL (PENGGANTI WINDOW.CONFIRM)
+		   ========================================================================== */
+		const ConfirmDialog = {
+			onConfirmCallback: null,
+
+			ask({ title = 'Konfirmasi Penghapusan', message = 'Apakah Anda yakin ingin menghapus data ini?', confirmLabel = 'Ya, Hapus', onConfirm }) {
+				const modalEl = document.getElementById('modal-confirm');
+				const titleEl = document.getElementById('confirm-dialog-title');
+				const msgEl = document.getElementById('confirm-dialog-message');
+				const acceptBtn = document.getElementById('confirm-dialog-accept-btn');
+				if (!modalEl || !titleEl || !msgEl || !acceptBtn) return;
+
+				titleEl.textContent = title;
+				msgEl.textContent = message;
+				acceptBtn.textContent = confirmLabel;
+				this.onConfirmCallback = typeof onConfirm === 'function' ? onConfirm : null;
+
+				SoundHaptic.feedback('warning');
+				ModalManager.open('confirm');
+			},
+
+			init() {
+				document.getElementById('confirm-dialog-cancel-btn')?.addEventListener('click', () => {
+					this.onConfirmCallback = null;
+					SoundHaptic.feedback('modalClose');
+					ModalManager.close('confirm');
+				});
+
+				document.getElementById('confirm-dialog-accept-btn')?.addEventListener('click', () => {
+					const cb = this.onConfirmCallback;
+					this.onConfirmCallback = null;
+					ModalManager.close('confirm');
+					if (cb) cb();
+				});
+			}
+		};
+
+		/* ==========================================================================
+		   6. KOMPONEN CUSTOM DROPDOWN (PENGGANTI <SELECT> & <OPTION> BAWAAN)
 		   ========================================================================== */
 		class CustomDropdown {
 			constructor({ containerId, options = [], value = '', placeholder = 'Pilih...', onChange = null }) {
@@ -1784,11 +2064,6 @@
 				}
 			}
 
-			getSelectedLabel() {
-				const found = this.options.find(opt => String(opt.value) === String(this.value));
-				return found ? found.label : this.placeholder;
-			}
-
 			getSelectedOption() {
 				return this.options.find(opt => String(opt.value) === String(this.value)) || null;
 			}
@@ -1809,7 +2084,7 @@
 							<polyline points="6 9 12 15 18 9"></polyline>
 						</svg>
 					</button>
-					<div role="listbox" class="${this.isOpen ? 'block' : 'hidden'} custom-dd-menu absolute left-0 right-0 top-full mt-1.5 max-h-60 overflow-y-auto rounded-2xl border theme-surface shadow-xl z-40 p-1.5 space-y-0.5 animate-modal-enter">
+					<div role="listbox" class="${this.isOpen ? 'block' : 'hidden'} custom-dd-menu absolute left-0 right-0 top-full mt-1.5 max-h-60 overflow-y-auto rounded-2xl border theme-surface shadow-xl z-40 p-1.5 space-y-0.5 animate-popover-enter">
 						${this.options.map(opt => {
 							const isSelected = String(opt.value) === String(this.value);
 							const iconHtml = opt.iconHtml || '';
@@ -1864,7 +2139,7 @@
 		document.addEventListener('click', () => CustomDropdown.closeAll());
 
 		/* ==========================================================================
-		   6. STATE MANAGEMENT APLIKASI & LOCALSTORAGE PERSISTENCE
+		   7. STATE MANAGEMENT APLIKASI, SCORING TOP 50 & LOCALSTORAGE PERSISTENCE
 		   ========================================================================== */
 		const AppState = {
 			filters: {
@@ -1874,9 +2149,11 @@
 				priceRange: 'all',
 				sort: 'default'
 			},
+			currentPage: 1,
 
 			defaultData() {
 				return {
+					hasCompletedOnboarding: false,
 					settings: {
 						theme: 'light',
 						accent: 'hijau',
@@ -1889,19 +2166,25 @@
 					},
 					profile: {
 						avatar: 'https://placehold.co/160x160/4A7C59/FFFFFF?text=BE',
-						fullName: 'Budi Santoso',
+						fullName: '',
 						region: 'Tangerang Kota',
 						district: 'Karawaci (Cimone Jaya)',
-						address: 'Jl. Raya Merdeka No. 45, RT 03/RW 02, Cimone Jaya, Karawaci',
-						phone: '081288994421',
+						address: '',
+						phone: '',
 						bank: 'Bank Jago'
 					},
-					cart: [
-						{ productId: 'prd-02', qty: 1 },
-						{ productId: 'prd-13', qty: 2 }
-					],
-					likes: ['prd-01', 'prd-11'],
-					searchHistory: ['TOA', 'Yamaha', 'Mixer 8 Channel', 'Corong', 'Spul'],
+					cart: [],
+					likes: ['prd-01', 'prd-03', 'prd-05', 'prd-11'],
+					productViews: {
+						'prd-01': 6,
+						'prd-02': 4,
+						'prd-03': 5,
+						'prd-05': 5,
+						'prd-07': 3,
+						'prd-09': 3,
+						'prd-11': 4
+					},
+					searchHistory: ['TOA', 'Yamaha', 'Mixer 8 Channel', 'Speaker 15 Inch'],
 					orderHistory: []
 				};
 			},
@@ -1914,13 +2197,20 @@
 					if (raw) {
 						const parsed = JSON.parse(raw);
 						const def = this.defaultData();
+						const mergedProfile = { ...def.profile, ...(parsed.profile || {}) };
+						const inferredOnboarding = Boolean(
+							parsed.hasCompletedOnboarding ||
+							(mergedProfile.fullName && mergedProfile.phone && mergedProfile.region && mergedProfile.district)
+						);
 						this.data = {
+							hasCompletedOnboarding: inferredOnboarding,
 							settings: { ...def.settings, ...(parsed.settings || {}) },
-							profile: { ...def.profile, ...(parsed.profile || {}) },
-							cart: Array.isArray(parsed.cart) ? parsed.cart : def.cart,
+							profile: mergedProfile,
+							cart: Array.isArray(parsed.cart) ? parsed.cart : [],
 							likes: Array.isArray(parsed.likes) ? parsed.likes : def.likes,
+							productViews: (parsed.productViews && typeof parsed.productViews === 'object') ? parsed.productViews : def.productViews,
 							searchHistory: Array.isArray(parsed.searchHistory) ? parsed.searchHistory : def.searchHistory,
-							orderHistory: Array.isArray(parsed.orderHistory) ? parsed.orderHistory : def.orderHistory
+							orderHistory: Array.isArray(parsed.orderHistory) ? parsed.orderHistory : []
 						};
 					} else {
 						this.data = this.defaultData();
@@ -1949,7 +2239,127 @@
 				return PRODUCTS_DATA.find(p => p.id === id) || null;
 			},
 
-			/* Menyelaraskan keranjang belanja jika stok di file JSON diubah menjadi 0 atau lebih kecil dari qty keranjang */
+			/* Mencatat setiap kali produk dibuka/dilihat untuk perhitungan skor Top 50 */
+			recordProductView(productId) {
+				if (!productId) return;
+				if (!this.data.productViews || typeof this.data.productViews !== 'object') {
+					this.data.productViews = {};
+				}
+				this.data.productViews[productId] = (Number(this.data.productViews[productId]) || 0) + 1;
+				this.save();
+			},
+
+			/* Menghitung skor interaksi (Dilihat * 2 + Wishlist * 15 + Pernah Dibeli * 10) */
+			getProductInteractionScore(productId) {
+				const views = Number(this.data.productViews?.[productId] || 0);
+				const isLiked = this.data.likes.includes(productId) ? 1 : 0;
+
+				let purchasedQty = 0;
+				for (const order of this.data.orderHistory) {
+					if (!Array.isArray(order.items)) continue;
+					for (const item of order.items) {
+						if (item.productId === productId) {
+							purchasedQty += Number(item.qty || 1);
+						}
+					}
+				}
+
+				return (views * 2) + (isLiked * 15) + (purchasedQty * 10);
+			},
+
+			/* Mengecek apakah user sedang melakukan pencarian atau filter aktif */
+			hasActiveSearchOrFilter() {
+				const { search, category, brand, priceRange, sort } = this.filters;
+				return (
+					search.trim().length > 0 ||
+					category !== 'Semua' ||
+					brand !== 'Semua' ||
+					priceRange !== 'all' ||
+					sort !== 'default'
+				);
+			},
+
+			/* Mengambil seluruh produk yang sudah diurutkan berdasarkan Top 50 (6 kategori fokus + skor tertinggi) */
+			getRankedCatalogProducts() {
+				const focusSet = new Set(STORE_CONFIG.focusCategories);
+				const enriched = PRODUCTS_DATA.map((product, originalIndex) => ({
+					product,
+					originalIndex,
+					isFocus: focusSet.has(product.category),
+					score: this.getProductInteractionScore(product.id)
+				}));
+
+				/* 1. Ambil kandidat dari 6 kategori fokus (Mixer, Power, Ampli, Speaker, Equalizer, Crossover) */
+				const focusCandidates = enriched
+					.filter(item => item.isFocus)
+					.sort((a, b) => (b.score - a.score) || (a.originalIndex - b.originalIndex));
+
+				const top50Entries = focusCandidates.slice(0, STORE_CONFIG.topLimit);
+				const top50Ids = new Set(top50Entries.map(entry => entry.product.id));
+
+				/* 2. Sisa produk di luar Top 50 (tetap diurutkan berdasarkan skor interaksi tertinggi) */
+				const remainingEntries = enriched
+					.filter(item => !top50Ids.has(item.product.id))
+					.sort((a, b) => (b.score - a.score) || (a.originalIndex - b.originalIndex));
+
+				return [...top50Entries, ...remainingEntries].map((entry, rankIdx) => ({
+					...entry.product,
+					_rank: rankIdx + 1,
+					_isTop50: rankIdx < STORE_CONFIG.topLimit && entry.isFocus,
+					_score: entry.score
+				}));
+			},
+
+			/* Menyaring produk:
+			   - Jika filter/pencarian default: tampilkan Top 50 teratas dulu, lalu halaman berikutnya menampilkan produk lainnya per 50 item.
+			   - Jika user mencari atau memilih filter: tampilkan seluruh produk yang cocok meski di luar Top 50. */
+			getFilteredProducts() {
+				const { search, category, brand, priceRange, sort } = this.filters;
+				const q = search.trim().toLowerCase();
+				const rankedAll = this.getRankedCatalogProducts();
+
+				let result = rankedAll.filter(item => {
+					if (category !== 'Semua' && item.category !== category) return false;
+					if (brand !== 'Semua' && item.brand !== brand) return false;
+
+					if (priceRange === 'under1m' && item.price >= 1000000) return false;
+					if (priceRange === '1to3m' && (item.price < 1000000 || item.price > 3000000)) return false;
+					if (priceRange === '3to6m' && (item.price <= 3000000 || item.price > 6000000)) return false;
+					if (priceRange === 'above6m' && item.price <= 6000000) return false;
+
+					if (q) {
+						const priceStr = String(item.price);
+						const formattedPrice = this.formatRupiah(item.price).toLowerCase();
+						const stockLabel = item.stock > 0 ? `stok ${item.stock} tersedia` : 'stok habis kosong';
+						const haystack = [
+							item.name,
+							item.brand,
+							item.category,
+							item.description,
+							priceStr,
+							formattedPrice,
+							stockLabel
+						].join(' ').toLowerCase();
+
+						if (!haystack.includes(q)) return false;
+					}
+
+					return true;
+				});
+
+				if (sort === 'az') {
+					result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+				} else if (sort === 'za') {
+					result = [...result].sort((a, b) => b.name.localeCompare(a.name));
+				} else if (sort === 'price_asc') {
+					result = [...result].sort((a, b) => a.price - b.price);
+				} else if (sort === 'price_desc') {
+					result = [...result].sort((a, b) => b.price - a.price);
+				}
+
+				return result;
+			},
+
 			syncCartWithStock() {
 				if (!this.data || !Array.isArray(this.data.cart)) return;
 				let changed = false;
@@ -2024,7 +2434,12 @@
 
 				const nextQty = item.qty + delta;
 				if (nextQty <= 0) {
-					this.removeFromCart(productId);
+					ConfirmDialog.ask({
+						title: 'Hapus Barang dari Keranjang?',
+						message: `Jumlah "${product.name}" akan menjadi 0. Hapus barang ini dari keranjang belanja?`,
+						confirmLabel: 'Ya, Hapus',
+						onConfirm: () => this.removeFromCart(productId)
+					});
 					return;
 				}
 
@@ -2056,24 +2471,42 @@
 				}
 			},
 
-			toggleLike(productId) {
+			toggleLike(productId, requireConfirmOnRemove = false) {
 				const product = this.getProductById(productId);
 				if (!product) return;
 
 				const exists = this.data.likes.includes(productId);
 				if (exists) {
-					this.data.likes = this.data.likes.filter(id => id !== productId);
-					SoundHaptic.feedback('unlike');
-					Toast.show(`Dihapus dari Wishlist / Suka: ${product.name}`, 'info');
+					const executeRemove = () => {
+						this.data.likes = this.data.likes.filter(id => id !== productId);
+						this.save();
+						UIRenderer.updateBadges();
+						UIRenderer.renderProducts();
+						if (!document.getElementById('modal-profile')?.classList.contains('hidden')) {
+							UIRenderer.renderProfileModal();
+						}
+						SoundHaptic.feedback('unlike');
+						Toast.show(`Dihapus dari Wishlist / Suka: ${product.name}`, 'info');
+					};
+
+					if (requireConfirmOnRemove) {
+						ConfirmDialog.ask({
+							title: 'Hapus dari Wishlist / Suka?',
+							message: `Apakah Anda yakin ingin menghapus "${product.name}" dari daftar Wishlist / Suka Anda?`,
+							confirmLabel: 'Ya, Hapus',
+							onConfirm: executeRemove
+						});
+					} else {
+						executeRemove();
+					}
 				} else {
 					this.data.likes.unshift(productId);
+					this.save();
+					UIRenderer.updateBadges();
+					UIRenderer.renderProducts();
 					SoundHaptic.feedback('like');
 					Toast.show(`Disimpan ke Wishlist / Suka: ${product.name}`, 'success');
 				}
-
-				this.save();
-				UIRenderer.updateBadges();
-				UIRenderer.renderProducts();
 			},
 
 			recordSearch(query) {
@@ -2082,60 +2515,130 @@
 				this.data.searchHistory = [
 					clean,
 					...this.data.searchHistory.filter(q => q.toLowerCase() !== clean.toLowerCase())
-				].slice(0, 10);
+				].slice(0, 12);
 				this.save();
 				UIRenderer.renderSearchHistoryChips();
-			},
-
-			getFilteredProducts() {
-				const { search, category, brand, priceRange, sort } = this.filters;
-				const q = search.trim().toLowerCase();
-
-				let result = PRODUCTS_DATA.filter(item => {
-					if (category !== 'Semua' && item.category !== category) return false;
-					if (brand !== 'Semua' && item.brand !== brand) return false;
-
-					if (priceRange === 'under1m' && item.price >= 1000000) return false;
-					if (priceRange === '1to3m' && (item.price < 1000000 || item.price > 3000000)) return false;
-					if (priceRange === '3to6m' && (item.price <= 3000000 || item.price > 6000000)) return false;
-					if (priceRange === 'above6m' && item.price <= 6000000) return false;
-
-					if (q) {
-						const priceStr = String(item.price);
-						const formattedPrice = this.formatRupiah(item.price).toLowerCase();
-						const stockLabel = item.stock > 0 ? `stok ${item.stock} tersedia` : 'stok habis kosong';
-						const haystack = [
-							item.name,
-							item.brand,
-							item.category,
-							item.description,
-							priceStr,
-							formattedPrice,
-							stockLabel
-						].join(' ').toLowerCase();
-
-						if (!haystack.includes(q)) return false;
-					}
-
-					return true;
-				});
-
-				if (sort === 'az') {
-					result = [...result].sort((a, b) => a.name.localeCompare(b.name));
-				} else if (sort === 'za') {
-					result = [...result].sort((a, b) => b.name.localeCompare(a.name));
-				} else if (sort === 'price_asc') {
-					result = [...result].sort((a, b) => a.price - b.price);
-				} else if (sort === 'price_desc') {
-					result = [...result].sort((a, b) => b.price - a.price);
-				}
-
-				return result;
 			}
 		};
 
 		/* ==========================================================================
-		   7. KALKULATOR JARAK & ONGKOS KIRIM (CIMONE JAYA, TANGERANG 0–30 KM)
+		   8. ONBOARDING WAJIB SAAT PERTAMA KALI HALAMAN DIBUKA
+		   ========================================================================== */
+		const OnboardingController = {
+			selectedRegion: 'Tangerang Kota',
+			selectedDistrict: 'Karawaci (Cimone Jaya)',
+			selectedBank: 'Bank Jago',
+			regionDropdown: null,
+			districtDropdown: null,
+			bankDropdown: null,
+
+			checkAndShow() {
+				if (!AppState.data.hasCompletedOnboarding) {
+					this.initDropdowns();
+					ModalManager.open('onboarding');
+				}
+			},
+
+			initDropdowns() {
+				const regions = Object.keys(TANGERANG_LOCATIONS).map(r => ({ value: r, label: r }));
+				const districts = (TANGERANG_LOCATIONS[this.selectedRegion] || []).map(d => ({ value: d.name, label: d.name }));
+				const banks = PAYMENT_PROVIDERS.map(p => ({
+					value: p.id,
+					label: `${p.label} (${p.type})`,
+					iconHtml: getPaymentIconSvg(p.id, 'w-6 h-6')
+				}));
+
+				this.regionDropdown = new CustomDropdown({
+					containerId: 'dropdown-onboard-region',
+					value: this.selectedRegion,
+					options: regions,
+					onChange: (val) => {
+						this.selectedRegion = val;
+						const list = TANGERANG_LOCATIONS[val] || [];
+						this.selectedDistrict = list[0]?.name || '';
+						this.districtDropdown.setOptions(
+							list.map(d => ({ value: d.name, label: d.name })),
+							this.selectedDistrict
+						);
+					}
+				});
+
+				this.districtDropdown = new CustomDropdown({
+					containerId: 'dropdown-onboard-district',
+					value: this.selectedDistrict,
+					options: districts,
+					onChange: (val) => {
+						this.selectedDistrict = val;
+					}
+				});
+
+				this.bankDropdown = new CustomDropdown({
+					containerId: 'dropdown-onboard-bank',
+					value: this.selectedBank,
+					options: banks,
+					onChange: (val) => {
+						this.selectedBank = val;
+					}
+				});
+			},
+
+			bindEvents() {
+				document.getElementById('onboarding-form')?.addEventListener('submit', (e) => {
+					e.preventDefault();
+					const fullName = document.getElementById('onboard-name').value.trim();
+					const phone = document.getElementById('onboard-phone').value.trim();
+					const address = document.getElementById('onboard-address').value.trim();
+
+					if (!fullName) {
+						SoundHaptic.feedback('warning');
+						Toast.show('Nama Lengkap wajib diisi untuk melanjutkan.', 'warning');
+						document.getElementById('onboard-name')?.focus();
+						return;
+					}
+
+					const cleanDigits = phone.replace(/\D/g, '');
+					if (!phone || cleanDigits.length < 9) {
+						SoundHaptic.feedback('warning');
+						Toast.show('Nomor Telepon / WhatsApp wajib diisi minimal 9 digit angka.', 'warning');
+						document.getElementById('onboard-phone')?.focus();
+						return;
+					}
+
+					if (!this.selectedRegion || !this.selectedDistrict) {
+						SoundHaptic.feedback('warning');
+						Toast.show('Wilayah Tangerang dan Kecamatan wajib dipilih.', 'warning');
+						return;
+					}
+
+					const initials = fullName
+						.split(/\s+/)
+						.slice(0, 2)
+						.map(w => w[0]?.toUpperCase() || '')
+						.join('') || 'BE';
+
+					AppState.data.profile = {
+						...AppState.data.profile,
+						avatar: `https://placehold.co/160x160/4A7C59/FFFFFF?text=${encodeURIComponent(initials)}`,
+						fullName,
+						phone,
+						region: this.selectedRegion,
+						district: this.selectedDistrict,
+						address,
+						bank: this.selectedBank || 'Bank Jago'
+					};
+					AppState.data.hasCompletedOnboarding = true;
+					AppState.save();
+
+					UIRenderer.updateBadges();
+					ModalManager.close('onboarding');
+					SoundHaptic.feedback('success');
+					Toast.show(`Selamat datang, ${fullName}! Data diri Anda telah tersimpan di Profil.`, 'success', 4200);
+				});
+			}
+		};
+
+		/* ==========================================================================
+		   9. KALKULATOR JARAK & ONGKOS KIRIM (CIMONE JAYA, TANGERANG 0–30 KM)
 		   ========================================================================== */
 		const ShippingCalculator = {
 			toRad(deg) {
@@ -2206,54 +2709,54 @@
 		};
 
 		/* ==========================================================================
-		   8. PENGATURAN TAMPILAN, 7 WARNA AKSEN KALEM GLOSSY, FONT & EXPORT/IMPORT JSON
+		   10. PENGATURAN TAMPILAN, 7 WARNA AKSEN KALEM GLOSSY, FONT & EXPORT/IMPORT JSON
 		   ========================================================================== */
 		const SettingsManager = {
 			accents: {
 				merah: {
-					label: 'Merah Kalem',
+					label: 'Merah',
 					primary: '#B8545A',
 					hover: '#9D4349',
 					soft: 'rgba(184, 84, 90, 0.16)',
 					gradient: 'linear-gradient(135deg, #CA686E 0%, #A9484E 100%)'
 				},
 				kuning: {
-					label: 'Kuning Kalem',
+					label: 'Kuning',
 					primary: '#B88A2E',
 					hover: '#9B7222',
 					soft: 'rgba(184, 138, 46, 0.17)',
 					gradient: 'linear-gradient(135deg, #CFA03F 0%, #A97C24 100%)'
 				},
 				hijau: {
-					label: 'Hijau Kalem',
+					label: 'Hijau',
 					primary: '#4A7C59',
 					hover: '#3B6548',
 					soft: 'rgba(74, 124, 89, 0.16)',
 					gradient: 'linear-gradient(135deg, #5C946D 0%, #3F6E4E 100%)'
 				},
 				biru: {
-					label: 'Biru Kalem',
+					label: 'Biru',
 					primary: '#437299',
 					hover: '#345B7C',
 					soft: 'rgba(67, 114, 153, 0.16)',
 					gradient: 'linear-gradient(135deg, #5687B0 0%, #3A668B 100%)'
 				},
 				oren: {
-					label: 'Oren Kalem',
+					label: 'Oren',
 					primary: '#C46D3B',
 					hover: '#A7582B',
 					soft: 'rgba(196, 109, 59, 0.16)',
 					gradient: 'linear-gradient(135deg, #D8814E 0%, #B56030 100%)'
 				},
 				ungu: {
-					label: 'Ungu Kalem',
+					label: 'Ungu',
 					primary: '#745B96',
 					hover: '#5E487B',
 					soft: 'rgba(116, 91, 150, 0.16)',
 					gradient: 'linear-gradient(135deg, #886EAB 0%, #685089 100%)'
 				},
 				abu: {
-					label: 'Abu Kalem',
+					label: 'Abu',
 					primary: '#59656F',
 					hover: '#454F58',
 					soft: 'rgba(89, 101, 111, 0.16)',
@@ -2264,19 +2767,6 @@
 			applyAll() {
 				const s = AppState.data.settings;
 				const root = document.documentElement;
-
-				/* Migrasi otomatis kunci aksen lama jika pengguna punya cache localStorage sebelumnya */
-				const legacyMap = {
-					sage: 'hijau',
-					olive: 'hijau',
-					ocean: 'biru',
-					terracotta: 'oren',
-					lavender: 'ungu'
-				};
-				if (legacyMap[s.accent]) {
-					s.accent = legacyMap[s.accent];
-					AppState.save();
-				}
 
 				root.setAttribute('data-theme', s.theme || 'light');
 				root.style.fontSize = s.fontSize || '16px';
@@ -2343,10 +2833,11 @@
 			exportData() {
 				const payload = {
 					appName: STORE_CONFIG.storeName,
+					schemaVersion: 4,
 					exportedAt: new Date().toISOString(),
 					data: AppState.data
 				};
-				const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+				const blob = new Blob([JSON.stringify(payload, null, '\t')], { type: 'application/json' });
 				const url = URL.createObjectURL(blob);
 				const a = document.createElement('a');
 				a.href = url;
@@ -2356,7 +2847,7 @@
 				document.body.removeChild(a);
 				URL.revokeObjectURL(url);
 				SoundHaptic.feedback('success');
-				Toast.show('Data berhasil di-export ke file JSON.', 'success');
+				Toast.show('Seluruh data Profil, Riwayat, Wishlist, Keranjang & Pengaturan berhasil di-export!', 'success', 4000);
 			},
 
 			importDataFromFile(file) {
@@ -2366,26 +2857,40 @@
 					try {
 						const parsed = JSON.parse(e.target.result);
 						const incoming = parsed.data ? parsed.data : parsed;
-						if (!incoming.settings && !incoming.profile) {
+						if (!incoming || (typeof incoming !== 'object') || (!incoming.settings && !incoming.profile)) {
 							throw new Error('Struktur JSON tidak valid');
 						}
 						const def = AppState.defaultData();
+						const mergedProfile = { ...def.profile, ...(incoming.profile || {}) };
+						const hasValidProfile = Boolean(
+							incoming.hasCompletedOnboarding ||
+							(mergedProfile.fullName && mergedProfile.phone && mergedProfile.region && mergedProfile.district)
+						);
+
 						AppState.data = {
+							hasCompletedOnboarding: hasValidProfile,
 							settings: { ...def.settings, ...(incoming.settings || {}) },
-							profile: { ...def.profile, ...(incoming.profile || {}) },
+							profile: mergedProfile,
 							cart: Array.isArray(incoming.cart) ? incoming.cart : [],
 							likes: Array.isArray(incoming.likes) ? incoming.likes : [],
+							productViews: (incoming.productViews && typeof incoming.productViews === 'object') ? incoming.productViews : {},
 							searchHistory: Array.isArray(incoming.searchHistory) ? incoming.searchHistory : [],
 							orderHistory: Array.isArray(incoming.orderHistory) ? incoming.orderHistory : []
 						};
+
 						AppState.syncCartWithStock();
 						AppState.save();
 						this.applyAll();
 						UIRenderer.updateBadges();
 						UIRenderer.renderProducts();
 						UIRenderer.renderProfileModal();
+
+						if (hasValidProfile && !document.getElementById('modal-onboarding')?.classList.contains('hidden')) {
+							ModalManager.close('onboarding');
+						}
+
 						SoundHaptic.feedback('success');
-						Toast.show('Data berhasil di-import dan dipulihkan!', 'success');
+						Toast.show('Data cadangan berhasil di-import dan seluruh riwayat telah dipulihkan!', 'success', 4000);
 					} catch (err) {
 						SoundHaptic.feedback('warning');
 						Toast.show('Gagal import: Format berkas JSON tidak sesuai.', 'error');
@@ -2396,7 +2901,7 @@
 		};
 
 		/* ==========================================================================
-		   9. RENDERER ANTARMUKA (HERO SLIDER, PRODUK, FILTER, KERANJANG, PROFILE)
+		   11. RENDERER ANTARMUKA (HERO SLIDER, TOP 50, PAGINATION 50, KERANJANG, PROFILE)
 		   ========================================================================== */
 		const UIRenderer = {
 			heroIndex: 0,
@@ -2413,7 +2918,7 @@
 				this.updateBadges();
 			},
 
-			/* 9A. Hero Slider 4 Foto Landscape Otomatis 5 Detik */
+			/* 11A. Hero Slider 4 Foto Landscape Otomatis 5 Detik */
 			initHeroSlider() {
 				const track = document.getElementById('hero-slider-track');
 				const indicators = document.getElementById('hero-indicators');
@@ -2501,9 +3006,8 @@
 				}, 5000);
 			},
 
-			/* Daftar Kategori Dinamis (Otomatis memuat kategori baru dari JSON seperti Corong, Spul, Mic, Trafo) */
 			getAvailableCategories() {
-				const primaryCategories = ['Mixer', 'Power', 'Ampli', 'Crossover', 'Equalizer', 'Speaker', 'Komponen'];
+				const primaryCategories = ['Mixer', 'Power', 'Ampli', 'Speaker', 'Equalizer', 'Crossover', 'Komponen'];
 				const detectedCategories = Array.from(
 					new Set(
 						PRODUCTS_DATA
@@ -2515,7 +3019,6 @@
 				return ['Semua', ...primaryCategories, ...extraCategories];
 			},
 
-			/* Daftar Merk/Brand Dinamis dari JSON */
 			getAvailableBrands() {
 				const detectedBrands = Array.from(
 					new Set(
@@ -2527,14 +3030,13 @@
 				return ['Semua', ...detectedBrands];
 			},
 
-			/* Refresh Kategori, Merk & Grid setelah file JSON dimuat */
 			refreshCatalogAndFilters() {
 				const categories = this.getAvailableCategories();
 				const brands = this.getAvailableBrands();
 
 				if (this.dropdowns.category) {
 					this.dropdowns.category.setOptions(
-						categories.map(c => ({ value: c, label: c === 'Semua' ? 'Semua Kategori' : c })),
+						categories.map(c => ({ value: c, label: c === 'Semua' ? 'Semua Kategori (Produk Unggulan)' : c })),
 						AppState.filters.category
 					);
 				}
@@ -2545,11 +3047,12 @@
 					);
 				}
 
+				AppState.currentPage = 1;
 				this.renderCategoryPills();
 				this.renderProducts();
 			},
 
-			/* 9B. Kategori Produk */
+			/* 11B. Kategori Produk */
 			renderCategoryPills() {
 				const categories = this.getAvailableCategories();
 				const container = document.getElementById('category-pills-container');
@@ -2557,9 +3060,10 @@
 
 				container.innerHTML = categories.map(cat => {
 					const isActive = AppState.filters.category === cat;
+					const labelText = cat === 'Semua' ? 'Semua (Produk Unggulan)' : cat;
 					return `
 						<button type="button" data-category-pill="${cat}" class="px-4 py-2 rounded-2xl border text-xs sm:text-sm font-semibold whitespace-nowrap transition active:scale-95 ${isActive ? 'accent-bg border-transparent shadow-xs' : 'theme-surface theme-text-primary hover:opacity-85'}">
-							${cat}
+							${labelText}
 						</button>
 					`;
 				}).join('');
@@ -2568,6 +3072,7 @@
 					btn.addEventListener('click', () => {
 						const chosen = btn.getAttribute('data-category-pill');
 						AppState.filters.category = chosen;
+						AppState.currentPage = 1;
 						if (this.dropdowns.category) {
 							this.dropdowns.category.setValue(chosen, false);
 						}
@@ -2579,11 +3084,13 @@
 
 				const labelEl = document.getElementById('active-category-label');
 				if (labelEl) {
-					labelEl.textContent = `Menampilkan: ${AppState.filters.category === 'Semua' ? 'Semua Kategori' : AppState.filters.category}`;
+					labelEl.textContent = AppState.filters.category === 'Semua'
+						? 'Menampilkan: Top 50 Unggulan'
+						: `Kategori Aktif: ${AppState.filters.category}`;
 				}
 			},
 
-			/* 9C. Inisialisasi Custom Dropdown untuk Filter & Pengaturan */
+			/* 11C. Inisialisasi Custom Dropdown untuk Filter & Pengaturan */
 			initFilterDropdowns() {
 				const categories = this.getAvailableCategories();
 				const brands = this.getAvailableBrands();
@@ -2591,9 +3098,10 @@
 				this.dropdowns.category = new CustomDropdown({
 					containerId: 'dropdown-filter-category',
 					value: AppState.filters.category,
-					options: categories.map(c => ({ value: c, label: c === 'Semua' ? 'Semua Kategori' : c })),
+					options: categories.map(c => ({ value: c, label: c === 'Semua' ? 'Semua Kategori (Produk Unggulan)' : c })),
 					onChange: (val) => {
 						AppState.filters.category = val;
+						AppState.currentPage = 1;
 						this.renderCategoryPills();
 						this.renderProducts();
 					}
@@ -2605,6 +3113,7 @@
 					options: brands.map(b => ({ value: b, label: b === 'Semua' ? 'Semua Merk' : b })),
 					onChange: (val) => {
 						AppState.filters.brand = val;
+						AppState.currentPage = 1;
 						this.renderProducts();
 					}
 				});
@@ -2621,6 +3130,7 @@
 					],
 					onChange: (val) => {
 						AppState.filters.priceRange = val;
+						AppState.currentPage = 1;
 						this.renderProducts();
 					}
 				});
@@ -2629,7 +3139,7 @@
 					containerId: 'dropdown-filter-sort',
 					value: AppState.filters.sort,
 					options: [
-						{ value: 'default', label: 'Rekomendasi Toko' },
+						{ value: 'default', label: 'Top 50 Popularitas & Fokus' },
 						{ value: 'az', label: 'Nama Produk (A – Z)' },
 						{ value: 'za', label: 'Nama Produk (Z – A)' },
 						{ value: 'price_asc', label: 'Harga: Terendah ke Tertinggi' },
@@ -2637,11 +3147,11 @@
 					],
 					onChange: (val) => {
 						AppState.filters.sort = val;
+						AppState.currentPage = 1;
 						this.renderProducts();
 					}
 				});
 
-				/* Dropdown Pengaturan: Jenis Font (Plus Jakarta Sans + 6 Font Baru) & Ketebalan Font */
 				this.dropdowns.fontFamily = new CustomDropdown({
 					containerId: 'dropdown-settings-fontfamily',
 					value: AppState.data.settings.fontFamily,
@@ -2677,7 +3187,6 @@
 					}
 				});
 
-				/* Render Badge Metode Pembayaran di Footer */
 				const footerBadges = document.getElementById('footer-payment-badges');
 				if (footerBadges) {
 					footerBadges.innerHTML = PAYMENT_PROVIDERS.map(p => `
@@ -2689,41 +3198,81 @@
 				}
 			},
 
-			/* 9D. Render Grid Produk & Hasil Pencarian (Termasuk Indikator Stok & Lock saat Stok Kosong) */
+			/* 11D. Render Grid Produk & Pagination 50 Item per Halaman */
 			renderProducts() {
 				const grid = document.getElementById('products-grid');
 				const emptyState = document.getElementById('empty-products-state');
 				const countBadge = document.getElementById('product-count-badge');
+				const rangeInfoEl = document.getElementById('pagination-range-info');
 				const heading = document.getElementById('catalog-heading');
+				const subtext = document.getElementById('catalog-subtext');
+				const paginationNav = document.getElementById('pagination-controls');
 				if (!grid) return;
 
-				const products = AppState.getFilteredProducts();
+				const allMatched = AppState.getFilteredProducts();
+				const totalItems = allMatched.length;
+				const perPage = STORE_CONFIG.itemsPerPage;
+				const totalPages = Math.max(1, Math.ceil(totalItems / perPage));
+
+				if (AppState.currentPage > totalPages) AppState.currentPage = totalPages;
+				if (AppState.currentPage < 1) AppState.currentPage = 1;
+
+				const startIdx = (AppState.currentPage - 1) * perPage;
+				const endIdx = Math.min(startIdx + perPage, totalItems);
+				const pageProducts = allMatched.slice(startIdx, endIdx);
+
 				if (countBadge) {
-					countBadge.textContent = `${products.length} Produk`;
+					countBadge.textContent = `${totalItems} Produk`;
 				}
 
+				if (rangeInfoEl) {
+					rangeInfoEl.textContent = totalItems > 0
+						? `Menampilkan ${startIdx + 1}–${endIdx} dari ${totalItems} produk`
+						: 'Menampilkan 0 produk';
+				}
+
+				const isFiltered = AppState.hasActiveSearchOrFilter();
 				if (heading) {
-					heading.textContent = AppState.filters.search.trim()
-						? `Hasil Pencarian untuk "${AppState.filters.search.trim()}"`
-						: 'Katalog Produk Elektronik';
+					if (AppState.filters.search.trim()) {
+						heading.textContent = `Hasil Pencarian untuk "${AppState.filters.search.trim()}"`;
+					} else if (isFiltered) {
+						heading.textContent = 'Hasil Filter Katalog Produk';
+					} else if (AppState.currentPage === 1) {
+						heading.textContent = '50 Produk Teratas';
+					} else {
+						heading.textContent = `Katalog Produk Lanjutan — Halaman ${AppState.currentPage}`;
+					}
 				}
 
-				if (products.length === 0) {
+				if (subtext) {
+					if (isFiltered) {
+						subtext.textContent = 'Menampilkan seluruh produk yang cocok dari database meskipun berada di luar 50 produk teratas.';
+					} else if (AppState.currentPage === 1) {
+						subtext.textContent = 'Prioritas 50 teratas untuk Mixer, Power, Ampli, Speaker, Equalizer & Crossover berdasarkan sering dilihat, wishlist, dan pembelian.';
+					} else {
+						subtext.textContent = `Menampilkan produk urutan ke-${startIdx + 1} sampai ke-${endIdx} (50 produk per halaman).`;
+					}
+				}
+
+				if (totalItems === 0) {
 					grid.innerHTML = '';
 					emptyState?.classList.remove('hidden');
+					paginationNav?.classList.add('hidden');
 					return;
 				}
 				emptyState?.classList.add('hidden');
 
-				grid.innerHTML = products.map((product, index) => {
+				grid.innerHTML = pageProducts.map((product, index) => {
 					const isLiked = AppState.data.likes.includes(product.id);
 					const isOutOfStock = Number(product.stock || 0) <= 0;
-					const staggerDelay = Math.min(index * 45, 360);
+					const staggerDelay = Math.min(index * 22, 320);
 					const fallbackUrl = product.fallbackImage || `https://placehold.co/800x550/EBF0EC/4A7C59?text=${encodeURIComponent(product.category)}`;
+					const showTopBadge = !isFiltered && AppState.currentPage === 1 && product._isTop50 && product._rank <= 10;
+
 					return `
 						<article data-product-card="${product.id}" style="animation-delay: ${staggerDelay}ms;" class="animate-card-enter theme-surface border rounded-3xl overflow-hidden flex flex-col justify-between group hover:-translate-y-1.5 transition-all duration-300 cursor-pointer">
 							<div>
-								<!-- Gambar Produk (Mendukung folder lokal foto/ dengan fallback otomatis) -->
+								<!-- Gambar Produk -->
 								<div class="relative aspect-[16/11] w-full overflow-hidden theme-elevated">
 									<img
 										src="${product.image}"
@@ -2733,6 +3282,11 @@
 										class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${isOutOfStock ? 'opacity-65 grayscale-[30%]' : ''}"
 									>
 									<div class="absolute top-3 left-3 flex flex-wrap items-center gap-1.5 pr-12">
+										${showTopBadge ? `
+											<span class="px-2 py-0.5 rounded-xl text-[10px] font-bold accent-bg shadow-xs">
+												#${product._rank} Populer
+											</span>
+										` : ''}
 										<span class="px-2.5 py-1 rounded-xl text-[11px] font-semibold bg-black/55 text-white backdrop-blur-xs">
 											${product.category}
 										</span>
@@ -2755,7 +3309,7 @@
 										</div>
 									`}
 
-									<!-- Tombol Suka / Wishlist (Tetap aktif meski stok kosong) -->
+									<!-- Tombol Suka / Wishlist -->
 									<button
 										type="button"
 										data-action-like="${product.id}"
@@ -2782,14 +3336,13 @@
 											${isOutOfStock ? 'Stok: 0' : `Tersedia: ${product.stock}`}
 										</span>
 									</div>
-									<!-- Deskripsi dengan batasan max-height & ellipsis -->
 									<p class="text-xs theme-text-secondary product-desc-clamp">
 										${product.description}
 									</p>
 								</div>
 							</div>
 
-							<!-- Tombol Eksekusi Kartu: Beli & Keranjang (Dinonaktifkan saat Stok Kosong) -->
+							<!-- Tombol Eksekusi Kartu: Beli & Keranjang -->
 							<div class="px-4 pb-4 pt-1 flex items-center gap-2">
 								${isOutOfStock ? `
 									<button
@@ -2843,7 +3396,7 @@
 
 						if (likeBtn) {
 							e.stopPropagation();
-							AppState.toggleLike(productId);
+							AppState.toggleLike(productId, false);
 							return;
 						}
 						if (cartBtn) {
@@ -2862,17 +3415,96 @@
 						this.openProductDetailModal(productId);
 					});
 				});
+
+				/* Render Kontrol Pagination 50 Produk/Halaman */
+				this.renderPaginationControls(totalPages, totalItems);
 			},
 
-			/* 9E. Modal Detail Produk Lengkap */
+			renderPaginationControls(totalPages, totalItems) {
+				const nav = document.getElementById('pagination-controls');
+				const summary = document.getElementById('pagination-page-summary');
+				const buttonsWrap = document.getElementById('pagination-buttons-wrap');
+				if (!nav || !summary || !buttonsWrap) return;
+
+				if (totalItems <= STORE_CONFIG.itemsPerPage) {
+					nav.classList.add('hidden');
+					return;
+				}
+
+				nav.classList.remove('hidden');
+				const curr = AppState.currentPage;
+				summary.textContent = `Halaman ${curr} dari ${totalPages} (${STORE_CONFIG.itemsPerPage} produk per halaman)`;
+
+				const pageNumbers = [];
+				for (let p = 1; p <= totalPages; p++) {
+					if (p === 1 || p === totalPages || Math.abs(p - curr) <= 2) {
+						pageNumbers.push(p);
+					} else if (pageNumbers[pageNumbers.length - 1] !== '...') {
+						pageNumbers.push('...');
+					}
+				}
+
+				buttonsWrap.innerHTML = `
+					<button
+						type="button"
+						data-page-target="${curr - 1}"
+						${curr === 1 ? 'disabled' : ''}
+						class="px-3.5 py-2 rounded-xl border text-xs font-semibold transition ${curr === 1 ? 'theme-subtle theme-text-muted opacity-50 cursor-not-allowed' : 'theme-elevated theme-text-primary hover:opacity-85 active:scale-95'}"
+					>
+						&larr; Sebelumnya
+					</button>
+					${pageNumbers.map(item => {
+						if (item === '...') {
+							return '<span class="px-2 text-xs theme-text-muted">...</span>';
+						}
+						const active = item === curr;
+						return `
+							<button
+								type="button"
+								data-page-target="${item}"
+								aria-current="${active ? 'page' : 'false'}"
+								class="min-w-[36px] h-9 px-2.5 rounded-xl border text-xs font-bold transition active:scale-95 ${active ? 'accent-bg border-transparent shadow-xs' : 'theme-elevated theme-text-primary hover:opacity-85'}"
+							>
+								${item}
+							</button>
+						`;
+					}).join('')}
+					<button
+						type="button"
+						data-page-target="${curr + 1}"
+						${curr === totalPages ? 'disabled' : ''}
+						class="px-3.5 py-2 rounded-xl border text-xs font-semibold transition ${curr === totalPages ? 'theme-subtle theme-text-muted opacity-50 cursor-not-allowed' : 'theme-elevated theme-text-primary hover:opacity-85 active:scale-95'}"
+					>
+						Berikutnya &rarr;
+					</button>
+				`;
+
+				buttonsWrap.querySelectorAll('[data-page-target]').forEach(btn => {
+					btn.addEventListener('click', () => {
+						if (btn.disabled) return;
+						const nextPage = Number(btn.getAttribute('data-page-target'));
+						if (nextPage >= 1 && nextPage <= totalPages && nextPage !== AppState.currentPage) {
+							AppState.currentPage = nextPage;
+							this.renderProducts();
+							SoundHaptic.feedback('click');
+							document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+						}
+					});
+				});
+			},
+
+			/* 11E. Modal Detail Produk Lengkap (Sekaligus mencatat view produk untuk skor Top 50) */
 			openProductDetailModal(productId) {
 				const product = AppState.getProductById(productId);
 				const container = document.getElementById('product-detail-content');
 				if (!product || !container) return;
 
+				AppState.recordProductView(productId);
+
 				const isLiked = AppState.data.likes.includes(product.id);
 				const isOutOfStock = Number(product.stock || 0) <= 0;
 				const fallbackUrl = product.fallbackImage || `https://placehold.co/800x600/EBF0EC/4A7C59?text=${encodeURIComponent(product.category)}`;
+
 				container.innerHTML = `
 					<div class="grid grid-cols-1 md:grid-cols-2">
 						<div class="relative theme-elevated min-h-[250px] md:min-h-[380px]">
@@ -2963,7 +3595,7 @@
 					ModalManager.close('product-detail');
 				});
 				document.getElementById('detail-like-btn')?.addEventListener('click', () => {
-					AppState.toggleLike(product.id);
+					AppState.toggleLike(product.id, false);
 					this.openProductDetailModal(product.id);
 				});
 				document.getElementById('detail-cart-btn')?.addEventListener('click', () => {
@@ -2979,11 +3611,12 @@
 				ModalManager.open('product-detail');
 			},
 
-			/* 9F. Render Modal Keranjang Belanja */
+			/* 11F. Render Modal Keranjang Belanja (Dengan Konfirmasi Hapus) */
 			renderCartModal() {
 				const listEl = document.getElementById('cart-items-list');
 				const subtotalEl = document.getElementById('cart-subtotal-display');
 				const checkoutBtn = document.getElementById('proceed-checkout-btn');
+				const clearCartBtn = document.getElementById('clear-cart-btn');
 				if (!listEl) return;
 
 				const items = AppState.data.cart
@@ -3002,12 +3635,20 @@
 						checkoutBtn.disabled = true;
 						checkoutBtn.classList.add('opacity-50', 'cursor-not-allowed');
 					}
+					if (clearCartBtn) {
+						clearCartBtn.disabled = true;
+						clearCartBtn.classList.add('opacity-50', 'cursor-not-allowed');
+					}
 					return;
 				}
 
 				if (checkoutBtn) {
 					checkoutBtn.disabled = false;
 					checkoutBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+				}
+				if (clearCartBtn) {
+					clearCartBtn.disabled = false;
+					clearCartBtn.classList.remove('opacity-50', 'cursor-not-allowed');
 				}
 
 				let subtotal = 0;
@@ -3054,11 +3695,20 @@
 					btn.addEventListener('click', () => AppState.updateCartQty(btn.getAttribute('data-cart-dec'), -1));
 				});
 				listEl.querySelectorAll('[data-cart-remove]').forEach(btn => {
-					btn.addEventListener('click', () => AppState.removeFromCart(btn.getAttribute('data-cart-remove')));
+					btn.addEventListener('click', () => {
+						const prodId = btn.getAttribute('data-cart-remove');
+						const prod = AppState.getProductById(prodId);
+						ConfirmDialog.ask({
+							title: 'Hapus Barang dari Keranjang?',
+							message: `Apakah Anda yakin ingin menghapus "${prod ? prod.name : 'barang ini'}" dari keranjang belanja?`,
+							confirmLabel: 'Ya, Hapus',
+							onConfirm: () => AppState.removeFromCart(prodId)
+						});
+					});
 				});
 			},
 
-			/* 9G. Update Badge Angka & Avatar Header */
+			/* 11G. Update Badge Angka, Sapaan Header & Avatar */
 			updateBadges() {
 				const totalQty = AppState.data.cart.reduce((sum, item) => sum + item.qty, 0);
 				document.querySelectorAll('.cart-badge-count').forEach(el => {
@@ -3076,9 +3726,16 @@
 				const avMobile = document.getElementById('header-avatar-mobile');
 				if (avDesktop && prof.avatar) avDesktop.src = prof.avatar;
 				if (avMobile && prof.avatar) avMobile.src = prof.avatar;
+
+				const greetingEl = document.getElementById('header-greeting-subtitle');
+				if (greetingEl) {
+					greetingEl.textContent = prof.fullName
+						? `Halo, ${prof.fullName} • ${prof.district || 'Tangerang'}`
+						: 'Spesialis Pro Audio & Komponen';
+				}
 			},
 
-			/* 9H. Chips Riwayat Pencarian di Header */
+			/* 11H. Chips Riwayat Pencarian di Header */
 			renderSearchHistoryChips() {
 				const container = document.getElementById('search-history-chips');
 				if (!container) return;
@@ -3101,15 +3758,16 @@
 						const input = document.getElementById('global-search-input');
 						if (input) input.value = term;
 						AppState.filters.search = term;
+						AppState.currentPage = 1;
 						document.getElementById('clear-search-btn')?.classList.remove('hidden');
-						document.getElementById('search-history-popover')?.classList.add('hidden');
+						PopoverManager.closeSearchHistory();
 						this.renderProducts();
 						SoundHaptic.feedback('click');
 					});
 				});
 			},
 
-			/* 9I. Modal Profile & Sub-Tab (Biodata, Wishlist/Suka, Belanja, Pencarian, Keranjang) */
+			/* 11I. Modal Profile & Sub-Tab (Biodata, Wishlist/Suka, Belanja, Pencarian, Keranjang) */
 			renderProfileModal() {
 				this.updateBadges();
 
@@ -3145,8 +3803,8 @@
 						<div class="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl border theme-elevated">
 							<img id="profile-avatar-preview" src="${p.avatar}" alt="Foto Profil" class="w-20 h-20 rounded-2xl object-cover border theme-border">
 							<div class="text-center sm:text-left space-y-1.5">
-								<h3 class="text-sm font-bold theme-text-primary">${p.fullName}</h3>
-								<p class="text-xs theme-text-secondary">Foto profil tersimpan otomatis di perangkat Anda</p>
+								<h3 class="text-sm font-bold theme-text-primary">${p.fullName || 'Pelanggan Berkat Elektronik'}</h3>
+								<p class="text-xs theme-text-secondary">Foto profil &amp; biodata tersimpan otomatis di perangkat Anda</p>
 								<input type="file" id="profile-avatar-file" accept="image/*" class="hidden">
 								<button type="button" id="change-avatar-btn" class="px-3 py-1.5 rounded-xl accent-soft-bg text-xs font-semibold hover:opacity-85">
 									Ubah Foto Profil
@@ -3156,22 +3814,22 @@
 
 						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
 							<div>
-								<label class="block text-xs font-semibold theme-text-secondary mb-1">Nama Lengkap</label>
-								<input type="text" id="prof-input-name" value="${p.fullName.replace(/"/g, '&quot;')}" required class="w-full px-3.5 py-2.5 rounded-xl border theme-elevated theme-text-primary text-sm">
+								<label class="block text-xs font-semibold theme-text-secondary mb-1">Nama Lengkap *</label>
+								<input type="text" id="prof-input-name" value="${(p.fullName || '').replace(/"/g, '&quot;')}" required class="w-full px-3.5 py-2.5 rounded-xl border theme-elevated theme-text-primary text-sm">
 							</div>
 							<div>
-								<label class="block text-xs font-semibold theme-text-secondary mb-1">Nomor Telepon / WhatsApp</label>
-								<input type="tel" id="prof-input-phone" value="${p.phone.replace(/"/g, '&quot;')}" required class="w-full px-3.5 py-2.5 rounded-xl border theme-elevated theme-text-primary text-sm">
+								<label class="block text-xs font-semibold theme-text-secondary mb-1">Nomor Telepon / WhatsApp *</label>
+								<input type="tel" id="prof-input-phone" value="${(p.phone || '').replace(/"/g, '&quot;')}" required class="w-full px-3.5 py-2.5 rounded-xl border theme-elevated theme-text-primary text-sm">
 							</div>
 						</div>
 
 						<div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
 							<div>
-								<label class="block text-xs font-semibold theme-text-secondary mb-1">Wilayah Tangerang</label>
+								<label class="block text-xs font-semibold theme-text-secondary mb-1">Wilayah Tangerang *</label>
 								<div id="dropdown-profile-region" class="relative"></div>
 							</div>
 							<div>
-								<label class="block text-xs font-semibold theme-text-secondary mb-1">Kecamatan</label>
+								<label class="block text-xs font-semibold theme-text-secondary mb-1">Kecamatan *</label>
 								<div id="dropdown-profile-district" class="relative"></div>
 							</div>
 							<div>
@@ -3181,8 +3839,8 @@
 						</div>
 
 						<div>
-							<label class="block text-xs font-semibold theme-text-secondary mb-1">Alamat Rumah Lengkap</label>
-							<textarea id="prof-input-address" rows="2" class="w-full px-3.5 py-2 rounded-xl border theme-elevated theme-text-primary text-sm">${p.address}</textarea>
+							<label class="block text-xs font-semibold theme-text-secondary mb-1">Alamat Rumah Lengkap (Opsional)</label>
+							<textarea id="prof-input-address" rows="2" class="w-full px-3.5 py-2 rounded-xl border theme-elevated theme-text-primary text-sm">${p.address || ''}</textarea>
 						</div>
 
 						<div class="flex justify-end">
@@ -3248,15 +3906,23 @@
 
 				document.getElementById('profile-biodata-form')?.addEventListener('submit', (e) => {
 					e.preventDefault();
+					const nameVal = document.getElementById('prof-input-name').value.trim();
+					const phoneVal = document.getElementById('prof-input-phone').value.trim();
+					if (!nameVal || !phoneVal) {
+						SoundHaptic.feedback('warning');
+						Toast.show('Nama Lengkap dan Nomor Telepon tidak boleh kosong.', 'warning');
+						return;
+					}
 					AppState.data.profile = {
 						avatar: avatarData,
-						fullName: document.getElementById('prof-input-name').value.trim() || 'Pelanggan Berkat',
-						phone: document.getElementById('prof-input-phone').value.trim(),
+						fullName: nameVal,
+						phone: phoneVal,
 						region: selectedRegion,
 						district: selectedDistrict,
 						bank: selectedBank,
 						address: document.getElementById('prof-input-address').value.trim()
 					};
+					AppState.data.hasCompletedOnboarding = true;
 					AppState.save();
 					this.updateBadges();
 					SoundHaptic.feedback('success');
@@ -3275,42 +3941,66 @@
 				}
 
 				container.innerHTML = `
-					<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-						${likedProducts.map(prod => {
-							const isOutOfStock = Number(prod.stock || 0) <= 0;
-							return `
-								<div class="p-3 rounded-2xl border theme-elevated flex items-center gap-3">
-									<img src="${prod.image}" alt="${prod.name}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/EBF0EC/4A7C59?text=Audio';" class="w-14 h-14 rounded-xl object-cover shrink-0 ${isOutOfStock ? 'opacity-65 grayscale-[25%]' : ''}">
-									<div class="flex-1 min-w-0">
-										<h4 class="text-xs font-bold theme-text-primary truncate">${prod.name}</h4>
-										<div class="flex items-center gap-2">
-											<p class="text-xs font-semibold accent-text">${AppState.formatRupiah(prod.price)}</p>
-											<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded ${isOutOfStock ? 'bg-rose-500/15 text-rose-600' : 'accent-soft-bg'}">
-												${isOutOfStock ? 'Stok Habis' : `Stok: ${prod.stock}`}
-											</span>
-										</div>
-										<div class="flex items-center gap-2 mt-1.5">
-											${isOutOfStock ? `
-												<button type="button" disabled class="px-2.5 py-1 rounded-lg theme-subtle theme-text-muted text-[11px] font-semibold opacity-60 cursor-not-allowed">Stok Habis</button>
-											` : `
-												<button type="button" data-prof-like-cart="${prod.id}" class="px-2.5 py-1 rounded-lg accent-bg text-[11px] font-semibold">+ Keranjang</button>
-											`}
-											<button type="button" data-prof-like-del="${prod.id}" class="text-[11px] text-rose-500 hover:underline">Hapus</button>
+					<div class="space-y-3">
+						<div class="flex items-center justify-between">
+							<span class="text-xs font-semibold theme-text-secondary">Daftar produk favorit yang Anda simpan:</span>
+							<button type="button" id="prof-clear-all-likes-btn" class="text-xs font-semibold text-rose-500 hover:underline">
+								Hapus Semua Wishlist
+							</button>
+						</div>
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+							${likedProducts.map(prod => {
+								const isOutOfStock = Number(prod.stock || 0) <= 0;
+								return `
+									<div class="p-3 rounded-2xl border theme-elevated flex items-center gap-3">
+										<img src="${prod.image}" alt="${prod.name}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/EBF0EC/4A7C59?text=Audio';" class="w-14 h-14 rounded-xl object-cover shrink-0 ${isOutOfStock ? 'opacity-65 grayscale-[25%]' : ''}">
+										<div class="flex-1 min-w-0">
+											<h4 class="text-xs font-bold theme-text-primary truncate">${prod.name}</h4>
+											<div class="flex items-center gap-2">
+												<p class="text-xs font-semibold accent-text">${AppState.formatRupiah(prod.price)}</p>
+												<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded ${isOutOfStock ? 'bg-rose-500/15 text-rose-600' : 'accent-soft-bg'}">
+													${isOutOfStock ? 'Stok Habis' : `Stok: ${prod.stock}`}
+												</span>
+											</div>
+											<div class="flex items-center gap-2 mt-1.5">
+												${isOutOfStock ? `
+													<button type="button" disabled class="px-2.5 py-1 rounded-lg theme-subtle theme-text-muted text-[11px] font-semibold opacity-60 cursor-not-allowed">Stok Habis</button>
+												` : `
+													<button type="button" data-prof-like-cart="${prod.id}" class="px-2.5 py-1 rounded-lg accent-bg text-[11px] font-semibold">+ Keranjang</button>
+												`}
+												<button type="button" data-prof-like-del="${prod.id}" class="text-[11px] text-rose-500 hover:underline">Hapus</button>
+											</div>
 										</div>
 									</div>
-								</div>
-							`;
-						}).join('')}
+								`;
+							}).join('')}
+						</div>
 					</div>
 				`;
+
+				document.getElementById('prof-clear-all-likes-btn')?.addEventListener('click', () => {
+					ConfirmDialog.ask({
+						title: 'Hapus Semua Wishlist / Suka?',
+						message: `Apakah Anda yakin ingin menghapus seluruh (${likedProducts.length}) produk dari daftar Wishlist / Suka Anda?`,
+						confirmLabel: 'Ya, Hapus Semua',
+						onConfirm: () => {
+							AppState.data.likes = [];
+							AppState.save();
+							this.updateBadges();
+							this.renderProducts();
+							this.renderProfileModal();
+							SoundHaptic.feedback('delete');
+							Toast.show('Semua daftar Wishlist / Suka telah dihapus.', 'info');
+						}
+					});
+				});
 
 				container.querySelectorAll('[data-prof-like-cart]').forEach(btn => {
 					btn.addEventListener('click', () => AppState.addToCart(btn.getAttribute('data-prof-like-cart'), 1));
 				});
 				container.querySelectorAll('[data-prof-like-del]').forEach(btn => {
 					btn.addEventListener('click', () => {
-						AppState.toggleLike(btn.getAttribute('data-prof-like-del'));
-						this.renderProfileModal();
+						AppState.toggleLike(btn.getAttribute('data-prof-like-del'), true);
 					});
 				});
 			},
@@ -3324,6 +4014,12 @@
 
 				container.innerHTML = `
 					<div class="space-y-3.5">
+						<div class="flex items-center justify-between">
+							<span class="text-xs font-semibold theme-text-secondary">Total ${orders.length} transaksi tercatat di perangkat ini:</span>
+							<button type="button" id="prof-clear-all-orders-btn" class="text-xs font-semibold text-rose-500 hover:underline">
+								Hapus Semua Riwayat Belanja
+							</button>
+						</div>
 						${orders.map(ord => `
 							<div class="p-4 rounded-2xl border theme-elevated space-y-3">
 								<div class="flex flex-wrap items-center justify-between gap-2 border-b theme-border pb-2">
@@ -3331,7 +4027,12 @@
 										<span class="text-xs font-bold accent-text">${ord.orderId}</span>
 										<span class="text-[11px] theme-text-muted ml-2">${ord.date}</span>
 									</div>
-									<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 text-[11px] font-semibold">Terkirim ke WhatsApp</span>
+									<div class="flex items-center gap-2">
+										<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 text-[11px] font-semibold">Terkirim ke WhatsApp</span>
+										<button type="button" data-delete-order-id="${ord.orderId}" class="text-[11px] font-semibold text-rose-500 hover:underline px-1.5 py-0.5 rounded">
+											Hapus
+										</button>
+									</div>
 								</div>
 								<div class="space-y-2">
 									${ord.items.map(it => {
@@ -3361,6 +4062,43 @@
 						`).join('')}
 					</div>
 				`;
+
+				document.getElementById('prof-clear-all-orders-btn')?.addEventListener('click', () => {
+					ConfirmDialog.ask({
+						title: 'Hapus Semua Riwayat Belanja?',
+						message: 'Seluruh catatan riwayat transaksi belanja Anda akan dihapus secara permanen dari perangkat ini. Lanjutkan?',
+						confirmLabel: 'Ya, Hapus Semua',
+						onConfirm: () => {
+							AppState.data.orderHistory = [];
+							AppState.save();
+							this.updateBadges();
+							this.renderProducts();
+							this.renderProfileModal();
+							SoundHaptic.feedback('delete');
+							Toast.show('Semua riwayat belanja telah dihapus.', 'info');
+						}
+					});
+				});
+
+				container.querySelectorAll('[data-delete-order-id]').forEach(btn => {
+					btn.addEventListener('click', () => {
+						const ordId = btn.getAttribute('data-delete-order-id');
+						ConfirmDialog.ask({
+							title: 'Hapus Riwayat Transaksi?',
+							message: `Apakah Anda yakin ingin menghapus catatan transaksi ${ordId} dari riwayat belanja?`,
+							confirmLabel: 'Ya, Hapus',
+							onConfirm: () => {
+								AppState.data.orderHistory = AppState.data.orderHistory.filter(o => o.orderId !== ordId);
+								AppState.save();
+								this.updateBadges();
+								this.renderProducts();
+								this.renderProfileModal();
+								SoundHaptic.feedback('delete');
+								Toast.show(`Riwayat transaksi ${ordId} dihapus.`, 'info');
+							}
+						});
+					});
+				});
 			},
 
 			renderProfileSearchesTab(container) {
@@ -3374,25 +4112,55 @@
 					<div class="space-y-3">
 						<div class="flex items-center justify-between">
 							<span class="text-xs font-semibold theme-text-secondary">Klik kata kunci untuk mencari kembali:</span>
-							<button type="button" id="prof-clear-search-btn" class="text-xs text-rose-500 hover:underline">Hapus Semua</button>
+							<button type="button" id="prof-clear-search-btn" class="text-xs font-semibold text-rose-500 hover:underline">Hapus Semua Riwayat</button>
 						</div>
 						<div class="flex flex-wrap gap-2">
 							${history.map(q => `
-								<button type="button" data-prof-search-term="${q.replace(/"/g, '&quot;')}" class="px-3.5 py-2 rounded-xl border theme-elevated hover:accent-soft-bg text-xs font-medium theme-text-primary transition">
-									${q}
-								</button>
+								<div class="inline-flex items-center rounded-xl border theme-elevated overflow-hidden">
+									<button type="button" data-prof-search-term="${q.replace(/"/g, '&quot;')}" class="px-3 py-2 hover:accent-soft-bg text-xs font-medium theme-text-primary transition">
+										${q}
+									</button>
+									<button type="button" data-prof-search-del="${q.replace(/"/g, '&quot;')}" title="Hapus kata kunci ini" class="px-2 py-2 text-[11px] theme-text-muted hover:text-rose-500 border-l theme-border transition">
+										✕
+									</button>
+								</div>
 							`).join('')}
 						</div>
 					</div>
 				`;
 
 				document.getElementById('prof-clear-search-btn')?.addEventListener('click', () => {
-					AppState.data.searchHistory = [];
-					AppState.save();
-					this.renderSearchHistoryChips();
-					this.renderProfileModal();
-					SoundHaptic.feedback('delete');
-					Toast.show('Riwayat pencarian dibersihkan.', 'info');
+					ConfirmDialog.ask({
+						title: 'Hapus Semua Riwayat Pencarian?',
+						message: 'Semua kata kunci di riwayat pencarian Anda akan dihapus. Lanjutkan?',
+						confirmLabel: 'Ya, Hapus Semua',
+						onConfirm: () => {
+							AppState.data.searchHistory = [];
+							AppState.save();
+							this.renderSearchHistoryChips();
+							this.renderProfileModal();
+							SoundHaptic.feedback('delete');
+							Toast.show('Semua riwayat pencarian telah dibersihkan.', 'info');
+						}
+					});
+				});
+
+				container.querySelectorAll('[data-prof-search-del]').forEach(btn => {
+					btn.addEventListener('click', () => {
+						const targetTerm = btn.getAttribute('data-prof-search-del');
+						ConfirmDialog.ask({
+							title: 'Hapus Riwayat Pencarian?',
+							message: `Hapus kata kunci "${targetTerm}" dari riwayat pencarian?`,
+							confirmLabel: 'Ya, Hapus',
+							onConfirm: () => {
+								AppState.data.searchHistory = AppState.data.searchHistory.filter(t => t !== targetTerm);
+								AppState.save();
+								this.renderSearchHistoryChips();
+								this.renderProfileModal();
+								SoundHaptic.feedback('delete');
+							}
+						});
+					});
 				});
 
 				container.querySelectorAll('[data-prof-search-term]').forEach(btn => {
@@ -3401,6 +4169,7 @@
 						const input = document.getElementById('global-search-input');
 						if (input) input.value = q;
 						AppState.filters.search = q;
+						AppState.currentPage = 1;
 						document.getElementById('clear-search-btn')?.classList.remove('hidden');
 						ModalManager.close('profile');
 						this.renderProducts();
@@ -3448,7 +4217,7 @@
 		};
 
 		/* ==========================================================================
-		   10. CONTROLLER CHECKOUT, ONGKOS KIRIM & WHATSAPP INTEGRATION
+		   12. CONTROLLER CHECKOUT, ONGKOS KIRIM & WHATSAPP INTEGRATION
 		   ========================================================================== */
 		const CheckoutController = {
 			selectedRegion: 'Tangerang Kota',
@@ -3545,7 +4314,6 @@
 					options: banks,
 					onChange: (val) => {
 						this.selectedBank = val;
-						this.renderOfficialDestinations();
 					}
 				});
 			},
@@ -3554,61 +4322,57 @@
 				const container = document.getElementById('official-payment-destinations');
 				if (!container) return;
 
-				container.innerHTML = STORE_CONFIG.officialDestinations.map(dest => {
-					const isMatched = this.selectedBank === dest.id;
-					return `
-						<div class="p-2.5 rounded-xl border transition flex flex-col justify-between gap-2 ${isMatched ? 'accent-border accent-soft-bg' : 'theme-surface'}">
-							<div class="flex items-center gap-2">
-								${getPaymentIconSvg(dest.id, 'w-7 h-7')}
-								<div class="min-w-0">
-									<span class="text-xs font-bold theme-text-primary block truncate">${dest.name}</span>
-									<span class="text-[10px] theme-text-muted block truncate">a.n. ${dest.holder}</span>
-								</div>
-							</div>
-							<div class="flex items-center justify-between gap-1.5 pt-1 border-t theme-border">
-								<span class="text-xs font-mono font-bold theme-text-primary truncate">${dest.accountNumber}</span>
-								<button type="button" data-copy-dest="${dest.accountNumber}" data-copy-name="${dest.name}" class="px-2 py-1 rounded-lg accent-bg text-[10px] font-semibold shrink-0 active:scale-95">
-									Salin
-								</button>
+				container.innerHTML = STORE_CONFIG.officialDestinations.map(dest => `
+					<div class="p-2.5 rounded-xl border theme-surface flex items-center justify-between gap-2">
+						<div class="flex items-center gap-2 min-w-0">
+							${getPaymentIconSvg(dest.id, 'w-7 h-7')}
+							<div class="min-w-0">
+								<span class="text-[11px] font-bold theme-text-primary block truncate">${dest.name}</span>
+								<span class="text-[11px] font-mono accent-text font-semibold block truncate">${dest.accountNumber}</span>
 							</div>
 						</div>
-					`;
-				}).join('');
+						<button type="button" data-copy-account="${dest.accountNumber}" data-copy-name="${dest.name}" class="px-2 py-1 rounded-lg accent-soft-bg text-[10px] font-bold shrink-0 hover:opacity-80 transition">
+							Salin
+						</button>
+					</div>
+				`).join('');
 
-				container.querySelectorAll('[data-copy-dest]').forEach(btn => {
+				container.querySelectorAll('[data-copy-account]').forEach(btn => {
 					btn.addEventListener('click', () => {
-						const accNum = btn.getAttribute('data-copy-dest');
-						const accName = btn.getAttribute('data-copy-name');
-						this.copyTextFallback(accNum, `${accName} (${accNum})`);
+						const acc = btn.getAttribute('data-copy-account');
+						const name = btn.getAttribute('data-copy-name');
+						this.copyTextFallback(acc);
+						SoundHaptic.feedback('copy');
+						Toast.show(`Nomor ${name} (${acc}) a.n. Berkat Elektronik berhasil disalin!`, 'success');
 					});
 				});
 			},
 
-			copyTextFallback(rawNumber, labelText) {
-				const tempInput = document.createElement('input');
-				tempInput.value = rawNumber;
-				document.body.appendChild(tempInput);
-				tempInput.select();
+			copyTextFallback(text) {
+				const temp = document.createElement('textarea');
+				temp.value = text;
+				temp.style.position = 'fixed';
+				temp.style.opacity = '0';
+				document.body.appendChild(temp);
+				temp.select();
 				try {
 					document.execCommand('copy');
-					SoundHaptic.feedback('copy');
-					Toast.show(`Nomor tujuan ${labelText} berhasil disalin!`, 'success');
 				} catch (err) {
-					Toast.show(`Tujuan pembayaran: ${labelText}`, 'info');
+					/* Abaikan jika gagal */
 				}
-				document.body.removeChild(tempInput);
+				document.body.removeChild(temp);
 			},
 
-			renderSummary(notifyIfOutOfRange = false) {
-				const itemsContainer = document.getElementById('checkout-items-summary');
+			renderSummary(announceAlert = false) {
+				const itemsWrap = document.getElementById('checkout-items-summary');
 				const itemCountBadge = document.getElementById('checkout-item-count-badge');
 				const subtotalEl = document.getElementById('checkout-subtotal');
 				const serviceEl = document.getElementById('checkout-service-fee');
-				const shipLabelEl = document.getElementById('checkout-shipping-label');
-				const shipFeeEl = document.getElementById('checkout-shipping-fee');
+				const shippingLabelEl = document.getElementById('checkout-shipping-label');
+				const shippingFeeEl = document.getElementById('checkout-shipping-fee');
 				const grandTotalEl = document.getElementById('checkout-grand-total');
-				const distPillEl = document.getElementById('shipping-distance-pill');
-				const statusBoxEl = document.getElementById('shipping-status-box');
+				const distPill = document.getElementById('shipping-distance-pill');
+				const statusBox = document.getElementById('shipping-status-box');
 				const submitBtn = document.getElementById('submit-whatsapp-order-btn');
 
 				const items = AppState.data.cart
@@ -3617,106 +4381,104 @@
 
 				if (items.length === 0) {
 					ModalManager.close('checkout');
-					Toast.show('Semua barang dihapus atau stok habis. Silakan pilih produk kembali.', 'info');
 					return;
 				}
 
 				const totalUnits = items.reduce((s, it) => s + it.qty, 0);
 				if (itemCountBadge) {
-					itemCountBadge.textContent = `${totalUnits} unit`;
+					itemCountBadge.textContent = `${totalUnits} barang`;
 				}
 
 				let subtotal = 0;
-				if (itemsContainer) {
-					itemsContainer.innerHTML = items.map(({ product, qty }) => {
-						const line = product.price * qty;
-						subtotal += line;
+				if (itemsWrap) {
+					itemsWrap.innerHTML = items.map(({ product, qty }) => {
+						const lineTotal = product.price * qty;
+						subtotal += lineTotal;
 						return `
-							<div class="p-2.5 rounded-xl border theme-surface flex items-center justify-between gap-2.5 text-xs">
-								<img src="${product.image}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/80x80/EBF0EC/4A7C59?text=Audio';" class="w-10 h-10 rounded-lg object-cover border theme-border shrink-0">
+							<div class="p-2.5 rounded-xl border theme-surface flex items-center gap-2.5 text-xs">
+								<img
+									src="${product.image}"
+									alt="${product.name}"
+									onerror="this.onerror=null;this.src='https://placehold.co/100x100/EBF0EC/4A7C59?text=Audio';"
+									class="w-11 h-11 rounded-lg object-cover border theme-border shrink-0"
+								>
 								<div class="flex-1 min-w-0">
 									<p class="font-semibold theme-text-primary truncate">${product.name}</p>
-									<span class="theme-text-muted">${qty} × ${AppState.formatRupiah(product.price)}</span>
+									<p class="theme-text-secondary text-[11px]">${qty} × ${AppState.formatRupiah(product.price)}</p>
 								</div>
-								<div class="flex items-center gap-2 shrink-0">
-									<span class="font-bold theme-text-primary">${AppState.formatRupiah(line)}</span>
-									<button type="button" data-checkout-remove="${product.id}" title="Hapus barang dari ringkasan" aria-label="Hapus ${product.name}" class="p-1.5 rounded-lg text-rose-500 hover:bg-rose-500/10 transition active:scale-90">
-										<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-											<polyline points="3 6 5 6 21 6"></polyline>
-											<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-										</svg>
+								<div class="flex flex-col items-end gap-1 shrink-0">
+									<span class="font-bold theme-text-primary">${AppState.formatRupiah(lineTotal)}</span>
+									<button type="button" data-checkout-remove="${product.id}" class="text-[10px] font-semibold text-rose-500 hover:underline">
+										Hapus
 									</button>
 								</div>
 							</div>
 						`;
 					}).join('');
 
-					itemsContainer.querySelectorAll('[data-checkout-remove]').forEach(btn => {
+					itemsWrap.querySelectorAll('[data-checkout-remove]').forEach(btn => {
 						btn.addEventListener('click', () => {
 							const prodId = btn.getAttribute('data-checkout-remove');
-							AppState.removeFromCart(prodId, true);
+							const prod = AppState.getProductById(prodId);
+							ConfirmDialog.ask({
+								title: 'Hapus Barang dari Daftar Beli?',
+								message: `Apakah Anda yakin ingin menghapus "${prod ? prod.name : 'barang ini'}" dari pesanan Anda?`,
+								confirmLabel: 'Ya, Hapus',
+								onConfirm: () => AppState.removeFromCart(prodId, true)
+							});
 						});
 					});
 				}
 
-				const shipEval = ShippingCalculator.evaluateShipping(this.selectedRegion, this.selectedDistrict);
+				const evalResult = ShippingCalculator.evaluateShipping(this.selectedRegion, this.selectedDistrict);
 
-				if (distPillEl) {
-					if (shipEval.eligible) {
-						distPillEl.textContent = `Jarak: ±${shipEval.distanceKm} KM (Terjangkau)`;
-						distPillEl.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-600';
-					} else if (shipEval.distanceKm !== null) {
-						distPillEl.textContent = `Jarak: ±${shipEval.distanceKm} KM (Luar Radius >30 KM)`;
-						distPillEl.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/15 text-rose-600';
+				if (distPill) {
+					distPill.textContent = evalResult.distanceKm !== null
+						? `Jarak: ±${evalResult.distanceKm} KM`
+						: 'Luar Area';
+				}
+
+				if (statusBox) {
+					if (evalResult.eligible) {
+						statusBox.innerHTML = `
+							<p class="font-semibold text-emerald-600">✓ Area Terjangkau (Radius 0–30 KM dari Cimone Jaya)</p>
+							<p class="theme-text-secondary">${evalResult.reason}</p>
+						`;
 					} else {
-						distPillEl.textContent = 'Di Luar Area Tangerang';
-						distPillEl.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/15 text-rose-600';
+						statusBox.innerHTML = `
+							<p class="font-semibold text-rose-600">✕ Di Luar Jangkauan Pengiriman (Maks. 30 KM)</p>
+							<p class="theme-text-secondary">${evalResult.reason}</p>
+						`;
 					}
 				}
 
-				if (statusBoxEl) {
-					if (shipEval.eligible) {
-						statusBoxEl.innerHTML = `
-							<p class="font-semibold text-emerald-600 flex items-center gap-1.5">
-								<span>✓ Alamat Terjangkau Pengiriman Toko</span>
-							</p>
-							<p class="theme-text-secondary">${shipEval.reason}</p>
-							<p class="theme-text-muted">Tarif berlaku: Rp 10.000 per kelipatan 5 KM (Maks. 30 KM dari Jl. Raya Merdeka No.35 Cimone Jaya).</p>
-						`;
-					} else {
-						statusBoxEl.innerHTML = `
-							<p class="font-semibold text-rose-600">✕ Di Luar Area / Batas Radius Pengiriman (Maks. 30 KM)</p>
-							<p class="theme-text-secondary">${shipEval.reason}</p>
-						`;
-						if (notifyIfOutOfRange) {
-							SoundHaptic.feedback('warning');
-							Toast.show(shipEval.reason, 'warning', 4200);
-						}
-					}
+				if (announceAlert && !evalResult.eligible) {
+					SoundHaptic.feedback('warning');
+					Toast.show(evalResult.reason, 'warning', 4500);
 				}
 
-				const shippingCost = shipEval.eligible ? shipEval.cost : 0;
 				const serviceFee = STORE_CONFIG.serviceFee;
+				const shippingCost = evalResult.eligible ? evalResult.cost : 0;
 				const grandTotal = subtotal + serviceFee + shippingCost;
 
 				if (subtotalEl) subtotalEl.textContent = AppState.formatRupiah(subtotal);
 				if (serviceEl) serviceEl.textContent = AppState.formatRupiah(serviceFee);
-				if (shipLabelEl) {
-					shipLabelEl.textContent = shipEval.eligible
-						? `Ongkos Kirim (±${shipEval.distanceKm} KM)`
-						: 'Ongkos Kirim (Tidak Terjangkau)';
+				if (shippingLabelEl) {
+					shippingLabelEl.textContent = evalResult.eligible
+						? `Ongkos Kirim (±${evalResult.distanceKm} KM)`
+						: 'Ongkos Kirim (Tidak Tersedia)';
 				}
-				if (shipFeeEl) {
-					shipFeeEl.textContent = shipEval.eligible ? AppState.formatRupiah(shippingCost) : '—';
+				if (shippingFeeEl) {
+					shippingFeeEl.textContent = evalResult.eligible ? AppState.formatRupiah(shippingCost) : '—';
 				}
 				if (grandTotalEl) {
 					grandTotalEl.textContent = AppState.formatRupiah(grandTotal);
 				}
 
 				if (submitBtn) {
-					submitBtn.disabled = !shipEval.eligible;
-					submitBtn.classList.toggle('opacity-50', !shipEval.eligible);
-					submitBtn.classList.toggle('cursor-not-allowed', !shipEval.eligible);
+					submitBtn.disabled = !evalResult.eligible;
+					submitBtn.classList.toggle('opacity-50', !evalResult.eligible);
+					submitBtn.classList.toggle('cursor-not-allowed', !evalResult.eligible);
 				}
 			},
 
@@ -3725,7 +4487,6 @@
 					this.pullFromProfile(true);
 				});
 
-				/* Custom Dropzone Foto Bukti Pembayaran */
 				const dropzone = document.getElementById('checkout-proof-dropzone');
 				const fileInput = document.getElementById('checkout-proof-input');
 
@@ -3733,10 +4494,14 @@
 				fileInput?.addEventListener('change', (e) => {
 					const file = e.target.files?.[0];
 					if (!file) return;
-
+					if (!file.type.startsWith('image/')) {
+						SoundHaptic.feedback('warning');
+						Toast.show('Harap unggah berkas gambar (JPG, PNG, WEBP).', 'error');
+						return;
+					}
 					if (file.size > 5 * 1024 * 1024) {
 						SoundHaptic.feedback('warning');
-						Toast.show('Ukuran foto maksimal 5 MB.', 'warning');
+						Toast.show('Ukuran gambar maksimal 5MB.', 'warning');
 						return;
 					}
 
@@ -3748,146 +4513,160 @@
 						document.getElementById('proof-preview-view')?.classList.remove('hidden');
 						document.getElementById('proof-preview-img').src = this.proofImageData;
 						document.getElementById('proof-file-name').textContent = file.name;
-						SoundHaptic.feedback('click');
-						Toast.show('Foto bukti pembayaran berhasil diunggah.', 'success');
+						SoundHaptic.feedback('success');
+						Toast.show('Foto bukti pembayaran siap dilampirkan.', 'success');
 					};
 					reader.readAsDataURL(file);
 				});
 
-				/* Submit Form Pembayaran ke WhatsApp */
 				document.getElementById('checkout-form')?.addEventListener('submit', (e) => {
 					e.preventDefault();
-					this.submitOrderToWhatsApp();
+					this.handleOrderSubmit();
 				});
 			},
 
-			submitOrderToWhatsApp() {
-				const fullName = document.getElementById('checkout-name').value.trim();
+			handleOrderSubmit() {
+				const name = document.getElementById('checkout-name').value.trim();
 				const phone = document.getElementById('checkout-phone').value.trim();
 				const address = document.getElementById('checkout-address').value.trim();
 
-				if (!fullName || !phone || !address) {
+				if (!name || !phone || !address) {
 					SoundHaptic.feedback('warning');
-					Toast.show('Harap lengkapi Nama Lengkap, Nomor Telepon, dan Alamat Rumah.', 'warning');
+					Toast.show('Mohon lengkapi Nama Lengkap, Nomor Telepon, dan Detail Alamat Rumah.', 'warning');
 					return;
 				}
 
-				const shipEval = ShippingCalculator.evaluateShipping(this.selectedRegion, this.selectedDistrict);
-				if (!shipEval.eligible) {
+				const phoneDigits = phone.replace(/\D/g, '');
+				if (phoneDigits.length < 9) {
 					SoundHaptic.feedback('warning');
-					Toast.show(shipEval.reason, 'error', 4200);
+					Toast.show('Nomor Telepon / WhatsApp tidak valid (minimal 9 digit).', 'warning');
+					return;
+				}
+
+				const evalResult = ShippingCalculator.evaluateShipping(this.selectedRegion, this.selectedDistrict);
+				if (!evalResult.eligible) {
+					SoundHaptic.feedback('warning');
+					Toast.show(evalResult.reason, 'error', 4500);
 					return;
 				}
 
 				if (!this.proofImageData) {
 					SoundHaptic.feedback('warning');
-					Toast.show('Silakan unggah foto bukti pembayaran terlebih dahulu.', 'warning');
+					Toast.show('Harap unggah foto bukti pembayaran terlebih dahulu sebelum mengirim pesanan.', 'warning');
 					return;
 				}
 
-				const items = AppState.data.cart
+				const cartItems = AppState.data.cart
 					.map(c => ({ ...c, product: AppState.getProductById(c.productId) }))
 					.filter(c => c.product !== null && c.product.stock > 0);
 
-				if (items.length === 0) {
-					Toast.show('Keranjang belanja kosong.', 'warning');
+				if (cartItems.length === 0) {
+					Toast.show('Tidak ada barang tersedia untuk dipesan.', 'warning');
 					return;
 				}
 
-				const subtotal = items.reduce((s, it) => s + it.product.price * it.qty, 0);
+				const subtotal = cartItems.reduce((s, it) => s + it.product.price * it.qty, 0);
 				const serviceFee = STORE_CONFIG.serviceFee;
-				const shippingCost = shipEval.cost;
+				const shippingCost = evalResult.cost;
 				const grandTotal = subtotal + serviceFee + shippingCost;
 				const orderId = 'BE-' + Date.now().toString().slice(-6);
-				const nowStr = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
 
-				/* Simpan ke Riwayat Belanja Profile (Lengkap dengan Foto Thumbnail Produk) */
-				const orderRecord = {
+				/* Kurangi stok produk sesuai jumlah yang dibeli */
+				cartItems.forEach(({ product, qty }) => {
+					product.stock = Math.max(0, Number(product.stock || 0) - qty);
+				});
+
+				/* Simpan riwayat transaksi ke Profile */
+				AppState.data.orderHistory.unshift({
 					orderId,
-					date: nowStr,
-					customerName: fullName,
+					date: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }),
+					customerName: name,
 					phone,
 					region: this.selectedRegion,
 					district: this.selectedDistrict,
 					address,
-					distanceKm: shipEval.distanceKm,
-					shippingCost,
-					serviceFee,
-					subtotal,
-					grandTotal,
+					distanceKm: evalResult.distanceKm,
 					bank: this.selectedBank,
 					proofFileName: this.proofFileName,
-					items: items.map(it => ({
+					subtotal,
+					serviceFee,
+					shippingCost,
+					grandTotal,
+					items: cartItems.map(it => ({
 						productId: it.product.id,
 						name: it.product.name,
-						image: it.product.image,
+						price: it.product.price,
 						qty: it.qty,
-						price: it.product.price
+						image: it.product.image
 					}))
-				};
+				});
 
-				AppState.data.orderHistory.unshift(orderRecord);
+				/* Sinkronkan biodata profil */
+				AppState.data.profile = {
+					...AppState.data.profile,
+					fullName: name,
+					phone,
+					region: this.selectedRegion,
+					district: this.selectedDistrict,
+					address,
+					bank: this.selectedBank
+				};
+				AppState.data.hasCompletedOnboarding = true;
+
+				/* Kosongkan keranjang setelah dipesan */
 				AppState.data.cart = [];
 				AppState.save();
-
 				UIRenderer.updateBadges();
-				UIRenderer.renderCartModal();
+				UIRenderer.renderProducts();
 
-				/* Susun Pesan WhatsApp Lengkap */
-				const itemsLines = items.map((it, idx) =>
-					`${idx + 1}. ${it.product.name} (${it.qty}x) = ${AppState.formatRupiah(it.product.price * it.qty)}`
-				).join('\n');
+				/* Susun pesan WhatsApp terstruktur */
+				const itemLines = cartItems
+					.map((it, idx) => `${idx + 1}. ${it.product.name} (${it.qty}x) = ${AppState.formatRupiah(it.product.price * it.qty)}`)
+					.join('\n');
 
 				const waMessage = [
-					'*KONFIRMASI PESANAN & BUKTI PEMBAYARAN*',
-					`*${STORE_CONFIG.storeName}*`,
-					`Alamat Toko: ${STORE_CONFIG.originName}`,
+					`*PESANAN BARU — BERKAT ELEKTRONIK*`,
 					`No. Pesanan: *${orderId}*`,
-					`Waktu: ${nowStr}`,
-					'',
-					'*DATA PENERIMA:*',
-					`• Nama: ${fullName}`,
-					`• No. HP/WA: ${phone}`,
-					`• Wilayah: ${this.selectedRegion} - Kec. ${this.selectedDistrict}`,
+					`--------------------------------`,
+					`*Data Pembeli:*`,
+					`• Nama: ${name}`,
+					`• No. Telp/WA: ${phone}`,
+					`• Wilayah: ${this.selectedRegion}`,
+					`• Kecamatan: ${this.selectedDistrict} (±${evalResult.distanceKm} KM dari Cimone Jaya)`,
 					`• Alamat: ${address}`,
-					'',
-					'*DAFTAR BARANG DIBELI:*',
-					itemsLines,
-					'',
-					'*RINCIAN PEMBAYARAN:*',
-					`• Subtotal Produk: ${AppState.formatRupiah(subtotal)}`,
+					`--------------------------------`,
+					`*Daftar Barang Dibeli:*`,
+					itemLines,
+					`--------------------------------`,
+					`*Rincian Pembayaran:*`,
+					`• Subtotal Barang: ${AppState.formatRupiah(subtotal)}`,
 					`• Biaya Layanan: ${AppState.formatRupiah(serviceFee)}`,
-					`• Ongkos Kirim (±${shipEval.distanceKm} KM dari Cimone Jaya): ${AppState.formatRupiah(shippingCost)}`,
+					`• Ongkos Kirim (±${evalResult.distanceKm} KM): ${AppState.formatRupiah(shippingCost)}`,
 					`• *TOTAL BAYAR: ${AppState.formatRupiah(grandTotal)}*`,
-					`• Metode Pembayaran: *${this.selectedBank}*`,
-					'• Tujuan Transfer Resmi: GoPay/DANA (089529305947) / Bank Jago (12345678)',
-					`• Bukti Transfer: Terlampir (${this.proofFileName})`,
-					'',
-					'Mohon segera diproses ya Admin Berkat Elektronik. Terima kasih!'
+					`• Metode Bank/E-Wallet: *${this.selectedBank}*`,
+					`• Status Bukti Transfer: *Terlampir (${this.proofFileName})*`,
+					``,
+					`_Catatan: Saya akan melampirkan foto bukti transfer (${this.proofFileName}) di chat ini. Terima kasih Berkat Elektronik!_`
 				].join('\n');
 
 				const waUrl = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(waMessage)}`;
 
-				SoundHaptic.feedback('success');
-				Toast.show(`Pesanan ${orderId} tersimpan! Mengarahkan ke WhatsApp toko...`, 'success', 4500);
-				ModalManager.close('checkout');
-
-				/* Reset bukti transfer untuk transaksi berikutnya */
 				this.proofImageData = null;
 				this.proofFileName = '';
 				document.getElementById('proof-placeholder-view')?.classList.remove('hidden');
 				document.getElementById('proof-preview-view')?.classList.add('hidden');
-				const fileInput = document.getElementById('checkout-proof-input');
-				if (fileInput) fileInput.value = '';
+				document.getElementById('checkout-proof-input').value = '';
 
-				setTimeout(() => {
-					window.open(waUrl, '_blank', 'noopener,noreferrer');
-				}, 450);
+				ModalManager.close('checkout');
+				SoundHaptic.feedback('success');
+				Toast.show('Pesanan tercatat! Mengarahkan ke WhatsApp Berkat Elektronik (0895-2930-5947)...', 'success', 4500);
+
+				window.open(waUrl, '_blank', 'noopener,noreferrer');
 			}
 		};
 
 		/* ==========================================================================
-		   11. PENGELOLA MODAL & EVENT LISTENER UTAMA
+		   13. MODAL & POPOVER MANAGER DENGAN ANIMASI MASUK & KELUAR YANG HALUS
 		   ========================================================================== */
 		const ModalManager = {
 			open(name) {
@@ -3895,46 +4674,112 @@
 				if (!modalEl) return;
 
 				if (name === 'cart') UIRenderer.renderCartModal();
-				if (name === 'profile') UIRenderer.renderProfileModal();
+				if (name === 'checkout') {
+					CheckoutController.openAndPopulate();
+					if (AppState.data.cart.length === 0) return;
+				}
 				if (name === 'settings') SettingsManager.syncModalControls();
-				if (name === 'checkout') CheckoutController.openAndPopulate();
+				if (name === 'profile') UIRenderer.renderProfileModal();
 
-				modalEl.classList.remove('hidden');
+				const dialogBox = modalEl.querySelector('.modal-dialog-box');
+				modalEl.classList.remove('hidden', 'modal-backdrop-exit');
+				modalEl.classList.add('modal-backdrop-enter');
+
+				if (dialogBox) {
+					dialogBox.classList.remove('animate-modal-exit');
+					void dialogBox.offsetWidth;
+					dialogBox.classList.add('animate-modal-enter');
+				}
+
 				document.body.style.overflow = 'hidden';
-				SoundHaptic.feedback('modalOpen');
+				if (name !== 'confirm') {
+					SoundHaptic.feedback('modalOpen');
+				}
 			},
 
 			close(name) {
 				const modalEl = document.getElementById(`modal-${name}`);
-				if (!modalEl) return;
-				modalEl.classList.add('hidden');
+				if (!modalEl || modalEl.classList.contains('hidden')) return;
 
-				const anyOpen = Array.from(document.querySelectorAll('[id^="modal-"]')).some(m => !m.classList.contains('hidden'));
-				if (!anyOpen) {
-					document.body.style.overflow = '';
+				const dialogBox = modalEl.querySelector('.modal-dialog-box');
+				modalEl.classList.remove('modal-backdrop-enter');
+				modalEl.classList.add('modal-backdrop-exit');
+
+				if (dialogBox) {
+					dialogBox.classList.remove('animate-modal-enter');
+					dialogBox.classList.add('animate-modal-exit');
 				}
-			},
 
-			closeAll() {
-				document.querySelectorAll('[id^="modal-"]').forEach(m => m.classList.add('hidden'));
-				document.body.style.overflow = '';
+				setTimeout(() => {
+					modalEl.classList.add('hidden');
+					modalEl.classList.remove('modal-backdrop-exit');
+					if (dialogBox) {
+						dialogBox.classList.remove('animate-modal-exit');
+					}
+
+					const anyOpen = Array.from(document.querySelectorAll('[id^="modal-"]')).some(
+						el => !el.classList.contains('hidden')
+					);
+					if (!anyOpen) {
+						document.body.style.overflow = '';
+					}
+				}, 235);
 			}
 		};
 
-		/* Inisialisasi Seluruh Event Aplikasi */
-		function bindApplicationEvents() {
-			/* Efek bayangan saat Fixed Header di-scroll */
-			const stickyHeader = document.getElementById('main-sticky-header');
+		const PopoverManager = {
+			openSearchHistory() {
+				const pop = document.getElementById('search-history-popover');
+				if (!pop || !pop.classList.contains('hidden')) return;
+				pop.classList.remove('hidden', 'animate-popover-exit');
+				pop.classList.add('animate-popover-enter');
+			},
+
+			closeSearchHistory() {
+				const pop = document.getElementById('search-history-popover');
+				if (!pop || pop.classList.contains('hidden')) return;
+				pop.classList.remove('animate-popover-enter');
+				pop.classList.add('animate-popover-exit');
+				setTimeout(() => {
+					pop.classList.add('hidden');
+					pop.classList.remove('animate-popover-exit');
+				}, 180);
+			}
+		};
+
+		/* ==========================================================================
+		   14. INISIALISASI EVENT GLOBAL & BOOTSTRAP APLIKASI
+		   ========================================================================== */
+		document.addEventListener('DOMContentLoaded', async () => {
+			AppState.init();
+			SettingsManager.applyAll();
+			StoreAvailability.renderAllIndicators();
+			setInterval(() => StoreAvailability.renderAllIndicators(), 30000);
+
+			ConfirmDialog.init();
+			OnboardingController.bindEvents();
+			UIRenderer.init();
+			CheckoutController.init();
+
+			/* Cek Onboarding wajib saat pertama kali dibuka */
+			OnboardingController.checkAndShow();
+
+			/* Muat katalog produk JSON eksternal secara asinkron */
+			await ProductRepository.loadAll();
+			UIRenderer.refreshCatalogAndFilters();
+			UIRenderer.updateBadges();
+
+			/* Efek elevasi header saat scroll */
+			const mainHeader = document.getElementById('main-sticky-header');
 			window.addEventListener('scroll', () => {
-				if (!stickyHeader) return;
-				stickyHeader.classList.toggle('is-scrolled', window.scrollY > 12);
+				if (mainHeader) {
+					mainHeader.classList.toggle('is-scrolled', window.scrollY > 12);
+				}
 			}, { passive: true });
 
-			/* Buka & Tutup Modal */
+			/* Tombol Buka / Tutup Modal */
 			document.querySelectorAll('[data-open-modal]').forEach(btn => {
-				btn.addEventListener('click', () => {
-					ModalManager.open(btn.getAttribute('data-open-modal'));
-				});
+				btn.addEventListener('click', () => ModalManager.open(btn.getAttribute('data-open-modal')));
 			});
 
 			document.querySelectorAll('[data-close-modal]').forEach(btn => {
@@ -3944,40 +4789,36 @@
 				});
 			});
 
-			/* Klik backdrop untuk menutup modal */
+			/* Klik area gelap di luar kotak modal menutup modal (kecuali Onboarding wajib) */
 			document.querySelectorAll('[id^="modal-"]').forEach(backdrop => {
 				backdrop.addEventListener('click', (e) => {
 					if (e.target === backdrop) {
-						SoundHaptic.feedback('modalClose');
 						const name = backdrop.id.replace('modal-', '');
+						if (name === 'onboarding') {
+							SoundHaptic.feedback('warning');
+							Toast.show('Silakan lengkapi Nama Lengkap, Nomor WA, dan Wilayah Tangerang terlebih dahulu.', 'warning');
+							return;
+						}
+						SoundHaptic.feedback('modalClose');
 						ModalManager.close(name);
 					}
 				});
 			});
 
-			/* Tutup modal dengan tombol Escape */
-			document.addEventListener('keydown', (e) => {
-				if (e.key === 'Escape') {
-					ModalManager.closeAll();
-					CustomDropdown.closeAll();
-					document.getElementById('search-history-popover')?.classList.add('hidden');
-				}
-			});
-
-			/* Pencarian Real-Time & Riwayat Pencarian */
+			/* Pencarian Real-Time + Riwayat Pencarian */
 			const searchInput = document.getElementById('global-search-input');
 			const clearSearchBtn = document.getElementById('clear-search-btn');
-			const executeSearchBtn = document.getElementById('execute-search-btn');
-			const historyPopover = document.getElementById('search-history-popover');
+			const searchPopover = document.getElementById('search-history-popover');
 
 			searchInput?.addEventListener('focus', () => {
 				UIRenderer.renderSearchHistoryChips();
-				historyPopover?.classList.remove('hidden');
+				PopoverManager.openSearchHistory();
 			});
 
 			searchInput?.addEventListener('input', (e) => {
 				const val = e.target.value;
 				AppState.filters.search = val;
+				AppState.currentPage = 1;
 				clearSearchBtn?.classList.toggle('hidden', val.length === 0);
 				UIRenderer.renderProducts();
 			});
@@ -3986,38 +4827,49 @@
 				if (e.key === 'Enter') {
 					e.preventDefault();
 					AppState.recordSearch(searchInput.value);
-					historyPopover?.classList.add('hidden');
+					PopoverManager.closeSearchHistory();
 					SoundHaptic.feedback('click');
 				}
 			});
 
-			executeSearchBtn?.addEventListener('click', () => {
+			document.getElementById('execute-search-btn')?.addEventListener('click', () => {
 				if (searchInput) {
+					AppState.filters.search = searchInput.value;
+					AppState.currentPage = 1;
 					AppState.recordSearch(searchInput.value);
 					UIRenderer.renderProducts();
+					PopoverManager.closeSearchHistory();
+					SoundHaptic.feedback('click');
 				}
-				historyPopover?.classList.add('hidden');
-				SoundHaptic.feedback('click');
 			});
 
 			clearSearchBtn?.addEventListener('click', () => {
 				if (searchInput) searchInput.value = '';
 				AppState.filters.search = '';
+				AppState.currentPage = 1;
 				clearSearchBtn.classList.add('hidden');
 				UIRenderer.renderProducts();
 				SoundHaptic.feedback('click');
 			});
 
 			document.getElementById('popover-clear-history')?.addEventListener('click', () => {
-				AppState.data.searchHistory = [];
-				AppState.save();
-				UIRenderer.renderSearchHistoryChips();
-				SoundHaptic.feedback('delete');
+				ConfirmDialog.ask({
+					title: 'Hapus Riwayat Pencarian?',
+					message: 'Semua kata kunci riwayat pencarian akan dihapus. Lanjutkan?',
+					confirmLabel: 'Ya, Hapus',
+					onConfirm: () => {
+						AppState.data.searchHistory = [];
+						AppState.save();
+						UIRenderer.renderSearchHistoryChips();
+						SoundHaptic.feedback('delete');
+						Toast.show('Riwayat pencarian dihapus.', 'info');
+					}
+				});
 			});
 
 			document.addEventListener('click', (e) => {
-				if (!e.target.closest('#global-search-input') && !e.target.closest('#search-history-popover') && !e.target.closest('#execute-search-btn')) {
-					historyPopover?.classList.add('hidden');
+				if (searchInput && searchPopover && !searchInput.contains(e.target) && !searchPopover.contains(e.target)) {
+					PopoverManager.closeSearchHistory();
 				}
 			});
 
@@ -4030,6 +4882,7 @@
 					priceRange: 'all',
 					sort: 'default'
 				};
+				AppState.currentPage = 1;
 				if (searchInput) searchInput.value = '';
 				clearSearchBtn?.classList.add('hidden');
 				UIRenderer.dropdowns.category?.setValue('Semua', false);
@@ -4039,20 +4892,27 @@
 				UIRenderer.renderCategoryPills();
 				UIRenderer.renderProducts();
 				SoundHaptic.feedback('click');
-				Toast.show('Semua filter dan pencarian telah direset.', 'info');
 			};
 
 			document.getElementById('reset-filters-btn')?.addEventListener('click', resetAllFilters);
 			document.getElementById('empty-reset-btn')?.addEventListener('click', resetAllFilters);
 
-			/* Keranjang: Kosongkan & Lanjut Checkout */
+			/* Aksi Keranjang: Kosongkan (Dengan Konfirmasi) & Beli Sekarang */
 			document.getElementById('clear-cart-btn')?.addEventListener('click', () => {
-				AppState.data.cart = [];
-				AppState.save();
-				UIRenderer.updateBadges();
-				UIRenderer.renderCartModal();
-				SoundHaptic.feedback('delete');
-				Toast.show('Keranjang belanja telah dikosongkan.', 'info');
+				if (AppState.data.cart.length === 0) return;
+				ConfirmDialog.ask({
+					title: 'Kosongkan Keranjang Belanja?',
+					message: 'Semua barang di dalam keranjang belanja Anda akan dihapus. Apakah Anda yakin ingin melanjutkan?',
+					confirmLabel: 'Ya, Kosongkan',
+					onConfirm: () => {
+						AppState.data.cart = [];
+						AppState.save();
+						UIRenderer.updateBadges();
+						UIRenderer.renderCartModal();
+						SoundHaptic.feedback('delete');
+						Toast.show('Keranjang belanja telah dikosongkan.', 'info');
+					}
+				});
 			});
 
 			document.getElementById('proceed-checkout-btn')?.addEventListener('click', () => {
@@ -4060,7 +4920,7 @@
 				ModalManager.open('checkout');
 			});
 
-			/* Pengaturan: Mode, Font Size, Toggles */
+			/* Pengaturan Tema, Ukuran Font, Toggle Animasi, Suara, Getar */
 			document.querySelectorAll('[data-setting-theme]').forEach(btn => {
 				btn.addEventListener('click', () => {
 					AppState.data.settings.theme = btn.getAttribute('data-setting-theme');
@@ -4090,17 +4950,17 @@
 				AppState.data.settings.sound = !AppState.data.settings.sound;
 				AppState.save();
 				SettingsManager.applyAll();
-				SoundHaptic.feedback('click');
+				if (AppState.data.settings.sound) SoundHaptic.playTone('success');
 			});
 
 			document.getElementById('toggle-vibrate-btn')?.addEventListener('click', () => {
 				AppState.data.settings.vibrate = !AppState.data.settings.vibrate;
 				AppState.save();
 				SettingsManager.applyAll();
-				SoundHaptic.feedback('click');
+				if (AppState.data.settings.vibrate) SoundHaptic.vibrate(25);
 			});
 
-			/* Tab Profile */
+			/* Navigasi Tab di Modal Profile */
 			document.querySelectorAll('[data-profile-tab]').forEach(btn => {
 				btn.addEventListener('click', () => {
 					UIRenderer.activeProfileTab = btn.getAttribute('data-profile-tab');
@@ -4109,18 +4969,14 @@
 				});
 			});
 
-			/* Export & Import JSON Global + Load File JSON Produk */
+			/* Export & Import Data JSON Global */
 			const importInput = document.getElementById('global-import-json-input');
-			const loadProductJsonInput = document.getElementById('load-product-json-input');
-
 			document.querySelectorAll('[data-action="export-data"]').forEach(btn => {
 				btn.addEventListener('click', () => SettingsManager.exportData());
 			});
+
 			document.querySelectorAll('[data-action="import-data"]').forEach(btn => {
 				btn.addEventListener('click', () => importInput?.click());
-			});
-			document.querySelectorAll('[data-action="load-product-json"]').forEach(btn => {
-				btn.addEventListener('click', () => loadProductJsonInput?.click());
 			});
 
 			importInput?.addEventListener('change', (e) => {
@@ -4129,9 +4985,16 @@
 				importInput.value = '';
 			});
 
+			/* Muat JSON Produk Manual & Unduh Contoh Template JSON */
+			const loadProductJsonInput = document.getElementById('load-product-json-input');
+			document.querySelectorAll('[data-action="load-product-json"]').forEach(btn => {
+				btn.addEventListener('click', () => loadProductJsonInput?.click());
+			});
+
 			loadProductJsonInput?.addEventListener('change', async (e) => {
-				if (e.target.files?.length) {
-					await ProductRepository.loadFromFileList(e.target.files);
+				const files = e.target.files;
+				if (files && files.length > 0) {
+					await ProductRepository.loadFromFileList(files);
 				}
 				loadProductJsonInput.value = '';
 			});
@@ -4139,20 +5002,6 @@
 			document.getElementById('download-sample-product-json-btn')?.addEventListener('click', () => {
 				ProductRepository.downloadSampleProductJson();
 			});
-		}
-
-		/* ==========================================================================
-		   12. BOOTSTRAP APLIKASI SAAT HALAMAN SELESAI DIMUAT
-		   ========================================================================== */
-		window.addEventListener('DOMContentLoaded', async () => {
-			AppState.init();
-			SettingsManager.applyAll();
-			StoreAvailability.renderAllIndicators();
-			setInterval(() => StoreAvailability.renderAllIndicators(), 60000);
-			await ProductRepository.loadAll();
-			UIRenderer.init();
-			CheckoutController.init();
-			bindApplicationEvents();
 		});
 	</script>
 </body>
