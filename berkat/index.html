@@ -1022,14 +1022,27 @@
 
 					<!-- Bank Pembayaran & Upload Bukti Transfer -->
 					<div class="p-4 rounded-2xl border theme-elevated space-y-3">
-						<div>
-							<label class="block text-xs font-semibold theme-text-secondary mb-1">Metode Bank / E-Wallet Pembayaran Anda *</label>
-							<div id="dropdown-checkout-bank" class="relative"></div>
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+							<div>
+								<label class="block text-xs font-semibold theme-text-secondary mb-1">Metode Bank / E-Wallet Anda *</label>
+								<div id="dropdown-checkout-bank" class="relative"></div>
+							</div>
+							<div>
+								<label for="checkout-sender-name" class="block text-xs font-semibold theme-text-secondary mb-1">Rekening Pengirim Atas Nama *</label>
+								<input type="text" id="checkout-sender-name" required placeholder="Contoh: Budi Santoso" class="w-full px-3.5 py-2.5 rounded-xl border theme-surface theme-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30">
+							</div>
+						</div>
+
+						<!-- Tujuan Transfer Resmi Berkat Elektronik (Harus dipilih dari 3 payment yang tersedia) -->
+						<div class="space-y-1.5">
+							<label class="block text-xs font-semibold theme-text-secondary">Tujuan Transfer Resmi Berkat Elektronik *</label>
+							<div id="dropdown-checkout-destination" class="relative"></div>
+							<span class="text-[10px] theme-text-muted block">Pilih rekening/E-wallet tujuan tempat Anda mengirim dana.</span>
 						</div>
 
 						<!-- Daftar Rekening & E-Wallet Tujuan Resmi Toko (GoPay, DANA, Bank Jago) -->
 						<div class="space-y-2">
-							<span class="text-[11px] font-semibold theme-text-secondary block">Tujuan Transfer Resmi Berkat Elektronik (Klik Salin):</span>
+							<span class="text-[11px] font-semibold theme-text-secondary block">Informasi Detail Rekening Tujuan:</span>
 							<div id="official-payment-destinations" class="grid grid-cols-1 sm:grid-cols-3 gap-2">
 								<!-- Dirender dinamis dengan ikon Bank Jago, GoPay, dan DANA -->
 							</div>
@@ -1419,7 +1432,7 @@
 					storeOpen,
 					onlineOpen,
 					storeLabel: storeOpen ? 'Toko Buka (09.00–17.00)' : 'Toko Tutup (Sen–Sab 09.00–17.00)',
-					onlineLabel: onlineOpen ? 'Online Aktif (10.00–15.00)' : 'Online Offline (Sen–Sab 10.00–15.00)'
+					onlineLabel: onlineOpen ? 'Online (10.00–15.00)' : 'Offline (Sen–Sab 10.00–15.00)'
 				};
 			},
 
@@ -1430,11 +1443,11 @@
 				if (headerBar) {
 					headerBar.innerHTML = `
 						<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-medium ${status.storeOpen ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300' : 'theme-subtle theme-text-secondary'}">
-							<span class="w-1.5 h-1.5 rounded-full ${status.storeOpen ? 'bg-emerald-500' : 'bg-slate-400'}"></span>
+							<span class="w-1.5 h-1.5 rounded-full ${status.storeOpen ? 'bg-emerald-500' : 'bg-rose-500'}"></span>
 							<span>${status.storeLabel}</span>
 						</span>
 						<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-medium ${status.onlineOpen ? 'bg-sky-500/15 text-sky-700 dark:text-sky-300' : 'theme-subtle theme-text-secondary'}">
-							<span class="w-1.5 h-1.5 rounded-full ${status.onlineOpen ? 'bg-sky-500' : 'bg-amber-500'}"></span>
+							<span class="w-1.5 h-1.5 rounded-full ${status.onlineOpen ? 'bg-sky-500' : 'bg-rose-500'}"></span>
 							<span>${status.onlineLabel} WIB</span>
 						</span>
 					`;
@@ -4267,11 +4280,13 @@
 			selectedRegion: 'Tangerang Kota',
 			selectedDistrict: 'Karawaci (Cimone Jaya)',
 			selectedBank: 'Bank Jago',
+			selectedDestination: '',
 			proofImageData: null,
 			proofFileName: '',
 			regionDropdown: null,
 			districtDropdown: null,
 			bankDropdown: null,
+			destinationDropdown: null,
 
 			init() {
 				this.bindEvents();
@@ -4299,6 +4314,9 @@
 				document.getElementById('checkout-name').value = p.fullName || '';
 				document.getElementById('checkout-phone').value = p.phone || '';
 				document.getElementById('checkout-address').value = p.address || '';
+				
+				const senderNameInput = document.getElementById('checkout-sender-name');
+				if (senderNameInput) senderNameInput.value = p.fullName || '';
 
 				this.selectedRegion = TANGERANG_LOCATIONS[p.region] ? p.region : 'Tangerang Kota';
 				const distList = TANGERANG_LOCATIONS[this.selectedRegion] || [];
@@ -4324,6 +4342,11 @@
 					value: p.id,
 					label: `${p.label} (${p.type})`,
 					iconHtml: getPaymentIconSvg(p.id, 'w-6 h-6')
+				}));
+				const destinations = STORE_CONFIG.officialDestinations.map(d => ({
+					value: `${d.name} — ${d.accountNumber} (a.n. ${d.holder})`,
+					label: `${d.name} : ${d.accountNumber} (${d.holder})`,
+					iconHtml: getPaymentIconSvg(d.id, 'w-6 h-6')
 				}));
 
 				this.regionDropdown = new CustomDropdown({
@@ -4358,6 +4381,19 @@
 					options: banks,
 					onChange: (val) => {
 						this.selectedBank = val;
+					}
+				});
+
+				if (!this.selectedDestination && destinations.length > 0) {
+					this.selectedDestination = destinations[0].value;
+				}
+
+				this.destinationDropdown = new CustomDropdown({
+					containerId: 'dropdown-checkout-destination',
+					value: this.selectedDestination,
+					options: destinations,
+					onChange: (val) => {
+						this.selectedDestination = val;
 					}
 				});
 			},
@@ -4401,9 +4437,7 @@
 				temp.select();
 				try {
 					document.execCommand('copy');
-				} catch (err) {
-					/* Abaikan jika gagal */
-				}
+				} catch (err) {}
 				document.body.removeChild(temp);
 			},
 
@@ -4573,10 +4607,11 @@
 				const name = document.getElementById('checkout-name').value.trim();
 				const phone = document.getElementById('checkout-phone').value.trim();
 				const address = document.getElementById('checkout-address').value.trim();
+				const senderName = document.getElementById('checkout-sender-name').value.trim();
 
-				if (!name || !phone || !address) {
+				if (!name || !phone || !address || !senderName) {
 					SoundHaptic.feedback('warning');
-					Toast.show('Mohon lengkapi Nama Lengkap, Nomor Telepon, dan Detail Alamat Rumah.', 'warning');
+					Toast.show('Mohon lengkapi Nama Lengkap, Nomor Telepon, Alamat Rumah, dan Nama Rekening Pengirim.', 'warning');
 					return;
 				}
 
@@ -4615,12 +4650,10 @@
 				const grandTotal = subtotal + serviceFee + shippingCost;
 				const orderId = 'BE-' + Date.now().toString().slice(-6);
 
-				/* Kurangi stok produk sesuai jumlah yang dibeli */
 				cartItems.forEach(({ product, qty }) => {
 					product.stock = Math.max(0, Number(product.stock || 0) - qty);
 				});
 
-				/* Simpan riwayat transaksi ke Profile */
 				AppState.data.orderHistory.unshift({
 					orderId,
 					date: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }),
@@ -4631,6 +4664,8 @@
 					address,
 					distanceKm: evalResult.distanceKm,
 					bank: this.selectedBank,
+					senderName,
+					destinationAccount: this.selectedDestination,
 					proofFileName: this.proofFileName,
 					subtotal,
 					serviceFee,
@@ -4645,7 +4680,6 @@
 					}))
 				});
 
-				/* Sinkronkan biodata profil */
 				AppState.data.profile = {
 					...AppState.data.profile,
 					fullName: name,
@@ -4657,13 +4691,11 @@
 				};
 				AppState.data.hasCompletedOnboarding = true;
 
-				/* Kosongkan keranjang setelah dipesan */
 				AppState.data.cart = [];
 				AppState.save();
 				UIRenderer.updateBadges();
 				UIRenderer.renderProducts();
 
-				/* Susun pesan WhatsApp terstruktur */
 				const itemLines = cartItems
 					.map((it, idx) => `${idx + 1}. ${it.product.name} (${it.qty}x) = ${AppState.formatRupiah(it.product.price * it.qty)}`)
 					.join('\n');
@@ -4687,7 +4719,9 @@
 					`• Biaya Layanan: ${AppState.formatRupiah(serviceFee)}`,
 					`• Ongkos Kirim (±${evalResult.distanceKm} KM): ${AppState.formatRupiah(shippingCost)}`,
 					`• *TOTAL BAYAR: ${AppState.formatRupiah(grandTotal)}*`,
-					`• Metode Bank/E-Wallet: *${this.selectedBank}*`,
+					`• Metode Bank/E-Wallet Pengirim: *${this.selectedBank}*`,
+					`• Rekening Pengirim Atas Nama: *${senderName}*`,
+					`• Tujuan Transfer Resmi: *${this.selectedDestination}*`,
 					`• Status Bukti Transfer: *Terlampir (${this.proofFileName})*`,
 					``,
 					`_Catatan: Saya akan melampirkan foto bukti transfer (${this.proofFileName}) di chat ini. Terima kasih Berkat Elektronik!_`
