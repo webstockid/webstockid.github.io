@@ -1277,9 +1277,19 @@
 			originCoords: { lat: -6.1856, lng: 106.6127 },
 			roadDistanceMultiplier: 1.28,
 			maxRadiusKm: 30,
-			shippingRatePerKm: {
-				'Tangerang Kota': 6000,
-				'Tangerang Kabupaten': 8000
+			shippingRules: {
+				'Tangerang Kota': {
+					baseKm: 2,
+					baseCost: 10000,
+					nextStepKm: 2,
+					nextStepCost: 5000
+				},
+				'Tangerang Kabupaten': {
+					baseKm: 8,
+					baseCost: 20000,
+					nextStepKm: 2,
+					nextStepCost: 6000
+				}
 			},
 			serviceFee: 15000,
 			whatsappNumber: '6289529305947',
@@ -2640,7 +2650,7 @@
 		};
 
 		/* ==========================================================================
-		   9. KALKULATOR JARAK & ONGKOS KIRIM (CIMONE JAYA, TANGERANG 0–30 KM)
+		   9. KALKULATOR JARAK & ONGKOS KIRIM BERDASARKAN ATURAN BARU
 		   ========================================================================== */
 		const ShippingCalculator = {
 			toRad(deg) {
@@ -2697,17 +2707,26 @@
 					};
 				}
 
-				const ratePerKm = STORE_CONFIG.shippingRatePerKm[region] || 6000;
-				const billedKm = Math.max(1, Math.ceil(distanceKm));
-				const cost = billedKm * ratePerKm;
+				const rule = STORE_CONFIG.shippingRules[region];
+				let cost = rule.baseCost;
+				let brackets = 0;
+				let reasonDetail = '';
+
+				if (distanceKm <= rule.baseKm) {
+					reasonDetail = `Jarak tempuh ±${distanceKm} KM (Masuk dalam ${rule.baseKm} KM pertama). Tarif dasar ${AppState.formatRupiah(rule.baseCost)}.`;
+				} else {
+					const extraKm = distanceKm - rule.baseKm;
+					brackets = Math.ceil(extraKm / rule.nextStepKm);
+					cost = rule.baseCost + (brackets * rule.nextStepCost);
+					reasonDetail = `Jarak tempuh ±${distanceKm} KM (${rule.baseKm} KM pertama + ${brackets} × ${rule.nextStepKm} KM berikutnya).`;
+				}
 
 				return {
 					eligible: true,
 					distanceKm,
 					cost,
-					billedKm,
-					ratePerKm,
-					reason: `Jarak tempuh ±${distanceKm} KM dari Jl. Raya Merdeka No.35 Cimone Jaya (${billedKm} KM × ${AppState.formatRupiah(ratePerKm)}/KM).`
+					brackets,
+					reason: `${reasonDetail} dari Jl. Raya Merdeka No.35 Cimone Jaya.`
 				};
 			}
 		};
