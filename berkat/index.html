@@ -105,11 +105,6 @@
 			transition-duration: 0.001ms !important;
 		}
 
-		html, body {
-			max-width: 100%;
-			overflow-x: hidden;
-		}
-
 		body {
 			background-color: var(--bg-page);
 			color: var(--text-primary);
@@ -370,33 +365,38 @@
 	<div id="toast-container" aria-live="polite" class="fixed top-20 right-4 z-[120] flex flex-col gap-2.5 max-w-sm w-[calc(100vw-2rem)] pointer-events-none"></div>
 
 	<!-- ==========================================================================
-	     FIXED FLOATING HEADER: ALAMAT, WAKTU, CUACA, BRAND, AKSI & INPUT PENCARIAN
+	     TOP INFO BAR (ALAMAT, WAKTU BUKA/TUTUP, PERKIRAAN CUACA) - IKUT BERGESER SAAT DI-SCROLL
 	     ========================================================================== -->
-	<header id="main-sticky-header" class="fixed top-0 left-0 right-0 z-40 w-full border-b theme-surface/95 backdrop-blur-md transition-all duration-300">
-		<!-- Bilah Informasi 3 Baris Rapi: 1. Alamat, 2. Waktu Buka/Tutup, 3. Perkiraan Cuaca -->
-		<div class="border-b theme-border theme-elevated overflow-hidden">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-col gap-1.5 text-[11px] theme-text-secondary">
-				<!-- Baris 1: Alamat Toko -->
-				<div class="flex items-center gap-1.5 min-w-0 max-w-full">
-					<svg class="w-3.5 h-3.5 accent-text shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-						<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-						<circle cx="12" cy="10" r="3"></circle>
-					</svg>
-					<span class="truncate block">Jl. Raya Merdeka No.35, RT.002/RW.001, Cimone Jaya, Kec. Karawaci, Kota Tangerang 15114</span>
-				</div>
+	<div id="top-info-bar" class="border-b theme-border theme-surface">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-col gap-1.5 text-[11px] theme-text-secondary overflow-hidden">
+			<!-- Baris 1: Alamat Toko -->
+			<div class="flex items-center gap-1.5 min-w-0 max-w-full">
+				<svg class="w-3.5 h-3.5 accent-text shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+					<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+					<circle cx="12" cy="10" r="3"></circle>
+				</svg>
+				<span class="truncate block">Jl. Raya Merdeka No.35, RT.002/RW.001, Cimone Jaya, Kec. Karawaci, Kota Tangerang 15114</span>
+			</div>
 
-				<!-- Baris 2: Informasi Toko Buka & Tutup -->
-				<div id="header-availability-bar" class="flex flex-wrap items-center gap-1.5 sm:gap-2 min-w-0 max-w-full">
-					<!-- Diisi otomatis oleh StoreAvailability -->
-				</div>
+			<!-- Baris 2: Informasi Toko Buka & Tutup -->
+			<div id="header-availability-bar" class="flex flex-wrap items-center gap-1.5 sm:gap-2 min-w-0 max-w-full">
+				<!-- Diisi otomatis oleh StoreAvailability -->
+			</div>
 
-				<!-- Baris 3: Perkiraan Cuaca Tangerang Real-Time -->
-				<div id="header-weather-bar" class="flex items-center gap-1.5 min-w-0 max-w-full">
-					<!-- Diisi otomatis oleh StoreAvailability & WeatherService -->
-				</div>
+			<!-- Baris 3: Perkiraan Cuaca Tangerang Real-Time -->
+			<div id="header-weather-bar" class="flex items-center gap-1.5 min-w-0 max-w-full">
+				<!-- Diisi otomatis oleh StoreAvailability & WeatherService -->
 			</div>
 		</div>
+	</div>
 
+	<!-- Spacer Penjaga Ruang agar Konten di Bawahnya Tidak Tertutup Fixed Navbar -->
+	<div id="navbar-layout-spacer" aria-hidden="true" class="w-full"></div>
+
+	<!-- ==========================================================================
+	     FIXED FLOATING NAVBAR (NAMA TOKO, NAMA AKUN, PENCARIAN, KERANJANG, PENGATURAN, PROFIL)
+	     ========================================================================== -->
+	<header id="main-sticky-header" class="fixed left-0 right-0 z-40 w-full border-b theme-surface/95 backdrop-blur-md transition-shadow duration-300" style="top: 0px;">
 		<!-- Bar Utama Header Melayang -->
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5">
 			<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
@@ -5008,27 +5008,35 @@
 
 			OnboardingController.checkAndShow();
 
-			/* Sinkronisasi Tinggi Header Fixed (Alamat s/d Input Pencarian) ke Padding-Top Body */
+			/* Sinkronisasi Posisi Fixed Navbar di Bawah Top Info Bar & Mengunci di top: 0 saat Scroll */
+			const topInfoBar = document.getElementById('top-info-bar');
 			const mainHeader = document.getElementById('main-sticky-header');
-			const syncFixedHeaderOffset = () => {
+			const navbarSpacer = document.getElementById('navbar-layout-spacer');
+
+			const updateFloatingNavbarLayout = () => {
 				if (!mainHeader) return;
-				const headerHeight = Math.ceil(mainHeader.getBoundingClientRect().height);
-				document.body.style.paddingTop = `${headerHeight}px`;
-				document.documentElement.style.scrollPaddingTop = `${headerHeight + 16}px`;
+				const infoHeight = topInfoBar ? Math.ceil(topInfoBar.getBoundingClientRect().height) : 0;
+				const navHeight = Math.ceil(mainHeader.getBoundingClientRect().height);
+				const scrollY = window.scrollY || window.pageYOffset || 0;
+
+				if (navbarSpacer) {
+					navbarSpacer.style.height = `${navHeight}px`;
+				}
+
+				const pinnedTop = Math.max(0, infoHeight - scrollY);
+				mainHeader.style.top = `${pinnedTop}px`;
+				mainHeader.classList.toggle('is-scrolled', scrollY > 8);
+				document.documentElement.style.scrollPaddingTop = `${navHeight + 16}px`;
 			};
 
-			syncFixedHeaderOffset();
-			if (typeof ResizeObserver !== 'undefined' && mainHeader) {
-				const headerResizeObserver = new ResizeObserver(() => syncFixedHeaderOffset());
-				headerResizeObserver.observe(mainHeader);
+			updateFloatingNavbarLayout();
+			if (typeof ResizeObserver !== 'undefined') {
+				const layoutObserver = new ResizeObserver(() => updateFloatingNavbarLayout());
+				if (topInfoBar) layoutObserver.observe(topInfoBar);
+				if (mainHeader) layoutObserver.observe(mainHeader);
 			}
-			window.addEventListener('resize', syncFixedHeaderOffset, { passive: true });
-
-			window.addEventListener('scroll', () => {
-				if (mainHeader) {
-					mainHeader.classList.toggle('is-scrolled', window.scrollY > 12);
-				}
-			}, { passive: true });
+			window.addEventListener('resize', updateFloatingNavbarLayout, { passive: true });
+			window.addEventListener('scroll', updateFloatingNavbarLayout, { passive: true });
 
 			/* Delegasi Global Tombol Buka / Tutup Modal agar selalu responsif di semua ukuran layar */
 			document.addEventListener('click', (e) => {
