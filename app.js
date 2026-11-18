@@ -6081,6 +6081,7 @@ function normalizeStockPayload(raw, ticker) {
 }
 
 // 1. Foreign Net Flow Tracker (Cache-First + Progressive Render)
+// 1. Foreign Net Flow Tracker (Cache-First + Progressive Render + Stock Logo)
 async function loadForeignFlowData() {
 	if (isForeignFlowLoading) return;
 	const container = document.getElementById('foreign-flow-list') || document.getElementById('asing-flow-container');
@@ -6101,7 +6102,6 @@ async function loadForeignFlowData() {
 	const renderFlowItems = (rawItems) => {
 		const flowMetrics = rawItems.map(item => {
 			const turnover = item.price * item.volume;
-			// const volRatio = item.volume / (item.avgVolume || 1);
 			const volRatio = item.volRatioDirect ?? (item.volume / (item.avgVolume || 1));
 			const direction = item.price >= item.prevClose ? 1 : -1;
 			const netFlowEstimate = turnover * direction * Math.min(volRatio, 3);
@@ -6123,19 +6123,29 @@ async function loadForeignFlowData() {
 				: 'bg-rose-500/15 text-rose-400 border-rose-500/30';
 
 			return `
-				<div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition">
-					<div>
-						<div class="flex items-center gap-2">
-							<span class="font-bold text-white">${stock.ticker}</span>
-							<span class="text-[11px] px-2 py-0.5 rounded border ${badgeClass}">
-								${isNetBuy ? 'NET BUY' : 'NET SELL'}
-							</span>
+				<div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition gap-3">
+					<div class="flex items-center gap-3 min-w-0">
+						<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
+							<img 
+								src="https://assets.stockbit.com/logos/companies/${stock.ticker}.png" 
+								alt="${stock.ticker}" 
+								class="w-full h-full object-contain drop-shadow-sm" 
+								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${stock.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${stock.ticker.substring(0,3)}</span>';};"
+							>
 						</div>
-						<div class="text-xs text-slate-400 mt-1">
-							Harga: Rp ${stock.price.toLocaleString('id-ID')} (${stock.changePercent >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%) · Vol: ${stock.volRatio.toFixed(1)}x
+						<div class="min-w-0">
+							<div class="flex items-center gap-2">
+								<span class="font-bold text-white">${stock.ticker}</span>
+								<span class="text-[11px] px-2 py-0.5 rounded border ${badgeClass}">
+									${isNetBuy ? 'NET BUY' : 'NET SELL'}
+								</span>
+							</div>
+							<div class="text-xs text-slate-400 mt-1 truncate">
+								Harga: Rp ${stock.price.toLocaleString('id-ID')} (${stock.changePercent >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%) · Vol: ${stock.volRatio.toFixed(1)}x
+							</div>
 						</div>
 					</div>
-					<div class="text-right">
+					<div class="text-right shrink-0">
 						<div class="font-semibold ${isNetBuy ? 'text-emerald-400' : 'text-rose-400'}">
 							${isNetBuy ? '+' : '-'}Rp ${flowInBillion} M
 						</div>
@@ -6194,7 +6204,7 @@ async function loadForeignFlowData() {
 	}
 }
 
-// 4. Fundamental & Valuation Matrix (Cache-First + Progressive Render)
+// 4. Fundamental & Valuation Matrix (Cache-First + Progressive Render + Stock Logo)
 async function runValuationScreener() {
 	if (isValuationLoading) return;
 	const container = document.getElementById('valuation-matrix-list') || document.getElementById('valuation-screener-container');
@@ -6240,12 +6250,22 @@ async function runValuationScreener() {
 
 		container.innerHTML = evaluated.slice(0, 20).map(stock => `
 			<div class="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition">
-				<div class="flex items-center justify-between mb-2">
-					<div class="flex items-center gap-2">
-						<span class="font-bold text-white">${stock.ticker}</span>
-						<span class="text-[11px] px-2 py-0.5 rounded border ${stock.statusClass}">${stock.status}</span>
+				<div class="flex items-center justify-between mb-2.5 gap-2">
+					<div class="flex items-center gap-2.5 min-w-0">
+						<div class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
+							<img 
+								src="https://assets.stockbit.com/logos/companies/${stock.ticker}.png" 
+								alt="${stock.ticker}" 
+								class="w-full h-full object-contain drop-shadow-sm" 
+								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${stock.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[10px] font-black text-slate-400 tracking-wider\\'>${stock.ticker.substring(0,3)}</span>';};"
+							>
+						</div>
+						<div class="flex items-center gap-2 flex-wrap">
+							<span class="font-bold text-white">${stock.ticker}</span>
+							<span class="text-[11px] px-2 py-0.5 rounded border ${stock.statusClass}">${stock.status}</span>
+						</div>
 					</div>
-					<span class="text-sm font-semibold text-white">Rp ${stock.price.toLocaleString('id-ID')}</span>
+					<span class="text-sm font-semibold text-white shrink-0">Rp ${stock.price.toLocaleString('id-ID')}</span>
 				</div>
 				<div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mb-2">
 					<div class="bg-emerald-500 h-full" style="width: ${stock.positionPct.toFixed(0)}%"></div>
@@ -6305,7 +6325,7 @@ async function runValuationScreener() {
 	}
 }
 
-// 5. Warrant Tracker (Batching + Fast Timeout)
+// 5. Warrant Tracker (Batching + Fast Timeout + Parent Stock Logo)
 async function loadWarrantData() {
 	if (isWarrantLoading) return;
 	const container = document.getElementById('warrant-tracker-list') || document.getElementById('warrant-container');
@@ -6359,18 +6379,29 @@ async function loadWarrantData() {
 			if (validWarrants.length > 0) {
 				container.innerHTML = validWarrants.map(w => {
 					const isUp = w.changePercent >= 0;
+					const logoTicker = w.parentTicker || w.ticker.replace(/-W\d*$/i, '');
 					return `
-						<div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition">
-							<div>
-								<div class="flex items-center gap-2">
-									<span class="font-bold text-emerald-400">${w.ticker}</span>
-									<span class="text-xs text-slate-400">Induk: ${w.parentTicker} ${w.parentPrice ? `(Rp ${w.parentPrice.toLocaleString('id-ID')})` : ''}</span>
+						<div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition gap-3">
+							<div class="flex items-center gap-3 min-w-0">
+								<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
+									<img 
+										src="https://assets.stockbit.com/logos/companies/${logoTicker}.png" 
+										alt="${w.ticker}" 
+										class="w-full h-full object-contain drop-shadow-sm" 
+										onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${logoTicker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${logoTicker.substring(0,3)}</span>';};"
+									>
 								</div>
-								<div class="text-xs text-slate-500 mt-1">
-									Vol: ${w.volume.toLocaleString('id-ID')} ${w.ratioToParent ? `· Rasio Harga: ${w.ratioToParent}% dari induk` : ''}
+								<div class="min-w-0">
+									<div class="flex items-center gap-2 flex-wrap">
+										<span class="font-bold text-emerald-400">${w.ticker}</span>
+										<span class="text-xs text-slate-400">Induk: ${w.parentTicker} ${w.parentPrice ? `(Rp ${w.parentPrice.toLocaleString('id-ID')})` : ''}</span>
+									</div>
+									<div class="text-xs text-slate-500 mt-1 truncate">
+										Vol: ${w.volume.toLocaleString('id-ID')} ${w.ratioToParent ? `· Rasio Harga: ${w.ratioToParent}% dari induk` : ''}
+									</div>
 								</div>
 							</div>
-							<div class="text-right">
+							<div class="text-right shrink-0">
 								<div class="font-bold text-white">Rp ${w.price.toLocaleString('id-ID')}</div>
 								<div class="text-xs font-medium ${isUp ? 'text-emerald-400' : 'text-rose-400'}">
 									${isUp ? '+' : ''}${w.changePercent.toFixed(2)}%
