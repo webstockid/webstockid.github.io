@@ -5,44 +5,45 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Berkat Elektronik — Spesialis Pro Audio &amp; Komponen Elektronik</title>
 	<!-- 1. FAVICON & ICON PERANGKAT -->
-    <link rel="icon" type="image/png" sizes="32x32" href="foto/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="foto/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="foto/apple-touch-icon.png">
-    
-    <!-- 2. PWA & INSTALLABLE META TAGS -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4f46e5"> <!-- Sesuaikan warna tema utama (misal: warna brand/navbar) -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Berkat Elektronik">
+	<link rel="icon" type="image/png" sizes="32x32" href="foto/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="foto/favicon-16x16.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="foto/apple-touch-icon.png">
 
-    <!-- 3. OPEN GRAPH (UNTUK PREVIEW DI WHATSAPP, FACEBOOK, LINKEDIN) -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://webstockid.github.io/berkat/index.html">
-    <meta property="og:title" content="Toko Berkat Elektronik Cimone">
-    <meta property="og:description" content="Pro Audio & Komponen Elektronik">
-    <meta property="og:image" content="https://webstockid.github.io/berkat/foto/berkat.png"> <!-- Ukuran rekomendasi: 1200x630 piksel -->
+	<!-- 2. PWA & INSTALLABLE META TAGS -->
+	<link rel="manifest" href="manifest.json">
+	<meta name="theme-color" content="#4A7C59">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="Berkat Elektronik">
 
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+	<!-- 3. OPEN GRAPH -->
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://webstockid.github.io/berkat/index.html">
+	<meta property="og:title" content="Toko Berkat Elektronik Cimone">
+	<meta property="og:description" content="Pro Audio & Komponen Elektronik">
+	<meta property="og:image" content="https://webstockid.github.io/berkat/foto/berkat.png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
 
-    <!-- 4. TWITTER CARDS (UNTUK PREVIEW DI TWITTER / X) -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://webstockid.github.io/berkat/index.html">
-    <meta name="twitter:title" content="Toko Berkat Elektronik Cimone">
-    <meta name="twitter:description" content="Pro Audio & Komponen Elektronik">
-    <meta name="twitter:image" content="https://webstockid.github.io/berkat/foto/berkat.png">
-    
+	<!-- 4. TWITTER CARDS -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:url" content="https://webstockid.github.io/berkat/index.html">
+	<meta name="twitter:title" content="Toko Berkat Elektronik Cimone">
+	<meta name="twitter:description" content="Pro Audio & Komponen Elektronik">
+	<meta name="twitter:image" content="https://webstockid.github.io/berkat/foto/berkat.png">
+
 	<!-- Google Fonts: Plus Jakarta Sans + 6 Font Pilihan -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=Nunito+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 	<!-- Tailwind CSS CDN -->
 	<script src="https://cdn.tailwindcss.com"></script>
+
 	<style>
 		/* ==========================================================================
-		   1. DESIGN TOKENS & PALET WARNA KALEM (MODE KALEM TERANG, HANGAT & GELAP)
+		   1. DESIGN TOKENS & PALET WARNA KALEM (TERANG, HANGAT & GELAP)
 		   ========================================================================== */
 		:root {
 			--bg-page: #F4F6F4;
@@ -104,13 +105,17 @@
 			transition-duration: 0.001ms !important;
 		}
 
+		html, body {
+			max-width: 100%;
+			overflow-x: hidden;
+		}
+
 		body {
 			background-color: var(--bg-page);
 			color: var(--text-primary);
 			font-family: var(--font-family);
 			font-weight: var(--font-weight-base);
 			transition: background-color 0.32s var(--ease-calm), color 0.32s var(--ease-calm);
-			overflow-x: hidden;
 		}
 
 		/* Kelas Utilitas Berbasis CSS Variables */
@@ -171,7 +176,7 @@
 		}
 
 		/* ==========================================================================
-		   2. ANIMASI HALUS (ENTER & EXIT MODAL, POPUP, DROPDOWN, TAB, CARD & TOAST)
+		   2. ANIMASI HALUS (MODAL, POPOVER, DROPDOWN, TAB, CARD & TOAST)
 		   ========================================================================== */
 		@keyframes backdropFadeIn {
 			from { opacity: 0; }
@@ -323,7 +328,7 @@
 
 		/* Fixed Header Glassmorphism saat halaman di-scroll */
 		#main-sticky-header.is-scrolled {
-			box-shadow: 0 10px 30px -10px rgba(20, 30, 24, 0.14);
+			box-shadow: 0 12px 32px -10px rgba(20, 30, 24, 0.18);
 		}
 
 		/* Pembatas Deskripsi Kartu Produk (Max-Height + Ellipsis) */
@@ -357,7 +362,7 @@
 		}
 	</style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-950">
+<body id="top" class="min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-950">
 
 	<!-- ==========================================================================
 	     TOAST NOTIFICATION CONTAINER (PENGGANTI ALERT BAWAAN)
@@ -365,21 +370,29 @@
 	<div id="toast-container" aria-live="polite" class="fixed top-20 right-4 z-[120] flex flex-col gap-2.5 max-w-sm w-[calc(100vw-2rem)] pointer-events-none"></div>
 
 	<!-- ==========================================================================
-	     FIXED FLOATING HEADER: NAMA TOKO, PENCARIAN, KERANJANG, PENGATURAN, PROFILE
+	     FIXED FLOATING HEADER: ALAMAT, WAKTU, CUACA, BRAND, AKSI & INPUT PENCARIAN
 	     ========================================================================== -->
-	<header id="main-sticky-header" class="sticky top-0 z-40 w-full border-b theme-surface/95 backdrop-blur-md transition-all duration-300">
-		<!-- Bilah Informasi Jam Operasional & Alamat Toko -->
-		<div class="border-b theme-border theme-elevated">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex flex-wrap items-center justify-between gap-2 text-[11px] theme-text-secondary">
-				<div class="flex items-center gap-2 truncate">
+	<header id="main-sticky-header" class="fixed top-0 left-0 right-0 z-40 w-full border-b theme-surface/95 backdrop-blur-md transition-all duration-300">
+		<!-- Bilah Informasi 3 Baris Rapi: 1. Alamat, 2. Waktu Buka/Tutup, 3. Perkiraan Cuaca -->
+		<div class="border-b theme-border theme-elevated overflow-hidden">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-col gap-1.5 text-[11px] theme-text-secondary">
+				<!-- Baris 1: Alamat Toko -->
+				<div class="flex items-center gap-1.5 min-w-0 max-w-full">
 					<svg class="w-3.5 h-3.5 accent-text shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 						<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
 						<circle cx="12" cy="10" r="3"></circle>
 					</svg>
-					<span class="truncate">Jl. Raya Merdeka No.35, RT.002/RW.001, Cimone Jaya, Kec. Karawaci, Kota Tangerang 15114</span>
+					<span class="truncate block">Jl. Raya Merdeka No.35, RT.002/RW.001, Cimone Jaya, Kec. Karawaci, Kota Tangerang 15114</span>
 				</div>
-				<div id="header-availability-bar" class="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
+
+				<!-- Baris 2: Informasi Toko Buka & Tutup -->
+				<div id="header-availability-bar" class="flex flex-wrap items-center gap-1.5 sm:gap-2 min-w-0 max-w-full">
 					<!-- Diisi otomatis oleh StoreAvailability -->
+				</div>
+
+				<!-- Baris 3: Perkiraan Cuaca Tangerang Real-Time -->
+				<div id="header-weather-bar" class="flex items-center gap-1.5 min-w-0 max-w-full">
+					<!-- Diisi otomatis oleh StoreAvailability & WeatherService -->
 				</div>
 			</div>
 		</div>
@@ -388,14 +401,13 @@
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5">
 			<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
 				<!-- Nama Toko & Logo -->
-				<div class="flex items-center justify-between gap-3">
-					<a href="#top" id="brand-home-btn" class="flex items-center gap-3 group focus:outline-none min-w-0">
+				<div class="flex items-center justify-between gap-3 min-w-0">
+					<a href="#top" id="brand-home-btn" class="flex items-center gap-3 group focus:outline-none min-w-0 flex-1">
 						<div class="w-10 h-10 sm:w-11 sm:h-11 aspect-square rounded-2xl overflow-hidden flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform bg-white shadow-sm">
-							<!-- Ganti SVG dengan tag <img> -->
-							<img src="foto/logo.png" alt="Logo Berkat Elektronik" class="w-full h-full object-cover">
+							<img src="foto/logo.png" alt="Logo Berkat Elektronik" onerror="this.onerror=null;this.src='https://placehold.co/88x88/4A7C59/FFFFFF?text=BE';" class="w-full h-full object-cover">
 						</div>
 						<div class="min-w-0">
-							<h1 class="text-lg sm:text-xl font-bold tracking-tight theme-text-primary leading-none truncate">
+							<h1 class="text-base sm:text-xl font-bold tracking-tight theme-text-primary leading-none truncate">
 								Berkat Elektronik
 							</h1>
 							<p id="header-greeting-subtitle" class="text-[11px] theme-text-muted truncate mt-1">
@@ -406,29 +418,29 @@
 
 					<!-- Tombol Aksi Mobile: Bulat Sama Rata (Keranjang, Pengaturan, Profil) -->
 					<div class="flex items-center gap-2 lg:hidden shrink-0">
-						<button type="button" data-open-modal="cart" title="Keranjang Belanja" aria-label="Buka Keranjang" class="relative w-10 h-10 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition">
-							<svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+						<button type="button" data-open-modal="cart" title="Keranjang Belanja" aria-label="Buka Keranjang" class="relative w-10 h-10 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition cursor-pointer">
+							<svg class="w-[18px] h-[18px] shrink-0 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 								<circle cx="9" cy="21" r="1"></circle>
 								<circle cx="20" cy="21" r="1"></circle>
 								<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
 							</svg>
-							<span class="cart-badge-count absolute -top-1 -right-1 min-w-[19px] h-[19px] px-1 rounded-full accent-bg text-[10px] font-bold flex items-center justify-center leading-none">0</span>
+							<span class="cart-badge-count pointer-events-none absolute -top-1 -right-1 min-w-[19px] h-[19px] px-1 rounded-full accent-bg text-[10px] font-bold flex items-center justify-center leading-none">0</span>
 						</button>
-						<button type="button" data-open-modal="settings" title="Pengaturan" aria-label="Pengaturan" class="w-10 h-10 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition">
-							<svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+						<button type="button" data-open-modal="settings" title="Pengaturan" aria-label="Pengaturan" class="w-10 h-10 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition cursor-pointer">
+							<svg class="w-[18px] h-[18px] shrink-0 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 								<circle cx="12" cy="12" r="3"></circle>
 								<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
 							</svg>
 						</button>
-						<button type="button" data-open-modal="profile" title="Profil Pengguna" aria-label="Profil Pengguna" class="w-10 h-10 aspect-square rounded-full border theme-subtle p-0.5 overflow-hidden flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition">
-							<img id="header-avatar-mobile" src="https://placehold.co/80x80/4A7C59/FFFFFF?text=BE" alt="Avatar" class="w-full h-full rounded-full object-cover aspect-square">
+						<button type="button" data-open-modal="profile" title="Profil Pengguna" aria-label="Profil Pengguna" class="w-10 h-10 aspect-square rounded-full border theme-subtle p-0.5 overflow-hidden flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition cursor-pointer">
+							<img id="header-avatar-mobile" src="https://placehold.co/80x80/4A7C59/FFFFFF?text=BE" alt="Avatar" class="w-full h-full rounded-full object-cover aspect-square pointer-events-none">
 						</button>
 					</div>
 				</div>
 
 				<!-- Kolom Pencarian Lengkap (Nama, Merk, Harga, Kategori, Deskripsi) -->
-				<div class="relative flex-1 max-w-2xl">
-					<div class="relative flex items-center">
+				<div id="header-search-wrapper" class="relative flex-1 max-w-2xl w-full">
+					<div class="relative flex items-center w-full">
 						<span class="absolute left-3.5 theme-text-muted pointer-events-none">
 							<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 								<circle cx="11" cy="11" r="8"></circle>
@@ -436,19 +448,20 @@
 							</svg>
 						</span>
 						<input
-							type="text"
+							type="search"
 							id="global-search-input"
 							autocomplete="off"
-							placeholder="Cari nama produk, merk (TOA, Yamaha, Ashley), kategori, harga, atau deskripsi..."
+							placeholder="Cari nama produk, merk (TOA, Yamaha, Ashley), kategori, harga..."
 							class="w-full pl-10 pr-24 py-2 rounded-2xl border theme-elevated theme-text-primary placeholder:opacity-60 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30 transition"
 						>
 						<button
 							type="button"
 							id="clear-search-btn"
 							title="Bersihkan pencarian"
-							class="hidden absolute right-16 p-1 rounded-lg theme-text-muted hover:theme-text-primary transition"
+							aria-label="Bersihkan pencarian"
+							class="hidden absolute right-16 p-1.5 rounded-lg theme-text-muted hover:theme-text-primary transition cursor-pointer z-10"
 						>
-							<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+							<svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 								<line x1="18" y1="6" x2="6" y2="18"></line>
 								<line x1="6" y1="6" x2="18" y2="18"></line>
 							</svg>
@@ -456,7 +469,7 @@
 						<button
 							type="button"
 							id="execute-search-btn"
-							class="absolute right-1.5 px-3 py-1 rounded-xl accent-bg text-xs font-medium shadow-sm active:scale-95"
+							class="absolute right-1.5 px-3 py-1.5 rounded-xl accent-bg text-xs font-medium shadow-sm active:scale-95 cursor-pointer z-10"
 						>
 							Cari
 						</button>
@@ -466,7 +479,7 @@
 					<div id="search-history-popover" class="hidden absolute left-0 right-0 top-full mt-2 p-3 rounded-2xl border theme-surface z-50 animate-popover-enter">
 						<div class="flex items-center justify-between mb-2">
 							<span class="text-xs font-semibold theme-text-secondary">Riwayat Pencarian Terakhir</span>
-							<button type="button" id="popover-clear-history" class="text-[11px] accent-text hover:underline">Hapus Riwayat</button>
+							<button type="button" id="popover-clear-history" class="text-[11px] accent-text hover:underline cursor-pointer">Hapus Riwayat</button>
 						</div>
 						<div id="search-history-chips" class="flex flex-wrap gap-1.5"></div>
 					</div>
@@ -474,24 +487,24 @@
 
 				<!-- Tombol Aksi Desktop: Bulat & Sama Rata (Keranjang, Pengaturan, Profil) -->
 				<div class="hidden lg:flex items-center gap-2.5 shrink-0">
-					<button type="button" data-open-modal="cart" title="Keranjang Belanja" aria-label="Keranjang Belanja" class="relative w-11 h-11 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition">
-						<svg class="w-5 h-5 accent-text shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+					<button type="button" data-open-modal="cart" title="Keranjang Belanja" aria-label="Keranjang Belanja" class="relative w-11 h-11 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition cursor-pointer">
+						<svg class="w-5 h-5 accent-text shrink-0 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 							<circle cx="9" cy="21" r="1"></circle>
 							<circle cx="20" cy="21" r="1"></circle>
 							<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
 						</svg>
-						<span class="cart-badge-count absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full accent-bg text-[11px] font-bold flex items-center justify-center leading-none">0</span>
+						<span class="cart-badge-count pointer-events-none absolute -top-1 -right-1 min-w-[20px] h-5 px-1 rounded-full accent-bg text-[11px] font-bold flex items-center justify-center leading-none">0</span>
 					</button>
 
-					<button type="button" data-open-modal="settings" title="Pengaturan Tampilan" aria-label="Pengaturan Tampilan" class="w-11 h-11 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition">
-						<svg class="w-5 h-5 accent-text shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+					<button type="button" data-open-modal="settings" title="Pengaturan Tampilan" aria-label="Pengaturan Tampilan" class="w-11 h-11 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition cursor-pointer">
+						<svg class="w-5 h-5 accent-text shrink-0 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 							<circle cx="12" cy="12" r="3"></circle>
 							<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
 						</svg>
 					</button>
 
-					<button type="button" data-open-modal="profile" title="Profil Pengguna" aria-label="Profil Pengguna" class="w-11 h-11 aspect-square rounded-full border theme-subtle p-0.5 overflow-hidden flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition">
-						<img id="header-avatar-desktop" src="https://placehold.co/80x80/4A7C59/FFFFFF?text=BE" alt="Profil" class="w-full h-full rounded-full object-cover aspect-square">
+					<button type="button" data-open-modal="profile" title="Profil Pengguna" aria-label="Profil Pengguna" class="w-11 h-11 aspect-square rounded-full border theme-subtle p-0.5 overflow-hidden flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition cursor-pointer">
+						<img id="header-avatar-desktop" src="https://placehold.co/80x80/4A7C59/FFFFFF?text=BE" alt="Profil" class="w-full h-full rounded-full object-cover aspect-square pointer-events-none">
 					</button>
 				</div>
 			</div>
@@ -552,9 +565,9 @@
 
 		<!-- 1. KATEGORI ELEKTRONIK -->
 		<section aria-label="Kategori Produk" class="space-y-3">
-			<div class="flex items-center justify-between">
+			<div class="flex items-center justify-between gap-2">
 				<h2 class="text-base sm:text-lg font-bold theme-text-primary">Kategori Elektronik</h2>
-				<span id="active-category-label" class="text-xs font-medium accent-text">Menampilkan: Top 50 Unggulan</span>
+				<span id="active-category-label" class="text-xs font-medium accent-text truncate">Menampilkan: Top 50 Unggulan</span>
 			</div>
 			<div id="category-pills-container" class="flex items-center gap-2 overflow-x-auto pb-2">
 				<!-- Tombol kategori dirender dinamis oleh JS -->
@@ -664,7 +677,7 @@
 				<!-- Kolom 1: Profil & Alamat Lengkap Toko -->
 				<div class="space-y-3">
 					<div class="flex items-center gap-2.5">
-						<div class="w-9 h-9 rounded-xl accent-bg flex items-center justify-center shadow-xs">
+						<div class="w-9 h-9 rounded-xl accent-bg flex items-center justify-center shadow-xs shrink-0">
 							<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<line x1="4" y1="21" x2="4" y2="14"></line>
 								<line x1="4" y1="10" x2="4" y2="3"></line>
@@ -698,7 +711,7 @@
 					<h4 class="text-xs font-bold uppercase tracking-wider theme-text-primary">Jam Operasional &amp; Ketersediaan</h4>
 					<div class="space-y-2.5 text-xs">
 						<div class="p-3 rounded-2xl border theme-elevated space-y-1">
-							<div class="flex items-center justify-between">
+							<div class="flex items-center justify-between gap-2">
 								<span class="font-semibold theme-text-primary">Toko Fisik (Offline)</span>
 								<span id="footer-store-badge" class="px-2 py-0.5 rounded-full text-[10px] font-semibold accent-soft-bg">Senin–Sabtu</span>
 							</div>
@@ -707,7 +720,7 @@
 						</div>
 
 						<div class="p-3 rounded-2xl border theme-elevated space-y-1">
-							<div class="flex items-center justify-between">
+							<div class="flex items-center justify-between gap-2">
 								<span class="font-semibold theme-text-primary">Layanan Online &amp; Pengiriman</span>
 								<span id="footer-online-badge" class="px-2 py-0.5 rounded-full text-[10px] font-semibold accent-soft-bg">Senin–Sabtu</span>
 							</div>
@@ -727,7 +740,7 @@
 						</li>
 						<li class="flex items-start gap-2.5">
 							<span class="w-5 h-5 rounded-full accent-bg text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
-							<span><strong class="theme-text-primary">Hitung Ongkir Otomatis:</strong> Berlaku khusus Tangerang Kota (<strong>Rp 6.000/KM</strong>) &amp; Kab. Tangerang (<strong>Rp 8.000/KM</strong>) radius <strong>0–30 KM</strong> dari Cimone Jaya + layanan Rp 15.000.</span>
+							<span><strong class="theme-text-primary">Hitung Ongkir Otomatis:</strong> Berlaku khusus Tangerang Kota &amp; Kab. Tangerang radius <strong>0–30 KM</strong> dari Cimone Jaya + layanan Rp 15.000.</span>
 						</li>
 						<li class="flex items-start gap-2.5">
 							<span class="w-5 h-5 rounded-full accent-bg text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
@@ -896,22 +909,22 @@
 	<div id="modal-cart" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto modal-backdrop-enter">
 		<div class="modal-dialog-box theme-surface border rounded-3xl max-w-2xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[90vh]" style="box-shadow: var(--shadow-modal);">
 			<!-- Header Modal Keranjang -->
-			<div class="px-6 py-4 border-b theme-border flex items-center justify-between">
-				<div class="flex items-center gap-2.5">
-					<span class="w-9 h-9 rounded-xl accent-soft-bg flex items-center justify-center">
+			<div class="px-6 py-4 border-b theme-border flex items-center justify-between gap-2">
+				<div class="flex items-center gap-2.5 min-w-0">
+					<span class="w-9 h-9 rounded-xl accent-soft-bg flex items-center justify-center shrink-0">
 						<svg class="w-5 h-5 accent-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 							<circle cx="9" cy="21" r="1"></circle>
 							<circle cx="20" cy="21" r="1"></circle>
 							<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
 						</svg>
 					</span>
-					<div>
-						<h2 class="text-base sm:text-lg font-bold theme-text-primary">Keranjang Belanja</h2>
-						<p class="text-xs theme-text-secondary">Atur jumlah barang sesuai stok tersedia sebelum melanjutkan pembayaran</p>
+					<div class="min-w-0">
+						<h2 class="text-base sm:text-lg font-bold theme-text-primary truncate">Keranjang Belanja</h2>
+						<p class="text-xs theme-text-secondary truncate">Atur jumlah barang sesuai stok tersedia sebelum pembayaran</p>
 					</div>
 				</div>
-				<button type="button" data-close-modal="cart" aria-label="Tutup Keranjang" class="p-2 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary transition">
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+				<button type="button" data-close-modal="cart" aria-label="Tutup Keranjang" class="p-2 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary transition shrink-0 cursor-pointer">
+					<svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 						<line x1="18" y1="6" x2="6" y2="18"></line>
 						<line x1="6" y1="6" x2="18" y2="18"></line>
 					</svg>
@@ -952,16 +965,16 @@
 		<div class="modal-dialog-box theme-surface border rounded-3xl max-w-4xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[92vh]" style="box-shadow: var(--shadow-modal);">
 			<!-- Header Checkout -->
 			<div class="px-6 py-4 border-b theme-border flex flex-wrap items-center justify-between gap-3">
-				<div>
-					<h2 class="text-lg font-bold theme-text-primary">Formulir Pembayaran &amp; Pengiriman</h2>
-					<p class="text-xs theme-text-secondary">Asal Pengiriman: <strong class="theme-text-primary">Jl. Raya Merdeka No.35, Cimone Jaya, Kec. Karawaci, Kota Tangerang</strong> (Radius 0–30 KM)</p>
+				<div class="min-w-0 flex-1">
+					<h2 class="text-base sm:text-lg font-bold theme-text-primary">Formulir Pembayaran &amp; Pengiriman</h2>
+					<p class="text-xs theme-text-secondary truncate">Asal: <strong class="theme-text-primary">Jl. Raya Merdeka No.35, Cimone Jaya, Karawaci, Tangerang</strong> (Radius 0–30 KM)</p>
 				</div>
-				<div class="flex items-center gap-2">
+				<div class="flex items-center gap-2 shrink-0">
 					<button type="button" id="sync-profile-to-checkout-btn" class="px-3 py-1.5 rounded-xl accent-soft-bg text-xs font-medium hover:opacity-85 transition">
 						Tarik Data Profile
 					</button>
-					<button type="button" data-close-modal="checkout" aria-label="Tutup Checkout" class="p-2 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary transition">
-						<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+					<button type="button" data-close-modal="checkout" aria-label="Tutup Checkout" class="p-2 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary transition cursor-pointer">
+						<svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 							<line x1="18" y1="6" x2="6" y2="18"></line>
 							<line x1="6" y1="6" x2="18" y2="18"></line>
 						</svg>
@@ -1033,7 +1046,7 @@
 							</div>
 						</div>
 
-						<!-- Tujuan Transfer Resmi Berkat Elektronik (Harus dipilih dari 3 payment yang tersedia) -->
+						<!-- Tujuan Transfer Resmi Berkat Elektronik -->
 						<div class="space-y-1.5">
 							<label class="block text-xs font-semibold theme-text-secondary">Tujuan Transfer Resmi Berkat Elektronik *</label>
 							<div id="dropdown-checkout-destination" class="relative"></div>
@@ -1127,13 +1140,13 @@
 	     ========================================================================== -->
 	<div id="modal-settings" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto modal-backdrop-enter">
 		<div class="modal-dialog-box theme-surface border rounded-3xl max-w-2xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[90vh]" style="box-shadow: var(--shadow-modal);">
-			<div class="px-6 py-4 border-b theme-border flex items-center justify-between">
-				<div>
-					<h2 class="text-lg font-bold theme-text-primary">Pengaturan Aplikasi</h2>
-					<p class="text-xs theme-text-secondary">Sesuaikan kenyamanan visual, tipografi, efek suara, dan cadangan data</p>
+			<div class="px-6 py-4 border-b theme-border flex items-center justify-between gap-2">
+				<div class="min-w-0">
+					<h2 class="text-base sm:text-lg font-bold theme-text-primary truncate">Pengaturan Aplikasi</h2>
+					<p class="text-xs theme-text-secondary truncate">Sesuaikan kenyamanan visual, tipografi, efek suara, dan cadangan data</p>
 				</div>
-				<button type="button" data-close-modal="settings" aria-label="Tutup Pengaturan" class="p-2 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary transition">
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+				<button type="button" data-close-modal="settings" aria-label="Tutup Pengaturan" class="p-2 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary transition shrink-0 cursor-pointer">
+					<svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 						<line x1="18" y1="6" x2="6" y2="18"></line>
 						<line x1="6" y1="6" x2="18" y2="18"></line>
 					</svg>
@@ -1218,12 +1231,12 @@
 						<button type="button" data-action="import-data" class="px-3.5 py-2 rounded-xl border theme-surface theme-text-primary text-xs font-semibold hover:opacity-85">
 							Import Cadangan (.json)
 						</button>
-						<!--<button type="button" data-action="load-product-json" class="px-3.5 py-2 rounded-xl border theme-surface theme-text-primary text-xs font-semibold hover:opacity-85">
+						<button type="button" data-action="load-product-json" class="px-3.5 py-2 rounded-xl border theme-surface theme-text-primary text-xs font-semibold hover:opacity-85">
 							Muat JSON Produk
-						</button>-->
-						<!--<button type="button" id="download-sample-product-json-btn" class="px-3.5 py-2 rounded-xl accent-soft-bg text-xs font-semibold hover:opacity-85">
+						</button>
+						<button type="button" id="download-sample-product-json-btn" class="px-3.5 py-2 rounded-xl accent-soft-bg text-xs font-semibold hover:opacity-85">
 							Unduh Template JSON
-						</button>-->
+						</button>
 					</div>
 				</div>
 			</div>
@@ -1236,13 +1249,13 @@
 	<div id="modal-profile" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto modal-backdrop-enter">
 		<div class="modal-dialog-box theme-surface border rounded-3xl max-w-3xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[92vh]" style="box-shadow: var(--shadow-modal);">
 			<!-- Header Profile -->
-			<div class="px-6 py-4 border-b theme-border flex items-center justify-between">
-				<div>
-					<h2 class="text-lg font-bold theme-text-primary">Profil &amp; Aktivitas Saya</h2>
-					<p class="text-xs theme-text-secondary">Data diri otomatis terhubung ke formulir pembayaran &amp; tersimpan lokal</p>
+			<div class="px-6 py-4 border-b theme-border flex items-center justify-between gap-2">
+				<div class="min-w-0">
+					<h2 class="text-base sm:text-lg font-bold theme-text-primary truncate">Profil &amp; Aktivitas Saya</h2>
+					<p class="text-xs theme-text-secondary truncate">Data diri otomatis terhubung ke formulir pembayaran &amp; tersimpan lokal</p>
 				</div>
-				<button type="button" data-close-modal="profile" aria-label="Tutup Profile" class="p-2 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary transition">
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+				<button type="button" data-close-modal="profile" aria-label="Tutup Profile" class="p-2 rounded-xl theme-subtle theme-text-secondary hover:theme-text-primary transition shrink-0 cursor-pointer">
+					<svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 						<line x1="18" y1="6" x2="6" y2="18"></line>
 						<line x1="6" y1="6" x2="18" y2="18"></line>
 					</svg>
@@ -1440,24 +1453,32 @@
 				const status = this.getStatus();
 				const weather = WeatherService.currentWeather;
 
+				/* Baris 2 Header: Informasi Toko Buka & Tutup */
 				const headerBar = document.getElementById('header-availability-bar');
 				if (headerBar) {
 					headerBar.innerHTML = `
-						<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-medium theme-subtle theme-text-secondary" title="Kondisi Cuaca Tangerang">
-							<span>${weather.icon}</span>
-							<span>Tangerang: <strong>${weather.condition}</strong></span>
+						<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-medium max-w-full ${status.storeOpen ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300' : 'theme-subtle theme-text-secondary'}">
+							<span class="w-1.5 h-1.5 rounded-full shrink-0 ${status.storeOpen ? 'bg-emerald-500' : 'bg-rose-500'}"></span>
+							<span class="truncate">${status.storeLabel}</span>
 						</span>
-						<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-medium ${status.storeOpen ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300' : 'theme-subtle theme-text-secondary'}">
-							<span class="w-1.5 h-1.5 rounded-full ${status.storeOpen ? 'bg-emerald-500' : 'bg-rose-500'}"></span>
-							<span>${status.storeLabel}</span>
-						</span>
-						<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-medium ${status.onlineOpen ? 'bg-sky-500/15 text-sky-700 dark:text-sky-300' : 'theme-subtle theme-text-secondary'}">
-							<span class="w-1.5 h-1.5 rounded-full ${status.onlineOpen ? 'bg-sky-500' : 'bg-rose-500'}"></span>
-							<span>${status.onlineLabel} WIB</span>
+						<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-medium max-w-full ${status.onlineOpen ? 'bg-sky-500/15 text-sky-700 dark:text-sky-300' : 'theme-subtle theme-text-secondary'}">
+							<span class="w-1.5 h-1.5 rounded-full shrink-0 ${status.onlineOpen ? 'bg-sky-500' : 'bg-rose-500'}"></span>
+							<span class="truncate">${status.onlineLabel} WIB</span>
 						</span>
 					`;
 				}
-				
+
+				/* Baris 3 Header: Perkiraan Cuaca Tangerang Real-Time (di bawah waktu buka/tutup) */
+				const weatherBar = document.getElementById('header-weather-bar');
+				if (weatherBar) {
+					weatherBar.innerHTML = `
+						<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-medium theme-subtle theme-text-secondary max-w-full" title="Perkiraan Cuaca Wilayah Tangerang">
+							<span class="shrink-0">${weather.icon}</span>
+							<span class="truncate">Perkiraan Cuaca Tangerang: <strong class="theme-text-primary">${weather.condition}</strong></span>
+						</span>
+					`;
+				}
+
 				const checkoutNotice = document.getElementById('checkout-availability-notice');
 				if (checkoutNotice) {
 					checkoutNotice.innerHTML = `
@@ -1486,8 +1507,8 @@
 				}
 			}
 		};
-		
-		/* Modul Perkiraan Cuaca Real-Time untuk Wilayah Tangerang (Open-Meteo API Gratis & Stabil) */
+
+		/* Modul Perkiraan Cuaca Real-Time untuk Wilayah Tangerang (Open-Meteo API) */
 		const WeatherService = {
 			currentWeather: {
 				condition: 'Memuat cuaca...',
@@ -1499,7 +1520,6 @@
 
 			async fetchTangerangWeather() {
 				try {
-					// Menggunakan koordinat pusat Kota Tangerang (-6.1783, 106.6319)
 					const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-6.1783&longitude=106.6319&current=temperature_2m,weather_code', { cache: 'no-cache' });
 					if (!res.ok) throw new Error('Network error');
 					const data = await res.json();
@@ -1514,19 +1534,18 @@
 					let icon = '☀️';
 					let isRainingOrCloudy = false;
 
-					// Klasifikasi WMO Weather Codes
 					if (code === 0 || code === 1) {
 						condition = 'Cerah / Terang';
 						extraMinutes = 0;
 						icon = '☀️';
 					} else if (code === 2 || code === 3 || code === 45 || code === 48) {
 						condition = 'Berawan / Mendung';
-						extraMinutes = 12; // Tambahan waktu ±12-15 menit
+						extraMinutes = 12;
 						icon = '⛅';
 						isRainingOrCloudy = true;
 					} else if (code >= 51) {
 						condition = 'Hujan / Gerimis';
-						extraMinutes = 18; // Tambahan waktu ±15-20 menit
+						extraMinutes = 18;
 						icon = '🌧️';
 						isRainingOrCloudy = true;
 					}
@@ -1541,7 +1560,6 @@
 
 					StoreAvailability.renderAllIndicators();
 				} catch (err) {
-					// Fallback jika offline / gagal koneksi
 					this.currentWeather = {
 						condition: 'Cerah Berawan (Normal)',
 						temp: '30°C',
@@ -1555,7 +1573,7 @@
 		};
 
 		/* ==========================================================================
-		   2. DATA SLIDER LANDSCAPE HEADER & REPOSITORY KATALOG PRODUK (100+ ITEM SIAP PAGINATION)
+		   2. DATA SLIDER LANDSCAPE HEADER & REPOSITORY KATALOG PRODUK (115 PRODUK)
 		   ========================================================================== */
 		const HERO_SLIDES = [
 			{
@@ -1584,7 +1602,6 @@
 			}
 		];
 
-		/* Daftar file JSON eksternal yang didukung */
 		const PRODUCT_JSON_FILES = [
 			'produk/produk-toa.json',
 			'produk/produk-acr.json',
@@ -1592,7 +1609,6 @@
 			'produk-toa_2.json'
 		];
 
-		/* 14 Produk Inti Unggulan */
 		const CORE_PRODUCTS_DATA = [
 			{
 				id: 'prd-01',
@@ -1764,7 +1780,6 @@
 			}
 		];
 
-		/* Generator Katalog Tambahan yang Realistis agar total mencapai 115 produk (memudahkan pengujian Top 50 + Pagination 50/halaman) */
 		function buildExtendedCatalog() {
 			const templates = [
 				{ category: 'Mixer', brand: 'Yamaha', prefix: 'Yamaha MG16XU', suffix: '16-Channel Live Console', basePrice: 6450000, img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=900&q=80', desc: 'Konsol mixer live 16 channel dengan preamp D-PRE transparan, kompresor 1-knob, dan efek SPX.' },
@@ -1822,7 +1837,6 @@
 		const DEFAULT_PRODUCTS_DATA = buildExtendedCatalog();
 		let PRODUCTS_DATA = [...DEFAULT_PRODUCTS_DATA];
 
-		/* Repository Loader: Mendukung JSON eksternal (produk/*.json) */
 		const ProductRepository = {
 			normalizeItem(raw) {
 				if (!raw || !raw.id || !raw.name) return null;
@@ -2045,9 +2059,7 @@
 						default:
 							this.scheduleNote(500, 0, 0.05, 'sine', 0.05, 380);
 					}
-				} catch (err) {
-					/* Abaikan jika browser memblokir autoplay audio */
-				}
+				} catch (err) {}
 			},
 
 			vibrate(pattern = 18) {
@@ -2055,9 +2067,7 @@
 				if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
 					try {
 						navigator.vibrate(pattern);
-					} catch (err) {
-						/* Abaikan pada perangkat non-haptic */
-					}
+					} catch (err) {}
 				}
 			},
 
@@ -2357,7 +2367,6 @@
 				return PRODUCTS_DATA.find(p => p.id === id) || null;
 			},
 
-			/* Mencatat setiap kali produk dibuka/dilihat untuk perhitungan skor Top 50 */
 			recordProductView(productId) {
 				if (!productId) return;
 				if (!this.data.productViews || typeof this.data.productViews !== 'object') {
@@ -2367,7 +2376,6 @@
 				this.save();
 			},
 
-			/* Menghitung skor interaksi (Dilihat * 2 + Wishlist * 15 + Pernah Dibeli * 10) */
 			getProductInteractionScore(productId) {
 				const views = Number(this.data.productViews?.[productId] || 0);
 				const isLiked = this.data.likes.includes(productId) ? 1 : 0;
@@ -2385,7 +2393,6 @@
 				return (views * 2) + (isLiked * 15) + (purchasedQty * 10);
 			},
 
-			/* Mengecek apakah user sedang melakukan pencarian atau filter aktif */
 			hasActiveSearchOrFilter() {
 				const { search, category, brand, priceRange, sort } = this.filters;
 				return (
@@ -2397,7 +2404,6 @@
 				);
 			},
 
-			/* Mengambil seluruh produk yang sudah diurutkan berdasarkan Top 50 (6 kategori fokus + skor tertinggi) */
 			getRankedCatalogProducts() {
 				const focusSet = new Set(STORE_CONFIG.focusCategories);
 				const enriched = PRODUCTS_DATA.map((product, originalIndex) => ({
@@ -2407,7 +2413,6 @@
 					score: this.getProductInteractionScore(product.id)
 				}));
 
-				/* 1. Ambil kandidat dari 6 kategori fokus (Mixer, Power, Ampli, Speaker, Equalizer, Crossover) */
 				const focusCandidates = enriched
 					.filter(item => item.isFocus)
 					.sort((a, b) => (b.score - a.score) || (a.originalIndex - b.originalIndex));
@@ -2415,7 +2420,6 @@
 				const top50Entries = focusCandidates.slice(0, STORE_CONFIG.topLimit);
 				const top50Ids = new Set(top50Entries.map(entry => entry.product.id));
 
-				/* 2. Sisa produk di luar Top 50 (tetap diurutkan berdasarkan skor interaksi tertinggi) */
 				const remainingEntries = enriched
 					.filter(item => !top50Ids.has(item.product.id))
 					.sort((a, b) => (b.score - a.score) || (a.originalIndex - b.originalIndex));
@@ -2428,9 +2432,6 @@
 				}));
 			},
 
-			/* Menyaring produk:
-			   - Jika filter/pencarian default: tampilkan Top 50 teratas dulu, lalu halaman berikutnya menampilkan produk lainnya per 50 item.
-			   - Jika user mencari atau memilih filter: tampilkan seluruh produk yang cocok meski di luar Top 50. */
 			getFilteredProducts() {
 				const { search, category, brand, priceRange, sort } = this.filters;
 				const q = search.trim().toLowerCase();
@@ -2756,7 +2757,7 @@
 		};
 
 		/* ==========================================================================
-		   9. KALKULATOR JARAK & ONGKOS KIRIM BERDASARKAN ATURAN BARU
+		   9. KALKULATOR JARAK & ONGKOS KIRIM BERDASARKAN ATURAN TANGERANG
 		   ========================================================================== */
 		const ShippingCalculator = {
 			toRad(deg) {
@@ -3047,7 +3048,6 @@
 				this.updateBadges();
 			},
 
-			/* 11A. Hero Slider 4 Foto Landscape Otomatis 5 Detik */
 			initHeroSlider() {
 				const track = document.getElementById('hero-slider-track');
 				const indicators = document.getElementById('hero-indicators');
@@ -3181,7 +3181,6 @@
 				this.renderProducts();
 			},
 
-			/* 11B. Kategori Produk */
 			renderCategoryPills() {
 				const categories = this.getAvailableCategories();
 				const container = document.getElementById('category-pills-container');
@@ -3219,7 +3218,6 @@
 				}
 			},
 
-			/* 11C. Inisialisasi Custom Dropdown untuk Filter & Pengaturan */
 			initFilterDropdowns() {
 				const categories = this.getAvailableCategories();
 				const brands = this.getAvailableBrands();
@@ -3327,7 +3325,6 @@
 				}
 			},
 
-			/* 11D. Render Grid Produk & Pagination 50 Item per Halaman */
 			renderProducts() {
 				const grid = document.getElementById('products-grid');
 				const emptyState = document.getElementById('empty-products-state');
@@ -3515,7 +3512,6 @@
 					`;
 				}).join('');
 
-				/* Delegasi Klik Kartu vs Tombol Aksi */
 				grid.querySelectorAll('[data-product-card]').forEach(card => {
 					card.addEventListener('click', (e) => {
 						const likeBtn = e.target.closest('[data-action-like]');
@@ -3545,7 +3541,6 @@
 					});
 				});
 
-				/* Render Kontrol Pagination 50 Produk/Halaman */
 				this.renderPaginationControls(totalPages, totalItems);
 			},
 
@@ -3622,7 +3617,6 @@
 				});
 			},
 
-			/* 11E. Modal Detail Produk Lengkap (Sekaligus mencatat view produk untuk skor Top 50) */
 			openProductDetailModal(productId) {
 				const product = AppState.getProductById(productId);
 				const container = document.getElementById('product-detail-content');
@@ -3740,7 +3734,6 @@
 				ModalManager.open('product-detail');
 			},
 
-			/* 11F. Render Modal Keranjang Belanja (Dengan Konfirmasi Hapus) */
 			renderCartModal() {
 				const listEl = document.getElementById('cart-items-list');
 				const subtotalEl = document.getElementById('cart-subtotal-display');
@@ -3785,21 +3778,22 @@
 					const lineTotal = product.price * qty;
 					subtotal += lineTotal;
 					const reachedMaxStock = qty >= product.stock;
+					const fallbackUrl = product.fallbackImage || `https://placehold.co/128x128/EBF0EC/4A7C59?text=${encodeURIComponent(product.category || 'Audio')}`;
 					return `
 						<div class="p-3.5 rounded-2xl border theme-elevated flex items-center gap-3.5">
 							<img
 								src="${product.image}"
 								alt="${product.name}"
-								onerror="this.onerror=null;this.src='https://placehold.co/120x120/EBF0EC/4A7C59?text=Audio';"
-								class="w-16 h-16 rounded-xl object-cover shrink-0 border theme-border"
+								onerror="if(this.dataset.fallbackTried!=='1'){this.dataset.fallbackTried='1';this.src='${fallbackUrl}';}else{this.onerror=null;this.src='https://placehold.co/128x128/EBF0EC/4A7C59?text=Audio';}"
+								class="w-16 h-16 aspect-square rounded-xl object-cover shrink-0 border theme-border bg-white/60"
 							>
 							<div class="flex-1 min-w-0">
-								<span class="text-[11px] font-semibold accent-text">${product.brand} • ${product.category} • Stok: ${product.stock}</span>
+								<span class="text-[11px] font-semibold accent-text block truncate">${product.brand} • ${product.category} • Stok: ${product.stock}</span>
 								<h4 class="text-xs sm:text-sm font-bold theme-text-primary truncate">${product.name}</h4>
 								<p class="text-xs theme-text-secondary">${AppState.formatRupiah(product.price)} / unit</p>
 								<p class="text-xs font-bold theme-text-primary mt-0.5">Total: ${AppState.formatRupiah(lineTotal)}</p>
 							</div>
-							<div class="flex flex-col items-end gap-2">
+							<div class="flex flex-col items-end gap-2 shrink-0">
 								<button type="button" data-cart-remove="${product.id}" class="text-[11px] font-semibold text-rose-500 hover:underline">
 									Hapus
 								</button>
@@ -3837,7 +3831,6 @@
 				});
 			},
 
-			/* 11G. Update Badge Angka, Sapaan Header & Avatar */
 			updateBadges() {
 				const totalQty = AppState.data.cart.reduce((sum, item) => sum + item.qty, 0);
 				document.querySelectorAll('.cart-badge-count').forEach(el => {
@@ -3864,7 +3857,6 @@
 				}
 			},
 
-			/* 11H. Chips Riwayat Pencarian di Header */
 			renderSearchHistoryChips() {
 				const container = document.getElementById('search-history-chips');
 				if (!container) return;
@@ -3896,7 +3888,6 @@
 				});
 			},
 
-			/* 11I. Modal Profile & Sub-Tab (Biodata, Wishlist/Suka, Belanja, Pencarian, Keranjang) */
 			renderProfileModal() {
 				this.updateBadges();
 
@@ -3985,7 +3976,7 @@
 				let selectedBank = p.bank || 'Bank Jago';
 				let avatarData = p.avatar;
 
-				const regionDD = new CustomDropdown({
+				new CustomDropdown({
 					containerId: 'dropdown-profile-region',
 					value: selectedRegion,
 					options: [
@@ -4080,14 +4071,20 @@
 						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 							${likedProducts.map(prod => {
 								const isOutOfStock = Number(prod.stock || 0) <= 0;
+								const fallbackUrl = prod.fallbackImage || `https://placehold.co/128x128/EBF0EC/4A7C59?text=${encodeURIComponent(prod.category || 'Audio')}`;
 								return `
 									<div class="p-3 rounded-2xl border theme-elevated flex items-center gap-3">
-										<img src="${prod.image}" alt="${prod.name}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/EBF0EC/4A7C59?text=Audio';" class="w-14 h-14 rounded-xl object-cover shrink-0 ${isOutOfStock ? 'opacity-65 grayscale-[25%]' : ''}">
+										<img
+											src="${prod.image}"
+											alt="${prod.name}"
+											onerror="if(this.dataset.fallbackTried!=='1'){this.dataset.fallbackTried='1';this.src='${fallbackUrl}';}else{this.onerror=null;this.src='https://placehold.co/128x128/EBF0EC/4A7C59?text=Audio';}"
+											class="w-14 h-14 aspect-square rounded-xl object-cover shrink-0 border theme-border bg-white/60 ${isOutOfStock ? 'opacity-65 grayscale-[25%]' : ''}"
+										>
 										<div class="flex-1 min-w-0">
 											<h4 class="text-xs font-bold theme-text-primary truncate">${prod.name}</h4>
-											<div class="flex items-center gap-2">
-												<p class="text-xs font-semibold accent-text">${AppState.formatRupiah(prod.price)}</p>
-												<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded ${isOutOfStock ? 'bg-rose-500/15 text-rose-600' : 'accent-soft-bg'}">
+											<div class="flex items-center gap-2 mt-0.5">
+												<p class="text-xs font-semibold accent-text truncate">${AppState.formatRupiah(prod.price)}</p>
+												<span class="text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0 ${isOutOfStock ? 'bg-rose-500/15 text-rose-600' : 'accent-soft-bg'}">
 													${isOutOfStock ? 'Stok Habis' : `Stok: ${prod.stock}`}
 												</span>
 											</div>
@@ -4166,10 +4163,16 @@
 								<div class="space-y-2">
 									${ord.items.map(it => {
 										const liveProd = AppState.getProductById(it.productId);
-										const thumbUrl = it.image || (liveProd ? liveProd.image : 'https://placehold.co/100x100/EBF0EC/4A7C59?text=Audio');
+										const thumbUrl = it.image || (liveProd ? liveProd.image : 'https://placehold.co/128x128/EBF0EC/4A7C59?text=Audio');
+										const fallbackUrl = (liveProd && liveProd.fallbackImage) ? liveProd.fallbackImage : 'https://placehold.co/128x128/EBF0EC/4A7C59?text=Audio';
 										return `
-											<div class="flex items-center gap-3 p-2 rounded-xl border theme-surface">
-												<img src="${thumbUrl}" alt="${it.name}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/EBF0EC/4A7C59?text=Audio';" class="w-11 h-11 rounded-lg object-cover border theme-border shrink-0">
+											<div class="flex items-center gap-3 p-2.5 rounded-xl border theme-surface">
+												<img
+													src="${thumbUrl}"
+													alt="${it.name}"
+													onerror="if(this.dataset.fallbackTried!=='1'){this.dataset.fallbackTried='1';this.src='${fallbackUrl}';}else{this.onerror=null;this.src='https://placehold.co/128x128/EBF0EC/4A7C59?text=Audio';}"
+													class="w-14 h-14 aspect-square rounded-xl object-cover border theme-border bg-white/60 shrink-0"
+												>
 												<div class="flex-1 min-w-0 text-xs">
 													<p class="font-semibold theme-text-primary truncate">${it.name}</p>
 													<p class="theme-text-secondary">${it.qty} unit × ${AppState.formatRupiah(it.price)}</p>
@@ -4320,33 +4323,64 @@
 				const total = items.reduce((s, it) => s + it.product.price * it.qty, 0);
 				container.innerHTML = `
 					<div class="space-y-3">
-						${items.map(({ product, qty }) => `
-							<div class="p-3 rounded-2xl border theme-elevated flex items-center gap-3 text-xs">
-								<img src="${product.image}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/EBF0EC/4A7C59?text=Audio';" class="w-12 h-12 rounded-xl object-cover border theme-border shrink-0">
-								<div class="flex-1 min-w-0">
-									<span class="text-[10px] font-semibold accent-text">${product.brand} • ${product.category}</span>
-									<p class="font-bold theme-text-primary truncate">${product.name}</p>
-									<p class="theme-text-secondary">${qty} unit × ${AppState.formatRupiah(product.price)}</p>
+						${items.map(({ product, qty }) => {
+							const fallbackUrl = product.fallbackImage || `https://placehold.co/128x128/EBF0EC/4A7C59?text=${encodeURIComponent(product.category || 'Audio')}`;
+							return `
+								<div class="p-3 rounded-2xl border theme-elevated flex items-center justify-between gap-3">
+									<div class="flex items-center gap-3 min-w-0 flex-1">
+										<img
+											src="${product.image}"
+											alt="${product.name}"
+											onerror="if(this.dataset.fallbackTried!=='1'){this.dataset.fallbackTried='1';this.src='${fallbackUrl}';}else{this.onerror=null;this.src='https://placehold.co/128x128/EBF0EC/4A7C59?text=Audio';}"
+											class="w-14 h-14 aspect-square rounded-xl object-cover border theme-border bg-white/60 shrink-0"
+										>
+										<div class="min-w-0 flex-1">
+											<span class="text-[10px] font-semibold accent-text block truncate">${product.brand} • ${product.category}</span>
+											<h4 class="text-xs font-bold theme-text-primary truncate">${product.name}</h4>
+											<p class="text-[11px] theme-text-secondary">${qty} × ${AppState.formatRupiah(product.price)} (Stok: ${product.stock})</p>
+										</div>
+									</div>
+									<div class="flex flex-col items-end gap-1.5 shrink-0">
+										<span class="text-xs font-bold accent-text">${AppState.formatRupiah(product.price * qty)}</span>
+										<button type="button" data-prof-cart-del="${product.id}" class="text-[11px] font-semibold text-rose-500 hover:underline">Hapus</button>
+									</div>
 								</div>
-								<span class="font-bold accent-text shrink-0">${AppState.formatRupiah(product.price * qty)}</span>
-							</div>
-						`).join('')}
+							`;
+						}).join('')}
 						<div class="pt-3 border-t theme-border flex items-center justify-between">
-							<span class="text-sm font-bold theme-text-primary">Subtotal: ${AppState.formatRupiah(total)}</span>
-							<button type="button" id="prof-open-cart-btn" class="px-4 py-2 rounded-xl accent-bg text-xs font-semibold">Buka Keranjang &amp; Beli</button>
+							<span class="text-xs font-bold">Total Keranjang: <span class="accent-text">${AppState.formatRupiah(total)}</span></span>
+							<button type="button" id="prof-go-checkout-btn" class="px-4 py-2 rounded-xl accent-bg text-xs font-bold">
+								Lanjut ke Pembayaran
+							</button>
 						</div>
 					</div>
 				`;
 
-				document.getElementById('prof-open-cart-btn')?.addEventListener('click', () => {
+				container.querySelectorAll('[data-prof-cart-del]').forEach(btn => {
+					btn.addEventListener('click', () => {
+						const prodId = btn.getAttribute('data-prof-cart-del');
+						const prod = AppState.getProductById(prodId);
+						ConfirmDialog.ask({
+							title: 'Hapus Barang dari Keranjang?',
+							message: `Hapus "${prod ? prod.name : 'barang ini'}" dari keranjang belanja Anda?`,
+							confirmLabel: 'Ya, Hapus',
+							onConfirm: () => {
+								AppState.removeFromCart(prodId);
+								this.renderProfileModal();
+							}
+						});
+					});
+				});
+
+				document.getElementById('prof-go-checkout-btn')?.addEventListener('click', () => {
 					ModalManager.close('profile');
-					ModalManager.open('cart');
+					ModalManager.open('checkout');
 				});
 			}
 		};
 
 		/* ==========================================================================
-		   12. CONTROLLER CHECKOUT, ONGKOS KIRIM & WHATSAPP INTEGRATION
+		   12. CHECKOUT CONTROLLER (TARIK DATA PROFILE, ONGKIR CIMONE JAYA & WHATSAPP)
 		   ========================================================================== */
 		const CheckoutController = {
 			selectedRegion: 'Tangerang Kota',
@@ -4364,110 +4398,83 @@
 				this.bindEvents();
 			},
 
-			openAndPopulate() {
-				AppState.syncCartWithStock();
-				const cartItems = AppState.data.cart
-					.map(c => ({ ...c, product: AppState.getProductById(c.productId) }))
-					.filter(c => c.product !== null && c.product.stock > 0);
+			bindEvents() {
+				document.getElementById('sync-profile-to-checkout-btn')?.addEventListener('click', () => {
+					this.pullFromProfile(true);
+				});
 
-				if (cartItems.length === 0) {
-					Toast.show('Keranjang kosong! Tambahkan barang yang tersedia sebelum membeli.', 'warning');
+				const dropzone = document.getElementById('checkout-proof-dropzone');
+				const fileInput = document.getElementById('checkout-proof-input');
+
+				dropzone?.addEventListener('click', () => {
+					fileInput?.click();
+				});
+
+				dropzone?.addEventListener('keydown', (e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						fileInput?.click();
+					}
+				});
+
+				fileInput?.addEventListener('change', (e) => {
+					const file = e.target.files?.[0];
+					if (!file) return;
+
+					if (!file.type.startsWith('image/')) {
+						SoundHaptic.feedback('warning');
+						Toast.show('Harap pilih berkas gambar (JPG, PNG, atau WEBP).', 'warning');
+						return;
+					}
+
+					if (file.size > 5 * 1024 * 1024) {
+						SoundHaptic.feedback('warning');
+						Toast.show('Ukuran gambar maksimal 5MB.', 'warning');
+						return;
+					}
+
+					const reader = new FileReader();
+					reader.onload = (ev) => {
+						this.proofImageData = ev.target.result;
+						this.proofFileName = file.name;
+
+						const previewImg = document.getElementById('proof-preview-img');
+						const fileNameEl = document.getElementById('proof-file-name');
+						if (previewImg) previewImg.src = this.proofImageData;
+						if (fileNameEl) fileNameEl.textContent = file.name;
+
+						document.getElementById('proof-placeholder-view')?.classList.add('hidden');
+						document.getElementById('proof-preview-view')?.classList.remove('hidden');
+						SoundHaptic.feedback('click');
+						Toast.show(`Bukti transfer "${file.name}" siap dilampirkan.`, 'success');
+					};
+					reader.readAsDataURL(file);
+				});
+
+				document.getElementById('checkout-form')?.addEventListener('submit', (e) => {
+					e.preventDefault();
+					this.handleOrderSubmit();
+				});
+			},
+
+			openAndPopulate() {
+				if (AppState.data.cart.length === 0) {
 					SoundHaptic.feedback('warning');
+					Toast.show('Keranjang masih kosong. Silakan pilih produk terlebih dahulu.', 'warning');
 					return;
 				}
 
-				StoreAvailability.renderAllIndicators();
+				const prof = AppState.data.profile;
+				this.selectedRegion = prof.region || 'Tangerang Kota';
+				this.selectedDistrict = prof.district || 'Karawaci (Cimone Jaya)';
+				this.selectedBank = prof.bank || 'Bank Jago';
+				this.selectedDestination = '';
+
+				this.initCheckoutDropdowns();
 				this.pullFromProfile(false);
-				this.renderSummary();
-			},
-
-			pullFromProfile(showToast = true) {
-				const p = AppState.data.profile;
-				document.getElementById('checkout-name').value = p.fullName || '';
-				document.getElementById('checkout-phone').value = p.phone || '';
-				document.getElementById('checkout-address').value = p.address || '';
-				
-				const senderNameInput = document.getElementById('checkout-sender-name');
-				if (senderNameInput) senderNameInput.value = p.fullName || '';
-
-				this.selectedRegion = TANGERANG_LOCATIONS[p.region] ? p.region : 'Tangerang Kota';
-				const distList = TANGERANG_LOCATIONS[this.selectedRegion] || [];
-				const validDistrict = distList.find(d => d.name === p.district);
-				this.selectedDistrict = validDistrict ? validDistrict.name : (distList[0]?.name || '');
-				const validBank = PAYMENT_PROVIDERS.find(b => b.id === p.bank);
-				this.selectedBank = validBank ? validBank.id : 'Bank Jago';
-
-				this.initOrUpdateDropdowns();
 				this.renderOfficialDestinations();
 				this.renderSummary();
-
-				if (showToast) {
-					SoundHaptic.feedback('click');
-					Toast.show('Data diri berhasil ditarik dari Profile.', 'success');
-				}
-			},
-
-			initOrUpdateDropdowns() {
-				const regions = Object.keys(TANGERANG_LOCATIONS).map(r => ({ value: r, label: r }));
-				const districts = (TANGERANG_LOCATIONS[this.selectedRegion] || []).map(d => ({ value: d.name, label: d.name }));
-				const banks = PAYMENT_PROVIDERS.map(p => ({
-					value: p.id,
-					label: `${p.label} (${p.type})`,
-					iconHtml: getPaymentIconSvg(p.id, 'w-6 h-6')
-				}));
-				const destinations = STORE_CONFIG.officialDestinations.map(d => ({
-					value: `${d.name} — ${d.accountNumber} (a.n. ${d.holder})`,
-					label: `${d.name} : ${d.accountNumber} (${d.holder})`,
-					iconHtml: getPaymentIconSvg(d.id, 'w-6 h-6')
-				}));
-
-				this.regionDropdown = new CustomDropdown({
-					containerId: 'dropdown-checkout-region',
-					value: this.selectedRegion,
-					options: regions,
-					onChange: (val) => {
-						this.selectedRegion = val;
-						const nextDistricts = TANGERANG_LOCATIONS[val] || [];
-						this.selectedDistrict = nextDistricts[0]?.name || '';
-						this.districtDropdown.setOptions(
-							nextDistricts.map(d => ({ value: d.name, label: d.name })),
-							this.selectedDistrict
-						);
-						this.renderSummary(true);
-					}
-				});
-
-				this.districtDropdown = new CustomDropdown({
-					containerId: 'dropdown-checkout-district',
-					value: this.selectedDistrict,
-					options: districts,
-					onChange: (val) => {
-						this.selectedDistrict = val;
-						this.renderSummary(true);
-					}
-				});
-
-				this.bankDropdown = new CustomDropdown({
-					containerId: 'dropdown-checkout-bank',
-					value: this.selectedBank,
-					options: banks,
-					onChange: (val) => {
-						this.selectedBank = val;
-					}
-				});
-
-				if (!this.selectedDestination && destinations.length > 0) {
-					this.selectedDestination = destinations[0].value;
-				}
-
-				this.destinationDropdown = new CustomDropdown({
-					containerId: 'dropdown-checkout-destination',
-					value: this.selectedDestination,
-					options: destinations,
-					onChange: (val) => {
-						this.selectedDestination = val;
-					}
-				});
+				StoreAvailability.renderAllIndicators();
 			},
 
 			renderOfficialDestinations() {
@@ -4483,43 +4490,151 @@
 								<span class="text-[11px] font-mono accent-text font-semibold block truncate">${dest.accountNumber}</span>
 							</div>
 						</div>
-						<button type="button" data-copy-account="${dest.accountNumber}" data-copy-name="${dest.name}" class="px-2 py-1 rounded-lg accent-soft-bg text-[10px] font-bold shrink-0 hover:opacity-80 transition">
+						<button type="button" data-copy-acc="${dest.accountNumber}" data-copy-label="${dest.name}" title="Salin Nomor ${dest.name}" class="px-2 py-1 rounded-lg accent-soft-bg text-[10px] font-bold hover:opacity-85 shrink-0 active:scale-95">
 							Salin
 						</button>
 					</div>
 				`).join('');
 
-				container.querySelectorAll('[data-copy-account]').forEach(btn => {
+				container.querySelectorAll('[data-copy-acc]').forEach(btn => {
 					btn.addEventListener('click', () => {
-						const acc = btn.getAttribute('data-copy-account');
-						const name = btn.getAttribute('data-copy-name');
-						this.copyTextFallback(acc);
-						SoundHaptic.feedback('copy');
-						Toast.show(`Nomor ${name} (${acc}) a.n. Berkat Elektronik berhasil disalin!`, 'success');
+						const accNum = btn.getAttribute('data-copy-acc');
+						const label = btn.getAttribute('data-copy-label');
+						this.copyAccountNumber(accNum, label);
 					});
 				});
 			},
 
-			copyTextFallback(text) {
-				const temp = document.createElement('textarea');
-				temp.value = text;
-				temp.style.position = 'fixed';
-				temp.style.opacity = '0';
-				document.body.appendChild(temp);
-				temp.select();
-				try {
-					document.execCommand('copy');
-				} catch (err) {}
-				document.body.removeChild(temp);
+			copyAccountNumber(text, label) {
+				const onCopied = () => {
+					SoundHaptic.feedback('copy');
+					Toast.show(`Nomor ${label} (${text}) berhasil disalin!`, 'success');
+				};
+
+				if (navigator.clipboard && navigator.clipboard.writeText) {
+					navigator.clipboard.writeText(text).then(onCopied).catch(() => {
+						this.fallbackCopy(text, onCopied);
+					});
+				} else {
+					this.fallbackCopy(text, onCopied);
+				}
 			},
 
-			renderSummary(announceAlert = false) {
-				const itemsWrap = document.getElementById('checkout-items-summary');
-				const itemCountBadge = document.getElementById('checkout-item-count-badge');
+			fallbackCopy(text, callback) {
+				const ta = document.createElement('textarea');
+				ta.value = text;
+				ta.style.position = 'fixed';
+				ta.style.opacity = '0';
+				document.body.appendChild(ta);
+				ta.select();
+				try {
+					document.execCommand('copy');
+					callback();
+				} catch (err) {}
+				document.body.removeChild(ta);
+			},
+
+			initCheckoutDropdowns() {
+				this.regionDropdown = new CustomDropdown({
+					containerId: 'dropdown-checkout-region',
+					value: this.selectedRegion,
+					options: [
+						{ value: 'Tangerang Kota', label: 'Tangerang Kota' },
+						{ value: 'Tangerang Kabupaten', label: 'Tangerang Kabupaten' }
+					],
+					onChange: (val) => {
+						this.selectedRegion = val;
+						const list = TANGERANG_LOCATIONS[val] || [];
+						this.selectedDistrict = list[0]?.name || '';
+						this.districtDropdown.setOptions(
+							list.map(d => ({ value: d.name, label: d.name })),
+							this.selectedDistrict
+						);
+						this.renderSummary();
+					}
+				});
+
+				const districts = TANGERANG_LOCATIONS[this.selectedRegion] || [];
+				this.districtDropdown = new CustomDropdown({
+					containerId: 'dropdown-checkout-district',
+					value: this.selectedDistrict,
+					options: districts.map(d => ({ value: d.name, label: d.name })),
+					onChange: (val) => {
+						this.selectedDistrict = val;
+						this.renderSummary();
+					}
+				});
+
+				this.bankDropdown = new CustomDropdown({
+					containerId: 'dropdown-checkout-bank',
+					value: this.selectedBank,
+					options: PAYMENT_PROVIDERS.map(item => ({
+						value: item.id,
+						label: `${item.label} (${item.type})`,
+						iconHtml: getPaymentIconSvg(item.id, 'w-6 h-6')
+					})),
+					onChange: (val) => {
+						this.selectedBank = val;
+					}
+				});
+
+				this.destinationDropdown = new CustomDropdown({
+					containerId: 'dropdown-checkout-destination',
+					value: this.selectedDestination,
+					placeholder: '-- Pilih Tujuan Transfer (GoPay / DANA / Bank Jago) --',
+					options: STORE_CONFIG.officialDestinations.map(dest => ({
+						value: dest.id,
+						label: `${dest.name} — ${dest.accountNumber} (a.n. ${dest.holder})`,
+						iconHtml: getPaymentIconSvg(dest.id, 'w-6 h-6')
+					})),
+					onChange: (val) => {
+						this.selectedDestination = val;
+					}
+				});
+			},
+
+			pullFromProfile(showToast = true) {
+				const prof = AppState.data.profile;
+				const nameEl = document.getElementById('checkout-name');
+				const phoneEl = document.getElementById('checkout-phone');
+				const addrEl = document.getElementById('checkout-address');
+				const senderEl = document.getElementById('checkout-sender-name');
+
+				if (nameEl && prof.fullName) nameEl.value = prof.fullName;
+				if (phoneEl && prof.phone) phoneEl.value = prof.phone;
+				if (addrEl && prof.address) addrEl.value = prof.address;
+				if (senderEl && prof.fullName && !senderEl.value) senderEl.value = prof.fullName;
+
+				if (prof.region && this.regionDropdown) {
+					this.selectedRegion = prof.region;
+					this.regionDropdown.setValue(prof.region, false);
+					const list = TANGERANG_LOCATIONS[prof.region] || [];
+					this.selectedDistrict = prof.district || list[0]?.name || '';
+					this.districtDropdown?.setOptions(
+						list.map(d => ({ value: d.name, label: d.name })),
+						this.selectedDistrict
+					);
+				}
+
+				if (prof.bank && this.bankDropdown) {
+					this.selectedBank = prof.bank;
+					this.bankDropdown.setValue(prof.bank, false);
+				}
+
+				this.renderSummary();
+				if (showToast) {
+					SoundHaptic.feedback('click');
+					Toast.show('Data dari Profile berhasil diisikan ke formulir pembayaran.', 'info');
+				}
+			},
+
+			renderSummary() {
+				const summaryContainer = document.getElementById('checkout-items-summary');
+				const countBadge = document.getElementById('checkout-item-count-badge');
 				const subtotalEl = document.getElementById('checkout-subtotal');
 				const serviceEl = document.getElementById('checkout-service-fee');
-				const shippingLabelEl = document.getElementById('checkout-shipping-label');
-				const shippingFeeEl = document.getElementById('checkout-shipping-fee');
+				const shipLabelEl = document.getElementById('checkout-shipping-label');
+				const shipFeeEl = document.getElementById('checkout-shipping-fee');
 				const grandTotalEl = document.getElementById('checkout-grand-total');
 				const distPill = document.getElementById('shipping-distance-pill');
 				const statusBox = document.getElementById('shipping-status-box');
@@ -4529,55 +4644,64 @@
 					.map(c => ({ ...c, product: AppState.getProductById(c.productId) }))
 					.filter(c => c.product !== null && c.product.stock > 0);
 
-				if (items.length === 0) {
-					ModalManager.close('checkout');
-					return;
-				}
-
-				const totalUnits = items.reduce((s, it) => s + it.qty, 0);
-				if (itemCountBadge) {
-					itemCountBadge.textContent = `${totalUnits} barang`;
+				if (countBadge) {
+					const totalQty = items.reduce((sum, it) => sum + it.qty, 0);
+					countBadge.textContent = `${totalQty} barang`;
 				}
 
 				let subtotal = 0;
-				if (itemsWrap) {
-					itemsWrap.innerHTML = items.map(({ product, qty }) => {
-						const lineTotal = product.price * qty;
-						subtotal += lineTotal;
-						return `
-							<div class="p-2.5 rounded-xl border theme-surface flex items-center gap-2.5 text-xs">
-								<img
-									src="${product.image}"
-									alt="${product.name}"
-									onerror="this.onerror=null;this.src='https://placehold.co/100x100/EBF0EC/4A7C59?text=Audio';"
-									class="w-11 h-11 rounded-lg object-cover border theme-border shrink-0"
-								>
-								<div class="flex-1 min-w-0">
-									<p class="font-semibold theme-text-primary truncate">${product.name}</p>
-									<p class="theme-text-secondary text-[11px]">${qty} × ${AppState.formatRupiah(product.price)}</p>
-								</div>
-								<div class="flex flex-col items-end gap-1 shrink-0">
-									<span class="font-bold theme-text-primary">${AppState.formatRupiah(lineTotal)}</span>
-									<button type="button" data-checkout-remove="${product.id}" class="text-[10px] font-semibold text-rose-500 hover:underline">
+				if (summaryContainer) {
+					if (items.length === 0) {
+						summaryContainer.innerHTML = `
+							<div class="p-4 rounded-xl border theme-surface text-center text-xs theme-text-secondary">
+								Tidak ada barang tersisa di keranjang. Silakan tutup dan pilih produk kembali.
+							</div>
+						`;
+					} else {
+						summaryContainer.innerHTML = items.map(({ product, qty }) => {
+							const line = product.price * qty;
+							subtotal += line;
+							const fallbackUrl = product.fallbackImage || `https://placehold.co/128x128/EBF0EC/4A7C59?text=${encodeURIComponent(product.category || 'Audio')}`;
+							return `
+								<div class="flex items-center justify-between gap-2.5 text-xs p-2.5 rounded-xl theme-surface border">
+									<div class="flex items-center gap-2.5 min-w-0 flex-1">
+										<img
+											src="${product.image}"
+											alt="${product.name}"
+											onerror="if(this.dataset.fallbackTried!=='1'){this.dataset.fallbackTried='1';this.src='${fallbackUrl}';}else{this.onerror=null;this.src='https://placehold.co/128x128/EBF0EC/4A7C59?text=Audio';}"
+											class="w-14 h-14 aspect-square rounded-xl object-cover border theme-border bg-white/60 shrink-0"
+										>
+										<div class="min-w-0 flex-1">
+											<p class="font-semibold theme-text-primary truncate">${product.name}</p>
+											<span class="theme-text-secondary block">${qty} unit × ${AppState.formatRupiah(product.price)}</span>
+											<span class="font-bold accent-text block mt-0.5">${AppState.formatRupiah(line)}</span>
+										</div>
+									</div>
+									<button type="button" data-checkout-remove="${product.id}" class="text-[11px] font-semibold text-rose-500 hover:underline shrink-0 self-start">
 										Hapus
 									</button>
 								</div>
-							</div>
-						`;
-					}).join('');
+							`;
+						}).join('');
 
-					itemsWrap.querySelectorAll('[data-checkout-remove]').forEach(btn => {
-						btn.addEventListener('click', () => {
-							const prodId = btn.getAttribute('data-checkout-remove');
-							const prod = AppState.getProductById(prodId);
-							ConfirmDialog.ask({
-								title: 'Hapus Barang dari Daftar Beli?',
-								message: `Apakah Anda yakin ingin menghapus "${prod ? prod.name : 'barang ini'}" dari pesanan Anda?`,
-								confirmLabel: 'Ya, Hapus',
-								onConfirm: () => AppState.removeFromCart(prodId, true)
+						summaryContainer.querySelectorAll('[data-checkout-remove]').forEach(btn => {
+							btn.addEventListener('click', () => {
+								const prodId = btn.getAttribute('data-checkout-remove');
+								const prod = AppState.getProductById(prodId);
+								ConfirmDialog.ask({
+									title: 'Hapus Barang dari Pesanan?',
+									message: `Apakah Anda yakin ingin menghapus "${prod ? prod.name : 'barang ini'}" dari daftar pembelian?`,
+									confirmLabel: 'Ya, Hapus',
+									onConfirm: () => {
+										AppState.removeFromCart(prodId, true);
+										if (AppState.data.cart.length === 0) {
+											ModalManager.close('checkout');
+										}
+									}
+								});
 							});
 						});
-					});
+					}
 				}
 
 				const evalResult = ShippingCalculator.evaluateShipping(this.selectedRegion, this.selectedDistrict);
@@ -4585,55 +4709,54 @@
 				if (distPill) {
 					distPill.textContent = evalResult.distanceKm !== null
 						? `Jarak: ±${evalResult.distanceKm} KM`
-						: 'Luar Area';
+						: 'Area di luar jangkauan';
 				}
 
 				if (statusBox) {
 					if (evalResult.eligible) {
-						// Fitur Tambahan: Kalkulasi Estimasi Waktu Sampai (ETA) berdasarkan jarak KM
-						const estimatedMinMinutes = Math.round(25 + (evalResult.distanceKm * 4));
+						const weatherExtra = Number(WeatherService.currentWeather?.extraMinutes || 0);
+						const estimatedMinMinutes = Math.round(25 + (evalResult.distanceKm * 4) + weatherExtra);
 						const estimatedMaxMinutes = estimatedMinMinutes + 20;
+						const weatherNote = weatherExtra > 0
+							? ` (Termasuk +${weatherExtra} mnt penyesuaian cuaca ${WeatherService.currentWeather.condition})`
+							: '';
 
 						statusBox.innerHTML = `
 							<p class="font-semibold text-emerald-600">✓ Area Terjangkau (Radius 0–30 KM dari Cimone Jaya)</p>
 							<p class="theme-text-secondary">${evalResult.reason}</p>
-							<p class="text-[11px] accent-text font-semibold mt-1">⏱️ Estimasi Waktu Sampai (ETA): ±${estimatedMinMinutes} – ${estimatedMaxMinutes} menit perjalanan kurir</p>
+							<p class="text-[11px] accent-text font-semibold mt-1">⏱️ Estimasi Waktu Sampai (ETA): ±${estimatedMinMinutes} – ${estimatedMaxMinutes} menit${weatherNote}</p>
 						`;
 					} else {
 						statusBox.innerHTML = `
-							<p class="font-semibold text-rose-600">✕ Di Luar Jangkauan Pengiriman (Maks. 30 KM)</p>
+							<p class="font-semibold text-rose-600">✕ Pengiriman Tidak Tersedia</p>
 							<p class="theme-text-secondary">${evalResult.reason}</p>
 						`;
 					}
 				}
 
-				if (announceAlert && !evalResult.eligible) {
-					SoundHaptic.feedback('warning');
-					Toast.show(evalResult.reason, 'warning', 4500);
+				const canSubmit = evalResult.eligible && items.length > 0;
+				if (submitBtn) {
+					submitBtn.disabled = !canSubmit;
+					submitBtn.classList.toggle('opacity-50', !canSubmit);
+					submitBtn.classList.toggle('cursor-not-allowed', !canSubmit);
 				}
 
-				const serviceFee = STORE_CONFIG.serviceFee;
+				const serviceFee = items.length > 0 ? STORE_CONFIG.serviceFee : 0;
 				const shippingCost = evalResult.eligible ? evalResult.cost : 0;
 				const grandTotal = subtotal + serviceFee + shippingCost;
 
 				if (subtotalEl) subtotalEl.textContent = AppState.formatRupiah(subtotal);
 				if (serviceEl) serviceEl.textContent = AppState.formatRupiah(serviceFee);
-				if (shippingLabelEl) {
-					shippingLabelEl.textContent = evalResult.eligible
+				if (shipLabelEl) {
+					shipLabelEl.textContent = evalResult.eligible
 						? `Ongkos Kirim (±${evalResult.distanceKm} KM)`
-						: 'Ongkos Kirim (Tidak Tersedia)';
+						: 'Ongkos Kirim (Di Luar Radius)';
 				}
-				if (shippingFeeEl) {
-					shippingFeeEl.textContent = evalResult.eligible ? AppState.formatRupiah(shippingCost) : '—';
+				if (shipFeeEl) {
+					shipFeeEl.textContent = evalResult.eligible ? AppState.formatRupiah(shippingCost) : 'Tidak Tersedia';
 				}
 				if (grandTotalEl) {
 					grandTotalEl.textContent = AppState.formatRupiah(grandTotal);
-				}
-
-				if (submitBtn) {
-					submitBtn.disabled = !evalResult.eligible;
-					submitBtn.classList.toggle('opacity-50', !evalResult.eligible);
-					submitBtn.classList.toggle('cursor-not-allowed', !evalResult.eligible);
 				}
 			},
 
@@ -4645,14 +4768,19 @@
 
 				if (!name || !phone || !address || !senderName) {
 					SoundHaptic.feedback('warning');
-					Toast.show('Mohon lengkapi Nama Lengkap, Nomor Telepon, Alamat Rumah, dan Nama Rekening Pengirim.', 'warning');
+					Toast.show('Harap lengkapi Nama Lengkap, No. Telepon, Alamat Rumah, dan Nama Pengirim Rekening.', 'warning');
 					return;
 				}
 
-				const phoneDigits = phone.replace(/\D/g, '');
-				if (phoneDigits.length < 9) {
+				if (!this.selectedDestination) {
 					SoundHaptic.feedback('warning');
-					Toast.show('Nomor Telepon / WhatsApp tidak valid (minimal 9 digit).', 'warning');
+					Toast.show('Harap pilih Tujuan Transfer Resmi Berkat Elektronik (GoPay / DANA / Bank Jago) terlebih dahulu.', 'warning', 4200);
+					return;
+				}
+
+				if (!this.proofImageData) {
+					SoundHaptic.feedback('warning');
+					Toast.show('Harap unggah Foto Bukti Pembayaran terlebih dahulu sebelum mengirim pesanan.', 'warning');
 					return;
 				}
 
@@ -4663,74 +4791,28 @@
 					return;
 				}
 
-				if (!this.proofImageData) {
-					SoundHaptic.feedback('warning');
-					Toast.show('Harap unggah foto bukti pembayaran terlebih dahulu sebelum mengirim pesanan.', 'warning');
-					return;
-				}
-
-				const cartItems = AppState.data.cart
+				const items = AppState.data.cart
 					.map(c => ({ ...c, product: AppState.getProductById(c.productId) }))
 					.filter(c => c.product !== null && c.product.stock > 0);
 
-				if (cartItems.length === 0) {
-					Toast.show('Tidak ada barang tersedia untuk dipesan.', 'warning');
+				if (items.length === 0) {
+					Toast.show('Keranjang belanja kosong.', 'warning');
 					return;
 				}
 
-				// Fitur Tambahan: Validasi Keterangan Waktu Pengiriman (Jam Online 10.00 - 15.00 WIB)
-				const storeStatus = StoreAvailability.getStatus();
-				if (!storeStatus.onlineOpen) {
-					ConfirmDialog.ask({
-						title: 'Diluar Jam Layanan Online',
-						message: 'Saat ini berada di luar jam operasional online (Senin–Sabtu 10.00–15.00 WIB). Pesanan Anda akan tetap tercatat dan diproses pada jam operasional berikutnya. Lanjutkan pengiriman ke WhatsApp?',
-						confirmLabel: 'Ya, Lanjutkan',
-						onConfirm: () => {
-							this.executeFinalOrderSubmission(name, phone, address, senderName, evalResult, cartItems);
-						}
-					});
-					return;
-				}
-
-				this.executeFinalOrderSubmission(name, phone, address, senderName, evalResult, cartItems);
-			},
-
-			executeFinalOrderSubmission(name, phone, address, senderName, evalResult, cartItems) {
-				const subtotal = cartItems.reduce((s, it) => s + it.product.price * it.qty, 0);
+				const subtotal = items.reduce((sum, it) => sum + (it.product.price * it.qty), 0);
 				const serviceFee = STORE_CONFIG.serviceFee;
 				const shippingCost = evalResult.cost;
 				const grandTotal = subtotal + serviceFee + shippingCost;
 				const orderId = 'BE-' + Date.now().toString().slice(-6);
+				const dateStr = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
 
-				cartItems.forEach(({ product, qty }) => {
-					product.stock = Math.max(0, Number(product.stock || 0) - qty);
-				});
-
-				AppState.data.orderHistory.unshift({
-					orderId,
-					date: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }),
-					customerName: name,
-					phone,
-					region: this.selectedRegion,
-					district: this.selectedDistrict,
-					address,
-					distanceKm: evalResult.distanceKm,
-					bank: this.selectedBank,
-					senderName,
-					destinationAccount: this.selectedDestination,
-					proofFileName: this.proofFileName,
-					subtotal,
-					serviceFee,
-					shippingCost,
-					grandTotal,
-					items: cartItems.map(it => ({
-						productId: it.product.id,
-						name: it.product.name,
-						price: it.product.price,
-						qty: it.qty,
-						image: it.product.image
-					}))
-				});
+				const destObj = STORE_CONFIG.officialDestinations.find(d => d.id === this.selectedDestination) || {
+					name: this.selectedDestination,
+					accountNumber: '-',
+					holder: 'Berkat Elektronik'
+				};
+				const destinationSummary = `${destObj.name} (${destObj.accountNumber} a.n. ${destObj.holder})`;
 
 				AppState.data.profile = {
 					...AppState.data.profile,
@@ -4743,82 +4825,113 @@
 				};
 				AppState.data.hasCompletedOnboarding = true;
 
+				const orderRecord = {
+					orderId,
+					date: dateStr,
+					customerName: name,
+					phone,
+					region: this.selectedRegion,
+					district: this.selectedDistrict,
+					address,
+					distanceKm: evalResult.distanceKm,
+					bank: this.selectedBank,
+					destinationAccount: destinationSummary,
+					senderName,
+					proofFileName: this.proofFileName,
+					subtotal,
+					serviceFee,
+					shippingCost,
+					grandTotal,
+					items: items.map(({ product, qty }) => ({
+						productId: product.id,
+						name: product.name,
+						price: product.price,
+						qty,
+						image: product.image
+					}))
+				};
+
+				AppState.data.orderHistory.unshift(orderRecord);
 				AppState.data.cart = [];
 				AppState.save();
+
 				UIRenderer.updateBadges();
+				UIRenderer.renderCartModal();
 				UIRenderer.renderProducts();
 
-				const itemLines = cartItems
-					.map((it, idx) => `${idx + 1}. ${it.product.name} (${it.qty}x) = ${AppState.formatRupiah(it.product.price * it.qty)}`)
+				const itemLines = orderRecord.items
+					.map((it, idx) => `${idx + 1}. ${it.name} (${it.qty}x @ ${AppState.formatRupiah(it.price)}) = ${AppState.formatRupiah(it.price * it.qty)}`)
 					.join('\n');
 
 				const waMessage = [
-					`*PESANAN BARU — BERKAT ELEKTRONIK*`,
+					`*KONFIRMASI PESANAN — BERKAT ELEKTRONIK*`,
 					`No. Pesanan: *${orderId}*`,
-					`--------------------------------`,
-					`*Data Pembeli:*`,
-					`• Nama: ${name}`,
-					`• No. Telp/WA: ${phone}`,
-					`• Wilayah: ${this.selectedRegion}`,
-					`• Kecamatan: ${this.selectedDistrict} (±${evalResult.distanceKm} KM dari Cimone Jaya)`,
-					`• Alamat: ${address}`,
-					`--------------------------------`,
-					`*Daftar Barang Dibeli:*`,
-					itemLines,
-					`--------------------------------`,
-					`*Rincian Pembayaran:*`,
-					`• Subtotal Barang: ${AppState.formatRupiah(subtotal)}`,
-					`• Biaya Layanan: ${AppState.formatRupiah(serviceFee)}`,
-					`• Ongkos Kirim (±${evalResult.distanceKm} KM): ${AppState.formatRupiah(shippingCost)}`,
-					`• *TOTAL BAYAR: ${AppState.formatRupiah(grandTotal)}*`,
-					`• Metode Bank/E-Wallet Pengirim: *${this.selectedBank}*`,
-					`• Rekening Pengirim Atas Nama: *${senderName}*`,
-					`• Tujuan Transfer Resmi: *${this.selectedDestination}*`,
-					`• Status Bukti Transfer: *Terlampir (${this.proofFileName})*`,
+					`Waktu: ${dateStr}`,
 					``,
-					`_Catatan: Saya akan melampirkan foto bukti transfer (${this.proofFileName}) di chat ini. Terima kasih Berkat Elektronik!_`
+					`*DATA PENERIMA:*`,
+					`• Nama: ${name}`,
+					`• No. WA/Telp: ${phone}`,
+					`• Wilayah: ${this.selectedRegion} — ${this.selectedDistrict}`,
+					`• Alamat Detail: ${address}`,
+					`• Jarak dari Toko (Cimone Jaya): ±${evalResult.distanceKm} KM`,
+					``,
+					`*RINCIAN BARANG:*`,
+					itemLines,
+					``,
+					`*RINCIAN PEMBAYARAN:*`,
+					`• Subtotal Produk: ${AppState.formatRupiah(subtotal)}`,
+					`• Biaya Layanan: ${AppState.formatRupiah(serviceFee)}`,
+					`• Ongkos Kirim (${this.selectedRegion}): ${AppState.formatRupiah(shippingCost)}`,
+					`• *TOTAL BAYAR: ${AppState.formatRupiah(grandTotal)}*`,
+					``,
+					`*BUKTI TRANSFER:*`,
+					`• Dari Bank / E-Wallet: ${this.selectedBank}`,
+					`• Tujuan Transfer: ${destinationSummary}`,
+					`• Rekening Pengirim a.n.: ${senderName}`,
+					`• Lampiran Bukti: ${this.proofFileName} _(Silakan lampirkan foto bukti transfer di chat WhatsApp ini)_`
 				].join('\n');
 
 				const waUrl = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(waMessage)}`;
+
+				ModalManager.close('checkout');
+				SoundHaptic.feedback('success');
+				Toast.show('Pesanan tersimpan di Riwayat Profile! Membuka WhatsApp Berkat Elektronik...', 'success', 4500);
 
 				this.proofImageData = null;
 				this.proofFileName = '';
 				document.getElementById('proof-placeholder-view')?.classList.remove('hidden');
 				document.getElementById('proof-preview-view')?.classList.add('hidden');
-				document.getElementById('checkout-proof-input').value = '';
-
-				ModalManager.close('checkout');
-				SoundHaptic.feedback('success');
-				Toast.show('Pesanan tercatat! Mengarahkan ke WhatsApp Berkat Elektronik (0895-2930-5947)...', 'success', 4500);
+				const fileInput = document.getElementById('checkout-proof-input');
+				if (fileInput) fileInput.value = '';
 
 				window.open(waUrl, '_blank', 'noopener,noreferrer');
 			}
 		};
 
 		/* ==========================================================================
-		   13. MODAL & POPOVER MANAGER DENGAN ANIMASI MASUK & KELUAR YANG HALUS
+		   13. MODAL MANAGER & POPOVER MANAGER DENGAN ANIMASI KELUAR HALUS
 		   ========================================================================== */
 		const ModalManager = {
 			open(name) {
-				const modalEl = document.getElementById(`modal-${name}`);
-				if (!modalEl) return;
+				const el = document.getElementById(`modal-${name}`);
+				if (!el) return;
 
-				if (name === 'cart') UIRenderer.renderCartModal();
-				if (name === 'checkout') {
+				if (name === 'cart') {
+					UIRenderer.renderCartModal();
+				} else if (name === 'checkout') {
 					CheckoutController.openAndPopulate();
-					if (AppState.data.cart.length === 0) return;
+				} else if (name === 'settings') {
+					SettingsManager.syncModalControls();
+				} else if (name === 'profile') {
+					UIRenderer.renderProfileModal();
 				}
-				if (name === 'settings') SettingsManager.syncModalControls();
-				if (name === 'profile') UIRenderer.renderProfileModal();
 
-				const dialogBox = modalEl.querySelector('.modal-dialog-box');
-				modalEl.classList.remove('hidden', 'modal-backdrop-exit');
-				modalEl.classList.add('modal-backdrop-enter');
-
-				if (dialogBox) {
-					dialogBox.classList.remove('animate-modal-exit');
-					void dialogBox.offsetWidth;
-					dialogBox.classList.add('animate-modal-enter');
+				const dialog = el.querySelector('.modal-dialog-box');
+				el.classList.remove('hidden', 'modal-backdrop-exit');
+				el.classList.add('modal-backdrop-enter');
+				if (dialog) {
+					dialog.classList.remove('animate-modal-exit');
+					dialog.classList.add('animate-modal-enter');
 				}
 
 				document.body.style.overflow = 'hidden';
@@ -4828,39 +4941,35 @@
 			},
 
 			close(name) {
-				const modalEl = document.getElementById(`modal-${name}`);
-				if (!modalEl || modalEl.classList.contains('hidden')) return;
+				const el = document.getElementById(`modal-${name}`);
+				if (!el || el.classList.contains('hidden')) return;
 
-				const dialogBox = modalEl.querySelector('.modal-dialog-box');
-				modalEl.classList.remove('modal-backdrop-enter');
-				modalEl.classList.add('modal-backdrop-exit');
-
-				if (dialogBox) {
-					dialogBox.classList.remove('animate-modal-enter');
-					dialogBox.classList.add('animate-modal-exit');
+				const dialog = el.querySelector('.modal-dialog-box');
+				el.classList.remove('modal-backdrop-enter');
+				el.classList.add('modal-backdrop-exit');
+				if (dialog) {
+					dialog.classList.remove('animate-modal-enter');
+					dialog.classList.add('animate-modal-exit');
 				}
 
 				setTimeout(() => {
-					modalEl.classList.add('hidden');
-					modalEl.classList.remove('modal-backdrop-exit');
-					if (dialogBox) {
-						dialogBox.classList.remove('animate-modal-exit');
+					el.classList.add('hidden');
+					el.classList.remove('modal-backdrop-exit');
+					if (dialog) {
+						dialog.classList.remove('animate-modal-exit');
 					}
-
-					const anyOpen = Array.from(document.querySelectorAll('[id^="modal-"]')).some(
-						el => !el.classList.contains('hidden')
-					);
+					const anyOpen = Array.from(document.querySelectorAll('[id^="modal-"]')).some(m => !m.classList.contains('hidden'));
 					if (!anyOpen) {
 						document.body.style.overflow = '';
 					}
-				}, 235);
+				}, 230);
 			}
 		};
 
 		const PopoverManager = {
 			openSearchHistory() {
 				const pop = document.getElementById('search-history-popover');
-				if (!pop || !pop.classList.contains('hidden')) return;
+				if (!pop) return;
 				pop.classList.remove('hidden', 'animate-popover-exit');
 				pop.classList.add('animate-popover-enter');
 			},
@@ -4873,55 +4982,75 @@
 				setTimeout(() => {
 					pop.classList.add('hidden');
 					pop.classList.remove('animate-popover-exit');
-				}, 180);
+				}, 170);
 			}
 		};
 
 		/* ==========================================================================
-		   14. INISIALISASI EVENT GLOBAL & BOOTSTRAP APLIKASI
+		   14. BOOTSTRAP & BINDING EVENT GLOBAL
 		   ========================================================================== */
-		document.addEventListener('DOMContentLoaded', () => {
+		document.addEventListener('DOMContentLoaded', async () => {
 			AppState.init();
 			SettingsManager.applyAll();
-			
-			// Panggil secara non-blocking agar UI & tombol langsung siap tanpa menunggu fetch
-			WeatherService.fetchTangerangWeather();
-			
-			StoreAvailability.renderAllIndicators();
-			setInterval(() => StoreAvailability.renderAllIndicators(), 30000);
-
 			ConfirmDialog.init();
 			OnboardingController.bindEvents();
 			UIRenderer.init();
 			CheckoutController.init();
 
-			/* Cek Onboarding wajib saat pertama kali dibuka */
+			StoreAvailability.renderAllIndicators();
+			WeatherService.fetchTangerangWeather();
+			setInterval(() => StoreAvailability.renderAllIndicators(), 60000);
+			setInterval(() => WeatherService.fetchTangerangWeather(), 900000);
+
+			await ProductRepository.loadAll();
+			UIRenderer.refreshCatalogAndFilters();
+			UIRenderer.updateBadges();
+
 			OnboardingController.checkAndShow();
 
-			/* Muat katalog produk JSON eksternal secara asinkron di latar belakang */
-			ProductRepository.loadAll().then(() => {
-				UIRenderer.refreshCatalogAndFilters();
-				UIRenderer.updateBadges();
-			});
-
-			/* Efek elevasi header saat scroll */
+			/* Sinkronisasi Tinggi Header Fixed (Alamat s/d Input Pencarian) ke Padding-Top Body */
 			const mainHeader = document.getElementById('main-sticky-header');
+			const syncFixedHeaderOffset = () => {
+				if (!mainHeader) return;
+				const headerHeight = Math.ceil(mainHeader.getBoundingClientRect().height);
+				document.body.style.paddingTop = `${headerHeight}px`;
+				document.documentElement.style.scrollPaddingTop = `${headerHeight + 16}px`;
+			};
+
+			syncFixedHeaderOffset();
+			if (typeof ResizeObserver !== 'undefined' && mainHeader) {
+				const headerResizeObserver = new ResizeObserver(() => syncFixedHeaderOffset());
+				headerResizeObserver.observe(mainHeader);
+			}
+			window.addEventListener('resize', syncFixedHeaderOffset, { passive: true });
+
 			window.addEventListener('scroll', () => {
 				if (mainHeader) {
 					mainHeader.classList.toggle('is-scrolled', window.scrollY > 12);
 				}
 			}, { passive: true });
 
-			/* Tombol Buka / Tutup Modal */
-			document.querySelectorAll('[data-open-modal]').forEach(btn => {
-				btn.addEventListener('click', () => ModalManager.open(btn.getAttribute('data-open-modal')));
-			});
+			/* Delegasi Global Tombol Buka / Tutup Modal agar selalu responsif di semua ukuran layar */
+			document.addEventListener('click', (e) => {
+				const openBtn = e.target.closest('[data-open-modal]');
+				if (openBtn) {
+					e.preventDefault();
+					const modalName = openBtn.getAttribute('data-open-modal');
+					if (modalName) {
+						ModalManager.open(modalName);
+					}
+					return;
+				}
 
-			document.querySelectorAll('[data-close-modal]').forEach(btn => {
-				btn.addEventListener('click', () => {
-					SoundHaptic.feedback('modalClose');
-					ModalManager.close(btn.getAttribute('data-close-modal'));
-				});
+				const closeBtn = e.target.closest('[data-close-modal]');
+				if (closeBtn) {
+					e.preventDefault();
+					const modalName = closeBtn.getAttribute('data-close-modal');
+					if (modalName) {
+						SoundHaptic.feedback('modalClose');
+						ModalManager.close(modalName);
+					}
+				}
 			});
 
 			/* Klik area gelap di luar kotak modal menutup modal (kecuali Onboarding wajib) */
@@ -4940,10 +5069,32 @@
 				});
 			});
 
+			/* Tombol ESC menutup modal teratas yang sedang terbuka */
+			document.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape') {
+					const openModals = Array.from(document.querySelectorAll('[id^="modal-"]')).filter(
+						el => !el.classList.contains('hidden') && el.id !== 'modal-onboarding'
+					);
+					if (openModals.length > 0) {
+						const lastModal = openModals[openModals.length - 1];
+						const name = lastModal.id.replace('modal-', '');
+						SoundHaptic.feedback('modalClose');
+						ModalManager.close(name);
+					}
+				}
+			});
+
 			/* Pencarian Real-Time + Riwayat Pencarian */
+			const searchWrapper = document.getElementById('header-search-wrapper');
 			const searchInput = document.getElementById('global-search-input');
 			const clearSearchBtn = document.getElementById('clear-search-btn');
-			const searchPopover = document.getElementById('search-history-popover');
+
+			const handleSearchQueryChange = (rawVal) => {
+				AppState.filters.search = rawVal;
+				AppState.currentPage = 1;
+				clearSearchBtn?.classList.toggle('hidden', rawVal.length === 0);
+				UIRenderer.renderProducts();
+			};
 
 			searchInput?.addEventListener('focus', () => {
 				UIRenderer.renderSearchHistoryChips();
@@ -4951,39 +5102,40 @@
 			});
 
 			searchInput?.addEventListener('input', (e) => {
-				const val = e.target.value;
-				AppState.filters.search = val;
-				AppState.currentPage = 1;
-				clearSearchBtn?.classList.toggle('hidden', val.length === 0);
-				UIRenderer.renderProducts();
+				handleSearchQueryChange(e.target.value);
+			});
+
+			searchInput?.addEventListener('search', (e) => {
+				handleSearchQueryChange(e.target.value);
 			});
 
 			searchInput?.addEventListener('keydown', (e) => {
 				if (e.key === 'Enter') {
 					e.preventDefault();
+					handleSearchQueryChange(searchInput.value);
 					AppState.recordSearch(searchInput.value);
 					PopoverManager.closeSearchHistory();
 					SoundHaptic.feedback('click');
+					document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 				}
 			});
 
 			document.getElementById('execute-search-btn')?.addEventListener('click', () => {
 				if (searchInput) {
-					AppState.filters.search = searchInput.value;
-					AppState.currentPage = 1;
+					handleSearchQueryChange(searchInput.value);
 					AppState.recordSearch(searchInput.value);
-					UIRenderer.renderProducts();
 					PopoverManager.closeSearchHistory();
 					SoundHaptic.feedback('click');
+					document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 				}
 			});
 
 			clearSearchBtn?.addEventListener('click', () => {
-				if (searchInput) searchInput.value = '';
-				AppState.filters.search = '';
-				AppState.currentPage = 1;
-				clearSearchBtn.classList.add('hidden');
-				UIRenderer.renderProducts();
+				if (searchInput) {
+					searchInput.value = '';
+					searchInput.focus();
+				}
+				handleSearchQueryChange('');
 				SoundHaptic.feedback('click');
 			});
 
@@ -5003,7 +5155,7 @@
 			});
 
 			document.addEventListener('click', (e) => {
-				if (searchInput && searchPopover && !searchInput.contains(e.target) && !searchPopover.contains(e.target)) {
+				if (searchWrapper && !searchWrapper.contains(e.target)) {
 					PopoverManager.closeSearchHistory();
 				}
 			});
@@ -5031,13 +5183,16 @@
 
 			document.getElementById('reset-filters-btn')?.addEventListener('click', resetAllFilters);
 			document.getElementById('empty-reset-btn')?.addEventListener('click', resetAllFilters);
+			document.getElementById('brand-home-btn')?.addEventListener('click', () => {
+				resetAllFilters();
+			});
 
-			/* Aksi Keranjang: Kosongkan (Dengan Konfirmasi) & Beli Sekarang */
+			/* Aksi Keranjang */
 			document.getElementById('clear-cart-btn')?.addEventListener('click', () => {
 				if (AppState.data.cart.length === 0) return;
 				ConfirmDialog.ask({
 					title: 'Kosongkan Keranjang Belanja?',
-					message: 'Semua barang di dalam keranjang belanja Anda akan dihapus. Apakah Anda yakin ingin melanjutkan?',
+					message: 'Seluruh barang di dalam keranjang belanja Anda akan dihapus. Lanjutkan?',
 					confirmLabel: 'Ya, Kosongkan',
 					onConfirm: () => {
 						AppState.data.cart = [];
@@ -5055,7 +5210,7 @@
 				ModalManager.open('checkout');
 			});
 
-			/* Pengaturan Tema, Ukuran Font, Toggle Animasi, Suara, Getar */
+			/* Event Pengaturan Tampilan, Font, Animasi, Suara & Getar */
 			document.querySelectorAll('[data-setting-theme]').forEach(btn => {
 				btn.addEventListener('click', () => {
 					AppState.data.settings.theme = btn.getAttribute('data-setting-theme');
@@ -5085,17 +5240,17 @@
 				AppState.data.settings.sound = !AppState.data.settings.sound;
 				AppState.save();
 				SettingsManager.applyAll();
-				if (AppState.data.settings.sound) SoundHaptic.playTone('success');
+				if (AppState.data.settings.sound) SoundHaptic.feedback('success');
 			});
 
 			document.getElementById('toggle-vibrate-btn')?.addEventListener('click', () => {
 				AppState.data.settings.vibrate = !AppState.data.settings.vibrate;
 				AppState.save();
 				SettingsManager.applyAll();
-				if (AppState.data.settings.vibrate) SoundHaptic.vibrate(25);
+				SoundHaptic.feedback('click');
 			});
 
-			/* Navigasi Tab di Modal Profile */
+			/* Tab Navigasi Profile */
 			document.querySelectorAll('[data-profile-tab]').forEach(btn => {
 				btn.addEventListener('click', () => {
 					UIRenderer.activeProfileTab = btn.getAttribute('data-profile-tab');
@@ -5104,38 +5259,45 @@
 				});
 			});
 
-			/* Export & Import Data JSON Global */
-			const importInput = document.getElementById('global-import-json-input');
+			/* Export & Import JSON Global + Muat JSON Produk */
+			const globalImportInput = document.getElementById('global-import-json-input');
+			const loadProductJsonInput = document.getElementById('load-product-json-input');
+
 			document.querySelectorAll('[data-action="export-data"]').forEach(btn => {
 				btn.addEventListener('click', () => SettingsManager.exportData());
 			});
 
 			document.querySelectorAll('[data-action="import-data"]').forEach(btn => {
-				btn.addEventListener('click', () => importInput?.click());
+				btn.addEventListener('click', () => {
+					SoundHaptic.feedback('click');
+					globalImportInput?.click();
+				});
 			});
 
-			importInput?.addEventListener('change', (e) => {
-				const file = e.target.files?.[0];
-				if (file) SettingsManager.importDataFromFile(file);
-				importInput.value = '';
-			});
-
-			/* Muat JSON Produk Manual & Unduh Contoh Template JSON */
-			const loadProductJsonInput = document.getElementById('load-product-json-input');
 			document.querySelectorAll('[data-action="load-product-json"]').forEach(btn => {
-				btn.addEventListener('click', () => loadProductJsonInput?.click());
-			});
-
-			loadProductJsonInput?.addEventListener('change', async (e) => {
-				const files = e.target.files;
-				if (files && files.length > 0) {
-					await ProductRepository.loadFromFileList(files);
-				}
-				loadProductJsonInput.value = '';
+				btn.addEventListener('click', () => {
+					SoundHaptic.feedback('click');
+					loadProductJsonInput?.click();
+				});
 			});
 
 			document.getElementById('download-sample-product-json-btn')?.addEventListener('click', () => {
 				ProductRepository.downloadSampleProductJson();
+			});
+
+			globalImportInput?.addEventListener('change', (e) => {
+				const file = e.target.files?.[0];
+				if (file) {
+					SettingsManager.importDataFromFile(file);
+					globalImportInput.value = '';
+				}
+			});
+
+			loadProductJsonInput?.addEventListener('change', (e) => {
+				if (e.target.files && e.target.files.length > 0) {
+					ProductRepository.loadFromFileList(e.target.files);
+					loadProductJsonInput.value = '';
+				}
 			});
 		});
 	</script>
