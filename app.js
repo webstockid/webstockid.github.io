@@ -5600,6 +5600,9 @@ function switchTab(tabName) {
 		fetchMacroAndCommodities();
 	}
 	if (tabName === 'fundamental') renderFundamentalWidget(currentTicker);
+	if (tabName === 'foreign') loadForeignFlowData();
+	if (tabName === 'valuation') runValuationScreener();
+	if (tabName === 'warrant') loadWarrantData();
 }
 
 // ==========================================
@@ -6030,7 +6033,7 @@ function normalizeStockPayload(raw, ticker) {
 
 	if (typeof raw.price === 'number') {
 		const prev = raw.prevClose || raw.previousClose || raw.price;
-		const vol = raw.volume || raw.currentVolume || 0;
+		const vol = raw.volume || (raw.currentLot ? raw.currentLot * 100 : raw.currentVolume) || 0;
 		const avgVol = raw.avgVolume || raw.averageDailyVolume10Day || raw.volYesterday || vol || 1;
 		return {
 			ticker,
@@ -6041,6 +6044,7 @@ function normalizeStockPayload(raw, ticker) {
 			low: raw.low || raw.low20 || raw.price,
 			volume: vol,
 			avgVolume: avgVol,
+			volRatioDirect: typeof raw.volRatio === 'number' ? raw.volRatio : null,
 			high52w: raw.fiftyTwoWeekHigh || raw.high52w || raw.high20 || raw.high || raw.price,
 			low52w: raw.fiftyTwoWeekLow || raw.low52w || raw.low20 || raw.low || raw.price,
 			changePercent: typeof raw.changePercent === 'number'
@@ -6097,7 +6101,8 @@ async function loadForeignFlowData() {
 	const renderFlowItems = (rawItems) => {
 		const flowMetrics = rawItems.map(item => {
 			const turnover = item.price * item.volume;
-			const volRatio = item.volume / (item.avgVolume || 1);
+			// const volRatio = item.volume / (item.avgVolume || 1);
+			const volRatio = item.volRatioDirect ?? (item.volume / (item.avgVolume || 1));
 			const direction = item.price >= item.prevClose ? 1 : -1;
 			const netFlowEstimate = turnover * direction * Math.min(volRatio, 3);
 
