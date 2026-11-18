@@ -558,28 +558,16 @@
 			<h3 class="text-base font-extrabold text-white flex items-center gap-2">
 				<i data-lucide="globe-2" class="w-5 h-5 text-sky-400"></i> Foreign Net Flow & Accumulation (Bandarmology Asing)
 			</h3>
-			<p class="text-xs text-slate-400 mt-1">Pemantauan estimasi akumulasi dan distribusi dana asing harian di bursa BEI.</p>
+			<p class="text-xs text-slate-400 mt-1">Pemantauan estimasi akumulasi dan distribusi aliran dana harian berdasarkan turnover & lonjakan volume.</p>
 		</div>
 		<button onclick="loadForeignFlowData()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg shadow transition flex items-center gap-2">
 			<i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh Data Asing
 		</button>
 	</div>
-	<div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/60 shadow-inner">
-		<table class="w-full text-left text-xs text-slate-200 whitespace-nowrap min-w-[700px]">
-			<thead class="bg-slate-800/80 text-slate-300 uppercase tracking-wider text-[10px] border-b border-slate-700">
-				<tr>
-					<th class="p-3">Kode</th>
-					<th class="p-3">Nama Emiten</th>
-					<th class="p-3">Harga Terakhir</th>
-					<th class="p-3">Net Volume Asing</th>
-					<th class="p-3">Estimasi Nilai Net Buy (IDR)</th>
-					<th class="p-3">Status Flow</th>
-				</tr>
-			</thead>
-			<tbody id="foreignTableBody" class="divide-y divide-slate-800/80">
-				<tr><td colspan="6" class="p-6 text-center text-slate-400">Memuat data aliran dana asing...</td></tr>
-			</tbody>
-		</table>
+	<div id="foreign-flow-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[800px] overflow-y-auto pr-1 scrollbar-thin">
+		<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800">
+			Klik tombol <strong class="text-sky-400">"Refresh Data Asing"</strong> untuk memuat data aliran dana.
+		</div>
 	</div>
 </div>
 
@@ -624,31 +612,18 @@
 	<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-900/80 p-4 rounded-xl border border-slate-800 shadow-lg">
 		<div>
 			<h3 class="text-base font-extrabold text-white flex items-center gap-2">
-				<i data-lucide="pie-chart" class="w-5 h-5 text-emerald-400"></i> Fundamental & Valuation Matrix Screener
+				<i data-lucide="pie-chart" class="w-5 h-5 text-emerald-400"></i> Valuation Matrix & 52-Week Range Screener
 			</h3>
-			<p class="text-xs text-slate-400 mt-1">Saring emiten berdasarkan valuasi fundamental (PER < 15, PBV < 2, ROE > 10%, DER < 1).</p>
+			<p class="text-xs text-slate-400 mt-1">Saring emiten berdasarkan posisi harga relatif terhadap rentang 52 minggu (Undervalued, Fair Value, Premium).</p>
 		</div>
 		<button onclick="runValuationScreener()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow transition flex items-center gap-2">
 			<i data-lucide="filter" class="w-4 h-4"></i> Filter Valuasi Ideal
 		</button>
 	</div>
-	<div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/60 shadow-inner">
-		<table class="w-full text-left text-xs text-slate-200 whitespace-nowrap min-w-[750px]">
-			<thead class="bg-slate-800/80 text-slate-300 uppercase tracking-wider text-[10px] border-b border-slate-700">
-				<tr>
-					<th class="p-3">Kode</th>
-					<th class="p-3">Nama Emiten</th>
-					<th class="p-3">PER (x)</th>
-					<th class="p-3">PBV (x)</th>
-					<th class="p-3">ROE (%)</th>
-					<th class="p-3">DER (x)</th>
-					<th class="p-3">Status Valuasi</th>
-				</tr>
-			</thead>
-			<tbody id="valuationTableBody" class="divide-y divide-slate-800/80">
-				<tr><td colspan="7" class="p-6 text-center text-slate-400">Klik 'Filter Valuasi Ideal' untuk memindai emiten.</td></tr>
-			</tbody>
-		</table>
+	<div id="valuation-matrix-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[800px] overflow-y-auto pr-1 scrollbar-thin">
+		<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800">
+			Klik <strong class="text-emerald-400">"Filter Valuasi Ideal"</strong> untuk memindai posisi harga emiten.
+		</div>
 	</div>
 </div>
 
@@ -659,28 +634,16 @@
 			<h3 class="text-base font-extrabold text-white flex items-center gap-2">
 				<i data-lucide="zap" class="w-5 h-5 text-fuchsia-400"></i> Warrant & Structured Warrant Tracker
 			</h3>
-			<p class="text-xs text-slate-400 mt-1">Pantau pergerakan harga, sisa masa berlaku, dan leverage waran serta waran terstruktur di BEI.</p>
+			<p class="text-xs text-slate-400 mt-1">Pantau pergerakan harga waran (-W), volume transaksi, dan rasio harganya terhadap saham induk di BEI.</p>
 		</div>
 		<button onclick="loadWarrantData()" class="px-4 py-2 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold rounded-lg shadow transition flex items-center gap-2">
 			<i data-lucide="refresh-cw" class="w-4 h-4"></i> Muat Data Waran
 		</button>
 	</div>
-	<div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/60 shadow-inner">
-		<table class="w-full text-left text-xs text-slate-200 whitespace-nowrap min-w-[700px]">
-			<thead class="bg-slate-800/80 text-slate-300 uppercase tracking-wider text-[10px] border-b border-slate-700">
-				<tr>
-					<th class="p-3">Kode Waran</th>
-					<th class="p-3">Induk (Underlying)</th>
-					<th class="p-3">Harga Waran</th>
-					<th class="p-3">Exercise Price</th>
-					<th class="p-3">Leverage / Premium</th>
-					<th class="p-3">Jatuh Tempo</th>
-				</tr>
-			</thead>
-			<tbody id="warrantTableBody" class="divide-y divide-slate-800/80">
-				<tr><td colspan="6" class="p-6 text-center text-slate-400">Klik 'Muat Data Waran' untuk melihat daftar waran aktif.</td></tr>
-			</tbody>
-		</table>
+	<div id="warrant-tracker-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[800px] overflow-y-auto pr-1 scrollbar-thin">
+		<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800">
+			Klik <strong class="text-fuchsia-400">"Muat Data Waran"</strong> untuk melihat daftar waran aktif dari watchlist.
+		</div>
 	</div>
 </div>
 				

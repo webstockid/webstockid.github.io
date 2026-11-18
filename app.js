@@ -6017,6 +6017,56 @@ function runBacktestEngine() {
 	}, 700);
 }
 
+// Helper normalisasi payload dari fetchRealtimeStockData agar kompatibel dengan worker utama
+function normalizeStockPayload(raw, ticker) {
+    if (!raw) return null;
+
+    if (typeof raw.price === 'number') {
+        const prev = raw.prevClose || raw.previousClose || raw.price;
+        return {
+            ticker,
+            price: raw.price,
+            prevClose: prev,
+            open: raw.open || raw.price,
+            high: raw.high || raw.price,
+            low: raw.low || raw.price,
+            volume: raw.volume || 0,
+            avgVolume: raw.avgVolume || raw.averageDailyVolume10Day || raw.volume || 1,
+            high52w: raw.fiftyTwoWeekHigh || raw.high52w || raw.high || raw.price,
+            low52w: raw.fiftyTwoWeekLow || raw.low52w || raw.low || raw.price,
+            changePercent: typeof raw.changePercent === 'number'
+                ? raw.changePercent
+                : ((raw.price - prev) / (prev || 1)) * 100
+        };
+    }
+
+    const result = raw?.chart?.result?.[0] || raw;
+    const meta = result?.meta;
+    if (!meta || !meta.regularMarketPrice) return null;
+
+    const price = meta.regularMarketPrice;
+    const prevClose = meta.chartPreviousClose || meta.previousClose || price;
+    const quote = result?.indicators?.quote?.[0] || {};
+    const validVols = (quote.volume || []).filter(v => v != null && v > 0);
+    const avgVol = validVols.length
+        ? validVols.reduce((sum, v) => sum + v, 0) / validVols.length
+        : (meta.regularMarketVolume || 1);
+
+    return {
+        ticker,
+        price,
+        prevClose,
+        open: meta.regularMarketOpen || price,
+        high: meta.regularMarketDayHigh || price,
+        low: meta.regularMarketDayLow || price,
+        volume: meta.regularMarketVolume || validVols[validVols.length - 1] || 0,
+        avgVolume: avgVol,
+        high52w: meta.fiftyTwoWeekHigh || price,
+        low52w: meta.fiftyTwoWeekLow || price,
+        changePercent: ((price - prevClose) / (prevClose || 1)) * 100
+    };
+}
+
 // --- MODUL REAL-TIME BERBASIS CLOUDFLARE WORKER PROXY ---
 
 // Ganti URL di bawah ini dengan URL Cloudflare Worker proxy Anda (misal: worker Anda sendiri atau endpoint yang biasa digunakan)
@@ -6025,130 +6075,254 @@ const CF_WORKER_PROXY = "https://stockid-api.accespy-mail.workers.dev";
 
 // 1. Foreign Net Flow Tracker (Mengambil semua saham dari radarWatchlist atau dibatasi sampel utama/pencarian)
 async function loadForeignFlowData() {
-	const tbody = document.getElementById('foreignTableBody');
-	if (!tbody) return;
-	tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-sky-400 animate-pulse">Memindai ratusan emiten dari radarWatchlist via Cloudflare Worker...</td></tr>`;
+    const container = document.getElementById('foreign-flow-list') || document.getElementById('asing-flow-container');
+    if (!container) return;
 
-	// Mengambil sampel emiten dari radarWatchlist (misal 15 emiten pertama atau di-random / di-slice agar tidak terlalu berat dalam satu request)
-	const targetTickers = (typeof radarWatchlist !== 'undefined' ? radarWatchlist.slice(0, 15) : ['BBCA', 'BBRI', 'BMRI', 'ASII', 'TLKM']).map(t => t + '.JK');
-	let html = '';
+    const watchlist = (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist))
+        ? uniqueRadarWatchlist.filter(t => !/-W\d*$/i.test(t))
+        : [];
 
-	for (const ticker of targetCleanTicker(targetTickers)) {
-		try {
-			const targetUrl = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`);
-			const response = await fetch(CF_WORKER_PROXY + targetUrl);
-			const data = await response.json();
-			const meta = data.chart.result[0].meta;
-			
-			const price = meta.regularMarketPrice || meta.chartPreviousClose;
-			const prevClose = meta.chartPreviousClose;
-			const change = price - prevClose;
-			const changePct = prevClose ? ((change / prevClose) * 100).toFixed(2) : '0.00';
-			const isPositive = change >= 0;
+    if (watchlist.length === 0) {
+        container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm">Watchlist kosong. Tambahkan emiten terlebih dahulu.</div>`;
+        return;
+    }
 
-			html += `
-				<tr class="hover:bg-slate-800/50 transition">
-					<td class="p-3 font-bold text-white">${ticker}</td>
-					<td class="p-3 text-slate-300">${meta.longName || meta.shortName || ticker}</td>
-					<td class="p-3 text-emerald-400 font-semibold">Rp ${price.toLocaleString()}</td>
-					<td class="p-3 ${isPositive ? 'text-emerald-400' : 'text-rose-400'} font-semibold">${isPositive ? '+' : ''}${changePct}%</td>
-					<td class="p-3 text-slate-200 font-bold">Vol: ${(meta.regularMarketVolume || 0).toLocaleString()}</td>
-					<td class="p-3">
-						<span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${isPositive ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800' : 'bg-rose-950/80 text-rose-400 border border-rose-800'}">
-							${isPositive ? 'BULLISH FLOW' : 'BEARISH FLOW'}
-						</span>
-					</td>
-				</tr>
-			`;
-		} catch (err) {
-			console.error(`Gagal memuat ${ticker}:`, err);
-		}
-	}
+    container.innerHTML = `<div class="text-center py-6 text-emerald-400 text-sm animate-pulse">Memuat analisis arus dana & volume...</div>`;
 
-	tbody.innerHTML = html || `<tr><td colspan="6" class="p-6 text-center text-rose-400">Gagal memuat data aliran dana.</td></tr>`;
+    try {
+        const results = [];
+        const batchSize = 5;
+
+        for (let i = 0; i < watchlist.length; i += batchSize) {
+            const batch = watchlist.slice(i, i + batchSize);
+            const batchData = await Promise.all(
+                batch.map(async (ticker) => {
+                    try {
+                        const raw = await fetchRealtimeStockData(ticker);
+                        return normalizeStockPayload(raw, ticker);
+                    } catch {
+                        return null;
+                    }
+                })
+            );
+            results.push(...batchData.filter(Boolean));
+        }
+
+        const flowMetrics = results.map(item => {
+            const turnover = item.price * item.volume;
+            const volRatio = item.volume / (item.avgVolume || 1);
+            const direction = item.price >= item.prevClose ? 1 : -1;
+            const netFlowEstimate = turnover * direction * Math.min(volRatio, 3);
+
+            return {
+                ...item,
+                turnover,
+                volRatio,
+                netFlowEstimate,
+                isAccumulation: item.price >= item.prevClose && volRatio >= 1.1
+            };
+        }).sort((a, b) => Math.abs(b.netFlowEstimate) - Math.abs(a.netFlowEstimate));
+
+        if (flowMetrics.length === 0) {
+            container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Data flow tidak tersedia saat ini.</div>`;
+            return;
+        }
+
+        container.innerHTML = flowMetrics.slice(0, 15).map(stock => {
+            const isNetBuy = stock.netFlowEstimate >= 0;
+            const flowInBillion = (Math.abs(stock.netFlowEstimate) / 1e9).toFixed(2);
+            const badgeClass = isNetBuy
+                ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                : 'bg-rose-500/15 text-rose-400 border-rose-500/30';
+
+            return `
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-white">${stock.ticker}</span>
+                            <span class="text-[11px] px-2 py-0.5 rounded border ${badgeClass}">
+                                ${isNetBuy ? 'NET BUY' : 'NET SELL'}
+                            </span>
+                        </div>
+                        <div class="text-xs text-slate-400 mt-1">
+                            Harga: Rp ${stock.price.toLocaleString('id-ID')} (${stock.changePercent >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%) · Vol: ${stock.volRatio.toFixed(1)}x
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-semibold ${isNetBuy ? 'text-emerald-400' : 'text-rose-400'}">
+                            ${isNetBuy ? '+' : '-'}Rp ${flowInBillion} M
+                        </div>
+                        <div class="text-[11px] text-slate-500">Est. Flow</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (err) {
+        console.error('Error loadForeignFlowData:', err);
+        container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Terjadi kesalahan saat memproses Asing Flow.</div>`;
+    }
 }
 
 // 4. Fundamental & Valuation Matrix (Memindai dari radarWatchlist)
 async function runValuationScreener() {
-	const tbody = document.getElementById('valuationTableBody');
-	if (!tbody) return;
-	tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-emerald-400 animate-pulse">Menyaring fundamental dari database radarWatchlist...</td></tr>`;
+    const container = document.getElementById('valuation-matrix-list') || document.getElementById('valuation-screener-container');
+    if (!container) return;
 
-	const targetTickers = (typeof radarWatchlist !== 'undefined' ? radarWatchlist.slice(0, 12) : ['ADRO', 'PTBA', 'UNVR', 'ICBP', 'INDF', 'BBCA']).map(t => t + '.JK');
-	let html = '';
+    const watchlist = (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist))
+        ? uniqueRadarWatchlist.filter(t => !/-W\d*$/i.test(t))
+        : [];
 
-	for (const ticker of targetTickers) {
-		try {
-			const targetUrl = encodeURIComponent(`https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=summaryDetail,defaultKeyStatistics`);
-			const res = await fetch(CF_WORKER_PROXY + targetUrl);
-			const json = await res.json();
-			const summary = json.quoteSummary.result[0].summaryDetail;
+    if (watchlist.length === 0) {
+        container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm">Tidak ada emiten di uniqueRadarWatchlist.</div>`;
+        return;
+    }
 
-			const per = summary?.trailingPE?.raw ? summary.trailingPE.raw.toFixed(2) : 'N/A';
-			const pbv = summary?.priceToBook?.raw ? summary.priceToBook.raw.toFixed(2) : 'N/A';
-			const marketCap = summary?.marketCap?.raw ? (summary.marketCap.raw / 1e9).toFixed(0) + ' Milyar' : 'N/A';
+    container.innerHTML = `<div class="text-center py-6 text-emerald-400 text-sm animate-pulse">Menghitung matriks valuasi & posisi 52W...</div>`;
 
-			html += `
-				<tr class="hover:bg-slate-800/50 transition">
-					<td class="p-3 font-bold text-white">${ticker}</td>
-					<td class="p-3 text-slate-300">Cap: ${marketCap}</td>
-					<td class="p-3 text-emerald-400 font-semibold">${per}x</td>
-					<td class="p-3 text-emerald-400 font-semibold">${pbv}x</td>
-					<td class="p-3 text-emerald-400 font-bold">Watchlist Live</td>
-					<td class="p-3 text-slate-300 font-semibold">Active</td>
-					<td class="p-3">
-						<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-800">
-							Verified
-						</span>
-					</td>
-				</tr>
-			`;
-		} catch (e) {
-			console.error(`Valuation error for ${ticker}:`, e);
-		}
-	}
+    try {
+        const items = [];
+        const batchSize = 5;
 
-	tbody.innerHTML = html || `<tr><td colspan="7" class="p-6 text-center text-rose-400">Gagal memuat data fundamental.</td></tr>`;
+        for (let i = 0; i < watchlist.length; i += batchSize) {
+            const batch = watchlist.slice(i, i + batchSize);
+            const batchRes = await Promise.all(
+                batch.map(async (ticker) => {
+                    try {
+                        const raw = await fetchRealtimeStockData(ticker);
+                        return normalizeStockPayload(raw, ticker);
+                    } catch {
+                        return null;
+                    }
+                })
+            );
+            items.push(...batchRes.filter(Boolean));
+        }
+
+        const evaluated = items.map(stock => {
+            const range52w = (stock.high52w - stock.low52w) || 1;
+            const positionPct = Math.max(0, Math.min(100, ((stock.price - stock.low52w) / range52w) * 100));
+            const discountFromHigh = ((stock.high52w - stock.price) / (stock.high52w || 1)) * 100;
+
+            let status = 'FAIR VALUE';
+            let statusClass = 'bg-sky-500/15 text-sky-400 border-sky-500/30';
+
+            if (positionPct <= 30) {
+                status = 'UNDERVALUED';
+                statusClass = 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
+            } else if (positionPct >= 75) {
+                status = 'PREMIUM';
+                statusClass = 'bg-amber-500/15 text-amber-400 border-amber-500/30';
+            }
+
+            return {
+                ...stock,
+                positionPct,
+                discountFromHigh,
+                status,
+                statusClass
+            };
+        }).sort((a, b) => a.positionPct - b.positionPct);
+
+        container.innerHTML = evaluated.map(stock => `
+            <div class="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-white">${stock.ticker}</span>
+                        <span class="text-[11px] px-2 py-0.5 rounded border ${stock.statusClass}">${stock.status}</span>
+                    </div>
+                    <span class="text-sm font-semibold text-white">Rp ${stock.price.toLocaleString('id-ID')}</span>
+                </div>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mb-2">
+                    <div class="bg-emerald-500 h-full" style="width: ${stock.positionPct.toFixed(0)}%"></div>
+                </div>
+                <div class="flex justify-between text-[11px] text-slate-400">
+                    <span>Low 52W: ${stock.low52w.toLocaleString('id-ID')}</span>
+                    <span>Diskon High: ${stock.discountFromHigh.toFixed(1)}%</span>
+                    <span>High 52W: ${stock.high52w.toLocaleString('id-ID')}</span>
+                </div>
+            </div>
+        `).join('');
+    } catch (err) {
+        console.error('Error runValuationScreener:', err);
+        container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Gagal memuat Valuasi Matrix.</div>`;
+    }
 }
 
 // 5. Warrant Tracker (Otomatis memfilter saham berakhiran '-W' dari radarWatchlist)
 async function loadWarrantData() {
-	const tbody = document.getElementById('warrantTableBody');
-	if (!tbody) return;
-	tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-fuchsia-400 animate-pulse">Menyaring daftar waran dari radarWatchlist...</td></tr>`;
+    const container = document.getElementById('warrant-tracker-list') || document.getElementById('warrant-container');
+    if (!container) return;
 
-	// Secara otomatis menyaring emiten di radarWatchlist yang memiliki akhiran '-W'
-	const allTickers = (typeof radarWatchlist !== 'undefined' ? radarWatchlist : []);
-	const warrantTickers = allTickers.filter(t => t.endsWith('-W')).map(t => t + '.JK');
+    const warrantTickers = (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist))
+        ? uniqueRadarWatchlist.filter(t => /-W\d*$/i.test(t))
+        : [];
 
-	// Jika tidak ketemu di list, gunakan fallback beberapa waran aktif
-	const targetWarrants = warrantTickers.length > 0 ? warrantTickers.slice(0, 15) : ['GOTO-W.JK', 'BUMI-W.JK', 'ADMR-W.JK'];
-	let html = '';
+    if (warrantTickers.length === 0) {
+        container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm">Tidak ada emiten waran (-W) di dalam watchlist saat ini.</div>`;
+        return;
+    }
 
-	for (const w of targetWarrants) {
-		try {
-			const targetUrl = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${w}?interval=1d&range=1d`);
-			const res = await fetch(CF_WORKER_PROXY + targetUrl);
-			const data = await res.json();
-			const meta = data.chart.result[0].meta;
-			const price = meta.regularMarketPrice || meta.chartPreviousClose;
+    container.innerHTML = `<div class="text-center py-6 text-emerald-400 text-sm animate-pulse">Memuat data pergerakan waran...</div>`;
 
-			html += `
-				<tr class="hover:bg-slate-800/50 transition">
-					<td class="p-3 font-bold text-fuchsia-400">${w}</td>
-					<td class="p-3 text-white font-semibold">Waran BEI (Watchlist)</td>
-					<td class="p-3 text-emerald-400 font-semibold">Rp ${price}</td>
-					<td class="p-3 text-slate-300">Live Worker</td>
-					<td class="p-3 text-amber-400 font-bold">Active</td>
-					<td class="p-3 text-slate-400">Bursa Efek Indonesia</td>
-				</tr>
-			`;
-		} catch (er) {
-			console.error(`Warrant error for ${w}:`, er);
-		}
-	}
+    try {
+        const warrantList = await Promise.all(
+            warrantTickers.map(async (wTicker) => {
+                const parentTicker = wTicker.replace(/-W\d*$/i, '');
+                const [rawWarrant, rawParent] = await Promise.all([
+                    fetchRealtimeStockData(wTicker).catch(() => null),
+                    fetchRealtimeStockData(parentTicker).catch(() => null)
+                ]);
 
-	tbody.innerHTML = html || `<tr><td colspan="6" class="p-6 text-center text-rose-400">Tidak ada data waran ditemukan dari watchlist.</td></tr>`;
+                const warrant = normalizeStockPayload(rawWarrant, wTicker);
+                const parent = normalizeStockPayload(rawParent, parentTicker);
+                if (!warrant) return null;
+
+                const ratioToParent = parent && parent.price > 0
+                    ? ((warrant.price / parent.price) * 100).toFixed(1)
+                    : null;
+
+                return {
+                    ...warrant,
+                    parentTicker,
+                    parentPrice: parent ? parent.price : null,
+                    ratioToParent
+                };
+            })
+        );
+
+        const validWarrants = warrantList.filter(Boolean);
+
+        if (validWarrants.length === 0) {
+            container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Data harga waran belum tersedia di feed.</div>`;
+            return;
+        }
+
+        container.innerHTML = validWarrants.map(w => {
+            const isUp = w.changePercent >= 0;
+            return `
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-emerald-400">${w.ticker}</span>
+                            <span class="text-xs text-slate-400">Induk: ${w.parentTicker} ${w.parentPrice ? `(Rp ${w.parentPrice.toLocaleString('id-ID')})` : ''}</span>
+                        </div>
+                        <div class="text-xs text-slate-500 mt-1">
+                            Vol: ${w.volume.toLocaleString('id-ID')} ${w.ratioToParent ? `· Rasio Harga: ${w.ratioToParent}% dari induk` : ''}
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold text-white">Rp ${w.price.toLocaleString('id-ID')}</div>
+                        <div class="text-xs font-medium ${isUp ? 'text-emerald-400' : 'text-rose-400'}">
+                            ${isUp ? '+' : ''}${w.changePercent.toFixed(2)}%
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (err) {
+        console.error('Error loadWarrantData:', err);
+        container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Gagal memuat Warrant Tracker.</div>`;
+    }
 }
 
 // Helper kecil untuk memastikan format ticker bersih
