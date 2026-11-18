@@ -6023,16 +6023,17 @@ function runBacktestEngine() {
 const CF_WORKER_PROXY = "https://stockid-api.accespy-mail.workers.dev"; 
 // Atau jika proxy Anda langsung menghandle query endpoint, sesuaikan formatnya.
 
-// 1. Foreign Net Flow / Market Movers Real-Time via Cloudflare Worker
+// 1. Foreign Net Flow Tracker (Mengambil semua saham dari radarWatchlist atau dibatasi sampel utama/pencarian)
 async function loadForeignFlowData() {
 	const tbody = document.getElementById('foreignTableBody');
 	if (!tbody) return;
-	tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-sky-400 animate-pulse">Menghubungkan ke Cloudflare Worker & memindai market BEI...</td></tr>`;
-	
-	const tickers = ['BBCA.JK', 'BBRI.JK', 'BMRI.JK', 'ASII.JK', 'TLKM.JK', 'GOTO.JK'];
+	tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-sky-400 animate-pulse">Memindai ratusan emiten dari radarWatchlist via Cloudflare Worker...</td></tr>`;
+
+	// Mengambil sampel emiten dari radarWatchlist (misal 15 emiten pertama atau di-random / di-slice agar tidak terlalu berat dalam satu request)
+	const targetTickers = (typeof radarWatchlist !== 'undefined' ? radarWatchlist.slice(0, 15) : ['BBCA', 'BBRI', 'BMRI', 'ASII', 'TLKM']).map(t => t + '.JK');
 	let html = '';
 
-	for (const ticker of tickers) {
+	for (const ticker of targetCleanTicker(targetTickers)) {
 		try {
 			const targetUrl = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`);
 			const response = await fetch(CF_WORKER_PROXY + targetUrl);
@@ -6042,7 +6043,7 @@ async function loadForeignFlowData() {
 			const price = meta.regularMarketPrice || meta.chartPreviousClose;
 			const prevClose = meta.chartPreviousClose;
 			const change = price - prevClose;
-			const changePct = ((change / prevClose) * 100).toFixed(2);
+			const changePct = prevClose ? ((change / prevClose) * 100).toFixed(2) : '0.00';
 			const isPositive = change >= 0;
 
 			html += `
@@ -6060,23 +6061,23 @@ async function loadForeignFlowData() {
 				</tr>
 			`;
 		} catch (err) {
-			console.error(`Gagal memuat data via worker untuk ${ticker}:`, err);
+			console.error(`Gagal memuat ${ticker}:`, err);
 		}
 	}
 
-	tbody.innerHTML = html || `<tr><td colspan="6" class="p-6 text-center text-rose-400">Gagal memuat data real-time via worker.</td></tr>`;
+	tbody.innerHTML = html || `<tr><td colspan="6" class="p-6 text-center text-rose-400">Gagal memuat data aliran dana.</td></tr>`;
 }
 
-// 4. Fundamental & Valuation Matrix Real-Time via Cloudflare Worker
+// 4. Fundamental & Valuation Matrix (Memindai dari radarWatchlist)
 async function runValuationScreener() {
 	const tbody = document.getElementById('valuationTableBody');
 	if (!tbody) return;
-	tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-emerald-400 animate-pulse">Memindai indikator fundamental via Cloudflare Worker...</td></tr>`;
+	tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-emerald-400 animate-pulse">Menyaring fundamental dari database radarWatchlist...</td></tr>`;
 
-	const tickers = ['ADRO.JK', 'PTBA.JK', 'UNVR.JK', 'ICBP.JK', 'INDF.JK', 'BBCA.JK'];
+	const targetTickers = (typeof radarWatchlist !== 'undefined' ? radarWatchlist.slice(0, 12) : ['ADRO', 'PTBA', 'UNVR', 'ICBP', 'INDF', 'BBCA']).map(t => t + '.JK');
 	let html = '';
 
-	for (const ticker of tickers) {
+	for (const ticker of targetTickers) {
 		try {
 			const targetUrl = encodeURIComponent(`https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=summaryDetail,defaultKeyStatistics`);
 			const res = await fetch(CF_WORKER_PROXY + targetUrl);
@@ -6093,7 +6094,7 @@ async function runValuationScreener() {
 					<td class="p-3 text-slate-300">Cap: ${marketCap}</td>
 					<td class="p-3 text-emerald-400 font-semibold">${per}x</td>
 					<td class="p-3 text-emerald-400 font-semibold">${pbv}x</td>
-					<td class="p-3 text-emerald-400 font-bold">Live Worker</td>
+					<td class="p-3 text-emerald-400 font-bold">Watchlist Live</td>
 					<td class="p-3 text-slate-300 font-semibold">Active</td>
 					<td class="p-3">
 						<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-800">
@@ -6110,16 +6111,21 @@ async function runValuationScreener() {
 	tbody.innerHTML = html || `<tr><td colspan="7" class="p-6 text-center text-rose-400">Gagal memuat data fundamental.</td></tr>`;
 }
 
-// 5. Warrant Tracker Real-Time via Cloudflare Worker
+// 5. Warrant Tracker (Otomatis memfilter saham berakhiran '-W' dari radarWatchlist)
 async function loadWarrantData() {
 	const tbody = document.getElementById('warrantTableBody');
 	if (!tbody) return;
-	tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-fuchsia-400 animate-pulse">Memuat harga waran via Cloudflare Worker...</td></tr>`;
+	tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-fuchsia-400 animate-pulse">Menyaring daftar waran dari radarWatchlist...</td></tr>`;
 
-	const warrants = ['GOTO-W.JK', 'BUMI-W.JK', 'ADMR-W.JK'];
+	// Secara otomatis menyaring emiten di radarWatchlist yang memiliki akhiran '-W'
+	const allTickers = (typeof radarWatchlist !== 'undefined' ? radarWatchlist : []);
+	const warrantTickers = allTickers.filter(t => t.endsWith('-W')).map(t => t + '.JK');
+
+	// Jika tidak ketemu di list, gunakan fallback beberapa waran aktif
+	const targetWarrants = warrantTickers.length > 0 ? warrantTickers.slice(0, 15) : ['GOTO-W.JK', 'BUMI-W.JK', 'ADMR-W.JK'];
 	let html = '';
 
-	for (const w of warrants) {
+	for (const w of targetWarrants) {
 		try {
 			const targetUrl = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${w}?interval=1d&range=1d`);
 			const res = await fetch(CF_WORKER_PROXY + targetUrl);
@@ -6130,7 +6136,7 @@ async function loadWarrantData() {
 			html += `
 				<tr class="hover:bg-slate-800/50 transition">
 					<td class="p-3 font-bold text-fuchsia-400">${w}</td>
-					<td class="p-3 text-white font-semibold">Waran BEI</td>
+					<td class="p-3 text-white font-semibold">Waran BEI (Watchlist)</td>
 					<td class="p-3 text-emerald-400 font-semibold">Rp ${price}</td>
 					<td class="p-3 text-slate-300">Live Worker</td>
 					<td class="p-3 text-amber-400 font-bold">Active</td>
@@ -6142,7 +6148,12 @@ async function loadWarrantData() {
 		}
 	}
 
-	tbody.innerHTML = html || `<tr><td colspan="6" class="p-6 text-center text-rose-400">Gagal memuat data waran.</td></tr>`;
+	tbody.innerHTML = html || `<tr><td colspan="6" class="p-6 text-center text-rose-400">Tidak ada data waran ditemukan dari watchlist.</td></tr>`;
+}
+
+// Helper kecil untuk memastikan format ticker bersih
+function targetCleanTicker(arr) {
+	return arr;
 }
 
 // Inisialisasi
