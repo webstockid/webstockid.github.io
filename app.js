@@ -374,20 +374,20 @@ function shareStockUrl() {
 const pendingFetchRequests = new Map();
 
 // Komentar: Menarik dan memproses data real-time harga saham dan indikator pasar.
-async function fetchRealtimeStockData(ticker, forceFetch = false) {
+// Komentar: Menarik dan memproses data real-time harga saham dan indikator pasar.
+async function fetchRealtimeStockData(ticker, forceFetch = false, skipFallback = false) {
 	const cachedData = getCachedStockData(ticker);
 	if (cachedData && !forceFetch) return cachedData;
 	
-	if (pendingFetchRequests.has(ticker)) {
-		return pendingFetchRequests.get(ticker);
+	const reqKey = `${ticker}_${skipFallback}`;
+	if (pendingFetchRequests.has(reqKey)) {
+		return pendingFetchRequests.get(reqKey);
 	}
 
-	// Komentar: Fungsi untuk Mengambil data promise.
 	const fetchPromise = (async () => {
 		const targetSymbol = `${ticker}.JK`;
 		const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 		
-		// Komentar: Fungsi untuk Mengambil data with timeout.
 		const fetchWithTimeout = async (url, timeoutMs = 4000) => {
 			const controller = new AbortController();
 			const timerId = setTimeout(() => controller.abort(), timeoutMs);
@@ -410,11 +410,13 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 			const json = await res.json();
 			freshData = parseYahooDataGlobal(json, ticker);
 		} catch(e) {
-			console.warn(`Worker Utama gagal untuk ${ticker}, memanggil Fallback...`);
+			if (!skipFallback) {
+				console.warn(`Worker Utama gagal untuk ${ticker}, memanggil Fallback...`);
+			}
 		}
 
-		// 2. Fallback Proxy Darurat
-		if (!freshData) {
+		// 2. Fallback Proxy Darurat (Dilewati saat scan massal agar tidak macet)
+		if (!freshData && !skipFallback) {
 			try {
 				const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
 				const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
@@ -430,11 +432,11 @@ async function fetchRealtimeStockData(ticker, forceFetch = false) {
 			setCachedStockData(ticker, freshData);
 		}
 		
-		pendingFetchRequests.delete(ticker);
+		pendingFetchRequests.delete(reqKey);
 		return freshData || cachedData;
 	})();
 
-	pendingFetchRequests.set(ticker, fetchPromise);
+	pendingFetchRequests.set(reqKey, fetchPromise);
 	return fetchPromise;
 }
 
@@ -6018,311 +6020,372 @@ function runBacktestEngine() {
 }
 
 // Helper normalisasi payload dari fetchRealtimeStockData agar kompatibel dengan worker utama
+let isForeignFlowLoading = false;
+let isValuationLoading = false;
+let isWarrantLoading = false;
+
+// Helper normalisasi payload dari fetchRealtimeStockData agar kompatibel dengan worker utama
 function normalizeStockPayload(raw, ticker) {
-    if (!raw) return null;
+	if (!raw) return null;
 
-    if (typeof raw.price === 'number') {
-        const prev = raw.prevClose || raw.previousClose || raw.price;
-        return {
-            ticker,
-            price: raw.price,
-            prevClose: prev,
-            open: raw.open || raw.price,
-            high: raw.high || raw.price,
-            low: raw.low || raw.price,
-            volume: raw.volume || 0,
-            avgVolume: raw.avgVolume || raw.averageDailyVolume10Day || raw.volume || 1,
-            high52w: raw.fiftyTwoWeekHigh || raw.high52w || raw.high || raw.price,
-            low52w: raw.fiftyTwoWeekLow || raw.low52w || raw.low || raw.price,
-            changePercent: typeof raw.changePercent === 'number'
-                ? raw.changePercent
-                : ((raw.price - prev) / (prev || 1)) * 100
-        };
-    }
+	if (typeof raw.price === 'number') {
+		const prev = raw.prevClose || raw.previousClose || raw.price;
+		const vol = raw.volume || raw.currentVolume || 0;
+		const avgVol = raw.avgVolume || raw.averageDailyVolume10Day || raw.volYesterday || vol || 1;
+		return {
+			ticker,
+			price: raw.price,
+			prevClose: prev,
+			open: raw.open || raw.price,
+			high: raw.high || raw.high20 || raw.price,
+			low: raw.low || raw.low20 || raw.price,
+			volume: vol,
+			avgVolume: avgVol,
+			high52w: raw.fiftyTwoWeekHigh || raw.high52w || raw.high20 || raw.high || raw.price,
+			low52w: raw.fiftyTwoWeekLow || raw.low52w || raw.low20 || raw.low || raw.price,
+			changePercent: typeof raw.changePercent === 'number'
+				? raw.changePercent
+				: (typeof raw.changePct === 'number' ? raw.changePct : ((raw.price - prev) / (prev || 1)) * 100)
+		};
+	}
 
-    const result = raw?.chart?.result?.[0] || raw;
-    const meta = result?.meta;
-    if (!meta || !meta.regularMarketPrice) return null;
+	const result = raw?.chart?.result?.[0] || raw;
+	const meta = result?.meta;
+	if (!meta || !meta.regularMarketPrice) return null;
 
-    const price = meta.regularMarketPrice;
-    const prevClose = meta.chartPreviousClose || meta.previousClose || price;
-    const quote = result?.indicators?.quote?.[0] || {};
-    const validVols = (quote.volume || []).filter(v => v != null && v > 0);
-    const avgVol = validVols.length
-        ? validVols.reduce((sum, v) => sum + v, 0) / validVols.length
-        : (meta.regularMarketVolume || 1);
+	const price = meta.regularMarketPrice;
+	const prevClose = meta.chartPreviousClose || meta.previousClose || price;
+	const quote = result?.indicators?.quote?.[0] || {};
+	const validVols = (quote.volume || []).filter(v => v != null && v > 0);
+	const avgVol = validVols.length
+		? validVols.reduce((sum, v) => sum + v, 0) / validVols.length
+		: (meta.regularMarketVolume || 1);
 
-    return {
-        ticker,
-        price,
-        prevClose,
-        open: meta.regularMarketOpen || price,
-        high: meta.regularMarketDayHigh || price,
-        low: meta.regularMarketDayLow || price,
-        volume: meta.regularMarketVolume || validVols[validVols.length - 1] || 0,
-        avgVolume: avgVol,
-        high52w: meta.fiftyTwoWeekHigh || price,
-        low52w: meta.fiftyTwoWeekLow || price,
-        changePercent: ((price - prevClose) / (prevClose || 1)) * 100
-    };
+	return {
+		ticker,
+		price,
+		prevClose,
+		open: meta.regularMarketOpen || price,
+		high: meta.regularMarketDayHigh || price,
+		low: meta.regularMarketDayLow || price,
+		volume: meta.regularMarketVolume || validVols[validVols.length - 1] || 0,
+		avgVolume: avgVol,
+		high52w: meta.fiftyTwoWeekHigh || price,
+		low52w: meta.fiftyTwoWeekLow || price,
+		changePercent: ((price - prevClose) / (prevClose || 1)) * 100
+	};
 }
 
-// --- MODUL REAL-TIME BERBASIS CLOUDFLARE WORKER PROXY ---
-
-// Ganti URL di bawah ini dengan URL Cloudflare Worker proxy Anda (misal: worker Anda sendiri atau endpoint yang biasa digunakan)
-const CF_WORKER_PROXY = "https://stockid-api.accespy-mail.workers.dev"; 
-// Atau jika proxy Anda langsung menghandle query endpoint, sesuaikan formatnya.
-
-// 1. Foreign Net Flow Tracker (Mengambil semua saham dari radarWatchlist atau dibatasi sampel utama/pencarian)
+// 1. Foreign Net Flow Tracker (Cache-First + Progressive Render)
 async function loadForeignFlowData() {
-    const container = document.getElementById('foreign-flow-list') || document.getElementById('asing-flow-container');
-    if (!container) return;
+	if (isForeignFlowLoading) return;
+	const container = document.getElementById('foreign-flow-list') || document.getElementById('asing-flow-container');
+	if (!container) return;
 
-    const watchlist = (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist))
-        ? uniqueRadarWatchlist.filter(t => !/-W\d*$/i.test(t))
-        : [];
+	const watchlist = (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist))
+		? uniqueRadarWatchlist.filter(t => !/-W\d*$/i.test(t))
+		: [];
 
-    if (watchlist.length === 0) {
-        container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm">Watchlist kosong. Tambahkan emiten terlebih dahulu.</div>`;
-        return;
-    }
+	if (watchlist.length === 0) {
+		container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm">Watchlist kosong. Tambahkan emiten terlebih dahulu.</div>`;
+		return;
+	}
 
-    container.innerHTML = `<div class="text-center py-6 text-emerald-400 text-sm animate-pulse">Memuat analisis arus dana & volume...</div>`;
+	isForeignFlowLoading = true;
+	container.innerHTML = `<div class="text-center py-6 text-emerald-400 text-sm animate-pulse">Memuat analisis arus dana & volume...</div>`;
 
-    try {
-        const results = [];
-        const batchSize = 5;
+	const renderFlowItems = (rawItems) => {
+		const flowMetrics = rawItems.map(item => {
+			const turnover = item.price * item.volume;
+			const volRatio = item.volume / (item.avgVolume || 1);
+			const direction = item.price >= item.prevClose ? 1 : -1;
+			const netFlowEstimate = turnover * direction * Math.min(volRatio, 3);
 
-        for (let i = 0; i < watchlist.length; i += batchSize) {
-            const batch = watchlist.slice(i, i + batchSize);
-            const batchData = await Promise.all(
-                batch.map(async (ticker) => {
-                    try {
-                        const raw = await fetchRealtimeStockData(ticker);
-                        return normalizeStockPayload(raw, ticker);
-                    } catch {
-                        return null;
-                    }
-                })
-            );
-            results.push(...batchData.filter(Boolean));
-        }
+			return {
+				...item,
+				turnover,
+				volRatio,
+				netFlowEstimate,
+				isAccumulation: item.price >= item.prevClose && volRatio >= 1.1
+			};
+		}).sort((a, b) => Math.abs(b.netFlowEstimate) - Math.abs(a.netFlowEstimate));
 
-        const flowMetrics = results.map(item => {
-            const turnover = item.price * item.volume;
-            const volRatio = item.volume / (item.avgVolume || 1);
-            const direction = item.price >= item.prevClose ? 1 : -1;
-            const netFlowEstimate = turnover * direction * Math.min(volRatio, 3);
+		container.innerHTML = flowMetrics.slice(0, 15).map(stock => {
+			const isNetBuy = stock.netFlowEstimate >= 0;
+			const flowInBillion = (Math.abs(stock.netFlowEstimate) / 1e9).toFixed(2);
+			const badgeClass = isNetBuy
+				? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+				: 'bg-rose-500/15 text-rose-400 border-rose-500/30';
 
-            return {
-                ...item,
-                turnover,
-                volRatio,
-                netFlowEstimate,
-                isAccumulation: item.price >= item.prevClose && volRatio >= 1.1
-            };
-        }).sort((a, b) => Math.abs(b.netFlowEstimate) - Math.abs(a.netFlowEstimate));
+			return `
+				<div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition">
+					<div>
+						<div class="flex items-center gap-2">
+							<span class="font-bold text-white">${stock.ticker}</span>
+							<span class="text-[11px] px-2 py-0.5 rounded border ${badgeClass}">
+								${isNetBuy ? 'NET BUY' : 'NET SELL'}
+							</span>
+						</div>
+						<div class="text-xs text-slate-400 mt-1">
+							Harga: Rp ${stock.price.toLocaleString('id-ID')} (${stock.changePercent >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%) · Vol: ${stock.volRatio.toFixed(1)}x
+						</div>
+					</div>
+					<div class="text-right">
+						<div class="font-semibold ${isNetBuy ? 'text-emerald-400' : 'text-rose-400'}">
+							${isNetBuy ? '+' : '-'}Rp ${flowInBillion} M
+						</div>
+						<div class="text-[11px] text-slate-500">Est. Flow</div>
+					</div>
+				</div>
+			`;
+		}).join('');
+	};
 
-        if (flowMetrics.length === 0) {
-            container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Data flow tidak tersedia saat ini.</div>`;
-            return;
-        }
+	try {
+		const results = [];
+		const uncached = [];
 
-        container.innerHTML = flowMetrics.slice(0, 15).map(stock => {
-            const isNetBuy = stock.netFlowEstimate >= 0;
-            const flowInBillion = (Math.abs(stock.netFlowEstimate) / 1e9).toFixed(2);
-            const badgeClass = isNetBuy
-                ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
-                : 'bg-rose-500/15 text-rose-400 border-rose-500/30';
+		// 1. Ambil yang sudah ada di cache terlebih dahulu (Instan 0ms)
+		for (const ticker of watchlist) {
+			const cached = getCachedStockData(ticker);
+			if (cached) {
+				const norm = normalizeStockPayload(cached, ticker);
+				if (norm) results.push(norm);
+			} else {
+				uncached.push(ticker);
+			}
+		}
 
-            return `
-                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-white">${stock.ticker}</span>
-                            <span class="text-[11px] px-2 py-0.5 rounded border ${badgeClass}">
-                                ${isNetBuy ? 'NET BUY' : 'NET SELL'}
-                            </span>
-                        </div>
-                        <div class="text-xs text-slate-400 mt-1">
-                            Harga: Rp ${stock.price.toLocaleString('id-ID')} (${stock.changePercent >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%) · Vol: ${stock.volRatio.toFixed(1)}x
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="font-semibold ${isNetBuy ? 'text-emerald-400' : 'text-rose-400'}">
-                            ${isNetBuy ? '+' : '-'}Rp ${flowInBillion} M
-                        </div>
-                        <div class="text-[11px] text-slate-500">Est. Flow</div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    } catch (err) {
-        console.error('Error loadForeignFlowData:', err);
-        container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Terjadi kesalahan saat memproses Asing Flow.</div>`;
-    }
+		if (results.length > 0) renderFlowItems(results);
+
+		// 2. Fetch sampel acak maksimal 30 emiten belum ter-cache (2 batch x 15)
+		const targets = uncached.sort(() => 0.5 - Math.random()).slice(0, 30);
+		const BATCH_SIZE = 15;
+
+		for (let i = 0; i < targets.length; i += BATCH_SIZE) {
+			const batch = targets.slice(i, i + BATCH_SIZE);
+			const batchData = await Promise.all(
+				batch.map(async (ticker) => {
+					try {
+						const raw = await fetchRealtimeStockData(ticker, false, true);
+						return normalizeStockPayload(raw, ticker);
+					} catch {
+						return null;
+					}
+				})
+			);
+			results.push(...batchData.filter(Boolean));
+			if (results.length > 0) renderFlowItems(results);
+		}
+
+		if (results.length === 0) {
+			container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Data flow tidak tersedia saat ini.</div>`;
+		}
+	} catch (err) {
+		console.error('Error loadForeignFlowData:', err);
+		container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Terjadi kesalahan saat memproses Asing Flow.</div>`;
+	} finally {
+		isForeignFlowLoading = false;
+	}
 }
 
-// 4. Fundamental & Valuation Matrix (Memindai dari radarWatchlist)
+// 4. Fundamental & Valuation Matrix (Cache-First + Progressive Render)
 async function runValuationScreener() {
-    const container = document.getElementById('valuation-matrix-list') || document.getElementById('valuation-screener-container');
-    if (!container) return;
+	if (isValuationLoading) return;
+	const container = document.getElementById('valuation-matrix-list') || document.getElementById('valuation-screener-container');
+	if (!container) return;
 
-    const watchlist = (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist))
-        ? uniqueRadarWatchlist.filter(t => !/-W\d*$/i.test(t))
-        : [];
+	const watchlist = (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist))
+		? uniqueRadarWatchlist.filter(t => !/-W\d*$/i.test(t))
+		: [];
 
-    if (watchlist.length === 0) {
-        container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm">Tidak ada emiten di uniqueRadarWatchlist.</div>`;
-        return;
-    }
+	if (watchlist.length === 0) {
+		container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm">Tidak ada emiten di uniqueRadarWatchlist.</div>`;
+		return;
+	}
 
-    container.innerHTML = `<div class="text-center py-6 text-emerald-400 text-sm animate-pulse">Menghitung matriks valuasi & posisi 52W...</div>`;
+	isValuationLoading = true;
+	container.innerHTML = `<div class="text-center py-6 text-emerald-400 text-sm animate-pulse">Menghitung matriks valuasi & posisi 52W...</div>`;
 
-    try {
-        const items = [];
-        const batchSize = 5;
+	const renderValuationItems = (rawItems) => {
+		const evaluated = rawItems.map(stock => {
+			const range52w = (stock.high52w - stock.low52w) || 1;
+			const positionPct = Math.max(0, Math.min(100, ((stock.price - stock.low52w) / range52w) * 100));
+			const discountFromHigh = ((stock.high52w - stock.price) / (stock.high52w || 1)) * 100;
 
-        for (let i = 0; i < watchlist.length; i += batchSize) {
-            const batch = watchlist.slice(i, i + batchSize);
-            const batchRes = await Promise.all(
-                batch.map(async (ticker) => {
-                    try {
-                        const raw = await fetchRealtimeStockData(ticker);
-                        return normalizeStockPayload(raw, ticker);
-                    } catch {
-                        return null;
-                    }
-                })
-            );
-            items.push(...batchRes.filter(Boolean));
-        }
+			let status = 'FAIR VALUE';
+			let statusClass = 'bg-sky-500/15 text-sky-400 border-sky-500/30';
 
-        const evaluated = items.map(stock => {
-            const range52w = (stock.high52w - stock.low52w) || 1;
-            const positionPct = Math.max(0, Math.min(100, ((stock.price - stock.low52w) / range52w) * 100));
-            const discountFromHigh = ((stock.high52w - stock.price) / (stock.high52w || 1)) * 100;
+			if (positionPct <= 30) {
+				status = 'UNDERVALUED';
+				statusClass = 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
+			} else if (positionPct >= 75) {
+				status = 'PREMIUM';
+				statusClass = 'bg-amber-500/15 text-amber-400 border-amber-500/30';
+			}
 
-            let status = 'FAIR VALUE';
-            let statusClass = 'bg-sky-500/15 text-sky-400 border-sky-500/30';
+			return {
+				...stock,
+				positionPct,
+				discountFromHigh,
+				status,
+				statusClass
+			};
+		}).sort((a, b) => a.positionPct - b.positionPct);
 
-            if (positionPct <= 30) {
-                status = 'UNDERVALUED';
-                statusClass = 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
-            } else if (positionPct >= 75) {
-                status = 'PREMIUM';
-                statusClass = 'bg-amber-500/15 text-amber-400 border-amber-500/30';
-            }
+		container.innerHTML = evaluated.slice(0, 20).map(stock => `
+			<div class="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition">
+				<div class="flex items-center justify-between mb-2">
+					<div class="flex items-center gap-2">
+						<span class="font-bold text-white">${stock.ticker}</span>
+						<span class="text-[11px] px-2 py-0.5 rounded border ${stock.statusClass}">${stock.status}</span>
+					</div>
+					<span class="text-sm font-semibold text-white">Rp ${stock.price.toLocaleString('id-ID')}</span>
+				</div>
+				<div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mb-2">
+					<div class="bg-emerald-500 h-full" style="width: ${stock.positionPct.toFixed(0)}%"></div>
+				</div>
+				<div class="flex justify-between text-[11px] text-slate-400">
+					<span>Low 52W: ${stock.low52w.toLocaleString('id-ID')}</span>
+					<span>Diskon High: ${stock.discountFromHigh.toFixed(1)}%</span>
+					<span>High 52W: ${stock.high52w.toLocaleString('id-ID')}</span>
+				</div>
+			</div>
+		`).join('');
+	};
 
-            return {
-                ...stock,
-                positionPct,
-                discountFromHigh,
-                status,
-                statusClass
-            };
-        }).sort((a, b) => a.positionPct - b.positionPct);
+	try {
+		const items = [];
+		const uncached = [];
 
-        container.innerHTML = evaluated.map(stock => `
-            <div class="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-white">${stock.ticker}</span>
-                        <span class="text-[11px] px-2 py-0.5 rounded border ${stock.statusClass}">${stock.status}</span>
-                    </div>
-                    <span class="text-sm font-semibold text-white">Rp ${stock.price.toLocaleString('id-ID')}</span>
-                </div>
-                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mb-2">
-                    <div class="bg-emerald-500 h-full" style="width: ${stock.positionPct.toFixed(0)}%"></div>
-                </div>
-                <div class="flex justify-between text-[11px] text-slate-400">
-                    <span>Low 52W: ${stock.low52w.toLocaleString('id-ID')}</span>
-                    <span>Diskon High: ${stock.discountFromHigh.toFixed(1)}%</span>
-                    <span>High 52W: ${stock.high52w.toLocaleString('id-ID')}</span>
-                </div>
-            </div>
-        `).join('');
-    } catch (err) {
-        console.error('Error runValuationScreener:', err);
-        container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Gagal memuat Valuasi Matrix.</div>`;
-    }
+		for (const ticker of watchlist) {
+			const cached = getCachedStockData(ticker);
+			if (cached) {
+				const norm = normalizeStockPayload(cached, ticker);
+				if (norm) items.push(norm);
+			} else {
+				uncached.push(ticker);
+			}
+		}
+
+		if (items.length > 0) renderValuationItems(items);
+
+		const targets = uncached.sort(() => 0.5 - Math.random()).slice(0, 30);
+		const BATCH_SIZE = 15;
+
+		for (let i = 0; i < targets.length; i += BATCH_SIZE) {
+			const batch = targets.slice(i, i + BATCH_SIZE);
+			const batchRes = await Promise.all(
+				batch.map(async (ticker) => {
+					try {
+						const raw = await fetchRealtimeStockData(ticker, false, true);
+						return normalizeStockPayload(raw, ticker);
+					} catch {
+						return null;
+					}
+				})
+			);
+			items.push(...batchRes.filter(Boolean));
+			if (items.length > 0) renderValuationItems(items);
+		}
+
+		if (items.length === 0) {
+			container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Data valuasi belum tersedia saat ini.</div>`;
+		}
+	} catch (err) {
+		console.error('Error runValuationScreener:', err);
+		container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Gagal memuat Valuasi Matrix.</div>`;
+	} finally {
+		isValuationLoading = false;
+	}
 }
 
-// 5. Warrant Tracker (Otomatis memfilter saham berakhiran '-W' dari radarWatchlist)
+// 5. Warrant Tracker (Batching + Fast Timeout)
 async function loadWarrantData() {
-    const container = document.getElementById('warrant-tracker-list') || document.getElementById('warrant-container');
-    if (!container) return;
+	if (isWarrantLoading) return;
+	const container = document.getElementById('warrant-tracker-list') || document.getElementById('warrant-container');
+	if (!container) return;
 
-    const warrantTickers = (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist))
-        ? uniqueRadarWatchlist.filter(t => /-W\d*$/i.test(t))
-        : [];
+	const warrantTickers = (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist))
+		? uniqueRadarWatchlist.filter(t => /-W\d*$/i.test(t))
+		: [];
 
-    if (warrantTickers.length === 0) {
-        container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm">Tidak ada emiten waran (-W) di dalam watchlist saat ini.</div>`;
-        return;
-    }
+	if (warrantTickers.length === 0) {
+		container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm">Tidak ada emiten waran (-W) di dalam watchlist saat ini.</div>`;
+		return;
+	}
 
-    container.innerHTML = `<div class="text-center py-6 text-emerald-400 text-sm animate-pulse">Memuat data pergerakan waran...</div>`;
+	isWarrantLoading = true;
+	container.innerHTML = `<div class="text-center py-6 text-emerald-400 text-sm animate-pulse">Memuat data pergerakan waran...</div>`;
 
-    try {
-        const warrantList = await Promise.all(
-            warrantTickers.map(async (wTicker) => {
-                const parentTicker = wTicker.replace(/-W\d*$/i, '');
-                const [rawWarrant, rawParent] = await Promise.all([
-                    fetchRealtimeStockData(wTicker).catch(() => null),
-                    fetchRealtimeStockData(parentTicker).catch(() => null)
-                ]);
+	try {
+		const validWarrants = [];
+		const BATCH_SIZE = 6;
 
-                const warrant = normalizeStockPayload(rawWarrant, wTicker);
-                const parent = normalizeStockPayload(rawParent, parentTicker);
-                if (!warrant) return null;
+		for (let i = 0; i < warrantTickers.length; i += BATCH_SIZE) {
+			const batch = warrantTickers.slice(i, i + BATCH_SIZE);
+			const batchList = await Promise.all(
+				batch.map(async (wTicker) => {
+					const parentTicker = wTicker.replace(/-W\d*$/i, '');
+					const [rawWarrant, rawParent] = await Promise.all([
+						fetchRealtimeStockData(wTicker, false, true).catch(() => null),
+						fetchRealtimeStockData(parentTicker, false, true).catch(() => null)
+					]);
 
-                const ratioToParent = parent && parent.price > 0
-                    ? ((warrant.price / parent.price) * 100).toFixed(1)
-                    : null;
+					const warrant = normalizeStockPayload(rawWarrant, wTicker);
+					const parent = normalizeStockPayload(rawParent, parentTicker);
+					if (!warrant) return null;
 
-                return {
-                    ...warrant,
-                    parentTicker,
-                    parentPrice: parent ? parent.price : null,
-                    ratioToParent
-                };
-            })
-        );
+					const ratioToParent = parent && parent.price > 0
+						? ((warrant.price / parent.price) * 100).toFixed(1)
+						: null;
 
-        const validWarrants = warrantList.filter(Boolean);
+					return {
+						...warrant,
+						parentTicker,
+						parentPrice: parent ? parent.price : null,
+						ratioToParent
+					};
+				})
+			);
 
-        if (validWarrants.length === 0) {
-            container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Data harga waran belum tersedia di feed.</div>`;
-            return;
-        }
+			validWarrants.push(...batchList.filter(Boolean));
 
-        container.innerHTML = validWarrants.map(w => {
-            const isUp = w.changePercent >= 0;
-            return `
-                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-emerald-400">${w.ticker}</span>
-                            <span class="text-xs text-slate-400">Induk: ${w.parentTicker} ${w.parentPrice ? `(Rp ${w.parentPrice.toLocaleString('id-ID')})` : ''}</span>
-                        </div>
-                        <div class="text-xs text-slate-500 mt-1">
-                            Vol: ${w.volume.toLocaleString('id-ID')} ${w.ratioToParent ? `· Rasio Harga: ${w.ratioToParent}% dari induk` : ''}
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="font-bold text-white">Rp ${w.price.toLocaleString('id-ID')}</div>
-                        <div class="text-xs font-medium ${isUp ? 'text-emerald-400' : 'text-rose-400'}">
-                            ${isUp ? '+' : ''}${w.changePercent.toFixed(2)}%
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    } catch (err) {
-        console.error('Error loadWarrantData:', err);
-        container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Gagal memuat Warrant Tracker.</div>`;
-    }
+			if (validWarrants.length > 0) {
+				container.innerHTML = validWarrants.map(w => {
+					const isUp = w.changePercent >= 0;
+					return `
+						<div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition">
+							<div>
+								<div class="flex items-center gap-2">
+									<span class="font-bold text-emerald-400">${w.ticker}</span>
+									<span class="text-xs text-slate-400">Induk: ${w.parentTicker} ${w.parentPrice ? `(Rp ${w.parentPrice.toLocaleString('id-ID')})` : ''}</span>
+								</div>
+								<div class="text-xs text-slate-500 mt-1">
+									Vol: ${w.volume.toLocaleString('id-ID')} ${w.ratioToParent ? `· Rasio Harga: ${w.ratioToParent}% dari induk` : ''}
+								</div>
+							</div>
+							<div class="text-right">
+								<div class="font-bold text-white">Rp ${w.price.toLocaleString('id-ID')}</div>
+								<div class="text-xs font-medium ${isUp ? 'text-emerald-400' : 'text-rose-400'}">
+									${isUp ? '+' : ''}${w.changePercent.toFixed(2)}%
+								</div>
+							</div>
+						</div>
+					`;
+				}).join('');
+			}
+		}
+
+		if (validWarrants.length === 0) {
+			container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Data harga waran belum tersedia di feed.</div>`;
+		}
+	} catch (err) {
+		console.error('Error loadWarrantData:', err);
+		container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Gagal memuat Warrant Tracker.</div>`;
+	} finally {
+		isWarrantLoading = false;
+	}
 }
 
 // Helper kecil untuk memastikan format ticker bersih
