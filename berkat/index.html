@@ -40,6 +40,7 @@
 
 	<!-- Tailwind CSS CDN -->
 	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 	<style>
 		/* ==========================================================================
@@ -355,6 +356,19 @@
 		::-webkit-scrollbar-thumb:hover {
 			background: var(--text-muted);
 		}
+
+		/* ==========================================================================
+		   3. ANIMASI LACAK PESANAN, STOK MENIPIS & INSTALL PWA
+		   ========================================================================== */
+		@keyframes trackStepIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+		@keyframes trackPulse { 0% { box-shadow: 0 0 0 0 rgba(74, 124, 89, .5); } 70% { box-shadow: 0 0 0 10px rgba(74, 124, 89, 0); } 100% { box-shadow: 0 0 0 0 rgba(74, 124, 89, 0); } }
+		@keyframes trackTruck { 0%, 100% { transform: translateX(-2px); } 50% { transform: translateX(3px); } }
+		@keyframes lowStockBlink { 0%, 100% { opacity: 1; } 50% { opacity: .72; } }
+		.track-step { animation: trackStepIn .45s ease both; }
+		.track-dot-current { animation: trackPulse 1.8s infinite; }
+		.track-truck { display: inline-block; animation: trackTruck 1.2s ease-in-out infinite; }
+		.track-bar-fill { transition: width 1s cubic-bezier(.2, .8, .2, 1); }
+		.stock-low-badge { animation: lowStockBlink 2.2s ease-in-out infinite; }
 	</style>
 </head>
 <body id="top" class="min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-950">
@@ -418,6 +432,9 @@
 
 					<!-- Tombol Aksi Mobile: Bulat Sama Rata (Keranjang, Pengaturan, Profil) -->
 					<div class="flex items-center gap-2 lg:hidden shrink-0">
+						<button type="button" data-open-modal="track" title="Lacak Pesanan" aria-label="Lacak Pesanan" class="w-10 h-10 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition cursor-pointer">
+							<i class="fa-solid fa-truck-fast text-[15px] pointer-events-none"></i>
+						</button>
 						<button type="button" data-open-modal="cart" title="Keranjang Belanja" aria-label="Buka Keranjang" class="relative w-10 h-10 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition cursor-pointer">
 							<svg class="w-[18px] h-[18px] shrink-0 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 								<circle cx="9" cy="21" r="1"></circle>
@@ -477,6 +494,7 @@
 
 					<!-- Popover Riwayat Pencarian Cepat -->
 					<div id="search-history-popover" class="hidden absolute left-0 right-0 top-full mt-2 p-3 rounded-2xl border theme-surface z-50 animate-popover-enter">
+						<div id="search-suggest-box" class="hidden mb-3 space-y-1"></div>
 						<div class="flex items-center justify-between mb-2">
 							<span class="text-xs font-semibold theme-text-secondary">Riwayat Pencarian Terakhir</span>
 							<button type="button" id="popover-clear-history" class="text-[11px] accent-text hover:underline cursor-pointer">Hapus Riwayat</button>
@@ -487,6 +505,9 @@
 
 				<!-- Tombol Aksi Desktop: Bulat & Sama Rata (Keranjang, Pengaturan, Profil) -->
 				<div class="hidden lg:flex items-center gap-2.5 shrink-0">
+					<button type="button" data-open-modal="track" title="Lacak Pesanan" aria-label="Lacak Pesanan" class="w-11 h-11 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition cursor-pointer">
+						<i class="fa-solid fa-truck-fast text-[17px] accent-text pointer-events-none"></i>
+					</button>
 					<button type="button" data-open-modal="cart" title="Keranjang Belanja" aria-label="Keranjang Belanja" class="relative w-11 h-11 aspect-square rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 hover:opacity-90 active:scale-95 transition cursor-pointer">
 						<svg class="w-5 h-5 accent-text shrink-0 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
 							<circle cx="9" cy="21" r="1"></circle>
@@ -616,6 +637,11 @@
 		</section>
 
 		<!-- 3. HASIL PENCARIAN, GRID KATALOG PRODUK & PAGINATION 50 PRODUK/HALAMAN -->
+		<section id="recent-viewed-section" aria-label="Terakhir Dilihat" class="hidden space-y-3">
+			<div class="flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left accent-text"></i><h3 class="text-sm font-bold theme-text-primary">Terakhir Dilihat</h3></div>
+			<div id="recent-viewed-list" class="flex gap-3 overflow-x-auto pb-1"></div>
+		</section>
+
 		<section id="catalog-section" aria-label="Daftar Produk" class="space-y-4">
 			<div class="flex flex-wrap items-center justify-between gap-3">
 				<div class="space-y-0.5">
@@ -961,6 +987,34 @@
 	<!-- ==========================================================================
 	     MODAL 3: FORM PEMBAYARAN, ONGKOS KIRIM (CIMONE JAYA) & WHATSAPP
 	     ========================================================================== -->
+	<!-- Modal Lacak Pesanan -->
+	<div id="modal-track" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto modal-backdrop-enter">
+		<div class="modal-dialog-box theme-surface border rounded-3xl max-w-xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[90vh]" style="box-shadow: var(--shadow-modal);">
+			<div class="px-6 py-4 border-b theme-border flex items-center justify-between gap-2">
+				<div class="flex items-center gap-2.5 min-w-0">
+					<span class="w-9 h-9 rounded-xl accent-soft-bg flex items-center justify-center shrink-0"><i class="fa-solid fa-truck-fast accent-text"></i></span>
+					<div class="min-w-0">
+						<h2 class="text-base sm:text-lg font-bold theme-text-primary truncate">Lacak Pesanan</h2>
+						<p class="text-xs theme-text-secondary truncate">Pantau status pengantaran berdasarkan estimasi waktu</p>
+					</div>
+				</div>
+				<button type="button" data-close-modal="track" aria-label="Tutup" class="w-9 h-9 rounded-full border theme-subtle theme-text-primary flex items-center justify-center shrink-0 cursor-pointer"><i class="fa-solid fa-xmark pointer-events-none"></i></button>
+			</div>
+			<div class="p-5 overflow-y-auto space-y-4">
+				<form id="track-form" class="flex gap-2">
+					<input id="track-order-input" type="text" autocomplete="off" placeholder="Nomor pesanan, contoh: BE-123456" class="flex-1 min-w-0 px-3.5 py-2 rounded-xl border theme-elevated theme-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30">
+					<button type="submit" class="px-4 py-2 rounded-xl accent-bg text-xs font-semibold shrink-0 active:scale-95 cursor-pointer"><i class="fa-solid fa-magnifying-glass mr-1.5"></i>Lacak</button>
+				</form>
+				<div id="track-recent-chips" class="flex flex-wrap gap-1.5"></div>
+				<div id="track-result"></div>
+			</div>
+			<div class="px-6 py-3 border-t theme-border flex flex-wrap items-center justify-between gap-2">
+				<span class="text-[11px] theme-text-muted">Status dihitung dari persentase waktu ETA pengantaran.</span>
+				<button type="button" id="track-export-csv-btn" class="text-xs font-semibold accent-text hover:underline cursor-pointer"><i class="fa-solid fa-file-csv mr-1.5"></i>Unduh Rekap Pesanan (CSV)</button>
+			</div>
+		</div>
+	</div>
+
 	<div id="modal-checkout" class="hidden fixed inset-0 z-50 bg-black/55 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto modal-backdrop-enter">
 		<div class="modal-dialog-box theme-surface border rounded-3xl max-w-4xl w-full overflow-hidden animate-modal-enter my-auto flex flex-col max-h-[92vh]" style="box-shadow: var(--shadow-modal);">
 			<!-- Header Checkout -->
@@ -1025,6 +1079,24 @@
 						<div>
 							<label for="checkout-address" class="block text-xs font-medium theme-text-secondary mb-1">Detail Alamat Rumah (Jalan, RT/RW, Patokan) *</label>
 							<textarea id="checkout-address" rows="2" required placeholder="Contoh: Jl. Merdeka No. 12, RT 02/RW 04, dekat Masjid..." class="w-full px-3.5 py-2 rounded-xl border theme-surface theme-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30"></textarea>
+						</div>
+
+						<!-- Lokasi Akurat (Opsional): GPS atau link Google Maps -->
+						<div id="geo-location-box" class="p-3 rounded-xl border theme-surface space-y-2.5">
+							<div class="flex items-center justify-between gap-2">
+								<span class="text-xs font-semibold theme-text-primary"><i class="fa-solid fa-location-crosshairs accent-text mr-1.5"></i>Lokasi Akurat (Opsional)</span>
+								<button type="button" id="geo-clear-btn" class="hidden text-[11px] font-semibold text-rose-500 hover:underline cursor-pointer"><i class="fa-solid fa-xmark mr-1"></i>Hapus</button>
+							</div>
+							<div class="flex flex-col sm:flex-row gap-2">
+								<button type="button" id="geo-use-location-btn" class="px-3 py-2 rounded-xl accent-bg text-xs font-semibold flex items-center justify-center gap-1.5 shrink-0 active:scale-95 cursor-pointer">
+									<i class="fa-solid fa-crosshairs"></i><span>Gunakan Lokasi Saya</span>
+								</button>
+								<div class="flex flex-1 gap-2 min-w-0">
+									<input id="geo-maps-input" type="text" autocomplete="off" placeholder="Tempel link Google Maps / koordinat" class="flex-1 min-w-0 px-3 py-2 rounded-xl border theme-elevated theme-text-primary text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600/30">
+									<button type="button" id="geo-apply-link-btn" title="Terapkan link" class="px-3 py-2 rounded-xl border theme-elevated text-xs font-semibold shrink-0 active:scale-95 cursor-pointer"><i class="fa-solid fa-link"></i></button>
+								</div>
+							</div>
+							<p id="geo-status" class="text-[11px] theme-text-muted"></p>
 						</div>
 
 						<!-- Info Status Radius & Ongkos Kirim -->
@@ -1340,6 +1412,11 @@
 			},
 			serviceFee: 15000,
 			whatsappNumber: '6289529305947',
+			lowStockThreshold: 3,
+			/* Estimasi pengantaran: prep + (jarak x menit/km) + cuaca; timeScale 60 = mode demo (1 jam terasa 1 menit) */
+			delivery: { prepMinutes: 25, minutesPerKm: 4, windowMinutes: 20, timeScale: 1 },
+			/* URL Google Apps Script (opsional) untuk menerima rekap pesanan di Google Sheets milik toko */
+			orderWebhookUrl: '',
 			officialDestinations: [
 				{ id: 'GoPay', name: 'GoPay', holder: 'Berkat Elektronik', accountNumber: '089529305947' },
 				{ id: 'DANA', name: 'DANA', holder: 'Berkat Elektronik', accountNumber: '089529305947' },
@@ -1573,7 +1650,7 @@
 		};
 
 		/* ==========================================================================
-		   2. DATA SLIDER LANDSCAPE HEADER & REPOSITORY KATALOG PRODUK (115 PRODUK)
+		   2. DATA SLIDER LANDSCAPE HEADER & REPOSITORY KATALOG PRODUK (5 PRODUK PER KATEGORI)
 		   ========================================================================== */
 		const HERO_SLIDES = [
 			{
@@ -1803,12 +1880,15 @@
 				{ category: 'Komponen', brand: 'Berkat Pro', prefix: 'Spul Tweeter & Voice Coil 44.4mm', suffix: 'Titanium Diaphragm Pengganti', basePrice: 85000, img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80', desc: 'Spul driver tweeter kawat tembaga pipih tahan panas untuk perbaikan speaker PA.' }
 			];
 
+			const MOCK_PER_CATEGORY = 5;
 			const generated = [...CORE_PRODUCTS_DATA];
+			const perCategory = {};
+			generated.forEach(item => { perCategory[item.category] = (perCategory[item.category] || 0) + 1; });
 			let counter = 15;
 			for (let round = 1; round <= 6; round++) {
 				for (let i = 0; i < templates.length; i++) {
-					if (generated.length >= 115) break;
 					const tpl = templates[i];
+					if ((perCategory[tpl.category] || 0) >= MOCK_PER_CATEGORY) continue;
 					const id = `prd-${String(counter).padStart(3, '0')}`;
 					const priceOffset = (round - 1) * 75000;
 					const stockVal = counter % 19 === 0 ? 0 : ((counter % 7) + 2);
@@ -1828,6 +1908,7 @@
 							`Ketersediaan Stok: ${stockVal > 0 ? stockVal + ' Unit' : 'Kosong'}`
 						]
 					});
+					perCategory[tpl.category] = (perCategory[tpl.category] || 0) + 1;
 					counter++;
 				}
 			}
@@ -1893,6 +1974,7 @@
 				});
 
 				PRODUCTS_DATA = Array.from(loadedMap.values());
+				StockManager.apply();
 				AppState.syncCartWithStock();
 
 				const fileNotice = document.getElementById('file-protocol-notice');
@@ -1922,6 +2004,7 @@
 
 				if (addedCount > 0) {
 					PRODUCTS_DATA = Array.from(loadedMap.values());
+					StockManager.apply();
 					AppState.syncCartWithStock();
 					document.getElementById('file-protocol-notice')?.classList.add('hidden');
 					UIRenderer.refreshCatalogAndFilters();
@@ -2308,11 +2391,11 @@
 						'prd-02': 4,
 						'prd-03': 5,
 						'prd-05': 5,
-						'prd-07': 3,
-						'prd-09': 3,
 						'prd-11': 4
 					},
 					searchHistory: ['TOA', 'Yamaha', 'Mixer 8 Channel', 'Speaker 15 Inch'],
+					recentViews: [],
+					stockSold: {},
 					orderHistory: []
 				};
 			},
@@ -2338,7 +2421,9 @@
 							likes: Array.isArray(parsed.likes) ? parsed.likes : def.likes,
 							productViews: (parsed.productViews && typeof parsed.productViews === 'object') ? parsed.productViews : def.productViews,
 							searchHistory: Array.isArray(parsed.searchHistory) ? parsed.searchHistory : def.searchHistory,
-							orderHistory: Array.isArray(parsed.orderHistory) ? parsed.orderHistory : []
+							orderHistory: Array.isArray(parsed.orderHistory) ? parsed.orderHistory : [],
+							recentViews: Array.isArray(parsed.recentViews) ? parsed.recentViews : [],
+							stockSold: (parsed.stockSold && typeof parsed.stockSold === 'object') ? parsed.stockSold : {}
 						};
 					} else {
 						this.data = this.defaultData();
@@ -2373,6 +2458,8 @@
 					this.data.productViews = {};
 				}
 				this.data.productViews[productId] = (Number(this.data.productViews[productId]) || 0) + 1;
+				this.data.recentViews = [productId, ...(this.data.recentViews || []).filter(id => id !== productId)].slice(0, 8);
+				Recommendations.renderStrip();
 				this.save();
 			},
 
@@ -2460,7 +2547,7 @@
 							stockLabel
 						].join(' ').toLowerCase();
 
-						if (!haystack.includes(q)) return false;
+						if (!SmartSearch.matches(haystack, q)) return false;
 					}
 
 					return true;
@@ -2760,6 +2847,56 @@
 		   9. KALKULATOR JARAK & ONGKOS KIRIM BERDASARKAN ATURAN TANGERANG
 		   ========================================================================== */
 		const ShippingCalculator = {
+			haversineKm(lat1, lng1, lat2, lng2) {
+				const dLat = this.toRad(lat2 - lat1);
+				const dLng = this.toRad(lng2 - lng1);
+				const a = Math.sin(dLat / 2) ** 2 + Math.cos(this.toRad(lat1)) * Math.cos(this.toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+				return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+			},
+
+			estimateEta(distanceKm) {
+				const { prepMinutes, minutesPerKm, windowMinutes } = STORE_CONFIG.delivery;
+				const weatherExtra = Number(WeatherService.currentWeather?.extraMinutes || 0);
+				const min = Math.round(prepMinutes + (distanceKm * minutesPerKm) + weatherExtra);
+				return { min, max: min + windowMinutes, weatherExtra };
+			},
+
+			findNearestLocation(lat, lng) {
+				let best = null;
+				Object.entries(TANGERANG_LOCATIONS).forEach(([region, list]) => {
+					list.forEach(loc => {
+						const km = this.haversineKm(lat, lng, loc.lat, loc.lng);
+						if (!best || km < best.km) best = { region, name: loc.name, km };
+					});
+				});
+				return best;
+			},
+
+			/* Hitung ongkir dari koordinat nyata pembeli (GPS / link Google Maps) */
+			evaluateByCoords(lat, lng) {
+				const { lat: oLat, lng: oLng } = STORE_CONFIG.originCoords;
+				const near = this.findNearestLocation(lat, lng);
+				const distanceKm = Math.round(Math.max(1.2, this.haversineKm(oLat, oLng, lat, lng) * STORE_CONFIG.roadDistanceMultiplier) * 10) / 10;
+				const base = { distanceKm, cost: 0, brackets: 0, region: near.region, district: near.name };
+
+				if (near.km > 15) {
+					return { ...base, eligible: false, reason: 'Titik lokasi berada di luar wilayah layanan Tangerang Kota dan Tangerang Kabupaten.' };
+				}
+				if (distanceKm > STORE_CONFIG.maxRadiusKm) {
+					return { ...base, eligible: false, reason: `Lokasi akurat Anda sekitar ${distanceKm} KM dari toko. Melebihi batas radius pengiriman 0–${STORE_CONFIG.maxRadiusKm} KM.` };
+				}
+
+				const rule = STORE_CONFIG.shippingRules[near.region];
+				const brackets = distanceKm > rule.baseKm ? Math.ceil((distanceKm - rule.baseKm) / rule.nextStepKm) : 0;
+				return {
+					...base,
+					eligible: true,
+					brackets,
+					cost: rule.baseCost + (brackets * rule.nextStepCost),
+					reason: `Lokasi akurat: jarak tempuh ±${distanceKm} KM dari Jl. Raya Merdeka No.35 Cimone Jaya (wilayah tarif ${near.region}).`
+				};
+			},
+
 			toRad(deg) {
 				return deg * (Math.PI / 180);
 			},
@@ -3005,9 +3142,12 @@
 							likes: Array.isArray(incoming.likes) ? incoming.likes : [],
 							productViews: (incoming.productViews && typeof incoming.productViews === 'object') ? incoming.productViews : {},
 							searchHistory: Array.isArray(incoming.searchHistory) ? incoming.searchHistory : [],
-							orderHistory: Array.isArray(incoming.orderHistory) ? incoming.orderHistory : []
+							orderHistory: Array.isArray(incoming.orderHistory) ? incoming.orderHistory : [],
+							recentViews: Array.isArray(incoming.recentViews) ? incoming.recentViews : [],
+							stockSold: (incoming.stockSold && typeof incoming.stockSold === 'object') ? incoming.stockSold : {}
 						};
 
+						StockManager.apply();
 						AppState.syncCartWithStock();
 						AppState.save();
 						this.applyAll();
@@ -3429,9 +3569,7 @@
 										</div>
 									` : `
 										<div class="absolute bottom-3 left-3">
-											<span class="px-2.5 py-1 rounded-xl text-[11px] font-semibold bg-black/55 text-white backdrop-blur-xs">
-												Stok: ${product.stock}
-											</span>
+											${StockManager.badge(product)}
 										</div>
 									`}
 
@@ -3479,13 +3617,8 @@
 									>
 										Beli
 									</button>
-									<button
-										type="button"
-										disabled
-										aria-disabled="true"
-										class="flex-1 py-2 px-3 rounded-xl border theme-elevated theme-text-muted text-xs font-semibold opacity-60 cursor-not-allowed flex items-center justify-center gap-1.5"
-									>
-										<span>Stok Habis</span>
+									<button type="button" data-action-notify="${product.id}" class="flex-1 py-2 px-3 rounded-xl border theme-elevated accent-text text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition">
+										<i class="fa-brands fa-whatsapp"></i><span>Kabari Saya</span>
 									</button>
 								` : `
 									<button
@@ -3518,6 +3651,12 @@
 						const cartBtn = e.target.closest('[data-action-cart]');
 						const buyBtn = e.target.closest('[data-action-buy]');
 						const productId = card.getAttribute('data-product-card');
+						const notifyBtn = e.target.closest('[data-action-notify]');
+						if (notifyBtn) {
+							e.stopPropagation();
+							StockManager.notifyRestock(productId);
+							return;
+						}
 
 						if (likeBtn) {
 							e.stopPropagation();
@@ -3656,6 +3795,7 @@
 								<h2 class="text-lg sm:text-xl font-bold theme-text-primary leading-snug">${product.name}</h2>
 								<p class="text-xl sm:text-2xl font-bold ${isOutOfStock ? 'theme-text-muted' : 'accent-text'}">${AppState.formatRupiah(product.price)}</p>
 
+								${StockManager.detailNote(product)}
 								<div class="pt-2 border-t theme-border space-y-1.5">
 									<h4 class="text-xs font-bold uppercase tracking-wider theme-text-muted">Deskripsi Lengkap</h4>
 									<p class="text-xs sm:text-sm theme-text-secondary leading-relaxed">
@@ -3692,9 +3832,7 @@
 										<button type="button" disabled class="flex-1 py-3 px-4 rounded-2xl border theme-elevated theme-text-muted text-xs sm:text-sm font-semibold opacity-55 cursor-not-allowed">
 											+ Keranjang
 										</button>
-										<button type="button" disabled class="flex-1 py-3 px-4 rounded-2xl theme-subtle theme-text-muted text-xs sm:text-sm font-bold opacity-55 cursor-not-allowed">
-											Stok Habis
-										</button>
+										<button type="button" id="detail-notify-btn" class="flex-1 py-3 px-4 rounded-2xl accent-bg text-xs sm:text-sm font-bold shadow-sm active:scale-95"><i class="fa-brands fa-whatsapp mr-1.5"></i>Kabari Saya</button>
 									` : `
 										<button type="button" id="detail-cart-btn" class="flex-1 py-3 px-4 rounded-2xl border theme-elevated theme-text-primary text-xs sm:text-sm font-semibold hover:opacity-85 transition active:scale-95">
 											+ Keranjang
@@ -3707,6 +3845,7 @@
 							</div>
 						</div>
 					</div>
+					${Recommendations.html(product)}
 				`;
 
 				document.getElementById('detail-close-mobile')?.addEventListener('click', () => {
@@ -3730,6 +3869,9 @@
 						ModalManager.open('checkout');
 					}
 				});
+
+				document.getElementById('detail-notify-btn')?.addEventListener('click', () => StockManager.notifyRestock(product.id));
+				Recommendations.bind(container);
 
 				ModalManager.open('product-detail');
 			},
@@ -4154,7 +4296,7 @@
 										<span class="text-[11px] theme-text-muted ml-2">${ord.date}</span>
 									</div>
 									<div class="flex items-center gap-2">
-										<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 text-[11px] font-semibold">Terkirim ke WhatsApp</span>
+										${OrderTracker.pillHtml(ord)}
 										<button type="button" data-delete-order-id="${ord.orderId}" class="text-[11px] font-semibold text-rose-500 hover:underline px-1.5 py-0.5 rounded">
 											Hapus
 										</button>
@@ -4383,6 +4525,15 @@
 		   12. CHECKOUT CONTROLLER (TARIK DATA PROFILE, ONGKIR CIMONE JAYA & WHATSAPP)
 		   ========================================================================== */
 		const CheckoutController = {
+			customLocation: null,
+
+			getShippingEvaluation() {
+				if (this.customLocation) {
+					return ShippingCalculator.evaluateByCoords(this.customLocation.lat, this.customLocation.lng);
+				}
+				return ShippingCalculator.evaluateShipping(this.selectedRegion, this.selectedDistrict);
+			},
+
 			selectedRegion: 'Tangerang Kota',
 			selectedDistrict: 'Karawaci (Cimone Jaya)',
 			selectedBank: 'Bank Jago',
@@ -4469,6 +4620,7 @@
 				this.selectedDistrict = prof.district || 'Karawaci (Cimone Jaya)';
 				this.selectedBank = prof.bank || 'Bank Jago';
 				this.selectedDestination = '';
+				GeoLocator.reset();
 
 				this.initCheckoutDropdowns();
 				this.pullFromProfile(false);
@@ -4704,7 +4856,7 @@
 					}
 				}
 
-				const evalResult = ShippingCalculator.evaluateShipping(this.selectedRegion, this.selectedDistrict);
+				const evalResult = this.getShippingEvaluation();
 
 				if (distPill) {
 					distPill.textContent = evalResult.distanceKm !== null
@@ -4714,9 +4866,10 @@
 
 				if (statusBox) {
 					if (evalResult.eligible) {
-						const weatherExtra = Number(WeatherService.currentWeather?.extraMinutes || 0);
-						const estimatedMinMinutes = Math.round(25 + (evalResult.distanceKm * 4) + weatherExtra);
-						const estimatedMaxMinutes = estimatedMinMinutes + 20;
+						const eta = ShippingCalculator.estimateEta(evalResult.distanceKm);
+						const weatherExtra = eta.weatherExtra;
+						const estimatedMinMinutes = eta.min;
+						const estimatedMaxMinutes = eta.max;
 						const weatherNote = weatherExtra > 0
 							? ` (Termasuk +${weatherExtra} mnt penyesuaian cuaca ${WeatherService.currentWeather.condition})`
 							: '';
@@ -4784,7 +4937,7 @@
 					return;
 				}
 
-				const evalResult = ShippingCalculator.evaluateShipping(this.selectedRegion, this.selectedDistrict);
+				const evalResult = this.getShippingEvaluation();
 				if (!evalResult.eligible) {
 					SoundHaptic.feedback('warning');
 					Toast.show(evalResult.reason, 'error', 4500);
@@ -4806,6 +4959,8 @@
 				const grandTotal = subtotal + serviceFee + shippingCost;
 				const orderId = 'BE-' + Date.now().toString().slice(-6);
 				const dateStr = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+				const eta = ShippingCalculator.estimateEta(evalResult.distanceKm);
+				const mapsUrl = GeoLocator.getMapsUrl();
 
 				const destObj = STORE_CONFIG.officialDestinations.find(d => d.id === this.selectedDestination) || {
 					name: this.selectedDestination,
@@ -4834,6 +4989,9 @@
 					district: this.selectedDistrict,
 					address,
 					distanceKm: evalResult.distanceKm,
+					createdAt: Date.now(),
+					etaMinutes: eta.max,
+					mapsUrl,
 					bank: this.selectedBank,
 					destinationAccount: destinationSummary,
 					senderName,
@@ -4852,6 +5010,8 @@
 				};
 
 				AppState.data.orderHistory.unshift(orderRecord);
+				StockManager.commitOrder(items);
+				OrderRecap.send(orderRecord);
 				AppState.data.cart = [];
 				AppState.save();
 
@@ -4874,6 +5034,8 @@
 					`• Wilayah: ${this.selectedRegion} — ${this.selectedDistrict}`,
 					`• Alamat Detail: ${address}`,
 					`• Jarak dari Toko (Cimone Jaya): ±${evalResult.distanceKm} KM`,
+					...(mapsUrl ? [`• Titik Lokasi Akurat: ${mapsUrl}`] : []),
+					`• Estimasi Pengantaran: ±${eta.min}–${eta.max} menit`,
 					``,
 					`*RINCIAN BARANG:*`,
 					itemLines,
@@ -4905,6 +5067,8 @@
 				if (fileInput) fileInput.value = '';
 
 				window.open(waUrl, '_blank', 'noopener,noreferrer');
+				GeoLocator.reset();
+				setTimeout(() => OrderTracker.open(orderId), 450);
 			}
 		};
 
@@ -4924,6 +5088,8 @@
 					SettingsManager.syncModalControls();
 				} else if (name === 'profile') {
 					UIRenderer.renderProfileModal();
+				} else if (name === 'track') {
+					OrderTracker.render(true);
 				}
 
 				const dialog = el.querySelector('.modal-dialog-box');
@@ -4987,10 +5153,727 @@
 		};
 
 		/* ==========================================================================
+		   15. FITUR TAMBAHAN: STOK OTOMATIS, LACAK PESANAN, REKAP, LOKASI AKURAT,
+		       PRODUK TERKAIT, PENCARIAN PINTAR & PWA
+		   ========================================================================== */
+
+		/* 15a. Stok otomatis: berkurang saat pesanan dibuat, peringatan stok menipis, minta info stok kembali */
+		const StockManager = {
+			isLow(product) {
+				return product.stock > 0 && product.stock <= STORE_CONFIG.lowStockThreshold;
+			},
+
+			badge(product) {
+				if (this.isLow(product)) {
+					return `
+						<span class="stock-low-badge px-2.5 py-1 rounded-xl text-[11px] font-bold bg-amber-500/95 text-amber-950 shadow-xs inline-flex items-center gap-1.5">
+							<i class="fa-solid fa-triangle-exclamation"></i> Stok menipis: sisa ${product.stock}
+						</span>
+					`;
+				}
+				return `
+					<span class="px-2.5 py-1 rounded-xl text-[11px] font-semibold bg-black/55 text-white backdrop-blur-xs">
+						Stok: ${product.stock}
+					</span>
+				`;
+			},
+
+			detailNote(product) {
+				if (!this.isLow(product)) return '';
+				return `
+					<p class="stock-low-badge text-xs font-semibold text-amber-600 flex items-center gap-1.5">
+						<i class="fa-solid fa-triangle-exclamation"></i> Stok menipis, tersisa ${product.stock} unit. Segera pesan sebelum habis.
+					</p>
+				`;
+			},
+
+			/* Stok efektif = stok dasar (kode/JSON) dikurangi total terjual di perangkat ini */
+			apply() {
+				const sold = AppState.data?.stockSold || {};
+				PRODUCTS_DATA.forEach(product => {
+					if (product._baseStock === undefined) product._baseStock = product.stock;
+					product.stock = Math.max(0, product._baseStock - (Number(sold[product.id]) || 0));
+				});
+			},
+
+			commitOrder(items) {
+				const sold = AppState.data.stockSold || (AppState.data.stockSold = {});
+				items.forEach(({ product, qty }) => {
+					sold[product.id] = (Number(sold[product.id]) || 0) + qty;
+				});
+				this.apply();
+				AppState.save();
+			},
+
+			notifyRestock(productId) {
+				const product = AppState.getProductById(productId);
+				if (!product) return;
+				const message = `Halo Berkat Elektronik, mohon kabari saya jika "${product.name}" sudah tersedia kembali. Terima kasih.`;
+				window.open(`https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+				SoundHaptic.feedback('success');
+				Toast.show('Membuka WhatsApp untuk meminta info stok tersedia kembali.', 'info');
+			}
+		};
+
+		/* 15b. Status pesanan: 6 tahap berdasarkan persentase waktu dari estimasi pengantaran (ETA) */
+		const ORDER_STAGES = [
+			{ label: 'Menunggu Konfirmasi', hint: 'Pesanan diterima, menunggu konfirmasi dari toko', icon: 'fa-hourglass-half', tone: 'bg-amber-500/15 text-amber-600' },
+			{ label: 'Dikemas', hint: 'Barang sedang dicek dan dikemas dengan aman', icon: 'fa-box-open', tone: 'bg-sky-500/15 text-sky-600' },
+			{ label: 'Dikirim', hint: 'Kurir berangkat dari toko di Cimone Jaya', icon: 'fa-truck-fast', tone: 'bg-emerald-500/15 text-emerald-600' },
+			{ label: 'Dikirim', hint: 'Dalam perjalanan menuju alamat Anda', icon: 'fa-route', tone: 'bg-emerald-500/15 text-emerald-600' },
+			{ label: 'Hampir Sampai', hint: 'Kurir sudah dekat dengan lokasi Anda', icon: 'fa-location-dot', tone: 'bg-orange-500/15 text-orange-600' },
+			{ label: 'Sampai', hint: 'Pesanan telah sampai di tujuan', icon: 'fa-circle-check', tone: 'bg-emerald-500 text-white' }
+		];
+		/* Batas atas (eksklusif) persen tiap tahap: 0-5, 6-10, 11-50, 51-80, 81-98, 99-100 */
+		const ORDER_STAGE_LIMITS = [6, 11, 51, 81, 99];
+
+		const OrderTracker = {
+			currentOrderId: null,
+			lastRenderedId: null,
+
+			getProgress(order) {
+				const lastIdx = ORDER_STAGES.length - 1;
+				const etaMinutes = Number(order.etaMinutes) || 0;
+				if (!order.createdAt || !etaMinutes) {
+					return { pct: 100, idx: lastIdx, stage: ORDER_STAGES[lastIdx], remainingMs: 0, arrival: null };
+				}
+				const scale = STORE_CONFIG.delivery.timeScale || 1;
+				const totalMs = (etaMinutes * 60000) / scale;
+				const elapsed = Date.now() - order.createdAt;
+				const pct = Math.min(100, Math.max(0, (elapsed / totalMs) * 100));
+				const found = ORDER_STAGE_LIMITS.findIndex(limit => pct < limit);
+				const idx = found === -1 ? lastIdx : found;
+				return {
+					pct,
+					idx,
+					stage: ORDER_STAGES[idx],
+					remainingMs: Math.max(0, totalMs - elapsed),
+					arrival: new Date(order.createdAt + totalMs)
+				};
+			},
+
+			formatDuration(ms) {
+				const mins = Math.max(1, Math.ceil(ms / 60000));
+				return mins >= 60 ? `${Math.floor(mins / 60)} jam ${mins % 60} menit` : `${mins} menit`;
+			},
+
+			pillHtml(order) {
+				const { stage } = this.getProgress(order);
+				return `
+					<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${stage.tone}">
+						<i class="fa-solid ${stage.icon}"></i>${stage.label}
+					</span>
+					<button type="button" data-track-order="${order.orderId}" class="text-[11px] font-semibold accent-text hover:underline px-1.5 py-0.5 rounded cursor-pointer">
+						<i class="fa-solid fa-location-crosshairs mr-1"></i>Lacak
+					</button>
+				`;
+			},
+
+			stepsHtml(progress) {
+				const lastIdx = ORDER_STAGES.length - 1;
+				return ORDER_STAGES.map((stage, i) => {
+					const state = i < progress.idx ? 'done' : (i === progress.idx ? 'current' : 'todo');
+					const dotClass = state === 'todo' ? 'theme-subtle theme-text-muted' : 'accent-bg';
+					const pulse = state === 'current' ? ' track-dot-current' : '';
+					const moving = (state === 'current' && (i === 2 || i === 3)) ? ' track-truck' : '';
+					const icon = state === 'done' ? 'fa-check' : stage.icon;
+					return `
+						<li class="track-step flex gap-3" style="animation-delay:${i * 70}ms">
+							<div class="flex flex-col items-center">
+								<span class="w-9 h-9 rounded-full flex items-center justify-center text-sm shrink-0 ${dotClass}${pulse}">
+									<i class="fa-solid ${icon}${moving}"></i>
+								</span>
+								${i < lastIdx ? `<span class="w-0.5 flex-1 min-h-[18px] ${i < progress.idx ? 'accent-bg' : 'theme-subtle'}"></span>` : ''}
+							</div>
+							<div class="pb-4 min-w-0">
+								<p class="text-sm font-bold ${state === 'todo' ? 'theme-text-muted' : 'theme-text-primary'}">
+									${stage.label}
+									${state === 'current' ? '<span class="ml-1.5 px-1.5 py-0.5 rounded-md accent-soft-bg accent-text text-[10px] font-semibold">Saat ini</span>' : ''}
+								</p>
+								<p class="text-xs theme-text-secondary">${stage.hint}</p>
+							</div>
+						</li>
+					`;
+				}).join('');
+			},
+
+			detailHtml(order) {
+				const progress = this.getProgress(order);
+				const isDone = progress.idx === ORDER_STAGES.length - 1;
+				const arrivalTime = progress.arrival
+					? progress.arrival.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+					: '-';
+				const etaText = isDone
+					? 'Pesanan telah sampai di tujuan. Terima kasih sudah berbelanja!'
+					: `Estimasi tiba pukul ${arrivalTime} WIB • sisa ±${this.formatDuration(progress.remainingMs)}`;
+				const itemCount = (order.items || []).reduce((sum, it) => sum + it.qty, 0);
+				const waText = encodeURIComponent(`Halo Berkat Elektronik, saya ingin menanyakan pesanan ${order.orderId}.`);
+
+				return `
+					<div class="space-y-4">
+						<div class="p-4 rounded-2xl border theme-elevated space-y-3">
+							<div class="flex flex-wrap items-center justify-between gap-2">
+								<div>
+									<p class="text-[11px] theme-text-muted">No. Pesanan</p>
+									<p class="text-sm font-bold accent-text">${order.orderId}</p>
+								</div>
+								<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${progress.stage.tone}">
+									<i class="fa-solid ${progress.stage.icon}"></i>${progress.stage.label}
+								</span>
+							</div>
+							<div class="space-y-1.5">
+								<div class="flex items-center justify-between text-[11px] theme-text-secondary">
+									<span>Progres pengantaran</span>
+									<span class="font-bold theme-text-primary">${Math.floor(progress.pct)}%</span>
+								</div>
+								<div class="h-2.5 rounded-full theme-subtle overflow-hidden">
+									<div data-track-bar data-target="${progress.pct}%" class="track-bar-fill h-full rounded-full accent-bg" style="width:${progress.pct}%"></div>
+								</div>
+							</div>
+							<p class="text-xs theme-text-secondary flex items-center gap-1.5">
+								<i class="fa-solid ${isDone ? 'fa-circle-check text-emerald-500' : 'fa-clock accent-text'}"></i>${etaText}
+							</p>
+						</div>
+						<ol class="px-1">${this.stepsHtml(progress)}</ol>
+						<div class="p-3 rounded-xl border theme-surface text-xs space-y-1.5 theme-text-secondary">
+							<p><i class="fa-solid fa-location-dot accent-text w-4"></i> ${order.district}, ${order.region} (±${order.distanceKm} KM)</p>
+							<p><i class="fa-solid fa-box accent-text w-4"></i> ${itemCount} barang • Total <strong class="theme-text-primary">${AppState.formatRupiah(order.grandTotal)}</strong></p>
+						</div>
+						<a href="https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${waText}" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 rounded-xl accent-bg text-xs font-semibold flex items-center justify-center gap-2 active:scale-95">
+							<i class="fa-brands fa-whatsapp"></i>Hubungi Toko tentang Pesanan Ini
+						</a>
+					</div>
+				`;
+			},
+
+			render(forceAnimate = false) {
+				const result = document.getElementById('track-result');
+				const chips = document.getElementById('track-recent-chips');
+				if (!result || !chips) return;
+
+				const orders = AppState.data.orderHistory;
+				const order = orders.find(o => o.orderId === this.currentOrderId) || orders[0] || null;
+
+				chips.innerHTML = orders.slice(0, 6).map(o => `
+					<button type="button" data-track-chip="${o.orderId}" class="px-2.5 py-1 rounded-xl border theme-border text-xs cursor-pointer ${order && o.orderId === order.orderId ? 'accent-soft-bg accent-text font-bold' : 'theme-elevated theme-text-primary'}">
+						${o.orderId}
+					</button>
+				`).join('');
+
+				if (!order) {
+					this.lastRenderedId = null;
+					result.innerHTML = `
+						<div class="text-center py-10 space-y-2">
+							<i class="fa-solid fa-box-open text-3xl theme-text-muted"></i>
+							<p class="text-xs theme-text-secondary">Belum ada pesanan di perangkat ini. Selesaikan pesanan lewat Keranjang untuk mulai melacak.</p>
+						</div>
+					`;
+					return;
+				}
+
+				const isNew = forceAnimate || this.lastRenderedId !== order.orderId;
+				this.currentOrderId = order.orderId;
+				this.lastRenderedId = order.orderId;
+				result.innerHTML = this.detailHtml(order);
+
+				const bar = result.querySelector('[data-track-bar]');
+				if (bar && isNew) {
+					bar.style.width = '0%';
+					requestAnimationFrame(() => requestAnimationFrame(() => {
+						bar.style.width = bar.dataset.target;
+					}));
+				}
+			},
+
+			open(orderId) {
+				this.currentOrderId = orderId || null;
+				ModalManager.open('track');
+			},
+
+			lookup(raw) {
+				const digits = String(raw || '').replace(/\D/g, '');
+				if (!digits) {
+					SoundHaptic.feedback('warning');
+					Toast.show('Masukkan nomor pesanan, contoh: BE-123456.', 'warning');
+					return;
+				}
+				const id = `BE-${digits}`;
+				if (!AppState.data.orderHistory.some(o => o.orderId === id)) {
+					SoundHaptic.feedback('warning');
+					Toast.show(`Pesanan ${id} tidak ditemukan di perangkat ini.`, 'warning', 4000);
+					return;
+				}
+				this.currentOrderId = id;
+				this.render(true);
+				SoundHaptic.feedback('click');
+			},
+
+			init() {
+				document.getElementById('track-form')?.addEventListener('submit', (e) => {
+					e.preventDefault();
+					this.lookup(document.getElementById('track-order-input')?.value);
+				});
+
+				document.getElementById('track-export-csv-btn')?.addEventListener('click', () => OrderRecap.exportCsv());
+
+				document.addEventListener('click', (e) => {
+					const chip = e.target.closest('[data-track-chip]');
+					if (chip) {
+						this.currentOrderId = chip.getAttribute('data-track-chip');
+						this.render(true);
+						SoundHaptic.feedback('click');
+						return;
+					}
+					const trackBtn = e.target.closest('[data-track-order]');
+					if (trackBtn) {
+						e.preventDefault();
+						ModalManager.close('profile');
+						this.open(trackBtn.getAttribute('data-track-order'));
+					}
+				});
+
+				/* Perbarui status otomatis selama modal terbuka */
+				setInterval(() => {
+					const modal = document.getElementById('modal-track');
+					if (modal && !modal.classList.contains('hidden')) this.render();
+				}, 15000);
+			}
+		};
+
+		/* 15c. Rekap pesanan untuk toko: kirim ke Google Sheets (webhook opsional) & unduh CSV */
+		const OrderRecap = {
+			send(order) {
+				const url = STORE_CONFIG.orderWebhookUrl;
+				if (!url) return;
+				try {
+					fetch(url, {
+						method: 'POST',
+						mode: 'no-cors',
+						keepalive: true,
+						headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+						body: JSON.stringify({
+							...order,
+							items: order.items.map(({ productId, name, qty, price }) => ({ productId, name, qty, price }))
+						})
+					}).catch(() => { /* rekap gagal terkirim: pesanan tetap aman di perangkat */ });
+				} catch (err) { /* abaikan */ }
+			},
+
+			exportCsv() {
+				const orders = AppState.data.orderHistory;
+				if (orders.length === 0) {
+					SoundHaptic.feedback('warning');
+					Toast.show('Belum ada pesanan untuk direkap.', 'warning');
+					return;
+				}
+				const cell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
+				const header = ['No. Pesanan', 'Waktu', 'Status', 'Nama', 'Telepon', 'Wilayah', 'Kecamatan', 'Alamat', 'Jarak (KM)', 'Barang', 'Subtotal', 'Biaya Layanan', 'Ongkir', 'Total', 'Bank / E-Wallet'];
+				const rows = orders.map(o => [
+					o.orderId, o.date, OrderTracker.getProgress(o).stage.label, o.customerName, o.phone, o.region, o.district, o.address,
+					o.distanceKm, (o.items || []).map(it => `${it.name} x${it.qty}`).join('; '),
+					o.subtotal, o.serviceFee, o.shippingCost, o.grandTotal, o.bank
+				]);
+				const csv = '\ufeff' + [header, ...rows].map(row => row.map(cell).join(',')).join('\r\n');
+				const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+				const a = document.createElement('a');
+				a.href = url;
+				a.download = `rekap-pesanan-berkat-${Date.now()}.csv`;
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+				URL.revokeObjectURL(url);
+				SoundHaptic.feedback('success');
+				Toast.show('Rekap pesanan (CSV) berhasil diunduh.', 'success');
+			}
+		};
+
+		/* 15d. Lokasi akurat untuk ongkir: GPS perangkat atau link Google Maps */
+		const GeoLocator = {
+			defaultStatus: 'Tanpa lokasi akurat, ongkir dihitung dari titik tengah kecamatan yang dipilih.',
+
+			getMapsUrl() {
+				const loc = CheckoutController.customLocation;
+				return loc ? `https://www.google.com/maps?q=${loc.lat},${loc.lng}` : '';
+			},
+
+			parse(text) {
+				let raw = String(text || '').trim();
+				try { raw = decodeURIComponent(raw); } catch (err) { /* pakai teks asli */ }
+				const patterns = [
+					/@(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/,
+					/!3d(-?\d{1,3}\.\d+)!4d(-?\d{1,3}\.\d+)/,
+					/[?&](?:q|ll|query|destination|center)=(-?\d{1,3}\.\d+),\s*(-?\d{1,3}\.\d+)/i,
+					/^\s*(-?\d{1,3}\.\d+)\s*[,;\s]\s*(-?\d{1,3}\.\d+)\s*$/
+				];
+				for (const pattern of patterns) {
+					const m = raw.match(pattern);
+					if (!m) continue;
+					const lat = Number(m[1]);
+					const lng = Number(m[2]);
+					if (Math.abs(lat) <= 90 && Math.abs(lng) <= 180) return { lat, lng };
+				}
+				return null;
+			},
+
+			setStatus(html, tone = 'muted') {
+				const el = document.getElementById('geo-status');
+				if (!el) return;
+				const toneClass = { muted: 'theme-text-muted', ok: 'text-emerald-600', bad: 'text-rose-600' }[tone];
+				el.className = `text-[11px] font-medium ${toneClass}`;
+				el.innerHTML = html;
+			},
+
+			apply(lat, lng, sourceLabel) {
+				CheckoutController.customLocation = { lat, lng, source: sourceLabel };
+				const result = CheckoutController.getShippingEvaluation();
+				if (result.eligible) {
+					this.setStatus(`<i class="fa-solid fa-circle-check mr-1"></i>Lokasi dari ${sourceLabel} dipakai: ±${result.distanceKm} KM, dekat ${result.district}.`, 'ok');
+				} else {
+					this.setStatus(`<i class="fa-solid fa-circle-xmark mr-1"></i>${result.reason}`, 'bad');
+				}
+				document.getElementById('geo-clear-btn')?.classList.remove('hidden');
+				CheckoutController.renderSummary();
+				SoundHaptic.feedback(result.eligible ? 'success' : 'warning');
+			},
+
+			applyLink() {
+				const input = document.getElementById('geo-maps-input');
+				const value = input ? input.value.trim() : '';
+				if (!value) {
+					Toast.show('Tempel link Google Maps atau koordinat (contoh: -6.1856, 106.6127).', 'warning');
+					return;
+				}
+				const point = this.parse(value);
+				if (point) {
+					this.apply(point.lat, point.lng, 'link Google Maps');
+				} else if (/goo\.gl|maps\.app/i.test(value)) {
+					SoundHaptic.feedback('warning');
+					Toast.show('Link pendek tidak bisa dibaca. Buka linknya lalu salin URL lengkap, atau pakai "Gunakan Lokasi Saya".', 'warning', 5200);
+				} else {
+					SoundHaptic.feedback('warning');
+					Toast.show('Koordinat tidak ditemukan pada link tersebut.', 'warning');
+				}
+			},
+
+			useMyLocation() {
+				if (!navigator.geolocation) {
+					Toast.show('Perangkat ini tidak mendukung pencarian lokasi.', 'warning');
+					return;
+				}
+				const btn = document.getElementById('geo-use-location-btn');
+				const original = btn ? btn.innerHTML : '';
+				if (btn) {
+					btn.disabled = true;
+					btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Mencari lokasi...</span>';
+				}
+				const restore = () => {
+					if (!btn) return;
+					btn.disabled = false;
+					btn.innerHTML = original;
+				};
+				navigator.geolocation.getCurrentPosition(
+					(pos) => {
+						restore();
+						this.apply(pos.coords.latitude, pos.coords.longitude, 'GPS perangkat');
+					},
+					(err) => {
+						restore();
+						SoundHaptic.feedback('warning');
+						Toast.show(err.code === 1 ? 'Izin lokasi ditolak. Aktifkan izin lokasi atau tempel link Google Maps.' : 'Lokasi tidak dapat ditemukan. Coba lagi atau tempel link Google Maps.', 'warning', 4500);
+					},
+					{ enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 }
+				);
+			},
+
+			reset() {
+				CheckoutController.customLocation = null;
+				const input = document.getElementById('geo-maps-input');
+				if (input) input.value = '';
+				document.getElementById('geo-clear-btn')?.classList.add('hidden');
+				this.setStatus(this.defaultStatus);
+			},
+
+			init() {
+				this.setStatus(this.defaultStatus);
+				document.getElementById('geo-use-location-btn')?.addEventListener('click', () => this.useMyLocation());
+				document.getElementById('geo-apply-link-btn')?.addEventListener('click', () => this.applyLink());
+				document.getElementById('geo-maps-input')?.addEventListener('keydown', (e) => {
+					if (e.key === 'Enter') {
+						e.preventDefault();
+						this.applyLink();
+					}
+				});
+				document.getElementById('geo-clear-btn')?.addEventListener('click', () => {
+					this.reset();
+					CheckoutController.renderSummary();
+					Toast.show('Lokasi akurat dihapus. Ongkir kembali memakai kecamatan.', 'info');
+				});
+			}
+		};
+
+		/* 15e. Produk terkait & terakhir dilihat */
+		const Recommendations = {
+			related(product, limit = 4) {
+				return PRODUCTS_DATA
+					.filter(item => item.id !== product.id)
+					.map(item => {
+						let score = 0;
+						if (item.category === product.category) score += 3;
+						if (item.brand === product.brand) score += 2;
+						if (Math.abs(item.price - product.price) <= product.price * 0.4) score += 1;
+						if (item.stock > 0) score += 0.5;
+						return { item, score };
+					})
+					.filter(entry => entry.score >= 3)
+					.sort((a, b) => b.score - a.score)
+					.slice(0, limit)
+					.map(entry => entry.item);
+			},
+
+			recent(excludeId, limit = 4) {
+				return (AppState.data.recentViews || [])
+					.filter(id => id !== excludeId)
+					.map(id => AppState.getProductById(id))
+					.filter(Boolean)
+					.slice(0, limit);
+			},
+
+			cardHtml(p) {
+				const fallback = p.fallbackImage || `https://placehold.co/400x300/EBF0EC/4A7C59?text=${encodeURIComponent(p.category)}`;
+				return `
+					<button type="button" data-reco-id="${p.id}" class="w-36 shrink-0 text-left rounded-2xl border theme-elevated overflow-hidden hover:opacity-90 active:scale-95 transition cursor-pointer">
+						<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='${fallback}'" class="w-full h-24 object-cover">
+						<div class="p-2.5 space-y-0.5">
+							<p class="text-[11px] font-semibold theme-text-primary line-clamp-2 leading-snug">${p.name}</p>
+							<p class="text-[11px] font-bold ${p.stock > 0 ? 'accent-text' : 'theme-text-muted'}">${p.stock > 0 ? AppState.formatRupiah(p.price) : 'Stok Habis'}</p>
+						</div>
+					</button>
+				`;
+			},
+
+			sectionHtml(title, icon, items) {
+				if (items.length === 0) return '';
+				return `
+					<div class="space-y-2">
+						<h4 class="text-xs font-bold uppercase tracking-wider theme-text-muted"><i class="fa-solid ${icon} accent-text mr-1.5"></i>${title}</h4>
+						<div class="flex gap-3 overflow-x-auto pb-1">${items.map(p => this.cardHtml(p)).join('')}</div>
+					</div>
+				`;
+			},
+
+			html(product) {
+				const related = this.sectionHtml('Produk Terkait', 'fa-link', this.related(product));
+				const recent = this.sectionHtml('Terakhir Dilihat', 'fa-clock-rotate-left', this.recent(product.id));
+				if (!related && !recent) return '';
+				return `<div class="px-5 sm:px-6 pb-5 pt-1 space-y-4 border-t theme-border">${related}${recent}</div>`;
+			},
+
+			bind(container) {
+				container.querySelectorAll('[data-reco-id]').forEach(btn => {
+					btn.addEventListener('click', () => {
+						SoundHaptic.feedback('click');
+						UIRenderer.openProductDetailModal(btn.getAttribute('data-reco-id'));
+						document.getElementById('modal-product-detail')?.scrollTo(0, 0);
+					});
+				});
+			},
+
+			renderStrip() {
+				const section = document.getElementById('recent-viewed-section');
+				const list = document.getElementById('recent-viewed-list');
+				if (!section || !list) return;
+				const items = this.recent(null, 8);
+				section.classList.toggle('hidden', items.length === 0);
+				list.innerHTML = items.map(p => this.cardHtml(p)).join('');
+				this.bind(list);
+			}
+		};
+
+		/* 15f. Pencarian pintar: sinonim, toleran salah ketik, saran dari riwayat & produk */
+		const SmartSearch = {
+			synonymGroups: [
+				['ampli', 'amplifier', 'amp'],
+				['power', 'poweramp'],
+				['speaker', 'loudspeaker', 'pengeras suara', 'pengeras'],
+				['mixer', 'mixing', 'konsol', 'console'],
+				['equalizer', 'eq', 'ekualiser'],
+				['crossover', 'xover', 'divider'],
+				['komponen', 'sparepart', 'spare part'],
+				['elco', 'kapasitor', 'capacitor'],
+				['mic', 'mikrofon', 'microphone'],
+				['trafo', 'transformator', 'transformer'],
+				['kabel', 'cable']
+			],
+			synonymMap: null,
+
+			normalize(text) {
+				return String(text || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+			},
+
+			synonyms(token) {
+				if (!this.synonymMap) {
+					this.synonymMap = new Map();
+					this.synonymGroups.forEach(group => group.forEach(term => this.synonymMap.set(term, group.filter(t => t !== term))));
+				}
+				return this.synonymMap.get(token) || [];
+			},
+
+			maxTypos(token) {
+				if (token.length < 4) return 0;
+				return token.length < 7 ? 1 : 2;
+			},
+
+			distance(a, b, max) {
+				if (Math.abs(a.length - b.length) > max) return max + 1;
+				let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+				for (let i = 1; i <= a.length; i++) {
+					const curr = [i];
+					let rowMin = i;
+					for (let j = 1; j <= b.length; j++) {
+						const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+						curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
+						rowMin = Math.min(rowMin, curr[j]);
+					}
+					if (rowMin > max) return max + 1;
+					prev = curr;
+				}
+				return prev[b.length];
+			},
+
+			words(text) {
+				return this.normalize(text).split(/[^a-z0-9]+/).filter(w => w.length >= 3);
+			},
+
+			matches(haystack, query) {
+				const hay = this.normalize(haystack);
+				const q = this.normalize(query);
+				if (!q || hay.includes(q)) return true;
+				if (this.synonyms(q).some(term => hay.includes(term))) return true;
+				const words = this.words(hay);
+				return q.split(/\s+/).filter(Boolean).every(token => {
+					if (hay.includes(token)) return true;
+					if (this.synonyms(token).some(s => hay.includes(s))) return true;
+					const max = this.maxTypos(token);
+					return max > 0 && words.some(w => this.distance(token, w, max) <= max);
+				});
+			},
+
+			vocabulary() {
+				const set = new Set();
+				PRODUCTS_DATA.forEach(p => this.words(`${p.name} ${p.brand} ${p.category}`).forEach(w => set.add(w)));
+				return Array.from(set);
+			},
+
+			didYouMean(query) {
+				const vocab = this.vocabulary();
+				let changed = false;
+				const fixed = this.normalize(query).split(/\s+/).filter(Boolean).map(token => {
+					const max = this.maxTypos(token);
+					if (max === 0 || vocab.some(w => w.includes(token)) || this.synonyms(token).length > 0) return token;
+					let best = null;
+					vocab.forEach(w => {
+						const d = this.distance(token, w, max);
+						if (d <= max && (!best || d < best.d)) best = { w, d };
+					});
+					if (best) changed = true;
+					return best ? best.w : token;
+				});
+				return changed ? fixed.join(' ') : '';
+			},
+
+			suggest(rawQuery) {
+				const q = this.normalize(rawQuery);
+				if (q.length < 2) return [];
+				const items = [];
+				const fix = this.didYouMean(rawQuery);
+				if (fix) items.push({ icon: 'fa-wand-magic-sparkles', label: `Maksud Anda: ${fix}?`, term: fix });
+				AppState.data.searchHistory
+					.filter(h => this.normalize(h).includes(q) && this.normalize(h) !== q)
+					.slice(0, 3)
+					.forEach(h => items.push({ icon: 'fa-clock-rotate-left', label: h, term: h }));
+				PRODUCTS_DATA
+					.filter(p => this.matches(`${p.name} ${p.brand} ${p.category}`, q))
+					.slice(0, 4)
+					.forEach(p => items.push({ icon: 'fa-box', label: p.name, term: p.name }));
+				return items.slice(0, 7);
+			},
+
+			renderSuggestions(rawQuery) {
+				const box = document.getElementById('search-suggest-box');
+				if (!box) return;
+				const items = this.suggest(rawQuery);
+				box.classList.toggle('hidden', items.length === 0);
+				box.innerHTML = items.length === 0 ? '' : `
+					<span class="text-xs font-semibold theme-text-secondary">Saran Pencarian</span>
+					${items.map(it => `
+						<button type="button" data-suggest-term="${it.term.replace(/"/g, '&quot;')}" class="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:accent-soft-bg text-left text-xs theme-text-primary cursor-pointer transition">
+							<i class="fa-solid ${it.icon} accent-text w-4 text-center"></i><span class="truncate">${it.label}</span>
+						</button>
+					`).join('')}
+				`;
+			},
+
+			init() {
+				document.getElementById('search-suggest-box')?.addEventListener('click', (e) => {
+					const btn = e.target.closest('[data-suggest-term]');
+					if (!btn) return;
+					const term = btn.getAttribute('data-suggest-term');
+					const input = document.getElementById('global-search-input');
+					if (input) input.value = term;
+					AppState.filters.search = term;
+					AppState.currentPage = 1;
+					document.getElementById('clear-search-btn')?.classList.remove('hidden');
+					PopoverManager.closeSearchHistory();
+					UIRenderer.renderProducts();
+					AppState.recordSearch(term);
+					SoundHaptic.feedback('click');
+				});
+			}
+		};
+
+		/* 15g. PWA: service worker, tombol pasang aplikasi & banner offline */
+		const PwaManager = {
+			deferredPrompt: null,
+
+			init() {
+				if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+					navigator.serviceWorker.register('sw.js').catch(() => { /* service worker tidak aktif */ });
+				}
+
+				const installBtn = document.getElementById('pwa-install-btn');
+				window.addEventListener('beforeinstallprompt', (e) => {
+					e.preventDefault();
+					this.deferredPrompt = e;
+					installBtn?.classList.remove('hidden');
+				});
+				installBtn?.addEventListener('click', async () => {
+					if (!this.deferredPrompt) return;
+					this.deferredPrompt.prompt();
+					await this.deferredPrompt.userChoice;
+					this.deferredPrompt = null;
+					installBtn.classList.add('hidden');
+				});
+				window.addEventListener('appinstalled', () => {
+					installBtn?.classList.add('hidden');
+					Toast.show('Aplikasi Berkat Elektronik berhasil dipasang.', 'success');
+				});
+
+				const syncOnline = () => document.getElementById('offline-banner')?.classList.toggle('hidden', navigator.onLine);
+				window.addEventListener('online', () => {
+					syncOnline();
+					Toast.show('Koneksi kembali online.', 'success');
+				});
+				window.addEventListener('offline', syncOnline);
+				syncOnline();
+			}
+		};
+
+		/* ==========================================================================
 		   14. BOOTSTRAP & BINDING EVENT GLOBAL
 		   ========================================================================== */
 		document.addEventListener('DOMContentLoaded', async () => {
 			AppState.init();
+			StockManager.apply();
 			SettingsManager.applyAll();
 			ConfirmDialog.init();
 			OnboardingController.bindEvents();
@@ -5007,6 +5890,12 @@
 			UIRenderer.updateBadges();
 
 			OnboardingController.checkAndShow();
+
+			OrderTracker.init();
+			GeoLocator.init();
+			SmartSearch.init();
+			Recommendations.renderStrip();
+			PwaManager.init();
 
 			/* Sinkronisasi Posisi Fixed Navbar di Bawah Top Info Bar & Mengunci di top: 0 saat Scroll */
 			const topInfoBar = document.getElementById('top-info-bar');
@@ -5101,6 +5990,7 @@
 				AppState.filters.search = rawVal;
 				AppState.currentPage = 1;
 				clearSearchBtn?.classList.toggle('hidden', rawVal.length === 0);
+				SmartSearch.renderSuggestions(rawVal);
 				UIRenderer.renderProducts();
 			};
 
@@ -5309,5 +6199,12 @@
 			});
 		});
 	</script>
+	<!-- PWA: banner offline & tombol pasang aplikasi -->
+	<div id="offline-banner" class="hidden fixed top-0 inset-x-0 z-[120] px-4 py-2 text-center text-xs font-semibold bg-amber-500 text-amber-950">
+		<i class="fa-solid fa-triangle-exclamation mr-1.5"></i>Anda sedang offline. Menampilkan data katalog yang tersimpan di perangkat.
+	</div>
+	<button type="button" id="pwa-install-btn" class="hidden fixed bottom-4 left-4 z-[60] px-4 py-2.5 rounded-full accent-bg text-xs font-semibold shadow-lg active:scale-95 cursor-pointer">
+		<i class="fa-solid fa-download mr-1.5"></i>Pasang Aplikasi
+	</button>
 </body>
 </html>
