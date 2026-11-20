@@ -6101,7 +6101,7 @@ let foreignFlowCooldownTimer = null;
 let valuationCooldownTimer = null;
 
 // Helper untuk menjalankan interval cooldown 15 detik dengan animasi loading pada tombol
-function startFeatureButtonCooldown(btn, timerType, defaultHtml, accentColorClass = 'text-sky-400', seconds = 15) {
+function startFeatureButtonCooldown(btn, timerType, defaultHtml, accentColorClass = 'text-sky-400', seconds = 10) {
 	if (!btn) return;
 
 	if (timerType === 'foreign' && foreignFlowCooldownTimer) {
@@ -6114,7 +6114,7 @@ function startFeatureButtonCooldown(btn, timerType, defaultHtml, accentColorClas
 	let remaining = seconds;
 	btn.disabled = true;
 	btn.classList.add('cursor-not-allowed', 'opacity-75');
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin ${accentColorClass}"></i> Jeda Refresh (${remaining}d)`;
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin ${accentColorClass}"></i> Memindai Flow Asing (${remaining}d)`;
 	if (window.lucide) lucide.createIcons();
 
 	const intervalId = setInterval(() => {
@@ -6129,7 +6129,7 @@ function startFeatureButtonCooldown(btn, timerType, defaultHtml, accentColorClas
 			btn.innerHTML = defaultHtml;
 			if (window.lucide) lucide.createIcons();
 		} else {
-			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin ${accentColorClass}"></i> Jeda Refresh (${remaining}d)`;
+			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin ${accentColorClass}"></i> Memindai Flow Aseng (${remaining}d)`;
 			if (window.lucide) lucide.createIcons();
 		}
 	}, 1000);
@@ -6231,7 +6231,7 @@ async function loadForeignFlowData() {
 	}
 
 	isForeignFlowLoading = true;
-	const defaultBtnHtml = `<i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh Data Asing`;
+	const defaultBtnHtml = `<i data-lucide="play" class="w-4 h-4"></i> Pindai Data Asing`;
 
 	if (btn) {
 		btn.disabled = true;
