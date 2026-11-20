@@ -6114,7 +6114,7 @@ function startFeatureButtonCooldown(btn, timerType, defaultHtml, accentColorClas
 	let remaining = seconds;
 	btn.disabled = true;
 	btn.classList.add('cursor-not-allowed', 'opacity-75');
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin ${accentColorClass}"></i> Memindai Flow Asing (${remaining}d)`;
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin ${accentColorClass}"></i> Sedang di Proses (${remaining}d)`;
 	if (window.lucide) lucide.createIcons();
 
 	const intervalId = setInterval(() => {
@@ -6129,7 +6129,7 @@ function startFeatureButtonCooldown(btn, timerType, defaultHtml, accentColorClas
 			btn.innerHTML = defaultHtml;
 			if (window.lucide) lucide.createIcons();
 		} else {
-			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin ${accentColorClass}"></i> Memindai Flow Aseng (${remaining}d)`;
+			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin ${accentColorClass}"></i> Sedang di Proses (${remaining}d)`;
 			if (window.lucide) lucide.createIcons();
 		}
 	}, 1000);
