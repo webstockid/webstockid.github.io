@@ -21,6 +21,78 @@ let whaleScanCooldownTimer = null;
 if (window.lucide) lucide.createIcons();
 
 // ==========================================
+// 1B. KONEKTOR TICKER.JS & HELPER SAHAM WARAN
+// ==========================================
+function isWarrantTicker(ticker) {
+	if (!ticker || typeof ticker !== 'string') return false;
+	const clean = ticker.trim().toUpperCase().replace(/\.JK$/i, '').replace(/^IDX:/i, '');
+	return /^[A-Z]{4}-?W\d*$/i.test(clean);
+}
+
+function normalizeTickerSymbol(ticker) {
+	if (!ticker || typeof ticker !== 'string') return '';
+	let clean = ticker.trim().toUpperCase().replace(/\.JK$/i, '').replace(/^IDX:/i, '');
+	// Ubah format 5+ huruf tanpa strip (misal: BSBKW -> BSBK-W) agar sesuai standar BEI & Yahoo Finance
+	if (/^[A-Z]{4}W\d*$/i.test(clean)) {
+		clean = clean.replace(/^([A-Z]{4})(W\d*)$/i, '$1-$2');
+	}
+	return clean;
+}
+
+function getParentTicker(ticker) {
+	const clean = normalizeTickerSymbol(ticker);
+	return isWarrantTicker(clean) ? clean.replace(/-W\d*$/i, '') : clean;
+}
+
+function toYahooTickerSymbol(ticker) {
+	const clean = normalizeTickerSymbol(ticker);
+	return clean ? `${clean}.JK` : '';
+}
+
+function toTradingViewSymbol(ticker) {
+	const clean = normalizeTickerSymbol(ticker);
+	// TradingView IDX menggunakan format tanpa strip untuk waran (contoh: IDX:BSBKW)
+	return isWarrantTicker(clean) ? `IDX:${clean.replace(/-/g, '')}` : `IDX:${clean}`;
+}
+
+// Komentar: Menggabungkan seluruh daftar saham reguler & waran dari ticker.js tanpa duplikasi.
+function getAllCombinedTickers() {
+	const sources = [
+		typeof uniqueRadarWatchlist !== 'undefined' ? uniqueRadarWatchlist : null,
+		typeof radarWatchlist !== 'undefined' ? radarWatchlist : null,
+		typeof warrantWatchlist !== 'undefined' ? warrantWatchlist : null,
+		typeof uniqueWarrantWatchlist !== 'undefined' ? uniqueWarrantWatchlist : null,
+		typeof warrantTickers !== 'undefined' ? warrantTickers : null,
+		typeof warrantList !== 'undefined' ? warrantList : null,
+		typeof daftarWaran !== 'undefined' ? daftarWaran : null,
+		typeof sahamWaran !== 'undefined' ? sahamWaran : null,
+		typeof idxWarrants !== 'undefined' ? idxWarrants : null,
+		typeof allTickers !== 'undefined' ? allTickers : null
+	];
+
+	const merged = new Set();
+	sources.forEach(list => {
+		if (Array.isArray(list)) {
+			list.forEach(item => {
+				const norm = normalizeTickerSymbol(item);
+				if (norm) merged.add(norm);
+			});
+		}
+	});
+	return Array.from(merged);
+}
+
+// Komentar: Mengambil khusus daftar saham reguler (non-waran) untuk screener utama.
+function getRegularStockTickers() {
+	return getAllCombinedTickers().filter(t => !isWarrantTicker(t));
+}
+
+// Komentar: Mengambil khusus daftar saham waran (-W) yang terdaftar di ticker.js.
+function getWarrantStockTickers() {
+	return getAllCombinedTickers().filter(t => isWarrantTicker(t));
+}
+
+// ==========================================
 // 2. SISTEM CACHE & WAKTU PASAR
 // ==========================================
 function isMarketOpen() {
@@ -373,19 +445,21 @@ function shareStockUrl() {
 // ==========================================
 const pendingFetchRequests = new Map();
 
-// Komentar: Menarik dan memproses data real-time harga saham dan indikator pasar.
-// Komentar: Menarik dan memproses data real-time harga saham dan indikator pasar.
+// Komentar: Menarik dan memproses data real-time harga saham maupun waran.
 async function fetchRealtimeStockData(ticker, forceFetch = false, skipFallback = false) {
-	const cachedData = getCachedStockData(ticker);
+	const cleanTicker = normalizeTickerSymbol(ticker);
+	if (!cleanTicker) return null;
+
+	const cachedData = getCachedStockData(cleanTicker);
 	if (cachedData && !forceFetch) return cachedData;
 	
-	const reqKey = `${ticker}_${skipFallback}`;
+	const reqKey = `${cleanTicker}_${skipFallback}`;
 	if (pendingFetchRequests.has(reqKey)) {
 		return pendingFetchRequests.get(reqKey);
 	}
 
 	const fetchPromise = (async () => {
-		const targetSymbol = `${ticker}.JK`;
+		const targetSymbol = toYahooTickerSymbol(cleanTicker);
 		const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 		
 		const fetchWithTimeout = async (url, timeoutMs = 4000) => {
@@ -406,30 +480,30 @@ async function fetchRealtimeStockData(ticker, forceFetch = false, skipFallback =
 		
 		// 1. Eksekusi Worker
 		try {
-			const res = await fetchWithTimeout(`${WORKER_URL}?symbol=${targetSymbol}`, 2500);
+			const res = await fetchWithTimeout(`${WORKER_URL}?symbol=${encodeURIComponent(targetSymbol)}`, 2500);
 			const json = await res.json();
-			freshData = parseYahooDataGlobal(json, ticker);
+			freshData = parseYahooDataGlobal(json, cleanTicker);
 		} catch(e) {
 			if (!skipFallback) {
-				console.warn(`Worker Utama gagal untuk ${ticker}, memanggil Fallback...`);
+				console.warn(`Worker Utama gagal untuk ${cleanTicker}, memanggil Fallback...`);
 			}
 		}
 
-		// 2. Fallback Proxy Darurat (Dilewati saat scan massal agar tidak macet)
+		// 2. Fallback Proxy Darurat
 		if (!freshData && !skipFallback) {
 			try {
-				const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${targetSymbol}?interval=15m&range=5d`;
+				const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(targetSymbol)}?interval=15m&range=5d`;
 				const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
 				const res = await fetchWithTimeout(allOriginsUrl, 6000);
 				const wrapper = await res.json();
-				freshData = parseYahooDataGlobal(JSON.parse(wrapper.contents), ticker);
+				freshData = parseYahooDataGlobal(JSON.parse(wrapper.contents), cleanTicker);
 			} catch(e) {
-				console.error(`Kegagalan total menarik data ${ticker}`);
+				console.error(`Kegagalan total menarik data ${cleanTicker}`);
 			}
 		}
 
 		if (freshData) {
-			setCachedStockData(ticker, freshData);
+			setCachedStockData(cleanTicker, freshData);
 		}
 		
 		pendingFetchRequests.delete(reqKey);
@@ -440,11 +514,13 @@ async function fetchRealtimeStockData(ticker, forceFetch = false, skipFallback =
 	return fetchPromise;
 }
 
-// Komentar: Membersihkan dan memetakan data mentah bursa menjadi format objek yang terstruktur.
+// Komentar: Membersihkan dan memetakan data mentah bursa (mendukung saham reguler & waran).
 function parseYahooDataGlobal(json, ticker) {
 	const result = json?.chart?.result?.[0] || json?.results?.[0];
 	if (!result) return null;
 
+	const cleanTicker = normalizeTickerSymbol(ticker);
+	const isWarrant = isWarrantTicker(cleanTicker);
 	const timestamps = result.timestamp || [];
 	const quote = result.indicators?.quote?.[0] || result.quote;
 	const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
@@ -452,20 +528,29 @@ function parseYahooDataGlobal(json, ticker) {
 	const highs = quote?.high?.filter(h => h !== null && h !== undefined) || [];
 	const lows = quote?.low?.filter(l => l !== null && l !== undefined) || [];
 
-	if (prices.length < 5) return null;
+	const metaPrice = result.meta?.regularMarketPrice;
+	if (!isWarrant && prices.length < 5) return null;
+	if (isWarrant && prices.length === 0 && (!metaPrice || metaPrice <= 0)) return null;
 
-	const currentPrice = result.meta?.regularMarketPrice || prices[prices.length - 1];
-	const previousClose = result.meta?.chartPreviousClose || prices[prices.length - 2];
-	const changePct = parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2));
+	const currentPrice = metaPrice || prices[prices.length - 1];
+	if (!currentPrice || currentPrice <= 0) return null;
 
-	// Komentar: Fungsi untuk Mengambil m a.
-	const getMA = (p) => roundToBEITick(prices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, prices.length));
+	const fallbackPrev = prices.length >= 2 ? prices[prices.length - 2] : currentPrice;
+	const previousClose = result.meta?.chartPreviousClose || result.meta?.previousClose || fallbackPrev;
+	const changePct = previousClose > 0
+		? parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2))
+		: 0;
+
+	const validPrices = prices.length > 0 ? prices : [currentPrice];
+	const getMA = (p) => roundToBEITick(validPrices.slice(-p).reduce((a, b) => a + b, 0) / Math.min(p, validPrices.length));
 	const ma5 = getMA(5);
 	const ma10 = getMA(10);
 	const ma20 = getMA(20);
 
-	const high20 = highs.length >= 20 ? roundToBEITick(Math.max(...highs.slice(-20))) : roundToBEITick(Math.max(...highs));
-	const low20 = lows.length >= 20 ? roundToBEITick(Math.min(...lows.slice(-20))) : roundToBEITick(Math.min(...lows));
+	const validHighs = highs.length > 0 ? highs : validPrices;
+	const validLows = lows.length > 0 ? lows : validPrices;
+	const high20 = validHighs.length >= 20 ? roundToBEITick(Math.max(...validHighs.slice(-20))) : roundToBEITick(Math.max(...validHighs));
+	const low20 = validLows.length >= 20 ? roundToBEITick(Math.min(...validLows.slice(-20))) : roundToBEITick(Math.min(...validLows));
 
 	let dailyData = {};
 	let totalVol20 = 0;
@@ -473,8 +558,8 @@ function parseYahooDataGlobal(json, ticker) {
 	const len = prices.length;
 	const period = Math.min(20, len);
 
-	for(let i = 0; i < len; i++) {
-		if(timestamps[i] && volumes[i] !== null && prices[i] !== null) {
+	for (let i = 0; i < len; i++) {
+		if (timestamps[i] && volumes[i] !== null && prices[i] !== null) {
 			let date = new Date(timestamps[i] * 1000);
 			let dayStr = date.toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' });
 			
@@ -527,10 +612,13 @@ function parseYahooDataGlobal(json, ticker) {
 	const bandarAvgPrice = totalVol20 > 0 ? roundToBEITick(totalValue20 / totalVol20) : roundToBEITick(currentPrice);
 
 	return { 
-		ticker, price: roundToBEITick(currentPrice), prevClose: roundToBEITick(previousClose), 
+		ticker: cleanTicker,
+		isWarrant,
+		price: roundToBEITick(currentPrice),
+		prevClose: roundToBEITick(previousClose), 
 		changePct, ma5, ma10, ma20, currentVolume, volYesterday, volRatio, valRatio, high20, low20, 
 		currentLot, currentValuation, bandarAvgPrice,
-		historicalPrices: prices
+		historicalPrices: validPrices
 	};
 }
 
@@ -548,7 +636,7 @@ function formatValuationIDR(val) {
 }
 
 // ==========================================
-// 16. FITUR PENCARIAN & VOICE SEARCH
+// 16. PENCARIAN AUTOCOMPLETE & SEARCH WARAN
 // ==========================================
 function initSearchSuggestions() {
 	const input = document.getElementById('stockSearch');
@@ -563,24 +651,29 @@ function initSearchSuggestions() {
 			box.innerHTML = '';
 			return;
 		}
-		const matches = uniqueRadarWatchlist.filter(item => item.includes(val)).slice(0, 10);
+		const allList = getAllCombinedTickers();
+		const matches = allList.filter(item => item.includes(val) || item.replace('-', '').includes(val)).slice(0, 12);
 		if (matches.length > 0) {
-			box.innerHTML = matches.map(ticker => `
+			box.innerHTML = matches.map(ticker => {
+				const logoTicker = getParentTicker(ticker);
+				const isWaran = isWarrantTicker(ticker);
+				return `
 				<div onclick="selectSuggestion('${ticker}')" class="px-4 py-2.5 hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-200 text-xs font-bold cursor-pointer transition flex items-center justify-between group">
 					<span class="flex items-center gap-2.5">
 						<div class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
 							<img 
-								src="https://assets.stockbit.com/logos/companies/${ticker}.png" 
+								src="https://assets.stockbit.com/logos/companies/${logoTicker}.png" 
 								alt="${ticker}" 
 								class="w-full h-full object-contain drop-shadow-sm" 
-								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[9px] font-black text-slate-400 tracking-wider\\'>${ticker.substring(0,3)}</span>';};"
+								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${logoTicker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[9px] font-black text-slate-400 tracking-wider\\'>${logoTicker.substring(0,3)}</span>';};"
 							>
 						</div>
 						${ticker}
 					</span>
-					<span class="text-[9px] text-slate-500 group-hover:text-emerald-400">IDX</span>
+					<span class="text-[9px] ${isWaran ? 'text-amber-400 bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 rounded' : 'text-slate-500 group-hover:text-emerald-400'}">${isWaran ? 'WARAN' : 'IDX'}</span>
 				</div>
-			`).join('');
+			`;
+			}).join('');
 			box.classList.remove('hidden');
 		} else {
 			box.classList.add('hidden');
@@ -593,6 +686,9 @@ function initSearchSuggestions() {
 		if (searchContainer && !searchContainer.contains(e.target)) box.classList.add('hidden');
 	});
 }
+
+// Pada bagian awal fungsi searchStock(bypassCooldown = false), normalisasi input:
+// const input = normalizeTickerSymbol(document.getElementById('stockSearch').value);
 
 // Komentar: Merespons saat pengguna memilih kode saham dari daftar saran pencarian.
 function selectSuggestion(ticker) {
@@ -4042,7 +4138,7 @@ function renderChart(ticker) {
 	if (typeof TradingView !== 'undefined') {
 		new TradingView.widget({
 			"autosize": true,
-			"symbol": `IDX:${ticker}`,
+			"symbol": toTradingViewSymbol(ticker),
 			"interval": currentInterval,
 			"timezone": "Asia/Jakarta",
 			"theme": "dark",
@@ -4069,9 +4165,9 @@ function renderChart(ticker) {
 	}
 }
 
-// Komentar: Memuat widget meteran teknikal (Technical Gauge) dari TradingView.
 function renderTechnicalGauge(ticker) {
 	const container = document.getElementById('tv_technical_container');
+	if (!container) return;
 	container.innerHTML = '';
 	const script = document.createElement('script');
 	script.type = 'text/javascript';
@@ -4082,7 +4178,7 @@ function renderTechnicalGauge(ticker) {
 		"width": "100%",
 		"isTransparent": true,
 		"height": "350",
-		"symbol": `IDX:${ticker}`,
+		"symbol": toTradingViewSymbol(ticker),
 		"showIntervalTabs": true,
 		"displayMode": "single",
 		"locale": "id",
@@ -6745,33 +6841,125 @@ async function runValuationScreener() {
 	}
 }
 
-// 5. Warrant Tracker (Batching + Fast Timeout + Parent Stock Logo)
+// 5. Warrant Tracker (Terhubung Langsung ke ticker.js + Cache Instan + Logo Induk)
 async function loadWarrantData() {
 	if (isWarrantLoading) return;
 	const container = document.getElementById('warrant-tracker-list') || document.getElementById('warrant-container');
 	if (!container) return;
 
-	const warrantTickers = (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist))
-		? uniqueRadarWatchlist.filter(t => /-W\d*$/i.test(t))
-		: [];
+	const warrantTickers = getWarrantStockTickers();
 
 	if (warrantTickers.length === 0) {
-		container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm">Tidak ada emiten waran (-W) di dalam watchlist saat ini.</div>`;
+		container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm col-span-full">Tidak ada emiten waran (-W) yang terbaca di dalam ticker.js saat ini.</div>`;
 		return;
 	}
 
 	isWarrantLoading = true;
-	container.innerHTML = `<div class="text-center py-6 text-emerald-400 text-sm animate-pulse">Memuat data pergerakan waran...</div>`;
+	container.innerHTML = `
+		<div class="text-center py-8 text-emerald-400 text-xs lg:text-sm col-span-full flex flex-col items-center justify-center gap-2">
+			<i data-lucide="loader-2" class="w-6 h-6 animate-spin text-emerald-400"></i>
+			<span>Membaca ${warrantTickers.length} emiten waran dari ticker.js...</span>
+		</div>
+	`;
+	if (window.lucide) lucide.createIcons();
+
+	const renderWarrantCards = (list) => {
+		const sorted = [...list].sort((a, b) => (b.volume || 0) - (a.volume || 0));
+		container.innerHTML = sorted.map(w => {
+			const isUp = w.changePercent >= 0;
+			const logoTicker = w.parentTicker || getParentTicker(w.ticker);
+			return `
+				<div class="p-4 rounded-xl bg-slate-900/75 border border-slate-800 hover:border-emerald-500/40 transition-all duration-200 shadow-sm flex flex-col justify-between gap-3">
+					<div class="flex items-center justify-between gap-3">
+						<div class="flex items-center gap-3 min-w-0">
+							<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
+								<img 
+									src="https://assets.stockbit.com/logos/companies/${logoTicker}.png" 
+									alt="${w.ticker}" 
+									class="w-full h-full object-contain drop-shadow-sm" 
+									onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${logoTicker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${logoTicker.substring(0,3)}</span>';};"
+								>
+							</div>
+							<div class="min-w-0">
+								<div class="flex items-center gap-2 flex-wrap">
+									<span class="font-extrabold text-emerald-400 text-sm lg:text-base">&dollar;${w.ticker}</span>
+									<span class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded font-bold">WARAN</span>
+								</div>
+								<div class="text-[11px] text-slate-400 mt-1 truncate">
+									Induk: <strong class="text-slate-200">${w.parentTicker}</strong> ${w.parentPrice ? `(Rp ${w.parentPrice.toLocaleString('id-ID')})` : ''}
+								</div>
+							</div>
+						</div>
+						<div class="text-right shrink-0">
+							<div class="font-extrabold text-white text-sm lg:text-base">Rp ${w.price.toLocaleString('id-ID')}</div>
+							<div class="text-xs font-bold ${isUp ? 'text-emerald-400' : 'text-rose-400'}">
+								${isUp ? '+' : ''}${w.changePercent.toFixed(2)}%
+							</div>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-[11px] bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/80">
+						<div>
+							<span class="text-slate-400 block text-[9px] uppercase">Volume & Valuasi</span>
+							<strong class="text-slate-200">${Math.floor((w.volume || 0) / 100).toLocaleString('id-ID')} Lot</strong>
+							<span class="text-[9px] text-slate-400 block">${formatValuationIDR(w.turnover)}</span>
+						</div>
+						<div class="text-right">
+							<span class="text-slate-400 block text-[9px] uppercase">Rasio vs Induk</span>
+							<strong class="text-sky-400">${w.ratioToParent ? `${w.ratioToParent}%` : '-'}</strong>
+							<span class="text-[9px] text-slate-500 block">Harga Waran/Induk</span>
+						</div>
+					</div>
+
+					<button onclick="selectTickerFromRadar('${w.ticker}')" class="w-full bg-slate-800/80 hover:bg-emerald-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2 rounded-xl border border-slate-700 hover:border-emerald-500 transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm">
+						<span>Buka Chart & Detail AI</span>
+						<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+					</button>
+				</div>
+			`;
+		}).join('');
+		if (window.lucide) lucide.createIcons();
+	};
 
 	try {
 		const validWarrants = [];
-		const BATCH_SIZE = 6;
+		const uncachedWarrants = [];
 
-		for (let i = 0; i < warrantTickers.length; i += BATCH_SIZE) {
-			const batch = warrantTickers.slice(i, i + BATCH_SIZE);
+		// 1. Cek cache terlebih dahulu agar tampilan waran langsung muncul
+		for (const wTicker of warrantTickers) {
+			const parentTicker = getParentTicker(wTicker);
+			const cachedW = getCachedStockData(wTicker);
+			const cachedP = getCachedStockData(parentTicker);
+			if (cachedW) {
+				const warrant = normalizeStockPayload(cachedW, wTicker);
+				const parent = normalizeStockPayload(cachedP, parentTicker);
+				if (warrant) {
+					const ratioToParent = parent && parent.price > 0
+						? ((warrant.price / parent.price) * 100).toFixed(1)
+						: null;
+					validWarrants.push({
+						...warrant,
+						parentTicker,
+						parentPrice: parent ? parent.price : null,
+						ratioToParent
+					});
+					continue;
+				}
+			}
+			uncachedWarrants.push(wTicker);
+		}
+
+		if (validWarrants.length > 0) {
+			renderWarrantCards(validWarrants);
+		}
+
+		// 2. Tarik data real-time untuk waran yang belum ada di cache
+		const BATCH_SIZE = 8;
+		for (let i = 0; i < uncachedWarrants.length; i += BATCH_SIZE) {
+			const batch = uncachedWarrants.slice(i, i + BATCH_SIZE);
 			const batchList = await Promise.all(
 				batch.map(async (wTicker) => {
-					const parentTicker = wTicker.replace(/-W\d*$/i, '');
+					const parentTicker = getParentTicker(wTicker);
 					const [rawWarrant, rawParent] = await Promise.all([
 						fetchRealtimeStockData(wTicker, false, true).catch(() => null),
 						fetchRealtimeStockData(parentTicker, false, true).catch(() => null)
@@ -6795,50 +6983,19 @@ async function loadWarrantData() {
 			);
 
 			validWarrants.push(...batchList.filter(Boolean));
-
 			if (validWarrants.length > 0) {
-				container.innerHTML = validWarrants.map(w => {
-					const isUp = w.changePercent >= 0;
-					const logoTicker = w.parentTicker || w.ticker.replace(/-W\d*$/i, '');
-					return `
-						<div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/30 transition gap-3">
-							<div class="flex items-center gap-3 min-w-0">
-								<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
-									<img 
-										src="https://assets.stockbit.com/logos/companies/${logoTicker}.png" 
-										alt="${w.ticker}" 
-										class="w-full h-full object-contain drop-shadow-sm" 
-										onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${logoTicker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${logoTicker.substring(0,3)}</span>';};"
-									>
-								</div>
-								<div class="min-w-0">
-									<div class="flex items-center gap-2 flex-wrap">
-										<span class="font-bold text-emerald-400">${w.ticker}</span>
-										<span class="text-xs text-slate-400">Induk: ${w.parentTicker} ${w.parentPrice ? `(Rp ${w.parentPrice.toLocaleString('id-ID')})` : ''}</span>
-									</div>
-									<div class="text-xs text-slate-500 mt-1 truncate">
-										Vol: ${w.volume.toLocaleString('id-ID')} ${w.ratioToParent ? `· Rasio Harga: ${w.ratioToParent}% dari induk` : ''}
-									</div>
-								</div>
-							</div>
-							<div class="text-right shrink-0">
-								<div class="font-bold text-white">Rp ${w.price.toLocaleString('id-ID')}</div>
-								<div class="text-xs font-medium ${isUp ? 'text-emerald-400' : 'text-rose-400'}">
-									${isUp ? '+' : ''}${w.changePercent.toFixed(2)}%
-								</div>
-							</div>
-						</div>
-					`;
-				}).join('');
+				renderWarrantCards(validWarrants);
 			}
 		}
 
 		if (validWarrants.length === 0) {
-			container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Data harga waran belum tersedia di feed.</div>`;
+			container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm col-span-full">Data harga waran belum tersedia di feed bursa saat ini.</div>`;
+		} else if (typeof AudioFX !== 'undefined') {
+			AudioFX.playSuccess();
 		}
 	} catch (err) {
 		console.error('Error loadWarrantData:', err);
-		container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm">Gagal memuat Warrant Tracker.</div>`;
+		container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm col-span-full">Gagal memuat Warrant Tracker.</div>`;
 	} finally {
 		isWarrantLoading = false;
 	}

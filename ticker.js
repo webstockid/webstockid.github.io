@@ -1,3 +1,6 @@
+// ==========================================
+// 1. DAFTAR SAHAM REGULER (IDX WATCHLIST)
+// ==========================================
 const radarWatchlist = [
 	"AALI", "ABBA", "ABMM", "ACES", "ACST", "ADCP", "ADHI", "ADMR", "ADRO", "AGII",
 	"AGRO", "AKRA", "ALDO", "AMAG", "AMMN", "AMRT", "ANJT", "ANTM", "APLN", "ARCI",
@@ -57,3 +60,39 @@ const radarWatchlist = [
 ];
 
 const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
+
+// ==========================================
+// 2. DAFTAR SAHAM WARAN BEI (-W / -W2)
+// ==========================================
+const warrantWatchlist = [
+	"ACRO-W", "ADCP-W", "AREA-W", "ASLI-W", "ATLA-W", "AWAN-W", "BABY-W", "BAIK-W", "BANK-W", "BBHI-W",
+	"BBKP-W", "BCAP-W", "BEBS-W", "BIPI-W", "BLES-W", "BNBR-W", "BOAT-W", "BRMS-W", "BSBK-W", "BUMI-W",
+	"CARE-W", "CBRE-W", "CGAS-W", "CHEM-W", "CHIP-W", "COAL-W", "CRSN-W", "CUAN-W", "CYBR-W", "DATA-W",
+	"DEWA-W", "DOOH-W", "DOSS-W", "DRMA-W", "ELIT-W", "ENRG-W", "EPAC-W", "ESIP-W", "ESTA-W", "EURO-W",
+	"FREN-W", "FREN-W2", "FUTR-W", "GOLF-W", "GOTO-W", "GRIA-W", "GRPM-W", "GTRA-W", "GTSI-W", "HAIS-W",
+	"HALO-W", "HATM-W", "HILL-W", "HOMI-W", "HUMI-W", "HYGN-W", "IATA-W", "IBOS-W", "IKPM-W", "INET-W",
+	"IPPE-W", "ISEA-W", "JARR-W", "KBAG-W", "KING-W", "KLAS-W", "KOCI-W", "KOKA-W", "KOTA-W", "KPIG-W",
+	"KRYA-W", "LABS-W", "LAJU-W", "LEAD-W", "LIVE-W", "LMAX-W", "MAHA-W", "MANG-W", "MAXI-W", "MENN-W",
+	"MHKI-W", "MINA-W", "MMIX-W", "MPXL-W", "MSJA-W", "MSTI-W", "MUTU-W", "NAIK-W", "NANO-W", "NASI-W",
+	"NETV-W", "NICE-W", "NICL-W", "NINE-W", "NSSS-W", "NTBK-W", "OASA-W", "OLIV-W", "PACK-W", "PADA-W",
+	"PANI-W", "PART-W", "PEVE-W", "PIPA-W", "PMMP-W", "PNBS-W", "PPGL-W", "PPRI-W", "PTMP-W", "PTPS-W",
+	"RAAM-W", "RAFI-W", "REAL-W", "RELF-W", "RGAS-W", "RMKO-W", "RONY-W", "RSCH-W", "SAGE-W", "SBMA-W",
+	"SEMA-W", "SICO-W", "SLIS-W", "SMGA-W", "SMIL-W", "SMKM-W", "SMLE-W", "SOLA-W", "STRK-W", "SURI-W",
+	"SWID-W", "TGUK-W", "TOOL-W", "TRGU-W", "TRIN-W", "TRON-W", "TRUE-W", "TYRE-W", "UVCR-W", "VAST-W",
+	"VERN-W", "VISI-W", "VKTR-W", "VTNY-W", "WIDI-W", "WIFI-W", "WINE-W", "WINR-W", "WIRG-W", "ZATA-W"
+];
+
+const uniqueWarrantWatchlist = [...new Set(warrantWatchlist)];
+
+// ==========================================
+// 3. HELPER RELASI WARAN & SAHAM INDUK
+// ==========================================
+function getParentTickerFromWarrant(warrantTicker) {
+	if (!warrantTicker) return "";
+	return warrantTicker.toUpperCase().split("-")[0].trim();
+}
+
+const warrantPairs = uniqueWarrantWatchlist.map(warrant => ({
+	warrant: warrant,
+	parent: getParentTickerFromWarrant(warrant)
+}));
