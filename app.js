@@ -2504,19 +2504,19 @@ function autoFillRRRFromAI() {
 	const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, basePrice);
 	
 	// Sesuai dengan hasil AI Signal (Entry Tertinggi, Stop Loss, TP 1)
-	let entryLow = roundToBEITick(fibo.entryLow * 0.97, 'floor');
-	let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
-	let res1 = fibo.res1;
-	let tp1 = roundToBEITick(res1 * 1.02, 'ceil');
+	// 1. Perbaikan autoFillRRRFromAI()
+const entryLow = roundToBEITick(fibo.entryLow * 0.97, 'floor');
+const entryHigh = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
+let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
+const res1 = fibo.res1;
+let tp1 = roundToBEITick(res1 * 1.02, 'ceil');
 
-	// 3. Proteksi Logika (Mencegah bentrok dengan validasi calculateSmartRRR)
-	// Memastikan SL selalu di bawah harga Entry Tertinggi, dan TP selalu di atasnya
-	if (sl >= entryHigh) {
-		sl = roundToBEITick(entryHigh * 0.95, 'floor'); // Default aman: SL -5%
-	}
-	if (tp1 <= entryHigh) {
-		tp1 = roundToBEITick(entryHigh * 1.05, 'ceil'); // Default aman: TP +5%
-	}
+if (sl >= entryHigh) {
+	sl = roundToBEITick(entryHigh * 0.95, 'floor');
+}
+if (tp1 <= entryHigh) {
+	tp1 = roundToBEITick(entryHigh * 1.05, 'ceil');
+}
 
 	// 4. Injeksi nilai ke dalam form input RRR
 	document.getElementById('rrrEntry').value = entryLow;
@@ -5595,11 +5595,14 @@ function switchTab(tabName) {
 	if (tabName === 'journal') renderJournalTable();
 	if (tabName === 'alert') renderAllAlerts();
 	if (tabName === 'paper') renderPaperTradingUI();
-	if (tabName === 'heatmap') {
-		renderSectorHeatmap();
-		fetchMacroAndCommodities();
-	}
-	if (tabName === 'fundamental') renderFundamentalWidget(currentTicker);
+	// 2 & 3. Di dalam switchTab(tabName)
+if (tabName === 'heatmap') {
+	renderSectorHeatmap();
+	loadLiveMacro();
+}
+if (tabName === 'fundamental') {
+	fetchRealtimeFundamentals(currentTicker);
+}
 	if (tabName === 'foreign') loadForeignFlowData();
 	if (tabName === 'valuation') runValuationScreener();
 	if (tabName === 'warrant') loadWarrantData();
