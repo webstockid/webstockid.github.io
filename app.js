@@ -726,26 +726,30 @@ function startSearchCooldown(seconds) {
 	}, 1000);
 }
 
-// Komentar: Menjalankan pencarian mendalam dan memuat seluruh instrumen data untuk saham spesifik.
+// Komentar: Menjalankan pencarian mendalam dan memuat seluruh instrumen data untuk saham maupun waran.
 async function searchStock(bypassCooldown = false) {
 	const btn = document.querySelector("button[onclick='searchStock()']");
 	if (!bypassCooldown && btn && btn.disabled) return;
-	const input = document.getElementById('stockSearch').value.trim().toUpperCase();
+
+	const rawInput = document.getElementById('stockSearch').value;
+	const input = normalizeTickerSymbol(rawInput);
 	const box = document.getElementById('searchSuggestionsBox');
 	if (box) box.classList.add('hidden');
 
 	if (input) {
+		document.getElementById('stockSearch').value = input;
+
 		// Cek limit tanpa memotong token (deductNow = false)
 		if (!checkAndUpdateLimit('search', false)) {
-			showToast("Limit harian pencarian saham Kamu telah habis (100x/hari).", "error");
+			showToast("Limit harian pencarian saham Kamu telah habis (50x/hari).", "error");
 			if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 			return;
 		}
 
-		// Validasi: Tarik data saham terlebih dahulu. Jika gagal/typo, jangan potong limit
+		// Validasi: Tarik data saham/waran terlebih dahulu. Jika gagal/typo, jangan potong limit
 		const stockData = await fetchRealtimeStockData(input, false);
 		if (!stockData || !stockData.price) {
-			showToast(`Saham ${input} tidak ditemukan!`, "warning");
+			showToast(`Emiten ${input} tidak ditemukan!`, "warning");
 			if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 			return;
 		}
@@ -754,7 +758,7 @@ async function searchStock(bypassCooldown = false) {
 		deductFeatureLimit('search');
 
 		currentTicker = input;
-		document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
+		document.getElementById('stockTitle').innerText = toTradingViewSymbol(currentTicker);
 		document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
 		document.getElementById('newsTickerLabel').innerText = currentTicker;
 		document.getElementById('fundTickerLabel').innerText = currentTicker;
@@ -775,11 +779,7 @@ async function searchStock(bypassCooldown = false) {
 	}
 }
 
-document.getElementById('stockSearch').addEventListener('keypress', function(e) {
-	if (e.key === 'Enter') searchStock();
-});
-
-// Komentar: Mengaktifkan input mikrofon untuk melakukan pencarian kode saham menggunakan suara.
+// Komentar: Mengaktifkan input mikrofon untuk melakukan pencarian kode saham maupun waran menggunakan suara.
 function startVoiceSearch() {
 	const voiceIcon = document.getElementById('voiceIcon');
 	const input = document.getElementById('stockSearch');
@@ -805,15 +805,22 @@ function startVoiceSearch() {
 	recognition.onresult = function(event) {
 		const transcript = event.results[0][0].transcript.trim().toUpperCase();
 		const spacelessTranscript = transcript.replace(/\s+/g, '');
+		const allTickers = getAllCombinedTickers();
 		let foundTicker = null;
-		if (typeof uniqueRadarWatchlist !== 'undefined') {
-			const words = transcript.split(' ');
-			foundTicker = uniqueRadarWatchlist.find(ticker => words.includes(ticker));
-			if (!foundTicker) foundTicker = uniqueRadarWatchlist.find(ticker => spacelessTranscript.includes(ticker));
+
+		if (allTickers.length > 0) {
+			const words = transcript.split(' ').map(w => normalizeTickerSymbol(w));
+			foundTicker = allTickers.find(ticker => words.includes(ticker));
+			if (!foundTicker) {
+				foundTicker = allTickers.find(ticker => spacelessTranscript.includes(ticker.replace('-', '')));
+			}
 		}
+
 		if (!foundTicker) {
-			foundTicker = transcript.replace(/COBA|DONG|ANALISA|CARI|SAHAM|BUKA|TOLONG/g, '').replace(/\s+/g, '').trim();
+			const cleaned = transcript.replace(/COBA|DONG|ANALISA|CARI|SAHAM|WARAN|BUKA|TOLONG/g, '').replace(/\s+/g, '').trim();
+			foundTicker = normalizeTickerSymbol(cleaned);
 		}
+
 		if (foundTicker) {
 			input.value = foundTicker;
 			searchStock(true);
@@ -822,7 +829,7 @@ function startVoiceSearch() {
 		}
 	};
 
-	recognition.onerror = function(event) {
+	recognition.onerror = function() {
 		input.placeholder = "Gagal mendengar, coba lagi...";
 	};
 
@@ -870,14 +877,16 @@ async function generateAISignal(ticker, isManualSearch = false) {
 	const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 	const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
+	// Pada bagian awal generateAISignal(ticker, isManualSearch = false):
+	const logoTicker = getParentTicker(ticker);
 	document.getElementById('aiHeaderTicker').innerHTML = `
 		<div class="flex items-center gap-2">
 			<div class="w-5 h-5 lg:w-6 lg:h-6 rounded-md bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
 				<img 
-					src="https://assets.stockbit.com/logos/companies/${ticker}.png" 
+					src="https://assets.stockbit.com/logos/companies/${logoTicker}.png" 
 					alt="${ticker}" 
 					class="w-full h-full object-contain drop-shadow-sm" 
-					onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] lg:text-[10px] font-black text-slate-400 tracking-wider\\'>${ticker.substring(0,3)}</span>';};"
+					onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${logoTicker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] lg:text-[10px] font-black text-slate-400 tracking-wider\\'>${logoTicker.substring(0,3)}</span>';};"
 				>
 			</div>
 			<span>[${ticker}] — KONDISI TEKNIKAL</span>
@@ -1960,12 +1969,13 @@ async function runCustomScreener() {
 	const btn = document.getElementById('btnRunCustomScreener');
 	if (btn && btn.disabled) return;
 
+	// Pada runCustomScreener() — perbaiki pengecekan RSI & pesan limit 20x/hari:
 	if (!checkAndUpdateLimit('customRadar', false)) {
-		showToast("Limit harian Custom Radar Kamu telah habis (50x/hari).", "error");
+		showToast("Limit harian Custom Radar Kamu telah habis (20x/hari).", "error");
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		return;
 	}
-
+	
 	if (btn) {
 		btn.disabled = true;
 		btn.className = "w-full sm:w-auto bg-slate-800 border border-slate-700 text-white font-bold px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
@@ -2018,8 +2028,8 @@ async function runCustomScreener() {
 				let matchRSI = true;
 				if (item.historicalPrices && ruleRSI !== 'ALL') {
 					const rsiValue = calculateRSI(item.historicalPrices);
-					if (ruleRSI === 'OVERSOLD' && rsiValue >= 10) matchRSI = false; 
-					if (ruleRSI === 'OVERBOUGHT' && rsiValue <= 100) matchRSI = false; 
+					if (ruleRSI === 'OVERSOLD' && rsiValue >= 30) matchRSI = false; 
+					if (ruleRSI === 'OVERBOUGHT' && rsiValue <= 70) matchRSI = false; 
 				}
 				
 				if (matchMA && matchVol && matchPrice && matchRSI) passedItems.push(item);
@@ -2587,39 +2597,33 @@ function renderPaperTradingUI() {
 // ==========================================
 // 15. SMART RRR CALCULATOR
 // ==========================================
+// Komentar: Menyinkronkan nilai Smart RRR dengan proyeksi AI Signal secara presisi.
 function autoFillRRRFromAI() {
-	// 1. Validasi ketersediaan data saham (Mencegah error senyap)
 	if (!globalStockData || !globalStockData.price) {
 		if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 		showToast("Data saham belum tersedia. Silakan cari saham terlebih dahulu!", "warning");
 		return;
 	}
 
-	// 2. Ekstrak data harga dan hitung rasio Fibo
 	const basePrice = globalStockData.price;
 	const fibo = getDynamicFiboLevels(globalStockData.high20, globalStockData.low20, basePrice);
 	
-	// Sesuai dengan hasil AI Signal (Entry Tertinggi, Stop Loss, TP 1)
-	// 1. Perbaikan autoFillRRRFromAI()
-const entryLow = roundToBEITick(fibo.entryLow * 0.97, 'floor');
-const entryHigh = roundToBEITick(fibo.entryHigh * 0.99, 'floor');
-let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
-const res1 = fibo.res1;
-let tp1 = roundToBEITick(res1 * 1.02, 'ceil');
+	const entryLow = roundToBEITick(fibo.entryLow * 0.97, 'floor');
+	let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
+	const res1 = fibo.res1;
+	let tp1 = roundToBEITick(res1 * 1.02, 'ceil');
 
-if (sl >= entryHigh) {
-	sl = roundToBEITick(entryHigh * 0.95, 'floor');
-}
-if (tp1 <= entryHigh) {
-	tp1 = roundToBEITick(entryHigh * 1.05, 'ceil');
-}
+	if (sl >= entryLow) {
+		sl = roundToBEITick(entryLow * 0.95, 'floor');
+	}
+	if (tp1 <= entryLow) {
+		tp1 = roundToBEITick(entryLow * 1.05, 'ceil');
+	}
 
-	// 4. Injeksi nilai ke dalam form input RRR
 	document.getElementById('rrrEntry').value = entryLow;
 	document.getElementById('rrrSL').value = sl;
 	document.getElementById('rrrTP').value = tp1;
 	
-	// 5. Jalankan kalkulasi dan berikan feedback ke user
 	calculateSmartRRR();
 	
 	if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
@@ -3646,11 +3650,14 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 			
 			sendBrowserPushNotification(`🐳 STOCK ID WHALE RADAR`, alertMsg);
 			showToast(alertMsg, "info", 5000); 
+
+			if (typeof notifyWhaleToServiceWorker === 'function') {
+				notifyWhaleToServiceWorker(ticker, `🐳 STOCK ID WHALE RADAR: $${ticker}`, alertMsg);
+			}
 			
 			const teleMsg = `<b>🐳 STOCK ID WHALE RADAR</b>\nSaham: <b>$${ticker}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nKet: Harga baru naik <b>${latestData.changePct}%</b>, Bandar indikasi kumpulin barang!`;
 			sendTelegramAlert(teleMsg);
 			
-			// Simpan data terbaru ke LocalStorage dalam format JSON
 			const newAlertData = {
 				time: now,
 				volRatio: latestData.volRatio,
@@ -3664,8 +3671,9 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 // ==========================================
 // 26. MULTI-TIMEFRAME AI ANALYSIS
 // ==========================================
+// Pada bagian awal analyzeAITimeframe(tfLabel):
 async function analyzeAITimeframe(tfLabel) {
-	const targetSymbol = `${currentTicker}.JK`;
+	const targetSymbol = toYahooTickerSymbol(currentTicker);
 	const resultContainer = document.getElementById('ai-tf-result');
 	
 	if (!resultContainer) return;
@@ -3778,7 +3786,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 		if (btn.disabled) return;
 		
 		if (!checkAndUpdateLimit('peer', false)) {
-			showToast("Limit harian Peer Komparasi Kamu telah habis (75x/hari).", "error");
+			showToast("Limit harian Peer Komparasi Kamu telah habis (25x/hari).", "error");
 			if (typeof AudioFX !== 'undefined') AudioFX.playAlert();
 			return;
 		}
@@ -3799,7 +3807,8 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 		if (window.lucide) lucide.createIcons();
 
 		let peerTickers = [];
-		const recUrl = `https://query2.finance.yahoo.com/v6/finance/recommendationsbysymbol/${targetTicker}.JK`;
+		const targetYahoo = toYahooTickerSymbol(targetTicker);
+		const recUrl = `https://query2.finance.yahoo.com/v6/finance/recommendationsbysymbol/${encodeURIComponent(targetYahoo)}`;
 		const proxies = [
 			`https://api.allorigins.win/get?url=${encodeURIComponent(recUrl)}`,
 			`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(recUrl)}`,
@@ -4262,7 +4271,8 @@ async function fetchRealtimeFundamentals(ticker) {
 	tvContainer.innerHTML = '';
 	
 	// Setup format simbol khusus untuk Bursa Efek Indonesia (contoh: IDX:BBCA)
-	const tvSymbol = `IDX:${ticker}`;
+	// 1. Pada fetchRealtimeFundamentals(ticker) — ubah baris setup simbol TradingView:
+	const tvSymbol = toTradingViewSymbol(ticker);
 	
 	// ==========================================
 	// WIDGET 1: PROFIL PERUSAHAAN (Sektor, Deskripsi)
@@ -4815,9 +4825,19 @@ function escapeHtml(text) {
 }
 
 // Komentar: Menganalisis teks masukan dan menyusun balasan balasan komprehensif dari asisten AI.
+// 3. Pada generateAIResponse(prompt) — deteksi saham reguler maupun waran di AI Chat:
 function generateAIResponse(prompt) {
 	const lower = prompt.toLowerCase();
+	const spacelessLower = lower.replace(/\s+/g, '');
 	let targetTicker = currentTicker;
+
+	const allTickers = getAllCombinedTickers();
+	if (allTickers.length > 0) {
+		const foundMatch = allTickers.find(t =>
+			lower.includes(t.toLowerCase()) || spacelessLower.includes(t.toLowerCase().replace('-', ''))
+		);
+		if (foundMatch) targetTicker = foundMatch;
+	}
 
 	if (typeof uniqueRadarWatchlist !== 'undefined') {
 		const foundMatch = uniqueRadarWatchlist.find(t => lower.includes(t.toLowerCase()));
@@ -6021,13 +6041,6 @@ function closeLossCelebration() {
 	}
 }
 
-// Komentar: Memeriksa parameter pada tautan (URL) dan otomatis memilih saham apabila tersedia kodenya.
-function checkUrlParamTicker() {
-	const urlParams = new URLSearchParams(window.location.search);
-	const tickerParam = urlParams.get('ticker');
-	if (tickerParam) currentTicker = tickerParam.toUpperCase();
-}
-
 // ==========================================
 // 30. GLOBAL GRADIENT BUTTON ENGINE
 // ==========================================
@@ -7128,10 +7141,26 @@ if ('serviceWorker' in navigator) {
 	processNextBatch();
 }*/
 
+// 2. Urutan Inisialisasi Utama di bagian paling bawah app_11.js:
+function checkUrlParamTicker() {
+	const urlParams = new URLSearchParams(window.location.search);
+	const tickerParam = urlParams.get('ticker');
+	if (tickerParam) {
+		const normalized = normalizeTickerSymbol(tickerParam);
+		if (normalized) {
+			currentTicker = normalized;
+			const searchInput = document.getElementById('stockSearch');
+			if (searchInput) searchInput.value = currentTicker;
+		}
+	}
+}
+
 // ==========================================
 // INISIALISASI UTAMA
 // ==========================================
-document.getElementById('stockTitle').innerText = `IDX:${currentTicker}`;
+checkUrlParamTicker();
+
+document.getElementById('stockTitle').innerText = toTradingViewSymbol(currentTicker);
 document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
 document.getElementById('newsTickerLabel').innerText = currentTicker;
 document.getElementById('fundTickerLabel').innerText = currentTicker;
@@ -7151,7 +7180,6 @@ renderAllAlerts();
 renderJournalTable();
 renderPaperTradingUI();
 renderTechnicalGauge(currentTicker);
-//renderFundamentalWidget(currentTicker);
 fetchStockNews(currentTicker);
 fetchCorporateAction(currentTicker);
 fetchRealtimeFundamentals(currentTicker);
@@ -7159,7 +7187,6 @@ fetchYahooTrending();
 cleanExpiredCache();
 checkWelcomeModal();
 checkNotificationStatus();
-checkUrlParamTicker();
 
 document.addEventListener('DOMContentLoaded', () => {
 	loadLiveMacro();
