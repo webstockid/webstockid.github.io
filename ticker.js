@@ -59,7 +59,7 @@ const radarWatchlist = [
 	"WOOD", "WSBP", "WTON", "YPAS", "YULE", "ZBRA", "ZONE", "ZYRX"
 ];
 
-const uniqueRadarWatchlist = [...new Set(radarWatchlist)];
+const uniqueRadarWatchlist = [...new Set(radarWatchlist.map(t => String(t).trim().toUpperCase()).filter(Boolean))];
 
 // ==========================================
 // 2. DAFTAR SAHAM WARAN BEI (-W / -W2)
@@ -82,14 +82,14 @@ const warrantWatchlist = [
 	"VERN-W", "VISI-W", "VKTR-W", "VTNY-W", "WIDI-W", "WIFI-W", "WINE-W", "WINR-W", "WIRG-W", "ZATA-W"
 ];
 
-const uniqueWarrantWatchlist = [...new Set(warrantWatchlist)];
+const uniqueWarrantWatchlist = [...new Set(warrantWatchlist.map(t => String(t).trim().toUpperCase()).filter(Boolean))];
 
 // ==========================================
 // 3. HELPER RELASI WARAN & SAHAM INDUK
 // ==========================================
 function getParentTickerFromWarrant(warrantTicker) {
-	if (!warrantTicker) return "";
-	return warrantTicker.toUpperCase().split("-")[0].trim();
+	if (!warrantTicker || typeof warrantTicker !== 'string') return "";
+	return warrantTicker.trim().toUpperCase().split("-")[0].replace(/W\d*$/i, "").trim();
 }
 
 const warrantPairs = uniqueWarrantWatchlist.map(warrant => ({
