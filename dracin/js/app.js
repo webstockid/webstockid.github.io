@@ -2,12 +2,12 @@
 // app.js — Entry point. Orkestrasi semua modul.
 // ============================================================
 
-import * as api from './api.js';
-import * as storage from './storage.js';
-import * as ui from './ui.js';
-import * as player from './player.js';
-import * as profile from './profile.js';
-import * as settings from './settings.js';
+import * as api from 'api.js';
+import * as storage from 'storage.js';
+import * as ui from 'ui.js';
+import * as player from 'player.js';
+import * as profile from 'profile.js';
+import * as settings from 'settings.js';
 
 // ---------- Elemen global ----------
 const searchInput = document.getElementById('searchInput');
