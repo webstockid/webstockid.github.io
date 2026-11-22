@@ -5,14 +5,19 @@
 
 const CONFIG = {
 	baseUrl: 'https://api.hoshiyomi.my.id/api',
-	apiKey: 'HOSHIYOMI-FREE-e5a2146a', // Ganti dengan key dari @dramaboxplusbot
+	// ⬇️ PASTE API KEY BARU KAMU DI SINI
+	apiKey: 'HOSHIYOMI-FREE-c8ca87b7',
 	platform: 'wetv', // 'iqiyi' atau 'wetv'
 	lang: 'id',
 	timeout: 15000,
+	debug: false, // ubah ke true jika ingin melihat log di console
 };
 
 async function request(endpoint, params = {}) {
 	const url = new URL(`${CONFIG.baseUrl}/${CONFIG.platform}${endpoint}`);
+	
+	// Kirim key lewat query parameter untuk menghindari CORS preflight
+	url.searchParams.append('api_key', CONFIG.apiKey);
 	url.searchParams.append('lang', CONFIG.lang);
 
 	Object.keys(params).forEach((key) => {
@@ -21,7 +26,7 @@ async function request(endpoint, params = {}) {
 		}
 	});
 
-	console.log('[API] Request:', url.toString());
+	if (CONFIG.debug) console.log('[API] Request:', url.toString());
 
 	const controller = new AbortController();
 	const timeoutId = setTimeout(() => controller.abort(), CONFIG.timeout);
@@ -30,20 +35,18 @@ async function request(endpoint, params = {}) {
 		const response = await fetch(url.toString(), {
 			signal: controller.signal,
 			headers: {
-				'X-API-Key': CONFIG.apiKey,
-				'User-Agent': 'Mozilla/5.0',
 				Accept: 'application/json',
 			},
 		});
 
-		console.log('[API] Status:', response.status);
+		if (CONFIG.debug) console.log('[API] Status:', response.status);
 
 		if (!response.ok) {
 			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 		}
 
 		const data = await response.json();
-		console.log('[API] Response:', data);
+		if (CONFIG.debug) console.log('[API] Response:', data);
 		return data;
 	} catch (err) {
 		if (err.name === 'AbortError') {
@@ -88,7 +91,7 @@ function normalizeList(raw) {
 	const items = raw?.items || raw?.data || raw?.results || [];
 
 	if (!Array.isArray(items)) {
-		console.warn('[API] Format respons tidak dikenal:', raw);
+		if (CONFIG.debug) console.warn('[API] Format respons tidak dikenal:', raw);
 		return [];
 	}
 

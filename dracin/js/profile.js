@@ -188,6 +188,12 @@ export function exportAllData() {
 
 export function importAllData(jsonText) {
 	const bundle = JSON.parse(jsonText);
+
+	// Guard: pastikan bundle adalah object yang valid
+	if (!bundle || typeof bundle !== 'object' || Array.isArray(bundle)) {
+		throw new Error('Format file tidak valid: bukan object JSON.');
+	}
+
 	if (Array.isArray(bundle.history)) saveList('dracin_history', bundle.history);
 	if (Array.isArray(bundle.likes)) saveList(KEY_LIKES, bundle.likes);
 	if (Array.isArray(bundle.saved)) saveList(KEY_SAVED, bundle.saved);
