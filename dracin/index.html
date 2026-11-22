@@ -72,7 +72,13 @@
 		};
 	</script>
 
-	<script src="https://suppenhuhn79.github.io/on-screen-console/onscreenconsole.js"></script>
+		<script>
+		if (location.search.includes('console=1')) {
+			const s = document.createElement('script');
+			s.src = 'https://suppenhuhn79.github.io/on-screen-console/onscreenconsole.js';
+			document.head.appendChild(s);
+		}
+	</script>
 	<!-- CSS kustom (hanya yang tidak bisa di-Tailwind) -->
 	<link rel="stylesheet" href="css/custom.css">
 </head>
