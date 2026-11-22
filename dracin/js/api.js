@@ -1,56 +1,53 @@
 // ============================================================
-// api.js — Hoshiyomi API (Platform: PineDrama - Gratis)
-// Dokumentasi: https://api.hoshiyomi.my.id/docs
+// api.js — Hoshiyomi API (dengan CORS Proxy)
 // ============================================================
 
 const CONFIG = {
+	// URL API asli
 	baseUrl: 'https://api.hoshiyomi.my.id/api',
-	// API Key gratis kamu (berlaku 1 hari, minta baru via @dramaboxplusbot)
+	// ⬇️ PASTE API KEY BARU KAMU DI SINI (jika yang lama expired)
 	apiKey: 'HOSHIYOMI-FREE-c8ca87b7',
-	// Platform gratis yang dipilih (bisa diganti: netshort, flickreels, dll)
-	platform: 'pinedrama',
+	platform: 'pinedrama', // Platform gratis
 	lang: 'id',
 	timeout: 15000,
-	debug: false, // ubah ke true untuk melihat log di console
+	// Gunakan proxy CORS publik untuk menghindari blokir browser
+	useProxy: true,
+	proxyUrl: 'https://corsproxy.io/?',
 };
 
 async function request(endpoint, params = {}) {
 	const url = new URL(`${CONFIG.baseUrl}/${CONFIG.platform}${endpoint}`);
-
-	// Kirim API key lewat query param (menghindari CORS preflight)
-	url.searchParams.append('api_key', CONFIG.apiKey);
 	url.searchParams.append('lang', CONFIG.lang);
-
+	
 	Object.keys(params).forEach((key) => {
 		if (params[key] !== undefined && params[key] !== null) {
 			url.searchParams.append(key, params[key]);
 		}
 	});
 
-	if (CONFIG.debug) console.log('[API] Request:', url.toString());
+	// Tentukan URL final (dengan atau tanpa proxy)
+	const finalUrl = CONFIG.useProxy 
+		? CONFIG.proxyUrl + encodeURIComponent(url.toString())
+		: url.toString();
 
 	const controller = new AbortController();
 	const timeoutId = setTimeout(() => controller.abort(), CONFIG.timeout);
 
 	try {
-		const response = await fetch(url.toString(), {
+		const response = await fetch(finalUrl, {
 			signal: controller.signal,
 			headers: {
-				'X-API-Key': CONFIG.apiKey, // Tetap kirim lewat header sebagai cadangan
+				'X-API-Key': CONFIG.apiKey,
 				'User-Agent': 'Mozilla/5.0',
 				Accept: 'application/json',
 			},
 		});
 
-		if (CONFIG.debug) console.log('[API] Status:', response.status);
-
 		if (!response.ok) {
-			const errorBody = await response.text();
-			throw new Error(`HTTP ${response.status}: ${errorBody.substring(0, 200)}`);
+			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 		}
 
 		const data = await response.json();
-		if (CONFIG.debug) console.log('[API] Response:', data);
 		return data;
 	} catch (err) {
 		if (err.name === 'AbortError') {
@@ -61,10 +58,6 @@ async function request(endpoint, params = {}) {
 		clearTimeout(timeoutId);
 	}
 }
-
-// ============================================================
-// ENDPOINT
-// ============================================================
 
 export async function getTrending(page = 1) {
 	const data = await request('/trending', { page });
@@ -84,8 +77,7 @@ export async function getDramaDetail(id) {
 
 export async function getEpisodes(id) {
 	const data = await request('/allepisode', { id });
-	// Hoshiyomi mengembalikan daftar episode di dalam properti "items"
-	const items = data?.items || data?.data || [];
+	const items = data?.items || data?.data || data?.episodes || [];
 
 	if (!Array.isArray(items)) return [];
 
@@ -96,15 +88,11 @@ export async function getEpisodes(id) {
 	}));
 }
 
-// ============================================================
-// Normalizer
-// ============================================================
 function normalizeList(raw) {
-	// Hoshiyomi biasanya mengembalikan array di properti "items"
-	const items = raw?.items || raw?.data || [];
+	const items = raw?.items || raw?.data || raw?.results || [];
 
 	if (!Array.isArray(items)) {
-		if (CONFIG.debug) console.warn('[API] Format respons tidak dikenal:', raw);
+		console.warn('[API] Format respons tidak dikenal:', raw);
 		return [];
 	}
 
