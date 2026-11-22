@@ -1,18 +1,16 @@
 // ============================================================
-// api.js — Hoshiyomi API (dengan CORS Proxy)
+// api.js — Hoshiyomi API (dengan CORS Proxy Alternatif)
 // ============================================================
 
 const CONFIG = {
-	// URL API asli
 	baseUrl: 'https://api.hoshiyomi.my.id/api',
-	// ⬇️ PASTE API KEY BARU KAMU DI SINI (jika yang lama expired)
 	apiKey: 'HOSHIYOMI-FREE-c8ca87b7',
-	platform: 'pinedrama', // Platform gratis
+	platform: 'pinedrama',
 	lang: 'id',
-	timeout: 15000,
-	// Gunakan proxy CORS publik untuk menghindari blokir browser
+	timeout: 8000, // Diturunkan jadi 8 detik agar cepat error jika gagal
 	useProxy: true,
-	proxyUrl: 'https://corsproxy.io/?',
+	// Menggunakan allorigins yang lebih stabil
+	proxyUrl: 'https://api.allorigins.win/raw?url=',
 };
 
 async function request(endpoint, params = {}) {
@@ -25,7 +23,6 @@ async function request(endpoint, params = {}) {
 		}
 	});
 
-	// Tentukan URL final (dengan atau tanpa proxy)
 	const finalUrl = CONFIG.useProxy 
 		? CONFIG.proxyUrl + encodeURIComponent(url.toString())
 		: url.toString();
@@ -38,20 +35,18 @@ async function request(endpoint, params = {}) {
 			signal: controller.signal,
 			headers: {
 				'X-API-Key': CONFIG.apiKey,
-				'User-Agent': 'Mozilla/5.0',
 				Accept: 'application/json',
 			},
 		});
 
 		if (!response.ok) {
-			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+			throw new Error(`HTTP ${response.status} - API menolak request`);
 		}
 
-		const data = await response.json();
-		return data;
+		return await response.json();
 	} catch (err) {
 		if (err.name === 'AbortError') {
-			throw new Error('Request timeout (15 detik)');
+			throw new Error('Koneksi Timeout (Server API/Proxy tidak merespons)');
 		}
 		throw err;
 	} finally {

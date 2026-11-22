@@ -42,7 +42,8 @@ async function loadTrending() {
 		ui.renderDramaList(trending, 'Trending Drama China');
 	} catch (err) {
 		console.error('[App] Gagal memuat trending:', err);
-		ui.showError('Gagal memuat data. Coba lagi nanti.');
+		// Ubah baris ini agar menampilkan pesan error asli di layar
+		ui.showError('Gagal: ' + err.message);
 	}
 }
 
