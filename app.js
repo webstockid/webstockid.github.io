@@ -5604,28 +5604,64 @@ function applyFontSize(size) {
 }
 
 // Komentar: Mengubah jenis huruf (font family) yang digunakan.
+// ==========================================
+// PENGATURAN GAYA & KETEBALAN HURUF
+// ==========================================
+const VALID_APP_FONTS = {
+	'Plus Jakarta Sans': '"Plus Jakarta Sans", sans-serif',
+	'Outfit': '"Outfit", sans-serif',
+	'Space Grotesk': '"Space Grotesk", sans-serif',
+	'Chakra Petch': '"Chakra Petch", sans-serif',
+	'JetBrains Mono': '"JetBrains Mono", monospace',
+	'Playfair Display': '"Playfair Display", serif',
+	'Syne': '"Syne", sans-serif'
+};
+
+const FONT_WEIGHT_LABELS = {
+	'300': '300 (Tipis)',
+	'400': '400 (Normal)',
+	'500': '500 (Sedang)',
+	'600': '600 (Semi Tebal)',
+	'700': '700 (Tebal)',
+	'800': '800 (Sangat Tebal)'
+};
+
 function applyFontStyle(fontName) {
-	if (fontName !== 'Lexend') {
-		let styleId = 'custom-font-style-loader';
-		let styleEl = document.getElementById(styleId);
-		if (!styleEl) {
-			styleEl = document.createElement('style');
-			styleEl.id = styleId;
-			document.head.appendChild(styleEl);
-		}
-		styleEl.innerHTML = `
-			@font-face {
-				font-family: '${fontName}';
-				src: url('Stockid_font/${fontName}.ttf') format('truetype');
-				font-weight: 800;
-				font-style: normal;
-			}
-		`;
+	const selectedFont = VALID_APP_FONTS[fontName] ? fontName : 'Plus Jakarta Sans';
+	document.documentElement.style.setProperty('--app-font-family', VALID_APP_FONTS[selectedFont]);
+	localStorage.setItem('stockid_font_style', selectedFont);
+
+	const selectEl = document.getElementById('settingFontStyle');
+	if (selectEl && selectEl.value !== selectedFont) {
+		selectEl.value = selectedFont;
 	}
-	document.documentElement.style.setProperty('--app-font-family', `"${fontName}"`);
-	localStorage.setItem('stockid_font_family', fontName);
-	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
 }
+
+function applyFontWeight(weight) {
+	const validWeight = FONT_WEIGHT_LABELS[String(weight)] ? String(weight) : '700';
+	document.documentElement.style.setProperty('--app-font-weight', validWeight);
+	localStorage.setItem('stockid_font_weight', validWeight);
+
+	const labelEl = document.getElementById('fontWeightLabel');
+	if (labelEl) {
+		labelEl.innerText = FONT_WEIGHT_LABELS[validWeight];
+	}
+
+	const sliderEl = document.getElementById('settingFontWeight');
+	if (sliderEl && sliderEl.value !== validWeight) {
+		sliderEl.value = validWeight;
+	}
+}
+
+function initTypographySettings() {
+	const savedFont = localStorage.getItem('stockid_font_style') || 'Plus Jakarta Sans';
+	const savedWeight = localStorage.getItem('stockid_font_weight') || '700';
+	applyFontStyle(savedFont);
+	applyFontWeight(savedWeight);
+}
+
+initTypographySettings();
+document.addEventListener('DOMContentLoaded', initTypographySettings);
 
 // ==========================================
 // 3. NAVIGASI, DROPDOWN & TABS

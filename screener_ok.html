@@ -21,22 +21,27 @@
 		<script src="https://unpkg.com/lucide@latest"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 		
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend&display=swap">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 		<link rel="icon" type="image/x-icon" href="stockid_gambar/stockidscreener.jpeg">
 		<link rel="icon" type="image/png" sizes="60x60" href="stockid_gambar/stockidscreener.jpeg">
 		<link rel="apple-touch-icon" sizes="180x180" href="stockid_gambar/stockidscreener.jpeg">
 		
 		<style>
+			:root {
+				--app-font-family: "Plus Jakarta Sans", sans-serif;
+				--app-font-weight: 700;
+			}
 			body {
-				font-family: "Lexend";
+				font-family: var(--app-font-family);
+				font-weight: var(--app-font-weight);
 				background-color: #0b0f19;
 			}
-			.heading-font, a, p, b, button, nav, ul, li, ol, tr, td, option, select, strong, option, div, span, table, label {
-				font-family: "Lexend";
-				font-weight: 800 !important;
+			body, .heading-font, a, p, b, button, nav, ul, li, ol, tr, td, option, select, strong, div, span, table, label, input {
+				font-family: var(--app-font-family) !important;
+				font-weight: var(--app-font-weight) !important;
 			}
 			.glassmorphism {
 				background: rgba(17, 24, 39, 0.75);
@@ -686,7 +691,7 @@
 					</div>
 				</div>
 				<div id="backtestResultContainer" class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 text-slate-300">
-					<p class="text-center text-slate-500">Pilih parameter dan klik "Jalankan Backtest" untuk melihat hasil simulasi.</p>
+					<p class="text-center text-slate-200">Pilih parameter dan Klik tombol <strong class="text-amber-400">"Jalankan Backtest"</strong> untuk melihat hasil simulasi.</p>
 				</div>
 			</div>
 		
@@ -705,7 +710,7 @@
 			</div>
 			<div id="valuation-matrix-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[800px] overflow-y-auto pr-1 scrollbar-thin">
 				<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800">
-					Klik <strong class="text-emerald-400">"Filter Valuasi Ideal"</strong> untuk memindai posisi harga emiten.
+					Klik tombol <strong class="text-emerald-400">"Filter Valuasi Ideal"</strong> untuk memindai posisi harga emiten.
 				</div>
 			</div>
 		</div>
@@ -725,7 +730,7 @@
 			</div>
 			<div id="warrant-tracker-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[800px] overflow-y-auto pr-1 scrollbar-thin">
 				<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800">
-					Klik <strong class="text-fuchsia-400">"Muat Data Waran"</strong> untuk melihat daftar waran aktif dari watchlist.
+					Klik tombol <strong class="text-fuchsia-400">"Muat Data Waran"</strong> untuk melihat daftar waran aktif dari watchlist.
 				</div>
 			</div>
 		</div>
@@ -1220,7 +1225,7 @@
 							<button onclick="clearAllAlerts()" class="text-[9px] lg:text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-2 py-1 rounded transition font-bold">Bersihkan Semua</button>
 						</div>
 						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 min-h-[100px] max-h-[400px] overflow-y-auto scrollbar-thin pr-1">
-							<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs">Belum ada alert harga yang dipasang pada saham manapun. Klik "Tambahkan ke Alert" di atas.</div>
+							<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs">Belum ada alert harga yang dipasang pada saham manapun. Klik tombol "Tambahkan ke Alert" di atas.</div>
 						</div>
 					</div>
 
@@ -1893,14 +1898,27 @@
 								<div class="flex flex-col space-y-1.5 pt-1">
 									<label class="text-slate-200 text-[11px] lg:text-xs font-bold">3. Gaya Huruf (Font Style)</label>
 									<select id="settingFontStyle" onchange="applyFontStyle(this.value)" class="w-full bg-slate-900 border border-slate-700 text-white text-[10px] lg:text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 cursor-pointer">
-										<option value="Comfortaa">Comfortaa</option>
-										<option value="ComicRelief">Comic Relief</option>
-										<option value="Fredoka">Fredoka</option>
-										<option value="Quicksand">Quick Sand</option>
-										<option value="Ubuntu">Ubuntu</option>
-										<option value="Unbounded">Unbounded</option>
-										<option value="Lexend">Lexend (Default)</option>
+										<option value="Plus Jakarta Sans">Plus Jakarta Sans (Default)</option>
+										<option value="Outfit">Outfit (Modern Rounded)</option>
+										<option value="Space Grotesk">Space Grotesk (Tech Sans)</option>
+										<option value="Chakra Petch">Chakra Petch (Cyber Futuristic)</option>
+										<option value="JetBrains Mono">JetBrains Mono (Terminal Pro)</option>
+										<option value="Playfair Display">Playfair Display (Editorial Serif)</option>
+										<option value="Syne">Syne (Artistic Display)</option>
 									</select>
+								</div>
+
+								<div class="space-y-1 pt-1">
+									<div class="flex justify-between items-center">
+										<label class="text-slate-200 text-[11px] lg:text-xs font-bold">4. Ketebalan Huruf (Font Weight)</label>
+										<span id="fontWeightLabel" class="text-emerald-400 font-bold text-[10px] lg:text-xs bg-slate-900 px-2 py-0.5 rounded border border-slate-700">700 (Tebal)</span>
+									</div>
+									<input type="range" id="settingFontWeight" min="300" max="800" value="700" step="100" oninput="applyFontWeight(this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+									<div class="flex justify-between text-[9px] text-slate-500">
+										<span>Tipis (300)</span>
+										<span>Normal (400)</span>
+										<span>Sangat Tebal (800)</span>
+									</div>
 								</div>
 							</div>
 						</div>
