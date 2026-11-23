@@ -21,78 +21,6 @@ let whaleScanCooldownTimer = null;
 if (window.lucide) lucide.createIcons();
 
 // ==========================================
-// 1B. KONEKTOR TICKER.JS & HELPER SAHAM WARAN
-// ==========================================
-function isWarrantTicker(ticker) {
-	if (!ticker || typeof ticker !== 'string') return false;
-	const clean = ticker.trim().toUpperCase().replace(/\.JK$/i, '').replace(/^IDX:/i, '');
-	return /^[A-Z]{4}-?W\d*$/i.test(clean);
-}
-
-function normalizeTickerSymbol(ticker) {
-	if (!ticker || typeof ticker !== 'string') return '';
-	let clean = ticker.trim().toUpperCase().replace(/\.JK$/i, '').replace(/^IDX:/i, '');
-	// Ubah format 5+ huruf tanpa strip (misal: BSBKW -> BSBK-W) agar sesuai standar BEI & Yahoo Finance
-	if (/^[A-Z]{4}W\d*$/i.test(clean)) {
-		clean = clean.replace(/^([A-Z]{4})(W\d*)$/i, '$1-$2');
-	}
-	return clean;
-}
-
-function getParentTicker(ticker) {
-	const clean = normalizeTickerSymbol(ticker);
-	return isWarrantTicker(clean) ? clean.replace(/-W\d*$/i, '') : clean;
-}
-
-function toYahooTickerSymbol(ticker) {
-	const clean = normalizeTickerSymbol(ticker);
-	return clean ? `${clean}.JK` : '';
-}
-
-function toTradingViewSymbol(ticker) {
-	const clean = normalizeTickerSymbol(ticker);
-	// TradingView IDX menggunakan format tanpa strip untuk waran (contoh: IDX:BSBKW)
-	return isWarrantTicker(clean) ? `IDX:${clean.replace(/-/g, '')}` : `IDX:${clean}`;
-}
-
-// Komentar: Menggabungkan seluruh daftar saham reguler & waran dari ticker.js tanpa duplikasi.
-function getAllCombinedTickers() {
-	const sources = [
-		typeof uniqueRadarWatchlist !== 'undefined' ? uniqueRadarWatchlist : null,
-		typeof radarWatchlist !== 'undefined' ? radarWatchlist : null,
-		typeof warrantWatchlist !== 'undefined' ? warrantWatchlist : null,
-		typeof uniqueWarrantWatchlist !== 'undefined' ? uniqueWarrantWatchlist : null,
-		typeof warrantTickers !== 'undefined' ? warrantTickers : null,
-		typeof warrantList !== 'undefined' ? warrantList : null,
-		typeof daftarWaran !== 'undefined' ? daftarWaran : null,
-		typeof sahamWaran !== 'undefined' ? sahamWaran : null,
-		typeof idxWarrants !== 'undefined' ? idxWarrants : null,
-		typeof allTickers !== 'undefined' ? allTickers : null
-	];
-
-	const merged = new Set();
-	sources.forEach(list => {
-		if (Array.isArray(list)) {
-			list.forEach(item => {
-				const norm = normalizeTickerSymbol(item);
-				if (norm) merged.add(norm);
-			});
-		}
-	});
-	return Array.from(merged);
-}
-
-// Komentar: Mengambil khusus daftar saham reguler (non-waran) untuk screener utama.
-function getRegularStockTickers() {
-	return getAllCombinedTickers().filter(t => !isWarrantTicker(t));
-}
-
-// Komentar: Mengambil khusus daftar saham waran (-W) yang terdaftar di ticker.js.
-function getWarrantStockTickers() {
-	return getAllCombinedTickers().filter(t => isWarrantTicker(t));
-}
-
-// ==========================================
 // 2. SISTEM CACHE & WAKTU PASAR
 // ==========================================
 function isMarketOpen() {
@@ -819,10 +747,11 @@ function startVoiceSearch() {
 		let foundTicker = null;
 
 		if (allTickers.length > 0) {
-			const words = transcript.split(' ').map(w => normalizeTickerSymbol(w));
-			foundTicker = allTickers.find(ticker => words.includes(ticker));
+			const sortedTickers = [...allTickers].sort((a, b) => b.length - a.length);
+			const words = transcript.split(/\s+/).map(w => normalizeTickerSymbol(w));
+			foundTicker = sortedTickers.find(ticker => words.includes(ticker));
 			if (!foundTicker) {
-				foundTicker = allTickers.find(ticker => spacelessTranscript.includes(ticker.replace('-', '')));
+				foundTicker = sortedTickers.find(ticker => spacelessTranscript.includes(ticker.replace(/-/g, '')));
 			}
 		}
 
@@ -4836,23 +4765,28 @@ function escapeHtml(text) {
 }
 
 // Komentar: Menganalisis teks masukan dan menyusun balasan balasan komprehensif dari asisten AI.
-// 3. Pada generateAIResponse(prompt) — deteksi saham reguler maupun waran di AI Chat:
 function generateAIResponse(prompt) {
 	const lower = prompt.toLowerCase();
 	const spacelessLower = lower.replace(/\s+/g, '');
 	let targetTicker = currentTicker;
+	let explicitTickerFound = false;
 
 	const allTickers = getAllCombinedTickers();
 	if (allTickers.length > 0) {
-		const foundMatch = allTickers.find(t =>
-			lower.includes(t.toLowerCase()) || spacelessLower.includes(t.toLowerCase().replace('-', ''))
-		);
-		if (foundMatch) targetTicker = foundMatch;
-	}
-
-	if (typeof uniqueRadarWatchlist !== 'undefined') {
-		const foundMatch = uniqueRadarWatchlist.find(t => lower.includes(t.toLowerCase()));
-		if (foundMatch) targetTicker = foundMatch;
+		// Urutkan kode terpanjang lebih dulu agar waran (misal: BSBK-W, FREN-W2) diprioritaskan atas saham induknya
+		const sortedTickers = [...allTickers].sort((a, b) => b.length - a.length);
+		const foundMatch = sortedTickers.find(t => {
+			const tLower = t.toLowerCase();
+			const tNoDash = tLower.replace(/-/g, '');
+			const escaped = tLower.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+			const escapedNoDash = tNoDash.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+			const boundaryRegex = new RegExp(`(?:^|[^a-z0-9-])\\$?(?:${escaped}|${escapedNoDash})(?:$|[^a-z0-9-])`, 'i');
+			return boundaryRegex.test(lower) || (isWarrantTicker(t) && spacelessLower.includes(tNoDash));
+		});
+		if (foundMatch) {
+			targetTicker = foundMatch;
+			explicitTickerFound = true;
+		}
 	}
 
 	const isCurrent = targetTicker === currentTicker;
@@ -4860,7 +4794,8 @@ function generateAIResponse(prompt) {
 	// Komentar: Fungsi untuk Format rp.
 	const formatRp = (num) => num ? `Rp ${num.toLocaleString('id-ID')}` : 'N/A';
 
-	if (lower.includes('halo') || lower.includes('hai') || lower.includes('pagi') || lower.includes('siang') || lower.includes('sore') || lower.includes('malam')) {
+	const isGreetingOnly = !explicitTickerFound && /^(halo|hai|pagi|siang|sore|malam)\b/i.test(lower.trim());
+	if (isGreetingOnly) {
 		return `Halo! Aku AI Assistant Stock ID. Mau bahas teknikal <strong class="text-emerald-400">$${targetTicker}</strong> atau ada saham lain yang mau di-screening hari ini?`;
 	}
 

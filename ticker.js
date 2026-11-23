@@ -2,64 +2,71 @@
 // 1. DAFTAR SAHAM REGULER (IDX WATCHLIST)
 // ==========================================
 const radarWatchlist = [
-	"AALI", "ABBA", "ABMM", "ACES", "ACST", "ADCP", "ADHI", "ADMR", "ADRO", "AGII",
-	"AGRO", "AKRA", "ALDO", "AMAG", "AMMN", "AMRT", "ANJT", "ANTM", "APLN", "ARCI",
-	"ARNA", "ARTO", "ASBI", "ASDM", "ASGR", "ASII", "ASJT", "ASLC", "ASMI", "ASRM",
-	"ASSA", "ASRI", "ATIC", "AUTO", "AVIA", "AWAN", "AXIO", "BABP", "BACA", "BAJA",
-	"BALI", "BANK", "BAYU", "BBCA", "BBHI", "BBKP", "BBLD", "BBMD", "BBNI", "BBRI",
-	"BBSI", "BBTN", "BBYB", "BDMN", "BELI", "BFIN", "BIRD", "BJBR", "BJTM", "BKSL",
-	"BMRI", "BMTR", "BNBR", "BNBS", "BNGA", "BOBA", "BOLI", "BREN", "BRIS", "BRMS",
-	"BRPT", "BSDE", "BSSR", "BTPN", "BUDI", "BUKA", "BUKK", "BULL", "BUMI", "BVIC",
-	"BWPT", "BYAN", "CAMP", "CARE", "CARS", "CASA", "CASS", "CATO", "CBRE", "CDIA",
-	"CEKA", "CENT", "CFIN", "CGAS", "CHIP", "CINT", "CLEO", "CLPI", "CMNP", "CMRY",
-	"COCO", "CPIN", "CSAP", "CSRA", "CTBN", "CTRA", "CTTH", "CUAN", "DART", "DEFI",
-	"DEPO", "DEWA", "DFAM", "DGIK", "DGNS", "DIGI", "DILD", "DIMA", "DMAS", "DMND",
-	"DNAR", "DNET", "DOID", "DPNS", "DPUM", "DRMA", "DSFI", "DSNG", "DSSA", "DUTI",
-	"DVLA", "EAST", "ECII", "EDII", "ELSA", "EMDE", "EMTK", "ENRG", "EPMT", "ERAA",
-	"ERAK", "ESIP", "ESSA", "ESTA", "EURO", "EXCL", "FAPA", "FAST", "FASW", "FILM",
-	"FIRT", "FISH", "FITT", "FLMC", "FMII", "FORU", "FPNI", "GDST", "GDYR", "GEMA",
-	"GEMS", "GGRM", "GJTL", "GOOD", "GOTO", "GREN", "GTBO", "GULA", "GWSA", "GZCO",
-	"HAIS", "HDFA", "HDTX", "HEAL", "HERO", "HEXA", "HILL", "HITS", "HMSP", "HOKI",
-	"HOTL", "HRTA", "HRUM", "HUMI", "IATA", "IBFN", "IBOS", "IBST", "ICBP", "ICON",
-	"IDPR", "IFII", "IFSH", "IGAR", "IKAI", "IKBI", "IMAS", "IMJS", "IMPC", "INAF",
-	"INAI", "INCF", "INCI", "INCO", "INDF", "INDO", "INDR", "INDS", "INDY", "INET",
-	"INKP", "INOV", "INPC", "INPP", "INRU", "INTP", "IPCC", "IPCM", "IPOL", "IPTV",
-	"IRRA", "ISAT", "ISSP", "ITMA", "ITMG", "JARR", "JAST", "JASU", "JECC", "JGPA",
-	"JKON", "JKSW", "JMAS", "JPFA", "JRPT", "JSMR", "JSPT", "JTPE", "KAEF", "KBAG",
-	"KBLI", "KBLM", "KBLV", "KDSI", "KEEN", "KEJU", "KIAS", "KICI", "KIJA", "KINO",
-	"KINR", "KKGI", "KLBF", "KMDS", "KMTR", "KOCI", "KOIN", "KONI", "KOPI", "KOTA",
-	"KPIG", "KRAS", "KROX", "LEAD", "LPCK", "LPGI", "LPIN", "LPKR", "LPLI", "LPOP",
-	"LPPF", "LSIP", "LSPT", "LTLS", "LUCK", "MAIN", "MAPA", "MAPB", "MAPI", "MARK",
-	"MASA", "MAYA", "MBAP", "MBMA", "MBSS", "MBTO", "MCAS", "MCOR", "MCOL", "MDFC",
-	"MDIA", "MDKA", "MDKI", "MEDC", "MEGA", "MERK", "META", "MFIN", "MFMI", "MGLV",
-	"MICE", "MIDI", "MIKA", "MINA", "MIRE", "MITS", "MKPI", "MLBI", "MLIA", "MLND",
-	"MLPT", "MMIX", "MNCN", "MNDO", "MPMX", "MPPA", "MRAT", "MREI", "MSIN", "MSKY",
-	"MTDL", "MTEL", "MTLA", "MTRA", "MTSM", "MYOH", "MYOR", "MYTX", "NASA", "NASI",
-	"NCKL", "NDKO", "NELI", "NELY", "NFCX", "NICE", "NICK", "NICL", "NIKL", "NINE",
-	"NISP", "NOBU", "NRCA", "NSSS", "NTRD", "OASA", "OBMD", "OCAP", "OCMD", "OILS",
-	"OKAS", "OMRE", "OPMS", "PALM", "PAMA", "PAMG", "PANI", "PANR", "PANS", "PBID",
-	"PBRX", "PBSA", "PCAR", "PDES", "PEGE", "PEHA", "PGAS", "PGJO", "PIPA", "PJAA",
-	"PKPK", "PLIN", "PLND", "PMMP", "PNBN", "PNBS", "PNIN", "PNLF", "PNSE", "POOL",
-	"PORT", "POWR", "PPGL", "PPRE", "PRDA", "PRIM", "PSAB", "PSDN", "PSGO", "PSSI",
-	"PTBA", "PTDU", "PTIS", "PTMP", "PTPP", "PTRO", "PTSN", "PTPW", "PUDP", "PWON",
-	"PYFA", "PZZA", "RAJA", "RALS", "RATU", "RBMS", "RCCC", "RDTX", "RELI", "RICY",
-	"RIGS", "RISE", "RMKE", "ROCK", "RODA", "ROTI", "SAFE", "SAME", "SAMF", "SAPX",
-	"SBMA", "SCCO", "SCMA", "SCNP", "SDPC", "SDRA", "SEMA", "SFAN", "SFXI", "SGAR",
-	"SGER", "SGLP", "SGRO", "SHID", "SIDO", "SILO", "SIMP", "SINK", "SIPD", "SKBM",
-	"SKLT", "SKRN", "SMAR", "SMBR", "SLIS", "SMCB", "SMDM", "SMDR", "SMGR", "SMIL",
-	"SMKL", "SMMA", "SMRA", "SMSM", "SNLK", "SOFA", "SONA", "SOSI", "SOTN", "SPMA",
-	"SPTO", "SQMI", "SREI", "SRSN", "SRTG", "SSIA", "SSMS", "SSSI", "SSTM", "STAA",
-	"STAR", "STTP", "SUPR", "SURE", "SWAT", "TALF", "TAPG", "TBIG", "TBLA", "TCID",
-	"TCPI", "TEBE", "TECH", "TFCO", "TGRA", "TIFA", "TINC", "TINS", "TIPR", "TIRA",
-	"TISC", "TKIM", "TLDN", "TLKM", "TMAN", "TMAS", "TMPO", "TNCA", "TOBA", "TOTE",
-	"TOTO", "TOWR", "TPIA", "TPMA", "TRFA", "TRIM", "TRIN", "TRIS", "TRST", "TRUE",
-	"TRUK", "TSPC", "TUGU", "TULT", "TYRE", "UANG", "UCID", "UECU", "UIDA", "ULTJ",
-	"UNIC", "UNTR", "UNVR", "URBN", "USBP", "VKTR", "VRNA", "VTNY", "WEGE", "WEHA",
-	"WICO", "WIDI", "WIFI", "WIIM", "WIKA", "WIMP", "WINE", "WINS", "WITC", "WMUU",
-	"WOOD", "WSBP", "WTON", "YPAS", "YULE", "ZBRA", "ZONE", "ZYRX"
+	"AALI", "ABBA", "ABMM", "ACES", "ACRO", "ACST", "ADCP", "ADHI", "ADMR", "ADRO",
+	"AGII", "AGRO", "AKRA", "ALDO", "AMAG", "AMMN", "AMRT", "ANJT", "ANTM", "APLN",
+	"ARCI", "AREA", "ARNA", "ARTO", "ASBI", "ASDM", "ASGR", "ASII", "ASJT", "ASLC",
+	"ASLI", "ASMI", "ASRI", "ASRM", "ASSA", "ATIC", "ATLA", "AUTO", "AVIA", "AWAN",
+	"AXIO", "BABP", "BABY", "BACA", "BAIK", "BAJA", "BALI", "BANK", "BAYU", "BBCA",
+	"BBHI", "BBKP", "BBLD", "BBMD", "BBNI", "BBRI", "BBSI", "BBTN", "BBYB", "BCAP",
+	"BDMN", "BEBS", "BELI", "BFIN", "BIPI", "BIRD", "BJBR", "BJTM", "BKSL", "BLES",
+	"BMRI", "BMTR", "BNBR", "BNBS", "BNGA", "BOAT", "BOBA", "BOLI", "BREN", "BRIS",
+	"BRMS", "BRPT", "BSBK", "BSDE", "BSSR", "BTPN", "BUDI", "BUKA", "BUKK", "BULL",
+	"BUMI", "BVIC", "BWPT", "BYAN", "CAMP", "CARE", "CARS", "CASA", "CASS", "CATO",
+	"CBRE", "CDIA", "CEKA", "CENT", "CFIN", "CGAS", "CHEM", "CHIP", "CINT", "CLEO",
+	"CLPI", "CMNP", "CMRY", "COAL", "COCO", "CPIN", "CRSN", "CSAP", "CSRA", "CTBN",
+	"CTRA", "CTTH", "CUAN", "CYBR", "DART", "DATA", "DEFI", "DEPO", "DEWA", "DFAM",
+	"DGIK", "DGNS", "DIGI", "DILD", "DIMA", "DMAS", "DMND", "DNAR", "DNET", "DOID",
+	"DOOH", "DOSS", "DPNS", "DPUM", "DRMA", "DSFI", "DSNG", "DSSA", "DUTI", "DVLA",
+	"EAST", "ECII", "EDII", "ELIT", "ELSA", "EMDE", "EMTK", "ENRG", "EPAC", "EPMT",
+	"ERAA", "ERAK", "ESIP", "ESSA", "ESTA", "EURO", "EXCL", "FAPA", "FAST", "FASW",
+	"FILM", "FIRT", "FISH", "FITT", "FLMC", "FMII", "FORU", "FPNI", "FREN", "FUTR",
+	"GDST", "GDYR", "GEMA", "GEMS", "GGRM", "GJTL", "GOLF", "GOOD", "GOTO", "GREN",
+	"GRIA", "GRPM", "GTBO", "GTRA", "GTSI", "GULA", "GWSA", "GZCO", "HAIS", "HALO",
+	"HATM", "HDFA", "HDTX", "HEAL", "HERO", "HEXA", "HILL", "HITS", "HMSP", "HOKI",
+	"HOMI", "HOTL", "HRTA", "HRUM", "HUMI", "HYGN", "IATA", "IBFN", "IBOS", "IBST",
+	"ICBP", "ICON", "IDPR", "IFII", "IFSH", "IGAR", "IKAI", "IKBI", "IKPM", "IMAS",
+	"IMJS", "IMPC", "INAF", "INAI", "INCF", "INCI", "INCO", "INDF", "INDO", "INDR",
+	"INDS", "INDY", "INET", "INKP", "INOV", "INPC", "INPP", "INRU", "INTP", "IPCC",
+	"IPCM", "IPOL", "IPPE", "IPTV", "IRRA", "ISAT", "ISEA", "ISSP", "ITMA", "ITMG",
+	"JARR", "JAST", "JASU", "JECC", "JGPA", "JKON", "JKSW", "JMAS", "JPFA", "JRPT",
+	"JSMR", "JSPT", "JTPE", "KAEF", "KBAG", "KBLI", "KBLM", "KBLV", "KDSI", "KEEN",
+	"KEJU", "KIAS", "KICI", "KIJA", "KING", "KINO", "KINR", "KKGI", "KLAS", "KLBF",
+	"KMDS", "KMTR", "KOCI", "KOIN", "KOKA", "KONI", "KOPI", "KOTA", "KPIG", "KRAS",
+	"KROX", "KRYA", "LABS", "LAJU", "LEAD", "LIVE", "LMAX", "LPCK", "LPGI", "LPIN",
+	"LPKR", "LPLI", "LPOP", "LPPF", "LSIP", "LSPT", "LTLS", "LUCK", "MAHA", "MAIN",
+	"MANG", "MAPA", "MAPB", "MAPI", "MARK", "MASA", "MAXI", "MAYA", "MBAP", "MBMA",
+	"MBSS", "MBTO", "MCAS", "MCOL", "MCOR", "MDFC", "MDIA", "MDKA", "MDKI", "MEDC",
+	"MEGA", "MENN", "MERK", "META", "MFIN", "MFMI", "MGLV", "MHKI", "MICE", "MIDI",
+	"MIKA", "MINA", "MIRE", "MITS", "MKPI", "MLBI", "MLIA", "MLND", "MLPT", "MMIX",
+	"MNCN", "MNDO", "MPMX", "MPPA", "MPXL", "MRAT", "MREI", "MSIN", "MSJA", "MSKY",
+	"MSTI", "MTDL", "MTEL", "MTLA", "MTRA", "MTSM", "MUTU", "MYOH", "MYOR", "MYTX",
+	"NAIK", "NANO", "NASA", "NASI", "NCKL", "NDKO", "NELI", "NELY", "NETV", "NFCX",
+	"NICE", "NICK", "NICL", "NIKL", "NINE", "NISP", "NOBU", "NRCA", "NSSS", "NTBK",
+	"NTRD", "OASA", "OBMD", "OCAP", "OCMD", "OILS", "OKAS", "OLIV", "OMRE", "OPMS",
+	"PACK", "PADA", "PALM", "PAMA", "PAMG", "PANI", "PANR", "PANS", "PART", "PBID",
+	"PBRX", "PBSA", "PCAR", "PDES", "PEGE", "PEHA", "PEVE", "PGAS", "PGJO", "PIPA",
+	"PJAA", "PKPK", "PLIN", "PLND", "PMMP", "PNBN", "PNBS", "PNIN", "PNLF", "PNSE",
+	"POOL", "PORT", "POWR", "PPGL", "PPRE", "PPRI", "PRDA", "PRIM", "PSAB", "PSDN",
+	"PSGO", "PSSI", "PTBA", "PTDU", "PTIS", "PTMP", "PTPP", "PTPS", "PTPW", "PTRO",
+	"PTSN", "PUDP", "PWON", "PYFA", "PZZA", "RAAM", "RAFI", "RAJA", "RALS", "RATU",
+	"RBMS", "RCCC", "RDTX", "REAL", "RELF", "RELI", "RGAS", "RICY", "RIGS", "RISE",
+	"RMKE", "RMKO", "ROCK", "RODA", "RONY", "ROTI", "RSCH", "SAFE", "SAGE", "SAME",
+	"SAMF", "SAPX", "SBMA", "SCCO", "SCMA", "SCNP", "SDPC", "SDRA", "SEMA", "SFAN",
+	"SFXI", "SGAR", "SGER", "SGLP", "SGRO", "SHID", "SICO", "SIDO", "SILO", "SIMP",
+	"SINK", "SIPD", "SKBM", "SKLT", "SKRN", "SLIS", "SMAR", "SMBR", "SMCB", "SMDM",
+	"SMDR", "SMGA", "SMGR", "SMIL", "SMKL", "SMKM", "SMLE", "SMMA", "SMRA", "SMSM",
+	"SNLK", "SOFA", "SOLA", "SONA", "SOSI", "SOTN", "SPMA", "SPTO", "SQMI", "SREI",
+	"SRSN", "SRTG", "SSIA", "SSMS", "SSSI", "SSTM", "STAA", "STAR", "STRK", "STTP",
+	"SUPR", "SURE", "SURI", "SWAT", "SWID", "TALF", "TAPG", "TBIG", "TBLA", "TCID",
+	"TCPI", "TEBE", "TECH", "TFCO", "TGRA", "TGUK", "TIFA", "TINC", "TINS", "TIPR",
+	"TIRA", "TISC", "TKIM", "TLDN", "TLKM", "TMAN", "TMAS", "TMPO", "TNCA", "TOBA",
+	"TOOL", "TOTE", "TOTO", "TOWR", "TPIA", "TPMA", "TRFA", "TRGU", "TRIM", "TRIN",
+	"TRIS", "TRON", "TRST", "TRUE", "TRUK", "TSPC", "TUGU", "TULT", "TYRE", "UANG",
+	"UCID", "UECU", "UIDA", "ULTJ", "UNIC", "UNTR", "UNVR", "URBN", "USBP", "UVCR",
+	"VAST", "VERN", "VISI", "VKTR", "VRNA", "VTNY", "WEGE", "WEHA", "WICO", "WIDI",
+	"WIFI", "WIIM", "WIKA", "WIMP", "WINE", "WINR", "WINS", "WIRG", "WITC", "WMUU",
+	"WOOD", "WSBP", "WTON", "YPAS", "YULE", "ZATA", "ZBRA", "ZONE", "ZYRX"
 ];
-
-const uniqueRadarWatchlist = [...new Set(radarWatchlist.map(t => String(t).trim().toUpperCase()).filter(Boolean))];
 
 // ==========================================
 // 2. DAFTAR SAHAM WARAN BEI (-W / -W2)
@@ -82,25 +89,22 @@ const warrantWatchlist = [
 	"VERN-W", "VISI-W", "VKTR-W", "VTNY-W", "WIDI-W", "WIFI-W", "WINE-W", "WINR-W", "WIRG-W", "ZATA-W"
 ];
 
-const uniqueWarrantWatchlist = [...new Set(warrantWatchlist.map(t => String(t).trim().toUpperCase()).filter(Boolean))];
-
 // ==========================================
-// 1B. KONEKTOR TICKER.JS & HELPER SAHAM WARAN
+// 3. NORMALISASI SIMBOL & HELPER SAHAM WARAN
 // ==========================================
-function isWarrantTicker(ticker) {
-	if (!ticker || typeof ticker !== 'string') return false;
-	const clean = ticker.trim().toUpperCase().replace(/\.JK$/i, '').replace(/^IDX:/i, '');
-	return /^[A-Z]{4}-?W\d*$/i.test(clean);
-}
-
 function normalizeTickerSymbol(ticker) {
 	if (!ticker || typeof ticker !== 'string') return '';
 	let clean = ticker.trim().toUpperCase().replace(/\.JK$/i, '').replace(/^IDX:/i, '');
-	// Ubah format 5+ huruf tanpa strip (misal: BSBKW -> BSBK-W) agar sesuai standar BEI & Yahoo Finance
+	// Ubah format 5+ karakter tanpa strip (misal: BSBKW -> BSBK-W) sesuai standar BEI & Yahoo Finance
 	if (/^[A-Z]{4}W\d*$/i.test(clean)) {
 		clean = clean.replace(/^([A-Z]{4})(W\d*)$/i, '$1-$2');
 	}
 	return clean;
+}
+
+function isWarrantTicker(ticker) {
+	const clean = normalizeTickerSymbol(ticker);
+	return /^[A-Z]{4}-W\d*$/i.test(clean);
 }
 
 function getParentTicker(ticker) {
@@ -115,17 +119,40 @@ function toYahooTickerSymbol(ticker) {
 
 function toTradingViewSymbol(ticker) {
 	const clean = normalizeTickerSymbol(ticker);
+	if (!clean) return '';
 	// TradingView IDX menggunakan format tanpa strip untuk waran (contoh: IDX:BSBKW)
 	return isWarrantTicker(clean) ? `IDX:${clean.replace(/-/g, '')}` : `IDX:${clean}`;
 }
 
-// Komentar: Menggabungkan seluruh daftar saham reguler & waran dari ticker.js tanpa duplikasi.
+const uniqueRadarWatchlist = [
+	...new Set(radarWatchlist.map(normalizeTickerSymbol).filter(Boolean))
+];
+
+const uniqueWarrantWatchlist = [
+	...new Set(warrantWatchlist.map(normalizeTickerSymbol).filter(Boolean))
+];
+
+// Mengambil daftar waran aktif milik satu saham induk (contoh: "FREN" -> ["FREN-W", "FREN-W2"])
+function getWarrantsByParent(parentTicker) {
+	const parent = getParentTicker(parentTicker);
+	if (!parent) return [];
+	return uniqueWarrantWatchlist.filter(w => getParentTicker(w) === parent);
+}
+
+// Mengecek apakah saham induk memiliki seri waran yang terdaftar
+function hasWarrant(ticker) {
+	return getWarrantsByParent(ticker).length > 0;
+}
+
+// ==========================================
+// 4. KONEKTOR WATCHLIST UNTUK APP.JS
+// ==========================================
 function getAllCombinedTickers() {
 	const sources = [
 		typeof uniqueRadarWatchlist !== 'undefined' ? uniqueRadarWatchlist : null,
 		typeof radarWatchlist !== 'undefined' ? radarWatchlist : null,
-		typeof warrantWatchlist !== 'undefined' ? warrantWatchlist : null,
 		typeof uniqueWarrantWatchlist !== 'undefined' ? uniqueWarrantWatchlist : null,
+		typeof warrantWatchlist !== 'undefined' ? warrantWatchlist : null,
 		typeof waranWatchlist !== 'undefined' ? waranWatchlist : null,
 		typeof uniqueWaranWatchlist !== 'undefined' ? uniqueWaranWatchlist : null,
 		typeof watchlistWaran !== 'undefined' ? watchlistWaran : null,
@@ -150,12 +177,10 @@ function getAllCombinedTickers() {
 	return Array.from(merged);
 }
 
-// Komentar: Mengambil khusus daftar saham reguler (non-waran) untuk screener utama.
 function getRegularStockTickers() {
 	return getAllCombinedTickers().filter(t => !isWarrantTicker(t));
 }
 
-// Komentar: Mengambil khusus daftar saham waran (-W) yang terdaftar di ticker.js.
 function getWarrantStockTickers() {
 	return getAllCombinedTickers().filter(t => isWarrantTicker(t));
 }
