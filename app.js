@@ -6232,12 +6232,12 @@ async function loadForeignFlowData() {
 	}
 
 	isForeignFlowLoading = true;
-	const defaultBtnHtml = `<i data-lucide="play" class="w-4 h-4"></i> Pindai Data Asing`;
+	const defaultBtnHtml = `<i data-lucide="play" class="w-4 h-4"></i> Pindai Flow Asing`;
 
 	if (btn) {
 		btn.disabled = true;
 		btn.classList.add('cursor-not-allowed', 'opacity-75');
-		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-sky-200"></i> Memuat Data Asing...`;
+		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-sky-200"></i> Memuat Flow Asing...`;
 		if (window.lucide) lucide.createIcons();
 	}
 
@@ -6855,164 +6855,335 @@ async function runValuationScreener() {
 	}
 }
 
-// 5. Warrant Tracker (Terhubung Langsung ke ticker.js + Cache Instan + Logo Induk)
-async function loadWarrantData() {
-	if (isWarrantLoading) return;
-	const container = document.getElementById('warrant-tracker-list') || document.getElementById('warrant-container');
-	if (!container) return;
+// ==========================================
+// 30. WARRANT TRACKER ENGINE (-W BEI)
+// ==========================================
+let isWarrantScanning = false;
 
-	const warrantTickers = getWarrantStockTickers();
+// Komentar: Menyuntikkan keyframe animasi tombol & kartu Waran Tracker secara otomatis.
+function ensureWarrantTrackerStyles() {
+	if (document.getElementById('warrantTrackerAnimStyle')) return;
+	const style = document.createElement('style');
+	style.id = 'warrantTrackerAnimStyle';
+	style.textContent = `
+		@keyframes warrantBtnPress {
+			0% { transform: scale(1); }
+			40% { transform: scale(0.92); }
+			75% { transform: scale(1.04); }
+			100% { transform: scale(1); }
+		}
+		@keyframes warrantCardSlideUp {
+			0% { opacity: 0; transform: translateY(14px) scale(0.98); }
+			100% { opacity: 1; transform: translateY(0) scale(1); }
+		}
+		.animate-warrant-press {
+			animation: warrantBtnPress 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+		}
+		.animate-warrant-card {
+			opacity: 0;
+			animation: warrantCardSlideUp 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+		}
+	`;
+	document.head.appendChild(style);
+}
 
-	if (warrantTickers.length === 0) {
-		container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm col-span-full">Tidak ada emiten waran (-W) yang terbaca di dalam ticker.js saat ini.</div>`;
-		return;
+// Komentar: Mengambil seluruh daftar ticker waran berakhiran -W dari ticker.js tanpa duplikasi.
+function getOnlyDashWTickers() {
+	const rawSources = [
+		typeof getWarrantStockTickers === 'function' ? getWarrantStockTickers() : null,
+		typeof uniqueWarrantWatchlist !== 'undefined' ? uniqueWarrantWatchlist : null,
+		typeof warrantWatchlist !== 'undefined' ? warrantWatchlist : null
+	];
+
+	const warrantSet = new Set();
+	rawSources.forEach(list => {
+		if (Array.isArray(list)) {
+			list.forEach(item => {
+				const clean = typeof normalizeTickerSymbol === 'function'
+					? normalizeTickerSymbol(item)
+					: String(item || '').trim().toUpperCase();
+				if (clean && clean.endsWith('-W')) {
+					warrantSet.add(clean);
+				}
+			});
+		}
+	});
+
+	return Array.from(warrantSet);
+}
+
+// Komentar: Mengambil data harga waran dengan fallback interval harian (1d) untuk waran likuiditas rendah.
+async function fetchWarrantWithFallback(wTicker) {
+	let data = await fetchRealtimeStockData(wTicker, false, true);
+	if (data && data.price > 0) return data;
+
+	data = await fetchRealtimeStockData(wTicker, true, false);
+	if (data && data.price > 0) return data;
+
+	try {
+		const yahooSymbol = `${wTicker}.JK`;
+		const dailyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(yahooSymbol)}?interval=1d&range=1mo`;
+		const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(dailyUrl)}`;
+		const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(5000) });
+		if (res.ok) {
+			const wrapper = await res.json();
+			const parsed = parseYahooDataGlobal(JSON.parse(wrapper.contents), wTicker);
+			if (parsed && parsed.price > 0) {
+				setCachedStockData(wTicker, parsed);
+				return parsed;
+			}
+		}
+	} catch (e) {
+		console.warn(`Fallback harian waran gagal untuk ${wTicker}`);
 	}
 
-	isWarrantLoading = true;
+	return null;
+}
+
+// Komentar: Memindai saham-saham Waran (-W) dan menampilkan perbandingan rasio dengan saham induknya.
+async function loadWarrantData() {
+	if (isWarrantScanning) return;
+	ensureWarrantTrackerStyles();
+
+	const btn = document.getElementById('btnLoadWarrant') || document.querySelector("button[onclick='loadWarrantData()']");
+	const container = document.getElementById('warrant-tracker-list');
+	if (!container) return;
+
+	isWarrantScanning = true;
+
+	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	if (navigator.vibrate) navigator.vibrate(100);
+
+	if (btn) {
+		btn.disabled = true;
+		btn.classList.remove('animate-warrant-press');
+		void btn.offsetWidth;
+		btn.classList.add('animate-warrant-press', 'ring-4', 'ring-fuchsia-500/30', 'cursor-not-allowed', 'opacity-90');
+		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-fuchsia-200"></i> <span>Memindai Waran (-W)...</span>`;
+		if (window.lucide) lucide.createIcons();
+	}
+
 	container.innerHTML = `
-		<div class="text-center py-8 text-emerald-400 text-xs lg:text-sm col-span-full flex flex-col items-center justify-center gap-2">
-			<i data-lucide="loader-2" class="w-6 h-6 animate-spin text-emerald-400"></i>
-			<span>Membaca ${warrantTickers.length} emiten waran dari ticker.js...</span>
+		<div class="col-span-full flex flex-col items-center justify-center py-12 px-4 text-center bg-slate-950/30 rounded-2xl border border-fuchsia-500/20 shadow-inner space-y-3">
+			<div class="w-12 h-12 rounded-2xl bg-fuchsia-500/10 border border-fuchsia-500/30 flex items-center justify-center">
+				<i data-lucide="loader-2" class="w-6 h-6 animate-spin text-fuchsia-400"></i>
+			</div>
+			<div>
+				<p class="text-xs lg:text-sm font-bold text-white">Memindai Saham Waran (-W) Aktif di BEI...</p>
+				<p class="text-[10px] lg:text-xs text-slate-400 mt-1">Mengambil harga waran, likuiditas lot, dan rasio terhadap saham induk.</p>
+			</div>
 		</div>
 	`;
 	if (window.lucide) lucide.createIcons();
 
-	const renderWarrantCards = (list) => {
-		const sorted = [...list].sort((a, b) => (b.volume || 0) - (a.volume || 0));
-		container.innerHTML = sorted.map(w => {
-			const isUp = w.changePercent >= 0;
-			const logoTicker = w.parentTicker || getParentTicker(w.ticker);
-			return `
-				<div class="p-4 rounded-xl bg-slate-900/75 border border-slate-800 hover:border-emerald-500/40 transition-all duration-200 shadow-sm flex flex-col justify-between gap-3">
-					<div class="flex items-center justify-between gap-3">
-						<div class="flex items-center gap-3 min-w-0">
-							<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
-								<img 
-									src="https://assets.stockbit.com/logos/companies/${logoTicker}.png" 
-									alt="${w.ticker}" 
-									class="w-full h-full object-contain drop-shadow-sm" 
-									onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${logoTicker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${logoTicker.substring(0,3)}</span>';};"
-								>
-							</div>
-							<div class="min-w-0">
-								<div class="flex items-center gap-2 flex-wrap">
-									<span class="font-extrabold text-emerald-400 text-sm lg:text-base">&dollar;${w.ticker}</span>
-									<span class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded font-bold">WARAN</span>
-								</div>
-								<div class="text-[11px] text-slate-400 mt-1 truncate">
-									Induk: <strong class="text-slate-200">${w.parentTicker}</strong> ${w.parentPrice ? `(Rp ${w.parentPrice.toLocaleString('id-ID')})` : ''}
-								</div>
-							</div>
-						</div>
-						<div class="text-right shrink-0">
-							<div class="font-extrabold text-white text-sm lg:text-base">Rp ${w.price.toLocaleString('id-ID')}</div>
-							<div class="text-xs font-bold ${isUp ? 'text-emerald-400' : 'text-rose-400'}">
-								${isUp ? '+' : ''}${w.changePercent.toFixed(2)}%
-							</div>
-						</div>
-					</div>
-
-					<div class="grid grid-cols-2 gap-2 text-[10px] lg:text-[11px] bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/80">
-						<div>
-							<span class="text-slate-400 block text-[9px] uppercase">Volume & Valuasi</span>
-							<strong class="text-slate-200">${Math.floor((w.volume || 0) / 100).toLocaleString('id-ID')} Lot</strong>
-							<span class="text-[9px] text-slate-400 block">${formatValuationIDR(w.turnover)}</span>
-						</div>
-						<div class="text-right">
-							<span class="text-slate-400 block text-[9px] uppercase">Rasio vs Induk</span>
-							<strong class="text-sky-400">${w.ratioToParent ? `${w.ratioToParent}%` : '-'}</strong>
-							<span class="text-[9px] text-slate-500 block">Harga Waran/Induk</span>
-						</div>
-					</div>
-
-					<button onclick="selectTickerFromRadar('${w.ticker}')" class="w-full bg-slate-800/80 hover:bg-emerald-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2 rounded-xl border border-slate-700 hover:border-emerald-500 transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm">
-						<span>Buka Chart & Detail AI</span>
-						<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
-					</button>
+	try {
+		const allDashW = getOnlyDashWTickers();
+		if (allDashW.length === 0) {
+			container.innerHTML = `
+				<div class="col-span-full text-center py-10 px-4 text-rose-400 text-xs lg:text-sm bg-slate-900/60 rounded-xl border border-rose-500/30">
+					Daftar saham Waran (-W) tidak ditemukan pada file <strong>ticker.js</strong>.
 				</div>
 			`;
-		}).join('');
-		if (window.lucide) lucide.createIcons();
-	};
+			return;
+		}
 
-	try {
-		const validWarrants = [];
-		const uncachedWarrants = [];
+		const shuffled = [...allDashW].sort(() => 0.5 - Math.random());
+		const foundWarrants = [];
+		const uncachedTickers = [];
 
-		// 1. Cek cache terlebih dahulu agar tampilan waran langsung muncul
-		for (const wTicker of warrantTickers) {
-			const parentTicker = getParentTicker(wTicker);
-			const cachedW = getCachedStockData(wTicker);
-			const cachedP = getCachedStockData(parentTicker);
-			if (cachedW) {
-				const warrant = normalizeStockPayload(cachedW, wTicker);
-				const parent = normalizeStockPayload(cachedP, parentTicker);
-				if (warrant) {
-					const ratioToParent = parent && parent.price > 0
-						? ((warrant.price / parent.price) * 100).toFixed(1)
-						: null;
-					validWarrants.push({
-						...warrant,
-						parentTicker,
-						parentPrice: parent ? parent.price : null,
-						ratioToParent
-					});
-					continue;
+		// 1. Cek cache terlebih dahulu agar tampil instan
+		for (const wTicker of shuffled) {
+			const cached = getCachedStockData(wTicker);
+			if (cached && cached.price > 0) {
+				foundWarrants.push(cached);
+			} else {
+				uncachedTickers.push(wTicker);
+			}
+			if (foundWarrants.length >= 16) break;
+		}
+
+		if (foundWarrants.length > 0) {
+			await enrichAndRenderWarrants(foundWarrants, container);
+		}
+
+		// 2. Pindai batch secara bertahap untuk melengkapi daftar waran (-W)
+		const BATCH_SIZE = 15;
+		const MAX_BATCHES = 5;
+		let batchCount = 0;
+
+		for (let i = 0; i < uncachedTickers.length; i += BATCH_SIZE) {
+			if (foundWarrants.length >= 16 || batchCount >= MAX_BATCHES) break;
+			batchCount++;
+
+			const batch = uncachedTickers.slice(i, i + BATCH_SIZE);
+			const results = await Promise.all(batch.map(w => fetchWarrantWithFallback(w)));
+
+			let hasNewItem = false;
+			for (const res of results) {
+				if (res && res.price > 0 && res.ticker.endsWith('-W')) {
+					if (!foundWarrants.some(item => item.ticker === res.ticker)) {
+						foundWarrants.push(res);
+						hasNewItem = true;
+					}
 				}
 			}
-			uncachedWarrants.push(wTicker);
-		}
 
-		if (validWarrants.length > 0) {
-			renderWarrantCards(validWarrants);
-		}
-
-		// 2. Tarik data real-time untuk waran yang belum ada di cache
-		const BATCH_SIZE = 8;
-		for (let i = 0; i < uncachedWarrants.length; i += BATCH_SIZE) {
-			const batch = uncachedWarrants.slice(i, i + BATCH_SIZE);
-			const batchList = await Promise.all(
-				batch.map(async (wTicker) => {
-					const parentTicker = getParentTicker(wTicker);
-					const [rawWarrant, rawParent] = await Promise.all([
-						fetchRealtimeStockData(wTicker, false, true).catch(() => null),
-						fetchRealtimeStockData(parentTicker, false, true).catch(() => null)
-					]);
-
-					const warrant = normalizeStockPayload(rawWarrant, wTicker);
-					const parent = normalizeStockPayload(rawParent, parentTicker);
-					if (!warrant) return null;
-
-					const ratioToParent = parent && parent.price > 0
-						? ((warrant.price / parent.price) * 100).toFixed(1)
-						: null;
-
-					return {
-						...warrant,
-						parentTicker,
-						parentPrice: parent ? parent.price : null,
-						ratioToParent
-					};
-				})
-			);
-
-			validWarrants.push(...batchList.filter(Boolean));
-			if (validWarrants.length > 0) {
-				renderWarrantCards(validWarrants);
+			if (hasNewItem) {
+				await enrichAndRenderWarrants(foundWarrants, container);
 			}
 		}
 
-		if (validWarrants.length === 0) {
-			container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm col-span-full">Data harga waran belum tersedia di feed bursa saat ini.</div>`;
-		} else if (typeof AudioFX !== 'undefined') {
-			AudioFX.playSuccess();
+		if (foundWarrants.length === 0) {
+			container.innerHTML = `
+				<div class="col-span-full text-center py-10 px-4 text-slate-400 text-xs lg:text-sm bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
+					<i data-lucide="search-x" class="w-7 h-7 text-slate-500 mx-auto"></i>
+					<p class="font-bold text-slate-200">Data Waran (-W) Belum Berhasil Dimuat</p>
+					<p class="text-[11px] text-slate-400">Server data sedang sibuk atau waran sedang tidak aktif. Silakan tekan tombol <strong>Muat Data Waran</strong> kembali.</p>
+				</div>
+			`;
+			if (window.lucide) lucide.createIcons();
+		} else {
+			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 		}
-	} catch (err) {
-		console.error('Error loadWarrantData:', err);
-		container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm col-span-full">Gagal memuat Warrant Tracker.</div>`;
 	} finally {
-		isWarrantLoading = false;
+		isWarrantScanning = false;
+		if (btn) {
+			btn.disabled = false;
+			btn.classList.remove('ring-4', 'ring-fuchsia-500/30', 'cursor-not-allowed', 'opacity-90', 'animate-warrant-press');
+			void btn.offsetWidth;
+			btn.classList.add('animate-warrant-press');
+			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4"></i> <span>Pindai Ulang Waran</span>`;
+			if (window.lucide) lucide.createIcons();
+		}
 	}
+}
+
+// Komentar: Melengkapi data saham induk & merender daftar kartu Waran (-W) dengan tata letak rapi.
+async function enrichAndRenderWarrants(warrantList, container) {
+	const topList = [...warrantList]
+		.sort((a, b) => {
+			const valA = a.currentValuation > 0 ? 1 : 0;
+			const valB = b.currentValuation > 0 ? 1 : 0;
+			if (valB !== valA) return valB - valA;
+			return (b.changePct || 0) - (a.changePct || 0);
+		})
+		.slice(0, 16);
+
+	const parentTickers = [...new Set(topList.map(w => w.ticker.replace(/-W$/i, '')))];
+	const parentMap = {};
+
+	await Promise.all(parentTickers.map(async (pTicker) => {
+		const cachedParent = getCachedStockData(pTicker);
+		if (cachedParent && cachedParent.price > 0) {
+			parentMap[pTicker] = cachedParent;
+		} else {
+			const fetchedParent = await fetchRealtimeStockData(pTicker, false, true);
+			if (fetchedParent && fetchedParent.price > 0) {
+				parentMap[pTicker] = fetchedParent;
+			}
+		}
+	}));
+
+	let html = `
+		<div class="col-span-full flex flex-wrap items-center justify-between gap-2 bg-slate-950/50 px-4 py-2.5 rounded-xl border border-fuchsia-500/20 text-[11px] lg:text-xs">
+			<span class="font-bold text-slate-200 flex items-center gap-2">
+				<span class="w-2 h-2 rounded-full bg-fuchsia-400 animate-ping"></span>
+				Menampilkan <strong class="text-fuchsia-400">${topList.length}</strong> Saham Waran Aktif (<strong class="text-white">-W</strong>)
+			</span>
+			<span class="text-[10px] text-slate-400">Diurutkan berdasarkan Likuiditas & Momentum</span>
+		</div>
+	`;
+
+	topList.forEach((item, index) => {
+		const wTicker = item.ticker;
+		const parentTicker = wTicker.replace(/-W$/i, '');
+		const parentData = parentMap[parentTicker] || null;
+
+		const wPrice = roundToBEITick(item.price);
+		const wChange = item.changePct || 0;
+		const isPlus = wChange >= 0;
+
+		const pPrice = parentData ? roundToBEITick(parentData.price) : 0;
+		const pChange = parentData ? (parentData.changePct || 0) : 0;
+		const ratioPct = pPrice > 0 ? ((wPrice / pPrice) * 100).toFixed(2) : '-';
+
+		let badgeLabel = 'NETRAL';
+		let badgeStyle = 'from-slate-700/40 to-slate-800/20 border-slate-600/40 text-slate-300';
+		if (wChange >= 5 && (item.volRatio || 0) >= 1.5) {
+			badgeLabel = 'HOT MOMENTUM';
+			badgeStyle = 'from-fuchsia-600/30 to-purple-500/10 border-fuchsia-500/40 text-fuchsia-300';
+		} else if (wChange > 0) {
+			badgeLabel = 'ZONA HIJAU';
+			badgeStyle = 'from-emerald-600/25 to-teal-500/10 border-emerald-500/30 text-emerald-400';
+		} else if (wChange < 0) {
+			badgeLabel = 'KOREKSI';
+			badgeStyle = 'from-rose-600/25 to-red-500/10 border-rose-500/30 text-rose-400';
+		}
+
+		const animDelay = Math.min(index * 55, 600);
+
+		html += `
+			<div style="animation-delay: ${animDelay}ms;" class="animate-warrant-card bg-slate-950/40 p-4 rounded-2xl border border-slate-800 hover:border-fuchsia-500/50 transition-all duration-300 relative shadow-md flex flex-col justify-between group">
+				<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l ${badgeStyle} border-b border-l rounded-bl-xl rounded-tr-2xl text-[9px] font-extrabold tracking-wider uppercase">
+					${badgeLabel}
+				</div>
+
+				<!-- Header Identitas Waran -->
+				<div class="flex items-center gap-3 border-b border-slate-800/80 pb-3 pr-24">
+					<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
+						<img
+							src="https://assets.stockbit.com/logos/companies/${parentTicker}.png"
+							alt="${wTicker}"
+							class="w-full h-full object-contain drop-shadow-sm"
+							onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${parentTicker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-fuchsia-400 tracking-wider\\'>${parentTicker.substring(0, 3)}</span>';};"
+						>
+					</div>
+					<div class="min-w-0">
+						<div class="flex items-center gap-2 flex-wrap">
+							<span class="font-extrabold text-white text-sm lg:text-base tracking-tight">&dollar;${wTicker}</span>
+							<span class="${isPlus ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'} font-bold px-2 py-0.5 rounded-md border text-[10px] tabular-nums">
+								${isPlus ? '+' : ''}${wChange}%
+							</span>
+						</div>
+						<p class="text-[10px] text-slate-400 mt-0.5 truncate">
+							Induk: <strong class="text-slate-200">&dollar;${parentTicker}</strong>
+							${pPrice > 0 ? `<span class="${pChange >= 0 ? 'text-emerald-400' : 'text-rose-400'}">(${pChange >= 0 ? '+' : ''}${pChange}%)</span>` : ''}
+						</p>
+					</div>
+				</div>
+
+				<!-- Grid Metrik Terstruktur 2x2 -->
+				<div class="grid grid-cols-2 gap-2.5 text-[10px] lg:text-xs my-3">
+					<div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800/90">
+						<span class="text-[9px] text-slate-400 uppercase tracking-wider block mb-0.5">Harga Waran</span>
+						<span class="font-extrabold text-fuchsia-400 text-xs lg:text-sm tabular-nums">Rp ${wPrice.toLocaleString('id-ID')}</span>
+					</div>
+					<div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800/90">
+						<span class="text-[9px] text-slate-400 uppercase tracking-wider block mb-0.5">Harga Induk</span>
+						<span class="font-extrabold text-sky-400 text-xs lg:text-sm tabular-nums">${pPrice > 0 ? `Rp ${pPrice.toLocaleString('id-ID')}` : 'N/A'}</span>
+					</div>
+					<div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800/90">
+						<span class="text-[9px] text-slate-400 uppercase tracking-wider block mb-0.5">Rasio Waran / Induk</span>
+						<span class="font-extrabold text-amber-400 text-xs tabular-nums">${ratioPct !== '-' ? `${ratioPct}%` : '-'}</span>
+					</div>
+					<div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800/90">
+						<span class="text-[9px] text-slate-400 uppercase tracking-wider block mb-0.5">Volume & Valuasi</span>
+						<span class="font-bold text-emerald-400 text-[11px] block truncate tabular-nums">${(item.currentLot || 0).toLocaleString('id-ID')} Lot</span>
+						<span class="text-[9px] text-slate-400 block truncate tabular-nums">${formatValuationIDR(item.currentValuation)}</span>
+					</div>
+				</div>
+
+				<!-- Tombol Aksi -->
+				<button onclick="selectTickerFromRadar('${wTicker}')" class="w-full bg-slate-800/90 hover:bg-fuchsia-600 active:scale-[0.98] text-slate-200 hover:text-white font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-fuchsia-500 transition-all duration-200 flex items-center justify-center gap-2 shadow-sm">
+					<span>Buka Chart & Analisa AI</span>
+					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+				</button>
+			</div>
+		`;
+	});
+
+	container.innerHTML = html;
+	if (window.lucide) lucide.createIcons();
 }
 
 // Helper kecil untuk memastikan format ticker bersih
