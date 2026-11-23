@@ -564,6 +564,42 @@
 			<i data-lucide="refresh-cw" class="w-4 h-4"></i> Pindai Flow Asing
 		</button>
 	</div>
+	<!-- Filter Arah Flow & Skala Nominal -->
+<div class="bg-slate-950/40 p-3.5 rounded-xl border border-slate-800 mb-4 space-y-3">
+	<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+		<div class="flex flex-wrap items-center gap-1.5">
+			<span class="text-[10px] text-slate-400 uppercase tracking-wider mr-1">Arah Flow:</span>
+			<button type="button" id="ffTypeBtn-ALL" onclick="setForeignFlowFilter('type', 'ALL')" class="px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/40 transition">
+				Semua
+			</button>
+			<button type="button" id="ffTypeBtn-BUY" onclick="setForeignFlowFilter('type', 'BUY')" class="px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-emerald-400 transition">
+				NET BUY
+			</button>
+			<button type="button" id="ffTypeBtn-SELL" onclick="setForeignFlowFilter('type', 'SELL')" class="px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-rose-400 transition">
+				NET SELL
+			</button>
+		</div>
+
+		<div class="flex flex-wrap items-center gap-1.5">
+			<span class="text-[10px] text-slate-400 uppercase tracking-wider mr-1">Nominal:</span>
+			<button type="button" id="ffNominalBtn-ALL" onclick="setForeignFlowFilter('nominal', 'ALL')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-sky-500/20 text-sky-400 border border-sky-500/40 transition">
+				Semua
+			</button>
+			<button type="button" id="ffNominalBtn-RIBU" onclick="setForeignFlowFilter('nominal', 'RIBU')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition">
+				Ribu
+			</button>
+			<button type="button" id="ffNominalBtn-JUTA" onclick="setForeignFlowFilter('nominal', 'JUTA')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition">
+				Juta
+			</button>
+			<button type="button" id="ffNominalBtn-MILIAR" onclick="setForeignFlowFilter('nominal', 'MILIAR')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition">
+				Miliar
+			</button>
+			<button type="button" id="ffNominalBtn-TRILIUN" onclick="setForeignFlowFilter('nominal', 'TRILIUN')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition">
+				Triliun
+			</button>
+		</div>
+	</div>
+</div>
 	<div id="foreign-flow-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[800px] overflow-y-auto pr-1 scrollbar-thin">
 		<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800">
 			Klik tombol <strong class="text-sky-400">"Pindai Flow Asing"</strong> untuk memuat data aliran dana.
@@ -578,29 +614,71 @@
 			<i data-lucide="history" class="w-5 h-5 text-amber-400"></i> Custom Screener Backtesting Engine
 		</h3>
 		<p class="text-xs text-slate-400">Uji performa historis strategi screening (Golden Cross, Volume Spike, & Breakout Resistance) terhadap pergerakan saham.</p>
-		<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-			<div>
-				<label class="block text-slate-400 text-xs mb-1">Strategi Filter</label>
-				<select id="backtestStrategy" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
-					<option value="golden_cross">Golden Cross MA20/MA50</option>
-					<option value="volume_spike">Volume Spike > 2.5x</option>
-					<option value="breakout">Breakout Resistance 20 Hari</option>
-				</select>
-			</div>
-			<div>
-				<label class="block text-slate-400 text-xs mb-1">Periode Uji</label>
-				<select id="backtestPeriod" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
-					<option value="30">30 Hari Bursa</option>
-					<option value="90">90 Hari Bursa (Quarter)</option>
-					<option value="180">180 Hari Bursa (Half Year)</option>
-				</select>
-			</div>
-			<div class="flex items-end">
-				<button onclick="runBacktestEngine()" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg shadow transition flex items-center justify-center gap-2">
-					<i data-lucide="play" class="w-4 h-4"></i> Jalankan Backtest
-				</button>
-			</div>
+		<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+	<!-- Custom Dropdown: Strategi Filter -->
+	<div class="relative">
+		<label class="text-[10px] text-slate-400 uppercase tracking-wider block mb-1.5">Strategi Filter</label>
+		<input type="hidden" id="backtestStrategy" value="golden_cross">
+		<button type="button" onclick="toggleBacktestDropdown('dropdownBacktestStrategy')" class="w-full bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-amber-500/50 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold flex items-center justify-between transition shadow-inner">
+			<span id="backtestStrategy_Label" class="truncate">Golden Cross MA20/MA50</span>
+			<i data-lucide="chevron-down" class="w-4 h-4 text-amber-400 shrink-0 ml-2"></i>
+		</button>
+		<div id="dropdownBacktestStrategy" class="hidden absolute left-0 right-0 mt-1.5 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-30 overflow-hidden divide-y divide-slate-800/80">
+			<button type="button" onclick="selectBacktestOption('backtestStrategy', 'golden_cross', 'Golden Cross MA20/MA50', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+				<span>Golden Cross MA20/MA50</span>
+				<span class="text-[9px] text-slate-500">Tren</span>
+			</button>
+			<button type="button" onclick="selectBacktestOption('backtestStrategy', 'volume_spike', 'Volume Spike > 2.5x', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+				<span>Volume Spike &gt; 2.5x</span>
+				<span class="text-[9px] text-slate-500">Likuiditas</span>
+			</button>
+			<button type="button" onclick="selectBacktestOption('backtestStrategy', 'breakout', 'Breakout Resistance 20 Hari', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+				<span>Breakout Resistance 20 Hari</span>
+				<span class="text-[9px] text-slate-500">Momentum</span>
+			</button>
+			<button type="button" onclick="selectBacktestOption('backtestStrategy', 'volume_accumulation', 'Volume Accumulation', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+				<span>Volume Accumulation</span>
+				<span class="text-[9px] text-blue-400">Akumulasi</span>
+			</button>
+			<button type="button" onclick="selectBacktestOption('backtestStrategy', 'curi_start', 'Curi Start (Whale Acc)', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+				<span>Curi Start (Whale Acc)</span>
+				<span class="text-[9px] text-fuchsia-400">Bandar</span>
+			</button>
 		</div>
+	</div>
+
+	<!-- Custom Dropdown: Periode Uji -->
+	<div class="relative">
+		<label class="text-[10px] text-slate-400 uppercase tracking-wider block mb-1.5">Periode Uji</label>
+		<input type="hidden" id="backtestPeriod" value="30">
+		<button type="button" onclick="toggleBacktestDropdown('dropdownBacktestPeriod')" class="w-full bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-amber-500/50 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold flex items-center justify-between transition shadow-inner">
+			<span id="backtestPeriod_Label" class="truncate">30 Hari Bursa</span>
+			<i data-lucide="chevron-down" class="w-4 h-4 text-amber-400 shrink-0 ml-2"></i>
+		</button>
+		<div id="dropdownBacktestPeriod" class="hidden absolute left-0 right-0 mt-1.5 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-30 overflow-hidden divide-y divide-slate-800/80">
+			<button type="button" onclick="selectBacktestOption('backtestPeriod', '7', '7 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+				<span>7 Hari Bursa</span>
+				<span class="text-[9px] text-cyan-400">Scalp / Pendek</span>
+			</button>
+			<button type="button" onclick="selectBacktestOption('backtestPeriod', '15', '15 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+				<span>15 Hari Bursa</span>
+				<span class="text-[9px] text-emerald-400">Swing Pendek</span>
+			</button>
+			<button type="button" onclick="selectBacktestOption('backtestPeriod', '30', '30 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+				<span>30 Hari Bursa</span>
+				<span class="text-[9px] text-slate-500">1 Bulan</span>
+			</button>
+			<button type="button" onclick="selectBacktestOption('backtestPeriod', '60', '60 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+				<span>60 Hari Bursa</span>
+				<span class="text-[9px] text-slate-500">2 Bulan</span>
+			</button>
+			<button type="button" onclick="selectBacktestOption('backtestPeriod', '90', '90 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+				<span>90 Hari Bursa</span>
+				<span class="text-[9px] text-slate-500">1 Kuartal</span>
+			</button>
+		</div>
+	</div>
+</div>
 	</div>
 	<div id="backtestResultContainer" class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 text-slate-300">
 		<p class="text-center text-slate-500">Pilih parameter dan klik "Jalankan Backtest" untuk melihat hasil simulasi.</p>

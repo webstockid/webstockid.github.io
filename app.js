@@ -549,12 +549,18 @@ function parseYahooDataGlobal(json, ticker) {
 
 	const bandarAvgPrice = totalVol20 > 0 ? roundToBEITick(totalValue20 / totalVol20) : roundToBEITick(currentPrice);
 
+	const raw52High = result.meta?.fiftyTwoWeekHigh;
+	const raw52Low = result.meta?.fiftyTwoWeekLow;
+	const fiftyTwoWeekHigh = (raw52High && raw52High > 0) ? roundToBEITick(raw52High) : high20;
+	const fiftyTwoWeekLow = (raw52Low && raw52Low > 0) ? roundToBEITick(raw52Low) : low20;
+
 	return { 
 		ticker: cleanTicker,
 		isWarrant,
 		price: roundToBEITick(currentPrice),
 		prevClose: roundToBEITick(previousClose), 
 		changePct, ma5, ma10, ma20, currentVolume, volYesterday, volRatio, valRatio, high20, low20, 
+		fiftyTwoWeekHigh, fiftyTwoWeekLow,
 		currentLot, currentValuation, bandarAvgPrice,
 		historicalPrices: validPrices
 	};
@@ -944,46 +950,71 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-blue-400">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-400">(Low MA20)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-sky-400">(High MA20)</strong>.</p>
 		`;
 
+		const turnoverAI = stockData.currentValuation || (price * (stockData.currentVolume || (stockData.currentLot || 0) * 100));
+		const directionAI = stockData.price >= (stockData.prevClose || stockData.price) ? 1 : -1;
+		const netFlowAI = turnoverAI * directionAI * Math.min(stockData.volRatio || 1, 3);
+		const isNetBuyAI = netFlowAI >= 0;
+		const netFlowTextAI = formatForeignFlowNominal(Math.abs(netFlowAI));
+		const valEvalAI = evaluateValuationStatus(stockData);
+
 		buktiEl.innerHTML = `
-	<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-		<span class="flex items-center gap-1.5">
-			<i data-lucide="circle-dollar-sign" class="w-4 h-4"></i> Harga: 
-			<strong class="text-blue-400 font-bold">Rp${price.toLocaleString('id-ID')}</strong> 
-			(${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)
-		</span>
-		<span class="text-[10px] lg:text-[11px] text-blue-400">${isCached ? 'Cache Instant' : 'Live Data'}</span>
-	</li>
-	<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-		<span class="flex items-center gap-1.5">
-			<i data-lucide="chart-candlestick" class="w-4 h-4"></i> Volume Transaksi:
-		</span>
-		<span class="text-blue-400 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
-	</li>
-	<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-		<span class="flex items-center gap-1.5">
-			<i data-lucide="chart-candlestick" class="w-4 h-4"></i> Valuasi Transaksi:
-		</span>
-		<span class="text-blue-400 font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
-	</li>
-	<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-		<span class="flex items-center gap-1.5">
-			<i data-lucide="venetian-mask" class="w-4 h-4"></i> Estimasi AVG Bandar:
-		</span>
-		<span class="text-blue-400 font-bold">Rp ${(stockData.bandarAvgPrice || price).toLocaleString('id-ID')}</span>
-	</li>
-	<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-		<span class="flex items-center gap-1.5">
-			<i data-lucide="chart-no-axes-combined" class="w-4 h-4"></i> Posisi Tren MA5 / MA10 / MA20:
-		</span>
-		<span class="text-blue-400 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
-	</li>
-	<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
-		<span class="flex items-center gap-1.5">
-			<i data-lucide="sliders-vertical" class="w-4 h-4"></i> Rasio Volume vs Rerata Harian:
-		</span>
-		<span class="font-bold ${isVolSpike ? 'text-emerald-400' : 'text-blue-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
-	</li>
-`;
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span class="flex items-center gap-1.5">
+					<i data-lucide="circle-dollar-sign" class="w-4 h-4"></i> Harga: 
+					<strong class="text-blue-400 font-bold">Rp${price.toLocaleString('id-ID')}</strong> 
+					(${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)
+				</span>
+				<span class="text-[10px] lg:text-[11px] text-blue-400">${isCached ? 'Cache Instant' : 'Live Data'}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span class="flex items-center gap-1.5">
+					<i data-lucide="chart-candlestick" class="w-4 h-4"></i> Volume Transaksi:
+				</span>
+				<span class="text-blue-400 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span class="flex items-center gap-1.5">
+					<i data-lucide="chart-candlestick" class="w-4 h-4"></i> Valuasi Transaksi:
+				</span>
+				<span class="text-blue-400 font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span class="flex items-center gap-1.5">
+					<i data-lucide="venetian-mask" class="w-4 h-4"></i> Estimasi AVG Bandar:
+				</span>
+				<span class="text-blue-400 font-bold">Rp ${(stockData.bandarAvgPrice || price).toLocaleString('id-ID')}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span class="flex items-center gap-1.5">
+					<i data-lucide="chart-no-axes-combined" class="w-4 h-4"></i> Posisi Tren MA5 / MA10 / MA20:
+				</span>
+				<span class="text-blue-400 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span class="flex items-center gap-1.5">
+					<i data-lucide="sliders-vertical" class="w-4 h-4"></i> Rasio Volume vs Rerata Harian:
+				</span>
+				<span class="font-bold ${isVolSpike ? 'text-emerald-400' : 'text-blue-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span class="flex items-center gap-1.5">
+					<i data-lucide="arrow-left-right" class="w-4 h-4"></i> Estimasi Asing Flow:
+				</span>
+				<span class="font-bold ${isNetBuyAI ? 'text-emerald-400' : 'text-rose-400'} flex items-center gap-1.5">
+					<span class="text-[9px] px-1.5 py-0.5 rounded border ${isNetBuyAI ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/15 border-rose-500/30 text-rose-400'}">${isNetBuyAI ? 'NET BUY' : 'NET SELL'}</span>
+					<span>${isNetBuyAI ? '+' : '-'}${netFlowTextAI}</span>
+				</span>
+			</li>
+			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
+				<span class="flex items-center gap-1.5">
+					<i data-lucide="scale" class="w-4 h-4"></i> Valuasi Matrix (52W):
+				</span>
+				<span class="font-bold ${valEvalAI.textClass} flex items-center gap-1.5">
+					<span class="text-[9px] px-1.5 py-0.5 rounded border ${valEvalAI.badgeClass}">${valEvalAI.status}</span>
+					<span>(${valEvalAI.positionPct.toFixed(1)}%)</span>
+				</span>
+			</li>
+		`;
 
 		let actionLabel = "<span class='inline-flex items-center gap-1'><i data-lucide='orbit' class='w-3 h-3'></i> NETRAL</span>";
 		let actionColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
@@ -6159,7 +6190,202 @@ function normalizeStockPayload(raw, ticker) {
 	};
 }
 
-// 1. Foreign Net Flow Tracker (Interval 15 Detik + Animasi Loading + Tombol Buka Chart & Detail AI)
+// ==========================================
+// HELPER FORMAT NOMINAL & EVALUASI VALUASI
+// ==========================================
+let foreignFlowCacheItems = [];
+let foreignFlowTypeFilter = 'ALL';
+let foreignFlowNominalFilter = 'ALL';
+
+function formatForeignFlowNominal(val) {
+	const absVal = Math.abs(val || 0);
+	if (absVal <= 0) return 'Rp 0';
+	if (absVal >= 1e12) return `Rp ${(absVal / 1e12).toFixed(2)} Triliun`;
+	if (absVal >= 1e9) return `Rp ${(absVal / 1e9).toFixed(2)} Miliar`;
+	if (absVal >= 1e6) return `Rp ${(absVal / 1e6).toFixed(2)} Juta`;
+	if (absVal >= 1e3) return `Rp ${(absVal / 1e3).toFixed(2)} Ribu`;
+	return `Rp ${Math.round(absVal).toLocaleString('id-ID')}`;
+}
+
+function getNominalScaleCategory(val) {
+	const absVal = Math.abs(val || 0);
+	if (absVal >= 1e12) return 'TRILIUN';
+	if (absVal >= 1e9) return 'MILIAR';
+	if (absVal >= 1e6) return 'JUTA';
+	return 'RIBU';
+}
+
+function evaluateValuationStatus(stock) {
+	const price = stock.price || 0;
+	let high52 = stock.high52w || stock.fiftyTwoWeekHigh || stock.high20 || price;
+	let low52 = stock.low52w || stock.fiftyTwoWeekLow || stock.low20 || price;
+
+	if (high52 <= low52) {
+		high52 = Math.max(high52, Math.round(price * 1.08));
+		low52 = Math.max(1, Math.min(low52, Math.round(price * 0.92)));
+	}
+
+	const range52w = Math.max(1, high52 - low52);
+	const positionPct = Math.max(0, Math.min(100, ((price - low52) / range52w) * 100));
+	const discountFromHigh = Math.max(0, ((high52 - price) / Math.max(1, high52)) * 100);
+	const upsideFromLow = Math.max(0, ((price - low52) / Math.max(1, low52)) * 100);
+
+	if (positionPct <= 35) {
+		return {
+			status: 'UNDERVALUED',
+			positionPct,
+			high52,
+			low52,
+			discountFromHigh,
+			upsideFromLow,
+			badgeClass: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+			textClass: 'text-emerald-400',
+			barGradient: 'from-emerald-600 via-emerald-400 to-teal-300',
+			insightText: `Zona diskon bawah 52W (terdiskon ${discountFromHigh.toFixed(1)}% dari puncak). Menarik untuk akumulasi bertahap saat rebound.`
+		};
+	} else if (positionPct >= 70) {
+		return {
+			status: 'PREMIUM',
+			positionPct,
+			high52,
+			low52,
+			discountFromHigh,
+			upsideFromLow,
+			badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+			textClass: 'text-amber-400',
+			barGradient: 'from-amber-600 via-amber-400 to-yellow-300',
+			insightText: `Mendekati puncak tertinggi 52W (${positionPct.toFixed(0)}%). Waspadai profit taking atau tunggu konfirmasi breakout valid.`
+		};
+	}
+
+	return {
+		status: 'FAIR VALUE',
+		positionPct,
+		high52,
+		low52,
+		discountFromHigh,
+		upsideFromLow,
+		badgeClass: 'bg-sky-500/15 text-sky-400 border-sky-500/30',
+		textClass: 'text-sky-400',
+		barGradient: 'from-sky-600 via-sky-400 to-cyan-300',
+		insightText: `Berada di zona tengah 52W (${positionPct.toFixed(0)}%). Potensi swing ke puncak masih terbuka sebesar +${discountFromHigh.toFixed(1)}%.`
+	};
+}
+
+// ==========================================
+// 1. FOREIGN NET FLOW TRACKER (FILTER NET BUY/SELL & NOMINAL)
+// ==========================================
+function setForeignFlowFilter(group, value) {
+	if (group === 'type') {
+		foreignFlowTypeFilter = value;
+		['ALL', 'BUY', 'SELL'].forEach(key => {
+			const el = document.getElementById(`ffTypeBtn-${key}`);
+			if (!el) return;
+			if (key === value) {
+				if (key === 'BUY') {
+					el.className = 'px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 transition';
+				} else if (key === 'SELL') {
+					el.className = 'px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/40 transition';
+				} else {
+					el.className = 'px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/40 transition';
+				}
+			} else {
+				el.className = 'px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition';
+			}
+		});
+	} else if (group === 'nominal') {
+		foreignFlowNominalFilter = value;
+		['ALL', 'RIBU', 'JUTA', 'MILIAR', 'TRILIUN'].forEach(key => {
+			const el = document.getElementById(`ffNominalBtn-${key}`);
+			if (!el) return;
+			el.className = key === value
+				? 'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-sky-500/20 text-sky-400 border border-sky-500/40 transition'
+				: 'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition';
+		});
+	}
+
+	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	if (foreignFlowCacheItems.length > 0) {
+		renderFilteredForeignFlow();
+	}
+}
+
+function renderFilteredForeignFlow() {
+	const container = document.getElementById('foreign-flow-list') || document.getElementById('asing-flow-container');
+	if (!container) return;
+
+	const filtered = foreignFlowCacheItems.filter(stock => {
+		const isNetBuy = stock.netFlowEstimate >= 0;
+		if (foreignFlowTypeFilter === 'BUY' && !isNetBuy) return false;
+		if (foreignFlowTypeFilter === 'SELL' && isNetBuy) return false;
+
+		if (foreignFlowNominalFilter !== 'ALL') {
+			const scale = getNominalScaleCategory(stock.netFlowEstimate);
+			if (scale !== foreignFlowNominalFilter) return false;
+		}
+		return true;
+	});
+
+	if (filtered.length === 0) {
+		container.innerHTML = `
+			<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/50 rounded-xl border border-slate-800">
+				Tidak ada emiten yang sesuai dengan filter <strong>${foreignFlowTypeFilter === 'ALL' ? 'Semua Arah' : (foreignFlowTypeFilter === 'BUY' ? 'NET BUY' : 'NET SELL')}</strong> &amp; nominal <strong>${foreignFlowNominalFilter}</strong>.
+			</div>
+		`;
+		return;
+	}
+
+	container.innerHTML = filtered.slice(0, 20).map(stock => {
+		const isNetBuy = stock.netFlowEstimate >= 0;
+		const formattedNominal = formatForeignFlowNominal(stock.netFlowEstimate);
+		const badgeClass = isNetBuy
+			? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+			: 'bg-rose-500/15 text-rose-400 border-rose-500/30';
+
+		return `
+			<div class="p-4 rounded-xl bg-slate-900/75 border border-slate-800 hover:border-sky-500/40 transition-all duration-200 shadow-sm flex flex-col justify-between gap-3">
+				<div class="flex items-center justify-between gap-3">
+					<div class="flex items-center gap-3 min-w-0">
+						<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
+							<img 
+								src="https://assets.stockbit.com/logos/companies/${stock.ticker}.png" 
+								alt="${stock.ticker}" 
+								class="w-full h-full object-contain drop-shadow-sm" 
+								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${stock.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${stock.ticker.substring(0,3)}</span>';};"
+							>
+						</div>
+						<div class="min-w-0">
+							<div class="flex items-center gap-2 flex-wrap">
+								<span class="font-extrabold text-white text-sm lg:text-base">&dollar;${stock.ticker}</span>
+								<span class="text-[10px] font-bold px-2 py-0.5 rounded border ${badgeClass}">
+									${isNetBuy ? 'NET BUY' : 'NET SELL'}
+								</span>
+							</div>
+							<div class="text-[11px] text-slate-400 mt-1 truncate">
+								Harga: <strong class="text-slate-200">Rp ${stock.price.toLocaleString('id-ID')}</strong> 
+								(<span class="${stock.changePercent >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${stock.changePercent >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%</span>) · Vol: <strong class="text-sky-400">${stock.volRatio.toFixed(1)}x</strong>
+							</div>
+						</div>
+					</div>
+					<div class="text-right shrink-0">
+						<div class="font-extrabold text-xs lg:text-sm ${isNetBuy ? 'text-emerald-400' : 'text-rose-400'}">
+							${isNetBuy ? '+' : '-'}${formattedNominal}
+						</div>
+						<div class="text-[10px] text-slate-500">Est. Foreign Flow</div>
+					</div>
+				</div>
+
+				<button onclick="selectTickerFromRadar('${stock.ticker}')" class="w-full bg-slate-800/80 hover:bg-sky-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2 rounded-xl border border-slate-700 hover:border-sky-500 transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm">
+					<span>Buka Chart &amp; Detail AI</span>
+					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+				</button>
+			</div>
+		`;
+	}).join('');
+
+	if (window.lucide) lucide.createIcons();
+}
+
 async function loadForeignFlowData() {
 	const btn = document.querySelector("#tabContent-foreign button[onclick='loadForeignFlowData()']");
 	if (isForeignFlowLoading || (btn && btn.disabled)) return;
@@ -6189,13 +6415,13 @@ async function loadForeignFlowData() {
 	container.innerHTML = `
 		<div class="text-center py-10 text-sky-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800 flex flex-col items-center justify-center gap-2">
 			<i data-lucide="loader-2" class="w-6 h-6 animate-spin text-sky-400"></i>
-			<span>Memindai estimasi arus dana asing & lonjakan volume transaksi...</span>
+			<span>Memindai estimasi arus dana asing &amp; lonjakan volume transaksi...</span>
 		</div>
 	`;
 	if (window.lucide) lucide.createIcons();
 
-	const renderFlowItems = (rawItems) => {
-		const flowMetrics = rawItems.map(item => {
+	const updateFlowCacheAndRender = (rawItems) => {
+		foreignFlowCacheItems = rawItems.map(item => {
 			const turnover = item.price * item.volume;
 			const volRatio = item.volRatioDirect ?? (item.volume / (item.avgVolume || 1));
 			const direction = item.price >= item.prevClose ? 1 : -1;
@@ -6210,55 +6436,7 @@ async function loadForeignFlowData() {
 			};
 		}).sort((a, b) => Math.abs(b.netFlowEstimate) - Math.abs(a.netFlowEstimate));
 
-		container.innerHTML = flowMetrics.slice(0, 16).map(stock => {
-			const isNetBuy = stock.netFlowEstimate >= 0;
-			const flowInBillion = (Math.abs(stock.netFlowEstimate) / 1e9).toFixed(2);
-			const badgeClass = isNetBuy
-				? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
-				: 'bg-rose-500/15 text-rose-400 border-rose-500/30';
-
-			return `
-				<div class="p-4 rounded-xl bg-slate-900/75 border border-slate-800 hover:border-sky-500/40 transition-all duration-200 shadow-sm flex flex-col justify-between gap-3">
-					<div class="flex items-center justify-between gap-3">
-						<div class="flex items-center gap-3 min-w-0">
-							<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
-								<img 
-									src="https://assets.stockbit.com/logos/companies/${stock.ticker}.png" 
-									alt="${stock.ticker}" 
-									class="w-full h-full object-contain drop-shadow-sm" 
-									onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${stock.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${stock.ticker.substring(0,3)}</span>';};"
-								>
-							</div>
-							<div class="min-w-0">
-								<div class="flex items-center gap-2 flex-wrap">
-									<span class="font-extrabold text-white text-sm lg:text-base">&dollar;${stock.ticker}</span>
-									<span class="text-[10px] font-bold px-2 py-0.5 rounded border ${badgeClass}">
-										${isNetBuy ? 'NET BUY' : 'NET SELL'}
-									</span>
-								</div>
-								<div class="text-[11px] text-slate-400 mt-1 truncate">
-									Harga: <strong class="text-slate-200">Rp ${stock.price.toLocaleString('id-ID')}</strong> 
-									(<span class="${stock.changePercent >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${stock.changePercent >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%</span>) · Vol: <strong class="text-sky-400">${stock.volRatio.toFixed(1)}x</strong>
-								</div>
-							</div>
-						</div>
-						<div class="text-right shrink-0">
-							<div class="font-extrabold text-xs lg:text-sm ${isNetBuy ? 'text-emerald-400' : 'text-rose-400'}">
-								${isNetBuy ? '+' : '-'}Rp ${flowInBillion} M
-							</div>
-							<div class="text-[10px] text-slate-500">Est. Foreign Flow</div>
-						</div>
-					</div>
-
-					<button onclick="selectTickerFromRadar('${stock.ticker}')" class="w-full bg-slate-800/80 hover:bg-sky-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2 rounded-xl border border-slate-700 hover:border-sky-500 transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm">
-						<span>Buka Chart & Detail AI</span>
-						<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
-					</button>
-				</div>
-			`;
-		}).join('');
-
-		if (window.lucide) lucide.createIcons();
+		renderFilteredForeignFlow();
 	};
 
 	try {
@@ -6275,7 +6453,7 @@ async function loadForeignFlowData() {
 			}
 		}
 
-		if (results.length > 0) renderFlowItems(results);
+		if (results.length > 0) updateFlowCacheAndRender(results);
 
 		const targets = uncached.sort(() => 0.5 - Math.random()).slice(0, 30);
 		const BATCH_SIZE = 15;
@@ -6293,7 +6471,7 @@ async function loadForeignFlowData() {
 				})
 			);
 			results.push(...batchData.filter(Boolean));
-			if (results.length > 0) renderFlowItems(results);
+			if (results.length > 0) updateFlowCacheAndRender(results);
 		}
 
 		if (results.length === 0) {
@@ -6310,7 +6488,47 @@ async function loadForeignFlowData() {
 	}
 }
 
-// 2. Backtesting Engine Informatif (Dengan Daftar Emiten Total Sinyal & Logo Saham)
+// ==========================================
+// 2. BACKTESTING ENGINE & DROPDOWN KOSTUM
+// ==========================================
+function toggleBacktestDropdown(dropdownId) {
+	const dropdown = document.getElementById(dropdownId);
+	if (!dropdown) return;
+	const isHidden = dropdown.classList.contains('hidden');
+
+	['dropdownBacktestStrategy', 'dropdownBacktestPeriod'].forEach(id => {
+		const el = document.getElementById(id);
+		if (el) el.classList.add('hidden');
+	});
+
+	if (isHidden) {
+		dropdown.classList.remove('hidden');
+		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	}
+}
+
+function selectBacktestOption(inputId, value, label, dropdownId) {
+	const inputEl = document.getElementById(inputId);
+	const labelEl = document.getElementById(`${inputId}_Label`);
+	const dropdownEl = document.getElementById(dropdownId);
+
+	if (inputEl) inputEl.value = value;
+	if (labelEl) labelEl.innerText = label;
+	if (dropdownEl) dropdownEl.classList.add('hidden');
+	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+}
+
+document.addEventListener('click', function(e) {
+	['dropdownBacktestStrategy', 'dropdownBacktestPeriod'].forEach(id => {
+		const el = document.getElementById(id);
+		if (el && !el.classList.contains('hidden')) {
+			if (!e.target.closest(`#${id}`) && !e.target.closest(`button[onclick="toggleBacktestDropdown('${id}')"]`)) {
+				el.classList.add('hidden');
+			}
+		}
+	});
+});
+
 async function runBacktestEngine() {
 	const strategyEl = document.getElementById('backtestStrategy');
 	const periodEl = document.getElementById('backtestPeriod');
@@ -6325,7 +6543,9 @@ async function runBacktestEngine() {
 	const strategyLabels = {
 		golden_cross: 'Golden Cross MA20/MA50',
 		volume_spike: 'Volume Spike > 2.5x',
-		breakout: 'Breakout Resistance 20 Hari'
+		breakout: 'Breakout Resistance 20 Hari',
+		volume_accumulation: 'Volume Accumulation',
+		curi_start: 'Curi Start (Whale Acc)'
 	};
 	const strategyTitle = strategyLabels[strategy] || strategy.replace('_', ' ').toUpperCase();
 
@@ -6382,7 +6602,8 @@ async function runBacktestEngine() {
 				? stock.historicalPrices
 				: [stock.prevClose, stock.price];
 
-			const lookbackIdx = Math.max(0, prices.length - Math.min(prices.length, Math.max(5, Math.floor(period / 6))));
+			const lookbackSpan = Math.max(2, Math.min(prices.length, Math.max(2, Math.floor(period / 3))));
+			const lookbackIdx = Math.max(0, prices.length - lookbackSpan);
 			const slice = prices.slice(lookbackIdx);
 			const entryRaw = slice[0] || stock.prevClose || stock.price;
 			const entryPrice = roundToBEITick(entryRaw);
@@ -6401,15 +6622,22 @@ async function runBacktestEngine() {
 				isMatch = stock.ma5 >= stock.ma10 || stock.price >= stock.ma20;
 				triggerNote = `MA5 Rp ${Math.round(stock.ma5).toLocaleString('id-ID')} vs MA20 Rp ${Math.round(stock.ma20).toLocaleString('id-ID')}`;
 			} else if (strategy === 'volume_spike') {
-				isMatch = stock.volRatio >= 1.4;
+				isMatch = stock.volRatio >= 2.0;
 				triggerNote = `Lonjakan Volume ${stock.volRatio.toFixed(1)}x rerata harian`;
+			} else if (strategy === 'volume_accumulation') {
+				isMatch = stock.volRatio >= 1.3 && stock.price >= stock.ma10 && stock.changePercent >= 0;
+				triggerNote = `Akumulasi Vol ${(stock.volRatio * 100).toFixed(0)}% · Bertahan di atas MA10`;
+			} else if (strategy === 'curi_start') {
+				isMatch = stock.volRatio >= 1.5 && stock.price >= stock.ma5 && stock.changePercent >= 0 && stock.changePercent < 5;
+				triggerNote = `Curi Start: Harga +${stock.changePercent.toFixed(2)}% (di atas MA5) · Vol ${stock.volRatio.toFixed(1)}x`;
 			} else {
 				const nearHigh = stock.high > 0 ? (stock.price >= stock.high * 0.96) : (stock.changePercent > 0);
 				isMatch = nearHigh || stock.price >= stock.ma10;
 				triggerNote = `Uji Resist Rp ${roundToBEITick(stock.high).toLocaleString('id-ID')} · Vol ${stock.volRatio.toFixed(1)}x`;
 			}
 
-			const daysAgo = ((idx * 3) % Math.max(5, Math.min(period, 28))) + 1;
+			const maxDaysWindow = Math.max(1, Math.min(period, 90));
+			const daysAgo = ((idx * 2) % maxDaysWindow) + 1;
 			const sigDateObj = new Date();
 			sigDateObj.setDate(sigDateObj.getDate() - daysAgo);
 			const signalDate = sigDateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -6565,7 +6793,7 @@ async function runBacktestEngine() {
 						<span class="text-xs lg:text-sm font-extrabold text-white flex items-center gap-2">
 							<i data-lucide="list-checks" class="w-4 h-4 text-amber-400"></i> Histori Emiten dari Total Sinyal (${totalSignals} Saham)
 						</span>
-						<span class="text-[10px] text-slate-400">Klik "Cek Chart" pada emiten untuk melihat ulang histori grafik & AI</span>
+						<span class="text-[10px] text-slate-400">Klik "Cek Chart" pada emiten untuk melihat ulang histori grafik &amp; AI</span>
 					</div>
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[650px] overflow-y-auto pr-1 scrollbar-thin">
 						${signalsCardsHtml}
@@ -6594,13 +6822,51 @@ async function runBacktestEngine() {
 	}
 }
 
-// 4. Fundamental & Valuation Matrix (Interval 15 Detik + Animasi Loading + Informatif + Smooth Progress Bar)
+// ==========================================
+// 3. VALUASI MATRIX (UNDERVALUED, FAIR VALUE, PREMIUM + ANIMASI BAR)
+// ==========================================
+function ensureValuationProgressStyles() {
+	if (document.getElementById('valuationProgressAnimStyle')) return;
+	const style = document.createElement('style');
+	style.id = 'valuationProgressAnimStyle';
+	style.textContent = `
+		@keyframes valuationStripeFlow {
+			0% { background-position: 0 0; }
+			100% { background-position: 28px 0; }
+		}
+		.valuation-bar-animated {
+			position: relative;
+			overflow: hidden;
+		}
+		.valuation-bar-animated::after {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background-image: linear-gradient(
+				45deg,
+				rgba(255, 255, 255, 0.22) 25%,
+				transparent 25%,
+				transparent 50%,
+				rgba(255, 255, 255, 0.22) 50%,
+				rgba(255, 255, 255, 0.22) 75%,
+				transparent 75%,
+				transparent
+			);
+			background-size: 28px 28px;
+			animation: valuationStripeFlow 1.2s linear infinite;
+		}
+	`;
+	document.head.appendChild(style);
+}
+
 async function runValuationScreener() {
 	const btn = document.querySelector("#tabContent-valuation button[onclick='runValuationScreener()']");
 	if (isValuationLoading || (btn && btn.disabled)) return;
 
 	const container = document.getElementById('valuation-matrix-list') || document.getElementById('valuation-screener-container');
 	if (!container) return;
+
+	ensureValuationProgressStyles();
 
 	const watchlist = (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist))
 		? uniqueRadarWatchlist.filter(t => !/-W\d*$/i.test(t))
@@ -6624,54 +6890,50 @@ async function runValuationScreener() {
 	container.innerHTML = `
 		<div class="text-center py-10 text-emerald-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800 flex flex-col items-center justify-center gap-2">
 			<i data-lucide="loader-2" class="w-6 h-6 animate-spin text-emerald-400"></i>
-			<span>Menghitung matriks valuasi, diskon 52W, dan posisi Moving Average emiten...</span>
+			<span>Menghitung matriks valuasi (Undervalued, Fair Value &amp; Premium)...</span>
 		</div>
 	`;
 	if (window.lucide) lucide.createIcons();
 
 	const renderValuationItems = (rawItems) => {
 		const evaluated = rawItems.map(stock => {
-			const range52w = (stock.high52w - stock.low52w) || 1;
-			const positionPct = Math.max(0, Math.min(100, ((stock.price - stock.low52w) / range52w) * 100));
-			const discountFromHigh = Math.max(0, ((stock.high52w - stock.price) / (stock.high52w || 1)) * 100);
-			const upsideFromLow = Math.max(0, ((stock.price - stock.low52w) / (stock.low52w || 1)) * 100);
+			const valInfo = evaluateValuationStatus(stock);
 			const isAboveMA20 = stock.price >= (stock.ma20 || stock.price);
-
-			let status = 'FAIR VALUE';
-			let statusClass = 'bg-sky-500/15 text-sky-400 border-sky-500/30';
-			let barGradient = 'from-sky-600 via-sky-400 to-cyan-300';
-			let textAccent = 'text-sky-400';
-			let insightText = `Berada di zona tengah 52W (${positionPct.toFixed(0)}%). Potensi swing ke puncak masih terbuka sebesar +${discountFromHigh.toFixed(1)}%.`;
-
-			if (positionPct <= 30) {
-				status = 'UNDERVALUED';
-				statusClass = 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
-				barGradient = 'from-emerald-600 via-emerald-400 to-teal-300';
-				textAccent = 'text-emerald-400';
-				insightText = `Zona diskon bawah 52W (terdiskon ${discountFromHigh.toFixed(1)}% dari puncak). Menarik untuk akumulasi bertahap saat rebound.`;
-			} else if (positionPct >= 75) {
-				status = 'PREMIUM';
-				statusClass = 'bg-amber-500/15 text-amber-400 border-amber-500/30';
-				barGradient = 'from-amber-600 via-amber-400 to-yellow-300';
-				textAccent = 'text-amber-400';
-				insightText = `Mendekati puncak tertinggi 52W (${positionPct.toFixed(0)}%). Waspadai profit taking atau tunggu konfirmasi breakout valid.`;
-			}
 
 			return {
 				...stock,
-				positionPct,
-				discountFromHigh,
-				upsideFromLow,
-				isAboveMA20,
-				status,
-				statusClass,
-				barGradient,
-				textAccent,
-				insightText
+				...valInfo,
+				isAboveMA20
 			};
-		}).sort((a, b) => a.positionPct - b.positionPct);
+		});
 
-		container.innerHTML = evaluated.slice(0, 20).map(stock => `
+		// Seimbangkan tampilan agar Undervalued, Fair Value, dan Premium tampil semua
+		const undervaluedList = evaluated.filter(s => s.status === 'UNDERVALUED').sort((a, b) => a.positionPct - b.positionPct);
+		const fairValueList = evaluated.filter(s => s.status === 'FAIR VALUE').sort((a, b) => a.positionPct - b.positionPct);
+		const premiumList = evaluated.filter(s => s.status === 'PREMIUM').sort((a, b) => b.positionPct - a.positionPct);
+
+		const balancedDisplay = [
+			...undervaluedList.slice(0, 7),
+			...fairValueList.slice(0, 7),
+			...premiumList.slice(0, 7)
+		];
+
+		if (balancedDisplay.length < 21) {
+			const usedTickers = new Set(balancedDisplay.map(s => s.ticker));
+			const remainder = evaluated.filter(s => !usedTickers.has(s.ticker)).slice(0, 21 - balancedDisplay.length);
+			balancedDisplay.push(...remainder);
+		}
+
+		container.innerHTML = `
+			<div class="col-span-full flex flex-wrap items-center justify-between gap-2 bg-slate-950/50 px-4 py-2.5 rounded-xl border border-slate-800 text-[10px] lg:text-xs">
+				<span class="font-bold text-slate-200">Ringkasan Matriks Valuasi (${evaluated.length} Emiten):</span>
+				<div class="flex flex-wrap items-center gap-2">
+					<span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold">Undervalued: ${undervaluedList.length}</span>
+					<span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 border border-sky-500/30 font-bold">Fair Value: ${fairValueList.length}</span>
+					<span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30 font-bold">Premium: ${premiumList.length}</span>
+				</div>
+			</div>
+		` + balancedDisplay.map(stock => `
 			<div class="p-4 rounded-xl bg-slate-900/75 border border-slate-800 hover:border-emerald-500/40 transition-all duration-200 shadow-sm flex flex-col justify-between gap-3">
 				<div class="flex items-center justify-between gap-2">
 					<div class="flex items-center gap-3 min-w-0">
@@ -6686,7 +6948,7 @@ async function runValuationScreener() {
 						<div class="min-w-0">
 							<div class="flex items-center gap-2 flex-wrap">
 								<span class="font-extrabold text-white text-sm lg:text-base">&dollar;${stock.ticker}</span>
-								<span class="text-[10px] font-bold px-2 py-0.5 rounded border ${stock.statusClass}">${stock.status}</span>
+								<span class="text-[10px] font-bold px-2 py-0.5 rounded border ${stock.badgeClass}">${stock.status}</span>
 							</div>
 							<div class="text-[10px] text-slate-400 mt-0.5">
 								Perubahan: <strong class="${stock.changePercent >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${stock.changePercent >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%</strong>
@@ -6702,16 +6964,16 @@ async function runValuationScreener() {
 				<div class="space-y-1.5 bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/80">
 					<div class="flex justify-between items-center text-[10px]">
 						<span class="text-slate-400 font-bold uppercase tracking-wider">Posisi Rentang 52 Minggu</span>
-						<span class="font-extrabold ${stock.textAccent}">${stock.positionPct.toFixed(1)}% dari Low</span>
+						<span class="font-extrabold ${stock.textClass}">${stock.positionPct.toFixed(1)}% dari Low</span>
 					</div>
-					<div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800 p-0.5 shadow-inner">
-						<div class="valuation-progress-fill bg-gradient-to-r ${stock.barGradient} h-full rounded-full transition-all duration-1000 ease-out flex items-center justify-end" data-target-width="${stock.positionPct.toFixed(1)}%" style="width: 0%;">
-							<div class="w-1.5 h-1.5 mr-0.5 bg-white rounded-full shadow-[0_0_8px_#ffffff]"></div>
+					<div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800 p-0.5 shadow-inner">
+						<div class="valuation-progress-fill valuation-bar-animated bg-gradient-to-r ${stock.barGradient} h-full rounded-full transition-all duration-1000 ease-out flex items-center justify-end" data-target-width="${Math.max(4, stock.positionPct).toFixed(1)}%" style="width: 0%;">
+							<div class="w-1.5 h-1.5 mr-0.5 bg-white rounded-full shadow-[0_0_8px_#ffffff] animate-ping relative z-10"></div>
 						</div>
 					</div>
 					<div class="flex justify-between text-[10px] text-slate-400 pt-0.5">
-						<span>Low 52W: <strong class="text-slate-200">Rp ${stock.low52w.toLocaleString('id-ID')}</strong></span>
-						<span>High 52W: <strong class="text-slate-200">Rp ${stock.high52w.toLocaleString('id-ID')}</strong></span>
+						<span>Low 52W: <strong class="text-slate-200">Rp ${stock.low52.toLocaleString('id-ID')}</strong></span>
+						<span>High 52W: <strong class="text-slate-200">Rp ${stock.high52.toLocaleString('id-ID')}</strong></span>
 					</div>
 				</div>
 
@@ -6722,7 +6984,7 @@ async function runValuationScreener() {
 						<span class="text-[9px] text-slate-500 block">Jarak Low: +${stock.upsideFromLow.toFixed(1)}%</span>
 					</div>
 					<div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800">
-						<span class="text-slate-400 block text-[9px] uppercase">Tren MA20 & Likuiditas</span>
+						<span class="text-slate-400 block text-[9px] uppercase">Tren MA20 &amp; Likuiditas</span>
 						<strong class="${stock.isAboveMA20 ? 'text-emerald-400' : 'text-amber-400'}">${stock.isAboveMA20 ? 'Above MA20' : 'Below MA20'}</strong>
 						<span class="text-[9px] text-slate-400 block truncate">${formatValuationIDR(stock.turnover)} (${stock.volRatio.toFixed(1)}x)</span>
 					</div>
@@ -6733,7 +6995,7 @@ async function runValuationScreener() {
 				</p>
 
 				<button onclick="selectTickerFromRadar('${stock.ticker}')" class="w-full bg-slate-800/80 hover:bg-emerald-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2 rounded-xl border border-slate-700 hover:border-emerald-500 transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm">
-					<span>Buka Chart & Detail AI</span>
+					<span>Buka Chart &amp; Detail AI</span>
 					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
 				</button>
 			</div>
@@ -6745,7 +7007,7 @@ async function runValuationScreener() {
 					const target = bar.getAttribute('data-target-width') || '0%';
 					bar.style.width = target;
 				});
-			}, 60);
+			}, 80);
 		});
 
 		if (window.lucide) lucide.createIcons();
@@ -6801,11 +7063,27 @@ async function runValuationScreener() {
 }
 
 // ==========================================
-// 30. WARRANT TRACKER ENGINE (-W BEI)
+// 4. WARRANT TRACKER ENGINE (-W BEI) - ANTI-TIMEOUT & PRIORITAS WARAN AKTIF
 // ==========================================
 let isWarrantScanning = false;
 
-// Komentar: Menyuntikkan keyframe animasi tombol & kartu Waran Tracker secara otomatis.
+const PRIORITIZED_ACTIVE_WARRANTS = [
+	"WIFI-W", "PANI-W", "INET-W", "CBRE-W", "CUAN-W", "DOOH-W", "GOLF-W", "HUMI-W",
+	"MINA-W", "VKTR-W", "BRMS-W", "BUMI-W", "BSBK-W", "ACRO-W", "AREA-W", "ASLI-W",
+	"ATLA-W", "AWAN-W", "BAIK-W", "BOAT-W", "CGAS-W", "CYBR-W", "DATA-W", "DEWA-W",
+	"DOSS-W", "FUTR-W", "GRIA-W", "GRPM-W", "GTRA-W", "GTSI-W", "HAIS-W", "HALO-W",
+	"HATM-W", "HILL-W", "HYGN-W", "IATA-W", "IBOS-W", "ISEA-W", "JARR-W", "KLAS-W",
+	"KOCI-W", "KOKA-W", "KPIG-W", "KRYA-W", "LABS-W", "LAJU-W", "LIVE-W", "LMAX-W",
+	"MAHA-W", "MANG-W", "MAXI-W", "MENN-W", "MHKI-W", "MMIX-W", "MPXL-W", "MSJA-W",
+	"MSTI-W", "MUTU-W", "NAIK-W", "NICE-W", "NICL-W", "NINE-W", "NSSS-W", "NTBK-W",
+	"OASA-W", "PACK-W", "PART-W", "PEVE-W", "PIPA-W", "PPGL-W", "PPRI-W", "PTMP-W",
+	"PTPS-W", "RAAM-W", "RAFI-W", "RELF-W", "RGAS-W", "RMKO-W", "RONY-W", "RSCH-W",
+	"SBMA-W", "SEMA-W", "SICO-W", "SMGA-W", "SMIL-W", "SMKM-W", "SMLE-W", "SOLA-W",
+	"STRK-W", "SURI-W", "SWID-W", "TGUK-W", "TOOL-W", "TRGU-W", "TRON-W", "TYRE-W",
+	"UVCR-W", "VAST-W", "VERN-W", "VISI-W", "VTNY-W", "WIDI-W", "WINE-W", "WINR-W",
+	"WIRG-W", "ZATA-W"
+];
+
 function ensureWarrantTrackerStyles() {
 	if (document.getElementById('warrantTrackerAnimStyle')) return;
 	const style = document.createElement('style');
@@ -6832,7 +7110,6 @@ function ensureWarrantTrackerStyles() {
 	document.head.appendChild(style);
 }
 
-// Komentar: Mengecek & menandai waran yang sudah expired/delisted di BEI agar tidak memperlambat pemindaian.
 function isDeadWarrantCached(wTicker) {
 	try {
 		const raw = localStorage.getItem(`warrant_dead_${wTicker}`);
@@ -6850,15 +7127,12 @@ function markDeadWarrantCache(wTicker) {
 	} catch (e) {}
 }
 
-// Komentar: Mengambil seluruh daftar ticker waran berakhiran -W dari ticker.js tanpa duplikasi.
 function getOnlyDashWTickers() {
 	const rawSources = [
 		typeof getWarrantStockTickers === 'function' ? getWarrantStockTickers() : null,
 		typeof uniqueWarrantWatchlist !== 'undefined' ? uniqueWarrantWatchlist : null,
 		typeof warrantWatchlist !== 'undefined' ? warrantWatchlist : null,
-		typeof waranWatchlist !== 'undefined' ? waranWatchlist : null,
-		typeof uniqueWaranWatchlist !== 'undefined' ? uniqueWaranWatchlist : null,
-		typeof watchlistWaran !== 'undefined' ? watchlistWaran : null
+		PRIORITIZED_ACTIVE_WARRANTS
 	];
 
 	const warrantSet = new Set();
@@ -6868,7 +7142,7 @@ function getOnlyDashWTickers() {
 				const clean = typeof normalizeTickerSymbol === 'function'
 					? normalizeTickerSymbol(item)
 					: String(item || '').trim().toUpperCase();
-				if (clean && isWarrantTicker(clean)) {
+				if (clean && (/^[A-Z]{4}-W\d*$/i.test(clean))) {
 					warrantSet.add(clean);
 				}
 			});
@@ -6878,7 +7152,6 @@ function getOnlyDashWTickers() {
 	return Array.from(warrantSet);
 }
 
-// Komentar: Mengambil data harga waran dengan rotasi Worker & multi-proxy interval harian (1d) agar anti-timeout.
 async function fetchWarrantWithFallback(wTicker) {
 	const cached = getCachedStockData(wTicker);
 	if (cached && cached.price > 0) return cached;
@@ -6886,14 +7159,18 @@ async function fetchWarrantWithFallback(wTicker) {
 	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 	const yahooSymbol = `${wTicker}.JK`;
 
-	const fetchJsonTimeout = async (url, timeoutMs = 4500) => {
+	const fetchJsonTimeout = async (url, timeoutMs = 4500, unwrapAllOrigins = false) => {
 		const controller = new AbortController();
 		const timer = setTimeout(() => controller.abort(), timeoutMs);
 		try {
 			const res = await fetch(url, { signal: controller.signal });
 			clearTimeout(timer);
 			if (!res.ok) throw new Error(`HTTP ${res.status}`);
-			return await res.json();
+			const json = await res.json();
+			if (unwrapAllOrigins && json && typeof json.contents === 'string') {
+				return JSON.parse(json.contents);
+			}
+			return json;
 		} catch (e) {
 			clearTimeout(timer);
 			throw e;
@@ -6901,9 +7178,36 @@ async function fetchWarrantWithFallback(wTicker) {
 	};
 
 	// 1. Coba Cloudflare Worker Utama
+	let workerRespondedValidJson = false;
 	try {
 		const json = await fetchJsonTimeout(`${WORKER_URL}?symbol=${encodeURIComponent(yahooSymbol)}`, 4500);
-		if (json?.chart?.error?.code === 'Not Found') {
+		if (json && json.chart) {
+			workerRespondedValidJson = true;
+			if (json.chart.error || !json.chart.result || json.chart.result.length === 0) {
+				markDeadWarrantCache(wTicker);
+				return null;
+			}
+			const parsed = parseYahooDataGlobal(json, wTicker);
+			if (parsed && parsed.price > 0) {
+				setCachedStockData(wTicker, parsed);
+				return parsed;
+			}
+		}
+	} catch (e) {}
+
+	if (workerRespondedValidJson) return null;
+
+	// 2. Fallback Concurrent Race Proxy (interval 1d/1mo untuk waran likuiditas tipis)
+	const dailyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(yahooSymbol)}?interval=1d&range=1mo`;
+	const proxyAttempts = [
+		fetchJsonTimeout(`https://api.allorigins.win/get?url=${encodeURIComponent(dailyUrl)}`, 4500, true),
+		fetchJsonTimeout(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(dailyUrl)}`, 4500, false),
+		fetchJsonTimeout(`https://corsproxy.io/?${encodeURIComponent(dailyUrl)}`, 4500, false)
+	];
+
+	try {
+		const json = await Promise.any(proxyAttempts);
+		if (json?.chart?.error || !json?.chart?.result?.length) {
 			markDeadWarrantCache(wTicker);
 			return null;
 		}
@@ -6914,38 +7218,14 @@ async function fetchWarrantWithFallback(wTicker) {
 		}
 	} catch (e) {}
 
-	// 2. Fallback Multi-Proxy dengan interval harian (1d/1mo) untuk waran likuiditas tipis
-	const dailyUrl = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(yahooSymbol)}?interval=1d&range=1mo`;
-	const proxies = [
-		`https://corsproxy.io/?${encodeURIComponent(dailyUrl)}`,
-		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(dailyUrl)}`,
-		`https://api.allorigins.win/raw?url=${encodeURIComponent(dailyUrl)}`
-	];
-
-	for (const pUrl of proxies) {
-		try {
-			const json = await fetchJsonTimeout(pUrl, 5000);
-			if (json?.chart?.error?.code === 'Not Found') {
-				markDeadWarrantCache(wTicker);
-				return null;
-			}
-			const parsed = parseYahooDataGlobal(json, wTicker);
-			if (parsed && parsed.price > 0) {
-				setCachedStockData(wTicker, parsed);
-				return parsed;
-			}
-		} catch (e) {}
-	}
-
 	return null;
 }
 
-// Komentar: Memindai saham-saham Waran (-W) dan menampilkan perbandingan rasio dengan saham induknya.
 async function loadWarrantData() {
 	if (isWarrantScanning) return;
 	ensureWarrantTrackerStyles();
 
-	const btn = document.getElementById('btnLoadWarrant') || document.querySelector("button[onclick*='loadWarrantData']");
+	const btn = document.getElementById('btnLoadWarrant') || document.querySelector("#tabContent-warrant button[onclick*='loadWarrantData']");
 	const container = document.getElementById('warrant-tracker-list');
 	if (!container) return;
 
@@ -6978,22 +7258,16 @@ async function loadWarrantData() {
 
 	try {
 		const allDashW = getOnlyDashWTickers();
-		if (allDashW.length === 0) {
-			container.innerHTML = `
-				<div class="col-span-full text-center py-10 px-4 text-rose-400 text-xs lg:text-sm bg-slate-900/60 rounded-xl border border-rose-500/30">
-					Daftar saham Waran (-W) tidak ditemukan pada file <strong>ticker.js</strong>.
-				</div>
-			`;
-			return;
-		}
+		const prioritizedSet = new Set(PRIORITIZED_ACTIVE_WARRANTS);
+		const priorityPool = allDashW.filter(t => prioritizedSet.has(t)).sort(() => 0.5 - Math.random());
+		const otherPool = allDashW.filter(t => !prioritizedSet.has(t)).sort(() => 0.5 - Math.random());
+		const orderedTickers = [...priorityPool, ...otherPool];
 
-		const shuffled = [...allDashW].sort(() => 0.5 - Math.random());
 		const foundWarrants = [];
 		const activeCandidates = [];
 		const fallbackCandidates = [];
 
-		// 1. Pisahkan data yang sudah di-cache agar langsung tampil instan
-		for (const wTicker of shuffled) {
+		for (const wTicker of orderedTickers) {
 			const cached = getCachedStockData(wTicker);
 			if (cached && cached.price > 0) {
 				foundWarrants.push(cached);
@@ -7008,10 +7282,9 @@ async function loadWarrantData() {
 			await enrichAndRenderWarrants(foundWarrants, container);
 		}
 
-		// 2. Jalankan Worker Pool terukur (5 koneksi paralel) agar tidak menabrak batas soket browser
 		const queue = activeCandidates.length > 0
-			? activeCandidates.slice(0, 65)
-			: fallbackCandidates.slice(0, 40);
+			? activeCandidates.slice(0, 50)
+			: fallbackCandidates.slice(0, 30);
 
 		let queueIdx = 0;
 		let renderLock = false;
@@ -7037,7 +7310,7 @@ async function loadWarrantData() {
 				}
 
 				const res = await fetchWarrantWithFallback(wTicker);
-				if (res && res.price > 0 && isWarrantTicker(res.ticker)) {
+				if (res && res.price > 0) {
 					if (!foundWarrants.some(item => item.ticker === res.ticker)) {
 						foundWarrants.push(res);
 						if (foundWarrants.length === 1 || foundWarrants.length % 4 === 0 || foundWarrants.length >= TARGET_COUNT) {
@@ -7058,7 +7331,7 @@ async function loadWarrantData() {
 				<div class="col-span-full text-center py-10 px-4 text-slate-400 text-xs lg:text-sm bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
 					<i data-lucide="search-x" class="w-7 h-7 text-slate-500 mx-auto"></i>
 					<p class="font-bold text-slate-200">Data Waran (-W) Belum Berhasil Dimuat</p>
-					<p class="text-[11px] text-slate-400">Server data sedang sibuk atau waran sedang tidak aktif. Silakan tekan tombol <strong>Muat Data Waran</strong> kembali.</p>
+					<p class="text-[11px] text-slate-400">Server data sedang sibuk atau waran sedang tidak aktif. Silakan tekan tombol <strong>Pindai Ulang Waran</strong> kembali.</p>
 				</div>
 			`;
 			if (window.lucide) lucide.createIcons();
