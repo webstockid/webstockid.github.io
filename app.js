@@ -1340,7 +1340,7 @@ function renderRadarItems(dataList) {
 							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
-							Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
+							Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
 						</span>
 					</div>
 				</div>
@@ -1562,7 +1562,7 @@ function renderBSJPItems(dataList) {
 							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
-							Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
+							Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
 						</span>
 					</div>
 				</div>
@@ -1812,7 +1812,7 @@ async function scanWhalesData() {
 										</span>
 									</div>
 									<div class="flex items-center gap-2 mt-1.5 text-[10px] lg:text-xs">
-										<span class="text-slate-400">Harga Last: <strong class="text-blue-400">Rp ${price.toLocaleString('id-ID')}</strong></span>
+										<span class="text-slate-400">Harga: <strong class="text-blue-400">Rp ${price.toLocaleString('id-ID')}</strong></span>
 										<span class="w-1 h-1 rounded-full bg-slate-600 shrink-0"></span>
 										<span class="text-slate-400">Vol: <strong class="text-fuchsia-400">${item.volRatio}x</strong></span>
 									</div>
@@ -2075,7 +2075,7 @@ async function runCustomScreener() {
 								<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 							</div>
 							<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
-								Harga Last: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
+								Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
 							</span>
 						</div>
 					</div>
@@ -6577,7 +6577,7 @@ async function runBacktestEngine() {
 	const strategy = strategyEl.value;
 	const period = parseInt(periodEl.value, 10) || 30;
 	const strategyLabels = {
-		golden_cross: 'Golden Cross MA20/MA50',
+		golden_cross: 'Golden Cross MA5/MA20',
 		volume_spike: 'Volume Spike > 2.5x',
 		breakout: 'Breakout Resistance 20 Hari',
 		volume_accumulation: 'Volume Accumulation',
@@ -6993,7 +6993,7 @@ async function runValuationScreener() {
 					</div>
 					<div class="text-right shrink-0">
 						<span class="text-sm lg:text-base font-extrabold text-white block">Rp ${stock.price.toLocaleString('id-ID')}</span>
-						<span class="text-[10px] text-slate-500">Harga Last</span>
+						<span class="text-[10px] text-slate-500">Harga</span>
 					</div>
 				</div>
 

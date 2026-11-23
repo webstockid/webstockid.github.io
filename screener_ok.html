@@ -625,12 +625,12 @@
 							<label class="text-[10px] text-slate-400 uppercase tracking-wider block mb-1.5">Strategi Filter</label>
 							<input type="hidden" id="backtestStrategy" value="golden_cross">
 							<button type="button" onclick="toggleBacktestDropdown('dropdownBacktestStrategy')" class="w-full bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-amber-500/50 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold flex items-center justify-between transition shadow-inner">
-								<span id="backtestStrategy_Label" class="truncate">Golden Cross MA20/MA50</span>
+								<span id="backtestStrategy_Label" class="truncate">Golden Cross MA5/MA20</span>
 								<i data-lucide="chevron-down" class="w-4 h-4 text-amber-400 shrink-0 ml-2"></i>
 							</button>
 							<div id="dropdownBacktestStrategy" class="hidden absolute left-0 right-0 mt-1.5 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-30 overflow-hidden divide-y divide-slate-800/80">
-								<button type="button" onclick="selectBacktestOption('backtestStrategy', 'golden_cross', 'Golden Cross MA20/MA50', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
-									<span>Golden Cross MA20/MA50</span>
+								<button type="button" onclick="selectBacktestOption('backtestStrategy', 'golden_cross', 'Golden Cross MA5/MA20', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+									<span>Golden Cross MA5/MA20</span>
 									<span class="text-[9px] text-slate-500">Tren</span>
 								</button>
 								<button type="button" onclick="selectBacktestOption('backtestStrategy', 'volume_spike', 'Volume Spike > 2.5x', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
