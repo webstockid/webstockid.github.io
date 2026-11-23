@@ -5713,16 +5713,16 @@ function switchTab(tabName) {
 	if (tabName === 'alert') renderAllAlerts();
 	if (tabName === 'paper') renderPaperTradingUI();
 	// 2 & 3. Di dalam switchTab(tabName)
-if (tabName === 'heatmap') {
-	renderSectorHeatmap();
-	loadLiveMacro();
-}
-if (tabName === 'fundamental') {
-	fetchRealtimeFundamentals(currentTicker);
-}
-	if (tabName === 'foreign') loadForeignFlowData();
-	if (tabName === 'valuation') runValuationScreener();
-	if (tabName === 'warrant') loadWarrantData();
+	if (tabName === 'heatmap') {
+		renderSectorHeatmap();
+		loadLiveMacro();
+	}
+	if (tabName === 'fundamental') {
+		fetchRealtimeFundamentals(currentTicker);
+	}
+	//if (tabName === 'foreign') loadForeignFlowData();
+	//if (tabName === 'valuation') runValuationScreener();
+	//if (tabName === 'warrant') loadWarrantData();
 }
 
 // ==========================================
