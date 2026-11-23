@@ -85,14 +85,77 @@ const warrantWatchlist = [
 const uniqueWarrantWatchlist = [...new Set(warrantWatchlist.map(t => String(t).trim().toUpperCase()).filter(Boolean))];
 
 // ==========================================
-// 3. HELPER RELASI WARAN & SAHAM INDUK
+// 1B. KONEKTOR TICKER.JS & HELPER SAHAM WARAN
 // ==========================================
-function getParentTickerFromWarrant(warrantTicker) {
-	if (!warrantTicker || typeof warrantTicker !== 'string') return "";
-	return warrantTicker.trim().toUpperCase().split("-")[0].replace(/W\d*$/i, "").trim();
+function isWarrantTicker(ticker) {
+	if (!ticker || typeof ticker !== 'string') return false;
+	const clean = ticker.trim().toUpperCase().replace(/\.JK$/i, '').replace(/^IDX:/i, '');
+	return /^[A-Z]{4}-?W\d*$/i.test(clean);
 }
 
-const warrantPairs = uniqueWarrantWatchlist.map(warrant => ({
-	warrant: warrant,
-	parent: getParentTickerFromWarrant(warrant)
-}));
+function normalizeTickerSymbol(ticker) {
+	if (!ticker || typeof ticker !== 'string') return '';
+	let clean = ticker.trim().toUpperCase().replace(/\.JK$/i, '').replace(/^IDX:/i, '');
+	// Ubah format 5+ huruf tanpa strip (misal: BSBKW -> BSBK-W) agar sesuai standar BEI & Yahoo Finance
+	if (/^[A-Z]{4}W\d*$/i.test(clean)) {
+		clean = clean.replace(/^([A-Z]{4})(W\d*)$/i, '$1-$2');
+	}
+	return clean;
+}
+
+function getParentTicker(ticker) {
+	const clean = normalizeTickerSymbol(ticker);
+	return isWarrantTicker(clean) ? clean.replace(/-W\d*$/i, '') : clean;
+}
+
+function toYahooTickerSymbol(ticker) {
+	const clean = normalizeTickerSymbol(ticker);
+	return clean ? `${clean}.JK` : '';
+}
+
+function toTradingViewSymbol(ticker) {
+	const clean = normalizeTickerSymbol(ticker);
+	// TradingView IDX menggunakan format tanpa strip untuk waran (contoh: IDX:BSBKW)
+	return isWarrantTicker(clean) ? `IDX:${clean.replace(/-/g, '')}` : `IDX:${clean}`;
+}
+
+// Komentar: Menggabungkan seluruh daftar saham reguler & waran dari ticker.js tanpa duplikasi.
+function getAllCombinedTickers() {
+	const sources = [
+		typeof uniqueRadarWatchlist !== 'undefined' ? uniqueRadarWatchlist : null,
+		typeof radarWatchlist !== 'undefined' ? radarWatchlist : null,
+		typeof warrantWatchlist !== 'undefined' ? warrantWatchlist : null,
+		typeof uniqueWarrantWatchlist !== 'undefined' ? uniqueWarrantWatchlist : null,
+		typeof waranWatchlist !== 'undefined' ? waranWatchlist : null,
+		typeof uniqueWaranWatchlist !== 'undefined' ? uniqueWaranWatchlist : null,
+		typeof watchlistWaran !== 'undefined' ? watchlistWaran : null,
+		typeof warrantTickers !== 'undefined' ? warrantTickers : null,
+		typeof warrantList !== 'undefined' ? warrantList : null,
+		typeof daftarWaran !== 'undefined' ? daftarWaran : null,
+		typeof daftarSahamWaran !== 'undefined' ? daftarSahamWaran : null,
+		typeof sahamWaran !== 'undefined' ? sahamWaran : null,
+		typeof idxWarrants !== 'undefined' ? idxWarrants : null,
+		typeof allTickers !== 'undefined' ? allTickers : null
+	];
+
+	const merged = new Set();
+	sources.forEach(list => {
+		if (Array.isArray(list)) {
+			list.forEach(item => {
+				const norm = normalizeTickerSymbol(item);
+				if (norm) merged.add(norm);
+			});
+		}
+	});
+	return Array.from(merged);
+}
+
+// Komentar: Mengambil khusus daftar saham reguler (non-waran) untuk screener utama.
+function getRegularStockTickers() {
+	return getAllCombinedTickers().filter(t => !isWarrantTicker(t));
+}
+
+// Komentar: Mengambil khusus daftar saham waran (-W) yang terdaftar di ticker.js.
+function getWarrantStockTickers() {
+	return getAllCombinedTickers().filter(t => isWarrantTicker(t));
+}

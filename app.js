@@ -462,13 +462,13 @@ async function fetchRealtimeStockData(ticker, forceFetch = false, skipFallback =
 		const targetSymbol = toYahooTickerSymbol(cleanTicker);
 		const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
 		
-		const fetchWithTimeout = async (url, timeoutMs = 4000) => {
+		const fetchWithTimeout = async (url, timeoutMs = 5000) => {
 			const controller = new AbortController();
 			const timerId = setTimeout(() => controller.abort(), timeoutMs);
 			try {
 				const res = await fetch(url, { signal: controller.signal });
 				clearTimeout(timerId);
-				if (!res.ok) throw new Error('Response not OK');
+				if (!res.ok) throw new Error(`HTTP ${res.status}`);
 				return res;
 			} catch (err) {
 				clearTimeout(timerId);
@@ -478,9 +478,9 @@ async function fetchRealtimeStockData(ticker, forceFetch = false, skipFallback =
 
 		let freshData = null;
 		
-		// 1. Eksekusi Worker
+		// 1. Eksekusi Cloudflare Worker Utama
 		try {
-			const res = await fetchWithTimeout(`${WORKER_URL}?symbol=${encodeURIComponent(targetSymbol)}`, 2500);
+			const res = await fetchWithTimeout(`${WORKER_URL}?symbol=${encodeURIComponent(targetSymbol)}`, 5000);
 			const json = await res.json();
 			freshData = parseYahooDataGlobal(json, cleanTicker);
 		} catch(e) {
@@ -489,16 +489,22 @@ async function fetchRealtimeStockData(ticker, forceFetch = false, skipFallback =
 			}
 		}
 
-		// 2. Fallback Proxy Darurat
+		// 2. Fallback Multi-Proxy Darurat
 		if (!freshData && !skipFallback) {
-			try {
-				const yahooProxyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(targetSymbol)}?interval=15m&range=5d`;
-				const allOriginsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(yahooProxyUrl)}`;
-				const res = await fetchWithTimeout(allOriginsUrl, 6000);
-				const wrapper = await res.json();
-				freshData = parseYahooDataGlobal(JSON.parse(wrapper.contents), cleanTicker);
-			} catch(e) {
-				console.error(`Kegagalan total menarik data ${cleanTicker}`);
+			const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(targetSymbol)}?interval=15m&range=5d`;
+			const proxyUrls = [
+				`https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`,
+				`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(yahooUrl)}`,
+				`https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}`
+			];
+
+			for (const pUrl of proxyUrls) {
+				try {
+					const res = await fetchWithTimeout(pUrl, 5500);
+					const json = await res.json();
+					freshData = parseYahooDataGlobal(json, cleanTicker);
+					if (freshData) break;
+				} catch(e) {}
 			}
 		}
 
@@ -523,20 +529,24 @@ function parseYahooDataGlobal(json, ticker) {
 	const isWarrant = isWarrantTicker(cleanTicker);
 	const timestamps = result.timestamp || [];
 	const quote = result.indicators?.quote?.[0] || result.quote;
-	const prices = quote?.close?.filter(p => p !== null && p !== undefined) || [];
-	const volumes = quote?.volume?.filter(v => v !== null && v !== undefined) || [];
-	const highs = quote?.high?.filter(h => h !== null && h !== undefined) || [];
-	const lows = quote?.low?.filter(l => l !== null && l !== undefined) || [];
+	const prices = quote?.close?.filter(p => typeof p === 'number' && !isNaN(p) && p > 0) || [];
+	const volumes = quote?.volume?.filter(v => typeof v === 'number' && !isNaN(v) && v >= 0) || [];
+	const highs = quote?.high?.filter(h => typeof h === 'number' && !isNaN(h) && h > 0) || [];
+	const lows = quote?.low?.filter(l => typeof l === 'number' && !isNaN(l) && l > 0) || [];
 
 	const metaPrice = result.meta?.regularMarketPrice;
-	if (!isWarrant && prices.length < 5) return null;
-	if (isWarrant && prices.length === 0 && (!metaPrice || metaPrice <= 0)) return null;
+	const metaPrev = result.meta?.previousClose || result.meta?.chartPreviousClose;
 
-	const currentPrice = metaPrice || prices[prices.length - 1];
+	if (!isWarrant && prices.length < 5) return null;
+	if (isWarrant && prices.length === 0 && (!metaPrice || metaPrice <= 0) && (!metaPrev || metaPrev <= 0)) return null;
+
+	const currentPrice = (metaPrice && metaPrice > 0)
+		? metaPrice
+		: (prices.length > 0 ? prices[prices.length - 1] : (isWarrant ? metaPrev : 0));
 	if (!currentPrice || currentPrice <= 0) return null;
 
 	const fallbackPrev = prices.length >= 2 ? prices[prices.length - 2] : currentPrice;
-	const previousClose = result.meta?.chartPreviousClose || result.meta?.previousClose || fallbackPrev;
+	const previousClose = (metaPrev && metaPrev > 0) ? metaPrev : fallbackPrev;
 	const changePct = previousClose > 0
 		? parseFloat((((currentPrice - previousClose) / previousClose) * 100).toFixed(2))
 		: 0;
@@ -6887,12 +6897,33 @@ function ensureWarrantTrackerStyles() {
 	document.head.appendChild(style);
 }
 
+// Komentar: Mengecek & menandai waran yang sudah expired/delisted di BEI agar tidak memperlambat pemindaian.
+function isDeadWarrantCached(wTicker) {
+	try {
+		const raw = localStorage.getItem(`warrant_dead_${wTicker}`);
+		if (!raw) return false;
+		const ts = parseInt(raw, 10);
+		if (Date.now() - ts < 24 * 60 * 60 * 1000) return true;
+		localStorage.removeItem(`warrant_dead_${wTicker}`);
+	} catch (e) {}
+	return false;
+}
+
+function markDeadWarrantCache(wTicker) {
+	try {
+		localStorage.setItem(`warrant_dead_${wTicker}`, Date.now().toString());
+	} catch (e) {}
+}
+
 // Komentar: Mengambil seluruh daftar ticker waran berakhiran -W dari ticker.js tanpa duplikasi.
 function getOnlyDashWTickers() {
 	const rawSources = [
 		typeof getWarrantStockTickers === 'function' ? getWarrantStockTickers() : null,
 		typeof uniqueWarrantWatchlist !== 'undefined' ? uniqueWarrantWatchlist : null,
-		typeof warrantWatchlist !== 'undefined' ? warrantWatchlist : null
+		typeof warrantWatchlist !== 'undefined' ? warrantWatchlist : null,
+		typeof waranWatchlist !== 'undefined' ? waranWatchlist : null,
+		typeof uniqueWaranWatchlist !== 'undefined' ? uniqueWaranWatchlist : null,
+		typeof watchlistWaran !== 'undefined' ? watchlistWaran : null
 	];
 
 	const warrantSet = new Set();
@@ -6902,7 +6933,7 @@ function getOnlyDashWTickers() {
 				const clean = typeof normalizeTickerSymbol === 'function'
 					? normalizeTickerSymbol(item)
 					: String(item || '').trim().toUpperCase();
-				if (clean && clean.endsWith('-W')) {
+				if (clean && isWarrantTicker(clean)) {
 					warrantSet.add(clean);
 				}
 			});
@@ -6912,29 +6943,63 @@ function getOnlyDashWTickers() {
 	return Array.from(warrantSet);
 }
 
-// Komentar: Mengambil data harga waran dengan fallback interval harian (1d) untuk waran likuiditas rendah.
+// Komentar: Mengambil data harga waran dengan rotasi Worker & multi-proxy interval harian (1d) agar anti-timeout.
 async function fetchWarrantWithFallback(wTicker) {
-	let data = await fetchRealtimeStockData(wTicker, false, true);
-	if (data && data.price > 0) return data;
+	const cached = getCachedStockData(wTicker);
+	if (cached && cached.price > 0) return cached;
 
-	data = await fetchRealtimeStockData(wTicker, true, false);
-	if (data && data.price > 0) return data;
+	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
+	const yahooSymbol = `${wTicker}.JK`;
 
+	const fetchJsonTimeout = async (url, timeoutMs = 4500) => {
+		const controller = new AbortController();
+		const timer = setTimeout(() => controller.abort(), timeoutMs);
+		try {
+			const res = await fetch(url, { signal: controller.signal });
+			clearTimeout(timer);
+			if (!res.ok) throw new Error(`HTTP ${res.status}`);
+			return await res.json();
+		} catch (e) {
+			clearTimeout(timer);
+			throw e;
+		}
+	};
+
+	// 1. Coba Cloudflare Worker Utama
 	try {
-		const yahooSymbol = `${wTicker}.JK`;
-		const dailyUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(yahooSymbol)}?interval=1d&range=1mo`;
-		const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(dailyUrl)}`;
-		const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(5000) });
-		if (res.ok) {
-			const wrapper = await res.json();
-			const parsed = parseYahooDataGlobal(JSON.parse(wrapper.contents), wTicker);
+		const json = await fetchJsonTimeout(`${WORKER_URL}?symbol=${encodeURIComponent(yahooSymbol)}`, 4500);
+		if (json?.chart?.error?.code === 'Not Found') {
+			markDeadWarrantCache(wTicker);
+			return null;
+		}
+		const parsed = parseYahooDataGlobal(json, wTicker);
+		if (parsed && parsed.price > 0) {
+			setCachedStockData(wTicker, parsed);
+			return parsed;
+		}
+	} catch (e) {}
+
+	// 2. Fallback Multi-Proxy dengan interval harian (1d/1mo) untuk waran likuiditas tipis
+	const dailyUrl = `https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(yahooSymbol)}?interval=1d&range=1mo`;
+	const proxies = [
+		`https://corsproxy.io/?${encodeURIComponent(dailyUrl)}`,
+		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(dailyUrl)}`,
+		`https://api.allorigins.win/raw?url=${encodeURIComponent(dailyUrl)}`
+	];
+
+	for (const pUrl of proxies) {
+		try {
+			const json = await fetchJsonTimeout(pUrl, 5000);
+			if (json?.chart?.error?.code === 'Not Found') {
+				markDeadWarrantCache(wTicker);
+				return null;
+			}
+			const parsed = parseYahooDataGlobal(json, wTicker);
 			if (parsed && parsed.price > 0) {
 				setCachedStockData(wTicker, parsed);
 				return parsed;
 			}
-		}
-	} catch (e) {
-		console.warn(`Fallback harian waran gagal untuk ${wTicker}`);
+		} catch (e) {}
 	}
 
 	return null;
@@ -6945,7 +7010,7 @@ async function loadWarrantData() {
 	if (isWarrantScanning) return;
 	ensureWarrantTrackerStyles();
 
-	const btn = document.getElementById('btnLoadWarrant') || document.querySelector("button[onclick='loadWarrantData()']");
+	const btn = document.getElementById('btnLoadWarrant') || document.querySelector("button[onclick*='loadWarrantData']");
 	const container = document.getElementById('warrant-tracker-list');
 	if (!container) return;
 
@@ -6969,7 +7034,7 @@ async function loadWarrantData() {
 				<i data-lucide="loader-2" class="w-6 h-6 animate-spin text-fuchsia-400"></i>
 			</div>
 			<div>
-				<p class="text-xs lg:text-sm font-bold text-white">Memindai Saham Waran (-W) Aktif di BEI...</p>
+				<p id="warrantScanStatusText" class="text-xs lg:text-sm font-bold text-white">Memindai Saham Waran (-W) Aktif di BEI...</p>
 				<p class="text-[10px] lg:text-xs text-slate-400 mt-1">Mengambil harga waran, likuiditas lot, dan rasio terhadap saham induk.</p>
 			</div>
 		</div>
@@ -6989,51 +7054,71 @@ async function loadWarrantData() {
 
 		const shuffled = [...allDashW].sort(() => 0.5 - Math.random());
 		const foundWarrants = [];
-		const uncachedTickers = [];
+		const activeCandidates = [];
+		const fallbackCandidates = [];
 
-		// 1. Cek cache terlebih dahulu agar tampil instan
+		// 1. Pisahkan data yang sudah di-cache agar langsung tampil instan
 		for (const wTicker of shuffled) {
 			const cached = getCachedStockData(wTicker);
 			if (cached && cached.price > 0) {
 				foundWarrants.push(cached);
+			} else if (isDeadWarrantCached(wTicker)) {
+				fallbackCandidates.push(wTicker);
 			} else {
-				uncachedTickers.push(wTicker);
+				activeCandidates.push(wTicker);
 			}
-			if (foundWarrants.length >= 16) break;
 		}
 
 		if (foundWarrants.length > 0) {
 			await enrichAndRenderWarrants(foundWarrants, container);
 		}
 
-		// 2. Pindai batch secara bertahap untuk melengkapi daftar waran (-W)
-		const BATCH_SIZE = 15;
-		const MAX_BATCHES = 5;
-		let batchCount = 0;
+		// 2. Jalankan Worker Pool terukur (5 koneksi paralel) agar tidak menabrak batas soket browser
+		const queue = activeCandidates.length > 0
+			? activeCandidates.slice(0, 65)
+			: fallbackCandidates.slice(0, 40);
 
-		for (let i = 0; i < uncachedTickers.length; i += BATCH_SIZE) {
-			if (foundWarrants.length >= 16 || batchCount >= MAX_BATCHES) break;
-			batchCount++;
+		let queueIdx = 0;
+		let renderLock = false;
+		const TARGET_COUNT = 16;
+		const CONCURRENCY = 5;
 
-			const batch = uncachedTickers.slice(i, i + BATCH_SIZE);
-			const results = await Promise.all(batch.map(w => fetchWarrantWithFallback(w)));
+		const triggerProgressiveRender = async () => {
+			if (renderLock || foundWarrants.length === 0) return;
+			renderLock = true;
+			try {
+				await enrichAndRenderWarrants(foundWarrants, container);
+			} finally {
+				renderLock = false;
+			}
+		};
 
-			let hasNewItem = false;
-			for (const res of results) {
-				if (res && res.price > 0 && res.ticker.endsWith('-W')) {
+		const workerTask = async () => {
+			while (queueIdx < queue.length && foundWarrants.length < TARGET_COUNT) {
+				const wTicker = queue[queueIdx++];
+				const statusEl = document.getElementById('warrantScanStatusText');
+				if (statusEl && foundWarrants.length === 0) {
+					statusEl.innerText = `Memindai Saham Waran (-W) Aktif di BEI... (${queueIdx}/${queue.length})`;
+				}
+
+				const res = await fetchWarrantWithFallback(wTicker);
+				if (res && res.price > 0 && isWarrantTicker(res.ticker)) {
 					if (!foundWarrants.some(item => item.ticker === res.ticker)) {
 						foundWarrants.push(res);
-						hasNewItem = true;
+						if (foundWarrants.length === 1 || foundWarrants.length % 4 === 0 || foundWarrants.length >= TARGET_COUNT) {
+							await triggerProgressiveRender();
+						}
 					}
 				}
 			}
+		};
 
-			if (hasNewItem) {
-				await enrichAndRenderWarrants(foundWarrants, container);
-			}
-		}
+		await Promise.all(Array.from({ length: CONCURRENCY }, () => workerTask()));
 
-		if (foundWarrants.length === 0) {
+		if (foundWarrants.length > 0) {
+			await enrichAndRenderWarrants(foundWarrants, container);
+			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
+		} else {
 			container.innerHTML = `
 				<div class="col-span-full text-center py-10 px-4 text-slate-400 text-xs lg:text-sm bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
 					<i data-lucide="search-x" class="w-7 h-7 text-slate-500 mx-auto"></i>
@@ -7042,8 +7127,6 @@ async function loadWarrantData() {
 				</div>
 			`;
 			if (window.lucide) lucide.createIcons();
-		} else {
-			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 		}
 	} finally {
 		isWarrantScanning = false;
@@ -7069,20 +7152,26 @@ async function enrichAndRenderWarrants(warrantList, container) {
 		})
 		.slice(0, 16);
 
-	const parentTickers = [...new Set(topList.map(w => w.ticker.replace(/-W$/i, '')))];
+	const parentTickers = [...new Set(topList.map(w => getParentTicker(w.ticker)))];
 	const parentMap = {};
 
-	await Promise.all(parentTickers.map(async (pTicker) => {
-		const cachedParent = getCachedStockData(pTicker);
-		if (cachedParent && cachedParent.price > 0) {
-			parentMap[pTicker] = cachedParent;
-		} else {
-			const fetchedParent = await fetchRealtimeStockData(pTicker, false, true);
-			if (fetchedParent && fetchedParent.price > 0) {
-				parentMap[pTicker] = fetchedParent;
+	// Ambil data saham induk secara terukur (max 5 paralel) agar harga induk selalu tampil
+	let pIdx = 0;
+	const fetchParentWorker = async () => {
+		while (pIdx < parentTickers.length) {
+			const pTicker = parentTickers[pIdx++];
+			const cachedParent = getCachedStockData(pTicker);
+			if (cachedParent && cachedParent.price > 0) {
+				parentMap[pTicker] = cachedParent;
+			} else {
+				const fetchedParent = await fetchRealtimeStockData(pTicker, false, false);
+				if (fetchedParent && fetchedParent.price > 0) {
+					parentMap[pTicker] = fetchedParent;
+				}
 			}
 		}
-	}));
+	};
+	await Promise.all(Array.from({ length: Math.min(5, parentTickers.length) }, () => fetchParentWorker()));
 
 	let html = `
 		<div class="col-span-full flex flex-wrap items-center justify-between gap-2 bg-slate-950/50 px-4 py-2.5 rounded-xl border border-fuchsia-500/20 text-[11px] lg:text-xs">
@@ -7096,7 +7185,7 @@ async function enrichAndRenderWarrants(warrantList, container) {
 
 	topList.forEach((item, index) => {
 		const wTicker = item.ticker;
-		const parentTicker = wTicker.replace(/-W$/i, '');
+		const parentTicker = getParentTicker(wTicker);
 		const parentData = parentMap[parentTicker] || null;
 
 		const wPrice = roundToBEITick(item.price);
