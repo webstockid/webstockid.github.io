@@ -1080,8 +1080,18 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		const directionAI = stockData.price >= (stockData.prevClose || stockData.price) ? 1 : -1;
 		const netFlowAI = turnoverAI * directionAI * Math.min(stockData.volRatio || 1, 3);
 		const isNetBuyAI = netFlowAI >= 0;
-		const netFlowTextAI = formatForeignFlowNominal(Math.abs(netFlowAI));
-		const valEvalAI = evaluateValuationStatus(stockData);
+		const formatFlowSafe = typeof formatForeignFlowNominal === 'function'
+			? formatForeignFlowNominal
+			: (v) => formatValuationIDR(v);
+		const netFlowTextAI = formatFlowSafe(Math.abs(netFlowAI));
+		const valEvalAI = typeof evaluateValuationStatus === 'function'
+			? evaluateValuationStatus(stockData)
+			: {
+				textClass: 'text-cyan-400',
+				badgeClass: 'bg-cyan-500/15 border-cyan-500/30 text-cyan-400',
+				status: 'FAIR',
+				positionPct: 50
+			};
 
 		buktiEl.innerHTML = `
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
@@ -1294,10 +1304,8 @@ function renderAISignalUI(ticker, stockData, isCached) {
 
 	// Hitung posisi harga saat ini pada rentang SL hingga TP2
 	const totalSpan = tp2 - sl;
-	const rawProgress = totalSpan > 0 ? ((currentPrice - sl) / totalSpan) * 100 : 50;
-	const progressPercent = Math.max(0, Math.min(100, Math.round(rawProgress)));
-	let calculatedProgress = totalSpan > 0 ? Math.round(((price - sl) / totalSpan) * 100) : 50;
-	calculatedProgress = Math.max(0, Math.min(100, calculatedProgress));
+	const rawProgress = totalSpan > 0 ? ((price - sl) / totalSpan) * 100 : 50;
+	let calculatedProgress = Math.max(0, Math.min(100, Math.round(rawProgress)));
 
 	const progressBar = document.getElementById('tpProgressBar');
 	progressBar.style.width = '0%';
@@ -2026,12 +2034,16 @@ function selectCustomOption(inputId, value, label, dropdownId) {
 	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
 }
 
+// Komentar: Menutup seluruh menu dropdown Custom Screener saat pengguna mengklik di luar area kontrol.
 document.addEventListener('click', function(e) {
-	const dropdowns = ['dropdownMA', 'dropdownVol', 'dropdownPrice'];
+	const dropdowns = ['dropdownMA', 'dropdownVol', 'dropdownPrice', 'dropdownRSI'];
 	dropdowns.forEach(id => {
 		const el = document.getElementById(id);
 		if (el && !el.classList.contains('hidden')) {
-			if (!e.target.closest(`#${id}`) && !e.target.closest(`button[onclick="toggleCustomDropdown('${id}')"]`)) {
+			const clickedInsideMenu = e.target.closest(`#${id}`);
+			const clickedToggleBtn = e.target.closest(`button[onclick="toggleCustomDropdown('${id}')"]`);
+			const clickedWrapper = e.target.closest('.custom-dropdown-wrapper');
+			if (!clickedInsideMenu && !clickedToggleBtn && !clickedWrapper) {
 				el.classList.add('hidden');
 			}
 		}
@@ -6781,6 +6793,8 @@ function selectBacktestOption(inputId, value, label, dropdownId) {
 	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
 }
 
+window.selectBacktestOption = selectBacktestOption;
+
 document.addEventListener('click', (e) => {
 	if (!e.target.closest('.custom-dropdown-wrapper')) {
 		const dropdowns = ['dropdownMA', 'dropdownVol', 'dropdownPrice', 'dropdownRSI'];
@@ -7539,16 +7553,19 @@ async function fetchWarrantWithFallback(wTicker) {
 }
 
 async function loadWarrantData() {
+	if (isWarrantScanning) return;
 	const container = document.getElementById('warrantResultsContainer');
 	const btn = document.getElementById('btnScanWarrant');
 	if (!container) return;
 
-	if (typeof playClickSound === 'function') playClickSound();
-	if (typeof triggerHaptic === 'function') triggerHaptic(100);
+	isWarrantScanning = true;
+	ensureWarrantTrackerStyles();
+	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	if (!isVibrateMuted && 'vibrate' in navigator) navigator.vibrate(100);
 
 	if (btn) {
 		btn.disabled = true;
-		btn.classList.add('opacity-60', 'cursor-not-allowed');
+		btn.classList.add('opacity-60', 'cursor-not-allowed', 'animate-warrant-press');
 	}
 
 	container.innerHTML = `
@@ -7560,75 +7577,28 @@ async function loadWarrantData() {
 	if (window.lucide) lucide.createIcons();
 
 	try {
-		const cardsHtml = [];
+		const warrantTickers = getOnlyDashWTickers().filter(t => !isDeadWarrantCached(t));
+		const activeWarrants = [];
+		const BATCH_SIZE = 12;
 
-		for (const item of IDX_ACTIVE_WARRANTS) {
-			const [parentPrice, warrantPrice] = await Promise.all([
-				fetchLivePriceSingle(item.parent),
-				fetchLivePriceSingle(item.warrant)
-			]);
-
-			if (!parentPrice || !warrantPrice) continue;
-
-			const metrics = calculateWarrantMetrics(parentPrice, warrantPrice, item.exercisePrice, item.ratio);
-			const limits = typeof calculateARA_ARB === 'function' ? calculateARA_ARB(warrantPrice, true) : null;
-
-			cardsHtml.push(`
-				<div class="bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 rounded-xl p-4 transition-all duration-200 flex flex-col gap-3">
-					<div class="flex items-start justify-between gap-2">
-						<div>
-							<div class="flex items-center gap-2">
-								<span class="text-sm lg:text-base font-bold text-white">${item.warrant}</span>
-								<span class="text-[10px] px-2 py-0.5 rounded-full border ${metrics.badgeClass} font-medium">${metrics.status}</span>
-							</div>
-							<p class="text-[11px] text-slate-400 mt-0.5">
-								Induk: <button type="button" onclick="openTickerFromNotification('${item.parent}')" class="text-cyan-400 hover:underline font-semibold">${item.parent}</button> (Rp ${metrics.parentPrice.toLocaleString('id-ID')}) • Exp: ${item.expiry}
-							</p>
-						</div>
-						<div class="text-right">
-							<div class="text-sm font-bold text-cyan-400">Rp ${metrics.warrantPrice.toLocaleString('id-ID')}</div>
-							<div class="text-[10px] text-slate-400">Tebus: Rp ${metrics.exercisePrice.toLocaleString('id-ID')}</div>
-						</div>
-					</div>
-
-					<div class="grid grid-cols-4 gap-2 pt-2 border-t border-slate-800/80 text-center">
-						<div class="bg-slate-950/60 rounded-lg py-1.5 px-1">
-							<div class="text-[10px] text-slate-400">Intrinsik</div>
-							<div class="text-xs font-semibold text-emerald-400">Rp ${metrics.intrinsicValue.toLocaleString('id-ID')}</div>
-						</div>
-						<div class="bg-slate-950/60 rounded-lg py-1.5 px-1">
-							<div class="text-[10px] text-slate-400">Parity (BEP)</div>
-							<div class="text-xs font-semibold text-white">Rp ${metrics.breakEvenPrice.toLocaleString('id-ID')}</div>
-						</div>
-						<div class="bg-slate-950/60 rounded-lg py-1.5 px-1">
-							<div class="text-[10px] text-slate-400">Premium</div>
-							<div class="text-xs font-semibold ${metrics.premiumPct <= 10 ? 'text-emerald-400' : 'text-amber-400'}">${metrics.premiumPct > 0 ? '+' : ''}${metrics.premiumPct}%</div>
-						</div>
-						<div class="bg-slate-950/60 rounded-lg py-1.5 px-1">
-							<div class="text-[10px] text-slate-400">Gearing</div>
-							<div class="text-xs font-semibold text-indigo-400">${metrics.gearing}x</div>
-						</div>
-					</div>
-
-					${limits ? `
-					<div class="flex items-center justify-between text-[11px] text-slate-400 bg-slate-950/50 rounded-lg px-3 py-1.5">
-						<span>ARA Waran: <strong class="text-emerald-400">Rp ${limits.ara.toLocaleString('id-ID')}</strong></span>
-						<span>ARB Waran: <strong class="text-rose-400">Rp ${limits.arb.toLocaleString('id-ID')}</strong></span>
-						<button type="button" onclick="openTickerFromNotification('${item.warrant}')" class="text-cyan-400 hover:text-cyan-300 font-medium">Lihat Chart →</button>
-					</div>
-					` : ''}
-				</div>
-			`);
+		for (let i = 0; i < warrantTickers.length; i += BATCH_SIZE) {
+			const batch = warrantTickers.slice(i, i + BATCH_SIZE);
+			const results = await Promise.all(batch.map(w => fetchWarrantWithFallback(w)));
+			results.forEach(res => {
+				if (res && res.price > 0) activeWarrants.push(res);
+			});
+			if (activeWarrants.length >= 16) break;
 		}
 
-		if (cardsHtml.length === 0) {
+		if (activeWarrants.length === 0) {
 			container.innerHTML = `
 				<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800">
 					Data harga waran belum tersedia saat ini (pasar tutup atau kode waran sedang suspensi).
 				</div>
 			`;
 		} else {
-			container.innerHTML = cardsHtml.join('');
+			await enrichAndRenderWarrants(activeWarrants, container);
+			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 		}
 
 		if (window.lucide) lucide.createIcons();
@@ -7640,9 +7610,10 @@ async function loadWarrantData() {
 			</div>
 		`;
 	} finally {
+		isWarrantScanning = false;
 		if (btn) {
 			btn.disabled = false;
-			btn.classList.remove('opacity-60', 'cursor-not-allowed');
+			btn.classList.remove('opacity-60', 'cursor-not-allowed', 'animate-warrant-press');
 		}
 	}
 }
@@ -7788,7 +7759,9 @@ function targetCleanTicker(arr) {
 
 // Inisialisasi
 document.addEventListener("DOMContentLoaded", () => {
-	applyGlobalButtonGradients();
+	if (typeof applyGlobalButtonGradients === 'function') {
+		applyGlobalButtonGradients();
+	}
 	
 	const observer = new MutationObserver((mutations) => {
 		let shouldUpdate = false;
@@ -7798,7 +7771,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				break;
 			}
 		}
-		if (shouldUpdate) {
+		if (shouldUpdate && typeof applyGlobalButtonGradients === 'function') {
 			setTimeout(applyGlobalButtonGradients, 1000);
 		}
 	});
@@ -7853,22 +7826,21 @@ function openTickerFromNotification(ticker) {
 	const cleanTicker = normalizeTickerSymbol(ticker);
 	if (!cleanTicker) return;
 
-	if (typeof playClickSound === 'function') playClickSound();
-	if (typeof triggerHaptic === 'function') triggerHaptic(120);
+	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	if (!isVibrateMuted && 'vibrate' in navigator) navigator.vibrate(120);
 
-	// Pindah ke tab utama screener jika fungsi tab tersedia
-	if (typeof switchMainTab === 'function') {
-		switchMainTab('screener');
+	if (typeof switchTab === 'function') {
+		switchTab('ai');
 	}
 
-	const inputEl = document.getElementById('stockInput');
+	const inputEl = document.getElementById('stockSearch') || document.getElementById('stockInput');
 	if (inputEl) {
 		inputEl.value = cleanTicker;
 		inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 	}
 
 	if (typeof searchStock === 'function') {
-		searchStock();
+		searchStock(true);
 	}
 }
 
@@ -7949,7 +7921,13 @@ function checkUrlParamTicker() {
 // ==========================================
 // INISIALISASI UTAMA
 // ==========================================
+let isMainAppInitialized = false;
+
+// Komentar: Menjalankan inisialisasi seluruh modul utama aplikasi secara idempoten.
 function initMainApp() {
+	if (isMainAppInitialized) return;
+	isMainAppInitialized = true;
+
 	checkUrlParamTicker();
 
 	const setTxt = (id, val) => {
@@ -7967,6 +7945,7 @@ function initMainApp() {
 	setTxt('peerTickerLabel', currentTicker);
 
 	checkVIPAuth();
+	initTypographySettings();
 	initSystemSettings();
 	initSearchSuggestions();
 	updateMarketBadge();
@@ -7993,7 +7972,7 @@ function initMainApp() {
 }
 
 if (document.readyState === 'loading') {
-	document.addEventListener('DOMContentLoaded', initMainApp);
+	document.addEventListener('DOMContentLoaded', initMainApp, { once: true });
 } else {
 	initMainApp();
 }
