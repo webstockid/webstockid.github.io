@@ -2055,15 +2055,15 @@ window.selectCustomOption = selectCustomOption;
 
 // Komentar: Menutup seluruh menu dropdown Custom Screener saat pengguna mengklik di luar area kontrol.
 document.addEventListener('click', function(e) {
-	const dropdowns = ['dropdownMA', 'dropdownVol', 'dropdownPrice', 'dropdownRSI'];
+	const dropdowns = ['dropdownBacktestStrategy', 'dropdownBacktestPeriod'];
 	dropdowns.forEach(id => {
-		const el = document.getElementById(id);
-		if (el && !el.classList.contains('hidden')) {
+		const menu = document.getElementById(id);
+		if (menu && !menu.classList.contains('hidden')) {
 			const clickedInsideMenu = e.target.closest(`#${id}`);
-			const clickedToggleBtn = e.target.closest(`button[onclick*="toggleCustomDropdown('${id}'"]`);
+			const clickedToggleBtn = e.target.closest(`button[onclick*="toggleBacktestDropdown('${id}'"]`);
 			const clickedWrapper = e.target.closest('.custom-dropdown-wrapper');
 			if (!clickedInsideMenu && !clickedToggleBtn && !clickedWrapper) {
-				el.classList.add('hidden');
+				menu.classList.add('hidden');
 			}
 		}
 	});
@@ -6785,7 +6785,10 @@ async function loadForeignFlowData() {
 // ==========================================
 // 2. BACKTESTING ENGINE & DROPDOWN KOSTUM
 // ==========================================
-function toggleBacktestDropdown(dropdownId) {
+function toggleBacktestDropdown(dropdownId, evt) {
+	const ev = evt || window.event;
+	if (ev) ev.stopPropagation();
+
 	const dropdown = document.getElementById(dropdownId);
 	if (!dropdown) return;
 	const isHidden = dropdown.classList.contains('hidden');
@@ -6797,13 +6800,18 @@ function toggleBacktestDropdown(dropdownId) {
 
 	if (isHidden) {
 		dropdown.classList.remove('hidden');
+		dropdown.style.display = '';
+		if (window.lucide) lucide.createIcons();
 		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
 	}
 }
 
-function selectBacktestOption(inputId, value, label, dropdownId) {
+function selectBacktestOption(inputId, value, label, dropdownId, evt) {
+	const ev = evt || window.event;
+	if (ev) ev.stopPropagation();
+
 	const inputEl = document.getElementById(inputId);
-	const labelEl = document.getElementById(`${inputId}_Label`);
+	const labelEl = document.getElementById(`${inputId}_Label`) || document.getElementById(`${inputId}Label`);
 	const dropdownEl = document.getElementById(dropdownId);
 
 	if (inputEl) inputEl.value = value;
@@ -6812,6 +6820,7 @@ function selectBacktestOption(inputId, value, label, dropdownId) {
 	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
 }
 
+window.toggleBacktestDropdown = toggleBacktestDropdown;
 window.selectBacktestOption = selectBacktestOption;
 
 document.addEventListener('click', (e) => {
