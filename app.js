@@ -2055,7 +2055,7 @@ window.selectCustomOption = selectCustomOption;
 
 // Komentar: Menutup seluruh menu dropdown Custom Screener saat pengguna mengklik di luar area kontrol.
 document.addEventListener('click', function(e) {
-	const dropdowns = ['dropdownBacktestStrategy', 'dropdownBacktestPeriod'];
+	const dropdowns = ['dropdownBacktestStrategy', 'dropdownBacktestPeriod', 'dropdownMA', 'dropdownVol', 'dropdownPrice', 'dropdownRSI'];
 	dropdowns.forEach(id => {
 		const menu = document.getElementById(id);
 		if (menu && !menu.classList.contains('hidden')) {
