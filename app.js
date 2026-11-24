@@ -17,8 +17,108 @@ let currentJournalView = 'table';
 let openAlertDropdowns = new Set();
 let isHeatmapLoaded = false;
 let whaleScanCooldownTimer = null;
+let isSoundMuted = localStorage.getItem('stockid_sound_muted') === 'true';
+let isVibrateMuted = localStorage.getItem('stockid_vibrate_muted') === 'true';
 
 if (window.lucide) lucide.createIcons();
+
+// ==========================================
+// HELPER NORMALISASI TICKER & WARAN BEI
+// ==========================================
+// Komentar: Membersihkan dan menstandarkan format kode saham maupun waran BEI.
+if (typeof normalizeTickerSymbol !== 'function') {
+	window.normalizeTickerSymbol = function(ticker) {
+		if (!ticker) return '';
+		let clean = String(ticker)
+			.trim()
+			.toUpperCase()
+			.replace(/^\$/, '')
+			.replace(/^IDX:/, '')
+			.replace(/\.JK$/i, '')
+			.replace(/\s+/g, '');
+
+		if (/^[A-Z]{4}W\d*$/.test(clean)) {
+			clean = clean.replace(/^([A-Z]{4})(W\d*)$/, '$1-$2');
+		}
+		if (/^[A-Z]{4}\.W\d*$/.test(clean)) {
+			clean = clean.replace(/^([A-Z]{4})\.(W\d*)$/, '$1-$2');
+		}
+		return clean;
+	};
+}
+
+// Komentar: Mengecek apakah simbol emiten merupakan instrumen waran (-W / -W2).
+if (typeof isWarrantTicker !== 'function') {
+	window.isWarrantTicker = function(ticker) {
+		const clean = normalizeTickerSymbol(ticker);
+		return /^[A-Z]{4}-W\d*$/.test(clean);
+	};
+}
+
+// Komentar: Mengambil kode saham induk dari emiten waran (contoh: BSBK-W -> BSBK).
+if (typeof getParentTicker !== 'function') {
+	window.getParentTicker = function(ticker) {
+		const clean = normalizeTickerSymbol(ticker);
+		return clean.replace(/-W\d*$/, '');
+	};
+}
+
+// Komentar: Mengubah simbol emiten ke format Yahoo Finance (.JK).
+if (typeof toYahooTickerSymbol !== 'function') {
+	window.toYahooTickerSymbol = function(ticker) {
+		const clean = normalizeTickerSymbol(ticker);
+		if (!clean) return '';
+		return clean.endsWith('.JK') ? clean : `${clean}.JK`;
+	};
+}
+
+// Komentar: Mengubah simbol emiten ke format widget TradingView IDX.
+if (typeof toTradingViewSymbol !== 'function') {
+	window.toTradingViewSymbol = function(ticker) {
+		const clean = normalizeTickerSymbol(ticker);
+		if (!clean) return 'IDX:MDIA';
+		return `IDX:${clean.replace('-', '.')}`;
+	};
+}
+
+// Komentar: Mengambil seluruh daftar kode saham reguler (non-waran) dari watchlist.
+if (typeof getRegularStockTickers !== 'function') {
+	window.getRegularStockTickers = function() {
+		const base = (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist))
+			? uniqueRadarWatchlist
+			: ['BBCA', 'BBRI', 'BMRI', 'BBNI', 'TLKM', 'ASII', 'MDIA', 'ANTM', 'BREN', 'CUAN', 'AMMN', 'GOTO', 'BRIS', 'ADRO', 'PTBA', 'INDF', 'ICBP', 'UNVR', 'KLBF', 'PGAS'];
+		return [...new Set(base.map(t => normalizeTickerSymbol(t)).filter(t => t && !isWarrantTicker(t)))];
+	};
+}
+
+// Komentar: Mengambil seluruh daftar kode waran (-W) aktif dari watchlist.
+if (typeof getWarrantStockTickers !== 'function') {
+	window.getWarrantStockTickers = function() {
+		const sources = [
+			typeof uniqueWarrantWatchlist !== 'undefined' ? uniqueWarrantWatchlist : [],
+			typeof warrantWatchlist !== 'undefined' ? warrantWatchlist : [],
+			typeof uniqueRadarWatchlist !== 'undefined' ? uniqueRadarWatchlist : [],
+			typeof PRIORITIZED_ACTIVE_WARRANTS !== 'undefined' ? PRIORITIZED_ACTIVE_WARRANTS : []
+		];
+		const set = new Set();
+		sources.forEach(arr => {
+			if (Array.isArray(arr)) {
+				arr.forEach(t => {
+					const clean = normalizeTickerSymbol(t);
+					if (clean && isWarrantTicker(clean)) set.add(clean);
+				});
+			}
+		});
+		return Array.from(set);
+	};
+}
+
+// Komentar: Menggabungkan daftar seluruh saham reguler dan waran tanpa duplikasi.
+if (typeof getAllCombinedTickers !== 'function') {
+	window.getAllCombinedTickers = function() {
+		return [...new Set([...getRegularStockTickers(), ...getWarrantStockTickers()])];
+	};
+}
 
 // ==========================================
 // 2. SISTEM CACHE & WAKTU PASAR
@@ -692,13 +792,14 @@ async function searchStock(bypassCooldown = false) {
 	const btn = document.querySelector("button[onclick='searchStock()']");
 	if (!bypassCooldown && btn && btn.disabled) return;
 
-	const rawInput = document.getElementById('stockSearch').value;
+	const searchInput = document.getElementById('stockSearch');
+	const rawInput = searchInput ? searchInput.value : '';
 	const input = normalizeTickerSymbol(rawInput);
 	const box = document.getElementById('searchSuggestionsBox');
 	if (box) box.classList.add('hidden');
 
 	if (input) {
-		document.getElementById('stockSearch').value = input;
+		if (searchInput) searchInput.value = input;
 
 		// Cek limit tanpa memotong token (deductNow = false)
 		if (!checkAndUpdateLimit('search', false)) {
@@ -719,15 +820,20 @@ async function searchStock(bypassCooldown = false) {
 		deductFeatureLimit('search');
 
 		currentTicker = input;
-		document.getElementById('stockTitle').innerText = toTradingViewSymbol(currentTicker);
-		document.getElementById('aiHeaderTicker').innerText = `[${currentTicker}] — KONDISI TEKNIKAL`;
-		document.getElementById('newsTickerLabel').innerText = currentTicker;
-		document.getElementById('fundTickerLabel').innerText = currentTicker;
-		document.getElementById('rrrTickerLabel').innerText = currentTicker;
-		document.getElementById('alertTickerLabel').innerText = currentTicker;
-		document.getElementById('corpTickerLabel').innerText = currentTicker;
-		document.getElementById('peerTickerLabel').innerText = currentTicker;
-		
+		const setTxt = (id, val) => {
+			const el = document.getElementById(id);
+			if (el) el.innerText = val;
+		};
+
+		setTxt('stockTitle', toTradingViewSymbol(currentTicker));
+		setTxt('aiHeaderTicker', `[${currentTicker}] — KONDISI TEKNIKAL`);
+		setTxt('newsTickerLabel', currentTicker);
+		setTxt('fundTickerLabel', currentTicker);
+		setTxt('rrrTickerLabel', currentTicker);
+		setTxt('alertTickerLabel', currentTicker);
+		setTxt('corpTickerLabel', currentTicker);
+		setTxt('peerTickerLabel', currentTicker);
+
 		renderChart(currentTicker);
 		renderTechnicalGauge(currentTicker);
 		renderAllAlerts();
@@ -1890,17 +1996,19 @@ async function scanWhalesData() {
 // ==========================================
 // 18. CUSTOM SCREENER BUILDER
 // ==========================================
+// Komentar: Mengatur buka-tutup menu dropdown filter pada Custom Screener dengan aman.
 function toggleCustomDropdown(dropdownId) {
 	const dropdown = document.getElementById(dropdownId);
+	if (!dropdown) return;
 	const isHidden = dropdown.classList.contains('hidden');
-	
-	['dropdownMA', 'dropdownVol', 'dropdownPrice'].forEach(id => {
-		document.getElementById(id).classList.add('hidden');
+
+	['dropdownMA', 'dropdownVol', 'dropdownPrice', 'dropdownRSI'].forEach(id => {
+		const el = document.getElementById(id);
+		if (el) el.classList.add('hidden');
 	});
 
 	if (isHidden) {
 		dropdown.classList.remove('hidden');
-		// if (typeof AudioFX !== 'undefined') AudioFX.playDelete();
 	}
 }
 
