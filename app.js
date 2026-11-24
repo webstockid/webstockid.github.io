@@ -2011,7 +2011,10 @@ async function scanWhalesData() {
 // 18. CUSTOM SCREENER BUILDER
 // ==========================================
 // Komentar: Mengatur buka-tutup menu dropdown filter pada Custom Screener dengan aman.
-function toggleCustomDropdown(dropdownId) {
+function toggleCustomDropdown(dropdownId, evt) {
+	const ev = evt || window.event;
+	if (ev) ev.stopPropagation();
+
 	const dropdown = document.getElementById(dropdownId);
 	if (!dropdown) return;
 	const isHidden = dropdown.classList.contains('hidden');
@@ -2024,15 +2027,26 @@ function toggleCustomDropdown(dropdownId) {
 	if (isHidden) {
 		dropdown.classList.remove('hidden');
 	}
+	if (window.lucide) lucide.createIcons();
 }
 
 // Komentar: Menyimpan nilai parameter penyaringan spesifik yang dipilih pengguna di Custom Screener.
-function selectCustomOption(inputId, value, label, dropdownId) {
-	document.getElementById(inputId).value = value;
-	document.getElementById(inputId + '_Label').innerText = label;
-	document.getElementById(dropdownId).classList.add('hidden');
+function selectCustomOption(inputId, value, label, dropdownId, evt) {
+	const ev = evt || window.event;
+	if (ev) ev.stopPropagation();
+
+	const inputEl = document.getElementById(inputId);
+	const labelEl = document.getElementById(inputId + '_Label');
+	const dropdownEl = document.getElementById(dropdownId);
+
+	if (inputEl) inputEl.value = value;
+	if (labelEl) labelEl.innerText = label;
+	if (dropdownEl) dropdownEl.classList.add('hidden');
 	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
 }
+
+window.toggleCustomDropdown = toggleCustomDropdown;
+window.selectCustomOption = selectCustomOption;
 
 // Komentar: Menutup seluruh menu dropdown Custom Screener saat pengguna mengklik di luar area kontrol.
 document.addEventListener('click', function(e) {
@@ -2041,7 +2055,7 @@ document.addEventListener('click', function(e) {
 		const el = document.getElementById(id);
 		if (el && !el.classList.contains('hidden')) {
 			const clickedInsideMenu = e.target.closest(`#${id}`);
-			const clickedToggleBtn = e.target.closest(`button[onclick="toggleCustomDropdown('${id}')"]`);
+			const clickedToggleBtn = e.target.closest(`button[onclick*="toggleCustomDropdown('${id}'"]`);
 			const clickedWrapper = e.target.closest('.custom-dropdown-wrapper');
 			if (!clickedInsideMenu && !clickedToggleBtn && !clickedWrapper) {
 				el.classList.add('hidden');
@@ -7150,14 +7164,30 @@ function setValuationFilter(status) {
 	}
 }
 
-// Komentar: Merender kartu Valuasi Matrix sesuai filter dengan posisi harga di samping nama saham dan label status di kanan.
+function shuffleValuationList(arr) {
+	const copy = [...arr];
+	for (let i = copy.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[copy[i], copy[j]] = [copy[j], copy[i]];
+	}
+	return copy;
+}
+
+// Komentar: Merender kartu Valuasi Matrix maksimal 75 saham (masing-masing 25 Undervalued, 25 Fair Value, 25 Premium).
 function renderFilteredValuation() {
 	const container = document.getElementById('valuation-matrix-list') || document.getElementById('valuation-screener-container');
 	if (!container) return;
 
-	const undervaluedList = valuationCacheItems.filter(s => s.status === 'UNDERVALUED').sort((a, b) => a.positionPct - b.positionPct);
-	const fairValueList = valuationCacheItems.filter(s => s.status === 'FAIR VALUE').sort((a, b) => a.positionPct - b.positionPct);
-	const premiumList = valuationCacheItems.filter(s => s.status === 'PREMIUM').sort((a, b) => b.positionPct - a.positionPct);
+	const MAX_PER_CATEGORY = 25;
+	const MAX_TOTAL_ALL = 75;
+
+	const undervaluedPool = valuationCacheItems.filter(s => s.status === 'UNDERVALUED').sort((a, b) => a.positionPct - b.positionPct);
+	const fairValuePool = valuationCacheItems.filter(s => s.status === 'FAIR VALUE').sort((a, b) => a.positionPct - b.positionPct);
+	const premiumPool = valuationCacheItems.filter(s => s.status === 'PREMIUM').sort((a, b) => b.positionPct - a.positionPct);
+
+	const undervaluedList = undervaluedPool.slice(0, MAX_PER_CATEGORY);
+	const fairValueList = fairValuePool.slice(0, MAX_PER_CATEGORY);
+	const premiumList = premiumPool.slice(0, MAX_PER_CATEGORY);
 
 	let displayItems = [];
 	if (valuationStatusFilter === 'UNDERVALUED') {
@@ -7168,15 +7198,10 @@ function renderFilteredValuation() {
 		displayItems = premiumList;
 	} else {
 		displayItems = [
-			...undervaluedList.slice(0, 7),
-			...fairValueList.slice(0, 7),
-			...premiumList.slice(0, 7)
-		];
-		if (displayItems.length < 21) {
-			const usedTickers = new Set(displayItems.map(s => s.ticker));
-			const remainder = valuationCacheItems.filter(s => !usedTickers.has(s.ticker)).slice(0, 21 - displayItems.length);
-			displayItems.push(...remainder);
-		}
+			...undervaluedList,
+			...fairValueList,
+			...premiumList
+		].slice(0, MAX_TOTAL_ALL);
 	}
 
 	const getFilterBtnClass = (key, activeClasses) => {
@@ -7185,21 +7210,23 @@ function renderFilteredValuation() {
 			: `px-2.5 py-1 rounded-lg text-[10px] lg:text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition cursor-pointer`;
 	};
 
+	const totalShownAll = Math.min(MAX_TOTAL_ALL, undervaluedList.length + fairValueList.length + premiumList.length);
+
 	const filterBarHtml = `
 		<div class="col-span-full flex flex-wrap items-center justify-between gap-2 bg-slate-950/50 px-4 py-3 rounded-xl border border-slate-800 text-[10px] lg:text-xs">
-			<span class="font-bold text-slate-200">Filter Matriks Valuasi (${valuationCacheItems.length} Emiten):</span>
+			<span class="font-bold text-slate-200">Filter Matriks Valuasi (${displayItems.length} Ditampilkan • Maks. 75):</span>
 			<div class="flex flex-wrap items-center gap-2">
 				<button type="button" onclick="setValuationFilter('ALL')" class="${getFilterBtnClass('ALL', 'bg-slate-700 text-white border-slate-500')}">
-					Semua (${valuationCacheItems.length})
+					Semua (${totalShownAll}/75)
 				</button>
 				<button type="button" onclick="setValuationFilter('UNDERVALUED')" class="${getFilterBtnClass('UNDERVALUED', 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40')}">
-					Undervalued (${undervaluedList.length})
+					Undervalued (${undervaluedList.length}/25)
 				</button>
 				<button type="button" onclick="setValuationFilter('FAIR VALUE')" class="${getFilterBtnClass('FAIR VALUE', 'bg-sky-500/20 text-sky-400 border-sky-500/40')}">
-					Fair Value (${fairValueList.length})
+					Fair Value (${fairValueList.length}/25)
 				</button>
 				<button type="button" onclick="setValuationFilter('PREMIUM')" class="${getFilterBtnClass('PREMIUM', 'bg-amber-500/20 text-amber-400 border-amber-500/40')}">
-					Premium (${premiumList.length})
+					Premium (${premiumList.length}/25)
 				</button>
 			</div>
 		</div>
@@ -7332,7 +7359,7 @@ async function runValuationScreener() {
 	if (window.lucide) lucide.createIcons();
 
 	const updateValuationCacheAndRender = (rawItems) => {
-		valuationCacheItems = rawItems.map(stock => {
+		const mapped = rawItems.map(stock => {
 			const valInfo = evaluateValuationStatus(stock);
 			const isAboveMA20 = stock.price >= (stock.ma20 || stock.price);
 			return {
@@ -7341,14 +7368,17 @@ async function runValuationScreener() {
 				isAboveMA20
 			};
 		});
+		// Acak urutan emiten setiap kali tombol diklik agar daftar berganti
+		valuationCacheItems = shuffleValuationList(mapped);
 		renderFilteredValuation();
 	};
 
 	try {
+		const rotatedWatchlist = shuffleValuationList(watchlist);
 		const items = [];
 		const uncached = [];
 
-		for (const ticker of watchlist) {
+		for (const ticker of rotatedWatchlist) {
 			const cached = getCachedStockData(ticker);
 			if (cached) {
 				const norm = normalizeStockPayload(cached, ticker);
@@ -7360,7 +7390,7 @@ async function runValuationScreener() {
 
 		if (items.length > 0) updateValuationCacheAndRender(items);
 
-		const targets = uncached.sort(() => 0.5 - Math.random()).slice(0, 30);
+		const targets = uncached.slice(0, 30);
 		const BATCH_SIZE = 15;
 
 		for (let i = 0; i < targets.length; i += BATCH_SIZE) {
@@ -7389,7 +7419,7 @@ async function runValuationScreener() {
 		container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm md:col-span-2">Gagal memuat Valuasi Matrix.</div>`;
 	} finally {
 		isValuationLoading = false;
-		startFeatureButtonCooldown(btn, 'valuation', defaultBtnHtml, 'text-emerald-400', 15);
+		startFeatureButtonCooldown(btn, 'valuation', defaultBtnHtml, 'text-emerald-400', 10);
 	}
 }
 
@@ -7552,10 +7582,11 @@ async function fetchWarrantWithFallback(wTicker) {
 	return null;
 }
 
+// Komentar: Memuat dan merender daftar waran aktif (-W / -W2) beserta data saham induknya.
 async function loadWarrantData() {
 	if (isWarrantScanning) return;
-	const container = document.getElementById('warrantResultsContainer');
-	const btn = document.getElementById('btnScanWarrant');
+	const container = document.getElementById('warrant-tracker-list') || document.getElementById('warrantResultsContainer');
+	const btn = document.getElementById('btnScanWarrant') || document.querySelector("#tabContent-warrant button[onclick*='loadWarrantData']");
 	if (!container) return;
 
 	isWarrantScanning = true;
@@ -7563,21 +7594,24 @@ async function loadWarrantData() {
 	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
 	if (!isVibrateMuted && 'vibrate' in navigator) navigator.vibrate(100);
 
+	const defaultBtnHtml = `<i data-lucide="refresh-cw" class="w-4 h-4"></i> Muat Data Waran`;
 	if (btn) {
 		btn.disabled = true;
 		btn.classList.add('opacity-60', 'cursor-not-allowed', 'animate-warrant-press');
+		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Memuat Waran...`;
+		if (window.lucide) lucide.createIcons();
 	}
 
 	container.innerHTML = `
-		<div class="text-center py-10 text-cyan-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800 flex flex-col items-center justify-center gap-2">
-			<i data-lucide="loader-2" class="w-6 h-6 animate-spin text-cyan-400"></i>
-			<span>Mengambil harga live saham induk & seri waran BEI (-W / -W2)...</span>
+		<div class="text-center py-10 text-fuchsia-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800 flex flex-col items-center justify-center gap-2">
+			<i data-lucide="loader-2" class="w-6 h-6 animate-spin text-fuchsia-400"></i>
+			<span>Mengambil harga live saham induk &amp; seri waran BEI (-W / -W2)...</span>
 		</div>
 	`;
 	if (window.lucide) lucide.createIcons();
 
 	try {
-		const warrantTickers = getOnlyDashWTickers().filter(t => !isDeadWarrantCached(t));
+		const warrantTickers = shuffleValuationList(getOnlyDashWTickers().filter(t => !isDeadWarrantCached(t)));
 		const activeWarrants = [];
 		const BATCH_SIZE = 12;
 
@@ -7614,9 +7648,13 @@ async function loadWarrantData() {
 		if (btn) {
 			btn.disabled = false;
 			btn.classList.remove('opacity-60', 'cursor-not-allowed', 'animate-warrant-press');
+			btn.innerHTML = defaultBtnHtml;
+			if (window.lucide) lucide.createIcons();
 		}
 	}
 }
+
+window.loadWarrantData = loadWarrantData;
 
 // Komentar: Melengkapi data saham induk & merender daftar kartu Waran (-W) dengan tata letak rapi.
 async function enrichAndRenderWarrants(warrantList, container) {

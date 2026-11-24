@@ -716,24 +716,24 @@
 		</div>
 		
 		<!-- Konten Tab 5: Warrant & Structured Warrant Tracker -->
-		<div id="tabContent-warrant" class="hidden min-h-[400px] space-y-4 text-xs lg:text-sm">
-			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-900/80 p-4 rounded-xl border border-slate-800 shadow-lg">
-				<div>
-					<h3 class="text-base font-extrabold text-white flex items-center gap-2">
-						<i data-lucide="zap" class="w-5 h-5 text-fuchsia-400"></i> Warrant & Structured Warrant Tracker
-					</h3>
-					<p class="text-xs text-slate-400 mt-1">Pantau pergerakan harga waran (-W), volume transaksi, dan rasio harganya terhadap saham induk di BEI.</p>
-				</div>
-				<button onclick="loadWarrantData()" class="px-4 py-2 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold rounded-lg shadow transition flex items-center gap-2">
-					<i data-lucide="refresh-cw" class="w-4 h-4"></i> Muat Data Waran
-				</button>
-			</div>
-			<div id="warrant-tracker-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[800px] overflow-y-auto pr-1 scrollbar-thin">
-				<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800">
-					Klik tombol <strong class="text-fuchsia-400">"Muat Data Waran"</strong> untuk melihat daftar waran aktif dari watchlist.
-				</div>
-			</div>
+<div id="tabContent-warrant" class="hidden min-h-[400px] space-y-4 text-xs lg:text-sm">
+	<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-900/80 p-4 rounded-xl border border-slate-800 shadow-lg">
+		<div>
+			<h3 class="text-base font-extrabold text-white flex items-center gap-2">
+				<i data-lucide="zap" class="w-5 h-5 text-fuchsia-400"></i> Warrant &amp; Structured Warrant Tracker
+			</h3>
+			<p class="text-xs text-slate-400 mt-1">Pantau pergerakan harga waran (-W), volume transaksi, dan rasio harganya terhadap saham induk di BEI.</p>
 		</div>
+		<button type="button" id="btnScanWarrant" onclick="loadWarrantData()" class="px-4 py-2 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold rounded-lg shadow transition flex items-center gap-2 cursor-pointer">
+			<i data-lucide="refresh-cw" class="w-4 h-4"></i> Muat Data Waran
+		</button>
+	</div>
+	<div id="warrant-tracker-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[800px] overflow-y-auto pr-1 scrollbar-thin">
+		<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800">
+			Klik tombol <strong class="text-fuchsia-400">"Muat Data Waran"</strong> untuk melihat daftar waran aktif dari watchlist.
+		</div>
+	</div>
+</div>
 				
 				<!-- TAB: INSIDER (FMP API) -->
 				<div id="tabContent-insider" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
@@ -1025,58 +1025,58 @@
 						</div>
 
 						<!-- Custom Tailwind Dropdowns -->
-						<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-900/50 p-3 lg:p-4 rounded-xl border border-slate-800">
-							
-							<!-- Dropdown 1: Tren & MA -->
-							<div class="relative">
-								<label class="text-[10px] lg:text-[11px] text-slate-200 font-bold block mb-1.5 uppercase tracking-wider">1. Tren Harga & MA</label>
-								<input type="hidden" id="csRuleMA" value="ALL">
-								<button onclick="toggleCustomDropdown('dropdownMA')" class="w-full bg-slate-950/10 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
-									<span id="csRuleMA_Label" class="truncate pr-2 font-medium text-blue-100">Semua Kondisi (Bebas)</span>
-									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
-								</button>
-								<ul id="dropdownMA" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl shadow-slate-950/80 max-h-48 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
-									<li onclick="selectCustomOption('csRuleMA', 'ALL', 'Semua Kondisi (Bebas)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Semua Kondisi (Bebas)</li>
-									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA5', 'Harga > MA5 (Uptrend Pendek)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Harga > MA5 (Uptrend Pendek)</li>
-									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA20', 'Harga > MA20 (Uptrend Menengah)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Harga > MA20 (Uptrend Menengah)</li>
-									<li onclick="selectCustomOption('csRuleMA', 'GOLDEN_CROSS', 'Golden Cross (MA5 > MA10)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Golden Cross (MA5 > MA10)</li>
-									<li onclick="selectCustomOption('csRuleMA', 'BELOW_MA20', 'Harga < MA20 (Downtrend / Oversold)', 'dropdownMA')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Harga &lt; MA20 (Downtrend / Oversold)</li>
-								</ul>
-							</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-900/50 p-3 lg:p-4 rounded-xl border border-slate-800">
 
-							<!-- Dropdown 2: Volume -->
-							<div class="relative">
-								<label class="text-[10px] lg:text-[11px] text-slate-200 font-bold block mb-1.5 uppercase tracking-wider">2. Syarat Volume (Likuiditas)</label>
-								<input type="hidden" id="csRuleVol" value="ALL">
-								<button onclick="toggleCustomDropdown('dropdownVol')" class="w-full bg-slate-950/10 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
-									<span id="csRuleVol_Label" class="truncate pr-2 font-medium text-blue-100">Semua Tingkat Volume</span>
-									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
-								</button>
-								<ul id="dropdownVol" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl shadow-slate-950/80 max-h-48 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
-									<li onclick="selectCustomOption('csRuleVol', 'ALL', 'Semua Tingkat Volume', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Semua Tingkat Volume</li>
-									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_1.5', 'Volume Spike (> 1.5x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Volume Spike (> 1.5x Rerata)</li>
-									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_3.0', 'Volume Meledak (> 3.0x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Volume Meledak (> 3.0x Rerata)</li>
-									<li onclick="selectCustomOption('csRuleVol', 'DRY', 'Volume Kering (< 1.0x Rerata)', 'dropdownVol')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Volume Kering (&lt; 1.0x Rerata)</li>
-								</ul>
-							</div>
+	<!-- Dropdown 1: Tren & MA -->
+	<div class="relative custom-dropdown-wrapper">
+		<label class="text-[10px] lg:text-[11px] text-slate-200 font-bold block mb-1.5 uppercase tracking-wider">1. Tren Harga &amp; MA</label>
+		<input type="hidden" id="csRuleMA" value="ALL">
+		<button type="button" onclick="toggleCustomDropdown('dropdownMA', event)" class="w-full bg-slate-900/90 border border-slate-700 hover:border-blue-500/60 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left cursor-pointer">
+			<span id="csRuleMA_Label" class="truncate pr-2 font-medium text-blue-100">Semua Kondisi (Bebas)</span>
+			<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
+		</button>
+		<ul id="dropdownMA" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-52 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
+			<li onclick="selectCustomOption('csRuleMA', 'ALL', 'Semua Kondisi (Bebas)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Semua Kondisi (Bebas)</li>
+			<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA5', 'Harga &gt; MA5 (Uptrend Pendek)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Harga &gt; MA5 (Uptrend Pendek)</li>
+			<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA20', 'Harga &gt; MA20 (Uptrend Menengah)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Harga &gt; MA20 (Uptrend Menengah)</li>
+			<li onclick="selectCustomOption('csRuleMA', 'GOLDEN_CROSS', 'Golden Cross (MA5 &gt; MA10)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Golden Cross (MA5 &gt; MA10)</li>
+			<li onclick="selectCustomOption('csRuleMA', 'BELOW_MA20', 'Harga &lt; MA20 (Downtrend / Oversold)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Harga &lt; MA20 (Downtrend / Oversold)</li>
+		</ul>
+	</div>
 
-							<!-- Dropdown 3: Harga Harian -->
-							<div class="relative">
-								<label class="text-[10px] lg:text-[11px] text-slate-200 font-bold block mb-1.5 uppercase tracking-wider">3. Pergerakan Harian (%)</label>
-								<input type="hidden" id="csRulePrice" value="ALL">
-								<button onclick="toggleCustomDropdown('dropdownPrice')" class="w-full bg-slate-950/10 border border-slate-800 hover:border-blue-500/50 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left">
-									<span id="csRulePrice_Label" class="truncate pr-2 font-medium text-blue-100">Semua Perubahan Harga</span>
-									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
-								</button>
-								<ul id="dropdownPrice" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-xl shadow-slate-950/80 max-h-48 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
-									<li onclick="selectCustomOption('csRulePrice', 'ALL', 'Semua Perubahan Harga', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Semua Perubahan Harga</li>
-									<li onclick="selectCustomOption('csRulePrice', 'GREEN', 'Ditutup menguat (Hijau / > 0%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Ditutup menguat (Hijau / > 0%)</li>
-									<li onclick="selectCustomOption('csRulePrice', 'RED', 'Ditutup Melemah (Merah / < 0%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Ditutup Melemah (Merah / &lt; 0%)</li>
-									<li onclick="selectCustomOption('csRulePrice', 'BREAKOUT', 'Breakout Kuat (> 5%)', 'dropdownPrice')" class="p-3 hover:bg-blue-500/10 hover:text-blue-500 cursor-pointer transition font-medium">Breakout Kuat (> 5%)</li>
-								</ul>
-							</div>
+	<!-- Dropdown 2: Volume -->
+	<div class="relative custom-dropdown-wrapper">
+		<label class="text-[10px] lg:text-[11px] text-slate-200 font-bold block mb-1.5 uppercase tracking-wider">2. Syarat Volume (Likuiditas)</label>
+		<input type="hidden" id="csRuleVol" value="ALL">
+		<button type="button" onclick="toggleCustomDropdown('dropdownVol', event)" class="w-full bg-slate-900/90 border border-slate-700 hover:border-blue-500/60 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left cursor-pointer">
+			<span id="csRuleVol_Label" class="truncate pr-2 font-medium text-blue-100">Semua Tingkat Volume</span>
+			<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
+		</button>
+		<ul id="dropdownVol" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-52 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
+			<li onclick="selectCustomOption('csRuleVol', 'ALL', 'Semua Tingkat Volume', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Semua Tingkat Volume</li>
+			<li onclick="selectCustomOption('csRuleVol', 'SPIKE_1.5', 'Volume Spike (&gt; 1.5x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Spike (&gt; 1.5x Rerata)</li>
+			<li onclick="selectCustomOption('csRuleVol', 'SPIKE_3.0', 'Volume Meledak (&gt; 3.0x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Meledak (&gt; 3.0x Rerata)</li>
+			<li onclick="selectCustomOption('csRuleVol', 'DRY', 'Volume Kering (&lt; 1.0x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Kering (&lt; 1.0x Rerata)</li>
+		</ul>
+	</div>
 
-						</div>
+	<!-- Dropdown 3: Harga Harian -->
+	<div class="relative custom-dropdown-wrapper">
+		<label class="text-[10px] lg:text-[11px] text-slate-200 font-bold block mb-1.5 uppercase tracking-wider">3. Pergerakan Harian (%)</label>
+		<input type="hidden" id="csRulePrice" value="ALL">
+		<button type="button" onclick="toggleCustomDropdown('dropdownPrice', event)" class="w-full bg-slate-900/90 border border-slate-700 hover:border-blue-500/60 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left cursor-pointer">
+			<span id="csRulePrice_Label" class="truncate pr-2 font-medium text-blue-100">Semua Perubahan Harga</span>
+			<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
+		</button>
+		<ul id="dropdownPrice" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-52 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
+			<li onclick="selectCustomOption('csRulePrice', 'ALL', 'Semua Perubahan Harga', 'dropdownPrice', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Semua Perubahan Harga</li>
+			<li onclick="selectCustomOption('csRulePrice', 'GREEN', 'Ditutup menguat (Hijau / &gt; 0%)', 'dropdownPrice', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Ditutup menguat (Hijau / &gt; 0%)</li>
+			<li onclick="selectCustomOption('csRulePrice', 'RED', 'Ditutup Melemah (Merah / &lt; 0%)', 'dropdownPrice', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Ditutup Melemah (Merah / &lt; 0%)</li>
+			<li onclick="selectCustomOption('csRulePrice', 'BREAKOUT', 'Breakout Kuat (&gt; 5%)', 'dropdownPrice', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Breakout Kuat (&gt; 5%)</li>
+		</ul>
+	</div>
+
+</div>
 					</div>
 
 					<div id="csResultsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[800px] overflow-y-auto pr-1.5 scrollbar-thin">
