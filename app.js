@@ -6816,7 +6816,7 @@ window.selectBacktestOption = selectBacktestOption;
 
 document.addEventListener('click', (e) => {
 	if (!e.target.closest('.custom-dropdown-wrapper')) {
-		const dropdowns = ['dropdownMA', 'dropdownVol', 'dropdownPrice', 'dropdownRSI', 'dropdownBacktestStrategy', 'dropdownBacktestPeriod'];
+		const dropdowns = ['dropdownBacktestStrategy', 'dropdownBacktestPeriod']; //'dropdownMA', 'dropdownVol', 'dropdownPrice', 'dropdownRSI', 
 		dropdowns.forEach((id) => {
 			const menu = document.getElementById(id);
 			if (menu && !menu.classList.contains('hidden')) {
