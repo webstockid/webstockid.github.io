@@ -7732,7 +7732,7 @@ function notifyWhaleToServiceWorker(ticker, title, message) {
 
 	if (document.hidden) {
 		unreadWhaleCount++;
-		updateAppBadge(unreadWhaleCount);
+		setWhaleAppBadge(unreadWhaleCount);
 	}
 
 	if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
