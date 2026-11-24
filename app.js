@@ -764,20 +764,20 @@ function selectSuggestion(ticker) {
 // ============================================================================
 // COOLDOWN TOMBOL CARI SAHAM
 // ============================================================================
-function startSearchCooldown(seconds = 7) {
+function startSearchCooldown(seconds = 5) {
 	const btn = document.getElementById('btnSearchStock') || document.querySelector('button[onclick*="searchStock"]');
 	if (!btn) return;
 
 	let remaining = seconds;
 	btn.disabled = true;
 	btn.classList.add('opacity-60', 'cursor-not-allowed');
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>(${remaining}s)</span>`;
+	btn.innerHTML = `<span>Cari (${remaining}s)</span>`;
 	if (window.lucide) lucide.createIcons();
 
 	const timer = setInterval(() => {
 		remaining -= 1;
 		if (remaining > 0) {
-			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>(${remaining}s)</span>`;
+			btn.innerHTML = `<span>Cari (${remaining}s)</span>`;
 			if (window.lucide) lucide.createIcons();
 		} else {
 			clearInterval(timer);

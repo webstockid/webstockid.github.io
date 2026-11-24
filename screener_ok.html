@@ -12,15 +12,12 @@
 		<meta property="og:title" content="Stock ID Screener #Andaimology">
 		<meta property="og:description" content="Alat Screening Saham yang dilengkapi AI dan Analisa Teknikal">
 		<meta property="og:type" content="website">
-			
 		<link rel="apple-touch-icon" sizes="180x180" href="stockid_gambar/apple-touch-icon.png">
 		<link rel="manifest" href="manifest.json">
 		<meta name="theme-color" content="#0b0f19">
-		
 		<script src="https://cdn.tailwindcss.com"></script>
 		<script src="https://unpkg.com/lucide@latest"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-		
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap">
@@ -28,154 +25,263 @@
 		<link rel="icon" type="image/x-icon" href="stockid_gambar/stockidscreener.jpeg">
 		<link rel="icon" type="image/png" sizes="60x60" href="stockid_gambar/stockidscreener.jpeg">
 		<link rel="apple-touch-icon" sizes="180x180" href="stockid_gambar/stockidscreener.jpeg">
-		
 		<style>
 			:root {
 				--app-font-family: "Plus Jakarta Sans", sans-serif;
 				--app-font-weight: 700;
 			}
+
 			body {
 				font-family: var(--app-font-family);
 				font-weight: var(--app-font-weight);
 				background-color: #0b0f19;
 			}
-			body, .heading-font, a, p, b, button, nav, ul, li, ol, tr, td, option, select, strong, div, span, table, label, input {
+
+			body,
+			.heading-font,
+			a,
+			p,
+			b,
+			button,
+			nav,
+			ul,
+			li,
+			ol,
+			tr,
+			td,
+			option,
+			select,
+			strong,
+			div,
+			span,
+			table,
+			label,
+			input {
 				font-family: var(--app-font-family) !important;
 				font-weight: var(--app-font-weight) !important;
 			}
+
 			.glassmorphism {
 				background: rgba(17, 24, 39, 0.75);
 				backdrop-filter: blur(12px);
 				-webkit-backdrop-filter: blur(12px);
 				border: 1px solid rgba(255, 255, 255, 0.08);
 			}
+
 			@keyframes progress-bar-stripes {
-				0% { background-position: 0 0; }
-				100% { background-position: 16px 0; }
+				0% {
+					background-position: 0 0;
+				}
+
+				100% {
+					background-position: 16px 0;
+				}
 			}
+
 			@keyframes barberShopMove {
-				0% { background-position: 0 0; }
-				100% { background-position: 40px 0; }
+				0% {
+					background-position: 0 0;
+				}
+
+				100% {
+					background-position: 40px 0;
+				}
 			}
+
 			@keyframes pulse-glow {
-				0%, 100% { opacity: 0.8; transform: scale(1); }
-				50% { opacity: 1; transform: scale(1.03); }
+
+				0%,
+				100% {
+					opacity: 0.8;
+					transform: scale(1);
+				}
+
+				50% {
+					opacity: 1;
+					transform: scale(1.03);
+				}
 			}
+
 			.animate-pulse-glow {
 				animation: pulse-glow 2s infinite ease-in-out;
 			}
+
 			@keyframes shimmer {
-				0% { background-position: -200% 0; }
-				100% { background-position: 200% 0; }
+				0% {
+					background-position: -200% 0;
+				}
+
+				100% {
+					background-position: 200% 0;
+				}
 			}
+
 			.skeleton {
 				background: linear-gradient(90deg, rgba(30, 41, 59, 0.6) 25%, rgba(51, 65, 85, 0.8) 50%, rgba(30, 41, 59, 0.6) 75%);
 				background-size: 200% 100%;
 				animation: shimmer 1.5s infinite;
 			}
+
 			@keyframes marquee {
-				0% { transform: translateX(0%); }
-				100% { transform: translateX(-50%); }
+				0% {
+					transform: translateX(0%);
+				}
+
+				100% {
+					transform: translateX(-50%);
+				}
 			}
+
 			.animate-marquee {
 				display: inline-flex;
 				width: max-content;
 				animation: marquee 35s linear infinite;
 			}
+
 			.animate-marquee:hover {
 				animation-play-state: paused;
 			}
+
 			@keyframes float-bounce {
-				0%, 100% { transform: translateY(0); }
-				50% { transform: translateY(-10px); }
+
+				0%,
+				100% {
+					transform: translateY(0);
+				}
+
+				50% {
+					transform: translateY(-10px);
+				}
 			}
+
 			.animate-float {
 				animation: float-bounce 2s infinite ease-in-out;
 			}
+
 			@keyframes rainbowScroll {
-				0% { background-position: 0% 50%; }
-				50% { background-position: 100% 50%; }
-				100% { background-position: 0% 50%; }
+				0% {
+					background-position: 0% 50%;
+				}
+
+				50% {
+					background-position: 100% 50%;
+				}
+
+				100% {
+					background-position: 0% 50%;
+				}
 			}
+
 			::-webkit-scrollbar {
 				width: 2px;
 				height: 2px;
 			}
+
 			::-webkit-scrollbar-track {
 				background: #0b0f19;
 				border-radius: 6px;
 			}
+
 			::-webkit-scrollbar-thumb {
 				background: linear-gradient(270deg, #10b981, #3b82f6, #8b5cf6, #ec4899, #f59e0b);
 				background-size: 400% 400%;
 				animation: rainbowScroll 6s ease infinite;
 				border-radius: 6px;
 			}
+
 			::-webkit-scrollbar-thumb:hover {
 				filter: brightness(1.2);
 			}
+
 			:root {
 				--app-font-family: "Lexend";
 			}
-			body, .heading-font, a, p, b, button, nav, ul, li, ol, option, select, strong, div, span, label, input {
+
+			body,
+			.heading-font,
+			a,
+			p,
+			b,
+			button,
+			nav,
+			ul,
+			li,
+			ol,
+			option,
+			select,
+			strong,
+			div,
+			span,
+			label,
+			input {
 				font-family: var(--app-font-family) !important;
 			}
+
 			body.light-mode {
 				background-color: #fafafa !important;
 				color: #0f172a !important;
 			}
-			body.light-mode ul, body.light-mode li {
+
+			body.light-mode ul,
+			body.light-mode li {
 				color: #111 !important;
 			}
-			body.light-mode .bg-slate-950, 
-			body.light-mode .bg-slate-900, 
-			body.light-mode .bg-slate-800, 
-			body.light-mode .bg-slate-700 { 
-				background-color: #fafafa !important; 
-				border-color: #e2e8f0 !important; 
-				color: #0f172a !important; 
+
+			body.light-mode .bg-slate-950,
+			body.light-mode .bg-slate-900,
+			body.light-mode .bg-slate-800,
+			body.light-mode .bg-slate-700 {
+				background-color: #fafafa !important;
+				border-color: #e2e8f0 !important;
+				color: #0f172a !important;
 			}
-			body.light-mode [class*="bg-slate-950/"], 
-			body.light-mode [class*="bg-slate-900/"], 
+
+			body.light-mode [class*="bg-slate-950/"],
+			body.light-mode [class*="bg-slate-900/"],
 			body.light-mode [class*="bg-slate-800/"],
-			body.light-mode [class*="bg-slate-700/"] { 
-				background-color: #efefef !important; 
-				border-color: #cbd5e1 !important; 
+			body.light-mode [class*="bg-slate-700/"] {
+				background-color: #efefef !important;
+				border-color: #cbd5e1 !important;
 			}
-			body.light-mode .text-slate-200, 
-			body.light-mode .text-white { 
-				color: #0f172a !important; 
+
+			body.light-mode .text-slate-200,
+			body.light-mode .text-white {
+				color: #0f172a !important;
 			}
-			body.light-mode .text-slate-200, 
-			body.light-mode .text-slate-400 { 
-				color: #475569 !important; 
+
+			body.light-mode .text-slate-200,
+			body.light-mode .text-slate-400 {
+				color: #475569 !important;
 			}
-			body.light-mode .border-slate-800, 
-			body.light-mode .border-slate-700 { 
-				border-color: #cbd5e1 !important; 
+
+			body.light-mode .border-slate-800,
+			body.light-mode .border-slate-700 {
+				border-color: #cbd5e1 !important;
 			}
-			body.light-mode .glassmorphism { 
-				background-color: #fafafa !important; 
-				border-color: rgba(0,0,0,0.1) !important; 
+
+			body.light-mode .glassmorphism {
+				background-color: #fafafa !important;
+				border-color: rgba(0, 0, 0, 0.1) !important;
 			}
-			body.light-mode input { 
-				background-color: #fafafa !important; 
-				color: #0f172a !important; 
-				border-color: #cbd5e1 !important; 
+
+			body.light-mode input {
+				background-color: #fafafa !important;
+				color: #0f172a !important;
+				border-color: #cbd5e1 !important;
 			}
-			body.light-mode button, 
-			body.light-mode btn { 
-				color: #efefef !important; 
+
+			body.light-mode button,
+			body.light-mode btn {
+				color: #efefef !important;
 			}
+
 			.limit-circle-badge {
 				box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
 				user-select: none;
 			}
 		</style>
 	</head>
-
 	<body class="text-slate-200 antialiased overflow-x-hidden">
-
 		<!-- Modal Pop-up Welcome -->
 		<div id="welcomeModal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
 			<div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 text-center">
@@ -183,26 +289,17 @@
 					<i data-lucide="info" class="w-8 h-8 text-emerald-400"></i>
 				</div>
 				<h3 class="text-xl font-bold text-white">Informasi Layanan Screener</h3>
-				<p class="text-xs text-slate-200 leading-relaxed">
-					Selamat datang di Stock's ID Screener.<br>Data pasar diperbarui secara real-time pada jam bursa (09:00 - 16:00 WIB) dan disimpan dalam cache secara otomatis di latar belakang untuk pengalaman akses yang lebih cepat.
-				</p>
-				<p class="text-xs text-slate-200 leading-relaxed">
-					Disclaimer: Jika Kamu baru pertama kali membuka web ini, sistem latar belakang akan otomatis mulai memperbarui data analisa berkala setiap 5 menit.
-				</p>
+				<p class="text-xs text-slate-200 leading-relaxed"> Selamat datang di Stock's ID Screener. <br>Data pasar diperbarui secara real-time pada jam bursa (09:00 - 16:00 WIB) dan disimpan dalam cache secara otomatis di latar belakang untuk pengalaman akses yang lebih cepat. </p>
+				<p class="text-xs text-slate-200 leading-relaxed"> Disclaimer: Jika Kamu baru pertama kali membuka web ini, sistem latar belakang akan otomatis mulai memperbarui data analisa berkala setiap 5 menit. </p>
 				<p class="text-xs text-slate-200 leading-relaxed">
 					<i>AI dapat membuat kesalahan, jangan jadikan AI sebagai patokan untuk Entry dan TP, gunakan prinsip dan kemandirian, analisa manual sebelum menentukan pilihan.</i>
 				</p>
 				<div class="flex flex-col sm:flex-row gap-3 pt-2">
-					<button onclick="closeWelcomeModal(false)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">
-						Oke
-					</button>
-					<button onclick="closeWelcomeModal(true)" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-emerald-500/20">
-						Jangan Tampilkan Lagi
-					</button>
+					<button onclick="closeWelcomeModal(false)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition"> Oke </button>
+					<button onclick="closeWelcomeModal(true)" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-emerald-500/20"> Jangan Tampilkan Lagi </button>
 				</div>
 			</div>
 		</div>
-
 		<!-- Navbar -->
 		<nav class="sticky top-0 z-40 w-full glassmorphism border-b border-slate-800">
 			<div class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
@@ -211,24 +308,20 @@
 						<i class="fa-solid fa-biohazard text-slate-950 text-xl font-bold"></i>
 					</div>
 					<div>
-						<span class="heading-font text-xl lg:text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">SCREENER</span></span>
+						<span class="heading-font text-xl lg:text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">STOCK ID <span class="text-emerald-400 font-bold">SCREENER</span>
+						</span>
 						<p class="text-[9px] lg:text-[10px] tracking-widest text-emerald-400 uppercase">#Andaimology Edition</p>
 					</div>
 				</div>
-
 				<div class="relative inline-block text-left" id="navDropdownContainer">
 					<button id="menuDropdownBtn" onclick="toggleNavDropdown()" type="button" class="bg-slate-900/80 hover:bg-slate-800 active:scale-95 text-slate-200 px-4 py-2.5 rounded-xl border border-slate-700/70 hover:border-emerald-500/60 text-xs font-bold tracking-wide transition-all duration-200 flex items-center gap-2.5 shadow-md hover:shadow-emerald-500/10 cursor-pointer select-none">
 						<i class="fa-solid fa-bars text-emerald-400 transition-transform duration-300 group-hover:scale-110"></i>
 						<span>Navigasi</span>
 						<i id="dropdownChevron" class="fa-solid fa-chevron-down text-[10px] text-white transition-transform duration-300 ease-out"></i>
 					</button>
-
 					<div id="navDropdownMenu" class="hidden opacity-0 scale-95 duration-200 ease-out absolute right-0 mt-2 w-64 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-2xl backdrop-blur-xl p-2 z-50 transform origin-top-right transition-all divide-y divide-slate-800/80">
 						<div class="pb-1.5 space-y-1">
-							<div class="px-2 py-1 text-[10px] font-bold text-white uppercase tracking-wider">
-								Aplikasi & Layanan
-							</div>
-
+							<div class="px-2 py-1 text-[10px] font-bold text-white uppercase tracking-wider"> Aplikasi & Layanan </div>
 							<a id="navLinkVIP" href="https://webstockid.github.io/screener" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-200 hover:bg-slate-800/80 hover:text-emerald-400 font-bold text-xs transition-all duration-200 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-wand-magic-sparkles text-amber-400 group-hover:scale-110 transition-transform w-4 text-center"></i>
@@ -238,7 +331,6 @@
 									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
-							
 							<a href="https://webstockid.github.io/index" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-200 hover:bg-slate-800/80 hover:text-emerald-400 font-bold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-crown text-white group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -248,7 +340,6 @@
 									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
-
 							<a href="https://webstockid.github.io/tools" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-200 hover:bg-slate-800/80 hover:text-emerald-400 font-bold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-screwdriver-wrench text-white group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -258,7 +349,6 @@
 									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
-
 							<a href="https://webstockid.github.io/watchlist" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-200 hover:bg-slate-800/80 hover:text-emerald-400 font-bold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-eye text-white group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -268,7 +358,6 @@
 									<i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-white group-hover:text-emerald-400 transition-colors default-icon"></i>
 								</div>
 							</a>
-
 							<a href="https://webstockid.github.io/member" class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-200 hover:bg-slate-800/80 hover:text-emerald-400 font-bold text-xs transition-all duration-150 group cursor-pointer">
 								<div class="flex items-center gap-2.5">
 									<i class="fa-solid fa-circle-user text-white group-hover:text-emerald-400 transition-colors w-4 text-center"></i>
@@ -283,84 +372,92 @@
 				</div>
 			</div>
 		</nav>
-
 		<!-- Dashboard Informasi Akun Premium -->
 		<div id="vipDashboard" class="hidden w-full bg-slate-900 border-b border-emerald-500/20 py-3 px-4 shadow-lg transition-all">
 			<div class="max-w-7xl 2xl:max-w-[1600px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 text-xs sm:text-sm lg:text-base">
 				<div class="flex flex-wrap items-center gap-3">
 					<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold flex items-center gap-1.5">
-						<i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> <span id="vipAccountStatus">Status: Aktif</span>
+						<i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+						<span id="vipAccountStatus">Status: Aktif</span>
 					</span>
-					<div class="text-slate-200">
-						Selamat datang, <strong id="vipUserName" class="text-white font-bold text-sm lg:text-base">User</strong>
+					<div class="text-slate-200"> Selamat datang, <strong id="vipUserName" class="text-white font-bold text-sm lg:text-base">User</strong>
 					</div>
 				</div>
-
 				<div class="flex items-center gap-4">
-					<div class="text-white text-xs lg:text-sm">
-						Sisa Masa Aktif: <strong id="vipDaysLeft" class="text-amber-400 font-bold">0 Hari</strong>
+					<div class="text-white text-xs lg:text-sm"> Sisa Masa Aktif: <strong id="vipDaysLeft" class="text-amber-400 font-bold">0 Hari</strong>
 					</div>
 					<button onclick="logoutVIP()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs lg:text-sm font-bold transition flex items-center gap-1">
-						<i data-lucide="log-out" class="w-3.5 h-3.5"></i> Logout
-					</button>
+						<i data-lucide="log-out" class="w-3.5 h-3.5"></i> Logout </button>
 				</div>
 			</div>
 		</div>
-		
 		<!-- Running Tape TradingView -->
 		<div class="bg-slate-950/10 border-b border-slate-800/80 overflow-hidden relative z-30 select-none">
 			<div class="tradingview-widget-container">
 				<div class="tradingview-widget-container__widget"></div>
 				<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-				{
-					"symbols": [
-						{ "description": "MDIA", "proName": "IDX:MDIA" },
-						{ "description": "BBRI", "proName": "IDX:BBRI" },
-						{ "description": "BMRI", "proName": "IDX:BMRI" },
-						{ "description": "DCII", "proName": "IDX:DCII" },
-						{ "description": "ASII", "proName": "IDX:ASII" },
-						{ "description": "CUAN", "proName": "IDX:CUAN" },
-						{ "description": "BREN", "proName": "IDX:BREN" },
-						{ "description": "ANTM", "proName": "IDX:ANTM" },
-						{ "description": "DEFI", "proName": "IDX:DEFI" },
-						{ "description": "LSIP", "proName": "IDX:LSIP" },
-						{ "description": "PCAR", "proName": "IDX:PCAR" }
-					],
-					"showSymbolLogo": false,
-					"isTransparent": true,
-					"displayMode": "adaptive",
-					"colorTheme": "dark",
-					"locale": "id"
-				}
+					{
+						"symbols": [{
+							"description": "MDIA",
+							"proName": "IDX:MDIA"
+						}, {
+							"description": "BBRI",
+							"proName": "IDX:BBRI"
+						}, {
+							"description": "BMRI",
+							"proName": "IDX:BMRI"
+						}, {
+							"description": "DCII",
+							"proName": "IDX:DCII"
+						}, {
+							"description": "ASII",
+							"proName": "IDX:ASII"
+						}, {
+							"description": "CUAN",
+							"proName": "IDX:CUAN"
+						}, {
+							"description": "BREN",
+							"proName": "IDX:BREN"
+						}, {
+							"description": "ANTM",
+							"proName": "IDX:ANTM"
+						}, {
+							"description": "DEFI",
+							"proName": "IDX:DEFI"
+						}, {
+							"description": "LSIP",
+							"proName": "IDX:LSIP"
+						}, {
+							"description": "PCAR",
+							"proName": "IDX:PCAR"
+						}],
+						"showSymbolLogo": false,
+						"isTransparent": true,
+						"displayMode": "adaptive",
+						"colorTheme": "dark",
+						"locale": "id"
+					}
 				</script>
 			</div>
 		</div>
-
 		<!-- Fixed Search Bar Melayang -->
 		<div class="sticky top-20 left-0 w-full z-30 glassmorphism border-b border-slate-800/80 py-3 px-4">
 			<div class="max-w-md lg:max-w-xl mx-auto flex items-center gap-2" id="searchContainer">
-				
 				<!-- Input Wrapper -->
 				<div class="relative flex-1">
 					<i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 lg:w-5 lg:h-5 text-slate-400 z-10"></i>
-					<input type="text" id="stockSearch" autocomplete="off" placeholder="Cari saham (MDIA...) atau klik Mic" 
-						class="w-full bg-slate-800 text-sm lg:text-base border border-slate-700 rounded-lg pl-10 lg:pl-11 pr-[45px] py-2 lg:py-2.5 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
-					
+					<input type="text" id="stockSearch" autocomplete="off" placeholder="Cari saham (MDIA...) atau klik Mic" class="w-full bg-slate-800 text-sm lg:text-base border border-slate-700 rounded-lg pl-10 lg:pl-11 pr-[45px] py-2 lg:py-2.5 focus:outline-none focus:border-emerald-500 uppercase text-white placeholder-slate-500">
 					<!-- Tombol Pencarian Suara -->
 					<button onclick="startVoiceSearch()" id="btnVoiceSearch" title="Pencarian Suara" class="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-400 transition z-10 p-1">
 						<i id="voiceIcon" class="fa-solid fa-microphone text-sm lg:text-base"></i>
 					</button>
-
 					<!-- Dropdown Menu Suggestions -->
 					<div id="searchSuggestionsBox" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl backdrop-blur-xl max-h-60 overflow-y-auto z-50 divide-y divide-slate-800/60 scrollbar-thin"></div>
 				</div>
-
 				<!-- Tombol Cari (Di luar kotak input) -->
 				<button onclick="searchStock()" class="relative shrink-0 text-xs lg:text-sm bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/40 font-bold px-4 py-2 lg:py-2.5 rounded-lg transition z-10">Cari</button>
-				
 			</div>
 		</div>
-
 		<!-- Modal Gateway Token VIP -->
 		<div id="vipGatewayModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
 			<div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 relative my-8">
@@ -371,21 +468,16 @@
 					<h2 class="text-2xl font-bold text-white tracking-tight">Stock ID Screener</h2>
 					<p class="text-xs text-slate-200">Masukan Akses Token Kamu</p>
 				</div>
-
 				<div class="space-y-3">
 					<div>
 						<input type="text" id="tokenInput" placeholder="JOKOWI4PERIODE" class="w-full bg-slate-950/10 border border-slate-800 rounded-xl px-4 py-3 text-center text-sm tracking-widest text-blue-400 uppercase focus:outline-none focus:border-emerald-500 transition">
 						<p id="loginErrorMsg" class="text-rose-400 text-xs text-center mt-2 hidden"></p>
 					</div>
-					<button onclick="loginVIP()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-sm">
-						Buka Dashboard
-					</button>
+					<button onclick="loginVIP()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-sm"> Buka Dashboard </button>
 				</div>
-
 				<div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3.5 space-y-2.5 text-left">
 					<span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block flex items-center gap-1.5">
-						<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Fitur Unggulan Yang Didapat:
-					</span>
+						<i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Fitur Unggulan Yang Didapat: </span>
 					<div class="grid grid-cols-2 gap-2 text-[10px] text-slate-200">
 						<div class="flex items-center gap-1.5">
 							<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> AI Signal & Trading Map
@@ -434,54 +526,37 @@
 						</div>
 					</div>
 				</div>
-
-				<p class="text-xs text-slate-400 text-center leading-relaxed">
-					Silakan hubungi Admin untuk mendapatkan Akses Token
-				</p>
-
+				<p class="text-xs text-slate-400 text-center leading-relaxed"> Silakan hubungi Admin untuk mendapatkan Akses Token </p>
 				<div class="border-t border-slate-800/80 pt-4 mt-2 space-y-3 text-center">
-					<p class="text-xs text-slate-200 font-medium leading-relaxed">
-						Dapatkan paket Stock ID Screener tanpa limit selama 60 hari penuh
-					</p>
+					<p class="text-xs text-slate-200 font-medium leading-relaxed"> Dapatkan paket Stock ID Screener tanpa limit selama 60 hari penuh </p>
 					<a href="https://wa.me/6289529305947?text=Halo%20admin%2C%20Saya%20ingin%20membeli%20fitur%20Stock%20ID%20Screener%20dan%20Watchlist%20selama%2060%20hari." target="_blank" class="inline-flex items-center justify-center gap-2 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl transition shadow-lg shadow-emerald-500/20 text-xs">
-						<i class="fa-brands fa-whatsapp text-sm"></i> Beli Rp. 400,000
-					</a>
+						<i class="fa-brands fa-whatsapp text-sm"></i> Beli Rp. 400,000 </a>
 				</div>
 			</div>
 		</div>
-
 		<!-- Main Content -->
 		<main class="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 lg:px-8 pt-6 lg:pt-8 pb-12 space-y-6 lg:space-y-8">
-
 			<!-- Baris Atas: Chart & Meteran Teknikal -->
 			<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 				<section class="lg:col-span-8 space-y-4">
 					<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5 flex flex-wrap justify-between items-center gap-3">
 						<div>
-							<h2 class="text-2xl lg:text-3xl font-bold text-white flex items-center gap-2" id="stockTitle">
-								IDX:MDIA
-							</h2>
+							<h2 class="text-2xl lg:text-3xl font-bold text-white flex items-center gap-2" id="stockTitle"> IDX:MDIA </h2>
 							<p class="text-xs lg:text-sm text-white mt-0.5">Bursa Efek Indonesia • 1-Day Chart</p>
 						</div>
-						
 						<div class="flex items-center gap-2">
 							<button id="btnExportCard" onclick="exportTradingCard()" class="text-xs lg:text-sm bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/40 px-3 lg:px-4 py-1.5 rounded-lg flex items-center gap-1.5 transition font-bold shadow-lg shadow-emerald-500/10">
-								<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card
-							</button>
+								<i data-lucide="download" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Export Card </button>
 							<button onclick="shareStockUrl()" class="text-xs lg:text-sm bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 lg:px-4 py-1.5 rounded-lg flex items-center gap-1.5 transition font-medium">
-								<i data-lucide="share-2" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Bagikan
-							</button>
+								<i data-lucide="share-2" class="w-3.5 h-3.5 lg:w-4 lg:h-4"></i> Bagikan </button>
 							<span id="marketStatusBadge" class="text-xs lg:text-sm bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 lg:px-4 py-1 rounded-full font-medium flex items-center gap-1.5">
-								<span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Market Live
-							</span>
+								<span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> Market Live </span>
 						</div>
 					</div>
-
 					<div class="bg-slate-900 border border-slate-800 rounded-xl p-2 lg:p-3 h-[500px] lg:h-[520px] 2xl:h-[580px] overflow-hidden shadow-xl">
 						<div id="tv_chart_container" class="w-full h-full"></div>
 					</div>
 				</section>
-
 				<section class="lg:col-span-4 h-full">
 					<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-5 shadow-xl h-full flex flex-col justify-between">
 						<h3 class="text-sm lg:text-base font-bold text-slate-200 mb-3 flex items-center gap-2">
@@ -493,69 +568,48 @@
 					</div>
 				</section>
 			</div>
-
 			<!-- Baris Bawah: Tab Navigasi & Konten -->
 			<section class="bg-slate-900 border border-slate-800 rounded-xl p-4 lg:p-6 shadow-xl">
 				<div class="sticky top-[133px] lg:top-[140px] z-20 glassmorphism p-2 lg:p-2.5 rounded-xl mb-6 border border-slate-800 flex gap-1.5 lg:gap-3 overflow-x-auto shadow-xl scrollbar-thin">
 					<button onclick="switchTab('ai')" id="tabBtn-ai" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="sparkles" class="w-4 h-4 text-rose-400"></i> AI Signal
-					</button>
+						<i data-lucide="sparkles" class="w-4 h-4 text-rose-400"></i> AI Signal </button>
 					<button onclick="switchTab('bigmoney')" id="tabBtn-bigmoney" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="zap" class="w-4 h-4 text-amber-400"></i> Radar Saham
-					</button>
+						<i data-lucide="zap" class="w-4 h-4 text-amber-400"></i> Radar Saham </button>
 					<button onclick="switchTab('custom')" id="tabBtn-custom" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="settings-2" class="w-4 h-4 text-blue-400"></i> Custom Radar
-					</button>
+						<i data-lucide="settings-2" class="w-4 h-4 text-blue-400"></i> Custom Radar </button>
 					<button onclick="switchTab('bsjp')" id="tabBtn-bsjp" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="sunset" class="w-4 h-4 text-orange-400"></i> BSJP Radar
-					</button>
+						<i data-lucide="sunset" class="w-4 h-4 text-orange-400"></i> BSJP Radar </button>
 					<button onclick="switchTab('foreign')" id="tabBtn-foreign" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition relative">
-						<i data-lucide="globe-2" class="w-4 h-4 text-sky-400"></i> Asing Flow
-					</button>
+						<i data-lucide="globe-2" class="w-4 h-4 text-sky-400"></i> Asing Flow </button>
 					<button onclick="switchTab('backtest')" id="tabBtn-backtest" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition relative">
-						<i data-lucide="history" class="w-4 h-4 text-amber-400"></i> Backtest
-					</button>
+						<i data-lucide="history" class="w-4 h-4 text-amber-400"></i> Backtest </button>
 					<button onclick="switchTab('valuation')" id="tabBtn-valuation" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition relative">
-						<i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> Valuasi Matrix
-					</button>
+						<i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> Valuasi Matrix </button>
 					<button onclick="switchTab('warrant')" id="tabBtn-warrant" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition relative">
-						<i data-lucide="zap" class="w-4 h-4 text-fuchsia-400"></i> Waran Tracker
-					</button>
+						<i data-lucide="zap" class="w-4 h-4 text-fuchsia-400"></i> Waran Tracker </button>
 					<button onclick="switchTab('peer')" id="tabBtn-peer" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Peer Komparasi
-					</button>
+						<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Peer Komparasi </button>
 					<button onclick="switchTab('journal')" id="tabBtn-journal" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="book-open" class="w-4 h-4 text-pink-400"></i> Journal Trading
-					</button>
+						<i data-lucide="book-open" class="w-4 h-4 text-pink-400"></i> Journal Trading </button>
 					<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="calculator" class="w-4 h-4 text-cyan-400"></i> Smart RRR
-					</button>
+						<i data-lucide="calculator" class="w-4 h-4 text-cyan-400"></i> Smart RRR </button>
 					<button onclick="switchTab('alert')" id="tabBtn-alert" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="bell" class="w-4 h-4 text-teal-400"></i> Smart Alert
-					</button>
+						<i data-lucide="bell" class="w-4 h-4 text-teal-400"></i> Smart Alert </button>
 					<button onclick="switchTab('paper')" id="tabBtn-paper" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="gamepad-2" class="w-4 h-4 text-blue-400"></i> Paper Trade
-					</button>
+						<i data-lucide="gamepad-2" class="w-4 h-4 text-blue-400"></i> Paper Trade </button>
 					<button onclick="switchTab('news')" id="tabBtn-news" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="newspaper" class="w-4 h-4 text-sky-400"></i> Berita
-					</button>
+						<i data-lucide="newspaper" class="w-4 h-4 text-sky-400"></i> Berita </button>
 					<button onclick="switchTab('corporate')" id="tabBtn-corporate" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="calendar" class="w-4 h-4 text-fuchsia-400"></i> Korporasi
-					</button>
+						<i data-lucide="calendar" class="w-4 h-4 text-fuchsia-400"></i> Korporasi </button>
 					<button onclick="switchTab('fundamental')" id="tabBtn-fundamental" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="pie-chart" class="w-4 h-4 text-fuchsia-400"></i> Fundamental
-					</button>
+						<i data-lucide="pie-chart" class="w-4 h-4 text-fuchsia-400"></i> Fundamental </button>
 					<button onclick="switchTab('insider')" id="tabBtn-insider" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="pie-chart" class="w-4 h-4 text-indigo-400"></i> Insider
-					</button>
+						<i data-lucide="pie-chart" class="w-4 h-4 text-indigo-400"></i> Insider </button>
 					<button onclick="switchTab('heatmap')" id="tabBtn-heatmap" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Sektor Heatmap
-					</button>
+						<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Sektor Heatmap </button>
 					<button onclick="switchTab('setting')" id="tabBtn-setting" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
-						<i data-lucide="settings" class="w-4 h-4 text-slate-400"></i> Pengaturan
-					</button>
+						<i data-lucide="settings" class="w-4 h-4 text-slate-400"></i> Pengaturan </button>
 				</div>
-				
 				<!-- Konten Tab 1: Foreign Net Flow Tracker -->
 				<div id="tabContent-foreign" class="hidden min-h-[400px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-900/80 p-4 rounded-xl border border-slate-800 shadow-lg">
@@ -566,52 +620,31 @@
 							<p class="text-xs text-slate-400 mt-1">Pemantauan estimasi akumulasi dan distribusi aliran dana harian berdasarkan turnover & lonjakan volume.</p>
 						</div>
 						<button onclick="loadForeignFlowData()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg shadow transition flex items-center gap-2">
-							<i data-lucide="play" class="w-4 h-4"></i> Pindai Flow Asing
-						</button>
+							<i data-lucide="play" class="w-4 h-4"></i> Pindai Flow Asing </button>
 					</div>
 					<!-- Filter Arah Flow & Skala Nominal -->
 					<div class="bg-slate-950/40 p-3.5 rounded-xl border border-slate-800 mb-4 space-y-3">
 						<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
 							<div class="flex flex-wrap items-center gap-1.5">
 								<span class="text-[10px] text-slate-400 uppercase tracking-wider mr-1">Arah Flow:</span>
-								<button type="button" id="ffTypeBtn-ALL" onclick="setForeignFlowFilter('type', 'ALL')" class="px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/40 transition">
-									Semua
-								</button>
-								<button type="button" id="ffTypeBtn-BUY" onclick="setForeignFlowFilter('type', 'BUY')" class="px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-emerald-400 transition">
-									NET BUY
-								</button>
-								<button type="button" id="ffTypeBtn-SELL" onclick="setForeignFlowFilter('type', 'SELL')" class="px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-rose-400 transition">
-									NET SELL
-								</button>
+								<button type="button" id="ffTypeBtn-ALL" onclick="setForeignFlowFilter('type', 'ALL')" class="px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/40 transition"> Semua </button>
+								<button type="button" id="ffTypeBtn-BUY" onclick="setForeignFlowFilter('type', 'BUY')" class="px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-emerald-400 transition"> NET BUY </button>
+								<button type="button" id="ffTypeBtn-SELL" onclick="setForeignFlowFilter('type', 'SELL')" class="px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-rose-400 transition"> NET SELL </button>
 							</div>
-							
 							<div class="flex flex-wrap items-center gap-1.5">
 								<span class="text-[10px] text-slate-400 uppercase tracking-wider mr-1">Nominal:</span>
-								<button type="button" id="ffNominalBtn-ALL" onclick="setForeignFlowFilter('nominal', 'ALL')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-sky-500/20 text-sky-400 border border-sky-500/40 transition">
-									Semua
-								</button>
-								<button type="button" id="ffNominalBtn-RIBU" onclick="setForeignFlowFilter('nominal', 'RIBU')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition">
-									Ribu
-								</button>
-								<button type="button" id="ffNominalBtn-JUTA" onclick="setForeignFlowFilter('nominal', 'JUTA')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition">
-									Juta
-								</button>
-								<button type="button" id="ffNominalBtn-MILIAR" onclick="setForeignFlowFilter('nominal', 'MILIAR')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition">
-									Miliar
-								</button>
-								<button type="button" id="ffNominalBtn-TRILIUN" onclick="setForeignFlowFilter('nominal', 'TRILIUN')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition">
-									Triliun
-								</button>
+								<button type="button" id="ffNominalBtn-ALL" onclick="setForeignFlowFilter('nominal', 'ALL')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-sky-500/20 text-sky-400 border border-sky-500/40 transition"> Semua </button>
+								<button type="button" id="ffNominalBtn-RIBU" onclick="setForeignFlowFilter('nominal', 'RIBU')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition"> Ribu </button>
+								<button type="button" id="ffNominalBtn-JUTA" onclick="setForeignFlowFilter('nominal', 'JUTA')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition"> Juta </button>
+								<button type="button" id="ffNominalBtn-MILIAR" onclick="setForeignFlowFilter('nominal', 'MILIAR')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition"> Miliar </button>
+								<button type="button" id="ffNominalBtn-TRILIUN" onclick="setForeignFlowFilter('nominal', 'TRILIUN')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition"> Triliun </button>
 							</div>
 						</div>
 					</div>
 					<div id="foreign-flow-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[800px] overflow-y-auto pr-1 scrollbar-thin">
-						<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800">
-							Klik tombol <strong class="text-sky-400">"Pindai Flow Asing"</strong> untuk memuat data aliran dana.
-						</div>
+						<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800"> Klik tombol <strong class="text-sky-400">"Pindai Flow Asing"</strong> untuk memuat data aliran dana. </div>
 					</div>
 				</div>
-				
 				<!-- Konten Tab 2: Backtesting Engine -->
 				<div id="tabContent-backtest" class="hidden min-h-[400px] space-y-4 text-xs lg:text-sm">
 					<div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 shadow-lg space-y-3">
@@ -620,132 +653,119 @@
 						</h3>
 						<p class="text-xs text-slate-400">Uji performa historis strategi screening (Golden Cross, Volume Spike, & Breakout Resistance) terhadap pergerakan saham.</p>
 						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-						<!-- Custom Dropdown: Strategi Filter -->
-						<div class="relative">
-							<label class="text-[10px] text-slate-400 uppercase tracking-wider block mb-1.5">Strategi Filter</label>
-							<input type="hidden" id="backtestStrategy" value="golden_cross">
-							<button type="button" onclick="toggleBacktestDropdown('dropdownBacktestStrategy')" class="w-full bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-amber-500/50 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold flex items-center justify-between transition shadow-inner">
-								<span id="backtestStrategy_Label" class="truncate">Golden Cross MA5/MA20</span>
-								<i data-lucide="chevron-down" class="w-4 h-4 text-amber-400 shrink-0 ml-2"></i>
-							</button>
-							<div id="dropdownBacktestStrategy" class="hidden absolute left-0 right-0 mt-1.5 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-30 overflow-hidden divide-y divide-slate-800/80">
-								<button type="button" onclick="selectBacktestOption('backtestStrategy', 'golden_cross', 'Golden Cross MA5/MA20', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
-									<span>Golden Cross MA5/MA20</span>
-									<span class="text-[9px] text-slate-500">Tren</span>
+							<!-- Custom Dropdown: Strategi Filter -->
+							<div class="relative">
+								<label class="text-[10px] text-slate-400 uppercase tracking-wider block mb-1.5">Strategi Filter</label>
+								<input type="hidden" id="backtestStrategy" value="golden_cross">
+								<button type="button" onclick="toggleBacktestDropdown('dropdownBacktestStrategy')" class="w-full bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-amber-500/50 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold flex items-center justify-between transition shadow-inner">
+									<span id="backtestStrategy_Label" class="truncate">Golden Cross MA5/MA20</span>
+									<i data-lucide="chevron-down" class="w-4 h-4 text-amber-400 shrink-0 ml-2"></i>
 								</button>
-								<button type="button" onclick="selectBacktestOption('backtestStrategy', 'volume_spike', 'Volume Spike > 2.5x', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
-									<span>Volume Spike &gt; 2.5x</span>
-									<span class="text-[9px] text-slate-500">Likuiditas</span>
-								</button>
-								<button type="button" onclick="selectBacktestOption('backtestStrategy', 'breakout', 'Breakout Resistance 20 Hari', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
-									<span>Breakout Resistance 20 Hari</span>
-									<span class="text-[9px] text-slate-500">Momentum</span>
+								<div id="dropdownBacktestStrategy" class="hidden absolute left-0 right-0 mt-1.5 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-30 overflow-hidden divide-y divide-slate-800/80">
+									<button type="button" onclick="selectBacktestOption('backtestStrategy', 'golden_cross', 'Golden Cross MA5/MA20', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+										<span>Golden Cross MA5/MA20</span>
+										<span class="text-[9px] text-slate-500">Tren</span>
 									</button>
-								<button type="button" onclick="selectBacktestOption('backtestStrategy', 'volume_accumulation', 'Volume Accumulation', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
-									<span>Volume Accumulation</span>
-									<span class="text-[9px] text-blue-400">Akumulasi</span>
-								</button>
-								<button type="button" onclick="selectBacktestOption('backtestStrategy', 'curi_start', 'Curi Start (Whale Acc)', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
-									<span>Curi Start (Whale Acc)</span>
-									<span class="text-[9px] text-fuchsia-400">Bandar</span>
-								</button>
+									<button type="button" onclick="selectBacktestOption('backtestStrategy', 'volume_spike', 'Volume Spike > 2.5x', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+										<span>Volume Spike &gt; 2.5x</span>
+										<span class="text-[9px] text-slate-500">Likuiditas</span>
+									</button>
+									<button type="button" onclick="selectBacktestOption('backtestStrategy', 'breakout', 'Breakout Resistance 20 Hari', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+										<span>Breakout Resistance 20 Hari</span>
+										<span class="text-[9px] text-slate-500">Momentum</span>
+									</button>
+									<button type="button" onclick="selectBacktestOption('backtestStrategy', 'volume_accumulation', 'Volume Accumulation', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+										<span>Volume Accumulation</span>
+										<span class="text-[9px] text-blue-400">Akumulasi</span>
+									</button>
+									<button type="button" onclick="selectBacktestOption('backtestStrategy', 'curi_start', 'Curi Start (Whale Acc)', 'dropdownBacktestStrategy')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+										<span>Curi Start (Whale Acc)</span>
+										<span class="text-[9px] text-fuchsia-400">Bandar</span>
+									</button>
+								</div>
 							</div>
-						</div>
-						
-						<!-- Custom Dropdown: Periode Uji -->
-						<div class="relative">
-							<label class="text-[10px] text-slate-400 uppercase tracking-wider block mb-1.5">Periode Uji</label>
-							<input type="hidden" id="backtestPeriod" value="30">
-							<button type="button" onclick="toggleBacktestDropdown('dropdownBacktestPeriod')" class="w-full bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-amber-500/50 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold flex items-center justify-between transition shadow-inner">
-								<span id="backtestPeriod_Label" class="truncate">30 Hari Bursa</span>
-								<i data-lucide="chevron-down" class="w-4 h-4 text-amber-400 shrink-0 ml-2"></i>
-							</button>
-							<div id="dropdownBacktestPeriod" class="hidden absolute left-0 right-0 mt-1.5 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-30 overflow-hidden divide-y divide-slate-800/80">
-								<button type="button" onclick="selectBacktestOption('backtestPeriod', '7', '7 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
-									<span>7 Hari Bursa</span>
-									<span class="text-[9px] text-cyan-400">Scalp / Pendek</span>
+							<!-- Custom Dropdown: Periode Uji -->
+							<div class="relative">
+								<label class="text-[10px] text-slate-400 uppercase tracking-wider block mb-1.5">Periode Uji</label>
+								<input type="hidden" id="backtestPeriod" value="30">
+								<button type="button" onclick="toggleBacktestDropdown('dropdownBacktestPeriod')" class="w-full bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-amber-500/50 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold flex items-center justify-between transition shadow-inner">
+									<span id="backtestPeriod_Label" class="truncate">30 Hari Bursa</span>
+									<i data-lucide="chevron-down" class="w-4 h-4 text-amber-400 shrink-0 ml-2"></i>
 								</button>
-								<button type="button" onclick="selectBacktestOption('backtestPeriod', '15', '15 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
-									<span>15 Hari Bursa</span>
-									<span class="text-[9px] text-emerald-400">Swing Pendek</span>
-								</button>
-								<button type="button" onclick="selectBacktestOption('backtestPeriod', '30', '30 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
-									<span>30 Hari Bursa</span>
-									<span class="text-[9px] text-slate-500">1 Bulan</span>
-								</button>
-								<button type="button" onclick="selectBacktestOption('backtestPeriod', '60', '60 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
-									<span>60 Hari Bursa</span>
-									<span class="text-[9px] text-slate-500">2 Bulan</span>
-								</button>
-								<button type="button" onclick="selectBacktestOption('backtestPeriod', '90', '90 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
-									<span>90 Hari Bursa</span>
-									<span class="text-[9px] text-slate-500">1 Kuartal</span>
-								</button>
+								<div id="dropdownBacktestPeriod" class="hidden absolute left-0 right-0 mt-1.5 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-30 overflow-hidden divide-y divide-slate-800/80">
+									<button type="button" onclick="selectBacktestOption('backtestPeriod', '7', '7 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+										<span>7 Hari Bursa</span>
+										<span class="text-[9px] text-cyan-400">Scalp / Pendek</span>
+									</button>
+									<button type="button" onclick="selectBacktestOption('backtestPeriod', '15', '15 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+										<span>15 Hari Bursa</span>
+										<span class="text-[9px] text-emerald-400">Swing Pendek</span>
+									</button>
+									<button type="button" onclick="selectBacktestOption('backtestPeriod', '30', '30 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+										<span>30 Hari Bursa</span>
+										<span class="text-[9px] text-slate-500">1 Bulan</span>
+									</button>
+									<button type="button" onclick="selectBacktestOption('backtestPeriod', '60', '60 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+										<span>60 Hari Bursa</span>
+										<span class="text-[9px] text-slate-500">2 Bulan</span>
+									</button>
+									<button type="button" onclick="selectBacktestOption('backtestPeriod', '90', '90 Hari Bursa', 'dropdownBacktestPeriod')" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 transition flex items-center justify-between">
+										<span>90 Hari Bursa</span>
+										<span class="text-[9px] text-slate-500">1 Kuartal</span>
+									</button>
+								</div>
 							</div>
-						</div>
-						<div class="flex items-end">
-							<button onclick="runBacktestEngine()" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg shadow transition flex items-center justify-center gap-2">
-								<i data-lucide="play" class="w-4 h-4"></i> Jalankan Backtest
-							</button>
+							<div class="flex items-end">
+								<button onclick="runBacktestEngine()" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg shadow transition flex items-center justify-center gap-2">
+									<i data-lucide="play" class="w-4 h-4"></i> Jalankan Backtest </button>
+							</div>
 						</div>
 					</div>
+					<div id="backtestResultContainer" class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 text-slate-300">
+						<p class="text-center text-slate-200">Pilih parameter dan Klik tombol <strong class="text-amber-400">"Jalankan Backtest"</strong> untuk melihat hasil simulasi. </p>
+					</div>
 				</div>
-				<div id="backtestResultContainer" class="bg-slate-900/60 border border-slate-800 rounded-xl p-4 text-slate-300">
-					<p class="text-center text-slate-200">Pilih parameter dan Klik tombol <strong class="text-amber-400">"Jalankan Backtest"</strong> untuk melihat hasil simulasi.</p>
+				<!-- Konten Tab 4: Fundamental Screener & Valuation Matrix -->
+				<div id="tabContent-valuation" class="hidden min-h-[400px] space-y-4 text-xs lg:text-sm">
+					<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-900/80 p-4 rounded-xl border border-slate-800 shadow-lg">
+						<div>
+							<h3 class="text-base font-extrabold text-white flex items-center gap-2">
+								<i data-lucide="pie-chart" class="w-5 h-5 text-emerald-400"></i> Valuation Matrix & 52-Week Range Screener
+							</h3>
+							<p class="text-xs text-slate-400 mt-1">Saring emiten berdasarkan posisi harga relatif terhadap rentang 52 minggu (Undervalued, Fair Value, Premium).</p>
+						</div>
+						<button onclick="runValuationScreener()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow transition flex items-center gap-2">
+							<i data-lucide="filter" class="w-4 h-4"></i> Filter Valuasi Ideal </button>
+					</div>
+					<div id="valuation-matrix-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[800px] overflow-y-auto pr-1 scrollbar-thin">
+						<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800"> Klik tombol <strong class="text-emerald-400">"Filter Valuasi Ideal"</strong> untuk memindai posisi harga emiten. </div>
+					</div>
 				</div>
-			</div>
-		
-		<!-- Konten Tab 4: Fundamental Screener & Valuation Matrix -->
-		<div id="tabContent-valuation" class="hidden min-h-[400px] space-y-4 text-xs lg:text-sm">
-			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-900/80 p-4 rounded-xl border border-slate-800 shadow-lg">
-				<div>
-					<h3 class="text-base font-extrabold text-white flex items-center gap-2">
-						<i data-lucide="pie-chart" class="w-5 h-5 text-emerald-400"></i> Valuation Matrix & 52-Week Range Screener
-					</h3>
-					<p class="text-xs text-slate-400 mt-1">Saring emiten berdasarkan posisi harga relatif terhadap rentang 52 minggu (Undervalued, Fair Value, Premium).</p>
+				<!-- Konten Tab 5: Warrant & Structured Warrant Tracker -->
+				<div id="tabContent-warrant" class="hidden min-h-[400px] space-y-4 text-xs lg:text-sm">
+					<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-900/80 p-4 rounded-xl border border-slate-800 shadow-lg">
+						<div>
+							<h3 class="text-base font-extrabold text-white flex items-center gap-2">
+								<i data-lucide="zap" class="w-5 h-5 text-fuchsia-400"></i> Warrant &amp; Structured Warrant Tracker
+							</h3>
+							<p class="text-xs text-slate-400 mt-1">Pantau pergerakan harga waran (-W), volume transaksi, dan rasio harganya terhadap saham induk di BEI.</p>
+						</div>
+						<button type="button" id="btnScanWarrant" onclick="loadWarrantData()" class="px-4 py-2 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold rounded-lg shadow transition flex items-center gap-2 cursor-pointer">
+							<i data-lucide="refresh-cw" class="w-4 h-4"></i> Muat Data Waran </button>
+					</div>
+					<div id="warrant-tracker-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[800px] overflow-y-auto pr-1 scrollbar-thin">
+						<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800"> Klik tombol <strong class="text-fuchsia-400">"Muat Data Waran"</strong> untuk melihat daftar waran aktif dari watchlist. </div>
+					</div>
 				</div>
-				<button onclick="runValuationScreener()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow transition flex items-center gap-2">
-					<i data-lucide="filter" class="w-4 h-4"></i> Filter Valuasi Ideal
-				</button>
-			</div>
-			<div id="valuation-matrix-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[800px] overflow-y-auto pr-1 scrollbar-thin">
-				<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800">
-					Klik tombol <strong class="text-emerald-400">"Filter Valuasi Ideal"</strong> untuk memindai posisi harga emiten.
-				</div>
-			</div>
-		</div>
-		
-		<!-- Konten Tab 5: Warrant & Structured Warrant Tracker -->
-<div id="tabContent-warrant" class="hidden min-h-[400px] space-y-4 text-xs lg:text-sm">
-	<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-900/80 p-4 rounded-xl border border-slate-800 shadow-lg">
-		<div>
-			<h3 class="text-base font-extrabold text-white flex items-center gap-2">
-				<i data-lucide="zap" class="w-5 h-5 text-fuchsia-400"></i> Warrant &amp; Structured Warrant Tracker
-			</h3>
-			<p class="text-xs text-slate-400 mt-1">Pantau pergerakan harga waran (-W), volume transaksi, dan rasio harganya terhadap saham induk di BEI.</p>
-		</div>
-		<button type="button" id="btnScanWarrant" onclick="loadWarrantData()" class="px-4 py-2 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold rounded-lg shadow transition flex items-center gap-2 cursor-pointer">
-			<i data-lucide="refresh-cw" class="w-4 h-4"></i> Muat Data Waran
-		</button>
-	</div>
-	<div id="warrant-tracker-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[800px] overflow-y-auto pr-1 scrollbar-thin">
-		<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800">
-			Klik tombol <strong class="text-fuchsia-400">"Muat Data Waran"</strong> untuk melihat daftar waran aktif dari watchlist.
-		</div>
-	</div>
-</div>
-				
 				<!-- TAB: INSIDER (FMP API) -->
 				<div id="tabContent-insider" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="building" class="w-4 h-4 lg:w-5 lg:h-5 text-indigo-400"></i> Pencarian Portofolio Institusi Global (13F)
-							</span>
+								<i data-lucide="building" class="w-4 h-4 lg:w-5 lg:h-5 text-indigo-400"></i> Pencarian Portofolio Institusi Global (13F) </span>
 							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Cari kepemilikan saham institusi raksasa dunia (contoh: Warrent Buffett, Bill Gates, George Soros, JPMorgan, Morgan Stanley, Vanguard) menggunakan Data dari Pemerintah Amerika Serikat</p>
 						</div>
 					</div>
-
 					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 shadow-lg shadow-indigo-500/5">
 						<div class="flex flex-col sm:flex-row gap-3">
 							<div class="relative w-full sm:flex-1">
@@ -762,7 +782,6 @@
 										<option value="0001029160" class="text-white font-normal">Soros Fund Management (George Soros)</option>
 										<option value="0001596532" class="text-white font-normal">ARK Investment Management (Cathie Wood)</option>
 									</optgroup>
-		
 									<optgroup label="Bank & Manajemen Aset Global" class="bg-slate-800 text-indigo-300 font-bold mt-2">
 										<option value="0000019617" class="text-white font-normal">JPMorgan Chase & Co.</option>
 										<option value="0000886982" class="text-white font-normal">Goldman Sachs Group</option>
@@ -770,7 +789,6 @@
 										<option value="0000093751" class="text-white font-normal">State Street Corp</option>
 										<option value="0000315066" class="text-white font-normal">Fidelity (FMR LLC)</option>
 									</optgroup>
-		
 									<optgroup label="Dana Pensiun & Yayasan Raksasa" class="bg-slate-800 text-indigo-300 font-bold mt-2">
 										<option value="0001364742" class="text-white font-normal">Bill & Melinda Gates Foundation Trust</option>
 										<option value="0001004146" class="text-white font-normal">California Public Employees Retirement System</option>
@@ -781,10 +799,8 @@
 								</div>
 							</div>
 							<button onclick="handleInsiderSearch()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-400 text-white font-bold px-6 py-2.5 rounded-lg border border-indigo-500 transition shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 shrink-0">
-								<i data-lucide="search" class="w-4 h-4"></i> Cari Portofolio
-							</button>
+								<i data-lucide="search" class="w-4 h-4"></i> Cari Portofolio </button>
 						</div>
-
 						<!-- Kontainer Hasil -->
 						<div id="insiderResultContainer" class="hidden space-y-3 pt-2">
 							<div class="flex items-center justify-between bg-slate-900/60 p-3 lg:p-4 rounded-lg border border-slate-800">
@@ -797,7 +813,6 @@
 									<p id="insiderReportDate" class="text-xs lg:text-sm font-bold text-indigo-400"></p>
 								</div>
 							</div>
-
 							<div class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner mt-2">
 								<table class="w-full text-left text-xs text-slate-200 whitespace-nowrap min-w-[600px]">
 									<thead class="bg-slate-950/60 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
@@ -814,44 +829,29 @@
 								</table>
 							</div>
 						</div>
-						
 						<!-- Pesan Status / Loading -->
 						<div id="insiderStatusMessage" class="hidden text-center py-10 text-slate-400 text-xs lg:text-sm bg-slate-900/30 rounded-xl border border-slate-800/50"></div>
 					</div>
-					
-					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
-						💡 <strong>Sumber Data FMP (13F):</strong> Data ini menampilkan kepemilikan institusional dari pasar global berdasarkan laporan wajib kuartalan kepada SEC (Form 13F).
-					</p>
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal"> 💡 <strong>Sumber Data FMP (13F):</strong> Data ini menampilkan kepemilikan institusional dari pasar global berdasarkan laporan wajib kuartalan kepada SEC (Form 13F). </p>
 				</div>
-				
 				<!-- TAB: BSJP (Beli Sore Jual Pagi) -->
 				<div id="tabContent-bsjp" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
 					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 shadow-lg shadow-orange-500/5">
 						<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 							<div class="space-y-1">
 								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
-									<i data-lucide="sunset" class="w-4 h-4 lg:w-5 lg:h-5 text-orange-400"></i> Radar BSJP (Beli Sore Jual Pagi)
-								</span>
+									<i data-lucide="sunset" class="w-4 h-4 lg:w-5 lg:h-5 text-orange-400"></i> Radar BSJP (Beli Sore Jual Pagi) </span>
 								<p class="text-[10px] lg:text-xs text-slate-400">Memfilter saham dengan momentum akumulasi kuat di sore hari untuk bisa digunakan dalam metode Beli Sore Jual Pagi</p>
 							</div>
 							<button id="btnStartBSJP" onclick="startBSJPProcess()" class="w-full sm:w-auto bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold px-6 py-2.5 rounded-lg border border-orange-500/50 transition shadow-lg shadow-orange-600/20 flex items-center justify-center gap-2 shrink-0">
-								<i data-lucide="play" class="w-4 h-4"></i> Mulai Pindai BSJP
-							</button>
+								<i data-lucide="play" class="w-4 h-4"></i> Mulai Pindai BSJP </button>
 						</div>
-
 						<div id="bsjpListContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[900px] overflow-y-auto pr-1.5 scrollbar-thin">
-							<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30">
-								Klik tombol <strong class="text-orange-400">"Mulai Pindai BSJP"</strong> di atas untuk mendapatkan rekomendasi BSJP secara real-time.
-							</div>
+							<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30"> Klik tombol <strong class="text-orange-400">"Mulai Pindai BSJP"</strong> di atas untuk mendapatkan rekomendasi BSJP secara real-time. </div>
 						</div>
 					</div>
-
-					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
-						💡 <strong>Logika BSJP:</strong> Saham yang difilter wajib memiliki valuasi transaksi yang besar, bertahan di atas Moving Average 5 (Uptrend Pendek), volume akumulasi di atas rata-rata (>1.5x), dan berada di zona hijau (+). Cocok untuk <i>hold</i> semalam.
-					</p>
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal"> 💡 <strong>Logika BSJP:</strong> Saham yang difilter wajib memiliki valuasi transaksi yang besar, bertahan di atas Moving Average 5 (Uptrend Pendek), volume akumulasi di atas rata-rata (>1.5x), dan berada di zona hijau (+). Cocok untuk <i>hold</i> semalam. </p>
 				</div>
-
-
 				<!-- Tab 1: AI Signal -->
 				<div id="tabContent-ai" class="space-y-4 min-h-[300px] text-xs lg:text-sm">
 					<!-- Row 1: Posisi 1 (TRADING MAP) & Posisi 2 ([MDIA] — KONDISI TEKNIKAL) -->
@@ -859,27 +859,29 @@
 						<!-- Posisi 1: TRADING MAP (TECHNICAL PIVOT) -->
 						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3.5">
 							<span class="font-bold text-teal-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
-								<i data-lucide="map-pin" class="w-4 h-4"></i> TRADING MAP (TECHNICAL PIVOT)
-							</span>
+								<i data-lucide="map-pin" class="w-4 h-4"></i> TRADING MAP (TECHNICAL PIVOT) </span>
 							<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs">
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
-									<span class="text-white text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5"><i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Area Entry</span>
+									<span class="text-white text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5">
+										<i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Area Entry </span>
 									<span id="mapSupport1" class="font-bold text-amber-400">Memuat...</span>
 								</div>
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
-									<span class="text-white text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5"><i data-lucide="plane-takeoff" class="w-3 h-3 text-cyan-400"></i> Resistance</span>
+									<span class="text-white text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5">
+										<i data-lucide="plane-takeoff" class="w-3 h-3 text-cyan-400"></i> Resistance </span>
 									<span id="mapResist1" class="font-bold text-cyan-400">Memuat...</span>
 								</div>
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
-									<span class="text-white text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5"><i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Take Profit (TP1 / TP2)</span>
+									<span class="text-white text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5">
+										<i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Take Profit (TP1 / TP2) </span>
 									<span id="mapTP" class="font-bold text-emerald-400">Memuat...</span>
 								</div>
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
-									<span class="text-white text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5"><i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss (SL)</span>
+									<span class="text-white text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5">
+										<i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss (SL) </span>
 									<span id="mapSL" class="font-bold text-rose-400">Memuat...</span>
 								</div>
 							</div>
-
 							<div class="bg-slate-900/90 p-3 lg:p-3.5 rounded-lg border border-slate-800 space-y-2">
 								<div class="flex justify-between items-center text-[10px] lg:text-[11px]">
 									<span class="text-rose-400 font-bold" id="tpBarSL">SL: -</span>
@@ -898,7 +900,6 @@
 								</div>
 							</div>
 						</div>
-
 						<!-- Posisi 2: [MDIA] — KONDISI TEKNIKAL -->
 						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3">
 							<div class="flex items-center justify-between">
@@ -915,195 +916,147 @@
 									<span id="aiScoreBadge" class="font-bold bg-slate-800 text-white px-2.5 py-0.5 rounded text-xs lg:text-sm border border-slate-700">- / 5</span>
 								</div>
 							</div>
-							<div id="aiVerdikDesc" class="text-slate-200 leading-relaxed text-[11px] lg:text-xs pt-1 border-t border-slate-900 space-y-1.5">
-								Menghubungkan ke server bursa untuk mengambil data real-time...
-							</div>
+							<div id="aiVerdikDesc" class="text-slate-200 leading-relaxed text-[11px] lg:text-xs pt-1 border-t border-slate-900 space-y-1.5"> Menghubungkan ke server bursa untuk mengambil data real-time... </div>
 							<div id="aiActionBoard" class="hidden flex flex-col space-y-2 mt-3 pt-3 border-t border-slate-800/80"></div>
 						</div>
 					</div>
-
 					<!-- Row 2: Posisi 3 (BUKTI UTAMA & KATALIS TEKNIKAL) & Posisi 4 (ARA & ARB) -->
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 						<!-- Posisi 3: BUKTI UTAMA & KATALIS TEKNIKAL -->
 						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-teal-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
-								<i data-lucide="check-circle-2" class="w-4 h-4"></i> BUKTI UTAMA & KATALIS TEKNIKAL
-							</span>
+								<i data-lucide="check-circle-2" class="w-4 h-4"></i> BUKTI UTAMA & KATALIS TEKNIKAL </span>
 							<ul id="aiBuktiUtamaList" class="space-y-2 text-slate-200 text-[11px] lg:text-xs list-none">
 								<li class="text-white">Memuat indikator teknikal riil (MA, Volume, Range)...</li>
 							</ul>
 						</div>
-
 						<!-- Posisi 4: ARA & ARB -->
 						<div class="flex flex-col gap-2 justify-center">
 							<div id="araArbContainer" class="transition-all duration-300"></div>
 						</div>
 					</div>
-
 					<!-- Row 3: Posisi 5 (BERITA RELEVAN) & Posisi 6 (SKENARIO PERGERAKAN HARGA) -->
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 						<!-- Posisi 5: BERITA RELEVAN -->
 						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-teal-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
-								<i data-lucide="newspaper" class="w-4 h-4"></i> BERITA RELEVAN
-							</span>
-							<div id="aiBeritaList" class="space-y-2 text-slate-200 text-[11px] lg:text-xs">
-								Memuat berita terkini...
-							</div>
+								<i data-lucide="newspaper" class="w-4 h-4"></i> BERITA RELEVAN </span>
+							<div id="aiBeritaList" class="space-y-2 text-slate-200 text-[11px] lg:text-xs"> Memuat berita terkini... </div>
 						</div>
-
 						<!-- Posisi 6: SKENARIO PERGERAKAN HARGA -->
 						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-teal-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
-								<i data-lucide="git-fork" class="w-4 h-4"></i> SKENARIO PERGERAKAN HARGA
-							</span>
-							<div id="aiSkenarioBox" class="space-y-2 text-slate-200 text-[11px] lg:text-xs leading-relaxed">
-								Memuat skenario...
-							</div>
+								<i data-lucide="git-fork" class="w-4 h-4"></i> SKENARIO PERGERAKAN HARGA </span>
+							<div id="aiSkenarioBox" class="space-y-2 text-slate-200 text-[11px] lg:text-xs leading-relaxed"> Memuat skenario... </div>
 						</div>
 					</div>
-
 					<!-- Row 4: Posisi 7 (KESIMPULAN & NOTE AI) -->
 					<div class="grid grid-cols-1 gap-4 lg:gap-6">
 						<!-- Posisi 7: KESIMPULAN & NOTE AI -->
 						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-2.5">
 							<span class="font-bold text-teal-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
-								<i data-lucide="thumbs-up" class="w-4 h-4"></i> KESIMPULAN & NOTE AI
-							</span>
-							<div id="aiKesimpulanText" class="text-slate-200 text-[11px] lg:text-xs leading-relaxed space-y-2">
-								Menghitung rekomendasi terstruktur...
-							</div>
+								<i data-lucide="thumbs-up" class="w-4 h-4"></i> KESIMPULAN & NOTE AI </span>
+							<div id="aiKesimpulanText" class="text-slate-200 text-[11px] lg:text-xs leading-relaxed space-y-2"> Menghitung rekomendasi terstruktur... </div>
 						</div>
 					</div>
-
-					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/50 p-3 rounded-lg border border-slate-900 leading-normal">
-						⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa harian. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda.
-					</p>
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/50 p-3 rounded-lg border border-slate-900 leading-normal"> ⚠️ <strong>DISCLAIMER INVESTASI:</strong> Seluruh kalkulasi berasal dari data bursa harian. Pengambilan keputusan investasi sepenuhnya menjadi tanggung jawab independen Anda. </p>
 				</div>
-
 				<!-- Tab 2: Radar Saham -->
 				<div id="tabContent-bigmoney" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 border border-slate-500/20 p-3 lg:p-4 rounded-xl gap-3">
 						<div class="flex items-center gap-2">
 							<div class="space-y-1">
 								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
-									<i data-lucide="zap" class="w-4 h-4 lg:w-5 lg:h-5 text-amber-400"></i> Pemindaian Saham Secara Otomatis
-								</span>
+									<i data-lucide="zap" class="w-4 h-4 lg:w-5 lg:h-5 text-amber-400"></i> Pemindaian Saham Secara Otomatis </span>
 								<p class="text-[10px] lg:text-xs text-slate-400">Mencari saham dalam semua kondisi dengan cepat.</p>
 							</div>
 						</div>
-
 						<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-slate-900 font-bold bg-amber-400 hover:bg-amber-500 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md">
-							<i data-lucide="play" class="w-4 h-4"></i> Mulai Pindai Pasar
-						</button>
+							<i data-lucide="play" class="w-4 h-4"></i> Mulai Pindai Pasar </button>
 					</div>
-
 					<div id="bigMoneyList" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[1400px] overflow-y-auto pr-1.5 scrollbar-thin">
-						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2">
-							Klik tombol <strong class="text-amber-400">"Mulai Pindai Pasar"</strong> di atas untuk memindai pasar secara otomatis berdasarkan seluruh indikator teknikal.
-						</div>
+						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2"> Klik tombol <strong class="text-amber-400">"Mulai Pindai Pasar"</strong> di atas untuk memindai pasar secara otomatis berdasarkan seluruh indikator teknikal. </div>
 					</div>
-
-					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
-						💡 <strong>Pemindaian Otomatis:</strong> Mencari saham berpotensi seperti: Momentum Breakout, Volume Accumulation, Golden Cross, Curi Start dan Pengujian Support dari bursa secara otomatis tanpa perlu memfilter manual.
-					</p>
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal"> 💡 <strong>Pemindaian Otomatis:</strong> Mencari saham berpotensi seperti: Momentum Breakout, Volume Accumulation, Golden Cross, Curi Start dan Pengujian Support dari bursa secara otomatis tanpa perlu memfilter manual. </p>
 				</div>
-				
 				<!-- TAB 3: Custom Radar -->
 				<div id="tabContent-custom" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
 					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 shadow-lg shadow-blue-500/5">
 						<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 							<div class="space-y-1">
 								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
-									<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-500"></i> Pemindaian Saham Tingkat Lanjut
-								</span>
+									<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-500"></i> Pemindaian Saham Tingkat Lanjut </span>
 								<p class="text-[10px] lg:text-xs text-slate-400">Rakit parameter radar Kamu sendiri dengan gaya filter institusional.</p>
 							</div>
 							<button id="btnRunCustomScreener" onclick="runCustomScreener()" class="w-full sm:w-auto bg-blue-800 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-lg border border-blue-700 transition shadow-lg shadow-blue-700/20 flex items-center justify-center gap-2 shrink-0">
-								<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter
-							</button>
+								<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter </button>
 						</div>
-
 						<!-- Custom Tailwind Dropdowns -->
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-900/50 p-3 lg:p-4 rounded-xl border border-slate-800">
-
-	<!-- Dropdown 1: Tren & MA -->
-	<div class="relative custom-dropdown-wrapper">
-		<label class="text-[10px] lg:text-[11px] text-slate-200 font-bold block mb-1.5 uppercase tracking-wider">1. Tren Harga &amp; MA</label>
-		<input type="hidden" id="csRuleMA" value="ALL">
-		<button type="button" onclick="toggleCustomDropdown('dropdownMA', event)" class="w-full bg-slate-900/90 border border-slate-700 hover:border-blue-500/60 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left cursor-pointer">
-			<span id="csRuleMA_Label" class="truncate pr-2 font-medium text-blue-100">Semua Kondisi (Bebas)</span>
-			<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
-		</button>
-		<ul id="dropdownMA" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-52 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
-			<li onclick="selectCustomOption('csRuleMA', 'ALL', 'Semua Kondisi (Bebas)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Semua Kondisi (Bebas)</li>
-			<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA5', 'Harga &gt; MA5 (Uptrend Pendek)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Harga &gt; MA5 (Uptrend Pendek)</li>
-			<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA20', 'Harga &gt; MA20 (Uptrend Menengah)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Harga &gt; MA20 (Uptrend Menengah)</li>
-			<li onclick="selectCustomOption('csRuleMA', 'GOLDEN_CROSS', 'Golden Cross (MA5 &gt; MA10)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Golden Cross (MA5 &gt; MA10)</li>
-			<li onclick="selectCustomOption('csRuleMA', 'BELOW_MA20', 'Harga &lt; MA20 (Downtrend / Oversold)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Harga &lt; MA20 (Downtrend / Oversold)</li>
-		</ul>
-	</div>
-
-	<!-- Dropdown 2: Volume -->
-	<div class="relative custom-dropdown-wrapper">
-		<label class="text-[10px] lg:text-[11px] text-slate-200 font-bold block mb-1.5 uppercase tracking-wider">2. Syarat Volume (Likuiditas)</label>
-		<input type="hidden" id="csRuleVol" value="ALL">
-		<button type="button" onclick="toggleCustomDropdown('dropdownVol', event)" class="w-full bg-slate-900/90 border border-slate-700 hover:border-blue-500/60 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left cursor-pointer">
-			<span id="csRuleVol_Label" class="truncate pr-2 font-medium text-blue-100">Semua Tingkat Volume</span>
-			<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
-		</button>
-		<ul id="dropdownVol" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-52 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
-			<li onclick="selectCustomOption('csRuleVol', 'ALL', 'Semua Tingkat Volume', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Semua Tingkat Volume</li>
-			<li onclick="selectCustomOption('csRuleVol', 'SPIKE_1.5', 'Volume Spike (&gt; 1.5x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Spike (&gt; 1.5x Rerata)</li>
-			<li onclick="selectCustomOption('csRuleVol', 'SPIKE_3.0', 'Volume Meledak (&gt; 3.0x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Meledak (&gt; 3.0x Rerata)</li>
-			<li onclick="selectCustomOption('csRuleVol', 'DRY', 'Volume Kering (&lt; 1.0x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Kering (&lt; 1.0x Rerata)</li>
-		</ul>
-	</div>
-
-	<!-- Dropdown 3: Harga Harian -->
-	<div class="relative custom-dropdown-wrapper">
-		<label class="text-[10px] lg:text-[11px] text-slate-200 font-bold block mb-1.5 uppercase tracking-wider">3. Pergerakan Harian (%)</label>
-		<input type="hidden" id="csRulePrice" value="ALL">
-		<button type="button" onclick="toggleCustomDropdown('dropdownPrice', event)" class="w-full bg-slate-900/90 border border-slate-700 hover:border-blue-500/60 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left cursor-pointer">
-			<span id="csRulePrice_Label" class="truncate pr-2 font-medium text-blue-100">Semua Perubahan Harga</span>
-			<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
-		</button>
-		<ul id="dropdownPrice" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-52 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
-			<li onclick="selectCustomOption('csRulePrice', 'ALL', 'Semua Perubahan Harga', 'dropdownPrice', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Semua Perubahan Harga</li>
-			<li onclick="selectCustomOption('csRulePrice', 'GREEN', 'Ditutup menguat (Hijau / &gt; 0%)', 'dropdownPrice', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Ditutup menguat (Hijau / &gt; 0%)</li>
-			<li onclick="selectCustomOption('csRulePrice', 'RED', 'Ditutup Melemah (Merah / &lt; 0%)', 'dropdownPrice', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Ditutup Melemah (Merah / &lt; 0%)</li>
-			<li onclick="selectCustomOption('csRulePrice', 'BREAKOUT', 'Breakout Kuat (&gt; 5%)', 'dropdownPrice', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Breakout Kuat (&gt; 5%)</li>
-		</ul>
-	</div>
-
-</div>
-					</div>
-
-					<div id="csResultsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[800px] overflow-y-auto pr-1.5 scrollbar-thin">
-						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2">
-							Atur parameter pada menu <i>dropdown</i> di atas dan klik <strong class="text-blue-500">"Jalankan Filter"</strong> untuk melihat saham yang lolos seleksi Kamu.
+						<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-900/50 p-3 lg:p-4 rounded-xl border border-slate-800">
+							<!-- Dropdown 1: Tren & MA -->
+							<div class="relative custom-dropdown-wrapper">
+								<label class="text-[10px] lg:text-[11px] text-slate-200 font-bold block mb-1.5 uppercase tracking-wider">1. Tren Harga &amp; MA</label>
+								<input type="hidden" id="csRuleMA" value="ALL">
+								<button type="button" onclick="toggleCustomDropdown('dropdownMA', event)" class="w-full bg-slate-900/90 border border-slate-700 hover:border-blue-500/60 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left cursor-pointer">
+									<span id="csRuleMA_Label" class="truncate pr-2 font-medium text-blue-100">Semua Kondisi (Bebas)</span>
+									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
+								</button>
+								<ul id="dropdownMA" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-52 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
+									<li onclick="selectCustomOption('csRuleMA', 'ALL', 'Semua Kondisi (Bebas)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Semua Kondisi (Bebas)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA5', 'Harga &gt; MA5 (Uptrend Pendek)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Harga &gt; MA5 (Uptrend Pendek)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA20', 'Harga &gt; MA20 (Uptrend Menengah)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Harga &gt; MA20 (Uptrend Menengah)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'GOLDEN_CROSS', 'Golden Cross (MA5 &gt; MA10)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Golden Cross (MA5 &gt; MA10)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'BELOW_MA20', 'Harga &lt; MA20 (Downtrend / Oversold)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Harga &lt; MA20 (Downtrend / Oversold)</li>
+								</ul>
+							</div>
+							<!-- Dropdown 2: Volume -->
+							<div class="relative custom-dropdown-wrapper">
+								<label class="text-[10px] lg:text-[11px] text-slate-200 font-bold block mb-1.5 uppercase tracking-wider">2. Syarat Volume (Likuiditas)</label>
+								<input type="hidden" id="csRuleVol" value="ALL">
+								<button type="button" onclick="toggleCustomDropdown('dropdownVol', event)" class="w-full bg-slate-900/90 border border-slate-700 hover:border-blue-500/60 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left cursor-pointer">
+									<span id="csRuleVol_Label" class="truncate pr-2 font-medium text-blue-100">Semua Tingkat Volume</span>
+									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
+								</button>
+								<ul id="dropdownVol" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-52 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
+									<li onclick="selectCustomOption('csRuleVol', 'ALL', 'Semua Tingkat Volume', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Semua Tingkat Volume</li>
+									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_1.5', 'Volume Spike (&gt; 1.5x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Spike (&gt; 1.5x Rerata)</li>
+									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_3.0', 'Volume Meledak (&gt; 3.0x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Meledak (&gt; 3.0x Rerata)</li>
+									<li onclick="selectCustomOption('csRuleVol', 'DRY', 'Volume Kering (&lt; 1.0x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Kering (&lt; 1.0x Rerata)</li>
+								</ul>
+							</div>
+							<!-- Dropdown 3: Harga Harian -->
+							<div class="relative custom-dropdown-wrapper">
+								<label class="text-[10px] lg:text-[11px] text-slate-200 font-bold block mb-1.5 uppercase tracking-wider">3. Pergerakan Harian (%)</label>
+								<input type="hidden" id="csRulePrice" value="ALL">
+								<button type="button" onclick="toggleCustomDropdown('dropdownPrice', event)" class="w-full bg-slate-900/90 border border-slate-700 hover:border-blue-500/60 rounded-xl p-3 text-slate-200 text-xs lg:text-sm flex justify-between items-center transition shadow-sm text-left cursor-pointer">
+									<span id="csRulePrice_Label" class="truncate pr-2 font-medium text-blue-100">Semua Perubahan Harga</span>
+									<i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 pointer-events-none shrink-0"></i>
+								</button>
+								<ul id="dropdownPrice" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-52 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
+									<li onclick="selectCustomOption('csRulePrice', 'ALL', 'Semua Perubahan Harga', 'dropdownPrice', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Semua Perubahan Harga</li>
+									<li onclick="selectCustomOption('csRulePrice', 'GREEN', 'Ditutup menguat (Hijau / &gt; 0%)', 'dropdownPrice', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Ditutup menguat (Hijau / &gt; 0%)</li>
+									<li onclick="selectCustomOption('csRulePrice', 'RED', 'Ditutup Melemah (Merah / &lt; 0%)', 'dropdownPrice', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Ditutup Melemah (Merah / &lt; 0%)</li>
+									<li onclick="selectCustomOption('csRulePrice', 'BREAKOUT', 'Breakout Kuat (&gt; 5%)', 'dropdownPrice', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Breakout Kuat (&gt; 5%)</li>
+								</ul>
+							</div>
 						</div>
 					</div>
-					
-					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
-						💡 <strong>Pemindaian Manual:</strong> Mencari saham secara ketat dan presisi yang bisa didukung dengan beberapa filter sekaligus.
-					</p>
+					<div id="csResultsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[800px] overflow-y-auto pr-1.5 scrollbar-thin">
+						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2"> Atur parameter pada menu <i>dropdown</i> di atas dan klik <strong class="text-blue-500">"Jalankan Filter"</strong> untuk melihat saham yang lolos seleksi Kamu. </div>
+					</div>
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal"> 💡 <strong>Pemindaian Manual:</strong> Mencari saham secara ketat dan presisi yang bisa didukung dengan beberapa filter sekaligus. </p>
 				</div>
-
 				<!-- Tab 4: Peer Komparasi -->
 				<div id="tabContent-peer" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Komparasi Saham Harga Serupa (<strong id="peerTickerLabel" class="text-emerald-400">MDIA</strong>)
-							</span>
+								<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Komparasi Saham Harga Serupa ( <strong id="peerTickerLabel" class="text-emerald-400">MDIA</strong>) </span>
 							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Membandingkan saham pilihan Kamu dengan saham-saham yang berada di range harga yang sama.</p>
 						</div>
 						<button id="btnRefreshPeer" onclick="loadPeerAnalysisByPrice(currentTicker, true)" class="w-full sm:w-auto bg-emerald-700 hover:bg-emerald-500 text-white font-bold px-6 py-2.5 rounded-lg border border-emerald-700 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0">
-							<i data-lucide="play" class="w-4 h-4"></i> Bandingkan
-						</button>
+							<i data-lucide="play" class="w-4 h-4"></i> Bandingkan </button>
 					</div>
-
 					<div class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
 						<table class="w-full text-left text-xs text-slate-200 whitespace-nowrap min-w-[700px]">
 							<thead class="bg-slate-950/10 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-800">
@@ -1118,71 +1071,56 @@
 							</thead>
 							<tbody id="peerTableBody" class="divide-y divide-slate-800/80 bg-slate-900/60">
 								<tr>
-									<td colspan="6" class="p-6 text-center text-slate-400">Klik tombol <strong class="text-emerald-400">"Bandingkan"</strong> di atas untuk memuat data komparasi saham.</td>
+									<td colspan="6" class="p-6 text-center text-slate-400">Klik tombol <strong class="text-emerald-400">"Bandingkan"</strong> di atas untuk memuat data komparasi saham. </td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
-					
-					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
-						💡 <strong>Logika Range Harga:</strong> Sistem menyaring daftar saham yang memiliki nilai transaksi per lembar dalam rentang ±25% serta beberapa indikator dari saham $<span id="peerTickerRef">MDIA</span>.
-					</p>
+					<p class="text-[10px] lg:text-[11px] text-white italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal"> 💡 <strong>Logika Range Harga:</strong> Sistem menyaring daftar saham yang memiliki nilai transaksi per lembar dalam rentang ±25% serta beberapa indikator dari saham $ <span id="peerTickerRef">MDIA</span>. </p>
 				</div>
-
 				<!-- Tab 5: Berita -->
 				<div id="tabContent-news" class="hidden space-y-3 min-h-[250px]">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs lg:text-sm text-white">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-xs lg:text-sm text-white">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong>
+						</span>
 						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-sky-400">Live News Aggregator</span>
 					</div>
 					<div id="newsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
 						<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-4">Memuat berita terkini...</div>
 					</div>
 				</div>
-
 				<!-- Tab 6: Fundamental -->
 				<div id="tabContent-fundamental" class="hidden min-h-[300px] space-y-4">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs lg:text-sm text-white">Profil & Fundamental Keuangan: <strong id="fundTickerLabel" class="text-fuchsia-400">MDIA</strong></span>
+						<span class="text-xs lg:text-sm text-white">Profil & Fundamental Keuangan: <strong id="fundTickerLabel" class="text-fuchsia-400">MDIA</strong>
+						</span>
 						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-fuchsia-400 font-bold">Yahoo & TradingView Data</span>
 					</div>
-					
 					<div id="yahooFundamentalContainer"></div>
-					
 					<div class="tradingview-widget-container mt-4 pt-4 border-t border-slate-800">
 						<div id="tv_fundamental_container"></div>
 					</div>
 				</div>
-				
-
 				<!-- Tab 7: Smart Alert -->
 				<div id="tabContent-alert" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="bell-ring" class="w-4 h-4 text-teal-400"></i> Smart Alert & Push Notification System
-							</span>
+								<i data-lucide="bell-ring" class="w-4 h-4 text-teal-400"></i> Smart Alert & Push Notification System </span>
 							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">Sistem mendeteksi secara otomatis saat harga pasar menyentuh target pada seluruh saham yang Kamu pantau.</p>
 						</div>
-						
 						<div class="flex items-center gap-2 shrink-0 self-start sm:self-auto">
 							<button id="btnToggleNotification" onclick="requestNotificationPermission()" class="text-[10px] lg:text-xs bg-teal-800 hover:bg-teal-700 text-teal-400 border border-teal-700 font-bold px-3.5 py-2 rounded-lg transition flex items-center justify-center gap-1.5 shadow-sm">
-								<i data-lucide="bell-off" class="w-3.5 h-3.5"></i> Aktifkan Notifikasi Browser
-							</button>
+								<i data-lucide="bell-off" class="w-3.5 h-3.5"></i> Aktifkan Notifikasi Browser </button>
 						</div>
 					</div>
-					
 					<!-- Konfigurasi Telegram Bot -->
 					<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-800 space-y-3.5 shadow-sm">
 						<div class="space-y-1">
 							<span class="text-[11px] lg:text-xs font-bold text-slate-200 uppercase tracking-wider block flex items-center gap-1.5">
-								<i data-lucide="send" class="w-3.5 h-3.5"></i> Integrasi Bot Telegram
-							</span>
-							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed">
-								Buat bot melalui <strong class="text-sky-300">BotFather</strong>, kirim pesan ke bot tersebut, lalu dapatkan Chat ID menggunakan <strong class="text-sky-300">userinfobot</strong> untuk menerima notifikasi.
-							</p>
+								<i data-lucide="send" class="w-3.5 h-3.5"></i> Integrasi Bot Telegram </span>
+							<p class="text-[10px] lg:text-xs text-slate-400 leading-relaxed"> Buat bot melalui <strong class="text-sky-300">BotFather</strong>, kirim pesan ke bot tersebut, lalu dapatkan Chat ID menggunakan <strong class="text-sky-300">userinfobot</strong> untuk menerima notifikasi. </p>
 						</div>
-						
 						<!-- Bagian Input Form Telegram -->
 						<div class="space-y-3">
 							<div>
@@ -1193,47 +1131,35 @@
 								<label class="block text-xs font-semibold text-slate-400 mb-1">Telegram Chat ID</label>
 								<input type="text" id="inputTeleChat" placeholder="Contoh: -100123456789 atau ID pribadi" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-sky-500">
 							</div>
-							
 							<!-- Tombol Simpan -->
 							<button onclick="saveTelegramConfig()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-5 py-2.5 rounded-lg transition flex items-center justify-center gap-1.5 shadow-md text-xs">
-								<i data-lucide="save" class="w-3.5 h-3.5"></i> Simpan & Tes Koneksi
-							</button>
-							
+								<i data-lucide="save" class="w-3.5 h-3.5"></i> Simpan & Tes Koneksi </button>
 							<button id="btnSnoozeTelegram" onclick="toggleTelegramSnooze()" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold px-4 py-2.5 rounded-lg transition text-xs flex items-center justify-center gap-2">
-								<i data-lucide="bell-off" class="w-4 h-4"></i> Tunda Notif 1 Jam
-							</button>
+								<i data-lucide="bell-off" class="w-4 h-4"></i> Tunda Notif 1 Jam </button>
 						</div>
 					</div>
-
 					<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
 						<div>
 							<span class="text-[11px] lg:text-xs font-bold text-slate-200 uppercase tracking-wider block flex items-center gap-1.5">
-								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Alert Untuk:<span id="alertTickerLabel" class="text-teal-400">MDIA</span>
+								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync Alert Untuk: <span id="alertTickerLabel" class="text-teal-400">MDIA</span>
 							</span>
 							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Ambil data Entry, Resistance, Take Profit, dan Stop Loss dari AI lalu tambahkan ke riwayat pantauan.</p>
 						</div>
 						<button onclick="openEditAlertModal()" class="bg-teal-800 hover:bg-teal-500 hover:text-white text-white px-5 py-2.5 rounded-lg border border-teal-700 font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
-							<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Tambahkan ke Alert
-						</button>
+							<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Tambahkan ke Alert </button>
 					</div>
-
 					<div class="space-y-2.5 pt-1">
 						<div class="flex items-center justify-between">
 							<span class="text-[11px] lg:text-xs text-slate-200 font-bold block flex items-center gap-1.5">
-								<i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i> Riwayat & Daftar Alert Semua Saham:
-							</span>
+								<i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i> Riwayat & Daftar Alert Semua Saham: </span>
 							<button onclick="clearAllAlerts()" class="text-[9px] lg:text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-2 py-1 rounded transition font-bold">Bersihkan Semua</button>
 						</div>
 						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 min-h-[100px] max-h-[400px] overflow-y-auto scrollbar-thin pr-1">
 							<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs">Belum ada alert harga yang dipasang pada saham manapun. Klik tombol "Tambahkan ke Alert" di atas.</div>
 						</div>
 					</div>
-
-					<p class="text-[10px] lg:text-[11px] text-slate-400 italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal">
-						💡 <strong>Informasi Push Notification:</strong> Notifikasi browser akan dikirimkan secara otomatis bahkan saat Kamu sedang membuka tab browser lain selama web Stock ID Screener tetap terbuka.
-					</p>
+					<p class="text-[10px] lg:text-[11px] text-slate-400 italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal"> 💡 <strong>Informasi Push Notification:</strong> Notifikasi browser akan dikirimkan secara otomatis bahkan saat Kamu sedang membuka tab browser lain selama web Stock ID Screener tetap terbuka. </p>
 				</div>
-				
 				<!-- Modal Konfigurasi Smart Alert -->
 				<div id="editAlertModal" class="fixed inset-0 z-[60] hidden bg-black/70 flex items-center justify-center backdrop-blur-sm transition-opacity">
 					<div class="bg-slate-800 border border-slate-600 rounded-xl w-11/12 max-w-md overflow-hidden shadow-2xl">
@@ -1246,38 +1172,30 @@
 								<i class="fa-solid fa-xmark"></i>
 							</button>
 						</div>
-			
 						<!-- Body Modal (Form Edit) -->
 						<div class="p-5 space-y-4">
-							<p class="text-xs text-slate-400 mb-2">
-								Data di bawah ini diisi secara otomatis oleh AI. Anda dapat mengubah nilainya sesuai dengan rencana trading sebelum menyimpannya ke daftar pantauan.
-							</p>
-				
+							<p class="text-xs text-slate-400 mb-2"> Data di bawah ini diisi secara otomatis oleh AI. Anda dapat mengubah nilainya sesuai dengan rencana trading sebelum menyimpannya ke daftar pantauan. </p>
 							<!-- Simbol Saham (Read-only) -->
 							<div>
 								<label for="alertModalTicker" class="block text-[11px] font-medium text-slate-400 mb-1">Simbol Saham</label>
 								<input type="text" id="alertModalTicker" readonly class="w-full bg-slate-900 border border-teal-400/50 rounded-lg px-3 py-2 text-slate-200 text-sm focus:outline-none focus:border-teal-500 cursor-not-allowed">
 							</div>
-				
 							<div class="grid grid-cols-2 gap-4">
 								<!-- Target Entry -->
 								<div>
 									<label for="alertModalEntry" class="block text-[11px] font-medium text-slate-400 mb-1">Target Entry</label>
 									<input type="number" id="alertModalEntry" class="w-full bg-slate-900 border border-amber-400/50 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-amber-500 transition-colors">
 								</div>
-					
 								<!-- Resistance -->
 								<div>
 									<label for="alertModalResistance" class="block text-[11px] font-medium text-slate-400 mb-1">Resistance</label>
 									<input type="number" id="alertModalResistance" class="w-full bg-slate-900 border border-sky-400/50 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-sky-500 transition-colors">
 								</div>
-					
 								<!-- Take Profit -->
 								<div>
 									<label for="alertModalTP" class="block text-[11px] font-medium text-slate-400 mb-1">Take Profit (TP)</label>
 									<input type="number" id="alertModalTP" class="w-full bg-slate-900 border border-emerald-400/50 rounded-lg px-3 py-2 text-emerald-400 font-semibold text-sm focus:outline-none focus:border-emerald-500 transition-colors">
 								</div>
-					
 								<!-- Stop Loss -->
 								<div>
 									<label for="alertModalSL" class="block text-[11px] font-medium text-slate-400 mb-1">Stop Loss (SL)</label>
@@ -1285,19 +1203,14 @@
 								</div>
 							</div>
 						</div>
-			
 						<!-- Footer Modal -->
 						<div class="px-5 py-4 border-t border-slate-700 bg-slate-900/60 flex justify-end gap-3">
-							<button onclick="closeEditAlertModal()" class="px-4 py-2 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-700 transition">
-								Batal
-							</button>
+							<button onclick="closeEditAlertModal()" class="px-4 py-2 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-700 transition"> Batal </button>
 							<button onclick="saveFinalEditedAlert()" class="px-4 py-2 rounded-lg text-xs font-medium bg-emerald-600 text-white hover:bg-emerald-500 transition flex items-center gap-2">
-								<i class="fa-solid fa-floppy-disk"></i> Simpan ke Daftar
-							</button>
+								<i class="fa-solid fa-floppy-disk"></i> Simpan ke Daftar </button>
 						</div>
 					</div>
 				</div>
-				
 				<!-- TAB 8: Paper Trade -->
 				<div id="tabContent-paper" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
 					<!-- Compact Rank & Balance Banner -->
@@ -1326,24 +1239,21 @@
 							<span id="ptRealizedPnL" class="text-sm lg:text-base font-bold text-slate-400">Rp 0</span>
 						</div>
 					</div>
-
 					<!-- Sub-Tabs Switcher (Form vs Portfolio) -->
 					<div class="flex bg-slate-950/30 p-1.5 rounded-xl border border-slate-500/20 gap-2">
 						<button onclick="ptSwitchSubTab('form')" id="ptSubBtnForm" class="flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white transition flex items-center justify-center gap-2 shadow-sm shadow-blue-600/20">
-							<i data-lucide="shopping-cart" class="w-4 h-4"></i> Form Eksekusi
-						</button>
+							<i data-lucide="shopping-cart" class="w-4 h-4"></i> Form Eksekusi </button>
 						<button onclick="ptSwitchSubTab('portfolio')" id="ptSubBtnPorto" class="flex-1 py-2 text-xs font-bold rounded-lg text-blue-400 hover:text-white hover:bg-blue-900/30 transition flex items-center justify-center gap-2">
-							<i data-lucide="briefcase" class="w-4 h-4"></i> Portofolio & Riwayat
-						</button>
+							<i data-lucide="briefcase" class="w-4 h-4"></i> Portofolio & Riwayat </button>
 					</div>
-
 					<!-- Sub-Tab Content 1: Form Eksekusi -->
 					<div id="ptSubContentForm" class="bg-slate-950/10 p-4 lg:p-6 rounded-xl border border-slate-500/20 space-y-4 max-w-xl mx-auto shadow-xl shadow-blue-900/10">
 						<div class="flex items-center justify-between border-b border-slate-500/20 pb-3">
-							<span class="font-bold text-blue-200 flex items-center gap-2 text-sm"><i data-lucide="shopping-cart" class="w-4 h-4 text-blue-400"></i> Form Order Saham</span>
-							<button onclick="ptSyncCurrentTicker()" class="text-[10px] bg-blue-800 hover:bg-blue-500 hover:text-white text-white px-3 py-1.5 rounded-lg border border-blue-700 transition font-bold flex items-center gap-1.5"><i data-lucide="wand-2" class="w-3 h-3"></i> Sync AI Signal</button>
+							<span class="font-bold text-blue-200 flex items-center gap-2 text-sm">
+								<i data-lucide="shopping-cart" class="w-4 h-4 text-blue-400"></i> Form Order Saham </span>
+							<button onclick="ptSyncCurrentTicker()" class="text-[10px] bg-blue-800 hover:bg-blue-500 hover:text-white text-white px-3 py-1.5 rounded-lg border border-blue-700 transition font-bold flex items-center gap-1.5">
+								<i data-lucide="wand-2" class="w-3 h-3"></i> Sync AI Signal </button>
 						</div>
-
 						<div class="grid grid-cols-2 gap-3">
 							<div>
 								<label class="text-[10px] text-blue-300 font-bold block mb-1 uppercase">Saham</label>
@@ -1371,34 +1281,31 @@
 								<input type="number" id="ptSL" placeholder="Rp" class="w-full bg-blue-950/30 border border-slate-500/30 rounded-lg p-2.5 text-white focus:border-rose-500 outline-none transition text-xs placeholder-blue-500/50">
 							</div>
 						</div>
-
 						<div class="pt-3 border-t border-slate-500/20 flex items-center justify-between">
 							<div>
 								<span class="text-[10px] text-blue-400 block font-bold">Total Nilai Beli:</span>
 								<span id="ptTotalValue" class="text-emerald-400 font-bold text-base">Rp 0</span>
 							</div>
 							<button onclick="ptExecuteBuy()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-lg shadow-blue-600/25 text-xs flex items-center gap-2">
-								<i data-lucide="mouse-pointer-click" class="w-4 h-4"></i> Eksekusi Beli
-							</button>
+								<i data-lucide="mouse-pointer-click" class="w-4 h-4"></i> Eksekusi Beli </button>
 						</div>
 					</div>
-
 					<!-- Sub-Tab Content 2: Portofolio & Riwayat -->
 					<div id="ptSubContentPorto" class="hidden bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-500/20 space-y-4 shadow-xl shadow-blue-950/10">
 						<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-500/20 pb-3">
-							<span class="font-bold text-blue-200 flex items-center gap-2 text-sm"><i data-lucide="briefcase" class="w-4 h-4 text-blue-400"></i> Portofolio Saham Aktif</span>
+							<span class="font-bold text-blue-200 flex items-center gap-2 text-sm">
+								<i data-lucide="briefcase" class="w-4 h-4 text-blue-400"></i> Portofolio Saham Aktif </span>
 							<div class="flex items-center gap-2">
-								<button onclick="ptResetAccount()" class="text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg transition font-bold flex items-center gap-1.5"><i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reset Akun</button>
-								<button onclick="ptRefreshPortoPrices()" class="text-[10px] bg-cyan-800 hover:bg-cyan-700 text-white px-3 py-1.5 rounded-lg border border-cyan-700 transition font-bold flex items-center gap-1.5 shadow-md"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Update Harga Live</button>
+								<button onclick="ptResetAccount()" class="text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg transition font-bold flex items-center gap-1.5">
+									<i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reset Akun </button>
+								<button onclick="ptRefreshPortoPrices()" class="text-[10px] bg-cyan-800 hover:bg-cyan-700 text-white px-3 py-1.5 rounded-lg border border-cyan-700 transition font-bold flex items-center gap-1.5 shadow-md">
+									<i data-lucide="refresh-cw" class="w-3 h-3"></i> Update Harga Live </button>
 							</div>
 						</div>
-						
 						<!-- TABEL DENGAN FLOATING PNL MENEMPEL DI ATAS KANAN -->
 						<div class="mt-2 relative">
 							<div class="flex justify-end pr-2">
-								<div id="ptUnrealizedPnL" class="px-3 py-1.5 rounded-t-lg text-[10px] lg:text-xs font-bold border-t border-l border-r border-slate-500/20 bg-slate-950/60 text-slate-400 translate-y-[1px] relative z-10 shadow-inner">
-									Total Floating: Rp 0 (0%)
-								</div>
+								<div id="ptUnrealizedPnL" class="px-3 py-1.5 rounded-t-lg text-[10px] lg:text-xs font-bold border-t border-l border-r border-slate-500/20 bg-slate-950/60 text-slate-400 translate-y-[1px] relative z-10 shadow-inner"> Total Floating: Rp 0 (0%) </div>
 							</div>
 							<div class="overflow-x-auto rounded-xl rounded-tr-none border border-slate-500/20 scrollbar-thin shadow-inner bg-slate-950/30 relative z-0">
 								<table class="w-full text-left text-xs text-blue-100 whitespace-nowrap min-w-[650px]">
@@ -1413,13 +1320,15 @@
 										</tr>
 									</thead>
 									<tbody id="ptPortoBody" class="divide-y divide-blue-500/10">
-										<tr><td colspan="6" class="p-6 text-center text-blue-400 font-sans">Belum ada posisi terbuka. Gunakan form eksekusi di atas.</td></tr>
+										<tr>
+											<td colspan="6" class="p-6 text-center text-blue-400 font-sans">Belum ada posisi terbuka. Gunakan form eksekusi di atas.</td>
+										</tr>
 									</tbody>
 								</table>
 							</div>
-
 							<div class="pt-4 space-y-3">
-								<span class="font-bold text-blue-200 flex items-center gap-2 text-xs"><i data-lucide="history" class="w-4 h-4 text-blue-400"></i> Riwayat Trade Terakhir (History)</span>
+								<span class="font-bold text-blue-200 flex items-center gap-2 text-xs">
+									<i data-lucide="history" class="w-4 h-4 text-blue-400"></i> Riwayat Trade Terakhir (History) </span>
 								<div id="ptHistoryContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">
 									<div class="text-blue-400 text-xs text-center col-span-full py-4 border border-dashed border-slate-500/20 rounded-lg font-sans">Belum ada riwayat penjualan saham.</div>
 								</div>
@@ -1427,27 +1336,21 @@
 						</div>
 					</div>
 				</div>
-
 				<!-- Tab 9: Smart RRR -->
 				<div id="tabContent-rrr" class="hidden min-h-[250px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
 						<div class="space-y-1">
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="calculator" class="w-4 h-4 lg:w-5 lg:h-5 text-cyan-400"></i> Smart RRR & Position Sizing (<strong id="rrrTickerLabel" class="text-cyan-400">MDIA</strong>)
-							</span>
+								<i data-lucide="calculator" class="w-4 h-4 lg:w-5 lg:h-5 text-cyan-400"></i> Smart RRR & Position Sizing ( <strong id="rrrTickerLabel" class="text-cyan-400">MDIA</strong>) </span>
 							<p class="text-[10px] text-slate-400 mt-0.5">Kalkulasi ukuran lot & rasio risiko sebelum mengeksekusi order.</p>
 						</div>
-						
 						<div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
 							<button onclick="saveTradingPlanToJournal()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-cyan-800 hover:bg-cyan-500 hover:text-white text-white font-bold px-3.5 py-2 rounded-lg border border-cyan-700 transition flex items-center justify-center gap-1.5 shadow-sm">
-								<i data-lucide="bookmark-plus" class="w-3.5 h-3.5"></i> Simpan ke Journal
-							</button>
+								<i data-lucide="bookmark-plus" class="w-3.5 h-3.5"></i> Simpan ke Journal </button>
 							<button onclick="autoFillRRRFromAI()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-blue-800 hover:bg-blue-500 hover:text-white text-white font-bold px-3.5 py-2 rounded-lg border border-blue-700 transition flex items-center justify-center gap-1.5">
-								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync AI Signal
-							</button>
+								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync AI Signal </button>
 						</div>
 					</div>
-
 					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 						<div class="space-y-4">
 							<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-800 space-y-2.5">
@@ -1463,7 +1366,6 @@
 									</div>
 								</div>
 							</div>
-
 							<div class="bg-slate-950/10 p-4 rounded-xl border border-slate-800 space-y-2.5">
 								<span class="text-[10px] lg:text-[11px] font-bold text-white uppercase tracking-wider block">2. Level Harga Trading Plan</span>
 								<div class="grid grid-cols-3 gap-2.5">
@@ -1482,14 +1384,12 @@
 								</div>
 							</div>
 						</div>
-
 						<div class="bg-slate-950/10 border border-slate-800 rounded-xl p-4 lg:p-5 space-y-3.5 flex flex-col justify-between">
 							<div>
 								<div class="flex justify-between items-center border-b border-slate-800 pb-2.5 mb-3">
 									<span class="text-slate-200 text-xs lg:text-sm">Rasio Risk / Reward:</span>
 									<span id="rrrResult" class="font-bold text-base lg:text-lg text-cyan-400">1 : -</span>
 								</div>
-
 								<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs">
 									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
 										<span class="text-white text-[9px] lg:text-[10px] block">Maksimal Risiko Uang (Rp)</span>
@@ -1509,20 +1409,15 @@
 									</div>
 								</div>
 							</div>
-
 							<div class="pt-2 border-t border-slate-800/80">
-								<div id="rrrEvaluationBadge" class="p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-slate-900 text-white">
-									Masukkan harga Entry, SL, dan TP untuk evaluasi AI.
-								</div>
+								<div id="rrrEvaluationBadge" class="p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-slate-900 text-white"> Masukkan harga Entry, SL, dan TP untuk evaluasi AI. </div>
 							</div>
 						</div>
 					</div>
-					
 					<!-- 2. KALKULATOR AVERAGING DOWN / UP -->
 					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 mt-4 shadow-xl">
 						<span class="text-[11px] lg:text-xs font-bold text-slate-200 uppercase tracking-wider block mb-4 flex items-center gap-1.5">
-							<i data-lucide="layers" class="w-4 h-4 text-cyan-400"></i> Kalkulator Averaging Down / Up
-						</span>
+							<i data-lucide="layers" class="w-4 h-4 text-cyan-400"></i> Kalkulator Averaging Down / Up </span>
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
 							<!-- Portofolio Saat Ini -->
 							<div class="space-y-3 bg-slate-900/50 p-3 lg:p-4 rounded-xl border border-slate-800/80">
@@ -1571,12 +1466,10 @@
 							</div>
 						</div>
 					</div>
-					
 					<!-- 3. KALKULATOR TRAILING STOP & PARSIAL PROFIT -->
 					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 mt-4 shadow-xl">
 						<span class="text-[11px] lg:text-xs font-bold text-slate-200 uppercase tracking-wider block mb-4 flex items-center gap-1.5">
-							<i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i> Kalkulator Trailing Stop & Jual Parsial
-						</span>
+							<i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i> Kalkulator Trailing Stop & Jual Parsial </span>
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
 							<!-- Posisi Saat Ini -->
 							<div class="space-y-3 bg-slate-900/50 p-3 lg:p-4 rounded-xl border border-slate-800/80">
@@ -1627,19 +1520,15 @@
 									<span id="ts-result-total-profit" class="text-sm lg:text-base font-bold text-fuchsia-400">Rp 0</span>
 								</div>
 							</div>
-							<div class="mt-3 pt-3 border-t border-slate-800/80 text-[10px] lg:text-[11px] text-slate-400 leading-relaxed" id="ts-scenario-desc">
-								Masukkan harga modal, total lot, dan 2 titik target profit (TP) untuk melihat kalkulasi skenario pengamanan modal <i>Risk-Free</i>.
-							</div>
+							<div class="mt-3 pt-3 border-t border-slate-800/80 text-[10px] lg:text-[11px] text-slate-400 leading-relaxed" id="ts-scenario-desc"> Masukkan harga modal, total lot, dan 2 titik target profit (TP) untuk melihat kalkulasi skenario pengamanan modal <i>Risk-Free</i>. </div>
 						</div>
 					</div>
-					
 					<div class="mt-4 bg-slate-800/50 border border-slate-700 rounded-xl p-4 shadow-sm">
 						<!-- Header -->
 						<div class="flex items-center gap-2 mb-4 border-b border-slate-700/80 pb-2">
 							<i data-lucide="calculator" class="w-4 h-4 text-purple-400"></i>
 							<h3 class="text-xs lg:text-sm font-bold text-white uppercase tracking-wider">Kalkulator Dividen & Trap Detector</h3>
 						</div>
-
 						<!-- Form Input Grid (Sama seperti Smart RRR) -->
 						<div class="grid grid-cols-2 gap-3 mb-4">
 							<!-- Input Harga Beli -->
@@ -1652,7 +1541,6 @@
 									<input type="number" id="divInputPrice" class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-lg pl-8 pr-3 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-600" placeholder="0" min="1">
 								</div>
 							</div>
-
 							<!-- Input DPS -->
 							<div>
 								<label class="block text-[10px] lg:text-[11px] font-medium text-slate-400 mb-1">Dividen (DPS)</label>
@@ -1664,7 +1552,6 @@
 								</div>
 							</div>
 						</div>
-
 						<!-- Panel Hasil Kalkulasi (Mirip Panel ARA/ARB) -->
 						<div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700 shadow-inner grid grid-cols-3 gap-2 text-center mb-3 transition-all duration-300">
 							<!-- Gross Yield -->
@@ -1683,20 +1570,16 @@
 								<span id="divYieldNet" class="font-bold text-emerald-400 text-sm">0.00%</span>
 							</div>
 						</div>
-
 						<!-- Dividend Trap Detector Panel -->
 						<div id="divTrapAlert" class="hidden flex items-start gap-2 bg-rose-500/10 border border-rose-500/30 p-2.5 rounded-lg transition-all duration-300">
 							<i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" id="divTrapIcon"></i>
 							<div>
 								<span id="divTrapTitle" class="text-[11px] font-bold text-rose-400 block mb-0.5">Potensi Dividend Trap!</span>
-								<p id="divTrapMessage" class="text-[10px] text-slate-300 leading-relaxed">
-									Yield terlalu tinggi (>10%). Waspada ARB saat Ex-Date.
-								</p>
+								<p id="divTrapMessage" class="text-[10px] text-slate-300 leading-relaxed"> Yield terlalu tinggi (>10%). Waspada ARB saat Ex-Date. </p>
 							</div>
 						</div>
 					</div>
 				</div>
-
 				<!-- Tab 10: Journal Trading -->
 				<div id="tabContent-journal" class="hidden min-h-[300px] space-y-4 text-xs lg:text-sm">
 					<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
@@ -1717,7 +1600,6 @@
 							<span class="text-lg font-bold text-rose-400" id="journalLossCount">0</span>
 						</div>
 					</div>
-
 					<div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center bg-slate-950/10 p-3.5 rounded-xl border border-slate-800 gap-3">
 						<div class="flex items-center gap-3">
 							<span class="font-bold text-slate-200 text-xs">Mode Tampilan:</span>
@@ -1726,17 +1608,12 @@
 								<button onclick="switchJournalView('kanban')" id="journalBtnKanban" class="px-3 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition">Kanban Board</button>
 							</div>
 						</div>
-
 						<div class="flex items-center gap-2">
 							<button onclick="exportJournalToCSV()" class="flex-1 sm:flex-initial text-[10px] bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 font-bold px-3 py-1.5 rounded-lg transition flex items-center justify-center gap-1.5">
-								<i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export CSV (.csv)
-							</button>
-							<button onclick="clearJournalHistory()" class="flex-1 sm:flex-initial text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 font-bold px-3 py-1.5 rounded-lg transition">
-								Hapus Semua
-							</button>
+								<i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export CSV (.csv) </button>
+							<button onclick="clearJournalHistory()" class="flex-1 sm:flex-initial text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 font-bold px-3 py-1.5 rounded-lg transition"> Hapus Semua </button>
 						</div>
 					</div>
-
 					<!-- Tampilan Tabel Journal -->
 					<div id="journalTableView" class="overflow-x-auto rounded-xl border border-slate-800 scrollbar-thin shadow-inner">
 						<table class="w-full text-left text-xs text-slate-200 whitespace-nowrap min-w-[750px]">
@@ -1759,45 +1636,39 @@
 							</tbody>
 						</table>
 					</div>
-
 					<!-- Tampilan Kanban Board -->
 					<div id="journalKanbanView" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
 						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'OPEN')">
 							<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
 								<span class="text-amber-400 font-bold text-xs uppercase flex items-center gap-1.5">
-									<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> OPEN PLAN
-								</span>
+									<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> OPEN PLAN </span>
 								<span id="kanbanCountOpen" class="bg-slate-900 text-slate-200 px-2 py-0.5 rounded text-[10px] font-bold">0</span>
 							</div>
 							<div id="kanbanColOpen" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
 						</div>
-
 						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'WIN')">
 							<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
 								<span class="text-emerald-400 font-bold text-xs uppercase flex items-center gap-1.5">
-									<span class="w-2 h-2 rounded-full bg-emerald-400"></span> WIN / TAKE PROFIT
-								</span>
+									<span class="w-2 h-2 rounded-full bg-emerald-400"></span> WIN / TAKE PROFIT </span>
 								<span id="kanbanCountWin" class="bg-slate-900 text-slate-200 px-2 py-0.5 rounded text-[10px] font-bold">0</span>
 							</div>
 							<div id="kanbanColWin" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
 						</div>
-
 						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800 flex flex-col min-h-[400px]" ondragover="allowDrop(event)" ondrop="dropJournalCard(event, 'LOSS')">
 							<div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
 								<span class="text-rose-400 font-bold text-xs uppercase flex items-center gap-1.5">
-									<span class="w-2 h-2 rounded-full bg-rose-400"></span> LOSS / STOP LOSS
-								</span>
+									<span class="w-2 h-2 rounded-full bg-rose-400"></span> LOSS / STOP LOSS </span>
 								<span id="kanbanCountLoss" class="bg-slate-900 text-slate-200 px-2 py-0.5 rounded text-[10px] font-bold">0</span>
 							</div>
 							<div id="kanbanColLoss" class="space-y-2.5 flex-1 overflow-y-auto scrollbar-thin pr-1"></div>
 						</div>
 					</div>
 				</div>
-
 				<!-- Tab 11: Aksi Korporasi -->
 				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3.5 text-xs lg:text-sm">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs lg:text-sm text-white">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong></span>
+						<span class="text-xs lg:text-sm text-white">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong>
+						</span>
 						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-fuchsia-400 font-bold">Dividen / RUPS / Split</span>
 					</div>
 					<div id="corporateContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -1807,10 +1678,8 @@
 						<a href="https://www.idx.co.id/id/perusahaan-tercatat/aksi-korporasi" target="_blank" class="text-[11px] lg:text-xs text-cyan-400 hover:underline">Lihat Pengumuman Resmi BEI &rarr;</a>
 					</div>
 				</div>
-
 				<!-- Tab 12: Sector Heatmap & Macro Commodity -->
 				<div id="tabContent-heatmap" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
-					
 					<!-- LIVE MACRO & KOMODITAS GLOBAL -->
 					<div class="bg-slate-900/50 p-4 lg:p-5 rounded-xl border border-slate-800 mt-6 shadow-lg">
 						<div class="flex items-center justify-between mb-4 border-b border-slate-700/80 pb-3">
@@ -1818,8 +1687,7 @@
 								<i data-lucide="globe-2" class="w-4 h-4 text-cyan-400"></i> Live Macro & Komoditas
 							</h3>
 							<button onclick="loadLiveMacro()" class="text-[10px] text-slate-400 hover:text-cyan-400 flex items-center gap-1 transition-colors bg-slate-800/50 px-2 py-1 rounded">
-								<i data-lucide="refresh-cw" class="w-3 h-3"></i> Segarkan
-							</button>
+								<i data-lucide="refresh-cw" class="w-3 h-3"></i> Segarkan </button>
 						</div>
 						<!-- Container Data Makro -->
 						<div id="macro-container" class="grid grid-cols-2 md:grid-cols-4 gap-3 lg:gap-4">
@@ -1829,252 +1697,216 @@
 							</div>
 						</div>
 					</div>
-
 					<hr class="border-slate-800/60 my-2">
-
 					<!-- Bagian Heatmap BEI -->
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3 mt-4">
 						<div>
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Peta Panas Sektor & Saham BEI (IDX Heatmap)
-							</span>
+								<i data-lucide="globe-2" class="w-4 h-4 text-lime-400"></i> Peta Panas Sektor & Saham BEI (IDX Heatmap) </span>
 							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Memantau aliran kapital dan performa sektoral Bursa Efek Indonesia secara visual interaktif.</p>
 						</div>
 					</div>
-					
 					<div class="bg-slate-950/10 p-3 rounded-xl border border-slate-800 h-[600px] overflow-hidden">
 						<div class="tradingview-widget-container h-full w-full" id="tv_heatmap_container"></div>
 					</div>
 				</div>
-				
 				<!-- Tab 13: Setting (Pengaturan) -->
 				<div id="tabContent-setting" class="hidden min-h-[500px] space-y-4 text-xs lg:text-sm">
 					<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-slate-950/10 p-4 rounded-xl border border-slate-800 gap-3">
 						<div>
 							<span class="text-slate-200 font-bold flex items-center gap-2 text-xs lg:text-sm">
-								<i data-lucide="settings" class="w-4 h-4 text-slate-400"></i> Pengaturan Preferensi Sistem
-							</span>
+								<i data-lucide="settings" class="w-4 h-4 text-slate-400"></i> Pengaturan Preferensi Sistem </span>
 							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Sesuaikan kenyamanan visual dan pengalaman antarmuka Kamu.</p>
 						</div>
 					</div>
-
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 						<!-- Preferensi Visual -->
 						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4">
 							<span class="font-bold text-cyan-400 flex items-center gap-1.5 text-[11px] lg:text-xs border-b border-slate-800/80 pb-2">
-								<i data-lucide="monitor" class="w-4 h-4"></i> PREFERENSI VISUAL
-							</span>
-							
+								<i data-lucide="monitor" class="w-4 h-4"></i> PREFERENSI VISUAL </span>
 							<div class="space-y-2">
 								<label class="text-slate-200 text-[11px] lg:text-xs font-bold block">1. Tema Tampilan (Mode)</label>
-									<div class="grid grid-cols-2 gap-2">
-										<label class="cursor-pointer relative">
-											<input type="radio" name="settingTheme" value="dark" onchange="applyTheme(this.value)" class="peer sr-only">
-											<div class="text-center bg-slate-900 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2 transition-all peer-checked:bg-emerald-500/20 peer-checked:text-emerald-400 peer-checked:border-emerald-500/50 font-bold">
-												🌙 Mode Gelap
-											</div>
-										</label>
-										<label class="cursor-pointer relative">
-											<input type="radio" name="settingTheme" value="light" onchange="applyTheme(this.value)" class="peer sr-only">
-											<div class="text-center bg-slate-900 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2 transition-all peer-checked:bg-amber-500/20 peer-checked:text-amber-400 peer-checked:border-amber-500/50 font-bold">
-												☀️ Mode Terang
-											</div>
-										</label>
-									</div>
-								</div>
-
-								<div class="space-y-1">
-									<div class="flex justify-between items-center">
-										<label class="text-slate-200 text-[11px] lg:text-xs font-bold">2. Ukuran Font Navigasi & Teks</label>
-										<span id="fontSizeLabel" class="text-emerald-400 font-bold text-[10px] lg:text-xs bg-slate-900 px-2 py-0.5 rounded border border-slate-700">16px</span>
-									</div>
-									<input type="range" id="settingFontSize" min="11" max="22" value="16" step="1" oninput="applyFontSize(this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
-									<div class="flex justify-between text-[9px] text-slate-500">
-										<span>Terkecil (11px)</span>
-										<span>Terbesar (22px)</span>
-									</div>
-								</div>
-
-								<div class="flex flex-col space-y-1.5 pt-1">
-									<label class="text-slate-200 text-[11px] lg:text-xs font-bold">3. Gaya Huruf (Font Style)</label>
-									<select id="settingFontStyle" onchange="applyFontStyle(this.value)" class="w-full bg-slate-900 border border-slate-700 text-white text-[10px] lg:text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 cursor-pointer">
-										<option value="Plus Jakarta Sans">Plus Jakarta Sans (Default)</option>
-										<option value="Outfit">Outfit (Modern Rounded)</option>
-										<option value="Space Grotesk">Space Grotesk (Tech Sans)</option>
-										<option value="Chakra Petch">Chakra Petch (Cyber Futuristic)</option>
-										<option value="JetBrains Mono">JetBrains Mono (Terminal Pro)</option>
-										<option value="Playfair Display">Playfair Display (Editorial Serif)</option>
-										<option value="Syne">Syne (Artistic Display)</option>
-									</select>
-								</div>
-
-								<div class="space-y-1 pt-1">
-									<div class="flex justify-between items-center">
-										<label class="text-slate-200 text-[11px] lg:text-xs font-bold">4. Ketebalan Huruf (Font Weight)</label>
-										<span id="fontWeightLabel" class="text-emerald-400 font-bold text-[10px] lg:text-xs bg-slate-900 px-2 py-0.5 rounded border border-slate-700">700 (Tebal)</span>
-									</div>
-									<input type="range" id="settingFontWeight" min="300" max="800" value="700" step="100" oninput="applyFontWeight(this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
-									<div class="flex justify-between text-[9px] text-slate-500">
-										<span>Tipis (300)</span>
-										<span>Normal (400)</span>
-										<span>Sangat Tebal (800)</span>
-									</div>
-								</div>
-							</div>
-						</div>
-						
-						<!-- PENGATURAN NOTIFIKASI (Tambahan Baru) -->
-						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 md:col-span-2">
-							<span class="font-bold text-teal-400 flex items-center gap-1.5 text-[11px] lg:text-xs border-b border-slate-800/80 pb-2">
-								<i data-lucide="bell" class="w-4 h-4"></i> PREFERENSI NOTIFIKASI TINGKAT LANJUT
-							</span>
-							
-							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-								<!-- 1. Tunda Notifikasi (Range) -->
-								<div class="bg-slate-900/60 p-3 lg:p-4 rounded-lg border border-slate-800 md:col-span-2">
-									<div class="flex justify-between items-center mb-2">
-										<label class="text-slate-200 text-[11px] lg:text-xs font-bold">1. Tunda Notifikasi Sementara (Snooze)</label>
-										<span id="notifSnoozeStatus" class="text-emerald-400 font-bold text-[10px] lg:text-[11px] bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/30">Aktif</span>
-									</div>
-									<input type="range" id="settingNotifSnooze" min="0" max="4" value="0" step="1" oninput="applyNotifSnooze(this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500 mb-2 mt-2">
-									<div class="flex justify-between text-[9px] text-slate-500 font-medium">
-										<span>Off</span>
-										<span>1 Jam</span>
-										<span>3 Jam</span>
-										<span>8 Jam</span>
-										<span>1 Hari</span>
-									</div>
-									<p id="notifSnoozeEstimate" class="text-[10px] text-slate-400 mt-3 italic hidden border-t border-slate-800/80 pt-2">Estimasi notifikasi aktif kembali: <strong id="notifResumeTime" class="text-teal-400"></strong></p>
-								</div>
-
-								<!-- 2. Suara Notifikasi Saja -->
-								<div class="flex justify-between items-center bg-slate-900/60 p-3 lg:p-4 rounded-lg border border-slate-800">
-									<div>
-										<span class="block text-slate-200 text-[11px] lg:text-xs font-bold mb-0.5">2. Bisukan Suara Saja</span>
-										<span class="block text-[9px] text-slate-400 max-w-[200px]">Popup/Alert muncul, tanpa efek suara.</span>
-									</div>
-									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" id="settingNotifMuteSound" onchange="applyNotifMuteSound(this.checked)" class="sr-only peer">
-										<div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-500"></div>
+								<div class="grid grid-cols-2 gap-2">
+									<label class="cursor-pointer relative">
+										<input type="radio" name="settingTheme" value="dark" onchange="applyTheme(this.value)" class="peer sr-only">
+										<div class="text-center bg-slate-900 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2 transition-all peer-checked:bg-emerald-500/20 peer-checked:text-emerald-400 peer-checked:border-emerald-500/50 font-bold"> 🌙 Mode Gelap </div>
+									</label>
+									<label class="cursor-pointer relative">
+										<input type="radio" name="settingTheme" value="light" onchange="applyTheme(this.value)" class="peer sr-only">
+										<div class="text-center bg-slate-900 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2 transition-all peer-checked:bg-amber-500/20 peer-checked:text-amber-400 peer-checked:border-amber-500/50 font-bold"> ☀️ Mode Terang </div>
 									</label>
 								</div>
-
-								<!-- 3. Jenis Notifikasi -->
-								<div class="flex flex-col bg-slate-900/60 p-3 lg:p-4 rounded-lg border border-slate-800 space-y-3">
-									<div>
-										<span class="block text-slate-200 text-[11px] lg:text-xs font-bold mb-0.5">3. Filter Kategori Notifikasi</span>
-										<span class="block text-[9px] text-slate-400">Pilih tipe alert yang ingin diterima.</span>
-									</div>
-									<div class="flex flex-col gap-2">
-										<label class="cursor-pointer">
-											<input type="radio" name="settingNotifType" value="both" onchange="applyNotifType(this.value)" class="peer sr-only">
-											<div class="w-full text-left bg-slate-950 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2.5 transition-all peer-checked:bg-teal-500/20 peer-checked:text-teal-400 peer-checked:border-teal-500/50 font-medium">
-												<i data-lucide="check-check" class="w-2 h-2 text-emerald-400"></i> Keduanya (Smart Alert & Whales)
-											</div>
-										</label>
-										<label class="cursor-pointer">
-											<input type="radio" name="settingNotifType" value="smart_alert" onchange="applyNotifType(this.value)" class="peer sr-only">
-											<div class="w-full text-left bg-slate-950 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2.5 transition-all peer-checked:bg-teal-500/20 peer-checked:text-teal-400 peer-checked:border-teal-500/50 font-medium">
-												<i data-lucide="bell-ring" class="w-2 h-2 text-emerald-400"></i> Hanya Smart Alert
-											</div>
-										</label>
-										<label class="cursor-pointer">
-											<input type="radio" name="settingNotifType" value="whales" onchange="applyNotifType(this.value)" class="peer sr-only">
-											<div class="w-full text-left bg-slate-950 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2.5 transition-all peer-checked:bg-teal-500/20 peer-checked:text-teal-400 peer-checked:border-teal-500/50 font-medium">
-												<i data-lucide="radio-tower" class="w-2 h-2 text-emerald-400"></i> Hanya Whales Detected
-											</div>
-										</label>
-									</div>
+							</div>
+							<div class="space-y-1">
+								<div class="flex justify-between items-center">
+									<label class="text-slate-200 text-[11px] lg:text-xs font-bold">2. Ukuran Font Navigasi & Teks</label>
+									<span id="fontSizeLabel" class="text-emerald-400 font-bold text-[10px] lg:text-xs bg-slate-900 px-2 py-0.5 rounded border border-slate-700">16px</span>
+								</div>
+								<input type="range" id="settingFontSize" min="11" max="22" value="16" step="1" oninput="applyFontSize(this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+								<div class="flex justify-between text-[9px] text-slate-500">
+									<span>Terkecil (11px)</span>
+									<span>Terbesar (22px)</span>
 								</div>
 							</div>
-						</div>
-
-						<!-- Preferensi Audio & Getar -->
-						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4">
-							<span class="font-bold text-fuchsia-400 flex items-center gap-1.5 text-[11px] lg:text-xs border-b border-slate-800/80 pb-2">
-								<i data-lucide="volume-2" class="w-4 h-4"></i> SISTEM AUDIO & HAPTIC
-							</span>
-							
-							<div class="space-y-3">
-								<div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-									<div>
-										<span class="block text-slate-200 text-[11px] lg:text-xs font-bold mb-0.5">1. Seluruh Efek Suara (Sound)</span>
-										<span class="block text-[9px] text-slate-400">Matikan notifikasi suara klik, profit, dan error.</span>
-									</div>
-									<button id="settingBtnSound" onclick="toggleGlobalSound()" class="px-4 py-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg text-[10px] font-bold transition">
-										Menyala
-									</button>
-								</div>
-
-								<div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-lg border border-slate-800">
-									<div>
-										<span class="block text-slate-200 text-[11px] lg:text-xs font-bold mb-0.5">2. Haptic & Getaran Ponsel</span>
-										<span class="block text-[9px] text-slate-400">Matikan umpan balik getaran saat klik tombol.</span>
-									</div>
-									<button id="settingBtnVibrate" onclick="toggleGlobalVibrate()" class="px-4 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg text-[10px] font-bold transition">
-										Menyala
-									</button>
-								</div>
+							<div class="flex flex-col space-y-1.5 pt-1">
+								<label class="text-slate-200 text-[11px] lg:text-xs font-bold">3. Gaya Huruf (Font Style)</label>
+								<select id="settingFontStyle" onchange="applyFontStyle(this.value)" class="w-full bg-slate-900 border border-slate-700 text-white text-[10px] lg:text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-emerald-500 cursor-pointer">
+									<option value="Plus Jakarta Sans">Plus Jakarta Sans (Default)</option>
+									<option value="Outfit">Outfit (Modern Rounded)</option>
+									<option value="Space Grotesk">Space Grotesk (Tech Sans)</option>
+									<option value="Chakra Petch">Chakra Petch (Cyber Futuristic)</option>
+									<option value="JetBrains Mono">JetBrains Mono (Terminal Pro)</option>
+									<option value="Playfair Display">Playfair Display (Editorial Serif)</option>
+									<option value="Syne">Syne (Artistic Display)</option>
+								</select>
 							</div>
-						</div>
-						
-						<!-- TENTANG APLIKASI -->
-						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 md:col-span-2">
-							<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs border-b border-slate-800/80 pb-2">
-								<i data-lucide="info" class="w-4 h-4"></i> TENTANG APLIKASI & SISTEM
-							</span>
-							
-							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-								<!-- Info Aplikasi & Pengembang -->
-								<div class="space-y-2 text-[10px] lg:text-xs text-slate-200">
-									<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
-										<span class="text-slate-400">Pengembang Utama</span>
-										<span class="font-bold text-white">Hardiansyah</span>
-									</div>
-									<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
-										<span class="text-slate-400">Bahasa Pemrograman</span>
-										<span class="font-bold text-green-400">Javascript, JSON, HTML, CSS, XML</span>
-									</div>
-									<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
-										<span class="text-slate-400">Versi Aplikasi</span>
-										<span class="font-bold text-green-400">Stock ID v.2.08 (Andaimology Edition)</span>
-									</div>
-									<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
-										<span class="text-slate-400">Infrastruktur</span>
-										<span class="font-bold text-green-400">Client-Side Processing (Real Time)</span>
-									</div>
+							<div class="space-y-1 pt-1">
+								<div class="flex justify-between items-center">
+									<label class="text-slate-200 text-[11px] lg:text-xs font-bold">4. Ketebalan Huruf (Font Weight)</label>
+									<span id="fontWeightLabel" class="text-emerald-400 font-bold text-[10px] lg:text-xs bg-slate-900 px-2 py-0.5 rounded border border-slate-700">700 (Tebal)</span>
 								</div>
-
-								<!-- Info Hardware & Browser Pengguna -->
-								<div class="space-y-2 text-[10px] lg:text-xs text-slate-200">
-									<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
-										<span class="text-slate-400">Sistem Operasi</span>
-										<span class="font-bold text-blue-400 truncate max-w-[50%] text-right" id="infoOS">Memuat...</span>
-									</div>
-									<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
-										<span class="text-slate-400">Browser Aktif</span>
-										<span class="font-bold text-blue-400 truncate max-w-[50%] text-right" id="infoBrowser">Memuat...</span>
-									</div>
-									<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
-										<span class="text-slate-400">Hardware (Cores / RAM)</span>
-										<span class="font-bold text-blue-400 text-right" id="infoHardware">Memuat...</span>
-									</div>
-									<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
-										<span class="text-slate-400">Rendering Engine (GPU)</span>
-										<span class="font-bold text-blue-400 truncate max-w-[50%] text-right" id="infoGPU" title="">Memuat...</span>
-									</div>
+								<input type="range" id="settingFontWeight" min="300" max="800" value="700" step="100" oninput="applyFontWeight(this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+								<div class="flex justify-between text-[9px] text-slate-500">
+									<span>Tipis (300)</span>
+									<span>Normal (400)</span>
+									<span>Sangat Tebal (800)</span>
 								</div>
-							</div>
-							
-							<div class="border-t border-slate-800/80 pt-3 mt-2 text-center text-[10px] text-slate-500 italic leading-relaxed">
-								Didedikasikan untuk Komunitas Trader Saham Indonesia. Seluruh proses pengambilan data, indikator, dan metrik di-render secara mandiri di sisi perangkat keras pengguna untuk menjamin kecepatan dan stabilitas.
 							</div>
 						</div>
 					</div>
+					<!-- PENGATURAN NOTIFIKASI (Tambahan Baru) -->
+					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 md:col-span-2">
+						<span class="font-bold text-teal-400 flex items-center gap-1.5 text-[11px] lg:text-xs border-b border-slate-800/80 pb-2">
+							<i data-lucide="bell" class="w-4 h-4"></i> PREFERENSI NOTIFIKASI TINGKAT LANJUT </span>
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<!-- 1. Tunda Notifikasi (Range) -->
+							<div class="bg-slate-900/60 p-3 lg:p-4 rounded-lg border border-slate-800 md:col-span-2">
+								<div class="flex justify-between items-center mb-2">
+									<label class="text-slate-200 text-[11px] lg:text-xs font-bold">1. Tunda Notifikasi Sementara (Snooze)</label>
+									<span id="notifSnoozeStatus" class="text-emerald-400 font-bold text-[10px] lg:text-[11px] bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/30">Aktif</span>
+								</div>
+								<input type="range" id="settingNotifSnooze" min="0" max="4" value="0" step="1" oninput="applyNotifSnooze(this.value)" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500 mb-2 mt-2">
+								<div class="flex justify-between text-[9px] text-slate-500 font-medium">
+									<span>Off</span>
+									<span>1 Jam</span>
+									<span>3 Jam</span>
+									<span>8 Jam</span>
+									<span>1 Hari</span>
+								</div>
+								<p id="notifSnoozeEstimate" class="text-[10px] text-slate-400 mt-3 italic hidden border-t border-slate-800/80 pt-2">Estimasi notifikasi aktif kembali: <strong id="notifResumeTime" class="text-teal-400"></strong>
+								</p>
+							</div>
+							<!-- 2. Suara Notifikasi Saja -->
+							<div class="flex justify-between items-center bg-slate-900/60 p-3 lg:p-4 rounded-lg border border-slate-800">
+								<div>
+									<span class="block text-slate-200 text-[11px] lg:text-xs font-bold mb-0.5">2. Bisukan Suara Saja</span>
+									<span class="block text-[9px] text-slate-400 max-w-[200px]">Popup/Alert muncul, tanpa efek suara.</span>
+								</div>
+								<label class="relative inline-flex items-center cursor-pointer">
+									<input type="checkbox" id="settingNotifMuteSound" onchange="applyNotifMuteSound(this.checked)" class="sr-only peer">
+									<div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-500"></div>
+								</label>
+							</div>
+							<!-- 3. Jenis Notifikasi -->
+							<div class="flex flex-col bg-slate-900/60 p-3 lg:p-4 rounded-lg border border-slate-800 space-y-3">
+								<div>
+									<span class="block text-slate-200 text-[11px] lg:text-xs font-bold mb-0.5">3. Filter Kategori Notifikasi</span>
+									<span class="block text-[9px] text-slate-400">Pilih tipe alert yang ingin diterima.</span>
+								</div>
+								<div class="flex flex-col gap-2">
+									<label class="cursor-pointer">
+										<input type="radio" name="settingNotifType" value="both" onchange="applyNotifType(this.value)" class="peer sr-only">
+										<div class="w-full text-left bg-slate-950 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2.5 transition-all peer-checked:bg-teal-500/20 peer-checked:text-teal-400 peer-checked:border-teal-500/50 font-medium">
+											<i data-lucide="check-check" class="w-2 h-2 text-emerald-400"></i> Keduanya (Smart Alert & Whales)
+										</div>
+									</label>
+									<label class="cursor-pointer">
+										<input type="radio" name="settingNotifType" value="smart_alert" onchange="applyNotifType(this.value)" class="peer sr-only">
+										<div class="w-full text-left bg-slate-950 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2.5 transition-all peer-checked:bg-teal-500/20 peer-checked:text-teal-400 peer-checked:border-teal-500/50 font-medium">
+											<i data-lucide="bell-ring" class="w-2 h-2 text-emerald-400"></i> Hanya Smart Alert
+										</div>
+									</label>
+									<label class="cursor-pointer">
+										<input type="radio" name="settingNotifType" value="whales" onchange="applyNotifType(this.value)" class="peer sr-only">
+										<div class="w-full text-left bg-slate-950 border border-slate-700 text-slate-400 text-[10px] lg:text-xs rounded-lg px-3 py-2.5 transition-all peer-checked:bg-teal-500/20 peer-checked:text-teal-400 peer-checked:border-teal-500/50 font-medium">
+											<i data-lucide="radio-tower" class="w-2 h-2 text-emerald-400"></i> Hanya Whales Detected
+										</div>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Preferensi Audio & Getar -->
+					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4">
+						<span class="font-bold text-fuchsia-400 flex items-center gap-1.5 text-[11px] lg:text-xs border-b border-slate-800/80 pb-2">
+							<i data-lucide="volume-2" class="w-4 h-4"></i> SISTEM AUDIO & HAPTIC </span>
+						<div class="space-y-3">
+							<div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+								<div>
+									<span class="block text-slate-200 text-[11px] lg:text-xs font-bold mb-0.5">1. Seluruh Efek Suara (Sound)</span>
+									<span class="block text-[9px] text-slate-400">Matikan notifikasi suara klik, profit, dan error.</span>
+								</div>
+								<button id="settingBtnSound" onclick="toggleGlobalSound()" class="px-4 py-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg text-[10px] font-bold transition"> Menyala </button>
+							</div>
+							<div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+								<div>
+									<span class="block text-slate-200 text-[11px] lg:text-xs font-bold mb-0.5">2. Haptic & Getaran Ponsel</span>
+									<span class="block text-[9px] text-slate-400">Matikan umpan balik getaran saat klik tombol.</span>
+								</div>
+								<button id="settingBtnVibrate" onclick="toggleGlobalVibrate()" class="px-4 py-2 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg text-[10px] font-bold transition"> Menyala </button>
+							</div>
+						</div>
+					</div>
+					<!-- TENTANG APLIKASI -->
+					<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-4 md:col-span-2">
+						<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs border-b border-slate-800/80 pb-2">
+							<i data-lucide="info" class="w-4 h-4"></i> TENTANG APLIKASI & SISTEM </span>
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<!-- Info Aplikasi & Pengembang -->
+							<div class="space-y-2 text-[10px] lg:text-xs text-slate-200">
+								<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
+									<span class="text-slate-400">Pengembang Utama</span>
+									<span class="font-bold text-white">Hardiansyah</span>
+								</div>
+								<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
+									<span class="text-slate-400">Bahasa Pemrograman</span>
+									<span class="font-bold text-green-400">Javascript, JSON, HTML, CSS, XML</span>
+								</div>
+								<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
+									<span class="text-slate-400">Versi Aplikasi</span>
+									<span class="font-bold text-green-400">Stock ID v.2.08 (Andaimology Edition)</span>
+								</div>
+								<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
+									<span class="text-slate-400">Infrastruktur</span>
+									<span class="font-bold text-green-400">Client-Side Processing (Real Time)</span>
+								</div>
+							</div>
+							<!-- Info Hardware & Browser Pengguna -->
+							<div class="space-y-2 text-[10px] lg:text-xs text-slate-200">
+								<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
+									<span class="text-slate-400">Sistem Operasi</span>
+									<span class="font-bold text-blue-400 truncate max-w-[50%] text-right" id="infoOS">Memuat...</span>
+								</div>
+								<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
+									<span class="text-slate-400">Browser Aktif</span>
+									<span class="font-bold text-blue-400 truncate max-w-[50%] text-right" id="infoBrowser">Memuat...</span>
+								</div>
+								<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
+									<span class="text-slate-400">Hardware (Cores / RAM)</span>
+									<span class="font-bold text-blue-400 text-right" id="infoHardware">Memuat...</span>
+								</div>
+								<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
+									<span class="text-slate-400">Rendering Engine (GPU)</span>
+									<span class="font-bold text-blue-400 truncate max-w-[50%] text-right" id="infoGPU" title="">Memuat...</span>
+								</div>
+							</div>
+						</div>
+						<div class="border-t border-slate-800/80 pt-3 mt-2 text-center text-[10px] text-slate-500 italic leading-relaxed"> Didedikasikan untuk Komunitas Trader Saham Indonesia. Seluruh proses pengambilan data, indikator, dan metrik di-render secara mandiri di sisi perangkat keras pengguna untuk menjamin kecepatan dan stabilitas. </div>
+					</div>
+				</div>
 				</div>
 			</section>
 		</main>
-
 		<!-- Container Export Trading Card (HTML2Canvas Target) -->
 		<div id="exportCardContainer" class="fixed -left-[9999px] top-0 w-[620px] bg-slate-950/10 text-white p-7 rounded-3xl border-2 border-emerald-500/40 space-y-5 shadow-2xl">
 			<div class="flex justify-between items-center border-b border-slate-800/80 pb-4">
@@ -2091,7 +1923,6 @@
 					<span class="text-xs text-slate-400 block" id="cardDateStr">14 Ags 2026</span>
 				</div>
 			</div>
-
 			<div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex justify-between items-center shadow-inner">
 				<div>
 					<span class="text-xs text-slate-400 uppercase tracking-widest block font-bold mb-1">EMITEN</span>
@@ -2102,7 +1933,6 @@
 					<span class="text-2xl font-bold text-emerald-400 leading-none" id="cardPrice">Rp 0</span>
 				</div>
 			</div>
-
 			<div class="grid grid-cols-2 gap-3 text-xs">
 				<div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
 					<span class="text-slate-400 text-[10px] block mb-1">AREA ENTRY / SUPPORT</span>
@@ -2121,7 +1951,6 @@
 					<span class="text-emerald-400 block font-bold text-sm" id="cardTP2">Rp -</span>
 				</div>
 			</div>
-
 			<div class="bg-slate-900/70 p-4 rounded-2xl border border-slate-800/80 space-y-2">
 				<span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block">INDIKATOR TEKNIKAL UTAMA:</span>
 				<div class="grid grid-cols-3 gap-2 text-xs pt-1 border-t border-slate-800/60">
@@ -2139,13 +1968,11 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="flex justify-between items-center text-[11px] text-slate-400 border-t border-slate-800/80 pt-3.5">
 				<span>Official Technical Card • webstockid.github.io</span>
 				<span class="text-emerald-400 font-bold">#Andaimology Edition</span>
 			</div>
 		</div>
-		
 		<!-- Modal Selebrasi Cuan (Single Random Image & Text) -->
 		<div id="cuanModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 opacity-0">
 			<div id="cuanModalContent" class="transform scale-50 transition-transform duration-500 ease-out flex flex-col items-center max-w-md w-full">
@@ -2154,15 +1981,10 @@
 					<div id="cuanImageContainer" class="w-full flex justify-center"></div>
 					<button onclick="closeCuanCelebration()" class="absolute -top-4 -right-4 bg-rose-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg hover:scale-110 transition z-10">✕</button>
 				</div>
-				<h2 id="cuanTitle" class="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mt-5 drop-shadow-lg animate-bounce text-center">
-					TAKE PROFIT TERCAPAI! 🚀
-				</h2>
-				<p id="cuanDesc" class="text-white text-xs md:text-sm bg-emerald-500/20 px-4 py-1.5 rounded-full mt-2 border border-emerald-500/30 text-center">
-					Saya bilang juga apa, cuan luber kan lo!
-				</p>
+				<h2 id="cuanTitle" class="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mt-5 drop-shadow-lg animate-bounce text-center"> TAKE PROFIT TERCAPAI! 🚀 </h2>
+				<p id="cuanDesc" class="text-white text-xs md:text-sm bg-emerald-500/20 px-4 py-1.5 rounded-full mt-2 border border-emerald-500/30 text-center"> Saya bilang juga apa, cuan luber kan lo! </p>
 			</div>
 		</div>
-
 		<!-- Modal Evaluasi Loss (Single Random Image & Text) -->
 		<div id="lossModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm transition-opacity duration-300 opacity-0">
 			<div id="lossModalContent" class="transform scale-50 transition-transform duration-500 ease-out flex flex-col items-center max-w-md w-full">
@@ -2171,15 +1993,10 @@
 					<div id="lossImageContainer" class="w-full flex justify-center"></div>
 					<button onclick="closeLossCelebration()" class="absolute -top-4 -right-4 bg-rose-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg hover:scale-110 transition z-10">✕</button>
 				</div>
-				<h2 id="lossTitle" class="text-xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-amber-400 mt-5 drop-shadow-lg animate-pulse text-center">
-					STOP LOSS TERCAPAI 🛡️
-				</h2>
-				<p id="lossDesc" class="text-white text-xs md:text-sm bg-rose-500/20 px-4 py-1.5 rounded-full mt-2 border border-rose-500/30 text-center">
-					Gapapa ya, masih ada rezeki di saham lain!
-				</p>
+				<h2 id="lossTitle" class="text-xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-amber-400 mt-5 drop-shadow-lg animate-pulse text-center"> STOP LOSS TERCAPAI 🛡️ </h2>
+				<p id="lossDesc" class="text-white text-xs md:text-sm bg-rose-500/20 px-4 py-1.5 rounded-full mt-2 border border-rose-500/30 text-center"> Gapapa ya, masih ada rezeki di saham lain! </p>
 			</div>
 		</div>
-		
 		<!-- Floating AI Assistant Button & Chatbox -->
 		<div class="fixed bottom-6 right-6 z-40 flex flex-col items-end">
 			<!-- Jendela Chat Modal (Hidden by default) -->
@@ -2199,57 +2016,44 @@
 						<i data-lucide="x" class="w-4 h-4"></i>
 					</button>
 				</div>
-
 				<!-- Area Percakapan (Messages Body) -->
 				<div id="aiChatMessages" class="flex-1 p-3 overflow-y-auto space-y-3 text-xs scrollbar-thin">
 					<div class="flex items-start gap-2">
 						<div class="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
 							<i data-lucide="bot" class="w-3 h-3"></i>
 						</div>
-						<div class="bg-slate-800/80 text-slate-200 p-2.5 rounded-xl rounded-tl-none border border-slate-700/60 leading-relaxed">
-							Halo! Saya asisten AI Stock ID. Ada yang bisa Saya bantu analisa hari ini? Kamu bisa tanyakan saham apa saja (contoh: <i>"Bagaimana prospek MDIA?"</i> atau <i>"Volume MDIA?"</i>).
-						</div>
+						<div class="bg-slate-800/80 text-slate-200 p-2.5 rounded-xl rounded-tl-none border border-slate-700/60 leading-relaxed"> Halo! Saya asisten AI Stock ID. Ada yang bisa Saya bantu analisa hari ini? Kamu bisa tanyakan saham apa saja (contoh: <i>"Bagaimana prospek MDIA?"</i> atau <i>"Volume MDIA?"</i>). </div>
 					</div>
 				</div>
-
 				<!-- Footer Input Chat -->
 				<div class="p-3 bg-slate-950/10 border-t border-slate-800 flex items-center gap-2">
-					<input type="text" id="aiChatInput" placeholder="Ketik pertanyaan saham..." 
-						class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 placeholder-slate-500">
+					<input type="text" id="aiChatInput" placeholder="Ketik pertanyaan saham..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 placeholder-slate-500">
 					<button onclick="sendAIChatMessage()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 p-2 rounded-xl transition font-bold flex items-center justify-center shrink-0">
 						<i data-lucide="send" class="w-3.5 h-3.5"></i>
 					</button>
 				</div>
 			</div>
-
 			<!-- Tombol Mengambang (Floating Action Button) -->
 			<button onclick="toggleAIChat()" class="animate-float z-40 bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 p-3.5 rounded-full shadow-[0_0_25px_rgba(16,185,129,0.4)] border border-emerald-300/40 hover:scale-110 active:scale-95 transition flex items-center justify-center group cursor-pointer" title="Tanya AI Assistant">
 				<i data-lucide="bot-message-square" class="w-6 h-6 text-slate-950 group-hover:rotate-16 transition-transform"></i>
 			</button>
 		</div>
-		
 		<!-- Container Toast Notification Modern -->
 		<div id="toastContainer" class="fixed bottom-10 left-4 z-[100] flex flex-col gap-3 pointer-events-none"></div>
-		
 		<!-- Kumpulan Floating Button Kiri (TV Screener & Whale Detector) -->
 		<div class="fixed bottom-6 left-6 z-40 flex flex-col gap-4 items-center">
-			
 			<!-- Tombol TV Screener Modal (Baru) -->
 			<button onclick="toggleTVScreenerModal()" class="animate-float z-40 bg-gradient-to-tr from-blue-400 to-indigo-500 p-3.5 rounded-full shadow-[0_0_25px_rgba(59,130,246,0.4)] border border-blue-300/40 hover:scale-110 active:scale-95 transition flex items-center justify-center group cursor-pointer" title="TradingView Market Screener">
 				<i data-lucide="layout-dashboard" class="w-6 h-6 text-slate-950 group-hover:rotate-16 transition-transform"></i>
 			</button>
-
 			<!-- Tombol Whale Detector Modal (Eksisting) -->
 			<button onclick="toggleWhaleModal()" class="animate-float z-40 bg-gradient-to-tr from-fuchsia-500 to-fuchsia-600 p-3.5 rounded-full shadow-[0_0_25px_rgba(192,38,211,0.4)] border border-fuchsia-300/40 hover:scale-110 active:scale-95 transition flex items-center justify-center group cursor-pointer" title="Whale Detector Radar">
 				<i data-lucide="radio" class="w-6 h-6 text-slate-950 group-hover:rotate-16 transition-transform"></i>
 			</button>
-
 		</div>
-		
 		<!-- Jendela Modal TradingView Screener -->
 		<div id="tvScreenerModal" class="hidden fixed inset-0 z-[80] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md transition-opacity duration-300 opacity-0">
 			<div id="tvScreenerModalContent" class="transform scale-95 transition-transform duration-300 ease-out bg-slate-900/95 border border-blue-500/20 rounded-2xl w-full max-w-5xl h-[85vh] flex flex-col shadow-[0_0_50px_rgba(59,130,246,0.15)] overflow-hidden">
-				
 				<!-- Modal Header -->
 				<div class="px-5 py-4 lg:px-6 lg:py-5 border-b border-blue-500/20 flex justify-between items-center bg-gradient-to-r from-slate-900 via-blue-950/20 to-slate-900 shrink-0">
 					<div class="flex items-center gap-4">
@@ -2263,14 +2067,14 @@
 					</div>
 					<div class="flex items-center gap-3">
 						<button onclick="refreshTVScreener()" class="text-blue-400 hover:text-white transition-colors p-2 bg-slate-800/50 rounded-xl hover:bg-blue-500/20 border border-transparent hover:border-blue-500/30 flex items-center gap-1.5 text-[10px] lg:text-xs font-bold" title="Segarkan Widget">
-							<i data-lucide="refresh-cw" id="iconRefreshTVScreener" class="w-4 h-4"></i> <span class="hidden sm:inline">Refresh</span>
+							<i data-lucide="refresh-cw" id="iconRefreshTVScreener" class="w-4 h-4"></i>
+							<span class="hidden sm:inline">Refresh</span>
 						</button>
 						<button onclick="toggleTVScreenerModal()" class="text-slate-400 hover:text-rose-400 transition-colors p-2 bg-slate-800/50 rounded-xl hover:bg-rose-500/10 border border-transparent hover:border-rose-500/30">
 							<i data-lucide="x" class="w-5 h-5"></i>
 						</button>
 					</div>
 				</div>
-				
 				<!-- Modal Body (Widget Container) -->
 				<div class="flex-1 w-full bg-slate-900/50 relative p-4 flex flex-col">
 					<div class="flex-1 w-full rounded-xl overflow-hidden border border-slate-700/50 bg-slate-950 shadow-inner relative">
@@ -2281,11 +2085,9 @@
 				</div>
 			</div>
 		</div>
-
 		<!-- Jendela Modal Whale Detector -->
 		<div id="whaleModal" class="hidden fixed inset-0 z-[80] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md transition-opacity duration-300 opacity-0">
 			<div id="whaleModalContent" class="transform scale-95 transition-transform duration-300 ease-out bg-slate-900/95 border border-fuchsia-500/20 rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-[0_0_50px_rgba(192,38,211,0.15)] overflow-hidden">
-				
 				<!-- Modal Header -->
 				<div class="px-5 py-4 lg:px-6 lg:py-5 border-b border-fuchsia-500/20 flex justify-between items-center bg-gradient-to-r from-slate-900 via-fuchsia-950/20 to-slate-900">
 					<div class="flex items-center gap-4">
@@ -2301,7 +2103,6 @@
 						<i data-lucide="x" class="w-5 h-5"></i>
 					</button>
 				</div>
-				
 				<!-- Modal Body -->
 				<div class="p-4 lg:p-6 flex-1 overflow-y-auto scrollbar-thin bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950">
 					<div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-6 bg-fuchsia-950/10 p-4 lg:p-5 rounded-2xl border border-fuchsia-500/10 shadow-inner">
@@ -2312,31 +2113,24 @@
 							</div>
 						</div>
 						<button id="btnScanWhales" onclick="scanWhalesData()" class="w-full md:w-auto bg-gradient-to-r from-fuchsia-700 to-purple-600 hover:from-fuchsia-600 hover:to-purple-500 text-white font-bold px-6 py-3 rounded-xl border border-fuchsia-400/50 transition-all shadow-[0_0_20px_rgba(192,38,211,0.3)] hover:shadow-[0_0_30px_rgba(192,38,211,0.5)] flex items-center justify-center gap-2 shrink-0 text-xs lg:text-sm group">
-							<i data-lucide="waves" class="w-4 h-4 group-hover:animate-bounce"></i> Pindai Whales Sekarang
-						</button>
+							<i data-lucide="waves" class="w-4 h-4 group-hover:animate-bounce"></i> Pindai Whales Sekarang </button>
 					</div>
-
 					<div id="whaleResultsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-5">
 						<div class="text-center text-slate-400 text-xs lg:text-sm py-16 col-span-full rounded-2xl bg-slate-900/50 border border-slate-800/50 border-dashed">
 							<div class="bg-slate-800/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-700">
 								<i data-lucide="radar" class="w-8 h-8 text-slate-500"></i>
-							</div>
-							Klik tombol <strong class="text-fuchsia-400">"Scan Whales Sekarang"</strong> untuk mulai melacak bandar (Smart Money) di seluruh pasar.
+							</div> Klik tombol <strong class="text-fuchsia-400">"Scan Whales Sekarang"</strong> untuk mulai melacak bandar (Smart Money) di seluruh pasar.
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		
 		<!-- Script CDN TradingView -->
 		<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-
 		<!-- Data Watchlist yang Dipisah -->
 		<script src="ticker.js"></script>
-
 		<!-- Script Logika Aplikasi Utama -->
 		<script src="app.js"></script>
-
 		<!-- Service Worker untuk Push Notification -->
 		<script>
 			if ('serviceWorker' in navigator) {
