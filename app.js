@@ -5663,14 +5663,36 @@ function updateDashboardLimitsUI() {
 	if (window.lucide) lucide.createIcons();
 }
 
+// Komentar: Mengatur tampilan visual input token VIP berdasarkan status (default, valid, atau error).
+function setVipInputState(state = 'default') {
+	const inputEl = document.getElementById('tokenInput');
+	const errEl = document.getElementById('loginErrorMsg');
+	if (!inputEl) return;
+
+	inputEl.classList.remove(
+		'border-emerald-500', 'ring-2', 'ring-emerald-500/30',
+		'border-rose-500', 'ring-rose-500/30'
+	);
+
+	if (state === 'valid') {
+		inputEl.classList.add('border-emerald-500', 'ring-2', 'ring-emerald-500/30');
+		if (errEl) errEl.classList.add('hidden');
+	} else if (state === 'error') {
+		inputEl.classList.add('border-rose-500', 'ring-2', 'ring-rose-500/30');
+	} else {
+		if (errEl) errEl.classList.add('hidden');
+	}
+}
+
 // Komentar: Memverifikasi status masa aktif dan hak akses token VIP pengguna.
 function checkVIPAuth() {
 	const savedToken = localStorage.getItem('vip_token');
 	const modal = document.getElementById('vipGatewayModal');
 	const dashboard = document.getElementById('vipDashboard');
 	if (!savedToken || !databaseVIP[savedToken]) {
-		if(modal) modal.classList.remove('hidden');
-		if(dashboard) dashboard.classList.add('hidden');
+		setVipInputState('default');
+		if (modal) modal.classList.remove('hidden');
+		if (dashboard) dashboard.classList.add('hidden');
 		return;
 	}
 	const account = databaseVIP[savedToken];
@@ -5678,12 +5700,13 @@ function checkVIPAuth() {
 	if (daysLeft < 0) {
 		showError("Masa aktif Akses Token kamu telah habis. Silakan minta ke Admin.");
 		localStorage.removeItem('vip_token');
-		if(modal) modal.classList.remove('hidden');
-		if(dashboard) dashboard.classList.add('hidden');
+		if (modal) modal.classList.remove('hidden');
+		if (dashboard) dashboard.classList.add('hidden');
 		return;
 	}
-	if(modal) modal.classList.add('hidden');
-	if(dashboard) dashboard.classList.remove('hidden');
+	setVipInputState('valid');
+	if (modal) modal.classList.add('hidden');
+	if (dashboard) dashboard.classList.remove('hidden');
 	const name = getExtractName(savedToken);
 	document.getElementById('vipUserName').innerText = name;
 	document.getElementById('vipDaysLeft').innerText = `${daysLeft} Hari Lagi`;
@@ -5699,8 +5722,9 @@ function loginVIP() {
 	if (!databaseVIP[tokenInput]) return showError("Akses Token tidak terdaftar / salah!");
 	const daysLeft = calculateDaysLeft(databaseVIP[tokenInput].tanggalExpired);
 	if (daysLeft < 0) return showError("Akses Token ini sudah kedaluwarsa!");
+
 	localStorage.setItem('vip_token', tokenInput);
-	document.getElementById('loginErrorMsg').classList.add('hidden');
+	setVipInputState('valid');
 	AudioFX.playSuccess();
 	checkVIPAuth();
 }
@@ -5708,14 +5732,18 @@ function loginVIP() {
 // Komentar: Mengakhiri sesi akses VIP pengguna dan menghapus token dari perangkat.
 function logoutVIP() {
 	localStorage.removeItem('vip_token');
+	const inputEl = document.getElementById('tokenInput');
+	if (inputEl) inputEl.value = '';
+	setVipInputState('default');
 	checkVIPAuth();
 }
 
 // Komentar: Menampilkan pesan kesalahan atau peringatan pada proses tertentu.
 function showError(msg) {
 	AudioFX.playTokenExpired();
+	setVipInputState('error');
 	const errEl = document.getElementById('loginErrorMsg');
-	if(errEl) {
+	if (errEl) {
 		errEl.innerText = msg;
 		errEl.classList.remove('hidden');
 	}
