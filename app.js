@@ -764,14 +764,14 @@ function selectSuggestion(ticker) {
 // ============================================================================
 // COOLDOWN TOMBOL CARI SAHAM
 // ============================================================================
-function startSearchCooldown(seconds = 3) {
+function startSearchCooldown(seconds = 7) {
 	const btn = document.getElementById('btnSearchStock') || document.querySelector('button[onclick*="searchStock"]');
 	if (!btn) return;
 
 	let remaining = seconds;
 	btn.disabled = true;
 	btn.classList.add('opacity-60', 'cursor-not-allowed');
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Tunggu (${remaining}s)</span>`;
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>(${remaining}s)</span>`;
 	if (window.lucide) lucide.createIcons();
 
 	const timer = setInterval(() => {
@@ -783,7 +783,7 @@ function startSearchCooldown(seconds = 3) {
 			clearInterval(timer);
 			btn.disabled = false;
 			btn.classList.remove('opacity-60', 'cursor-not-allowed');
-			btn.innerHTML = `<i data-lucide="search" class="w-4 h-4"></i> <span>Cari</span> <span id="badgeLimitSearch" class="limit-badge-circle"></span>`;
+			btn.innerHTML = `<span>Cari</span> <span id="badgeLimitSearch" class="limit-badge-circle"></span>`;
 			if (window.lucide) lucide.createIcons();
 			if (typeof updateAllLimitBadges === 'function') updateAllLimitBadges();
 		}
