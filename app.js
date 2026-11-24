@@ -777,7 +777,7 @@ function startSearchCooldown(seconds = 7) {
 	const timer = setInterval(() => {
 		remaining -= 1;
 		if (remaining > 0) {
-			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Tunggu (${remaining}s)</span>`;
+			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>(${remaining}s)</span>`;
 			if (window.lucide) lucide.createIcons();
 		} else {
 			clearInterval(timer);
