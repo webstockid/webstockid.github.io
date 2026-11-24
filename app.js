@@ -761,28 +761,31 @@ function selectSuggestion(ticker) {
 }
 
 // Komentar: Mengaktifkan jeda antar pencarian untuk mencegah permintaan data terlalu beruntun.
-function startSearchCooldown(seconds) {
-	const btn = document.querySelector("button[onclick='searchStock()']");
+// ============================================================================
+// COOLDOWN TOMBOL CARI SAHAM
+// ============================================================================
+function startSearchCooldown(seconds = 3) {
+	const btn = document.getElementById('btnSearchStock') || document.querySelector('button[onclick*="searchStock"]');
 	if (!btn) return;
-	btn.disabled = true;
-	btn.classList.add('opacity-50', 'cursor-not-allowed');
-	let remaining = seconds;
-	if (searchCooldownTimer) clearInterval(searchCooldownTimer);
-	
-	btn.childNodes[0].nodeValue = `Cari (${remaining}d) `;
-	updateDashboardLimitsUI();
 
-	searchCooldownTimer = setInterval(() => {
-		remaining--;
-		if (remaining <= 0) {
-			clearInterval(searchCooldownTimer);
-			btn.disabled = false;
-			btn.classList.remove('opacity-50', 'cursor-not-allowed');
-			btn.childNodes[0].nodeValue = "Cari ";
-			updateDashboardLimitsUI();
+	let remaining = seconds;
+	btn.disabled = true;
+	btn.classList.add('opacity-60', 'cursor-not-allowed');
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Tunggu (${remaining}s)</span>`;
+	if (window.lucide) lucide.createIcons();
+
+	const timer = setInterval(() => {
+		remaining -= 1;
+		if (remaining > 0) {
+			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Tunggu (${remaining}s)</span>`;
+			if (window.lucide) lucide.createIcons();
 		} else {
-			btn.childNodes[0].nodeValue = `Cari (${remaining}d) `;
-			updateDashboardLimitsUI();
+			clearInterval(timer);
+			btn.disabled = false;
+			btn.classList.remove('opacity-60', 'cursor-not-allowed');
+			btn.innerHTML = `<i data-lucide="search" class="w-4 h-4"></i> <span>Cari</span> <span id="badgeLimitSearch" class="limit-badge-circle"></span>`;
+			if (window.lucide) lucide.createIcons();
+			if (typeof updateAllLimitBadges === 'function') updateAllLimitBadges();
 		}
 	}, 1000);
 }
@@ -1289,7 +1292,10 @@ function renderAISignalUI(ticker, stockData, isCached) {
 	document.getElementById('tpBarCurrent').innerText = `Harga: Rp ${price.toLocaleString('id-ID')}`;
 	document.getElementById('tpBarTP').innerText = `TP2: Rp ${tp2.toLocaleString('id-ID')}`;
 
-	const totalSpan = tp1 - sl;
+	// Hitung posisi harga saat ini pada rentang SL hingga TP2
+	const totalSpan = tp2 - sl;
+	const rawProgress = totalSpan > 0 ? ((currentPrice - sl) / totalSpan) * 100 : 50;
+	const progressPercent = Math.max(0, Math.min(100, Math.round(rawProgress)));
 	let calculatedProgress = totalSpan > 0 ? Math.round(((price - sl) / totalSpan) * 100) : 50;
 	calculatedProgress = Math.max(0, Math.min(100, calculatedProgress));
 
@@ -4991,8 +4997,9 @@ function generateAIResponse(prompt) {
 	const fibo = getDynamicFiboLevels(data?.high20, data?.low20, price);
 	
 	let sl = roundToBEITick(fibo.sl * 0.96, 'floor');
-	let sup1 = fibo.entryLow;
-	let sup2 = fibo.entryHigh;
+	// Area support disinkronkan dengan kartu AI Signal utama
+	const sup1 = roundToBEITick(fibo.entryLow * 0.97);
+	const sup2 = roundToBEITick(fibo.entryHigh * 0.99);
 	let res1 = fibo.res1;
 	let res2 = fibo.res2;
 	let tp1 = roundToBEITick(res1 * 1.02, 'ceil');
@@ -6161,7 +6168,10 @@ function loadDeviceSystemInfo() {
 	browserEl.innerText = browser;
 	hwEl.innerText = `${cores} | RAM: ${ram}`;
 	
-	gpu = gpu.replace(/ANGLE \(\vert{}\)|Direct3D.*|OpenGL.*/g, '').trim(); 
+	const cleanGPU = gpu
+		.replace(/ANGLE \(|\)|Direct3D.*|OpenGL.*/g, '')
+		.replace(/\s+/g, ' ')
+		.trim();
 	gpuEl.innerText = gpu.length > 60 ? gpu.substring(0, 60) + "..." : gpu;
 	gpuEl.title = gpu; // Tooltip akan muncul jika tulisan terlalu panjang
 }
@@ -6771,15 +6781,16 @@ function selectBacktestOption(inputId, value, label, dropdownId) {
 	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
 }
 
-document.addEventListener('click', function(e) {
-	['dropdownBacktestStrategy', 'dropdownBacktestPeriod'].forEach(id => {
-		const el = document.getElementById(id);
-		if (el && !el.classList.contains('hidden')) {
-			if (!e.target.closest(`#${id}`) && !e.target.closest(`button[onclick="toggleBacktestDropdown('${id}')"]`)) {
-				el.classList.add('hidden');
+document.addEventListener('click', (e) => {
+	if (!e.target.closest('.custom-dropdown-wrapper')) {
+		const dropdowns = ['dropdownMA', 'dropdownVol', 'dropdownPrice', 'dropdownRSI'];
+		dropdowns.forEach((id) => {
+			const menu = document.getElementById(id);
+			if (menu && !menu.classList.contains('hidden')) {
+				menu.classList.add('hidden');
 			}
-		}
-	});
+		});
+	}
 });
 
 async function runBacktestEngine() {
@@ -7528,129 +7539,110 @@ async function fetchWarrantWithFallback(wTicker) {
 }
 
 async function loadWarrantData() {
-	if (isWarrantScanning) return;
-	ensureWarrantTrackerStyles();
-
-	const btn = document.getElementById('btnLoadWarrant') || document.querySelector("#tabContent-warrant button[onclick*='loadWarrantData']");
-	const container = document.getElementById('warrant-tracker-list');
+	const container = document.getElementById('warrantResultsContainer');
+	const btn = document.getElementById('btnScanWarrant');
 	if (!container) return;
 
-	isWarrantScanning = true;
-
-	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
-	if (navigator.vibrate) navigator.vibrate(100);
+	if (typeof playClickSound === 'function') playClickSound();
+	if (typeof triggerHaptic === 'function') triggerHaptic(100);
 
 	if (btn) {
 		btn.disabled = true;
-		btn.classList.remove('animate-warrant-press');
-		void btn.offsetWidth;
-		btn.classList.add('animate-warrant-press', 'ring-4', 'ring-fuchsia-500/30', 'cursor-not-allowed', 'opacity-90');
-		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-fuchsia-200"></i> <span>Memindai Waran (-W)...</span>`;
-		if (window.lucide) lucide.createIcons();
+		btn.classList.add('opacity-60', 'cursor-not-allowed');
 	}
 
 	container.innerHTML = `
-		<div class="col-span-full flex flex-col items-center justify-center py-12 px-4 text-center bg-slate-950/30 rounded-2xl border border-fuchsia-500/20 shadow-inner space-y-3">
-			<div class="w-12 h-12 rounded-2xl bg-fuchsia-500/10 border border-fuchsia-500/30 flex items-center justify-center">
-				<i data-lucide="loader-2" class="w-6 h-6 animate-spin text-fuchsia-400"></i>
-			</div>
-			<div>
-				<p id="warrantScanStatusText" class="text-xs lg:text-sm font-bold text-white">Memindai Saham Waran (-W) Aktif di BEI...</p>
-				<p class="text-[10px] lg:text-xs text-slate-400 mt-1">Mengambil harga waran, likuiditas lot, dan rasio terhadap saham induk.</p>
-			</div>
+		<div class="text-center py-10 text-cyan-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800 flex flex-col items-center justify-center gap-2">
+			<i data-lucide="loader-2" class="w-6 h-6 animate-spin text-cyan-400"></i>
+			<span>Mengambil harga live saham induk & seri waran BEI (-W / -W2)...</span>
 		</div>
 	`;
 	if (window.lucide) lucide.createIcons();
 
 	try {
-		const allDashW = getOnlyDashWTickers();
-		const prioritizedSet = new Set(PRIORITIZED_ACTIVE_WARRANTS);
-		const priorityPool = allDashW.filter(t => prioritizedSet.has(t)).sort(() => 0.5 - Math.random());
-		const otherPool = allDashW.filter(t => !prioritizedSet.has(t)).sort(() => 0.5 - Math.random());
-		const orderedTickers = [...priorityPool, ...otherPool];
+		const cardsHtml = [];
 
-		const foundWarrants = [];
-		const activeCandidates = [];
-		const fallbackCandidates = [];
+		for (const item of IDX_ACTIVE_WARRANTS) {
+			const [parentPrice, warrantPrice] = await Promise.all([
+				fetchLivePriceSingle(item.parent),
+				fetchLivePriceSingle(item.warrant)
+			]);
 
-		for (const wTicker of orderedTickers) {
-			const cached = getCachedStockData(wTicker);
-			if (cached && cached.price > 0) {
-				foundWarrants.push(cached);
-			} else if (isDeadWarrantCached(wTicker)) {
-				fallbackCandidates.push(wTicker);
-			} else {
-				activeCandidates.push(wTicker);
-			}
+			if (!parentPrice || !warrantPrice) continue;
+
+			const metrics = calculateWarrantMetrics(parentPrice, warrantPrice, item.exercisePrice, item.ratio);
+			const limits = typeof calculateARA_ARB === 'function' ? calculateARA_ARB(warrantPrice, true) : null;
+
+			cardsHtml.push(`
+				<div class="bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 rounded-xl p-4 transition-all duration-200 flex flex-col gap-3">
+					<div class="flex items-start justify-between gap-2">
+						<div>
+							<div class="flex items-center gap-2">
+								<span class="text-sm lg:text-base font-bold text-white">${item.warrant}</span>
+								<span class="text-[10px] px-2 py-0.5 rounded-full border ${metrics.badgeClass} font-medium">${metrics.status}</span>
+							</div>
+							<p class="text-[11px] text-slate-400 mt-0.5">
+								Induk: <button type="button" onclick="openTickerFromNotification('${item.parent}')" class="text-cyan-400 hover:underline font-semibold">${item.parent}</button> (Rp ${metrics.parentPrice.toLocaleString('id-ID')}) • Exp: ${item.expiry}
+							</p>
+						</div>
+						<div class="text-right">
+							<div class="text-sm font-bold text-cyan-400">Rp ${metrics.warrantPrice.toLocaleString('id-ID')}</div>
+							<div class="text-[10px] text-slate-400">Tebus: Rp ${metrics.exercisePrice.toLocaleString('id-ID')}</div>
+						</div>
+					</div>
+
+					<div class="grid grid-cols-4 gap-2 pt-2 border-t border-slate-800/80 text-center">
+						<div class="bg-slate-950/60 rounded-lg py-1.5 px-1">
+							<div class="text-[10px] text-slate-400">Intrinsik</div>
+							<div class="text-xs font-semibold text-emerald-400">Rp ${metrics.intrinsicValue.toLocaleString('id-ID')}</div>
+						</div>
+						<div class="bg-slate-950/60 rounded-lg py-1.5 px-1">
+							<div class="text-[10px] text-slate-400">Parity (BEP)</div>
+							<div class="text-xs font-semibold text-white">Rp ${metrics.breakEvenPrice.toLocaleString('id-ID')}</div>
+						</div>
+						<div class="bg-slate-950/60 rounded-lg py-1.5 px-1">
+							<div class="text-[10px] text-slate-400">Premium</div>
+							<div class="text-xs font-semibold ${metrics.premiumPct <= 10 ? 'text-emerald-400' : 'text-amber-400'}">${metrics.premiumPct > 0 ? '+' : ''}${metrics.premiumPct}%</div>
+						</div>
+						<div class="bg-slate-950/60 rounded-lg py-1.5 px-1">
+							<div class="text-[10px] text-slate-400">Gearing</div>
+							<div class="text-xs font-semibold text-indigo-400">${metrics.gearing}x</div>
+						</div>
+					</div>
+
+					${limits ? `
+					<div class="flex items-center justify-between text-[11px] text-slate-400 bg-slate-950/50 rounded-lg px-3 py-1.5">
+						<span>ARA Waran: <strong class="text-emerald-400">Rp ${limits.ara.toLocaleString('id-ID')}</strong></span>
+						<span>ARB Waran: <strong class="text-rose-400">Rp ${limits.arb.toLocaleString('id-ID')}</strong></span>
+						<button type="button" onclick="openTickerFromNotification('${item.warrant}')" class="text-cyan-400 hover:text-cyan-300 font-medium">Lihat Chart →</button>
+					</div>
+					` : ''}
+				</div>
+			`);
 		}
 
-		if (foundWarrants.length > 0) {
-			await enrichAndRenderWarrants(foundWarrants, container);
-		}
-
-		const queue = activeCandidates.length > 0
-			? activeCandidates.slice(0, 50)
-			: fallbackCandidates.slice(0, 30);
-
-		let queueIdx = 0;
-		let renderLock = false;
-		const TARGET_COUNT = 16;
-		const CONCURRENCY = 5;
-
-		const triggerProgressiveRender = async () => {
-			if (renderLock || foundWarrants.length === 0) return;
-			renderLock = true;
-			try {
-				await enrichAndRenderWarrants(foundWarrants, container);
-			} finally {
-				renderLock = false;
-			}
-		};
-
-		const workerTask = async () => {
-			while (queueIdx < queue.length && foundWarrants.length < TARGET_COUNT) {
-				const wTicker = queue[queueIdx++];
-				const statusEl = document.getElementById('warrantScanStatusText');
-				if (statusEl && foundWarrants.length === 0) {
-					statusEl.innerText = `Memindai Saham Waran (-W) Aktif di BEI... (${queueIdx}/${queue.length})`;
-				}
-
-				const res = await fetchWarrantWithFallback(wTicker);
-				if (res && res.price > 0) {
-					if (!foundWarrants.some(item => item.ticker === res.ticker)) {
-						foundWarrants.push(res);
-						if (foundWarrants.length === 1 || foundWarrants.length % 4 === 0 || foundWarrants.length >= TARGET_COUNT) {
-							await triggerProgressiveRender();
-						}
-					}
-				}
-			}
-		};
-
-		await Promise.all(Array.from({ length: CONCURRENCY }, () => workerTask()));
-
-		if (foundWarrants.length > 0) {
-			await enrichAndRenderWarrants(foundWarrants, container);
-			if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
-		} else {
+		if (cardsHtml.length === 0) {
 			container.innerHTML = `
-				<div class="col-span-full text-center py-10 px-4 text-slate-400 text-xs lg:text-sm bg-slate-900/60 rounded-xl border border-slate-800 space-y-2">
-					<i data-lucide="search-x" class="w-7 h-7 text-slate-500 mx-auto"></i>
-					<p class="font-bold text-slate-200">Data Waran (-W) Belum Berhasil Dimuat</p>
-					<p class="text-[11px] text-slate-400">Server data sedang sibuk atau waran sedang tidak aktif. Silakan tekan tombol <strong>Pindai Ulang Waran</strong> kembali.</p>
+				<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800">
+					Data harga waran belum tersedia saat ini (pasar tutup atau kode waran sedang suspensi).
 				</div>
 			`;
-			if (window.lucide) lucide.createIcons();
+		} else {
+			container.innerHTML = cardsHtml.join('');
 		}
+
+		if (window.lucide) lucide.createIcons();
+	} catch (error) {
+		console.error('Error loadWarrantData:', error);
+		container.innerHTML = `
+			<div class="text-center py-8 text-rose-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-rose-500/30">
+				Terjadi kesalahan saat memproses data Warrant Tracker.
+			</div>
+		`;
 	} finally {
-		isWarrantScanning = false;
 		if (btn) {
 			btn.disabled = false;
-			btn.classList.remove('ring-4', 'ring-fuchsia-500/30', 'cursor-not-allowed', 'opacity-90', 'animate-warrant-press');
-			void btn.offsetWidth;
-			btn.classList.add('animate-warrant-press');
-			btn.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4"></i> <span>Pindai Ulang Waran</span>`;
-			if (window.lucide) lucide.createIcons();
+			btn.classList.remove('opacity-60', 'cursor-not-allowed');
 		}
 	}
 }
@@ -7861,11 +7853,23 @@ function openTickerFromNotification(ticker) {
 	const cleanTicker = normalizeTickerSymbol(ticker);
 	if (!cleanTicker) return;
 
-	const searchInput = document.getElementById('stockSearch');
-	if (searchInput) searchInput.value = cleanTicker;
-	if (typeof searchStock === 'function') searchStock(true);
-	if (typeof switchTab === 'function') switchTab('ai');
-	window.scrollTo({ top: 0, behavior: 'smooth' });
+	if (typeof playClickSound === 'function') playClickSound();
+	if (typeof triggerHaptic === 'function') triggerHaptic(120);
+
+	// Pindah ke tab utama screener jika fungsi tab tersedia
+	if (typeof switchMainTab === 'function') {
+		switchMainTab('screener');
+	}
+
+	const inputEl = document.getElementById('stockInput');
+	if (inputEl) {
+		inputEl.value = cleanTicker;
+		inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	}
+
+	if (typeof searchStock === 'function') {
+		searchStock();
+	}
 }
 
 // Hapus bulatan notif otomatis saat user membuka kembali layar aplikasi
