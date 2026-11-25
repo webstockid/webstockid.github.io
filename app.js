@@ -6953,20 +6953,20 @@ async function runBacktestEngine() {
 			let triggerNote = '';
 
 			if (strategy === 'golden_cross') {
-				isMatch = stock.ma5 >= stock.ma10 || stock.price >= stock.ma20;
+				isMatch = stock.ma5 >= stock.ma20 || stock.price >= stock.ma20;
 				triggerNote = `MA5 Rp ${Math.round(stock.ma5).toLocaleString('id-ID')} vs MA20 Rp ${Math.round(stock.ma20).toLocaleString('id-ID')}`;
 			} else if (strategy === 'volume_spike') {
-				isMatch = stock.volRatio >= 2.0;
+				isMatch = stock.volRatio >= 2.5;
 				triggerNote = `Lonjakan Volume ${stock.volRatio.toFixed(1)}x rerata harian`;
 			} else if (strategy === 'volume_accumulation') {
-				isMatch = stock.volRatio >= 1.3 && stock.price >= stock.ma10 && stock.changePercent >= 0;
+				isMatch = stock.volRatio >= 1.2 && stock.price >= stock.ma10 && stock.changePercent >= 0;
 				triggerNote = `Akumulasi Vol ${(stock.volRatio * 100).toFixed(0)}% · Bertahan di atas MA10`;
 			} else if (strategy === 'curi_start') {
-				isMatch = stock.volRatio >= 1.5 && stock.price >= stock.ma5 && stock.changePercent >= 0 && stock.changePercent < 5;
+				isMatch = stock.volRatio >= 2.0 && stock.price >= stock.ma5 && stock.changePercent >= 0 && stock.changePercent < 5;
 				triggerNote = `Curi Start: Harga +${stock.changePercent.toFixed(2)}% (di atas MA5) · Vol ${stock.volRatio.toFixed(1)}x`;
 			} else {
 				const nearHigh = stock.high > 0 ? (stock.price >= stock.high * 0.96) : (stock.changePercent > 0);
-				isMatch = nearHigh || stock.price >= stock.ma10;
+				isMatch = nearHigh || stock.price >= stock.ma20;
 				triggerNote = `Uji Resist Rp ${roundToBEITick(stock.high).toLocaleString('id-ID')} · Vol ${stock.volRatio.toFixed(1)}x`;
 			}
 
