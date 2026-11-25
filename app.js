@@ -4312,26 +4312,92 @@ function renderChart(ticker) {
 	}
 }
 
+// Komentar: Memuat widget TradingView Symbol Overview & Statistik Kunci Emiten yang sedang dipilih.
 function renderTechnicalGauge(ticker) {
 	const container = document.getElementById('tv_technical_container');
 	if (!container) return;
+
+	const cleanTicker = normalizeTickerSymbol(ticker) || 'MDIA';
+	const tvSymbol = toTradingViewSymbol(cleanTicker);
+	const activeTheme = localStorage.getItem('stockid_theme') === 'light' ? 'light' : 'dark';
+
+	// Komentar: Memperbarui label judul kartu dari "Analisa Teknikal Real-Time" agar sesuai dengan widget baru.
+	const cardWrapper = container.parentElement;
+	if (cardWrapper) {
+		const headerCandidates = cardWrapper.querySelectorAll('h1, h2, h3, h4, span, p, div');
+		for (const el of headerCandidates) {
+			if (el !== container && !container.contains(el) && el.children.length <= 2 && el.textContent.includes('Analisa Teknikal Real-Time')) {
+				const iconEl = el.querySelector('i[data-lucide], svg');
+				if (iconEl) {
+					el.innerHTML = `${iconEl.outerHTML} <span>Ringkasan Emiten &amp; Statistik Kunci [${cleanTicker}] (TradingView Engine)</span>`;
+				} else {
+					el.textContent = `Ringkasan Emiten & Statistik Kunci [${cleanTicker}] (TradingView Engine)`;
+				}
+				break;
+			}
+		}
+	}
+
 	container.innerHTML = '';
+	container.style.minHeight = '430px';
+
+	const widgetWrapper = document.createElement('div');
+	widgetWrapper.className = 'tradingview-widget-container w-full h-full';
+
+	const widgetInner = document.createElement('div');
+	widgetInner.className = 'tradingview-widget-container__widget w-full h-full';
+	widgetWrapper.appendChild(widgetInner);
+
 	const script = document.createElement('script');
 	script.type = 'text/javascript';
-	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
+	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js';
 	script.async = true;
 	script.text = JSON.stringify({
-		"interval": "1D",
+		"symbols": [
+			[
+				cleanTicker,
+				`${tvSymbol}|1D`
+			]
+		],
+		"chartOnly": false,
 		"width": "100%",
-		"isTransparent": true,
-		"height": "350",
-		"symbol": toTradingViewSymbol(ticker),
-		"showIntervalTabs": true,
-		"displayMode": "single",
+		"height": 430,
 		"locale": "id",
-		"colorTheme": "dark"
+		"colorTheme": activeTheme,
+		"autosize": false,
+		"showVolume": true,
+		"showMA": true,
+		"hideDateRanges": false,
+		"hideMarketStatus": false,
+		"hideSymbolLogo": false,
+		"scalePosition": "right",
+		"scaleMode": "Normal",
+		"fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
+		"fontSize": "10",
+		"noTimeScale": false,
+		"valuesTracking": "1",
+		"changeMode": "price-and-percent",
+		"chartType": "area",
+		"maLineColor": "#10b981",
+		"maLineWidth": 1,
+		"maLength": 20,
+		"lineWidth": 2,
+		"lineType": 0,
+		"isTransparent": true,
+		"dateRanges": [
+			"1d|1",
+			"1m|30",
+			"3m|60",
+			"12m|1D",
+			"60m|1W",
+			"all|1M"
+		]
 	});
-	container.appendChild(script);
+
+	widgetWrapper.appendChild(script);
+	container.appendChild(widgetWrapper);
+
+	if (window.lucide) lucide.createIcons();
 }
 
 // ==========================================
