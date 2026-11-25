@@ -6794,42 +6794,50 @@ function calculateRealisticForeignFlow(quote) {
 	};
 }
 
+let foreignFlowScanInProgress = false;
+let foreignFlowCooldownTimer = null;
+
 // ============================================================================
 // 3. PEMINDAIAN DATA ASING FLOW (TERHUBUNG KE TOMBOL PINDAI FLOW ASING)
 // ============================================================================
-async function loadForeignFlowData(forceRefresh = false) {
+async function loadForeignFlowData(forceRefresh = true) {
 	const btn = document.getElementById('btnLoadForeignFlow')
 		|| document.getElementById('btnScanForeignFlow')
 		|| document.querySelector("#tabContent-foreign button[onclick*='loadForeignFlowData']");
 	const container = document.getElementById('foreign-flow-list')
 		|| document.getElementById('asing-flow-container');
 
-	if (isForeignFlowLoading || (btn && btn.disabled)) return [];
+	// Cegah eksekusi ganda saat pemindaian atau cooldown masih berjalan
+	if (foreignFlowScanInProgress || (btn && btn.disabled)) return [];
 
-	const now = Date.now();
-	const defaultBtnHtml = btn
-		? btn.innerHTML
+	// Simpan tampilan awal tombol sekali saja agar tidak tertimpa ikon spinner
+	if (btn && !btn.dataset.defaultHtml) {
+		btn.dataset.defaultHtml = btn.innerHTML;
+	}
+	const defaultBtnHtml = (btn && btn.dataset.defaultHtml)
+		? btn.dataset.defaultHtml
 		: `<i data-lucide="radar" class="w-4 h-4"></i> Pindai Flow Asing`;
 
 	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
-	if (!isVibrateMuted && 'vibrate' in navigator) navigator.vibrate(100);
+	if (typeof isVibrateMuted !== 'undefined' && !isVibrateMuted && 'vibrate' in navigator) {
+		navigator.vibrate(100);
+	}
 
-	// Cek cache lokal jika belum kedaluwarsa dan tidak dipaksa refresh
-	if (!forceRefresh) {
+	// Gunakan cache hanya jika dipanggil otomatis (forceRefresh === false)
+	if (forceRefresh === false) {
 		try {
 			const cachedRaw = localStorage.getItem(FOREIGN_FLOW_CACHE_KEY);
 			if (cachedRaw) {
 				const cached = JSON.parse(cachedRaw);
 				if (
 					cached &&
-					(now - cached.timestamp) < FOREIGN_FLOW_CACHE_TTL &&
+					(Date.now() - cached.timestamp) < FOREIGN_FLOW_CACHE_TTL &&
 					Array.isArray(cached.data) &&
 					cached.data.length > 0
 				) {
 					foreignFlowCacheItems = cached.data;
 					window.foreignFlowData = cached.data;
 					renderFilteredForeignFlow();
-					if (typeof AudioFX !== 'undefined') AudioFX.playSuccess();
 					return cached.data;
 				}
 			}
@@ -6838,7 +6846,7 @@ async function loadForeignFlowData(forceRefresh = false) {
 		}
 	}
 
-	// Ambil maksimal 30 emiten reguler secara deterministik
+	// Ambil maksimal 30 emiten reguler
 	const sourceWatchlist = typeof getRegularStockTickers === 'function'
 		? getRegularStockTickers()
 		: (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist)
@@ -6853,7 +6861,8 @@ async function loadForeignFlowData(forceRefresh = false) {
 		return [];
 	}
 
-	isForeignFlowLoading = true;
+	foreignFlowScanInProgress = true;
+	if (typeof isForeignFlowLoading !== 'undefined') isForeignFlowLoading = true;
 
 	if (btn) {
 		btn.disabled = true;
@@ -6881,7 +6890,7 @@ async function loadForeignFlowData(forceRefresh = false) {
 			const batchResults = await Promise.all(
 				batch.map(async (ticker) => {
 					try {
-						const raw = await fetchRealtimeStockData(ticker, Boolean(forceRefresh), true);
+						const raw = await fetchRealtimeStockData(ticker, true, true);
 						const norm = normalizeStockPayload(raw, ticker);
 						if (!norm || norm.price <= 0) return null;
 						return calculateRealisticForeignFlow(norm);
@@ -6893,7 +6902,6 @@ async function loadForeignFlowData(forceRefresh = false) {
 
 			collected.push(...batchResults.filter(Boolean));
 
-			// Render bertahap agar hasil langsung muncul di layar
 			if (collected.length > 0) {
 				const activeVolList = collected.filter(item => item.volume > 0);
 				const baseSortList = activeVolList.length > 0 ? activeVolList : collected;
@@ -6935,13 +6943,43 @@ async function loadForeignFlowData(forceRefresh = false) {
 		}
 		return [];
 	} finally {
-		isForeignFlowLoading = false;
-		startFeatureButtonCooldown(btn, 'foreign', defaultBtnHtml, 'text-sky-400', 10);
+		// Selalu buka kunci state pemindaian
+		foreignFlowScanInProgress = false;
+		if (typeof isForeignFlowLoading !== 'undefined') isForeignFlowLoading = false;
+
+		// Pulihkan tombol secara mandiri dengan cooldown 10 detik
+		if (btn) {
+			if (foreignFlowCooldownTimer) {
+				clearInterval(foreignFlowCooldownTimer);
+				foreignFlowCooldownTimer = null;
+			}
+
+			let remaining = 10;
+			btn.disabled = true;
+			btn.classList.add('cursor-not-allowed', 'opacity-75');
+			btn.innerHTML = `<i data-lucide="clock" class="w-4 h-4 text-sky-400"></i> Tunggu ${remaining}d`;
+			if (window.lucide) lucide.createIcons();
+
+			foreignFlowCooldownTimer = setInterval(() => {
+				remaining -= 1;
+				if (remaining > 0) {
+					btn.innerHTML = `<i data-lucide="clock" class="w-4 h-4 text-sky-400"></i> Tunggu ${remaining}d`;
+					if (window.lucide) lucide.createIcons();
+				} else {
+					clearInterval(foreignFlowCooldownTimer);
+					foreignFlowCooldownTimer = null;
+					btn.disabled = false;
+					btn.classList.remove('cursor-not-allowed', 'opacity-75');
+					btn.innerHTML = defaultBtnHtml;
+					if (window.lucide) lucide.createIcons();
+				}
+			}, 1000);
+		}
 	}
 }
 
 window.loadForeignFlowData = loadForeignFlowData;
-window.setForeignFlowFilter = setForeignFlowFilter;
+// window.setForeignFlowFilter = setForeignFlowFilter;
 
 // ==========================================
 // 2. BACKTESTING ENGINE & DROPDOWN KOSTUM
