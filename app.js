@@ -6708,31 +6708,52 @@ function renderFilteredForeignFlow() {
 	if (window.lucide) lucide.createIcons();
 }
 
-// ============================================================================
-// KONSTANTA & KONFIGURASI ASING FLOW (CLV PROXY MODEL)
-// ============================================================================
-//const FOREIGN_FLOW_CACHE_KEY = 'stockid_foreign_flow_cache_v3';
-//const FOREIGN_FLOW_CACHE_TTL = 5 * 60 * 1000; // 5 menit
+// ==========================================
+// KONSTANTA, STATE & HELPER ASING FLOW (CLV PROXY MODEL)
+// ==========================================
+const FOREIGN_FLOW_CACHE_KEY = 'stockid_foreign_flow_cache_v3';
+const FOREIGN_FLOW_CACHE_TTL = 5 * 60 * 1000; // 5 menit
 
-// ============================================================================
-// 1. HITUNG CLOSE LOCATION VALUE (CLV)
-// Mengukur posisi harga terhadap rentang High-Low hari ini (-1.0 s/d +1.0)
-// ============================================================================
+let foreignFlowCacheItems = [];
+let foreignFlowTypeFilter = 'ALL';
+let foreignFlowNominalFilter = 'ALL';
+let foreignFlowScanInProgress = false;
+
+isForeignFlowLoading = false;
+foreignFlowCooldownTimer = null;
+
+// Komentar: Memformat nominal estimasi arus dana asing ke satuan Rupiah (Ribu/Juta/Miliar/Triliun).
+function formatForeignFlowNominal(val) {
+	const absVal = Math.abs(Number(val) || 0);
+	if (absVal <= 0) return 'Rp 0';
+	if (absVal >= 1e12) return `Rp ${(absVal / 1e12).toFixed(2)} Triliun`;
+	if (absVal >= 1e9) return `Rp ${(absVal / 1e9).toFixed(2)} Miliar`;
+	if (absVal >= 1e6) return `Rp ${(absVal / 1e6).toFixed(2)} Juta`;
+	if (absVal >= 1e3) return `Rp ${(absVal / 1e3).toFixed(2)} Ribu`;
+	return `Rp ${Math.round(absVal).toLocaleString('id-ID')}`;
+}
+
+// Komentar: Mengelompokkan skala nominal arus dana asing untuk kebutuhan filter cepat.
+function getNominalScaleCategory(val) {
+	const absVal = Math.abs(Number(val) || 0);
+	if (absVal >= 1e12) return 'TRILIUN';
+	if (absVal >= 1e9) return 'MILIAR';
+	if (absVal >= 1e6) return 'JUTA';
+	return 'RIBU';
+}
+
+// Komentar: Menghitung Close Location Value (CLV) dalam rentang -1.0 hingga +1.0 berdasarkan posisi harga terhadap High-Low.
 function calculateCLV(price, high, low, prevClose) {
-	// Jika saham terkunci ARA/ARB atau belum ada rentang harga (high === low)
 	if (!high || !low || high <= low) {
 		if (price > prevClose) return 1;
 		if (price < prevClose) return -1;
 		return 0;
 	}
 
-	// Rumus CLV: ((Price - Low) - (High - Price)) / (High - Low)
 	let clv = ((price - low) - (high - price)) / (high - low);
-
-	// Pastikan nilai tetap berada di dalam batas [-1, 1]
 	clv = Math.max(-1, Math.min(1, clv));
 
-	// Tie-breaker halus jika harga berada tepat di titik tengah (zona netral)
+	// Tie-breaker halus saat harga ditutup tepat di titik tengah rentang harian
 	if (Math.abs(clv) < 0.03) {
 		return price >= prevClose ? 0.05 : -0.05;
 	}
@@ -6740,10 +6761,7 @@ function calculateCLV(price, high, low, prevClose) {
 	return clv;
 }
 
-// ============================================================================
-// 2. KALKULASI ESTIMASI NET BUY / NET SELL ASING
-// Menggabungkan CLV dengan bobot partisipasi institusi (15% - 35% turnover)
-// ============================================================================
+// Komentar: Menghitung estimasi Net Buy / Net Sell Asing dengan menggabungkan CLV dan bobot partisipasi institusi (15% - 35% turnover).
 function calculateRealisticForeignFlow(quote) {
 	const price = Number(quote.regularMarketPrice || quote.price || 0);
 	const prevClose = Number(quote.regularMarketPreviousClose || quote.prevClose || price);
@@ -6752,54 +6770,158 @@ function calculateRealisticForeignFlow(quote) {
 	const volume = Number(quote.regularMarketVolume || quote.volume || 0);
 	const avgVolume = Number(quote.averageDailyVolume10Day || quote.avgVolume || volume || 1);
 
-	// Total nilai transaksi hari ini (Rupiah)
 	const turnover = Number(quote.turnover || (price * volume));
-
-	// Hitung arah akumulasi/distribusi secara gradual (-1 s/d +1)
 	const clv = calculateCLV(price, high, low, prevClose);
 
-	// Hitung rasio lonjakan volume dan konversi ke bobot partisipasi (15% - 35%)
 	const rawVolRatio = typeof quote.volRatio === 'number'
 		? quote.volRatio
 		: (avgVolume > 0 ? (volume / avgVolume) : 1);
 	const clampedVolRatio = Math.max(0.5, Math.min(rawVolRatio, 3));
 	const foreignWeight = 0.15 + ((clampedVolRatio - 0.5) / 2.5) * 0.20;
 
-	// Estimasi nominal Net Buy / Net Sell (maksimal 35% dari total turnover)
-	const netFlowEstimate = turnover * clv * foreignWeight;
+	const netFlowEstimate = Math.round(turnover * clv * foreignWeight);
 	const isNetBuy = netFlowEstimate >= 0;
 	const changePercent = typeof quote.changePercent === 'number'
 		? quote.changePercent
 		: (prevClose > 0 ? ((price - prevClose) / prevClose) * 100 : 0);
 
-	const cleanTicker = normalizeTickerSymbol(
-		quote.ticker || (quote.symbol || '').replace(/\.JK$/i, '')
-	);
+	const cleanTicker = typeof normalizeTickerSymbol === 'function'
+		? normalizeTickerSymbol(quote.ticker || (quote.symbol || '').replace(/\.JK$/i, ''))
+		: String(quote.ticker || quote.symbol || '').replace(/\.JK$/i, '').trim().toUpperCase();
 
 	return {
 		ticker: cleanTicker,
-		price: roundToBEITick(price),
-		prevClose: roundToBEITick(prevClose),
-		high: high,
-		low: low,
-		volume: volume,
-		turnover: turnover,
-		changePercent: changePercent,
+		price: typeof roundToBEITick === 'function' ? roundToBEITick(price) : Math.round(price),
+		prevClose: typeof roundToBEITick === 'function' ? roundToBEITick(prevClose) : Math.round(prevClose),
+		high,
+		low,
+		volume,
+		turnover,
+		changePercent,
 		clv: Number(clv.toFixed(3)),
 		volRatio: Number(rawVolRatio.toFixed(2)),
 		foreignWeight: Number((foreignWeight * 100).toFixed(1)),
-		netFlowEstimate: Math.round(netFlowEstimate),
+		netFlowEstimate,
 		status: isNetBuy ? 'NET BUY' : 'NET SELL',
 		type: isNetBuy ? 'BUY' : 'SELL'
 	};
 }
 
-let foreignFlowScanInProgress = false;
-let foreignFlowCooldownTimer = null;
+// Komentar: Mengatur filter arah transaksi (ALL/BUY/SELL) dan skala nominal (RIBU/JUTA/MILIAR/TRILIUN) pada tab Asing Flow.
+function setForeignFlowFilter(group, value) {
+	if (group === 'type') {
+		foreignFlowTypeFilter = value;
+		['ALL', 'BUY', 'SELL'].forEach(key => {
+			const el = document.getElementById(`ffTypeBtn-${key}`);
+			if (!el) return;
+			if (key === value) {
+				if (key === 'BUY') {
+					el.className = 'px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 transition';
+				} else if (key === 'SELL') {
+					el.className = 'px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/40 transition';
+				} else {
+					el.className = 'px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/40 transition';
+				}
+			} else {
+				el.className = 'px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition';
+			}
+		});
+	} else if (group === 'nominal') {
+		foreignFlowNominalFilter = value;
+		['ALL', 'RIBU', 'JUTA', 'MILIAR', 'TRILIUN'].forEach(key => {
+			const el = document.getElementById(`ffNominalBtn-${key}`);
+			if (!el) return;
+			el.className = key === value
+				? 'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-sky-500/20 text-sky-400 border border-sky-500/40 transition'
+				: 'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition';
+		});
+	}
 
-// ============================================================================
-// 3. PEMINDAIAN DATA ASING FLOW (TERHUBUNG KE TOMBOL PINDAI FLOW ASING)
-// ============================================================================
+	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	if (foreignFlowCacheItems.length > 0) {
+		renderFilteredForeignFlow();
+	}
+}
+
+// Komentar: Merender kartu hasil pemindaian Asing Flow ke antarmuka sesuai filter aktif.
+function renderFilteredForeignFlow() {
+	const container = document.getElementById('foreign-flow-list') || document.getElementById('asing-flow-container');
+	if (!container) return;
+
+	const filtered = foreignFlowCacheItems.filter(stock => {
+		const isNetBuy = stock.netFlowEstimate >= 0;
+		if (foreignFlowTypeFilter === 'BUY' && !isNetBuy) return false;
+		if (foreignFlowTypeFilter === 'SELL' && isNetBuy) return false;
+
+		if (foreignFlowNominalFilter !== 'ALL') {
+			const scale = getNominalScaleCategory(stock.netFlowEstimate);
+			if (scale !== foreignFlowNominalFilter) return false;
+		}
+		return true;
+	});
+
+	if (filtered.length === 0) {
+		container.innerHTML = `
+			<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/50 rounded-xl border border-slate-800">
+				Tidak ada emiten yang sesuai dengan filter <strong>${foreignFlowTypeFilter === 'ALL' ? 'Semua Arah' : (foreignFlowTypeFilter === 'BUY' ? 'NET BUY' : 'NET SELL')}</strong> &amp; nominal <strong>${foreignFlowNominalFilter}</strong>.
+			</div>
+		`;
+		return;
+	}
+
+	container.innerHTML = filtered.slice(0, 20).map(stock => {
+		const isNetBuy = stock.netFlowEstimate >= 0;
+		const formattedNominal = formatForeignFlowNominal(stock.netFlowEstimate);
+		const prefixSign = stock.netFlowEstimate > 0 ? '+' : (stock.netFlowEstimate < 0 ? '-' : '');
+		const badgeClass = isNetBuy
+			? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+			: 'bg-rose-500/15 text-rose-400 border-rose-500/30';
+
+		return `
+			<div class="p-4 rounded-xl bg-slate-900/75 border border-slate-800 hover:border-sky-500/40 transition-all duration-200 shadow-sm flex flex-col justify-between gap-3">
+				<div class="flex items-center justify-between gap-3">
+					<div class="flex items-center gap-3 min-w-0">
+						<div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-inner p-1">
+							<img 
+								src="https://assets.stockbit.com/logos/companies/${stock.ticker}.png" 
+								alt="${stock.ticker}" 
+								class="w-full h-full object-contain drop-shadow-sm" 
+								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${stock.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[11px] font-black text-slate-400 tracking-wider\\'>${stock.ticker.substring(0, 3)}</span>';};"
+							>
+						</div>
+						<div class="min-w-0">
+							<div class="flex items-center gap-2 flex-wrap">
+								<span class="font-extrabold text-white text-sm lg:text-base">&dollar;${stock.ticker}</span>
+								<span class="text-[10px] font-bold px-2 py-0.5 rounded border ${badgeClass}">
+									${isNetBuy ? 'NET BUY' : 'NET SELL'}
+								</span>
+							</div>
+							<div class="text-[11px] text-slate-400 mt-1 truncate">
+								Harga: <strong class="text-slate-200">Rp ${stock.price.toLocaleString('id-ID')}</strong> 
+								(<span class="${stock.changePercent >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${stock.changePercent >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%</span>) · Vol: <strong class="text-sky-400">${stock.volRatio.toFixed(1)}x</strong>
+							</div>
+						</div>
+					</div>
+					<div class="text-right shrink-0">
+						<div class="font-extrabold text-xs lg:text-sm ${isNetBuy ? 'text-emerald-400' : 'text-rose-400'}">
+							${prefixSign}${formattedNominal}
+						</div>
+						<div class="text-[10px] text-slate-500">Est. Foreign Flow (${stock.foreignWeight}%)</div>
+					</div>
+				</div>
+
+				<button onclick="selectTickerFromRadar('${stock.ticker}')" class="w-full bg-slate-800/80 hover:bg-sky-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2 rounded-xl border border-slate-700 hover:border-sky-500 transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm">
+					<span>Buka Chart &amp; Detail AI</span>
+					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
+				</button>
+			</div>
+		`;
+	}).join('');
+
+	if (window.lucide) lucide.createIcons();
+}
+
+// Komentar: Memindai estimasi arus dana asing (Foreign Net Flow) secara real-time dan memperbarui tampilan.
 async function loadForeignFlowData(forceRefresh = true) {
 	const btn = document.getElementById('btnLoadForeignFlow')
 		|| document.getElementById('btnScanForeignFlow')
@@ -6807,10 +6929,8 @@ async function loadForeignFlowData(forceRefresh = true) {
 	const container = document.getElementById('foreign-flow-list')
 		|| document.getElementById('asing-flow-container');
 
-	// Cegah eksekusi ganda saat pemindaian atau cooldown masih berjalan
 	if (foreignFlowScanInProgress || (btn && btn.disabled)) return [];
 
-	// Simpan tampilan awal tombol sekali saja agar tidak tertimpa ikon spinner
 	if (btn && !btn.dataset.defaultHtml) {
 		btn.dataset.defaultHtml = btn.innerHTML;
 	}
@@ -6823,7 +6943,7 @@ async function loadForeignFlowData(forceRefresh = true) {
 		navigator.vibrate(100);
 	}
 
-	// Gunakan cache hanya jika dipanggil otomatis (forceRefresh === false)
+	// Gunakan cache lokal jika pemindaian tidak dipaksa refresh (forceRefresh === false)
 	if (forceRefresh === false) {
 		try {
 			const cachedRaw = localStorage.getItem(FOREIGN_FLOW_CACHE_KEY);
@@ -6846,7 +6966,6 @@ async function loadForeignFlowData(forceRefresh = true) {
 		}
 	}
 
-	// Ambil maksimal 30 emiten reguler
 	const sourceWatchlist = typeof getRegularStockTickers === 'function'
 		? getRegularStockTickers()
 		: (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist)
@@ -6862,7 +6981,7 @@ async function loadForeignFlowData(forceRefresh = true) {
 	}
 
 	foreignFlowScanInProgress = true;
-	if (typeof isForeignFlowLoading !== 'undefined') isForeignFlowLoading = true;
+	isForeignFlowLoading = true;
 
 	if (btn) {
 		btn.disabled = true;
@@ -6883,24 +7002,24 @@ async function loadForeignFlowData(forceRefresh = true) {
 
 	try {
 		const collected = [];
-		const BATCH_SIZE = 15;
+		const BATCH_SIZE = 10;
 
 		for (let i = 0; i < targetTickers.length; i += BATCH_SIZE) {
 			const batch = targetTickers.slice(i, i + BATCH_SIZE);
-			const batchResults = await Promise.all(
+			const batchResults = await Promise.allSettled(
 				batch.map(async (ticker) => {
-					try {
-						const raw = await fetchRealtimeStockData(ticker, true, true);
-						const norm = normalizeStockPayload(raw, ticker);
-						if (!norm || norm.price <= 0) return null;
-						return calculateRealisticForeignFlow(norm);
-					} catch {
-						return null;
-					}
+					const raw = await fetchRealtimeStockData(ticker, forceRefresh, true);
+					const norm = normalizeStockPayload(raw, ticker);
+					if (!norm || norm.price <= 0) return null;
+					return calculateRealisticForeignFlow(norm);
 				})
 			);
 
-			collected.push(...batchResults.filter(Boolean));
+			batchResults.forEach(res => {
+				if (res.status === 'fulfilled' && res.value) {
+					collected.push(res.value);
+				}
+			});
 
 			if (collected.length > 0) {
 				const activeVolList = collected.filter(item => item.volume > 0);
@@ -6943,11 +7062,9 @@ async function loadForeignFlowData(forceRefresh = true) {
 		}
 		return [];
 	} finally {
-		// Selalu buka kunci state pemindaian
 		foreignFlowScanInProgress = false;
-		if (typeof isForeignFlowLoading !== 'undefined') isForeignFlowLoading = false;
+		isForeignFlowLoading = false;
 
-		// Pulihkan tombol secara mandiri dengan cooldown 10 detik
 		if (btn) {
 			if (foreignFlowCooldownTimer) {
 				clearInterval(foreignFlowCooldownTimer);
@@ -6979,7 +7096,8 @@ async function loadForeignFlowData(forceRefresh = true) {
 }
 
 window.loadForeignFlowData = loadForeignFlowData;
-// window.setForeignFlowFilter = setForeignFlowFilter;
+window.setForeignFlowFilter = setForeignFlowFilter;
+window.renderFilteredForeignFlow = renderFilteredForeignFlow;
 
 // ==========================================
 // 2. BACKTESTING ENGINE & DROPDOWN KOSTUM
