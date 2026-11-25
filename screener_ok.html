@@ -193,10 +193,6 @@
 				filter: brightness(1.2);
 			}
 
-			:root {
-				--app-font-family: "Lexend";
-			}
-
 			body,
 			.heading-font,
 			a,
@@ -270,9 +266,11 @@
 				border-color: #cbd5e1 !important;
 			}
 
-			body.light-mode button,
-			body.light-mode btn {
-				color: #efefef !important;
+			/* Ganti aturan body.light-mode button di screener_ok_13.html */
+			body.light-mode button.bg-slate-800,
+			body.light-mode button.bg-slate-900,
+			body.light-mode button.bg-slate-700 {
+				color: #0f172a !important;
 			}
 
 			.limit-circle-badge {
