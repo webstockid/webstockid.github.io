@@ -6711,8 +6711,8 @@ function renderFilteredForeignFlow() {
 // ============================================================================
 // KONSTANTA & KONFIGURASI ASING FLOW (CLV PROXY MODEL)
 // ============================================================================
-const FOREIGN_FLOW_CACHE_KEY = 'stockid_foreign_flow_cache_v3';
-const FOREIGN_FLOW_CACHE_TTL = 5 * 60 * 1000; // 5 menit
+//const FOREIGN_FLOW_CACHE_KEY = 'stockid_foreign_flow_cache_v3';
+//const FOREIGN_FLOW_CACHE_TTL = 5 * 60 * 1000; // 5 menit
 
 // ============================================================================
 // 1. HITUNG CLOSE LOCATION VALUE (CLV)
