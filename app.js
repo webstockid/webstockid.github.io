@@ -6708,105 +6708,155 @@ function renderFilteredForeignFlow() {
 	if (window.lucide) lucide.createIcons();
 }
 
-async function loadForeignFlowData() {
-	const btn = document.querySelector("#tabContent-foreign button[onclick='loadForeignFlowData()']");
-	if (isForeignFlowLoading || (btn && btn.disabled)) return;
+// ============================================================================
+// KONSTANTA & KONFIGURASI ASING FLOW (CLV PROXY MODEL)
+// ============================================================================
+const FOREIGN_FLOW_CACHE_KEY = 'stockid_foreign_flow_cache_v2';
+const FOREIGN_FLOW_CACHE_TTL = 5 * 60 * 1000; // 5 menit
 
-	const container = document.getElementById('foreign-flow-list') || document.getElementById('asing-flow-container');
-	if (!container) return;
-
-	const watchlist = (typeof uniqueRadarWatchlist !== 'undefined' && Array.isArray(uniqueRadarWatchlist))
-		? uniqueRadarWatchlist.filter(t => !/-W\d*$/i.test(t))
-		: [];
-
-	if (watchlist.length === 0) {
-		container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm md:col-span-2">Watchlist kosong. Tambahkan emiten terlebih dahulu.</div>`;
-		return;
+// ============================================================================
+// 1. HITUNG CLOSE LOCATION VALUE (CLV)
+// Mengukur posisi harga terhadap rentang High-Low hari ini (-1.0 s/d +1.0)
+// ============================================================================
+function calculateCLV(price, high, low, prevClose) {
+	// Jika saham terkunci ARA/ARB atau belum ada rentang harga (high === low)
+	if (!high || !low || high <= low) {
+		if (price > prevClose) return 1;
+		if (price < prevClose) return -1;
+		return 0;
 	}
 
-	isForeignFlowLoading = true;
-	const defaultBtnHtml = `<i data-lucide="play" class="w-4 h-4"></i> Pindai Flow Asing`;
+	// Rumus CLV: ((Price - Low) - (High - Price)) / (High - Low)
+	let clv = ((price - low) - (high - price)) / (high - low);
 
-	if (btn) {
-		btn.disabled = true;
-		btn.classList.add('cursor-not-allowed', 'opacity-75');
-		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-sky-200"></i> Memuat Flow Asing...`;
-		if (window.lucide) lucide.createIcons();
+	// Pastikan nilai tetap berada di dalam batas [-1, 1]
+	clv = Math.max(-1, Math.min(1, clv));
+
+	// Tie-breaker halus jika harga berada tepat di titik tengah (zona netral)
+	if (Math.abs(clv) < 0.03) {
+		return price >= prevClose ? 0.05 : -0.05;
 	}
 
-	container.innerHTML = `
-		<div class="text-center py-10 text-sky-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800 flex flex-col items-center justify-center gap-2">
-			<i data-lucide="loader-2" class="w-6 h-6 animate-spin text-sky-400"></i>
-			<span>Memindai estimasi arus dana asing &amp; lonjakan volume transaksi...</span>
-		</div>
-	`;
-	if (window.lucide) lucide.createIcons();
+	return clv;
+}
 
-	const updateFlowCacheAndRender = (rawItems) => {
-		foreignFlowCacheItems = rawItems.map(item => {
-			const turnover = item.price * item.volume;
-			const volRatio = item.volRatioDirect ?? (item.volume / (item.avgVolume || 1));
-			const direction = item.price >= item.prevClose ? 1 : -1;
-			const netFlowEstimate = turnover * direction * Math.min(volRatio, 3);
+// Menggabungkan CLV dengan bobot partisipasi institusi (15% - 35% turnover)
+// ============================================================================
+function calculateRealisticForeignFlow(quote) {
+	const price = Number(quote.regularMarketPrice || quote.price || 0);
+	const prevClose = Number(quote.regularMarketPreviousClose || quote.prevClose || price);
+	const high = Number(quote.regularMarketDayHigh || quote.high || price);
+	const low = Number(quote.regularMarketDayLow || quote.low || price);
+	const volume = Number(quote.regularMarketVolume || quote.volume || 0);
+	const avgVolume = Number(quote.averageDailyVolume10Day || quote.avgVolume || volume);
 
-			return {
-				...item,
-				turnover,
-				volRatio,
-				netFlowEstimate,
-				isAccumulation: item.price >= item.prevClose && volRatio >= 1.1
-			};
-		}).sort((a, b) => Math.abs(b.netFlowEstimate) - Math.abs(a.netFlowEstimate));
+	// Total nilai transaksi hari ini (Rupiah)
+	const turnover = price * volume;
 
-		renderFilteredForeignFlow();
+	// Hitung arah akumulasi/distribusi secara gradual (-1 s/d +1)
+	const clv = calculateCLV(price, high, low, prevClose);
+
+	// Hitung rasio lonjakan volume dan konversi ke bobot partisipasi (15% - 35%)
+	const rawVolRatio = avgVolume > 0 ? (volume / avgVolume) : 1;
+	const clampedVolRatio = Math.max(0.5, Math.min(rawVolRatio, 3));
+	const foreignWeight = 0.15 + ((clampedVolRatio - 0.5) / 2.5) * 0.20;
+
+	// Estimasi nominal Net Buy / Net Sell (tidak akan melebihi 35% total turnover)
+	const netFlowEstimate = turnover * clv * foreignWeight;
+	const isNetBuy = netFlowEstimate >= 0;
+
+	return {
+		ticker: (quote.symbol || '').replace('.JK', ''),
+		price: price,
+		prevClose: prevClose,
+		high: high,
+		low: low,
+		volume: volume,
+		turnover: turnover,
+		clv: Number(clv.toFixed(3)),
+		volRatio: Number(rawVolRatio.toFixed(2)),
+		foreignWeight: Number((foreignWeight * 100).toFixed(1)),
+		netFlowEstimate: Math.round(netFlowEstimate),
+		status: isNetBuy ? 'NET BUY' : 'NET SELL',
+		type: isNetBuy ? 'BUY' : 'SELL'
 	};
+}
+
+async function loadForeignFlowData(forceRefresh = false) {
+	const now = Date.now();
+
+	// Cek cache lokal jika tidak dipaksa refresh
+	if (!forceRefresh) {
+		try {
+			const cachedRaw = localStorage.getItem(FOREIGN_FLOW_CACHE_KEY);
+			if (cachedRaw) {
+				const cached = JSON.parse(cachedRaw);
+				if (cached && (now - cached.timestamp) < FOREIGN_FLOW_CACHE_TTL && Array.isArray(cached.data)) {
+					window.foreignFlowData = cached.data;
+					if (typeof renderForeignFlowUI === 'function') {
+						renderForeignFlowUI(cached.data);
+					}
+					return cached.data;
+				}
+			}
+		} catch (err) {
+			console.warn('[Asing Flow] Gagal membaca cache:', err);
+		}
+	}
+
+	// Ambil maksimal 30 emiten secara deterministik (tanpa acak Math.random)
+	// agar daftar saham yang dipantau konsisten sepanjang hari bursa
+	const sourceWatchlist = Array.isArray(window.WATCHLIST_EMITEN) ? window.WATCHLIST_EMITEN : [];
+	const targetTickers = sourceWatchlist
+		.slice(0, 30)
+		.map(item => {
+			const code = typeof item === 'string' ? item : item.ticker;
+			return code.endsWith('.JK') ? code : `${code}.JK`;
+		});
+
+	if (targetTickers.length === 0) {
+		return [];
+	}
 
 	try {
-		const results = [];
-		const uncached = [];
+		// Tarik data pasar aktual melalui Cloudflare Worker proxy
+		const workerUrl = window.STOCKID_API_URL || 'https://stockid-api.workers.dev';
+		const response = await fetch(`${workerUrl}/quote?symbols=${encodeURIComponent(targetTickers.join(','))}`);
 
-		for (const ticker of watchlist) {
-			const cached = getCachedStockData(ticker);
-			if (cached) {
-				const norm = normalizeStockPayload(cached, ticker);
-				if (norm) results.push(norm);
-			} else {
-				uncached.push(ticker);
-			}
+		if (!response.ok) {
+			throw new Error(`HTTP ${response.status}`);
 		}
 
-		if (results.length > 0) updateFlowCacheAndRender(results);
+		const payload = await response.json();
+		const quotes = payload?.quoteResponse?.result || payload?.data || [];
 
-		const targets = uncached.sort(() => 0.5 - Math.random()).slice(0, 30);
-		const BATCH_SIZE = 15;
+		// Proses perhitungan CLV dan urutkan berdasarkan nilai transaksi terbesar
+		const processedList = quotes
+			.filter(q => (q.regularMarketVolume || q.volume || 0) > 0)
+			.map(q => calculateRealisticForeignFlow(q))
+			.sort((a, b) => Math.abs(b.netFlowEstimate) - Math.abs(a.netFlowEstimate))
+			.slice(0, 20);
 
-		for (let i = 0; i < targets.length; i += BATCH_SIZE) {
-			const batch = targets.slice(i, i + BATCH_SIZE);
-			const batchData = await Promise.all(
-				batch.map(async (ticker) => {
-					try {
-						const raw = await fetchRealtimeStockData(ticker, false, true);
-						return normalizeStockPayload(raw, ticker);
-					} catch {
-						return null;
-					}
-				})
-			);
-			results.push(...batchData.filter(Boolean));
-			if (results.length > 0) updateFlowCacheAndRender(results);
+		// Simpan hasil terbaru ke cache
+		localStorage.setItem(FOREIGN_FLOW_CACHE_KEY, JSON.stringify({
+			timestamp: now,
+			data: processedList
+		}));
+
+		window.foreignFlowData = processedList;
+
+		// Render ulang antarmuka Asing Flow / AI Signal
+		if (typeof renderForeignFlowUI === 'function') {
+			renderForeignFlowUI(processedList);
+		}
+		if (typeof renderAISignalUI === 'function') {
+			renderAISignalUI();
 		}
 
-		if (results.length === 0) {
-			container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm md:col-span-2">Data flow tidak tersedia saat ini.</div>`;
-		} else if (typeof AudioFX !== 'undefined') {
-			AudioFX.playSuccess();
-		}
-	} catch (err) {
-		console.error('Error loadForeignFlowData:', err);
-		container.innerHTML = `<div class="text-center py-6 text-rose-400 text-sm md:col-span-2">Terjadi kesalahan saat memproses Asing Flow.</div>`;
-	} finally {
-		isForeignFlowLoading = false;
-		startFeatureButtonCooldown(btn, 'foreign', defaultBtnHtml, 'text-sky-400', 15);
+		return processedList;
+	} catch (error) {
+		console.error('[Asing Flow] Gagal memuat data dari API:', error);
+		return window.foreignFlowData || [];
 	}
 }
 
