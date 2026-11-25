@@ -6963,7 +6963,7 @@ async function runBacktestEngine() {
 				triggerNote = `Akumulasi Vol ${(stock.volRatio * 100).toFixed(0)}% · Bertahan di atas MA10`;
 			} else if (strategy === 'curi_start') {
 				isMatch = stock.volRatio >= 2.0 && stock.price >= stock.ma5 && stock.changePercent >= 0 && stock.changePercent < 5;
-				triggerNote = `Curi Start: Harga +${stock.changePercent.toFixed(2)}% (di atas MA5) · Vol ${stock.volRatio.toFixed(1)}x`;
+				triggerNote = `Harga +${stock.changePercent.toFixed(2)}% (di atas MA5) · Vol ${stock.volRatio.toFixed(1)}x`;
 			} else {
 				const nearHigh = stock.high > 0 ? (stock.price >= stock.high * 0.96) : (stock.changePercent > 0);
 				isMatch = nearHigh || stock.price >= stock.ma20;
