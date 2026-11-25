@@ -4312,7 +4312,21 @@ function renderChart(ticker) {
 	}
 }
 
-// Komentar: Memuat widget TradingView Symbol Overview & Statistik Kunci Emiten yang sedang dipilih.
+// ==========================================
+// WIDGET ANALISA TEKNIKAL MULTI-ENGINE (3-IN-1)
+// ==========================================
+let currentTechEngineMode = localStorage.getItem('stockid_tech_engine_mode') || 'gauge';
+
+// Komentar: Mengganti mode tampilan engine pada panel Analisa Teknikal Real-Time.
+function switchTechnicalEngineMode(mode) {
+	currentTechEngineMode = mode;
+	localStorage.setItem('stockid_tech_engine_mode', mode);
+	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	if (!isVibrateMuted && 'vibrate' in navigator) navigator.vibrate(100);
+	renderTechnicalGauge(currentTicker);
+}
+
+// Komentar: Memuat widget Analisa Teknikal Real-Time dengan pilihan Speedometer, Chart Konfirmasi, atau Ringkasan.
 function renderTechnicalGauge(ticker) {
 	const container = document.getElementById('tv_technical_container');
 	if (!container) return;
@@ -4321,17 +4335,17 @@ function renderTechnicalGauge(ticker) {
 	const tvSymbol = toTradingViewSymbol(cleanTicker);
 	const activeTheme = localStorage.getItem('stockid_theme') === 'light' ? 'light' : 'dark';
 
-	// Komentar: Memperbarui label judul kartu dari "Analisa Teknikal Real-Time" agar sesuai dengan widget baru.
+	// Komentar: Memperbarui judul kartu agar konsisten dengan simbol emiten aktif.
 	const cardWrapper = container.parentElement;
 	if (cardWrapper) {
 		const headerCandidates = cardWrapper.querySelectorAll('h1, h2, h3, h4, span, p, div');
 		for (const el of headerCandidates) {
-			if (el !== container && !container.contains(el) && el.children.length <= 2 && el.textContent.includes('Analisa Teknikal Real-Time')) {
+			if (el !== container && !container.contains(el) && el.children.length <= 2 && (el.textContent.includes('Analisa Teknikal Real-Time') || el.textContent.includes('Ringkasan Emiten'))) {
 				const iconEl = el.querySelector('i[data-lucide], svg');
 				if (iconEl) {
-					el.innerHTML = `${iconEl.outerHTML} <span>Ringkasan Emiten &amp; Statistik Kunci [${cleanTicker}] (TradingView Engine)</span>`;
+					el.innerHTML = `${iconEl.outerHTML} <span>Analisa Teknikal Real-Time [${cleanTicker}] (TradingView Engine)</span>`;
 				} else {
-					el.textContent = `Ringkasan Emiten & Statistik Kunci [${cleanTicker}] (TradingView Engine)`;
+					el.textContent = `Analisa Teknikal Real-Time [${cleanTicker}] (TradingView Engine)`;
 				}
 				break;
 			}
@@ -4339,66 +4353,140 @@ function renderTechnicalGauge(ticker) {
 	}
 
 	container.innerHTML = '';
-	container.style.minHeight = '430px';
+	container.style.minHeight = '470px';
 
-	const widgetWrapper = document.createElement('div');
-	widgetWrapper.className = 'tradingview-widget-container w-full h-full';
+	// Komentar: Membuat bar navigasi mode widget di bagian atas kontainer.
+	const switcherBar = document.createElement('div');
+	switcherBar.className = 'flex flex-wrap items-center justify-between gap-2 mb-3 pb-2.5 border-b border-slate-800/80';
 
-	const widgetInner = document.createElement('div');
-	widgetInner.className = 'tradingview-widget-container__widget w-full h-full';
-	widgetWrapper.appendChild(widgetInner);
+	const modes = [
+		{ id: 'gauge', label: 'Speedometer Sinyal', icon: 'gauge' },
+		{ id: 'intraday', label: 'Chart Konfirmasi 15m', icon: 'candlestick-chart' },
+		{ id: 'overview', label: 'Statistik Kunci', icon: 'bar-chart-3' }
+	];
 
-	const script = document.createElement('script');
-	script.type = 'text/javascript';
-	script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js';
-	script.async = true;
-	script.text = JSON.stringify({
-		"symbols": [
-			[
-				cleanTicker,
-				`${tvSymbol}|1D`
-			]
-		],
-		"chartOnly": false,
-		"width": "100%",
-		"height": 430,
-		"locale": "id",
-		"colorTheme": activeTheme,
-		"autosize": false,
-		"showVolume": true,
-		"showMA": true,
-		"hideDateRanges": false,
-		"hideMarketStatus": false,
-		"hideSymbolLogo": false,
-		"scalePosition": "right",
-		"scaleMode": "Normal",
-		"fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
-		"fontSize": "10",
-		"noTimeScale": false,
-		"valuesTracking": "1",
-		"changeMode": "price-and-percent",
-		"chartType": "area",
-		"maLineColor": "#10b981",
-		"maLineWidth": 1,
-		"maLength": 20,
-		"lineWidth": 2,
-		"lineType": 0,
-		"isTransparent": true,
-		"dateRanges": [
-			"1d|1",
-			"1m|30",
-			"3m|60",
-			"12m|1D",
-			"60m|1W",
-			"all|1M"
-		]
-	});
+	const buttonsHtml = modes.map(m => {
+		const isActive = currentTechEngineMode === m.id;
+		const btnClass = isActive
+			? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-sm'
+			: 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700';
+		return `
+			<button type="button" onclick="switchTechnicalEngineMode('${m.id}')" class="px-2.5 py-1.5 rounded-lg border text-[10px] lg:text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${btnClass}">
+				<i data-lucide="${m.icon}" class="w-3.5 h-3.5"></i>
+				<span>${m.label}</span>
+			</button>
+		`;
+	}).join('');
 
-	widgetWrapper.appendChild(script);
-	container.appendChild(widgetWrapper);
+	switcherBar.innerHTML = `
+		<div class="flex flex-wrap items-center gap-1.5">${buttonsHtml}</div>
+		<span class="text-[10px] text-slate-400 font-medium">${tvSymbol}</span>
+	`;
+	container.appendChild(switcherBar);
+
+	// Komentar: Kontainer utama untuk merender engine TradingView sesuai mode terpilih.
+	const engineBody = document.createElement('div');
+	engineBody.id = 'tv_technical_engine_body';
+	engineBody.className = 'w-full h-[420px] rounded-xl overflow-hidden';
+	container.appendChild(engineBody);
+
+	if (currentTechEngineMode === 'intraday') {
+		// Komentar: Mode 2 - Chart Konfirmasi Timeframe 15 Menit dengan indikator Smart Money & Tren.
+		if (typeof TradingView !== 'undefined') {
+			new TradingView.widget({
+				"autosize": true,
+				"symbol": tvSymbol,
+				"interval": "15",
+				"timezone": "Asia/Jakarta",
+				"theme": activeTheme,
+				"style": "1",
+				"locale": "id",
+				"hide_side_toolbar": false,
+				"allow_symbol_change": false,
+				"container_id": "tv_technical_engine_body",
+				"studies": [
+					"IchimokuCloud@tv-basicstudies",
+					"OBV@tv-basicstudies",
+					"ChaikinMoneyFlow@tv-basicstudies",
+					"DirectionalMovement@tv-basicstudies"
+				]
+			});
+		} else {
+			engineBody.innerHTML = `<div class="flex items-center justify-center h-full text-slate-400 text-xs">Library TradingView (tv.js) belum termuat.</div>`;
+		}
+	} else if (currentTechEngineMode === 'overview') {
+		// Komentar: Mode 3 - Ringkasan Emiten & Statistik Kunci.
+		const widgetWrapper = document.createElement('div');
+		widgetWrapper.className = 'tradingview-widget-container w-full h-full';
+		const widgetInner = document.createElement('div');
+		widgetInner.className = 'tradingview-widget-container__widget w-full h-full';
+		widgetWrapper.appendChild(widgetInner);
+
+		const script = document.createElement('script');
+		script.type = 'text/javascript';
+		script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js';
+		script.async = true;
+		script.text = JSON.stringify({
+			"symbols": [[cleanTicker, `${tvSymbol}|1D`]],
+			"chartOnly": false,
+			"width": "100%",
+			"height": 420,
+			"locale": "id",
+			"colorTheme": activeTheme,
+			"autosize": false,
+			"showVolume": true,
+			"showMA": true,
+			"hideDateRanges": false,
+			"hideMarketStatus": false,
+			"hideSymbolLogo": false,
+			"scalePosition": "right",
+			"scaleMode": "Normal",
+			"fontSize": "10",
+			"valuesTracking": "1",
+			"changeMode": "price-and-percent",
+			"chartType": "area",
+			"maLineColor": "#10b981",
+			"maLineWidth": 1,
+			"maLength": 20,
+			"lineWidth": 2,
+			"isTransparent": true,
+			"dateRanges": ["1d|1", "1m|30", "3m|60", "12m|1D", "60m|1W", "all|1M"]
+		});
+
+		widgetWrapper.appendChild(script);
+		engineBody.appendChild(widgetWrapper);
+	} else {
+		// Komentar: Mode 1 (Default) - Speedometer Multi-Gauge (Oscillators, Summary, Moving Averages).
+		const widgetWrapper = document.createElement('div');
+		widgetWrapper.className = 'tradingview-widget-container w-full h-full';
+		const widgetInner = document.createElement('div');
+		widgetInner.className = 'tradingview-widget-container__widget w-full h-full';
+		widgetWrapper.appendChild(widgetInner);
+
+		const script = document.createElement('script');
+		script.type = 'text/javascript';
+		script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
+		script.async = true;
+		script.text = JSON.stringify({
+			"interval": "1D",
+			"width": "100%",
+			"isTransparent": true,
+			"height": 420,
+			"symbol": tvSymbol,
+			"showIntervalTabs": true,
+			"displayMode": "multiple",
+			"locale": "id",
+			"colorTheme": activeTheme
+		});
+
+		widgetWrapper.appendChild(script);
+		engineBody.appendChild(widgetWrapper);
+	}
 
 	if (window.lucide) lucide.createIcons();
 }
+
+window.switchTechnicalEngineMode = switchTechnicalEngineMode;
 
 // ==========================================
 // 23. BERITA, KORPORASI, TRENDING & HEATMAP
