@@ -4361,7 +4361,7 @@ function renderTechnicalGauge(ticker) {
 
 	const modes = [
 		{ id: 'gauge', label: 'Speedometer Sinyal', icon: 'gauge' },
-		{ id: 'intraday', label: 'Chart Konfirmasi 15m', icon: 'candlestick-chart' },
+		//{ id: 'intraday', label: 'Chart Konfirmasi 15m', icon: 'candlestick-chart' },
 		{ id: 'overview', label: 'Statistik Kunci', icon: 'bar-chart-3' }
 	];
 
