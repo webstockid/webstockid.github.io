@@ -5776,6 +5776,34 @@ document.addEventListener("DOMContentLoaded", function() {
 // ==========================================
 // 5. SISTEM PENGATURAN PREFERENSI (SETTING)
 // ==========================================
+const NOTIF_CATEGORY_META = {
+	both: {
+		label: 'Keduanya (Smart Alert & Whale Radar)',
+		icon: 'bell-ring',
+		iconClass: 'text-emerald-400',
+		activeOptionClass: 'bg-emerald-500/10 text-emerald-400',
+		badgeText: 'Semua Aktif',
+		badgeClass: 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+	},
+	smart_alert: {
+		label: 'Hanya Smart Alert (Target Harga)',
+		icon: 'crosshair',
+		iconClass: 'text-amber-400',
+		activeOptionClass: 'bg-amber-500/10 text-amber-400',
+		badgeText: 'Smart Alert',
+		badgeClass: 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30'
+	},
+	whales: {
+		label: 'Hanya Whale Radar (Akumulasi Bandar)',
+		icon: 'radar',
+		iconClass: 'text-fuchsia-400',
+		activeOptionClass: 'bg-fuchsia-500/10 text-fuchsia-400',
+		badgeText: 'Whale Radar',
+		badgeClass: 'text-[10px] font-bold px-2 py-0.5 rounded bg-fuchsia-500/10 text-fuchsia-400 border border-fuchsia-500/30'
+	}
+};
+
+// Komentar: Memuat seluruh preferensi pengaturan pengguna dari LocalStorage saat aplikasi dibuka.
 function initSystemSettings() {
 	const savedTheme = localStorage.getItem('stockid_theme') || 'dark';
 	applyTheme(savedTheme);
@@ -5787,7 +5815,6 @@ function initSystemSettings() {
 	const fontInput = document.getElementById('settingFontSize');
 	if (fontInput) fontInput.value = savedFontSize;
 
-	// Hapus atau ganti blok savedFontFamily lama di initSystemSettings() menjadi:
 	const savedFontStyle = localStorage.getItem('stockid_font_style') || 'Plus Jakarta Sans';
 	applyFontStyle(savedFontStyle);
 
@@ -5806,8 +5833,28 @@ function initSystemSettings() {
 	if (notifMuteInput) notifMuteInput.checked = savedNotifMute;
 
 	const savedNotifType = localStorage.getItem('stockid_notif_type') || 'both';
-	const notifTypeRadio = document.querySelector(`input[name="settingNotifType"][value="${savedNotifType}"]`);
-	if (notifTypeRadio) notifTypeRadio.checked = true;
+	applyNotifType(savedNotifType, true);
+}
+
+// Komentar: Membuka atau menutup menu dropdown kostum kategori notifikasi.
+function toggleSettingNotifDropdown(dropdownId, evt) {
+	const ev = evt || window.event;
+	if (ev) ev.stopPropagation();
+
+	const dropdown = document.getElementById(dropdownId);
+	const chevron = document.getElementById('iconSettingNotifType');
+	if (!dropdown) return;
+
+	const isHidden = dropdown.classList.contains('hidden');
+	if (isHidden) {
+		dropdown.classList.remove('hidden');
+		if (chevron) chevron.classList.add('rotate-180');
+		if (window.lucide) lucide.createIcons();
+		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	} else {
+		dropdown.classList.add('hidden');
+		if (chevron) chevron.classList.remove('rotate-180');
+	}
 }
 
 // Komentar: Menerapkan waktu penundaan (snooze) untuk notifikasi.
@@ -5866,11 +5913,79 @@ function applyNotifMuteSound(isChecked) {
 	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
 }
 
-// Komentar: Menyimpan jenis notifikasi yang dipilih oleh pengguna.
-function applyNotifType(typeVal) {
-	localStorage.setItem('stockid_notif_type', typeVal);
-	if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+// Komentar: Menyimpan dan menyinkronkan tampilan UI kategori notifikasi yang dipilih pengguna.
+function applyNotifType(typeVal, isInit = false) {
+	const selectedKey = NOTIF_CATEGORY_META[typeVal] ? typeVal : 'both';
+	const meta = NOTIF_CATEGORY_META[selectedKey];
+
+	if (!isInit) {
+		localStorage.setItem('stockid_notif_type', selectedKey);
+		if (typeof AudioFX !== 'undefined') AudioFX.playClick();
+	}
+
+	const inputEl = document.getElementById('settingNotifType');
+	if (inputEl) inputEl.value = selectedKey;
+
+	const labelContainer = document.getElementById('settingNotifType_Label');
+	if (labelContainer) {
+		labelContainer.innerHTML = `
+			<i data-lucide="${meta.icon}" class="w-4 h-4 ${meta.iconClass} shrink-0"></i>
+			<span class="truncate">${meta.label}</span>
+		`;
+	}
+
+	const badgeEl = document.getElementById('notifCategoryBadge');
+	if (badgeEl) {
+		badgeEl.innerText = meta.badgeText;
+		badgeEl.className = meta.badgeClass;
+	}
+
+	const options = document.querySelectorAll('#dropdownSettingNotifType .notif-dropdown-option');
+	options.forEach(opt => {
+		const optVal = opt.getAttribute('data-notif-value');
+		const checkIcon = opt.querySelector('.notif-check-icon');
+		const optMeta = NOTIF_CATEGORY_META[optVal] || NOTIF_CATEGORY_META.both;
+
+		opt.className = 'notif-dropdown-option w-full px-3.5 py-2.5 text-left transition flex items-center justify-between gap-2.5';
+		if (optVal === selectedKey) {
+			opt.classList.add(...optMeta.activeOptionClass.split(' '));
+			if (checkIcon) checkIcon.classList.remove('hidden');
+		} else {
+			opt.classList.add('text-slate-200', 'hover:bg-slate-800/80');
+			if (checkIcon) checkIcon.classList.add('hidden');
+		}
+	});
+
+	if (window.lucide) lucide.createIcons();
 }
+
+// Komentar: Memilih opsi kategori notifikasi pada dropdown kostum dan menyimpannya.
+function selectSettingNotifOption(value, label, dropdownId, evt) {
+	const ev = evt || window.event;
+	if (ev) ev.stopPropagation();
+
+	applyNotifType(value, false);
+
+	const dropdown = document.getElementById(dropdownId);
+	const chevron = document.getElementById('iconSettingNotifType');
+	if (dropdown) dropdown.classList.add('hidden');
+	if (chevron) chevron.classList.remove('rotate-180');
+}
+
+document.addEventListener('click', function(e) {
+	const dropdown = document.getElementById('dropdownSettingNotifType');
+	const chevron = document.getElementById('iconSettingNotifType');
+	if (dropdown && !dropdown.classList.contains('hidden')) {
+		if (!e.target.closest('.custom-dropdown-wrapper')) {
+			dropdown.classList.add('hidden');
+			if (chevron) chevron.classList.remove('rotate-180');
+		}
+	}
+});
+
+window.toggleSettingNotifDropdown = toggleSettingNotifDropdown;
+window.selectSettingNotifOption = selectSettingNotifOption;
+window.applyNotifType = applyNotifType;
 
 // Komentar: Mengganti tema antarmuka aplikasi (gelap/terang).
 function applyTheme(theme) {
@@ -8073,6 +8188,601 @@ function openTickerFromNotification(ticker) {
 		searchStock(true);
 	}
 }
+
+// ==========================================
+// 31. GLOBAL MARKET, CRYPTO & COMMODITIES MARQUEE
+// ==========================================
+const GLOBAL_MARQUEE_CACHE_KEY = 'stockid_global_market_marquee_v1';
+const GLOBAL_MARQUEE_CACHE_TTL = 3 * 60 * 1000; // 3 Menit
+let globalMarqueeRefreshTimer = null;
+
+// Komentar: Daftar instrumen indeks bursa dunia, kripto, dan komoditas beserta konfigurasi logo SVG.
+const GLOBAL_MARKET_INSTRUMENTS = [
+	// INDONESIA
+	{
+		symbol: '^JKSE',
+		name: 'IHSG',
+		region: 'INDO',
+		regionColor: 'text-rose-400 bg-rose-500/10 border-rose-500/30',
+		prefix: '',
+		decimals: 2,
+		logoKey: 'flag_id'
+	},
+	// UNITED STATES
+	{
+		symbol: '^GSPC',
+		name: 'S&P 500',
+		region: 'US',
+		regionColor: 'text-sky-400 bg-sky-500/10 border-sky-500/30',
+		prefix: '',
+		decimals: 2,
+		logoKey: 'flag_us'
+	},
+	{
+		symbol: '^IXIC',
+		name: 'NASDAQ',
+		region: 'US',
+		regionColor: 'text-sky-400 bg-sky-500/10 border-sky-500/30',
+		prefix: '',
+		decimals: 2,
+		logoKey: 'flag_us'
+	},
+	{
+		symbol: '^DJI',
+		name: 'DOW JONES',
+		region: 'US',
+		regionColor: 'text-sky-400 bg-sky-500/10 border-sky-500/30',
+		prefix: '',
+		decimals: 2,
+		logoKey: 'flag_us'
+	},
+	// KOREA SELATAN
+	{
+		symbol: '^KS11',
+		name: 'KOSPI',
+		region: 'KOREA',
+		regionColor: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/30',
+		prefix: '',
+		decimals: 2,
+		logoKey: 'flag_kr'
+	},
+	// JEPANG
+	{
+		symbol: '^N225',
+		name: 'NIKKEI 225',
+		region: 'JEPANG',
+		regionColor: 'text-red-400 bg-red-500/10 border-red-500/30',
+		prefix: '',
+		decimals: 2,
+		logoKey: 'flag_jp'
+	},
+	// CHINA & HONG KONG
+	{
+		symbol: '000001.SS',
+		name: 'SHANGHAI',
+		region: 'CHINA',
+		regionColor: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
+		prefix: '',
+		decimals: 2,
+		logoKey: 'flag_cn'
+	},
+	{
+		symbol: '^HSI',
+		name: 'HANG SENG',
+		region: 'CHINA',
+		regionColor: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
+		prefix: '',
+		decimals: 2,
+		logoKey: 'flag_hk'
+	},
+	// NEGARA EROPA
+	{
+		symbol: '^FTSE',
+		name: 'FTSE 100',
+		region: 'EROPA',
+		regionColor: 'text-blue-400 bg-blue-500/10 border-blue-500/30',
+		prefix: '',
+		decimals: 2,
+		logoKey: 'flag_uk'
+	},
+	{
+		symbol: '^GDAXI',
+		name: 'DAX',
+		region: 'EROPA',
+		regionColor: 'text-blue-400 bg-blue-500/10 border-blue-500/30',
+		prefix: '',
+		decimals: 2,
+		logoKey: 'flag_de'
+	},
+	{
+		symbol: '^FCHI',
+		name: 'CAC 40',
+		region: 'EROPA',
+		regionColor: 'text-blue-400 bg-blue-500/10 border-blue-500/30',
+		prefix: '',
+		decimals: 2,
+		logoKey: 'flag_fr'
+	},
+	// KRIPTO
+	{
+		symbol: 'BTC-USD',
+		name: 'BITCOIN',
+		region: 'KRIPTO',
+		regionColor: 'text-orange-400 bg-orange-500/10 border-orange-500/30',
+		prefix: '$',
+		decimals: 2,
+		logoKey: 'crypto_btc'
+	},
+	{
+		symbol: 'ETH-USD',
+		name: 'ETHEREUM',
+		region: 'KRIPTO',
+		regionColor: 'text-purple-400 bg-purple-500/10 border-purple-500/30',
+		prefix: '$',
+		decimals: 2,
+		logoKey: 'crypto_eth'
+	},
+	{
+		symbol: 'SOL-USD',
+		name: 'SOLANA',
+		region: 'KRIPTO',
+		regionColor: 'text-teal-400 bg-teal-500/10 border-teal-500/30',
+		prefix: '$',
+		decimals: 2,
+		logoKey: 'crypto_sol'
+	},
+	// HARGA KOMODITAS
+	{
+		symbol: 'GC=F',
+		name: 'GOLD (EMAS)',
+		region: 'KOMODITAS',
+		regionColor: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30',
+		prefix: '$',
+		decimals: 2,
+		logoKey: 'comm_gold'
+	},
+	{
+		symbol: 'SI=F',
+		name: 'SILVER (PERAK)',
+		region: 'KOMODITAS',
+		regionColor: 'text-slate-300 bg-slate-500/15 border-slate-500/30',
+		prefix: '$',
+		decimals: 2,
+		logoKey: 'comm_silver'
+	},
+	{
+		symbol: 'CL=F',
+		name: 'WTI OIL',
+		region: 'KOMODITAS',
+		regionColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+		prefix: '$',
+		decimals: 2,
+		logoKey: 'comm_oil'
+	},
+	{
+		symbol: 'HG=F',
+		name: 'COPPER',
+		region: 'KOMODITAS',
+		regionColor: 'text-amber-500 bg-amber-500/10 border-amber-500/30',
+		prefix: '$',
+		decimals: 2,
+		logoKey: 'comm_copper'
+	},
+	{
+		symbol: 'NG=F',
+		name: 'NATURAL GAS',
+		region: 'KOMODITAS',
+		regionColor: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30',
+		prefix: '$',
+		decimals: 2,
+		logoKey: 'comm_gas'
+	}
+];
+
+// Komentar: Menghasilkan ikon SVG bulat yang tajam dan konsisten untuk setiap negara, kripto, dan komoditas.
+function getGlobalMarketLogoSVG(logoKey) {
+	const logos = {
+		flag_id: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="16" fill="#E11D48"/>
+				<rect y="16" width="32" height="16" fill="#F8FAFC"/>
+			</svg>`,
+		flag_us: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#F8FAFC"/>
+				<rect width="32" height="4.5" y="0" fill="#DC2626"/>
+				<rect width="32" height="4.5" y="9" fill="#DC2626"/>
+				<rect width="32" height="4.5" y="18" fill="#DC2626"/>
+				<rect width="32" height="5" y="27" fill="#DC2626"/>
+				<rect width="16" height="17" fill="#1D4ED8"/>
+				<circle cx="5" cy="5" r="1.2" fill="#FFFFFF"/>
+				<circle cx="11" cy="5" r="1.2" fill="#FFFFFF"/>
+				<circle cx="8" cy="8.5" r="1.2" fill="#FFFFFF"/>
+				<circle cx="5" cy="12" r="1.2" fill="#FFFFFF"/>
+				<circle cx="11" cy="12" r="1.2" fill="#FFFFFF"/>
+			</svg>`,
+		flag_kr: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#FFFFFF"/>
+				<circle cx="16" cy="16" r="7.5" fill="#DC2626"/>
+				<path d="M8.5 16a7.5 7.5 0 0 0 15 0a3.75 3.75 0 0 1-7.5 0a3.75 3.75 0 0 0-7.5 0z" fill="#1D4ED8"/>
+				<rect x="5" y="6" width="4.5" height="1.8" transform="rotate(-35 5 6)" fill="#0F172A"/>
+				<rect x="22.5" y="5" width="4.5" height="1.8" transform="rotate(35 22.5 5)" fill="#0F172A"/>
+				<rect x="5" y="24" width="4.5" height="1.8" transform="rotate(35 5 24)" fill="#0F172A"/>
+				<rect x="22.5" y="25" width="4.5" height="1.8" transform="rotate(-35 22.5 25)" fill="#0F172A"/>
+			</svg>`,
+		flag_jp: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#FFFFFF"/>
+				<circle cx="16" cy="16" r="7.5" fill="#DC2626"/>
+			</svg>`,
+		flag_cn: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#DC2626"/>
+				<polygon points="9,5 10.4,9.2 14.8,9.2 11.2,11.8 12.6,16 9,13.4 5.4,16 6.8,11.8 3.2,9.2 7.6,9.2" fill="#FACC15"/>
+				<circle cx="17.5" cy="6.5" r="1.2" fill="#FACC15"/>
+				<circle cx="20" cy="9.5" r="1.2" fill="#FACC15"/>
+				<circle cx="20" cy="13.5" r="1.2" fill="#FACC15"/>
+				<circle cx="17.5" cy="16.5" r="1.2" fill="#FACC15"/>
+			</svg>`,
+		flag_hk: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#E11D48"/>
+				<circle cx="16" cy="11" r="3" fill="#FFFFFF"/>
+				<circle cx="20.8" cy="14.5" r="3" fill="#FFFFFF"/>
+				<circle cx="19" cy="20.2" r="3" fill="#FFFFFF"/>
+				<circle cx="13" cy="20.2" r="3" fill="#FFFFFF"/>
+				<circle cx="11.2" cy="14.5" r="3" fill="#FFFFFF"/>
+				<circle cx="16" cy="16" r="2" fill="#E11D48"/>
+			</svg>`,
+		flag_uk: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#1E3A8A"/>
+				<path d="M0 0L32 32M32 0L0 32" stroke="#FFFFFF" stroke-width="5"/>
+				<path d="M0 0L32 32M32 0L0 32" stroke="#DC2626" stroke-width="2.5"/>
+				<rect x="13" width="6" height="32" fill="#FFFFFF"/>
+				<rect y="13" width="32" height="6" fill="#FFFFFF"/>
+				<rect x="14.2" width="3.6" height="32" fill="#DC2626"/>
+				<rect y="14.2" width="32" height="3.6" fill="#DC2626"/>
+			</svg>`,
+		flag_de: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="10.7" y="0" fill="#0F172A"/>
+				<rect width="32" height="10.7" y="10.7" fill="#DC2626"/>
+				<rect width="32" height="10.7" y="21.3" fill="#FACC15"/>
+			</svg>`,
+		flag_fr: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="10.7" height="32" x="0" fill="#1D4ED8"/>
+				<rect width="10.7" height="32" x="10.7" fill="#FFFFFF"/>
+				<rect width="10.7" height="32" x="21.3" fill="#DC2626"/>
+			</svg>`,
+		crypto_btc: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#F97316"/>
+				<text x="16" y="22" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="900" font-family="sans-serif">&#8383;</text>
+			</svg>`,
+		crypto_eth: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#4F46E5"/>
+				<polygon points="16,5 23,16.5 16,20.5 9,16.5" fill="#E0E7FF"/>
+				<polygon points="16,22.2 23,18.2 16,27 9,18.2" fill="#A5B4FC"/>
+			</svg>`,
+		crypto_sol: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#0F172A"/>
+				<polygon points="8,9 25,9 22,12.5 5,12.5" fill="#14F195"/>
+				<polygon points="5,14.5 22,14.5 25,18 8,18" fill="#00C2FF"/>
+				<polygon points="8,20 25,20 22,23.5 5,23.5" fill="#9945FF"/>
+			</svg>`,
+		comm_gold: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#422006"/>
+				<polygon points="8,22 11,11 21,11 24,22" fill="#FACC15"/>
+				<polygon points="11,11 21,11 19,14 13,14" fill="#FEF08A"/>
+			</svg>`,
+		comm_silver: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#1E293B"/>
+				<polygon points="8,22 11,11 21,11 24,22" fill="#CBD5E1"/>
+				<polygon points="11,11 21,11 19,14 13,14" fill="#F8FAFC"/>
+			</svg>`,
+		comm_oil: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#064E3B"/>
+				<path d="M16 6C16 6 9 14.5 9 19.5A7 7 0 0 0 23 19.5C23 14.5 16 6 16 6Z" fill="#34D399"/>
+			</svg>`,
+		comm_copper: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#451A03"/>
+				<circle cx="16" cy="16" r="8" fill="none" stroke="#F59E0B" stroke-width="3.5"/>
+				<circle cx="16" cy="16" r="3" fill="#FBBF24"/>
+			</svg>`,
+		comm_gas: `
+			<svg viewBox="0 0 32 32" class="w-full h-full">
+				<rect width="32" height="32" fill="#083344"/>
+				<path d="M16.5 6C17.5 10.5 22 12.5 22 18.5A6 6 0 0 1 10 18.5C10 15.5 11.8 13 13.5 11.5C13.2 14 14.8 15 15.5 14C14.8 11.2 15.5 8.5 16.5 6Z" fill="#22D3EE"/>
+			</svg>`
+	};
+
+	return logos[logoKey] || `
+		<svg viewBox="0 0 32 32" class="w-full h-full">
+			<rect width="32" height="32" fill="#1E293B"/>
+			<circle cx="16" cy="16" r="7" fill="#10B981"/>
+		</svg>`;
+}
+
+// Komentar: Menyuntikkan stylesheet animasimarquee berjalan mulus tanpa jeda ke halaman.
+function ensureGlobalMarqueeStyles() {
+	if (document.getElementById('globalMarketMarqueeStyle')) return;
+	const style = document.createElement('style');
+	style.id = 'globalMarketMarqueeStyle';
+	style.textContent = `
+		@keyframes stockidGlobalMarqueeFlow {
+			0% {
+				transform: translate3d(0, 0, 0);
+			}
+			100% {
+				transform: translate3d(-50%, 0, 0);
+			}
+		}
+		.global-marquee-track {
+			display: flex;
+			width: max-content;
+			animation: stockidGlobalMarqueeFlow 48s linear infinite;
+			will-change: transform;
+		}
+		.global-marquee-wrapper:hover .global-marquee-track {
+			animation-play-state: paused;
+		}
+		body.light-mode #globalMarketMarquee {
+			background: rgba(255, 255, 255, 0.92) !important;
+			border-color: rgba(203, 213, 225, 0.9) !important;
+		}
+		body.light-mode #globalMarketMarquee .gm-item-card {
+			background: rgba(248, 250, 252, 0.95) !important;
+			border-color: rgba(226, 232, 240, 1) !important;
+		}
+		body.light-mode #globalMarketMarquee .gm-title-text {
+			color: #0f172a !important;
+		}
+	`;
+	document.head.appendChild(style);
+}
+
+// Komentar: Menempatkan kontainer marquee tepat di bawah Dashboard Profil/Status dan di atas Kolom Pencarian.
+function mountGlobalMarketMarqueeContainer() {
+	const existing = document.getElementById('globalMarketMarquee');
+	if (existing) return existing;
+
+	const vipDashboard = document.getElementById('vipDashboard');
+	const searchAnchor = document.getElementById('searchContainer')
+		|| (document.getElementById('stockSearch')
+			? document.getElementById('stockSearch').closest('div.bg-slate-900, div.rounded-2xl, div.rounded-xl, section, form')
+			: null);
+
+	// Bersihkan marquee saham atau widget ticker-tape lama di antara vipDashboard dan kolom pencarian
+	if (vipDashboard && vipDashboard.parentElement) {
+		let sibling = vipDashboard.nextElementSibling;
+		while (sibling && sibling !== searchAnchor && !sibling.contains(searchAnchor)) {
+			const nextSib = sibling.nextElementSibling;
+			const idClass = `${sibling.id || ''} ${sibling.className || ''}`.toLowerCase();
+			const inner = (sibling.innerHTML || '').toLowerCase();
+			const isOldTicker = sibling.tagName === 'MARQUEE'
+				|| idClass.includes('marquee')
+				|| idClass.includes('ticker')
+				|| inner.includes('ticker-tape')
+				|| inner.includes('embed-widget-ticker');
+
+			if (isOldTicker) {
+				sibling.remove();
+			}
+			sibling = nextSib;
+		}
+	}
+
+	const wrapper = document.createElement('div');
+	wrapper.id = 'globalMarketMarquee';
+	wrapper.className = 'global-marquee-wrapper w-full bg-slate-900/90 border border-slate-800/90 rounded-xl shadow-lg backdrop-blur-md overflow-hidden my-3 relative select-none';
+	wrapper.innerHTML = `
+		<div class="flex items-center">
+			<div class="shrink-0 z-20 bg-slate-950/95 border-r border-slate-800 px-3 py-2.5 flex items-center gap-2 shadow-md">
+				<span class="relative flex h-2 w-2">
+					<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+					<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+				</span>
+				<span class="text-[10px] lg:text-xs font-extrabold tracking-wider text-emerald-400 uppercase whitespace-nowrap">
+					Global Market
+				</span>
+			</div>
+			<div class="relative flex-1 overflow-hidden py-1.5">
+				<div class="pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-slate-900/95 to-transparent z-10"></div>
+				<div class="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-slate-900/95 to-transparent z-10"></div>
+				<div id="globalMarketMarqueeTrack" class="global-marquee-track items-center gap-2.5 px-2">
+					<div class="text-[11px] text-slate-400 px-4 py-1 flex items-center gap-2">
+						<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-emerald-400"></i>
+						<span>Memuat indikator Bursa Dunia, Kripto &amp; Komoditas...</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	`;
+
+	if (vipDashboard && vipDashboard.parentNode) {
+		vipDashboard.insertAdjacentElement('afterend', wrapper);
+	} else if (searchAnchor && searchAnchor.parentNode) {
+		searchAnchor.parentNode.insertBefore(wrapper, searchAnchor);
+	} else {
+		const mainContainer = document.querySelector('main') || document.body;
+		mainContainer.prepend(wrapper);
+	}
+
+	if (window.lucide) lucide.createIcons();
+	return wrapper;
+}
+
+// Komentar: Menarik data harga real-time satu instrumen global via Cloudflare Worker dengan fallback multi-proxy.
+async function fetchGlobalInstrumentQuote(item) {
+	const WORKER_URL = 'https://stockid-api.accespy-mail.workers.dev';
+	const encodedSym = encodeURIComponent(item.symbol);
+
+	const parseChartResult = (json) => {
+		const result = json?.chart?.result?.[0];
+		if (!result) return null;
+		const quote = result.indicators?.quote?.[0];
+		const closes = (quote?.close || []).filter(p => typeof p === 'number' && !isNaN(p) && p > 0);
+		const metaPrice = result.meta?.regularMarketPrice;
+		const metaPrev = result.meta?.previousClose || result.meta?.chartPreviousClose;
+
+		const price = (metaPrice && metaPrice > 0)
+			? metaPrice
+			: (closes.length > 0 ? closes[closes.length - 1] : 0);
+		if (!price || price <= 0) return null;
+
+		const prevClose = (metaPrev && metaPrev > 0)
+			? metaPrev
+			: (closes.length >= 2 ? closes[closes.length - 2] : price);
+		const changePct = prevClose > 0 ? ((price - prevClose) / prevClose) * 100 : 0;
+
+		return {
+			...item,
+			price,
+			prevClose,
+			changePct
+		};
+	};
+
+	const fetchTimeoutJson = async (url, timeoutMs = 5000) => {
+		const controller = new AbortController();
+		const timer = setTimeout(() => controller.abort(), timeoutMs);
+		try {
+			const res = await fetch(url, { signal: controller.signal });
+			clearTimeout(timer);
+			if (!res.ok) throw new Error(`HTTP ${res.status}`);
+			return await res.json();
+		} catch (e) {
+			clearTimeout(timer);
+			throw e;
+		}
+	};
+
+	// 1. Worker Utama
+	try {
+		const json = await fetchTimeoutJson(`${WORKER_URL}?symbol=${encodedSym}`, 5000);
+		const parsed = parseChartResult(json);
+		if (parsed) return parsed;
+	} catch (e) {}
+
+	// 2. Fallback Multi-Proxy Yahoo Finance
+	const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodedSym}?interval=1d&range=5d`;
+	const fallbacks = [
+		`https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`,
+		`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(yahooUrl)}`
+	];
+
+	for (const proxyUrl of fallbacks) {
+		try {
+			const json = await fetchTimeoutJson(proxyUrl, 5000);
+			const parsed = parseChartResult(json);
+			if (parsed) return parsed;
+		} catch (e) {}
+	}
+
+	return null;
+}
+
+// Komentar: Merender deretan kartu indikator Bursa Dunia, Kripto, dan Komoditas ke dalam track marquee berjalan.
+function renderGlobalMarketMarqueeItems(items) {
+	const track = document.getElementById('globalMarketMarqueeTrack');
+	if (!track || !Array.isArray(items) || items.length === 0) return;
+
+	const buildSingleLoopHTML = () => items.map(item => {
+		const isUp = item.changePct > 0;
+		const isDown = item.changePct < 0;
+		const changeColor = isUp ? 'text-emerald-400' : (isDown ? 'text-rose-400' : 'text-slate-400');
+		const changeBg = isUp
+			? 'bg-emerald-500/10 border-emerald-500/25'
+			: (isDown ? 'bg-rose-500/10 border-rose-500/25' : 'bg-slate-800/80 border-slate-700');
+		const arrowIcon = isUp ? '▲' : (isDown ? '▼' : '•');
+		const sign = isUp ? '+' : '';
+
+		const formattedPrice = item.price.toLocaleString('en-US', {
+			minimumFractionDigits: item.decimals,
+			maximumFractionDigits: item.decimals
+		});
+
+		return `
+			<div class="gm-item-card flex items-center gap-2.5 bg-slate-950/75 hover:bg-slate-800/90 border border-slate-800/90 hover:border-emerald-500/40 rounded-lg px-3 py-1.5 transition-colors duration-200 shrink-0 shadow-sm">
+				<div class="w-6 h-6 rounded-full overflow-hidden border border-slate-700/80 shrink-0 shadow-inner flex items-center justify-center bg-slate-900">
+					${getGlobalMarketLogoSVG(item.logoKey)}
+				</div>
+				<div class="flex items-center gap-2">
+					<div class="flex flex-col leading-tight">
+						<div class="flex items-center gap-1.5">
+							<span class="gm-title-text text-[11px] lg:text-xs font-extrabold text-white tracking-tight whitespace-nowrap">${item.name}</span>
+							<span class="text-[8px] font-extrabold px-1.5 py-0.2 rounded border ${item.regionColor} tracking-wider whitespace-nowrap">${item.region}</span>
+						</div>
+						<span class="text-[10px] lg:text-[11px] font-bold text-slate-300 tabular-nums whitespace-nowrap">${item.prefix}${formattedPrice}</span>
+					</div>
+					<span class="text-[10px] font-extrabold ${changeColor} ${changeBg} border px-1.5 py-0.5 rounded-md tabular-nums whitespace-nowrap">
+						${arrowIcon} ${sign}${item.changePct.toFixed(2)}%
+					</span>
+				</div>
+			</div>
+		`;
+	}).join('');
+
+	const singleLoop = buildSingleLoopHTML();
+	// Duplikasi 2x agar pergerakan horizontal berjalan mulus tanpa putus
+	track.innerHTML = singleLoop + singleLoop;
+}
+
+// Komentar: Memuat cache instan lalu menyegarkan data seluruh indikator pasar global secara berkala.
+async function initGlobalMarketMarquee(forceRefresh = false) {
+	ensureGlobalMarqueeStyles();
+	mountGlobalMarketMarqueeContainer();
+
+	// 1. Tampilkan cache terlebih dahulu agar tidak blank saat halaman dibuka
+	try {
+		const cachedRaw = localStorage.getItem(GLOBAL_MARQUEE_CACHE_KEY);
+		if (cachedRaw) {
+			const cached = JSON.parse(cachedRaw);
+			if (Array.isArray(cached.data) && cached.data.length > 0) {
+				renderGlobalMarketMarqueeItems(cached.data);
+				if (!forceRefresh && (Date.now() - cached.timestamp) < GLOBAL_MARQUEE_CACHE_TTL) {
+					return;
+				}
+			}
+		}
+	} catch (e) {}
+
+	// 2. Ambil data real-time seluruh instrumen secara paralel
+	const results = await Promise.all(
+		GLOBAL_MARKET_INSTRUMENTS.map(item => fetchGlobalInstrumentQuote(item))
+	);
+	const validItems = results.filter(Boolean);
+
+	if (validItems.length > 0) {
+		renderGlobalMarketMarqueeItems(validItems);
+		try {
+			localStorage.setItem(GLOBAL_MARQUEE_CACHE_KEY, JSON.stringify({
+				timestamp: Date.now(),
+				data: validItems
+			}));
+		} catch (e) {}
+	}
+
+	// 3. Jadwalkan pembaruan otomatis setiap 60 detik
+	if (!globalMarqueeRefreshTimer) {
+		globalMarqueeRefreshTimer = setInterval(() => {
+			initGlobalMarketMarquee(true);
+		}, 60 * 1000);
+	}
+}
+
+initGlobalMarketMarquee();
+document.addEventListener('DOMContentLoaded', () => initGlobalMarketMarquee(false));
+
 
 // Hapus bulatan notif otomatis saat user membuka kembali layar aplikasi
 document.addEventListener('visibilitychange', () => {
