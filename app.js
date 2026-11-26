@@ -2138,12 +2138,12 @@ async function runCustomScreener() {
 				let matchMA = true;
 				if (ruleMA === 'ABOVE_MA5') matchMA = item.price > (item.ma5 || 0);
 				else if (ruleMA === 'ABOVE_MA20') matchMA = item.price > (item.ma20 || 0);
-				else if (ruleMA === 'GOLDEN_CROSS') matchMA = (item.ma5 || 0) > (item.ma10 || 0);
+				else if (ruleMA === 'GOLDEN_CROSS') matchMA = (item.ma5 || 0) > (item.ma20 || 0);
 				else if (ruleMA === 'BELOW_MA20') matchMA = item.price < (item.ma20 || 0);
 
 				let matchVol = true;
-				if (ruleVol === 'SPIKE_1.5') matchVol = (item.volRatio || 0) >= 1.5;
-				else if (ruleVol === 'SPIKE_3.0') matchVol = (item.volRatio || 0) >= 3.0;
+				if (ruleVol === 'SPIKE_2.0') matchVol = (item.volRatio || 0) >= 2.0;
+				else if (ruleVol === 'SPIKE_5.0') matchVol = (item.volRatio || 0) >= 5.0;
 				else if (ruleVol === 'DRY') matchVol = (item.volRatio || 0) < 1.0;
 
 				let matchPrice = true;
@@ -2154,8 +2154,8 @@ async function runCustomScreener() {
 				let matchRSI = true;
 				if (item.historicalPrices && ruleRSI !== 'ALL') {
 					const rsiValue = calculateRSI(item.historicalPrices);
-					if (ruleRSI === 'OVERSOLD' && rsiValue >= 30) matchRSI = false; 
-					if (ruleRSI === 'OVERBOUGHT' && rsiValue <= 70) matchRSI = false; 
+					if (ruleRSI === 'OVERSOLD' && rsiValue >= 20) matchRSI = false; 
+					if (ruleRSI === 'OVERBOUGHT' && rsiValue <= 100) matchRSI = false; 
 				}
 				
 				if (matchMA && matchVol && matchPrice && matchRSI) passedItems.push(item);
@@ -7192,7 +7192,7 @@ async function loadForeignFlowData(forceRefresh = true) {
 		container.innerHTML = `
 			<div class="text-center py-10 text-sky-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800 flex flex-col items-center justify-center gap-2">
 				<i data-lucide="loader-2" class="w-6 h-6 animate-spin text-sky-400"></i>
-				<span>Memindai estimasi arus dana asing acak A–Z (target 20 Net Buy &amp; 20 Net Sell)...</span>
+				<span>Memindai estimasi arus dana asing acak...</span>
 			</div>
 		`;
 		if (window.lucide) lucide.createIcons();
@@ -7273,13 +7273,13 @@ async function loadForeignFlowData(forceRefresh = true) {
 			let remaining = 10;
 			btn.disabled = true;
 			btn.classList.add('cursor-not-allowed', 'opacity-75');
-			btn.innerHTML = `<i data-lucide="clock" class="w-4 h-4 text-sky-400"></i> Tunggu ${remaining}d`;
+			btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin ${accentColorClass}"></i> Sedang di Proses ${remaining}d`;
 			if (window.lucide) lucide.createIcons();
 
 			foreignFlowCooldownTimer = setInterval(() => {
 				remaining -= 1;
 				if (remaining > 0) {
-					btn.innerHTML = `<i data-lucide="clock" class="w-4 h-4 text-sky-400"></i> Tunggu ${remaining}d`;
+					btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin ${accentColorClass}"></i> Sedang di Proses ${remaining}d`;
 					if (window.lucide) lucide.createIcons();
 				} else {
 					clearInterval(foreignFlowCooldownTimer);
@@ -7746,7 +7746,7 @@ function renderFilteredValuation() {
 		<div class="col-span-full flex flex-wrap items-center justify-between gap-2 bg-slate-950/50 px-4 py-3 rounded-xl border border-slate-800 text-[10px] lg:text-xs">
 			<span class="font-bold text-slate-200">Filter Matriks Valuasi (${displayItems.length} Ditampilkan • Maks. 75):</span>
 			<div class="flex flex-wrap items-center gap-2">
-				<button type="button" onclick="setValuationFilter('ALL')" class="${getFilterBtnClass('ALL', 'bg-slate-700 text-white border-slate-500')}">
+				<button type="button" onclick="setValuationFilter('ALL')" class="${getFilterBtnClass('ALL', 'bg-fuchsia-500/20 text-white border-slate-500')}">
 					Semua (${totalShownAll}/75)
 				</button>
 				<button type="button" onclick="setValuationFilter('UNDERVALUED')" class="${getFilterBtnClass('UNDERVALUED', 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40')}">

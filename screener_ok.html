@@ -746,10 +746,10 @@
 						<i data-lucide="history" class="w-4 h-4 text-amber-400"></i> Backtest </button>
 					<button onclick="switchTab('valuation')" id="tabBtn-valuation" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition relative">
 						<i data-lucide="pie-chart" class="w-4 h-4 text-emerald-400"></i> Valuasi Matrix </button>
-					<button onclick="switchTab('warrant')" id="tabBtn-warrant" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition relative">
-						<i data-lucide="zap" class="w-4 h-4 text-fuchsia-400"></i> Waran Tracker </button>
 					<button onclick="switchTab('peer')" id="tabBtn-peer" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="git-compare" class="w-4 h-4 text-emerald-400"></i> Peer Komparasi </button>
+					<button onclick="switchTab('warrant')" id="tabBtn-warrant" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition relative">
+						<i data-lucide="zap" class="w-4 h-4 text-fuchsia-400"></i> Waran Tracker </button>
 					<button onclick="switchTab('journal')" id="tabBtn-journal" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
 						<i data-lucide="book-open" class="w-4 h-4 text-pink-400"></i> Journal Trading </button>
 					<button onclick="switchTab('rrr')" id="tabBtn-rrr" class="flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition">
@@ -1166,7 +1166,7 @@
 									<li onclick="selectCustomOption('csRuleMA', 'ALL', 'Semua Kondisi (Bebas)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Semua Kondisi (Bebas)</li>
 									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA5', 'Harga &gt; MA5 (Uptrend Pendek)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Harga &gt; MA5 (Uptrend Pendek)</li>
 									<li onclick="selectCustomOption('csRuleMA', 'ABOVE_MA20', 'Harga &gt; MA20 (Uptrend Menengah)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Harga &gt; MA20 (Uptrend Menengah)</li>
-									<li onclick="selectCustomOption('csRuleMA', 'GOLDEN_CROSS', 'Golden Cross (MA5 &gt; MA10)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Golden Cross (MA5 &gt; MA10)</li>
+									<li onclick="selectCustomOption('csRuleMA', 'GOLDEN_CROSS', 'Golden Cross (MA5 &gt; MA20)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Golden Cross (MA5 &gt; MA20)</li>
 									<li onclick="selectCustomOption('csRuleMA', 'BELOW_MA20', 'Harga &lt; MA20 (Downtrend / Oversold)', 'dropdownMA', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Harga &lt; MA20 (Downtrend / Oversold)</li>
 								</ul>
 							</div>
@@ -1180,8 +1180,8 @@
 								</button>
 								<ul id="dropdownVol" class="hidden absolute z-50 w-full mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-52 overflow-y-auto text-xs lg:text-sm text-slate-200 divide-y divide-slate-800/80 scrollbar-thin">
 									<li onclick="selectCustomOption('csRuleVol', 'ALL', 'Semua Tingkat Volume', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Semua Tingkat Volume</li>
-									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_1.5', 'Volume Spike (&gt; 1.5x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Spike (&gt; 1.5x Rerata)</li>
-									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_3.0', 'Volume Meledak (&gt; 3.0x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Meledak (&gt; 3.0x Rerata)</li>
+									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_2.0', 'Volume Spike (&gt; 2x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Spike (&gt; 200% Rerata)</li>
+									<li onclick="selectCustomOption('csRuleVol', 'SPIKE_5.0', 'Volume Meledak (&gt; 5x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Meledak (&gt; 500% Rerata)</li>
 									<li onclick="selectCustomOption('csRuleVol', 'DRY', 'Volume Kering (&lt; 1.0x Rerata)', 'dropdownVol', event)" class="p-3 hover:bg-blue-500/15 hover:text-blue-400 cursor-pointer transition font-medium">Volume Kering (&lt; 1.0x Rerata)</li>
 								</ul>
 							</div>
