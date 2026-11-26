@@ -6841,8 +6841,9 @@ function evaluateValuationStatus(stock) {
 // ==========================================
 // KONSTANTA, STATE & HELPER ASING FLOW (CLV PROXY MODEL)
 // ==========================================
-const FOREIGN_FLOW_CACHE_KEY = 'stockid_foreign_flow_cache_v3';
+const FOREIGN_FLOW_CACHE_KEY = 'stockid_foreign_flow_cache_v4';
 const FOREIGN_FLOW_CACHE_TTL = 5 * 60 * 1000; // 5 menit
+const FOREIGN_FLOW_TARGET_PER_SIDE = 20; // 20 Net Buy + 20 Net Sell = 40 saham
 
 let foreignFlowCacheItems = [];
 let foreignFlowTypeFilter = 'ALL';
@@ -6937,6 +6938,71 @@ function calculateRealisticForeignFlow(quote) {
 	};
 }
 
+// Komentar: Mengacak dan menyusun daftar emiten secara bergantian dari huruf A-Z agar merata.
+function getRandomizedAZTickers(watchlist) {
+	const uniqueList = [...new Set((watchlist || []).filter(Boolean))];
+	const buckets = {};
+
+	uniqueList.forEach(ticker => {
+		const firstChar = ticker.charAt(0).toUpperCase();
+		const key = /^[A-Z]$/.test(firstChar) ? firstChar : '#';
+		if (!buckets[key]) buckets[key] = [];
+		buckets[key].push(ticker);
+	});
+
+	const letters = Object.keys(buckets);
+	letters.forEach(letter => {
+		const arr = buckets[letter];
+		for (let i = arr.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[arr[i], arr[j]] = [arr[j], arr[i]];
+		}
+	});
+
+	for (let i = letters.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[letters[i], letters[j]] = [letters[j], letters[i]];
+	}
+
+	const randomizedAZ = [];
+	let added = true;
+	let round = 0;
+
+	while (added) {
+		added = false;
+		for (let i = 0; i < letters.length; i++) {
+			const letter = letters[i];
+			if (round < buckets[letter].length) {
+				randomizedAZ.push(buckets[letter][round]);
+				added = true;
+			}
+		}
+		round++;
+	}
+
+	return randomizedAZ;
+}
+
+// Komentar: Menyusun daftar seimbang 20 saham Net Buy dan 20 saham Net Sell (total 40 saham).
+function buildBalancedForeignFlowList(items, targetPerSide = FOREIGN_FLOW_TARGET_PER_SIDE) {
+	const activeVolList = items.filter(item => item.volume > 0);
+	const zeroVolList = items.filter(item => item.volume <= 0);
+	const prioritizedPool = [...activeVolList, ...zeroVolList];
+
+	const netBuyItems = prioritizedPool
+		.filter(item => item.netFlowEstimate >= 0)
+		.sort((a, b) => Math.abs(b.netFlowEstimate) - Math.abs(a.netFlowEstimate))
+		.slice(0, targetPerSide);
+
+	const netSellItems = prioritizedPool
+		.filter(item => item.netFlowEstimate < 0)
+		.sort((a, b) => Math.abs(b.netFlowEstimate) - Math.abs(a.netFlowEstimate))
+		.slice(0, targetPerSide);
+
+	return [...netBuyItems, ...netSellItems]
+		.sort((a, b) => Math.abs(b.netFlowEstimate) - Math.abs(a.netFlowEstimate));
+}
+
 // Komentar: Mengatur filter arah transaksi (ALL/BUY/SELL) dan skala nominal (RIBU/JUTA/MILIAR/TRILIUN) pada tab Asing Flow.
 function setForeignFlowFilter(group, value) {
 	if (group === 'type') {
@@ -6999,7 +7065,7 @@ function renderFilteredForeignFlow() {
 		return;
 	}
 
-	container.innerHTML = filtered.slice(0, 20).map(stock => {
+	container.innerHTML = filtered.map(stock => {
 		const isNetBuy = stock.netFlowEstimate >= 0;
 		const formattedNominal = formatForeignFlowNominal(stock.netFlowEstimate);
 		const prefixSign = stock.netFlowEstimate > 0 ? '+' : (stock.netFlowEstimate < 0 ? '-' : '');
@@ -7051,7 +7117,7 @@ function renderFilteredForeignFlow() {
 	if (window.lucide) lucide.createIcons();
 }
 
-// Komentar: Memindai estimasi arus dana asing (Foreign Net Flow) secara real-time dan memperbarui tampilan.
+// Komentar: Memindai estimasi arus dana asing (Foreign Net Flow) secara real-time acak A-Z dan memperbarui tampilan.
 async function loadForeignFlowData(forceRefresh = true) {
 	const btn = document.getElementById('btnLoadForeignFlow')
 		|| document.getElementById('btnScanForeignFlow')
@@ -7102,7 +7168,9 @@ async function loadForeignFlowData(forceRefresh = true) {
 			? uniqueRadarWatchlist.filter(t => !/-W\d*$/i.test(t))
 			: []);
 
-	const targetTickers = sourceWatchlist.slice(0, 30);
+	const randomizedWatchlist = getRandomizedAZTickers(sourceWatchlist);
+	const targetTickers = randomizedWatchlist.slice(0, 120);
+
 	if (targetTickers.length === 0) {
 		if (container) {
 			container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs lg:text-sm md:col-span-2">Daftar watchlist emiten belum tersedia.</div>`;
@@ -7124,7 +7192,7 @@ async function loadForeignFlowData(forceRefresh = true) {
 		container.innerHTML = `
 			<div class="text-center py-10 text-sky-400 text-xs lg:text-sm md:col-span-2 bg-slate-900/60 rounded-xl border border-slate-800 flex flex-col items-center justify-center gap-2">
 				<i data-lucide="loader-2" class="w-6 h-6 animate-spin text-sky-400"></i>
-				<span>Memindai estimasi arus dana asing (CLV &amp; Turnover) pada ${targetTickers.length} emiten unggulan...</span>
+				<span>Memindai estimasi arus dana asing acak A–Z (target 20 Net Buy &amp; 20 Net Sell)...</span>
 			</div>
 		`;
 		if (window.lucide) lucide.createIcons();
@@ -7132,7 +7200,7 @@ async function loadForeignFlowData(forceRefresh = true) {
 
 	try {
 		const collected = [];
-		const BATCH_SIZE = 10;
+		const BATCH_SIZE = 15;
 
 		for (let i = 0; i < targetTickers.length; i += BATCH_SIZE) {
 			const batch = targetTickers.slice(i, i + BATCH_SIZE);
@@ -7152,14 +7220,15 @@ async function loadForeignFlowData(forceRefresh = true) {
 			});
 
 			if (collected.length > 0) {
-				const activeVolList = collected.filter(item => item.volume > 0);
-				const baseSortList = activeVolList.length > 0 ? activeVolList : collected;
-
-				foreignFlowCacheItems = [...baseSortList]
-					.sort((a, b) => Math.abs(b.netFlowEstimate) - Math.abs(a.netFlowEstimate))
-					.slice(0, 20);
+				foreignFlowCacheItems = buildBalancedForeignFlowList(collected, FOREIGN_FLOW_TARGET_PER_SIDE);
 				window.foreignFlowData = foreignFlowCacheItems;
 				renderFilteredForeignFlow();
+			}
+
+			const activeBuyCount = collected.filter(item => item.volume > 0 && item.netFlowEstimate >= 0).length;
+			const activeSellCount = collected.filter(item => item.volume > 0 && item.netFlowEstimate < 0).length;
+			if (activeBuyCount >= FOREIGN_FLOW_TARGET_PER_SIDE && activeSellCount >= FOREIGN_FLOW_TARGET_PER_SIDE) {
+				break;
 			}
 		}
 
