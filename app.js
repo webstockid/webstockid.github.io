@@ -2191,7 +2191,7 @@ async function runCustomScreener() {
 			let infoMA = '';
 			if (ruleMA === 'ABOVE_MA5') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Pendek:</strong> Bertahan mantap di atas MA5.</span></li>`;
 			else if (ruleMA === 'ABOVE_MA20') infoMA = `<li class="flex gap-2"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0"></i> <span><strong class="text-emerald-400">Uptrend Menengah:</strong> Solid di atas support MA20.</span></li>`;
-			else if (ruleMA === 'GOLDEN_CROSS') infoMA = `<li class="flex gap-2"><i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0"></i> <span><strong class="text-amber-400">Golden Cross:</strong> MA5 melintasi naik di atas MA10.</span></li>`;
+			else if (ruleMA === 'GOLDEN_CROSS') infoMA = `<li class="flex gap-2"><i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0"></i> <span><strong class="text-amber-400">Golden Cross:</strong> MA5 melintasi naik di atas MA20.</span></li>`;
 			else if (ruleMA === 'BELOW_MA20') infoMA = `<li class="flex gap-2"><i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0"></i> <span><strong class="text-rose-400">Oversold:</strong> Di bawah MA20, pantau rebound.</span></li>`;
 			else infoMA = `<li class="flex gap-2"><i data-lucide="info" class="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0"></i> <span><strong class="text-slate-300">Tren:</strong> Bebas, posisi harga Rp ${price.toLocaleString('id-ID')}.</span></li>`;
 
@@ -7746,7 +7746,7 @@ function renderFilteredValuation() {
 		<div class="col-span-full flex flex-wrap items-center justify-between gap-2 bg-slate-950/50 px-4 py-3 rounded-xl border border-slate-800 text-[10px] lg:text-xs">
 			<span class="font-bold text-slate-200">Filter Matriks Valuasi (${displayItems.length} Ditampilkan • Maks. 75):</span>
 			<div class="flex flex-wrap items-center gap-2">
-				<button type="button" onclick="setValuationFilter('ALL')" class="${getFilterBtnClass('ALL', 'bg-fuchsia-500/20 text-white border-slate-500')}">
+				<button type="button" onclick="setValuationFilter('ALL')" class="${getFilterBtnClass('ALL', 'bg-fuchsia-500/20 text-fuchsia-400 border-fuchsia-500/40')}">
 					Semua (${totalShownAll}/75)
 				</button>
 				<button type="button" onclick="setValuationFilter('UNDERVALUED')" class="${getFilterBtnClass('UNDERVALUED', 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40')}">
