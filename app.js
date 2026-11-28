@@ -1365,7 +1365,7 @@ async function startRadarProcess() {
 	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-emerald-400"></i> Memindai Instan...`;
 	if (window.lucide) lucide.createIcons();
 
-	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai saham secara otomatis berdasarkan seluruh indikator...</div>`;
+	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i> Memindai saham secara otomatis berdasarkan seluruh indikator...</div>`;
 	
 	const baseList = getRegularStockTickers();
 	const shuffled = baseList.length > 0 ? [...baseList] : (typeof uniqueRadarWatchlist !== 'undefined' ? [...uniqueRadarWatchlist] : []);
@@ -1396,7 +1396,7 @@ async function startRadarProcess() {
 
 	isRadarScanning = false;
 	btn.disabled = false;
-	btn.className = "w-full sm:w-auto bg-emerald-800 hover:bg-emerald-500 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-emerald-700 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0";
+	btn.className = "w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-slate-100 font-bold px-6 py-2.5 rounded-lg border border-emerald-500 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0";
 	btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Pindai Ulang Pasar`;
 	if (window.lucide) lucide.createIcons();
 
@@ -2116,7 +2116,7 @@ async function runCustomScreener() {
 		
 		const ruleRSI = document.getElementById('csRuleRSI') ? document.getElementById('csRuleRSI').value : 'ALL';
 
-		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i> Memfilter saham sesuai custom rules Kamu...</div>`;
+		container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i> Memfilter saham sesuai custom rules Kamu...</div>`;
 		
 		const baseCsList = getRegularStockTickers();
 		const shuffled = (baseCsList.length > 0 ? [...baseCsList] : (typeof uniqueRadarWatchlist !== 'undefined' ? [...uniqueRadarWatchlist] : [])).sort(() => 0.5 - Math.random());
@@ -2290,7 +2290,7 @@ async function runCustomScreener() {
 	} finally {
 		if (btn) {
 			btn.disabled = false;
-			btn.className = "w-full sm:w-auto bg-emerald-800 hover:bg-emerald-500 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-emerald-700 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0";
+			btn.className = "w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-slate-100 font-bold px-6 py-2.5 rounded-lg border border-emerald-500 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0";
 			btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter`;
 			if (window.lucide) lucide.createIcons();
 		}
