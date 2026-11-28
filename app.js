@@ -1563,10 +1563,10 @@ async function startBSJPProcess() {
 	
 	btn.disabled = true;
 	btn.className = "w-full sm:w-auto bg-slate-800 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-slate-700 flex items-center justify-center gap-2 shrink-0 cursor-not-allowed opacity-70";
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-orange-400"></i> Memindai BSJP...`;
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-emerald-400"></i> Memindai BSJP...`;
 	if (window.lucide) lucide.createIcons();
 	
-	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-orange-500"></i> Menyaring saham yang cocok untuk BSJP...</div>`;
+	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-900/30"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i> Menyaring saham yang cocok untuk BSJP...</div>`;
 	
 	const baseBsjpList = getRegularStockTickers();
 	const shuffledWatchlist = (baseBsjpList.length > 0 ? [...baseBsjpList] : (typeof uniqueRadarWatchlist !== 'undefined' ? [...uniqueRadarWatchlist] : [])).sort(() => 0.5 - Math.random());
@@ -1647,7 +1647,7 @@ async function startBSJPProcess() {
 				clearInterval(bsjpCooldownTimer);
 				btn.disabled = false;
 				btn.classList.remove('cursor-not-allowed', 'opacity-70');
-				btn.className = "w-full sm:w-auto bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-orange-500/50 transition shadow-lg shadow-orange-600/20 flex items-center justify-center gap-2 shrink-0";
+				btn.className = "w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-slate-100 font-bold px-6 py-2.5 rounded-lg border border-emerald-500 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0";
 				btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Pindai Ulang BSJP`;
 				if (window.lucide) lucide.createIcons();
 			}
@@ -1684,7 +1684,7 @@ function renderBSJPItems(dataList) {
 		html += `
 			<div class="bg-slate-950/30 p-4 lg:p-5 rounded-xl border border-slate-700/60 hover:border-orange-500/50 transition-colors duration-300 relative shadow-sm flex flex-col justify-between">
 				<!-- Badge Potensi Profit (Absolute Top Right dengan z-index) -->
-				<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l from-orange-600/30 to-amber-500/10 border-b border-l border-orange-500/30 rounded-bl-xl rounded-tr-xl text-[10px] font-bold text-orange-400 flex items-center gap-1.5 shadow-sm">
+				<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l from-emerald-600/30 to-emerald-500/10 border-b border-l border-emerald-500/30 rounded-bl-xl rounded-tr-xl text-[10px] font-bold text-emerald-400 flex items-center gap-1.5 shadow-sm">
 					<i data-lucide="trending-up" class="w-3 h-3"></i> Potensi TP Pagi: +${rewardPct}%
 				</div>
 				
@@ -1735,7 +1735,7 @@ function renderBSJPItems(dataList) {
 				
 				<!-- Keterangan Detail Indikator -->
 				<div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800 text-[10px] lg:text-[11px] text-slate-300 leading-relaxed space-y-2 mt-3">
-					<span class="text-amber-400 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
+					<span class="text-emerald-400 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
 						<i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> ANALISIS TEKNIKAL BSJP:
 					</span>
 					<ul class="space-y-1.5 mt-1 list-none">
