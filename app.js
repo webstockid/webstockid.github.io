@@ -381,7 +381,7 @@ function showConfirm(message) {
 					<div class="inline-flex p-3 bg-amber-500/10 rounded-xl border border-amber-500/20 text-amber-400 mb-1">
 						<i class="fa-solid fa-triangle-exclamation text-xl"></i>
 					</div>
-					<h3 class="text-base font-bold text-white">Konfirmasi Tindakan</h3>
+					<h3 class="text-base font-bold text-slate-300">Konfirmasi Tindakan</h3>
 					<p id="customConfirmMsg" class="text-xs text-slate-300 leading-relaxed"></p>
 					<div class="flex gap-3 pt-2">
 						<button id="customConfirmBtnCancel" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">Batal</button>
@@ -1135,7 +1135,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 				<span class="flex items-center gap-1.5">
 					<i data-lucide="sliders-vertical" class="w-4 h-4"></i> Rasio Volume vs Rerata Harian:
 				</span>
-				<span class="font-bold ${isVolSpike ? 'text-emerald-400' : 'text-white'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
+				<span class="font-bold ${isVolSpike ? 'text-emerald-400' : 'text-slate-300'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span class="flex items-center gap-1.5">
@@ -1482,7 +1482,7 @@ function renderRadarItems(dataList) {
 							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
-							Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
+							Harga: <strong class="text-slate-300">Rp ${price.toLocaleString('id-ID')}</strong> 
 						</span>
 					</div>
 				</div>
@@ -1511,7 +1511,7 @@ function renderRadarItems(dataList) {
 				</div>
 				
 				<div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800 text-[10px] lg:text-[11px] text-slate-300 leading-relaxed space-y-2 mt-3">
-					<span class="text-amber-400 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
+					<span class="text-emerald-400 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
 						<i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> ANALISIS TEKNIKAL OTOMATIS:
 					</span>
 					<p class="mt-1">${alasanTeknikal}</p>
@@ -1704,7 +1704,7 @@ function renderBSJPItems(dataList) {
 							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
-							Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
+							Harga: <strong class="text-slate-300">Rp ${price.toLocaleString('id-ID')}</strong> 
 						</span>
 					</div>
 				</div>
@@ -1754,7 +1754,7 @@ function renderBSJPItems(dataList) {
 					</ul>
 				</div>
 
-				<button onclick="selectTickerFromCustom('${item.ticker}')" class="mt-4 w-full bg-slate-800/80 hover:bg-orange-600 text-slate-300 hover:text-slate-300 font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-orange-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
+				<button onclick="selectTickerFromCustom('${item.ticker}')" class="mt-4 w-full bg-emerald-500/20 hover:bg-emerald-600 text-emerald-400 hover:text-slate-300 font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-emerald-700 hover:border-emerald-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
 					<span>Buka Chart & Detail AI</span>
 					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
 				</button>
@@ -2104,7 +2104,7 @@ async function runCustomScreener() {
 	if (btn) {
 		btn.disabled = true;
 		btn.className = "w-full sm:w-auto bg-slate-800 border border-slate-700 text-slate-300 font-bold px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
-		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-blue-400"></i> Sedang Memfilter...`;
+		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-emerald-400"></i> Sedang Memfilter...`;
 		if (window.lucide) lucide.createIcons();
 	}
 
@@ -2217,7 +2217,7 @@ async function runCustomScreener() {
 			html += `
 				<div class="bg-slate-950/30 p-4 lg:p-5 rounded-xl border border-slate-700/60 hover:border-blue-500/50 transition-colors duration-300 relative shadow-sm flex flex-col justify-between">
 					<!-- Badge Filter Match -->
-					<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l from-blue-600/30 to-blue-500/10 border-b border-l border-blue-500/30 rounded-bl-xl rounded-tr-xl text-[10px] font-bold text-blue-400 flex items-center gap-1.5 shadow-sm">
+					<div class="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l from-emerald-600/30 to-emerald-500/10 border-b border-l border-emerald-500/30 rounded-bl-xl rounded-tr-xl text-[10px] font-bold text-emerald-400 flex items-center gap-1.5 shadow-sm">
 						${filterBadgeHtml}
 					</div>
 					
@@ -2237,7 +2237,7 @@ async function runCustomScreener() {
 								<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 							</div>
 							<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
-								Harga: <strong class="text-white">Rp ${price.toLocaleString('id-ID')}</strong> 
+								Harga: <strong class="text-slate-300">Rp ${price.toLocaleString('id-ID')}</strong> 
 							</span>
 						</div>
 					</div>
@@ -2268,7 +2268,7 @@ async function runCustomScreener() {
 					
 					<!-- Keterangan Detail Indikator -->
 					<div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800 text-[10px] lg:text-[11px] text-slate-300 leading-relaxed space-y-2 mt-3">
-						<span class="text-blue-500 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
+						<span class="text-emerald-400 font-bold block flex items-center gap-1.5 border-b border-slate-800/80 pb-1.5">
 							<i data-lucide="list-filter" class="w-3.5 h-3.5"></i> DETAIL FILTER:
 						</span>
 						<ul class="space-y-1.5 mt-1 list-none">
@@ -2276,7 +2276,7 @@ async function runCustomScreener() {
 						</ul>
 					</div>
 					
-					<button onclick="selectTickerFromCustom('${item.ticker}')" class="mt-4 w-full bg-slate-800/80 hover:bg-blue-600 text-slate-300 hover:text-slate-300 font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-blue-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
+					<button onclick="selectTickerFromCustom('${item.ticker}')" class="mt-4 w-full bg-emerald-500/20 hover:bg-emerald-600 text-emerald-400 hover:text-slate-300 font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-emerald-700 hover:border-emerald-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
 						<span>Buka Chart & Detail AI</span>
 						<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
 					</button>
@@ -2657,7 +2657,7 @@ function renderPaperTradingUI() {
 							>
 						</div>
 						<div class="flex flex-col">
-							<span class="text-white">&dollar;${item.ticker}</span>
+							<span class="text-slate-300">&dollar;${item.ticker}</span>
 							${item.sl > 0 || item.tp > 0 ? `<span class="text-[9px] text-slate-500 font-normal mt-0.5">Auto SL/TP Aktif</span>` : ''}
 						</div>
 					</div>
@@ -2701,7 +2701,7 @@ function renderPaperTradingUI() {
 									onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${h.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] font-black text-slate-400 tracking-wider\\'>${h.ticker.substring(0,3)}</span>';};"
 								>
 							</div>
-							<span class="font-bold text-white">&dollar;${h.ticker} <strong class='text-blue-400'>(${h.lots} Lot)</strong></span>
+							<span class="font-bold text-slate-300">&dollar;${h.ticker} <strong class='text-blue-400'>(${h.lots} Lot)</strong></span>
 						</div>
 						<span class="text-[9px] ${isWin ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'} px-2 py-0.5 rounded font-bold">${h.status}</span>
 					</div>
@@ -2787,7 +2787,7 @@ function calculateSmartRRR() {
 		maxLotsEl.innerText = "0 Lot";
 		capitalNeededEl.innerText = "Rp 0";
 		rewardEl.innerText = "Rp 0";
-		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-slate-900 text-white";
+		evalEl.className = "p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-slate-900 text-slate-300";
 		evalEl.innerText = "Masukkan harga Entry, SL (>0 & < Entry), dan TP (> Entry) untuk evaluasi AI.";
 		return;
 	}
@@ -3000,7 +3000,7 @@ function renderJournalTable() {
 								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};"
 							>
 						</div>
-						<span class="text-white">&dollar;${item.ticker}</span>
+						<span class="text-slate-300">&dollar;${item.ticker}</span>
 					</div>
 				</td>
 				<td class="p-3.5 text-amber-400">Rp ${item.entry.toLocaleString('id-ID')}</td>
@@ -3427,7 +3427,7 @@ function renderAllAlerts() {
 			if (isTriggered) {
 				statusBadge = '<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold">TERCAPAI</span>';
 				rowBorder = 'border-l-[3px] border-emerald-500/60';
-				toggleBtn = `<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[9px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-1 rounded font-bold transition hover:text-white">RESET</button>`;
+				toggleBtn = `<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[9px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-1 rounded font-bold transition hover:text-slate-300">RESET</button>`;
 			} else if (isActive) {
 				statusBadge = '<span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded text-[8px] font-bold animate-pulse">MENUNGGU</span>';
 				rowBorder = 'border-l-[3px] border-amber-500/60';
@@ -3435,7 +3435,7 @@ function renderAllAlerts() {
 			} else {
 				statusBadge = '<span class="bg-slate-800 text-slate-400 border border-slate-700 px-1.5 py-0.5 rounded text-[8px] font-bold">OFF</span>';
 				rowBorder = 'opacity-60 border-l-[3px] border-slate-700';
-				toggleBtn = `<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[9px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-1 rounded font-bold transition hover:text-white">OFF</button>`;
+				toggleBtn = `<button onclick="toggleAlertStatus('${ticker}', ${index})" class="text-[9px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-1 rounded font-bold transition hover:text-slate-300">OFF</button>`;
 			}
 
 			htmlContent += `
@@ -3894,7 +3894,7 @@ async function analyzeAITimeframe(tfLabel) {
 				</div>
 				<div class="flex justify-between items-center mb-1.5">
 					<span class="text-slate-400">Status Harga Terakhir:</span>
-					<span class="font-bold text-white">Rp ${currentClose.toLocaleString('id-ID')} (<span class="${signalColor}">${changePct > 0 ? '+' : ''}${changePct}%</span>)</span>
+					<span class="font-bold text-slate-300">Rp ${currentClose.toLocaleString('id-ID')} (<span class="${signalColor}">${changePct > 0 ? '+' : ''}${changePct}%</span>)</span>
 				</div>
 				<div class="flex justify-between items-center mb-1.5">
 					<span class="text-slate-400">Trend Signal (${displayLabel}):</span>
@@ -5198,7 +5198,7 @@ function generateAIResponse(prompt) {
 	if (lower.includes('entry') || lower.includes('support') || lower.includes('masuk') || lower.includes('beli')) {
 		return `
 			<strong class="text-amber-400 flex items-center gap-1.5"><i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Area Entry & Support $${targetTicker}:</strong>
-			Harga saat ini berada di <span class="text-white">${formatRp(price)}</span>.<br>
+			Harga saat ini berada di <span class="text-slate-300">${formatRp(price)}</span>.<br>
 			Area akumulasi (entry ideal) yang disarankan berada di rentang support kuat <strong class="text-amber-400">${formatRp(sup1)} - ${formatRp(sup2)}</strong>.<br>
 			<span class="text-[10px] text-slate-400 mt-1 block"><i>Tips: Cicil beli jika harga mantul (rebound) dari area ini.</i></span>
 		`;
@@ -5225,9 +5225,9 @@ function generateAIResponse(prompt) {
 		return `
 			<strong class="text-fuchsia-400 flex items-center gap-1.5"><i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Posisi Moving Average $${targetTicker}:</strong>
 			<ul class="space-y-0.5 mt-1 list-inside">
-				<li>• MA5 : <span class="text-white">${formatRp(data.ma5)}</span></li>
-				<li>• MA10: <span class="text-white">${formatRp(data.ma10)}</span></li>
-				<li>• MA20: <span class="text-white">${formatRp(data.ma20)}</span></li>
+				<li>• MA5 : <span class="text-slate-300">${formatRp(data.ma5)}</span></li>
+				<li>• MA10: <span class="text-slate-300">${formatRp(data.ma10)}</span></li>
+				<li>• MA20: <span class="text-slate-300">${formatRp(data.ma20)}</span></li>
 			</ul>
 			<div class="mt-1.5 border-t border-slate-700/50 pt-1.5">Struktur saat ini: Harga (${formatRp(price)}) berada ${trendText}.</div>
 		`;
@@ -5238,9 +5238,9 @@ function generateAIResponse(prompt) {
 		return `
 			<strong class="text-emerald-400 flex items-center gap-1.5"><i data-lucide="bar-chart-2" class="w-3.5 h-3.5"></i> Analisis Volume $${targetTicker}:</strong>
 			<ul class="space-y-0.5 mt-1">
-				<li>• Total Lot: <span class="text-white">${(data.currentLot || 0).toLocaleString('id-ID')} Lot</span></li>
-				<li>• Valuasi: <span class="text-white">${formatRp(data.currentValuation)}</span></li>
-				<li>• Rasio Rerata: <span class="text-white">${data.volRatio}x</span> (${volStatus})</li>
+				<li>• Total Lot: <span class="text-slate-300">${(data.currentLot || 0).toLocaleString('id-ID')} Lot</span></li>
+				<li>• Valuasi: <span class="text-slate-300">${formatRp(data.currentValuation)}</span></li>
+				<li>• Rasio Rerata: <span class="text-slate-300">${data.volRatio}x</span> (${volStatus})</li>
 			</ul>
 			<div class="text-[10px] text-slate-400 mt-1.5 leading-relaxed">Lonjakan volume (Spike) adalah konfirmasi mutlak yang menguatkan validasi <i>breakout</i>.</div>
 		`;
@@ -5252,7 +5252,7 @@ function generateAIResponse(prompt) {
 			: 'Tren cenderung tertekan, sebaiknya <strong class="text-amber-400">Wait & See</strong> atau *Buy on Support* dengan SL ketat.';
 		return `
 			<strong class="text-emerald-400 flex items-center gap-1.5"><i data-lucide="cpu" class="w-3.5 h-3.5"></i> Ringkasan Teknis AI untuk $${targetTicker}:</strong>
-			Harga terkini <strong class="text-white">${formatRp(price)}</strong> (<span class="${data.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${data.changePct >= 0 ? '+' : ''}${data.changePct}%</span>).<br>
+			Harga terkini <strong class="text-slate-300">${formatRp(price)}</strong> (<span class="${data.changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${data.changePct >= 0 ? '+' : ''}${data.changePct}%</span>).<br>
 			Secara umum, ruang pergerakan terdekat berada di antara support <strong class="text-amber-400">${formatRp(sup2)}</strong> dan resistance <strong class="text-cyan-400">${formatRp(res1)}</strong>.<br><br>
 			<span class="text-slate-300">💡 <b>Saran:</b> ${saran}</span>
 		`;
@@ -5339,8 +5339,8 @@ function calculateTrailingStop() {
 	resTotalProfit.innerText = `Rp ${Math.round(totalProfit).toLocaleString('id-ID')}`;
 
 	descEl.innerHTML = `
-		<strong class="text-emerald-400">Skenario Risk-Free:</strong> Saat harga menyentuh TP1 (Rp ${tp1Price.toLocaleString('id-ID')}), jual <strong class="text-white">${lotTP1} Lot</strong> untuk mengamankan modal dan profit. 
-		Sisa <strong class="text-white">${lotTP2} Lot</strong> di-<i>hold</i> menuju TP2 (Rp ${tp2Price.toLocaleString('id-ID')}) dengan memindahkan Stop Loss menjadi Trailing Stop ke titik impas di <strong class="text-white">Rp ${newTrailingStop.toLocaleString('id-ID')}</strong>. 
+		<strong class="text-emerald-400">Skenario Risk-Free:</strong> Saat harga menyentuh TP1 (Rp ${tp1Price.toLocaleString('id-ID')}), jual <strong class="text-slate-300">${lotTP1} Lot</strong> untuk mengamankan modal dan profit. 
+		Sisa <strong class="text-slate-300">${lotTP2} Lot</strong> di-<i>hold</i> menuju TP2 (Rp ${tp2Price.toLocaleString('id-ID')}) dengan memindahkan Stop Loss menjadi Trailing Stop ke titik impas di <strong class="text-slate-300">Rp ${newTrailingStop.toLocaleString('id-ID')}</strong>. 
 		Jika harga gagal naik dan berbalik menyentuh modal, sisa posisi tertutup tanpa ada risiko kerugian tambahan.
 	`;
 }
@@ -7553,7 +7553,7 @@ async function runBacktestEngine() {
 						</div>
 						<div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800">
 							<span class="text-slate-400 block text-[9px] uppercase">Harga Terkini</span>
-							<strong class="text-white">Rp ${item.exitPrice.toLocaleString('id-ID')}</strong>
+							<strong class="text-slate-300">Rp ${item.exitPrice.toLocaleString('id-ID')}</strong>
 						</div>
 						<div class="bg-slate-900/90 p-2 rounded-lg border border-slate-800">
 							<span class="text-slate-400 block text-[9px] uppercase">Drawdown</span>
@@ -8222,7 +8222,7 @@ async function enrichAndRenderWarrants(warrantList, container) {
 		<div class="col-span-full flex flex-wrap items-center justify-between gap-2 bg-slate-950/50 px-4 py-2.5 rounded-xl border border-fuchsia-500/20 text-[11px] lg:text-xs">
 			<span class="font-bold text-slate-200 flex items-center gap-2">
 				<span class="w-2 h-2 rounded-full bg-fuchsia-400 animate-ping"></span>
-				Menampilkan <strong class="text-fuchsia-400">${topList.length}</strong> Saham Waran Aktif (<strong class="text-white">-W</strong>)
+				Menampilkan <strong class="text-fuchsia-400">${topList.length}</strong> Saham Waran Aktif (<strong class="text-slate-300">-W</strong>)
 			</span>
 			<span class="text-[10px] text-slate-400">Diurutkan berdasarkan Likuiditas & Momentum</span>
 		</div>

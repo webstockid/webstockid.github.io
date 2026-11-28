@@ -358,7 +358,7 @@
 				<div class="inline-flex p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20 mb-1">
 					<i data-lucide="info" class="w-8 h-8 text-emerald-400"></i>
 				</div>
-				<h3 class="text-xl font-bold text-white">Informasi Layanan Screener</h3>
+				<h3 class="text-xl font-bold text-slate-300">Informasi Layanan Screener</h3>
 				<p class="text-xs text-slate-200 leading-relaxed"> Selamat datang di Stock's ID Screener. <br>Data pasar diperbarui secara real-time pada jam bursa (09:00 - 16:00 WIB) dan disimpan dalam cache secara otomatis di latar belakang untuk pengalaman akses yang lebih cepat. </p>
 				<p class="text-xs text-slate-200 leading-relaxed"> Disclaimer: Jika Kamu baru pertama kali membuka web ini, sistem latar belakang akan otomatis mulai memperbarui data analisa berkala setiap 5 menit. </p>
 				<p class="text-xs text-slate-200 leading-relaxed">
@@ -512,7 +512,7 @@
 								<span>Autentikasi Token</span>
 							</span>
 							<span class="flex items-center gap-1.5 text-slate-400">
-								<i class="fa-solid fa-shield-halved text-emerald-500/80 text-[10px]"></i>
+								<i class="fa-solid fa-shield-halved text-emerald-400/80 text-[10px]"></i>
 								<span>Encrypted Session</span>
 							</span>
 						</div>
@@ -1065,7 +1065,7 @@
 						<div class="bg-slate-950/10 p-4 lg:p-5 rounded-xl border border-slate-800 space-y-3">
 							<div class="flex items-center justify-between">
 								<span class="font-bold text-slate-200 uppercase tracking-wider text-[11px] lg:text-xs" id="aiHeaderTicker">[MDIA] — KONDISI TEKNIKAL</span>
-								<span class="text-[10px] lg:text-[11px] text-white" id="aiDateStamp">Memuat data real-time...</span>
+								<span class="text-[10px] lg:text-[11px] text-slate-300" id="aiDateStamp">Memuat data real-time...</span>
 							</div>
 							<div class="flex items-center justify-between border-t border-slate-800/80 pt-2.5">
 								<div>
@@ -1088,7 +1088,7 @@
 							<span class="font-bold text-emerald-400 flex items-center gap-1.5 text-[11px] lg:text-xs">
 								<i data-lucide="check-circle-2" class="w-4 h-4"></i> BUKTI UTAMA & KATALIS TEKNIKAL </span>
 							<ul id="aiBuktiUtamaList" class="space-y-2 text-slate-200 text-[11px] lg:text-xs list-none">
-								<li class="text-white">Memuat indikator teknikal riil (MA, Volume, Range)...</li>
+								<li class="text-slate-300">Memuat indikator teknikal riil (MA, Volume, Range)...</li>
 							</ul>
 						</div>
 						<!-- Posisi 4: ARA & ARB -->
@@ -1132,7 +1132,7 @@
 								<p class="text-[10px] lg:text-xs text-slate-400">Mencari saham dalam semua kondisi dengan cepat.</p>
 							</div>
 						</div>
-						<button id="btnStartRadar" onclick="startRadarProcess()" class="text-[10px] lg:text-xs text-slate-900 font-bold bg-emerald-400 hover:bg-emerald-500 px-4 py-2 rounded-lg border border-emerald-500/50 flex items-center justify-center gap-1.5 transition shadow-md">
+						<button id="btnStartRadar" onclick="startRadarProcess()" class="w-full sm:w-auto bg-emerald-800 hover:bg-emerald-500 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-emerald-700 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0">
 							<i data-lucide="play" class="w-4 h-4"></i> Mulai Pindai Pasar </button>
 					</div>
 					<div id="bigMoneyList" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[1400px] overflow-y-auto pr-1.5 scrollbar-thin">
@@ -1146,10 +1146,10 @@
 						<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 							<div class="space-y-1">
 								<span class="text-slate-200 font-bold flex items-center gap-2 text-sm lg:text-base">
-									<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-blue-500"></i> Pemindaian Saham Tingkat Lanjut </span>
+									<i data-lucide="settings-2" class="w-4 h-4 lg:w-5 lg:h-5 text-emerald-400"></i> Pemindaian Saham Tingkat Lanjut </span>
 								<p class="text-[10px] lg:text-xs text-slate-400">Rakit parameter radar Kamu sendiri dengan gaya filter institusional.</p>
 							</div>
-							<button id="btnRunCustomScreener" onclick="runCustomScreener()" class="w-full sm:w-auto bg-blue-800 hover:bg-blue-500 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-blue-700 transition shadow-lg shadow-blue-700/20 flex items-center justify-center gap-2 shrink-0">
+							<button id="btnRunCustomScreener" onclick="runCustomScreener()" class="w-full sm:w-auto bg-emerald-800 hover:bg-emerald-500 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-emerald-700 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0">
 								<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter </button>
 						</div>
 						<!-- Custom Tailwind Dropdowns -->
@@ -1203,7 +1203,7 @@
 						</div>
 					</div>
 					<div id="csResultsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[800px] overflow-y-auto pr-1.5 scrollbar-thin">
-						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2"> Atur parameter pada menu <i>dropdown</i> di atas dan klik <strong class="text-blue-500">"Jalankan Filter"</strong> untuk melihat saham yang lolos seleksi Kamu. </div>
+						<div class="text-center text-slate-400 text-xs lg:text-sm py-12 lg:col-span-2"> Atur parameter pada menu <i>dropdown</i> di atas dan klik <strong class="text-emerald-400">"Jalankan Filter"</strong> untuk melihat saham yang lolos seleksi Kamu. </div>
 					</div>
 					<p class="text-[10px] lg:text-[11px] text-slate-300 italic bg-slate-950/10 p-3 rounded-lg border border-slate-900 leading-normal"> 💡 <strong>Pemindaian Manual:</strong> Mencari saham secara ketat dan presisi yang bisa didukung dengan beberapa filter sekaligus. </p>
 				</div>
@@ -1242,7 +1242,7 @@
 				<!-- Tab 5: Berita -->
 				<div id="tabContent-news" class="hidden space-y-3 min-h-[250px]">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs lg:text-sm text-white">Update Terkini: <strong id="newsTickerLabel" class="text-white">MDIA</strong>
+						<span class="text-xs lg:text-sm text-slate-300">Update Terkini: <strong id="newsTickerLabel" class="text-slate-300">MDIA</strong>
 						</span>
 						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-sky-400">Live News Aggregator</span>
 					</div>
@@ -1253,7 +1253,7 @@
 				<!-- Tab 6: Fundamental -->
 				<div id="tabContent-fundamental" class="hidden min-h-[300px] space-y-4">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs lg:text-sm text-white">Profil & Fundamental Keuangan: <strong id="fundTickerLabel" class="text-fuchsia-400">MDIA</strong>
+						<span class="text-xs lg:text-sm text-slate-300">Profil & Fundamental Keuangan: <strong id="fundTickerLabel" class="text-fuchsia-400">MDIA</strong>
 						</span>
 						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-fuchsia-400 font-bold">Yahoo & TradingView Data</span>
 					</div>
@@ -1571,7 +1571,7 @@
 								</div>
 							</div>
 							<div class="pt-2 border-t border-slate-800/80">
-								<div id="rrrEvaluationBadge" class="p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-slate-900 text-white"> Masukkan harga Entry, SL, dan TP untuk evaluasi AI. </div>
+								<div id="rrrEvaluationBadge" class="p-2.5 rounded-lg text-[11px] lg:text-xs font-bold text-center bg-slate-900 text-slate-300"> Masukkan harga Entry, SL, dan TP untuk evaluasi AI. </div>
 							</div>
 						</div>
 					</div>
@@ -1746,7 +1746,7 @@
 					<div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
 						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800">
 							<span class="text-slate-400 text-[10px] uppercase block font-bold">Total Planned Trade</span>
-							<span class="text-lg font-bold text-white" id="journalTotalCount">0</span>
+							<span class="text-lg font-bold text-slate-300" id="journalTotalCount">0</span>
 						</div>
 						<div class="bg-slate-950/10 p-3.5 rounded-xl border border-slate-800">
 							<span class="text-slate-400 text-[10px] uppercase block font-bold">Win Rate</span>
@@ -1828,7 +1828,7 @@
 				<!-- Tab 11: Aksi Korporasi -->
 				<div id="tabContent-corporate" class="hidden min-h-[250px] space-y-3.5 text-xs lg:text-sm">
 					<div class="flex items-center justify-between mb-2">
-						<span class="text-xs lg:text-sm text-white">Aksi Korporasi: <strong id="corpTickerLabel" class="text-white">MDIA</strong>
+						<span class="text-xs lg:text-sm text-slate-300">Aksi Korporasi: <strong id="corpTickerLabel" class="text-slate-300">MDIA</strong>
 						</span>
 						<span class="text-[10px] lg:text-xs bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-fuchsia-400 font-bold">Dividen / RUPS / Split</span>
 					</div>
@@ -2062,7 +2062,7 @@
 							<div class="space-y-2 text-[10px] lg:text-xs text-slate-200">
 								<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
 									<span class="text-slate-400">Pengembang Utama</span>
-									<span class="font-bold text-white">Hardiansyah</span>
+									<span class="font-bold text-slate-300">Hardiansyah</span>
 								</div>
 								<div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded border border-slate-800">
 									<span class="text-slate-400">Bahasa Pemrograman</span>
@@ -2204,7 +2204,7 @@
 							<i data-lucide="sparkles" class="w-4 h-4"></i>
 						</div>
 						<div>
-							<h4 class="text-xs font-bold text-white">Stock ID AI Assistant</h4>
+							<h4 class="text-xs font-bold text-slate-300">Stock ID AI Assistant</h4>
 							<span class="text-[9px] text-emerald-400">Online • Analis Pasar Aktif</span>
 						</div>
 					</div>
