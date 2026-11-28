@@ -1076,9 +1076,9 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			: "Pergerakan harga berada dalam zona konsolidasi dinamis antar garis rata-rata, mengisyaratkan perebutan momentum antara kubu *bulls* dan *bears*.";
 
 		descEl.innerHTML = `
-			<p class="leading-relaxed"><strong class="text-blue-400">Mengapa?</strong> Saham <strong class="text-emerald-400 font-bold">${ticker}</strong> saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
-			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-blue-400">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
-			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-blue-400">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-400">(Low MA20)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-sky-400">(High MA20)</strong>.</p>
+			<p class="leading-relaxed"><strong class="text-fuchsia-400">Mengapa?</strong> Saham <strong class="text-emerald-400 font-bold">${ticker}</strong> saat ini diperdagangkan pada level harga Rp ${price.toLocaleString('id-ID')} (${trendText}). ${maAlignText}</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-fuchsia-400">Analisis Likuiditas & Volume:</strong> Terdeteksi bahwa ${volText}. Tingkat aktivitas volume ini mengonfirmasi kekuatan partisipasi institusi atau pelaku pasar utama dalam mendukung pergerakan harga hari ini.</p>
+			<p class="leading-relaxed pt-1.5 border-t border-slate-900/60"><strong class="text-fuchsia-400">Rentang Volatilitas 20 Hari:</strong> Pergerakan saham ${ticker} bergerak dalam koridor rentang antara Rp ${stockData.low20.toLocaleString('id-ID')} <strong class="text-amber-400">(Low MA20)</strong> hingga Rp ${stockData.high20.toLocaleString('id-ID')} <strong class="text-emerald-400">(High MA20)</strong>.</p>
 		`;
 
 		const turnoverAI = stockData.currentValuation || (price * (stockData.currentVolume || (stockData.currentLot || 0) * 100));
@@ -1102,40 +1102,40 @@ function renderAISignalUI(ticker, stockData, isCached) {
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span class="flex items-center gap-1.5">
 					<i data-lucide="circle-dollar-sign" class="w-4 h-4"></i> Harga: 
-					<strong class="text-blue-400 font-bold">Rp${price.toLocaleString('id-ID')}</strong> 
+					<strong class="text-fuchsia-400 font-bold">Rp${price.toLocaleString('id-ID')}</strong> 
 					(${stockData.changePct >= 0 ? '+' : ''}${stockData.changePct}%)
 				</span>
-				<span class="text-[10px] lg:text-[11px] text-blue-400">${isCached ? 'Cache Instant' : 'Live Data'}</span>
+				<span class="text-[10px] lg:text-[11px] text-fuchsia-400">${isCached ? 'Cache Instant' : 'Live Data'}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span class="flex items-center gap-1.5">
 					<i data-lucide="chart-candlestick" class="w-4 h-4"></i> Volume Transaksi:
 				</span>
-				<span class="text-blue-400 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
+				<span class="text-white font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span class="flex items-center gap-1.5">
 					<i data-lucide="chart-candlestick" class="w-4 h-4"></i> Valuasi Transaksi:
 				</span>
-				<span class="text-blue-400 font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
+				<span class="text-white font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span class="flex items-center gap-1.5">
 					<i data-lucide="venetian-mask" class="w-4 h-4"></i> Estimasi AVG Bandar:
 				</span>
-				<span class="text-blue-400 font-bold">Rp ${(stockData.bandarAvgPrice || price).toLocaleString('id-ID')}</span>
+				<span class="text-fuchsia-400 font-bold">Rp ${(stockData.bandarAvgPrice || price).toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span class="flex items-center gap-1.5">
 					<i data-lucide="chart-no-axes-combined" class="w-4 h-4"></i> Posisi Tren MA5 / MA10 / MA20:
 				</span>
-				<span class="text-blue-400 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
+				<span class="text-white font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span class="flex items-center gap-1.5">
 					<i data-lucide="sliders-vertical" class="w-4 h-4"></i> Rasio Volume vs Rerata Harian:
 				</span>
-				<span class="font-bold ${isVolSpike ? 'text-emerald-400' : 'text-blue-400'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
+				<span class="font-bold ${isVolSpike ? 'text-emerald-400' : 'text-white'}">${stockData.volRatio}x ${isVolSpike ? '(Spike Active)' : '(Normal)'}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span class="flex items-center gap-1.5">
@@ -1362,7 +1362,7 @@ async function startRadarProcess() {
 
 	btn.disabled = true;
 	btn.className = "text-[10px] lg:text-xs text-white font-bold bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 cursor-not-allowed";
-	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-amber-400"></i> Memindai Instan...`;
+	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-emerald-400"></i> Memindai Instan...`;
 	if (window.lucide) lucide.createIcons();
 
 	container.innerHTML = `<div class="text-center text-slate-400 text-xs py-12 lg:col-span-2 border border-slate-800 rounded-xl bg-slate-950/10"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-400"></i> Memindai saham secara otomatis berdasarkan seluruh indikator...</div>`;
@@ -1396,7 +1396,7 @@ async function startRadarProcess() {
 
 	isRadarScanning = false;
 	btn.disabled = false;
-	btn.className = "text-[10px] lg:text-xs text-slate-900 font-bold bg-amber-400 hover:bg-amber-500 px-4 py-2 rounded-lg border border-amber-500/50 flex items-center justify-center gap-1.5 transition shadow-md";
+	btn.className = "text-[10px] lg:text-xs text-slate-900 font-bold bg-emerald-400 hover:bg-emerald-500 px-4 py-2 rounded-lg border border-emerald-500/50 flex items-center justify-center gap-1.5 transition shadow-md";
 	btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Pindai Ulang Pasar`;
 	if (window.lucide) lucide.createIcons();
 
@@ -1517,7 +1517,7 @@ function renderRadarItems(dataList) {
 					<p class="mt-1">${alasanTeknikal}</p>
 				</div>
 
-				<button onclick="selectTickerFromRadar('${ticker}')" class="mt-4 w-full bg-slate-800/80 hover:bg-amber-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-amber-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
+				<button onclick="selectTickerFromRadar('${ticker}')" class="mt-4 w-full bg-emerald-500/20 hover:bg-emerald-600 text-emerald-400 hover:text-white font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-emerald-700 hover:border-emerald-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
 					<span>Buka Chart & Detail AI</span>
 					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
 				</button>
@@ -3794,7 +3794,7 @@ function checkWhaleAlertRealtime(ticker, stockData) {
 			showToast(alertMsg, "info", 5000, () => openTickerFromNotification(cleanTicker));
 
 			if (typeof notifyWhaleToServiceWorker === 'function') {
-				notifyWhaleToServiceWorker(cleanTicker, `🐳 STOCK ID WHALE RADAR: $${cleanTicker} (${formattedPrice})`, alertMsg);
+				notifyWhaleToServiceWorker(cleanTicker, `🐳 STOCK ID WHALE RADAR`, alertMsg);
 			}
 
 			const teleMsg = `<b>🐳 STOCK ID WHALE RADAR</b>\nSaham: <b>$${cleanTicker}</b>\nHarga Saat Ini: <b>${formattedPrice}</b>\nVolume: Mencapai <b>${(latestData.volRatio * 100).toFixed(0)}%</b> dari volume kemarin!\nKet: Harga baru naik <b>${latestData.changePct}%</b>, Bandar indikasi kumpulin barang!`;
