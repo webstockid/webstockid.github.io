@@ -1361,7 +1361,7 @@ async function startRadarProcess() {
 	const container = document.getElementById('bigMoneyList');
 
 	btn.disabled = true;
-	btn.className = "text-[10px] lg:text-xs text-slate-300 font-bold bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 cursor-not-allowed";
+	btn.className = "w-full sm:w-auto bg-slate-800 border border-slate-700 text-slate-300 font-bold px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
 	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-emerald-400"></i> Memindai Instan...`;
 	if (window.lucide) lucide.createIcons();
 
@@ -1562,7 +1562,7 @@ async function startBSJPProcess() {
 	isBSJPScanning = true;
 	
 	btn.disabled = true;
-	btn.className = "w-full sm:w-auto bg-slate-800 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-slate-700 flex items-center justify-center gap-2 shrink-0 cursor-not-allowed opacity-70";
+	btn.className = "w-full sm:w-auto bg-slate-800 border border-slate-700 text-slate-300 font-bold px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
 	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-emerald-400"></i> Memindai BSJP...`;
 	if (window.lucide) lucide.createIcons();
 	
