@@ -1396,7 +1396,7 @@ async function startRadarProcess() {
 
 	isRadarScanning = false;
 	btn.disabled = false;
-	btn.className = "text-[10px] lg:text-xs text-slate-900 font-bold bg-emerald-400 hover:bg-emerald-500 px-4 py-2 rounded-lg border border-emerald-500/50 flex items-center justify-center gap-1.5 transition shadow-md";
+	btn.className = "w-full sm:w-auto bg-emerald-800 hover:bg-emerald-500 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-emerald-700 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0";
 	btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Pindai Ulang Pasar`;
 	if (window.lucide) lucide.createIcons();
 
@@ -2290,7 +2290,7 @@ async function runCustomScreener() {
 	} finally {
 		if (btn) {
 			btn.disabled = false;
-			btn.className = "w-full sm:w-auto bg-blue-800 hover:bg-blue-500 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-blue-700 transition shadow-lg shadow-blue-700/20 flex items-center justify-center gap-2 shrink-0";
+			btn.className = "w-full sm:w-auto bg-emerald-800 hover:bg-emerald-500 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-emerald-700 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0";
 			btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter`;
 			if (window.lucide) lucide.createIcons();
 		}
