@@ -385,7 +385,7 @@ function showConfirm(message) {
 					<p id="customConfirmMsg" class="text-xs text-slate-300 leading-relaxed"></p>
 					<div class="flex gap-3 pt-2">
 						<button id="customConfirmBtnCancel" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition">Batal</button>
-						<button id="customConfirmBtnOk" class="flex-1 bg-rose-500 hover:bg-rose-400 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-rose-500/20">Ya, Lanjutkan</button>
+						<button id="customConfirmBtnOk" class="flex-1 bg-rose-500 hover:bg-rose-400 text-slate-300 text-xs font-bold py-2.5 rounded-xl transition shadow-lg shadow-rose-500/20">Ya, Lanjutkan</button>
 					</div>
 				</div>
 			`;
@@ -1243,14 +1243,14 @@ function renderAISignalUI(ticker, stockData, isCached) {
 		if (actionBoardEl) {
 			actionBoardEl.innerHTML = `
 				<div class="flex items-center justify-between mb-1">
-					<span class="text-[10px] lg:text-[11px] font-bold text-white uppercase tracking-wider">Rekomendasi Aksi:</span>
+					<span class="text-[10px] lg:text-[11px] font-bold text-slate-300 uppercase tracking-wider">Rekomendasi Aksi:</span>
 					<span class="font-bold border px-2 py-0.5 rounded text-[10px] lg:text-[11px] ${actionColor}">${actionLabel}</span>
 				</div>
 				<p class="text-[10px] lg:text-[11px] text-slate-300 leading-relaxed">${actionDesc}</p>
 				
 				<div class="mt-3 pt-3 border-t border-slate-800/80">
 					<div class="flex justify-between items-center mb-1.5">
-						<span class="text-[10px] lg:text-[11px] font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+						<span class="text-[10px] lg:text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
 							<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> POWER METER VOLUME:
 						</span>
 						<span class="font-bold text-[10px] lg:text-[11px] ${bandarColor}">${bandarStatus}</span>
@@ -1361,7 +1361,7 @@ async function startRadarProcess() {
 	const container = document.getElementById('bigMoneyList');
 
 	btn.disabled = true;
-	btn.className = "text-[10px] lg:text-xs text-white font-bold bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 cursor-not-allowed";
+	btn.className = "text-[10px] lg:text-xs text-slate-300 font-bold bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 cursor-not-allowed";
 	btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-emerald-400"></i> Memindai Instan...`;
 	if (window.lucide) lucide.createIcons();
 
@@ -1401,7 +1401,7 @@ async function startRadarProcess() {
 	if (window.lucide) lucide.createIcons();
 
 	if (validData.length === 0) {
-		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada data bursa yang berhasil ditangkap. Silakan coba kembali. (Limit tidak dikurangi)</div>`;
+		container.innerHTML = `<div class="text-center text-slate-300 text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada data bursa yang berhasil ditangkap. Silakan coba kembali. (Limit tidak dikurangi)</div>`;
 	} else {
 		// Potong token karena radar berhasil menemukan saham
 		deductFeatureLimit('radar');
@@ -1416,7 +1416,7 @@ function renderRadarItems(dataList) {
 	let htmlContent = '';
 
 	if (sorted.length === 0) {
-		container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada saham potensial yang ditemukan saat ini.</div>`;
+		container.innerHTML = `<div class="text-center text-slate-300 text-xs lg:text-sm py-8 lg:col-span-2">Tidak ada saham potensial yang ditemukan saat ini.</div>`;
 		return;
 	}
 
@@ -1478,7 +1478,7 @@ function renderRadarItems(dataList) {
 					</div>
 					<div class="flex flex-col w-full">
 						<div class="flex items-center gap-2">
-							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${ticker}</span>
+							<span class="font-extrabold text-slate-300 text-base lg:text-lg tracking-tight">&dollar;${ticker}</span>
 							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
@@ -1562,7 +1562,7 @@ async function startBSJPProcess() {
 	isBSJPScanning = true;
 	
 	btn.disabled = true;
-	btn.className = "w-full sm:w-auto bg-slate-800 text-white font-bold px-6 py-2.5 rounded-lg border border-slate-700 flex items-center justify-center gap-2 shrink-0 cursor-not-allowed opacity-70";
+	btn.className = "w-full sm:w-auto bg-slate-800 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-slate-700 flex items-center justify-center gap-2 shrink-0 cursor-not-allowed opacity-70";
 	btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-orange-400"></i> Memindai BSJP...`;
 	if (window.lucide) lucide.createIcons();
 	
@@ -1647,7 +1647,7 @@ async function startBSJPProcess() {
 				clearInterval(bsjpCooldownTimer);
 				btn.disabled = false;
 				btn.classList.remove('cursor-not-allowed', 'opacity-70');
-				btn.className = "w-full sm:w-auto bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold px-6 py-2.5 rounded-lg border border-orange-500/50 transition shadow-lg shadow-orange-600/20 flex items-center justify-center gap-2 shrink-0";
+				btn.className = "w-full sm:w-auto bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-orange-500/50 transition shadow-lg shadow-orange-600/20 flex items-center justify-center gap-2 shrink-0";
 				btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Pindai Ulang BSJP`;
 				if (window.lucide) lucide.createIcons();
 			}
@@ -1700,7 +1700,7 @@ function renderBSJPItems(dataList) {
 					</div>
 					<div class="flex flex-col w-full">
 						<div class="flex items-center gap-2">
-							<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
+							<span class="font-extrabold text-slate-300 text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
 							<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 						</div>
 						<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
@@ -1948,7 +1948,7 @@ async function scanWhalesData() {
 								</div>
 								<div class="flex flex-col">
 									<div class="flex items-center gap-2.5">
-										<span class="font-black text-white text-lg lg:text-xl tracking-tight leading-none">${item.ticker}</span>
+										<span class="font-black text-slate-300 text-lg lg:text-xl tracking-tight leading-none">${item.ticker}</span>
 										<span class="text-[10px] lg:text-[11px] ${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'} px-2 py-0.5 rounded-md border font-bold shadow-sm">
 											${item.changePct >= 0 ? '+' : ''}${item.changePct}%
 										</span>
@@ -2103,7 +2103,7 @@ async function runCustomScreener() {
 	
 	if (btn) {
 		btn.disabled = true;
-		btn.className = "w-full sm:w-auto bg-slate-800 border border-slate-700 text-white font-bold px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
+		btn.className = "w-full sm:w-auto bg-slate-800 border border-slate-700 text-slate-300 font-bold px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
 		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-blue-400"></i> Sedang Memfilter...`;
 		if (window.lucide) lucide.createIcons();
 	}
@@ -2233,7 +2233,7 @@ async function runCustomScreener() {
 						</div>
 						<div class="flex flex-col w-full">
 							<div class="flex items-center gap-2">
-								<span class="font-extrabold text-white text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
+								<span class="font-extrabold text-slate-300 text-base lg:text-lg tracking-tight">&dollar;${item.ticker}</span>
 								<span class="${item.changePct >= 0 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-rose-400 bg-rose-500/10 border-rose-500/20'} font-bold px-1.5 py-0.5 rounded border text-[10px] lg:text-[11px] shadow-sm">${item.changePct >= 0 ? '+' : ''}${item.changePct}%</span>
 							</div>
 							<span class="text-[10px] lg:text-[11px] text-slate-400 mt-0.5">
@@ -2290,7 +2290,7 @@ async function runCustomScreener() {
 	} finally {
 		if (btn) {
 			btn.disabled = false;
-			btn.className = "w-full sm:w-auto bg-blue-800 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-lg border border-blue-700 transition shadow-lg shadow-blue-700/20 flex items-center justify-center gap-2 shrink-0";
+			btn.className = "w-full sm:w-auto bg-blue-800 hover:bg-blue-500 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-blue-700 transition shadow-lg shadow-blue-700/20 flex items-center justify-center gap-2 shrink-0";
 			btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Jalankan Filter`;
 			if (window.lucide) lucide.createIcons();
 		}
@@ -2313,7 +2313,7 @@ function ptSwitchSubTab(subTab) {
 	const contentForm = document.getElementById('ptSubContentForm');
 	const contentPorto = document.getElementById('ptSubContentPorto');
 
-	const activeClass = "flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white transition flex items-center justify-center gap-2 shadow-sm shadow-blue-600/20";
+	const activeClass = "flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-slate-300 transition flex items-center justify-center gap-2 shadow-sm shadow-blue-600/20";
 	const inactiveClass = "flex-1 py-2 text-xs font-bold rounded-lg text-blue-400 hover:text-white hover:bg-blue-900/30 transition flex items-center justify-center gap-2";
 
 	if (subTab === 'form') {
@@ -3053,7 +3053,7 @@ function renderKanbanBoard() {
 								onerror="this.onerror=null; this.src='https://s3-symbol-logo.tradingview.com/idx/${item.ticker.toLowerCase()}.svg'; this.onerror=function(){this.outerHTML='<span class=\\'text-[8px] font-black text-slate-400 tracking-wider\\'>${item.ticker.substring(0,3)}</span>';};"
 							>
 						</div>
-						<span class="font-bold text-white text-xs">&dollar;${item.ticker}</span>
+						<span class="font-bold text-slate-300 text-xs">&dollar;${item.ticker}</span>
 					</div>
 					<span class="text-[9px] text-slate-400">${item.date}</span>
 				</div>
@@ -3393,7 +3393,7 @@ function renderAllAlerts() {
 						</div>
 						<div class="flex flex-col">
 							<div class="flex items-center gap-2">
-								<span class="font-bold text-white text-sm md:text-base tracking-wide">$${ticker}</span>
+								<span class="font-bold text-slate-300 text-sm md:text-base tracking-wide">$${ticker}</span>
 								${isCurrent ? '<span class="bg-emerald-500/20 text-cyan-400 text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/30 hidden sm:inline-block">DIBUKA</span>' : ''}
 							</div>
 							<span class="font-bold ${activeCount > 0 ? 'text-cyan-400' : 'text-slate-500'} text-[10px] md:text-xs mt-0.5">${activeCount} Alert Aktif</span>
@@ -3890,7 +3890,7 @@ async function analyzeAITimeframe(tfLabel) {
 			<div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700 mt-2 text-[11px] lg:text-xs shadow-inner transition-all">
 				<div class="flex justify-between items-center mb-2 border-b border-slate-800 pb-2">
 					<span class="text-slate-400 flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5"></i> Timeframe (Agregasi):</span>
-					<span class="font-bold text-white uppercase bg-slate-800 px-2 py-0.5 rounded border border-slate-700">${displayLabel}</span>
+					<span class="font-bold text-slate-300 uppercase bg-slate-800 px-2 py-0.5 rounded border border-slate-700">${displayLabel}</span>
 				</div>
 				<div class="flex justify-between items-center mb-1.5">
 					<span class="text-slate-400">Status Harga Terakhir:</span>
@@ -3934,7 +3934,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 		}
 
 		btn.disabled = true;
-		btn.className = "w-full sm:w-auto bg-slate-800 border border-slate-700 text-white font-bold px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
+		btn.className = "w-full sm:w-auto bg-slate-800 border border-slate-700 text-slate-300 font-bold px-6 py-2.5 rounded-lg flex items-center justify-center gap-2 shrink-0 cursor-not-allowed";
 		btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-emerald-400"></i> Memuat Peer...`;
 		if (window.lucide) lucide.createIcons();
 	}
@@ -4090,7 +4090,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 	} finally {
 		if (isManualRefresh && btn) {
 			btn.disabled = false;
-			btn.className = "w-full sm:w-auto bg-emerald-700 hover:bg-emerald-500 text-white font-bold px-6 py-2.5 rounded-lg border border-emerald-700 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0";
+			btn.className = "w-full sm:w-auto bg-emerald-700 hover:bg-emerald-500 text-slate-300 font-bold px-6 py-2.5 rounded-lg border border-emerald-700 transition shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 shrink-0";
 			btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i> Bandingkan`;
 			if (window.lucide) lucide.createIcons();
 		}
@@ -4250,7 +4250,7 @@ function renderFMPTable(portfolioData) {
 		
 		html += `
 			<tr class="hover:bg-slate-800/40 transition-colors border-b border-slate-800/50 last:border-0">
-				<th scope="row" class="p-3.5 font-medium text-white whitespace-nowrap">
+				<th scope="row" class="p-3.5 font-medium text-slate-300 whitespace-nowrap">
 					<span class="bg-indigo-500/20 text-indigo-400 text-[10px] font-bold px-2.5 py-1 rounded border border-indigo-500/30">${item.tickcusip || '-'}</span>
 				</th>
 				<td class="p-3.5 text-slate-300 font-medium truncate max-w-[200px]" title="${item.nameOfIssuer || '-'}">${item.nameOfIssuer || '-'}</td>
@@ -4863,7 +4863,7 @@ async function fetchCorporateAction(ticker) {
 	if (!container) return;
 
 	container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3';
-	container.innerHTML = `<div class="text-center text-white text-xs lg:text-sm py-10 lg:col-span-3 flex flex-col items-center gap-2"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto text-fuchsia-400"></i><span class="text-xs text-slate-400">Menyisir Aksi Korporasi $${ticker}...</span></div>`;
+	container.innerHTML = `<div class="text-center text-slate-300 text-xs lg:text-sm py-10 lg:col-span-3 flex flex-col items-center gap-2"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto text-fuchsia-400"></i><span class="text-xs text-slate-400">Menyisir Aksi Korporasi $${ticker}...</span></div>`;
 	if (window.lucide) lucide.createIcons();
 
 	try {
@@ -5021,7 +5021,7 @@ async function loadLiveMacro() {
 						</div>
 					</div>
 					<div>
-						<div class="text-sm lg:text-base font-bold text-white mb-0.5 tracking-tight">
+						<div class="text-sm lg:text-base font-bold text-slate-300 mb-0.5 tracking-tight">
 							${data.prefix}${formattedPrice}${data.suffix}
 						</div>
 						<div class="text-[10px] lg:text-[11px] font-bold ${colorClass}">
@@ -5774,7 +5774,7 @@ function updateDashboardLimitsUI() {
 
 		if (isUnlimited) {
 			badge.innerText = '∞';
-			badge.className = 'limit-circle-badge absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-extrabold flex items-center justify-center bg-fuchsia-500 text-white border border-slate-900 shadow-md z-20 pointer-events-none transition-all duration-300';
+			badge.className = 'limit-circle-badge absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-extrabold flex items-center justify-center bg-fuchsia-500 text-slate-300 border border-slate-900 shadow-md z-20 pointer-events-none transition-all duration-300';
 			badge.title = 'Akses Tanpa Batas';
 		} else {
 			const val = count !== undefined && count !== null ? count : 0;
@@ -5782,7 +5782,7 @@ function updateDashboardLimitsUI() {
 			if (val > 0) {
 				badge.className = 'limit-circle-badge absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full text-[9px] font-extrabold flex items-center justify-center bg-emerald-500 text-slate-950 border border-slate-900 shadow-md z-20 pointer-events-none transition-all duration-300';
 			} else {
-				badge.className = 'limit-circle-badge absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full text-[9px] font-extrabold flex items-center justify-center bg-rose-500 text-white border border-slate-900 shadow-md z-20 pointer-events-none transition-all duration-300 animate-pulse';
+				badge.className = 'limit-circle-badge absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full text-[9px] font-extrabold flex items-center justify-center bg-rose-500 text-slate-300 border border-slate-900 shadow-md z-20 pointer-events-none transition-all duration-300 animate-pulse';
 			}
 			badge.title = `Sisa Token / Limit: ${val}`;
 		}
@@ -6270,7 +6270,7 @@ function switchTab(tabName) {
 			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-emerald-400 bg-slate-800 border border-slate-700 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition relative";
 			if (content) content.classList.remove('hidden');
 		} else {
-			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-white hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition relative";
+			if(btn) btn.className = "flex-1 py-2 lg:py-2.5 text-xs lg:text-sm font-bold rounded-lg text-slate-300 hover:text-slate-200 flex items-center justify-center gap-1.5 whitespace-nowrap px-3 lg:px-4 transition relative";
 			if (content) content.classList.add('hidden');
 		}
 	});
@@ -7087,7 +7087,7 @@ function renderFilteredForeignFlow() {
 						</div>
 						<div class="min-w-0">
 							<div class="flex items-center gap-2 flex-wrap">
-								<span class="font-extrabold text-white text-sm lg:text-base">&dollar;${stock.ticker}</span>
+								<span class="font-extrabold text-slate-300 text-sm lg:text-base">&dollar;${stock.ticker}</span>
 								<span class="text-[10px] font-bold px-2 py-0.5 rounded border ${badgeClass}">
 									${isNetBuy ? 'NET BUY' : 'NET SELL'}
 								</span>
@@ -7530,7 +7530,7 @@ async function runBacktestEngine() {
 							</div>
 							<div class="min-w-0">
 								<div class="flex items-center gap-2 flex-wrap">
-									<span class="font-extrabold text-white text-sm">&dollar;${item.ticker}</span>
+									<span class="font-extrabold text-slate-300 text-sm">&dollar;${item.ticker}</span>
 									${statusBadge}
 								</div>
 								<div class="text-[10px] text-slate-400 mt-0.5 truncate">
@@ -7577,7 +7577,7 @@ async function runBacktestEngine() {
 				<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
 					<div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
 						<div class="text-[10px] text-slate-400 uppercase font-bold">Total Sinyal</div>
-						<div class="text-lg font-extrabold text-white mt-1">${totalSignals} Emiten</div>
+						<div class="text-lg font-extrabold text-slate-300 mt-1">${totalSignals} Emiten</div>
 						<div class="text-[10px] text-slate-400 mt-0.5">${winSignals.length} Win · ${lossSignals.length} Loss</div>
 					</div>
 					<div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
@@ -7612,7 +7612,7 @@ async function runBacktestEngine() {
 
 				<div class="space-y-3 pt-1">
 					<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-2">
-						<span class="text-xs lg:text-sm font-extrabold text-white flex items-center gap-2">
+						<span class="text-xs lg:text-sm font-extrabold text-slate-300 flex items-center gap-2">
 							<i data-lucide="list-checks" class="w-4 h-4 text-amber-400"></i> Histori Emiten dari Total Sinyal (${totalSignals} Saham)
 						</span>
 						<span class="text-[10px] text-slate-400">Klik "Cek Chart" pada emiten untuk melihat ulang histori grafik &amp; AI</span>
@@ -7785,7 +7785,7 @@ function renderFilteredValuation() {
 					</div>
 					<div class="min-w-0">
 						<div class="flex items-center gap-2 flex-wrap">
-							<span class="font-extrabold text-white text-sm lg:text-base">&dollar;${stock.ticker}</span>
+							<span class="font-extrabold text-slate-300 text-sm lg:text-base">&dollar;${stock.ticker}</span>
 							<span class="text-xs lg:text-sm font-extrabold text-amber-400 bg-amber-500/10 border border-amber-500/25 px-2 py-0.5 rounded-md">Rp ${stock.price.toLocaleString('id-ID')}</span>
 						</div>
 						<div class="text-[10px] text-slate-400 mt-0.5">
@@ -8274,7 +8274,7 @@ async function enrichAndRenderWarrants(warrantList, container) {
 					</div>
 					<div class="min-w-0">
 						<div class="flex items-center gap-2 flex-wrap">
-							<span class="font-extrabold text-white text-sm lg:text-base tracking-tight">&dollar;${wTicker}</span>
+							<span class="font-extrabold text-slate-300 text-sm lg:text-base tracking-tight">&dollar;${wTicker}</span>
 							<span class="${isPlus ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30'} font-bold px-2 py-0.5 rounded-md border text-[10px] tabular-nums">
 								${isPlus ? '+' : ''}${wChange}%
 							</span>
@@ -8942,7 +8942,7 @@ function renderGlobalMarketMarqueeItems(items) {
 				<div class="flex items-center gap-2">
 					<div class="flex flex-col leading-tight">
 						<div class="flex items-center gap-1.5">
-							<span class="gm-title-text text-[11px] lg:text-xs font-extrabold text-white tracking-tight whitespace-nowrap">${item.name}</span>
+							<span class="gm-title-text text-[11px] lg:text-xs font-extrabold text-slate-300 tracking-tight whitespace-nowrap">${item.name}</span>
 							<span class="text-[8px] font-extrabold px-1.5 py-0.2 rounded border ${item.regionColor} tracking-wider whitespace-nowrap">${item.region}</span>
 						</div>
 						<span class="text-[10px] lg:text-[11px] font-bold text-slate-300 tabular-nums whitespace-nowrap">${item.prefix}${formattedPrice}</span>
