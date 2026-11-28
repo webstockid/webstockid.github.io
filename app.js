@@ -447,7 +447,7 @@ function showToast(message, type = 'success', duration = 5000, onClickCallback =
 	toast.innerHTML = `
 		<i class="fa-solid ${iconClass} ${iconColor} text-base shrink-0"></i>
 		<div class="flex-1 leading-relaxed whitespace-pre-line">${message}</div>
-		<button type="button" class="toast-close-btn text-slate-400 hover:text-white transition p-1 shrink-0">
+		<button type="button" class="toast-close-btn text-slate-400 hover:text-slate-300 transition p-1 shrink-0">
 			<i class="fa-solid fa-xmark text-xs"></i>
 		</button>
 	`;
@@ -1111,13 +1111,13 @@ function renderAISignalUI(ticker, stockData, isCached) {
 				<span class="flex items-center gap-1.5">
 					<i data-lucide="chart-candlestick" class="w-4 h-4"></i> Volume Transaksi:
 				</span>
-				<span class="text-white font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
+				<span class="text-slate-300 font-bold">${(stockData.currentLot || 0).toLocaleString('id-ID')} Lot</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span class="flex items-center gap-1.5">
 					<i data-lucide="chart-candlestick" class="w-4 h-4"></i> Valuasi Transaksi:
 				</span>
-				<span class="text-white font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
+				<span class="text-slate-300 font-bold">${formatValuationIDR(stockData.currentValuation)}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span class="flex items-center gap-1.5">
@@ -1129,7 +1129,7 @@ function renderAISignalUI(ticker, stockData, isCached) {
 				<span class="flex items-center gap-1.5">
 					<i data-lucide="chart-no-axes-combined" class="w-4 h-4"></i> Posisi Tren MA5 / MA10 / MA20:
 				</span>
-				<span class="text-white font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
+				<span class="text-slate-300 font-bold">Rp ${stockData.ma5.toLocaleString('id-ID')} / ${stockData.ma10.toLocaleString('id-ID')} / ${stockData.ma20.toLocaleString('id-ID')}</span>
 			</li>
 			<li class="flex justify-between items-center bg-slate-900/60 p-2 rounded border border-slate-800/80">
 				<span class="flex items-center gap-1.5">
@@ -1517,7 +1517,7 @@ function renderRadarItems(dataList) {
 					<p class="mt-1">${alasanTeknikal}</p>
 				</div>
 
-				<button onclick="selectTickerFromRadar('${ticker}')" class="mt-4 w-full bg-emerald-500/20 hover:bg-emerald-600 text-emerald-400 hover:text-white font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-emerald-700 hover:border-emerald-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
+				<button onclick="selectTickerFromRadar('${ticker}')" class="mt-4 w-full bg-emerald-500/20 hover:bg-emerald-600 text-emerald-400 hover:text-slate-300 font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-emerald-700 hover:border-emerald-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
 					<span>Buka Chart & Detail AI</span>
 					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
 				</button>
@@ -1754,7 +1754,7 @@ function renderBSJPItems(dataList) {
 					</ul>
 				</div>
 
-				<button onclick="selectTickerFromCustom('${item.ticker}')" class="mt-4 w-full bg-slate-800/80 hover:bg-orange-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-orange-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
+				<button onclick="selectTickerFromCustom('${item.ticker}')" class="mt-4 w-full bg-slate-800/80 hover:bg-orange-600 text-slate-300 hover:text-slate-300 font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-orange-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
 					<span>Buka Chart & Detail AI</span>
 					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
 				</button>
@@ -1981,7 +1981,7 @@ async function scanWhalesData() {
 							</div>
 						</div>
 						
-						<button onclick="selectTickerFromRadar('${item.ticker}'); toggleWhaleModal();" class="mt-4 w-full bg-slate-800/80 hover:bg-fuchsia-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-3 rounded-xl border border-slate-700 hover:border-fuchsia-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
+						<button onclick="selectTickerFromRadar('${item.ticker}'); toggleWhaleModal();" class="mt-4 w-full bg-slate-800/80 hover:bg-fuchsia-600 text-slate-300 hover:text-slate-300 font-bold text-[10px] lg:text-xs py-3 rounded-xl border border-slate-700 hover:border-fuchsia-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
 							<span>Buka Chart & Detail AI</span>
 							<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
 						</button>
@@ -2276,7 +2276,7 @@ async function runCustomScreener() {
 						</ul>
 					</div>
 					
-					<button onclick="selectTickerFromCustom('${item.ticker}')" class="mt-4 w-full bg-slate-800/80 hover:bg-blue-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-blue-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
+					<button onclick="selectTickerFromCustom('${item.ticker}')" class="mt-4 w-full bg-slate-800/80 hover:bg-blue-600 text-slate-300 hover:text-slate-300 font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-blue-500 transition-all duration-300 flex items-center justify-center gap-2 group relative z-10 shadow-sm">
 						<span>Buka Chart & Detail AI</span>
 						<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
 					</button>
@@ -2314,7 +2314,7 @@ function ptSwitchSubTab(subTab) {
 	const contentPorto = document.getElementById('ptSubContentPorto');
 
 	const activeClass = "flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-slate-300 transition flex items-center justify-center gap-2 shadow-sm shadow-blue-600/20";
-	const inactiveClass = "flex-1 py-2 text-xs font-bold rounded-lg text-blue-400 hover:text-white hover:bg-blue-900/30 transition flex items-center justify-center gap-2";
+	const inactiveClass = "flex-1 py-2 text-xs font-bold rounded-lg text-blue-400 hover:text-slate-300 hover:bg-blue-900/30 transition flex items-center justify-center gap-2";
 
 	if (subTab === 'form') {
 		if (btnForm) btnForm.className = activeClass;
@@ -2672,7 +2672,7 @@ function renderPaperTradingUI() {
 						${isPlus ? '+' : ''}Rp ${Math.round(pnl).toLocaleString('id-ID')} (${isPlus ? '+' : ''}${pnlPct}%)
 					</td>
 					<td class="p-3.5 text-center">
-						<button onclick="ptExecuteSell(${item.id})" class="text-[10px] bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-400 font-bold px-3 py-1 rounded-lg border border-rose-500/30 transition">Jual</button>
+						<button onclick="ptExecuteSell(${item.id})" class="text-[10px] bg-rose-500/20 hover:bg-rose-500 hover:text-slate-300 text-rose-400 font-bold px-3 py-1 rounded-lg border border-rose-500/30 transition">Jual</button>
 					</td>
 				</tr>
 			`;
@@ -2947,12 +2947,12 @@ function switchJournalView(view) {
 		tv.classList.remove('hidden');
 		kv.classList.add('hidden');
 		btnT.className = "px-3 py-1 text-[10px] font-bold rounded bg-emerald-500 text-slate-950 transition";
-		btnK.className = "px-3 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition";
+		btnK.className = "px-3 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-slate-300 transition";
 	} else {
 		tv.classList.add('hidden');
 		kv.classList.remove('hidden');
 		btnK.className = "px-3 py-1 text-[10px] font-bold rounded bg-emerald-500 text-slate-950 transition";
-		btnT.className = "px-3 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition";
+		btnT.className = "px-3 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-slate-300 transition";
 		renderKanbanBoard();
 	}
 	AudioFX.playClick();
@@ -3010,7 +3010,7 @@ function renderJournalTable() {
 				<td class="p-3.5">${statusBadge}</td>
 				<td class="p-3.5 text-center space-x-1">
 					<button onclick="updateJournalStatus(${item.id}, 'WIN')" class="text-[9px] bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 font-bold px-2 py-1 rounded-md border border-emerald-500/30 transition">WIN</button>
-					<button onclick="updateJournalStatus(${item.id}, 'LOSS')" class="text-[9px] bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white font-bold px-2 py-1 rounded-md border border-rose-500/30 transition">LOSS</button>
+					<button onclick="updateJournalStatus(${item.id}, 'LOSS')" class="text-[9px] bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-slate-300 font-bold px-2 py-1 rounded-md border border-rose-500/30 transition">LOSS</button>
 					<button onclick="deleteJournalItem(${item.id})" class="text-[9px] bg-slate-800 text-slate-400 hover:text-rose-400 px-2 py-1 rounded-md transition">✕</button>
 				</td>
 			</tr>
@@ -3067,7 +3067,7 @@ function renderKanbanBoard() {
 					<div class="flex items-center gap-1">
 						${item.status !== 'OPEN' ? `<button onclick="updateJournalStatus(${item.id}, 'OPEN')" class="text-[8px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded font-bold transition">Open</button>` : ''}
 						${item.status !== 'WIN' ? `<button onclick="updateJournalStatus(${item.id}, 'WIN')" class="text-[8px] bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 px-1.5 py-0.5 rounded font-bold transition">WIN</button>` : ''}
-						${item.status !== 'LOSS' ? `<button onclick="updateJournalStatus(${item.id}, 'LOSS')" class="text-[8px] bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-400 px-1.5 py-0.5 rounded font-bold transition">LOSS</button>` : ''}
+						${item.status !== 'LOSS' ? `<button onclick="updateJournalStatus(${item.id}, 'LOSS')" class="text-[8px] bg-rose-500/20 hover:bg-rose-500 hover:text-slate-300 text-rose-400 px-1.5 py-0.5 rounded font-bold transition">LOSS</button>` : ''}
 						<button onclick="deleteJournalItem(${item.id})" class="text-[8px] text-slate-500 hover:text-rose-400 px-1 py-0.5 transition" title="Hapus">✕</button>
 					</div>
 				</div>
@@ -4036,7 +4036,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 								>
 							</div>
 							<div class="flex flex-col">
-								<strong class="text-white text-sm tracking-wide">&dollar;${data.ticker}</strong>
+								<strong class="text-slate-300 text-sm tracking-wide">&dollar;${data.ticker}</strong>
 								${isCurrent ? '<span class="text-[9px] text-emerald-400/80 font-medium tracking-wide">Sedang Dipantau</span>' : '<span class="text-[9px] text-slate-500 font-medium tracking-wide">Saham Serupa</span>'}
 							</div>
 						</div>
@@ -4065,7 +4065,7 @@ async function loadPeerAnalysisByPrice(targetTicker, isManualRefresh = false) {
 						</span>
 					</td>
 					<td class="p-4 align-middle text-center">
-						<button onclick="document.getElementById('stockSearch').value='${data.ticker}'; searchStock(true);" class="text-[10px] bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white px-3 py-2 rounded-lg border border-slate-700 hover:border-emerald-500 transition-all duration-200 font-bold shadow-sm flex items-center justify-center gap-1.5 mx-auto group-hover:bg-emerald-500/20 group-hover:text-emerald-400 group-hover:border-emerald-500/40 whitespace-nowrap">
+						<button onclick="document.getElementById('stockSearch').value='${data.ticker}'; searchStock(true);" class="text-[10px] bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-slate-300 px-3 py-2 rounded-lg border border-slate-700 hover:border-emerald-500 transition-all duration-200 font-bold shadow-sm flex items-center justify-center gap-1.5 mx-auto group-hover:bg-emerald-500/20 group-hover:text-emerald-400 group-hover:border-emerald-500/40 whitespace-nowrap">
 							Buka Chart <i class="fa-solid fa-chevron-right text-[9px] opacity-80"></i>
 						</button>
 					</td>
@@ -4369,7 +4369,7 @@ function renderTechnicalGauge(ticker) {
 		const isActive = currentTechEngineMode === m.id;
 		const btnClass = isActive
 			? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-sm'
-			: 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700';
+			: 'bg-slate-900/80 text-slate-400 border-slate-800 hover:text-slate-300 hover:border-slate-700';
 		return `
 			<button type="button" onclick="switchTechnicalEngineMode('${m.id}')" class="px-2.5 py-1.5 rounded-lg border text-[10px] lg:text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${btnClass}">
 				<i data-lucide="${m.icon}" class="w-3.5 h-3.5"></i>
@@ -7019,7 +7019,7 @@ function setForeignFlowFilter(group, value) {
 					el.className = 'px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/40 transition';
 				}
 			} else {
-				el.className = 'px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition';
+				el.className = 'px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-300 transition';
 			}
 		});
 	} else if (group === 'nominal') {
@@ -7029,7 +7029,7 @@ function setForeignFlowFilter(group, value) {
 			if (!el) return;
 			el.className = key === value
 				? 'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-sky-500/20 text-sky-400 border border-sky-500/40 transition'
-				: 'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition';
+				: 'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-300 transition';
 		});
 	}
 
@@ -7106,7 +7106,7 @@ function renderFilteredForeignFlow() {
 					</div>
 				</div>
 
-				<button onclick="selectTickerFromRadar('${stock.ticker}')" class="w-full bg-slate-800/80 hover:bg-sky-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2 rounded-xl border border-slate-700 hover:border-sky-500 transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm">
+				<button onclick="selectTickerFromRadar('${stock.ticker}')" class="w-full bg-slate-800/80 hover:bg-sky-600 text-slate-300 hover:text-slate-300 font-bold text-[10px] lg:text-xs py-2 rounded-xl border border-slate-700 hover:border-sky-500 transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm">
 					<span>Buka Chart &amp; Detail AI</span>
 					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
 				</button>
@@ -7737,7 +7737,7 @@ function renderFilteredValuation() {
 	const getFilterBtnClass = (key, activeClasses) => {
 		return valuationStatusFilter === key
 			? `px-2.5 py-1 rounded-lg text-[10px] lg:text-xs font-extrabold border transition cursor-pointer shadow-sm ${activeClasses}`
-			: `px-2.5 py-1 rounded-lg text-[10px] lg:text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition cursor-pointer`;
+			: `px-2.5 py-1 rounded-lg text-[10px] lg:text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-300 transition cursor-pointer`;
 	};
 
 	const totalShownAll = Math.min(MAX_TOTAL_ALL, undervaluedList.length + fairValueList.length + premiumList.length);
@@ -7832,7 +7832,7 @@ function renderFilteredValuation() {
 				💡 ${stock.insightText}
 			</p>
 
-			<button onclick="selectTickerFromRadar('${stock.ticker}')" class="w-full bg-slate-800/80 hover:bg-emerald-600 text-slate-300 hover:text-white font-bold text-[10px] lg:text-xs py-2 rounded-xl border border-slate-700 hover:border-emerald-500 transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm">
+			<button onclick="selectTickerFromRadar('${stock.ticker}')" class="w-full bg-slate-800/80 hover:bg-emerald-600 text-slate-300 hover:text-slate-300 font-bold text-[10px] lg:text-xs py-2 rounded-xl border border-slate-700 hover:border-emerald-500 transition-all duration-300 flex items-center justify-center gap-2 group shadow-sm">
 				<span>Buka Chart &amp; Detail AI</span>
 				<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
 			</button>
@@ -8308,7 +8308,7 @@ async function enrichAndRenderWarrants(warrantList, container) {
 				</div>
 
 				<!-- Tombol Aksi -->
-				<button onclick="selectTickerFromRadar('${wTicker}')" class="w-full bg-slate-800/90 hover:bg-fuchsia-600 active:scale-[0.98] text-slate-200 hover:text-white font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-fuchsia-500 transition-all duration-200 flex items-center justify-center gap-2 shadow-sm">
+				<button onclick="selectTickerFromRadar('${wTicker}')" class="w-full bg-slate-800/90 hover:bg-fuchsia-600 active:scale-[0.98] text-slate-200 hover:text-slate-300 font-bold text-[10px] lg:text-xs py-2.5 rounded-xl border border-slate-700 hover:border-fuchsia-500 transition-all duration-200 flex items-center justify-center gap-2 shadow-sm">
 					<span>Buka Chart & Analisa AI</span>
 					<i data-lucide="arrow-right" class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"></i>
 				</button>

@@ -241,7 +241,7 @@
 			}
 
 			body.light-mode .text-slate-200,
-			body.light-mode .text-white {
+			body.light-mode .text-slate-300 {
 				color: #0f172a !important;
 			}
 
@@ -450,11 +450,11 @@
 						<i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
 						<span id="vipAccountStatus">Status: Aktif</span>
 					</span>
-					<div class="text-slate-200"> Selamat datang, <strong id="vipUserName" class="text-white font-bold text-sm lg:text-base">User</strong>
+					<div class="text-slate-200"> Selamat datang, <strong id="vipUserName" class="text-slate-300 font-bold text-sm lg:text-base">User</strong>
 					</div>
 				</div>
 				<div class="flex items-center gap-4">
-					<div class="text-white text-xs lg:text-sm"> Sisa Masa Aktif: <strong id="vipDaysLeft" class="text-amber-400 font-bold">0 Hari</strong>
+					<div class="text-slate-300 text-xs lg:text-sm"> Sisa Masa Aktif: <strong id="vipDaysLeft" class="text-amber-400 font-bold">0 Hari</strong>
 					</div>
 					<button onclick="logoutVIP()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg text-xs lg:text-sm font-bold transition flex items-center gap-1">
 						<i data-lucide="log-out" class="w-3.5 h-3.5"></i> Logout </button>
@@ -795,10 +795,10 @@
 							<div class="flex flex-wrap items-center gap-1.5">
 								<span class="text-[10px] text-slate-400 uppercase tracking-wider mr-1">Nominal:</span>
 								<button type="button" id="ffNominalBtn-ALL" onclick="setForeignFlowFilter('nominal', 'ALL')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-sky-500/20 text-sky-400 border border-sky-500/40 transition"> Semua </button>
-								<button type="button" id="ffNominalBtn-RIBU" onclick="setForeignFlowFilter('nominal', 'RIBU')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition"> Ribu </button>
-								<button type="button" id="ffNominalBtn-JUTA" onclick="setForeignFlowFilter('nominal', 'JUTA')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition"> Juta </button>
-								<button type="button" id="ffNominalBtn-MILIAR" onclick="setForeignFlowFilter('nominal', 'MILIAR')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition"> Miliar </button>
-								<button type="button" id="ffNominalBtn-TRILIUN" onclick="setForeignFlowFilter('nominal', 'TRILIUN')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-white transition"> Triliun </button>
+								<button type="button" id="ffNominalBtn-RIBU" onclick="setForeignFlowFilter('nominal', 'RIBU')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-300 transition"> Ribu </button>
+								<button type="button" id="ffNominalBtn-JUTA" onclick="setForeignFlowFilter('nominal', 'JUTA')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-300 transition"> Juta </button>
+								<button type="button" id="ffNominalBtn-MILIAR" onclick="setForeignFlowFilter('nominal', 'MILIAR')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-300 transition"> Miliar </button>
+								<button type="button" id="ffNominalBtn-TRILIUN" onclick="setForeignFlowFilter('nominal', 'TRILIUN')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-300 transition"> Triliun </button>
 							</div>
 						</div>
 					</div>
@@ -936,23 +936,23 @@
 								<select id="insiderSearchInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-10 pr-10 py-2.5 text-slate-300 text-xs lg:text-sm focus:outline-none focus:border-indigo-500 transition shadow-inner appearance-none cursor-pointer">
 									<option value="" disabled selected>-- Pilih Institusi Raksasa --</option>
 									<optgroup label="Hedge Fund & Konglomerasi" class="bg-slate-800 text-indigo-300 font-bold">
-										<option value="0001067983" class="text-white font-normal">Berkshire Hathaway (Warren Buffett)</option>
-										<option value="0001350694" class="text-white font-normal">Bridgewater Associates (Ray Dalio)</option>
-										<option value="0001336528" class="text-white font-normal">Pershing Square (Bill Ackman)</option>
-										<option value="0001423053" class="text-white font-normal">Citadel Advisors (Ken Griffin)</option>
-										<option value="0001029160" class="text-white font-normal">Soros Fund Management (George Soros)</option>
-										<option value="0001596532" class="text-white font-normal">ARK Investment Management (Cathie Wood)</option>
+										<option value="0001067983" class="text-slate-300 font-normal">Berkshire Hathaway (Warren Buffett)</option>
+										<option value="0001350694" class="text-slate-300 font-normal">Bridgewater Associates (Ray Dalio)</option>
+										<option value="0001336528" class="text-slate-300 font-normal">Pershing Square (Bill Ackman)</option>
+										<option value="0001423053" class="text-slate-300 font-normal">Citadel Advisors (Ken Griffin)</option>
+										<option value="0001029160" class="text-slate-300 font-normal">Soros Fund Management (George Soros)</option>
+										<option value="0001596532" class="text-slate-300 font-normal">ARK Investment Management (Cathie Wood)</option>
 									</optgroup>
 									<optgroup label="Bank & Manajemen Aset Global" class="bg-slate-800 text-indigo-300 font-bold mt-2">
-										<option value="0000019617" class="text-white font-normal">JPMorgan Chase & Co.</option>
-										<option value="0000886982" class="text-white font-normal">Goldman Sachs Group</option>
-										<option value="0000895421" class="text-white font-normal">Morgan Stanley</option>
-										<option value="0000093751" class="text-white font-normal">State Street Corp</option>
-										<option value="0000315066" class="text-white font-normal">Fidelity (FMR LLC)</option>
+										<option value="0000019617" class="text-slate-300 font-normal">JPMorgan Chase & Co.</option>
+										<option value="0000886982" class="text-slate-300 font-normal">Goldman Sachs Group</option>
+										<option value="0000895421" class="text-slate-300 font-normal">Morgan Stanley</option>
+										<option value="0000093751" class="text-slate-300 font-normal">State Street Corp</option>
+										<option value="0000315066" class="text-slate-300 font-normal">Fidelity (FMR LLC)</option>
 									</optgroup>
 									<optgroup label="Dana Pensiun & Yayasan Raksasa" class="bg-slate-800 text-indigo-300 font-bold mt-2">
-										<option value="0001364742" class="text-white font-normal">Bill & Melinda Gates Foundation Trust</option>
-										<option value="0001004146" class="text-white font-normal">California Public Employees Retirement System</option>
+										<option value="0001364742" class="text-slate-300 font-normal">Bill & Melinda Gates Foundation Trust</option>
+										<option value="0001004146" class="text-slate-300 font-normal">California Public Employees Retirement System</option>
 									</optgroup>
 								</select>
 								<div class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">
@@ -1023,22 +1023,22 @@
 								<i data-lucide="map-pin" class="w-4 h-4"></i> TRADING MAP (TECHNICAL PIVOT) </span>
 							<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs">
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
-									<span class="text-white text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5">
+									<span class="text-slate-300 text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5">
 										<i data-lucide="target" class="w-3 h-3 text-amber-400"></i> Area Entry </span>
 									<span id="mapSupport1" class="font-bold text-amber-400">Memuat...</span>
 								</div>
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
-									<span class="text-white text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5">
+									<span class="text-slate-300 text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5">
 										<i data-lucide="plane-takeoff" class="w-3 h-3 text-blue-400"></i> Resistance </span>
 									<span id="mapResist1" class="font-bold text-blue-400">Memuat...</span>
 								</div>
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
-									<span class="text-white text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5">
+									<span class="text-slate-300 text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5">
 										<i data-lucide="circle-dollar-sign" class="w-3 h-3 text-emerald-400"></i> Take Profit (TP1 / TP2) </span>
 									<span id="mapTP" class="font-bold text-emerald-400">Memuat...</span>
 								</div>
 								<div class="bg-slate-900/60 p-2.5 rounded border border-slate-800">
-									<span class="text-white text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5">
+									<span class="text-slate-300 text-[10px] lg:text-[11px] block mb-1 flex items-center gap-1.5">
 										<i data-lucide="shield-minus" class="w-3 h-3 text-rose-400"></i> Stop Loss (SL) </span>
 									<span id="mapSL" class="font-bold text-rose-400">Memuat...</span>
 								</div>
@@ -1306,14 +1306,14 @@
 							</span>
 							<p class="text-[10px] lg:text-xs text-slate-400 mt-0.5">Ambil data Entry, Resistance, Take Profit, dan Stop Loss dari AI lalu tambahkan ke riwayat pantauan.</p>
 						</div>
-						<button onclick="openEditAlertModal()" class="bg-teal-800 hover:bg-teal-500 hover:text-white text-slate-300 px-5 py-2.5 rounded-lg border border-teal-700 font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
+						<button onclick="openEditAlertModal()" class="bg-teal-800 hover:bg-teal-500 hover:text-slate-300 text-slate-300 px-5 py-2.5 rounded-lg border border-teal-700 font-bold transition flex items-center justify-center gap-1.5 shadow-md shrink-0">
 							<i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Tambahkan ke Alert </button>
 					</div>
 					<div class="space-y-2.5 pt-1">
 						<div class="flex items-center justify-between">
 							<span class="text-[11px] lg:text-xs text-slate-200 font-bold block flex items-center gap-1.5">
 								<i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i> Riwayat & Daftar Alert Semua Saham: </span>
-							<button onclick="clearAllAlerts()" class="text-[9px] lg:text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-2 py-1 rounded transition font-bold">Bersihkan Semua</button>
+							<button onclick="clearAllAlerts()" class="text-[9px] lg:text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-slate-300 text-rose-400 border border-rose-500/30 px-2 py-1 rounded transition font-bold">Bersihkan Semua</button>
 						</div>
 						<div id="alertListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 min-h-[100px] max-h-[400px] overflow-y-auto scrollbar-thin pr-1">
 							<div class="text-center text-slate-400 py-6 lg:col-span-3 text-xs">Belum ada alert harga yang dipasang pada saham manapun. Klik tombol "Tambahkan ke Alert" di atas.</div>
@@ -1326,10 +1326,10 @@
 					<div class="bg-slate-800 border border-slate-600 rounded-xl w-11/12 max-w-md overflow-hidden shadow-2xl">
 						<!-- Header Modal -->
 						<div class="px-5 py-4 border-b border-slate-700 flex justify-between items-center bg-slate-900/60">
-							<h3 class="text-white font-semibold text-sm flex items-center gap-2">
+							<h3 class="text-slate-300 font-semibold text-sm flex items-center gap-2">
 								<i class="fa-solid fa-bell-pen text-emerald-400"></i> Konfigurasi Smart Alert
 							</h3>
-							<button onclick="closeEditAlertModal()" class="text-slate-400 hover:text-white transition">
+							<button onclick="closeEditAlertModal()" class="text-slate-400 hover:text-slate-300 transition">
 								<i class="fa-solid fa-xmark"></i>
 							</button>
 						</div>
@@ -1404,7 +1404,7 @@
 					<div class="flex bg-slate-950/30 p-1.5 rounded-xl border border-slate-500/20 gap-2">
 						<button onclick="ptSwitchSubTab('form')" id="ptSubBtnForm" class="flex-1 py-2 text-xs font-bold rounded-lg bg-blue-600 text-slate-300 transition flex items-center justify-center gap-2 shadow-sm shadow-blue-600/20">
 							<i data-lucide="shopping-cart" class="w-4 h-4"></i> Form Eksekusi </button>
-						<button onclick="ptSwitchSubTab('portfolio')" id="ptSubBtnPorto" class="flex-1 py-2 text-xs font-bold rounded-lg text-blue-400 hover:text-white hover:bg-blue-900/30 transition flex items-center justify-center gap-2">
+						<button onclick="ptSwitchSubTab('portfolio')" id="ptSubBtnPorto" class="flex-1 py-2 text-xs font-bold rounded-lg text-blue-400 hover:text-slate-300 hover:bg-blue-900/30 transition flex items-center justify-center gap-2">
 							<i data-lucide="briefcase" class="w-4 h-4"></i> Portofolio & Riwayat </button>
 					</div>
 					<!-- Sub-Tab Content 1: Form Eksekusi -->
@@ -1412,7 +1412,7 @@
 						<div class="flex items-center justify-between border-b border-slate-500/20 pb-3">
 							<span class="font-bold text-blue-200 flex items-center gap-2 text-sm">
 								<i data-lucide="shopping-cart" class="w-4 h-4 text-blue-400"></i> Form Order Saham </span>
-							<button onclick="ptSyncCurrentTicker()" class="text-[10px] bg-blue-800 hover:bg-blue-500 hover:text-white text-slate-300 px-3 py-1.5 rounded-lg border border-blue-700 transition font-bold flex items-center gap-1.5">
+							<button onclick="ptSyncCurrentTicker()" class="text-[10px] bg-blue-800 hover:bg-blue-500 hover:text-slate-300 text-slate-300 px-3 py-1.5 rounded-lg border border-blue-700 transition font-bold flex items-center gap-1.5">
 								<i data-lucide="wand-2" class="w-3 h-3"></i> Sync AI Signal </button>
 						</div>
 						<div class="grid grid-cols-2 gap-3">
@@ -1457,7 +1457,7 @@
 							<span class="font-bold text-blue-200 flex items-center gap-2 text-sm">
 								<i data-lucide="briefcase" class="w-4 h-4 text-blue-400"></i> Portofolio Saham Aktif </span>
 							<div class="flex items-center gap-2">
-								<button onclick="ptResetAccount()" class="text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg transition font-bold flex items-center gap-1.5">
+								<button onclick="ptResetAccount()" class="text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-slate-300 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-lg transition font-bold flex items-center gap-1.5">
 									<i data-lucide="rotate-ccw" class="w-3 h-3"></i> Reset Akun </button>
 								<button onclick="ptRefreshPortoPrices()" class="text-[10px] bg-cyan-800 hover:bg-cyan-700 text-slate-300 px-3 py-1.5 rounded-lg border border-cyan-700 transition font-bold flex items-center gap-1.5 shadow-md">
 									<i data-lucide="refresh-cw" class="w-3 h-3"></i> Update Harga Live </button>
@@ -1506,9 +1506,9 @@
 							<p class="text-[10px] text-slate-400 mt-0.5">Kalkulasi ukuran lot & rasio risiko sebelum mengeksekusi order.</p>
 						</div>
 						<div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
-							<button onclick="saveTradingPlanToJournal()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-cyan-800 hover:bg-cyan-500 hover:text-white text-slate-300 font-bold px-3.5 py-2 rounded-lg border border-cyan-700 transition flex items-center justify-center gap-1.5 shadow-sm">
+							<button onclick="saveTradingPlanToJournal()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-cyan-800 hover:bg-cyan-500 hover:text-slate-300 text-slate-300 font-bold px-3.5 py-2 rounded-lg border border-cyan-700 transition flex items-center justify-center gap-1.5 shadow-sm">
 								<i data-lucide="bookmark-plus" class="w-3.5 h-3.5"></i> Simpan ke Journal </button>
-							<button onclick="autoFillRRRFromAI()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-blue-800 hover:bg-blue-500 hover:text-white text-slate-300 font-bold px-3.5 py-2 rounded-lg border border-blue-700 transition flex items-center justify-center gap-1.5">
+							<button onclick="autoFillRRRFromAI()" class="flex-1 sm:flex-initial text-[10px] lg:text-xs bg-blue-800 hover:bg-blue-500 hover:text-slate-300 text-slate-300 font-bold px-3.5 py-2 rounded-lg border border-blue-700 transition flex items-center justify-center gap-1.5">
 								<i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Sync AI Signal </button>
 						</div>
 					</div>
@@ -1553,19 +1553,19 @@
 								</div>
 								<div class="grid grid-cols-2 gap-2.5 text-[11px] lg:text-xs">
 									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-										<span class="text-white text-[9px] lg:text-[10px] block">Maksimal Risiko Uang (Rp)</span>
+										<span class="text-slate-300 text-[9px] lg:text-[10px] block">Maksimal Risiko Uang (Rp)</span>
 										<span id="rrrMaxRiskAmount" class="font-bold text-rose-400">Rp 0</span>
 									</div>
 									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-										<span class="text-white text-[9px] lg:text-[10px] block">Maksimal Alokasi Lot</span>
+										<span class="text-slate-300 text-[9px] lg:text-[10px] block">Maksimal Alokasi Lot</span>
 										<span id="rrrMaxLots" class="font-bold text-sky-400">0 Lot</span>
 									</div>
 									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-										<span class="text-white text-[9px] lg:text-[10px] block">Total Modal Terpakai</span>
+										<span class="text-slate-300 text-[9px] lg:text-[10px] block">Total Modal Terpakai</span>
 										<span id="rrrCapitalNeeded" class="font-bold text-amber-400">Rp 0</span>
 									</div>
 									<div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-										<span class="text-white text-[9px] lg:text-[10px] block">Potensi Profit Bersih (Rp)</span>
+										<span class="text-slate-300 text-[9px] lg:text-[10px] block">Potensi Profit Bersih (Rp)</span>
 										<span id="rrrPotentialReward" class="font-bold text-emerald-300">Rp 0</span>
 									</div>
 								</div>
@@ -1766,13 +1766,13 @@
 							<span class="font-bold text-slate-200 text-xs">Mode Tampilan:</span>
 							<div class="flex bg-slate-900 p-1 rounded-lg border border-slate-800">
 								<button onclick="switchJournalView('table')" id="journalBtnTable" class="px-3 py-1 text-[10px] font-bold rounded bg-emerald-500 text-slate-950 transition">Tabel</button>
-								<button onclick="switchJournalView('kanban')" id="journalBtnKanban" class="px-3 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition">Kanban Board</button>
+								<button onclick="switchJournalView('kanban')" id="journalBtnKanban" class="px-3 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-slate-300 transition">Kanban Board</button>
 							</div>
 						</div>
 						<div class="flex items-center gap-2">
 							<button onclick="exportJournalToCSV()" class="flex-1 sm:flex-initial text-[10px] bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 border border-emerald-500/30 font-bold px-3 py-1.5 rounded-lg transition flex items-center justify-center gap-1.5">
 								<i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export CSV (.csv) </button>
-							<button onclick="clearJournalHistory()" class="flex-1 sm:flex-initial text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 border border-rose-500/30 font-bold px-3 py-1.5 rounded-lg transition"> Hapus Semua </button>
+							<button onclick="clearJournalHistory()" class="flex-1 sm:flex-initial text-[10px] bg-rose-500/10 hover:bg-rose-500 hover:text-slate-300 text-rose-400 border border-rose-500/30 font-bold px-3 py-1.5 rounded-lg transition"> Hapus Semua </button>
 						</div>
 					</div>
 					<!-- Tampilan Tabel Journal -->
@@ -2178,7 +2178,7 @@
 					<button onclick="closeCuanCelebration()" class="absolute -top-4 -right-4 bg-rose-500 text-slate-300 rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg hover:scale-110 transition z-10">✕</button>
 				</div>
 				<h2 id="cuanTitle" class="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mt-5 drop-shadow-lg animate-bounce text-center"> TAKE PROFIT TERCAPAI! 🚀 </h2>
-				<p id="cuanDesc" class="text-white text-xs md:text-sm bg-emerald-500/20 px-4 py-1.5 rounded-full mt-2 border border-emerald-500/30 text-center"> Saya bilang juga apa, cuan luber kan lo! </p>
+				<p id="cuanDesc" class="text-slate-300 text-xs md:text-sm bg-emerald-500/20 px-4 py-1.5 rounded-full mt-2 border border-emerald-500/30 text-center"> Saya bilang juga apa, cuan luber kan lo! </p>
 			</div>
 		</div>
 		<!-- Modal Evaluasi Loss (Single Random Image & Text) -->
@@ -2190,7 +2190,7 @@
 					<button onclick="closeLossCelebration()" class="absolute -top-4 -right-4 bg-rose-500 text-slate-300 rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg hover:scale-110 transition z-10">✕</button>
 				</div>
 				<h2 id="lossTitle" class="text-xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-amber-400 mt-5 drop-shadow-lg animate-pulse text-center"> STOP LOSS TERCAPAI 🛡️ </h2>
-				<p id="lossDesc" class="text-white text-xs md:text-sm bg-rose-500/20 px-4 py-1.5 rounded-full mt-2 border border-rose-500/30 text-center"> Gapapa ya, masih ada rezeki di saham lain! </p>
+				<p id="lossDesc" class="text-slate-300 text-xs md:text-sm bg-rose-500/20 px-4 py-1.5 rounded-full mt-2 border border-rose-500/30 text-center"> Gapapa ya, masih ada rezeki di saham lain! </p>
 			</div>
 		</div>
 		<!-- Floating AI Assistant Button & Chatbox -->
@@ -2208,7 +2208,7 @@
 							<span class="text-[9px] text-emerald-400">Online • Analis Pasar Aktif</span>
 						</div>
 					</div>
-					<button onclick="toggleAIChat()" class="text-slate-400 hover:text-white transition p-1">
+					<button onclick="toggleAIChat()" class="text-slate-400 hover:text-slate-300 transition p-1">
 						<i data-lucide="x" class="w-4 h-4"></i>
 					</button>
 				</div>
@@ -2262,7 +2262,7 @@
 						</div>
 					</div>
 					<div class="flex items-center gap-3">
-						<button onclick="refreshTVScreener()" class="text-blue-400 hover:text-white transition-colors p-2 bg-slate-800/50 rounded-xl hover:bg-blue-500/20 border border-transparent hover:border-blue-500/30 flex items-center gap-1.5 text-[10px] lg:text-xs font-bold" title="Segarkan Widget">
+						<button onclick="refreshTVScreener()" class="text-blue-400 hover:text-slate-300 transition-colors p-2 bg-slate-800/50 rounded-xl hover:bg-blue-500/20 border border-transparent hover:border-blue-500/30 flex items-center gap-1.5 text-[10px] lg:text-xs font-bold" title="Segarkan Widget">
 							<i data-lucide="refresh-cw" id="iconRefreshTVScreener" class="w-4 h-4"></i>
 							<span class="hidden sm:inline">Refresh</span>
 						</button>
